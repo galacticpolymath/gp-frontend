@@ -37,7 +37,7 @@ import { ILessonPartProps } from "./LessonPart";
 export interface ICopyLessonBtnProps
   extends Pick<INewUnitLesson, "allUnitLessons" | "lessonsFolder">,
     Pick<INewUnitSchema, "GdrivePublicID">,
-    Pick<ILessonPartProps, "setParts" | "lsnNum"> {
+    Pick<ILessonPartProps, "setParts"> {
   userGDriveLessonFolderId?: Pick<
     INewUnitLesson,
     "userGDriveLessonFolderId"
@@ -128,7 +128,6 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
   lessonsFolder,
   isRetrievingLessonFolderIds,
   setParts,
-  lsnNum,
 }) => {
   const btnRef = useRef<HTMLButtonElement | null>(null);
   const { _isGpPlusMember, _isCopyUnitBtnDisabled } = useUserContext();
@@ -193,7 +192,9 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
     if (
       !sharedGDriveLessonFolderId ||
       !lessonSharedDriveFolderName ||
-      !lessonsGrades
+      !lessonsGrades ||
+      !lessonsFolder?.name ||
+      !lessonsFolder.sharedGDriveId
     ) {
       alert(
         "ERROR! Can't open the target lesson folder. Please refresh the page or contact support if the issue persists."
@@ -423,19 +424,21 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
 
               if (isJobDone) {
                 setParts((parts) => {
-                  const targetLessonPartIndex = parts.findIndex((part) => {
-                    return part.lsn == lsnNum;
-                  });
+                  console.log("lessonId: ", lessonId);
 
-                  if (targetLessonPartIndex === -1) {
+                  const targetPartIndex = parts.findIndex((part) => {
+                    return part.lsn && lessonId && part.lsn == lessonId;
+                  });
+                  const targetPart = parts[targetPartIndex];
+
+                  console.log("targetPart: ", targetPart);
+
+                  if (!targetPart) {
                     return parts;
                   }
 
-                  const targetLessonPart = parts[
-                    targetLessonPartIndex
-                  ] as INewUnitLesson<IItemV2>;
-                  parts[targetLessonPartIndex] = {
-                    ...targetLessonPart,
+                  parts[targetPartIndex] = {
+                    ...targetPart,
                     userGDriveLessonFolderId: targetFolderId,
                   };
 

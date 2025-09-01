@@ -143,7 +143,7 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
     }
 
     const targetLessonFolder = sharedGDriveLessonFolders.find((folder) => {
-      if(lsnNum == 100){
+      if (lsnNum == 100) {
         return folder.name === "assessments";
       }
 
@@ -172,7 +172,6 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
     console.log("sharedGDriveLessonFolders: ", sharedGDriveLessonFolders);
 
     console.log("sharedGDriveLessonFolder: ", sharedGDriveLessonFolder);
-    
   });
 
   const { _isUserTeacher } = useUserContext();
@@ -364,6 +363,17 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
     boxShadow: isExpanded ? highlightedGlow : "none",
     pointerEvent: "none",
   };
+  const lessonsFolder =
+    lsnNum == 100
+      ? // will use the assessments folder itself as the parent folder
+        {
+          name: sharedGDriveLessonFolder?.name,
+          sharedGDriveId: sharedGDriveLessonFolder?.id,
+        }
+      : {
+          name: sharedGDriveLessonFolder?.parentFolder.name,
+          sharedGDriveId: sharedGDriveLessonFolder?.parentFolder.id,
+        };
 
   return (
     <div style={accordionStyleAccordionWrapper}>
@@ -633,10 +643,7 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                 lessonName={lsnTitle}
                 sharedGDriveLessonFolderId={sharedGDriveLessonFolder?.id}
                 allUnitLessons={allUnitLessons}
-                lessonsFolder={{
-                  name: sharedGDriveLessonFolder?.parentFolder.name,
-                  sharedGDriveId: sharedGDriveLessonFolder?.parentFolder.id,
-                }}
+                lessonsFolder={lessonsFolder}
                 lessonsGrades={selectedGrade.grades}
                 lessonSharedDriveFolderName={sharedGDriveLessonFolder?.name}
                 userGDriveLessonFolderId={userGDriveLessonFolderId}

@@ -487,6 +487,7 @@ export default async function handler(
           `The target unit folder and its corresponding lesson folder do not exist, creating them...`
         );
 
+
         if (!isStreamOpen) {
           throw new CustomError("The stream has ended.", 500);
         }
@@ -605,6 +606,8 @@ export default async function handler(
         console.log(
           "The target unit folder already exists, so we will create a new lesson folder and copy the items into it."
         );
+
+        console.log("_lessonsFolderInSharedDrive.name: ", _lessonsFolderInSharedDrive.name);
 
         // todo: BUG OCCURING
         const clientOrigin = new URL(request.headers.referer ?? "").origin;
