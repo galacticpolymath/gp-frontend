@@ -189,6 +189,8 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
       lessonsGrades
     );
 
+    console.log("lessonsFolder, hey there: ", lessonsFolder)    
+
     if (
       !sharedGDriveLessonFolderId ||
       !lessonSharedDriveFolderName ||
@@ -199,6 +201,7 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
       alert(
         "ERROR! Can't open the target lesson folder. Please refresh the page or contact support if the issue persists."
       );
+      setIsCopyingLesson(false);
       return;
     }
 

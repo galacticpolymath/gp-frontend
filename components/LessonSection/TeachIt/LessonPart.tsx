@@ -149,7 +149,8 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
 
       const parentFolderGradeType = folder.parentFolder?.name
         ?.split("_")
-        ?.at(-1);
+        ?.at(-1)
+        ?.replace(/[a-zA-Z]/g, "");
 
       console.log("parentFolderGradeType: ", parentFolderGradeType);
 
