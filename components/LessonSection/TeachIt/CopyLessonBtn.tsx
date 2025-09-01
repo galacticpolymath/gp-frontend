@@ -27,7 +27,7 @@ import {
   TCopyFilesMsg,
   TCopyLessonReqQueryParams,
 } from "../../../pages/api/gp-plus/copy-lesson";
-import { ILessonForUI } from "../../../types/global";
+import { ILessonForUI, TSetter } from "../../../types/global";
 import { INewUnitSchema } from "../../../backend/models/Unit/types/unit";
 import { EventSourcePolyfill } from "event-source-polyfill";
 import { toast } from "react-toastify";
@@ -36,8 +36,7 @@ import { ILessonPartProps } from "./LessonPart";
 
 export interface ICopyLessonBtnProps
   extends Pick<INewUnitLesson, "allUnitLessons" | "lessonsFolder">,
-    Pick<INewUnitSchema, "GdrivePublicID">,
-    Pick<ILessonPartProps, "setParts"> {
+    Pick<INewUnitSchema, "GdrivePublicID"> {
   userGDriveLessonFolderId?: Pick<
     INewUnitLesson,
     "userGDriveLessonFolderId"
@@ -51,6 +50,7 @@ export interface ICopyLessonBtnProps
   lessonSharedDriveFolderName?: string;
   isRetrievingLessonFolderIds: boolean;
   sharedGDriveLessonFolderId?: string;
+  setParts: TSetter<(INewUnitLesson<IItemV2> | ILessonForUI)[]>;
 }
 
 export const ensureValidToken = async (
