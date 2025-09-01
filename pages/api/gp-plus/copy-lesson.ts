@@ -375,20 +375,7 @@ export default async function handler(
           !targetUnitFolder.labels.trashed;
       }
 
-      if (targetLessonFolderInUserDrive?.lessonDriveId) {
-        const targetLessonsFolder = await getGDriveItem(
-          targetLessonFolderInUserDrive?.lessonDriveId,
-          gDriveAccessToken,
-          gDriveRefreshToken,
-          clientOrigin
-        );
-        doesTargetGDriveUnitFolderExist =
-          "id" in targetLessonsFolder &&
-          !!targetLessonsFolder.id &&
-          !targetLessonsFolder.labels.trashed;
-      }
-
-      let doesTargetGDriveLessonFolderExist = false;
+      let doesTargetGDriveLessonFolderExist = !!targetLessonFolderInUserDrive;
 
       if (targetLessonFolderInUserDrive?.lessonDriveId) {
         const gdriveItem = await getGDriveItem(
@@ -476,7 +463,7 @@ export default async function handler(
 
       console.log(`unitDriveId, python: ${unitDriveId}`);
 
-      throw new Error("java");
+      // throw new Error("java");
 
       // if the unit folder doesn't exist, then create the structure of the target unit folder and copy the file items into the
       // corresponding lesson folder

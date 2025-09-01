@@ -189,7 +189,7 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
       lessonsGrades
     );
 
-    console.log("lessonsFolder, hey there: ", lessonsFolder)    
+    console.log("lessonsFolder, hey there: ", lessonsFolder);
 
     if (
       !sharedGDriveLessonFolderId ||
