@@ -94,7 +94,7 @@ const LessonGDriveId = new Schema<ILessonGDriveId>({
     lessonNum: String,
     lessonDriveId: String,
     lessonSharedGDriveFolderId: String,
-    gradePrefix: String
+    gradesRange: String
   }, {
   _id: false
 });

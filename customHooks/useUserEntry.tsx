@@ -6,6 +6,7 @@ import axios from "axios";
 import { signIn } from "next-auth/react";
 import { ChangeEvent, useState } from "react";
 import { constructUrlWithSearchQuery, validateEmail } from "../globalFns";
+import { useCustomCookies } from "./useCustomCookies";
 
 type TLoginForm = {
   email: string;
@@ -97,6 +98,7 @@ export const useUserEntry = () => {
   const [userEntryErrors, setUserEntryErrors] = useState(new Map());
   const [isUserTeacher, setIsUserTeacher] = useState(false);
   const [isUserEntryInProcess, setIsUserEntryInProcess] = useState(false);
+  const { removeAppCookies } = useCustomCookies();
   const [createAccountForm, setCreateAccountForm] = useState({
     firstName: "",
     lastName: "",
@@ -255,6 +257,11 @@ export const useUserEntry = () => {
       return;
     }
 
+    removeAppCookies([
+      "gdriveAccessToken",
+      "gdriveAccessTokenExp",
+      "gdriveRefreshToken",
+    ]);
     sendFormToServer("login", "credentials", {
       login: {
         email,

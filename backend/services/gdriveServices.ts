@@ -981,7 +981,7 @@ export const createUnitFolder = async (
   allUnitLessons: NonNullable<
     Pick<INewUnitLesson, "allUnitLessons">["allUnitLessons"]
   >,
-  gradePrefix: string
+  gradesRange: string
 ) => {
   const targetUnitFolderCreation = await createGDriveFolder(
     unit.name,
@@ -1118,7 +1118,7 @@ export const createUnitFolder = async (
         lessonDriveId: folderSubItem.id,
         lessonNum: targetUnitLesson.id,
         lessonSharedGDriveFolderId: targetUnitLesson.sharedGDriveId,
-        gradePrefix
+        gradesRange: gradesRange
       });
       break;
     }

@@ -69,7 +69,7 @@ export type TCopyLessonReqQueryParams = {
   lessonSharedGDriveFolderId: string | undefined;
   lessonSharedDriveFolderName: string | undefined;
   lessonName: string | undefined;
-  lessonsGrades: string | undefined;
+  lessonsFolderGradesRange: string | undefined;
   unitId: string | undefined;
   unitName: string | undefined;
   unitSharedGDriveId: string | undefined;
@@ -223,7 +223,7 @@ export default async function handler(
       !reqQueryParams?.lessonSharedGDriveFolderId ||
       !reqQueryParams?.allUnitLessons ||
       !reqQueryParams?.lessonsFolder ||
-      !reqQueryParams?.lessonsGrades ||
+      !reqQueryParams?.lessonsFolderGradesRange ||
       !reqQueryParams?.lessonName
     ) {
       throw new CustomError(
@@ -241,7 +241,7 @@ export default async function handler(
     const jwtPayload = await getJwtPayloadPromise(
       request.headers.authorization
     );
-    const lessonsFolderGradePrefix = reqQueryParams.lessonsGrades;
+    const lessonsFolderGradesRange = reqQueryParams.lessonsFolderGradesRange;
 
     if(!_lessonsFolderInSharedDrive.sharedGDriveId || !_lessonsFolderInSharedDrive.name){
       throw new CustomError(
@@ -512,7 +512,7 @@ export default async function handler(
           clientOrigin,
           email,
           _allUnitLessons,
-          lessonsFolderGradePrefix
+          lessonsFolderGradesRange
         );
 
         sendMessage(response, {
@@ -572,7 +572,7 @@ export default async function handler(
                 lessonDriveId: lessonFolderId,
                 lessonNum: reqQueryParams.lessonId,
                 lessonSharedGDriveFolderId: reqQueryParams.lessonSharedGDriveFolderId,
-                gradePrefix: lessonsFolderGradePrefix
+                gradesRange: lessonsFolderGradesRange
               } as ILessonGDriveId,
             },
           },
@@ -722,7 +722,7 @@ export default async function handler(
                 lessonDriveId: targetLessonFolderCreationResult.folderId,
                 lessonNum: reqQueryParams.lessonId,
                 lessonSharedGDriveFolderId: reqQueryParams.lessonSharedGDriveFolderId,
-                gradePrefix: lessonsFolderGradePrefix
+                gradesRange: lessonsFolderGradesRange
               } as ILessonGDriveId,
             },
           },
@@ -1131,7 +1131,7 @@ export default async function handler(
           lessonDriveId: targetLessonFolderInUserDrive.id,
           lessonNum: reqQueryParams.lessonId,
           lessonSharedGDriveFolderId: reqQueryParams.lessonSharedGDriveFolderId,
-          gradePrefix: lessonsFolderGradePrefix
+          gradesRange: lessonsFolderGradesRange
         });
         break;
       }

@@ -17,6 +17,7 @@ import CopyingUnitToast, {
 } from "../../CopyingUnitToast";
 import { EXPIRATION_DATE_TIME } from "../../../pages/google-drive-auth-result";
 import {
+  IItemV2,
   INewUnitLesson,
   IResource,
 } from "../../../backend/models/Unit/types/teachingMaterials";
@@ -35,7 +36,8 @@ import { ILessonPartProps } from "./LessonPart";
 
 export interface ICopyLessonBtnProps
   extends Pick<INewUnitLesson, "allUnitLessons" | "lessonsFolder">,
-    Pick<INewUnitSchema, "GdrivePublicID">, Pick<ILessonPartProps, "setParts" | "lsnNum"> {
+    Pick<INewUnitSchema, "GdrivePublicID">,
+    Pick<ILessonPartProps, "setParts" | "lsnNum"> {
   userGDriveLessonFolderId?: Pick<
     INewUnitLesson,
     "userGDriveLessonFolderId"
@@ -126,7 +128,7 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
   lessonsFolder,
   isRetrievingLessonFolderIds,
   setParts,
-  lsnNum
+  lsnNum,
 }) => {
   const btnRef = useRef<HTMLButtonElement | null>(null);
   const { _isGpPlusMember, _isCopyUnitBtnDisabled } = useUserContext();
@@ -161,7 +163,7 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
   const copyUnit = async () => {
     console.log("Copy unit function called");
 
-    // setIsCopyingLesson(true);
+    setIsCopyingLesson(true);
 
     const validToken = await ensureValidToken(
       gdriveAccessTokenExp!,
@@ -223,7 +225,7 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
       multiselect: true,
       callbackFunction: async (data) => {
         if (data?.docs?.length) {
-          setIsCopyingLesson(false);
+          setIsCopyingLesson(true);
 
           const validToken = await ensureValidToken(
             gdriveAccessTokenExp!,
@@ -320,7 +322,7 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
             lessonName: lessonName,
             lessonSharedGDriveFolderId: sharedGDriveLessonFolderId,
             lessonSharedDriveFolderName,
-            lessonsGrades: lessonsGrades,
+            lessonsFolderGradesRange: lessonsGrades,
           };
 
           console.log("reqQueryParams: ", reqQueryParams);
@@ -419,30 +421,27 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
 
               console.log("data, python: ", parsedData);
 
-              if(isJobDone && wasSuccessful){
-                setParts(parts => {
-                  const targetPartIndex = parts.findIndex(
-                    (part) => {
-                      return part.lsn && lsnNum && part.lsn == lsnNum;
-                    }
-                  );
-                  const targetPart = parts[targetPartIndex]
-
-                  if(!targetPart){
-                    return parts
-                  }
-
-                  parts[targetPartIndex] = {
-                    ...targetPart,
-                    userGDriveLessonFolderId: targetFolderId
-                  }
-                  
-                  return parts
-                });
-              }
-
-
               if (isJobDone) {
+                setParts((parts) => {
+                  const targetLessonPartIndex = parts.findIndex((part) => {
+                    return part.lsn == lsnNum;
+                  });
+
+                  if (targetLessonPartIndex === -1) {
+                    return parts;
+                  }
+
+                  const targetLessonPart = parts[
+                    targetLessonPartIndex
+                  ] as INewUnitLesson<IItemV2>;
+                  parts[targetLessonPartIndex] = {
+                    ...targetLessonPart,
+                    userGDriveLessonFolderId: targetFolderId,
+                  };
+
+                  return parts;
+                });
+
                 const title = wasSuccessful
                   ? `Successfully copied '${lessonName}'`
                   : `Failed to copy '${lessonName}'`;
@@ -483,6 +482,7 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
                   toastId,
                 });
                 eventSource.close();
+                setIsCopyingLesson(false);
                 return;
               }
 
@@ -596,6 +596,8 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
         }
       },
     });
+
+    setIsCopyingLesson(false);
 
     return;
   };

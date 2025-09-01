@@ -83,7 +83,7 @@ export interface ILessonGDriveId {
   lessonNum: string;
   lessonDriveId: string;
   lessonSharedGDriveFolderId: string;
-  gradePrefix: string
+  gradesRange: string
 }
 
 export interface IUnitGDriveLesson {

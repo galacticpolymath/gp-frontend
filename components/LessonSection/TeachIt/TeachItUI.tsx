@@ -123,7 +123,7 @@ const getUserLessonsGDriveFolderIds = async (
   gdriveRefreshToken: string,
   unitId: string,
   lessonNumIds: string[],
-  gradePrefix: string,
+  gradesRange: string,
   ensureValidToken: () => ReturnType<typeof _ensureValidToken>
 ) => {
   try {
@@ -142,7 +142,7 @@ const getUserLessonsGDriveFolderIds = async (
       url.searchParams.append("lessonNumIds", lessonNumId);
     });
     url.searchParams.append("unitId", unitId!);
-    url.searchParams.append("gradePrefix", gradePrefix);
+    url.searchParams.append("grades", gradesRange);
 
     const { data, status } = await axios.get<ILessonGDriveId[] | null>(
       url.href,
@@ -259,19 +259,19 @@ const TeachItUI = <
         gdriveAccessToken &&
         gdriveRefreshToken &&
         lessonNumIds?.length &&
-        selectedGrade.gradePrefix
+        selectedGrade.grades
       ) {
         try {
           // TODO: present the loading button for all copy lessons buttons when you are getting the id of the lesson folder of the user
 
-          console.log("selectedGrade.gradePrefix, will get lesson folder ids: ", selectedGrade.gradePrefix);
+          console.log("selectedGrade.grades, will get lesson folder ids: ", selectedGrade.grades);
 
           const userGDriveLessonFolderIds = await getUserLessonsGDriveFolderIds(
             token,
             gdriveRefreshToken,
             unitId!,
             lessonNumIds,
-            selectedGrade.gradePrefix,
+            selectedGrade.grades,
             ensureValidToken
           );
 

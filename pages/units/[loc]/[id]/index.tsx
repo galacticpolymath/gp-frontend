@@ -989,28 +989,57 @@ export const getStaticProps = async (arg: {
             | undefined = undefined;
           const lessonsWithFilePreviewImgsPromises = resource.lessons?.map(
             async (lesson) => {
-              // GOAL: find the shared lessons folder (the parent folder for all of the lessons folder)
-              // loop through all of the items of unitGDriveChildItems, if the name can equal lesson.name
-              // -then get the parentFolderId of the lesson folder
+              console.log("lesson, sup there: ", lesson.title);
+
               if (!lessonsFolder && unitGDriveChildItems) {
                 for (const unitGDriveChildItem of unitGDriveChildItems) {
-                  const lessonName = unitGDriveChildItem.name
-                    ?.split("_")
-                    .at(-1)
-                    ?.toLowerCase();
+                  let lessonTitle = lesson.title?.toLowerCase();
+
+                  if (
+                    lessonTitle === "assessments" &&
+                    lessonTitle !== unitGDriveChildItem.name?.toLowerCase()
+                  ) {
+                    continue;
+                  }
+
+                  let lessonName = unitGDriveChildItem.name;
+
+                  if (unitGDriveChildItem.name?.includes("_")) {
+                    lessonName = unitGDriveChildItem.name
+                      ?.split("_")
+                      .at(-1)
+                      ?.toLowerCase();
+                  }
 
                   if (
                     lessonName &&
                     lesson.title &&
-                    lessonName.toLowerCase() === lesson.title.toLowerCase()
+                    lessonName.toLowerCase() === lessonTitle
                   ) {
-                    const { name, id } =
+                    console.log("lesson, hi there: ", lesson.title);
+                    console.log(
+                      "lessonsFolder found, sup there: ",
+                      unitGDriveChildItem.name
+                    );
+
+                    const targetUnitGDriveChildItem =
                       unitGDriveChildItems.find((item) => {
+                        if (lessonTitle === "assessments") {
+                          return item.name === "assessments";
+                        }
+
                         return (
                           item.id &&
                           item.id === unitGDriveChildItem.parentFolderId
                         );
                       }) ?? {};
+
+                    console.log(
+                      "targetUnitGDriveChildItem, sup there: ",
+                      targetUnitGDriveChildItem
+                    );
+
+                    const { name, id } = targetUnitGDriveChildItem;
                     lessonsFolder =
                       name && id
                         ? {
@@ -1022,38 +1051,41 @@ export const getStaticProps = async (arg: {
                 }
               }
 
-              const targetGDriveSharedLessonFolders: ISharedGDriveLessonFolder[] | undefined =
-                unitGDriveChildItems
-                  ?.filter((item) => {
-                    const lessonName = item?.name?.split("_").at(-1);
+              const targetGDriveSharedLessonFolders:
+                | ISharedGDriveLessonFolder[]
+                | undefined = unitGDriveChildItems
+                ?.filter((item) => {
+                  const lessonName = item?.name?.split("_").at(-1);
 
-                    return (
-                      lessonName &&
-                      lesson.title &&
-                      lessonName.toLowerCase() === lesson.title.toLowerCase()
-                    );
-                  })
-                  ?.map((itemA) => {
-                    console.log("item, sup there: ", itemA);
+                  return (
+                    lessonName &&
+                    lesson.title &&
+                    lessonName.toLowerCase() === lesson.title.toLowerCase()
+                  );
+                })
+                ?.map((itemA) => {
+                  console.log("item, sup there: ", itemA);
 
-                    const lessonsFolder = unitGDriveChildItems.find((itemB) => {
-                      return itemB.id === itemA.parentFolderId;
-                    });
-
-                    console.log("lessonsFolder, python: ", lessonsFolder);
-                    
-                    // if lessonsFolder.pathFile === '', then the item is located at the root of the google drive folder
-                    const parentFolder = lessonsFolder ? { id: lessonsFolder.id!, name: lessonsFolder.name! } : {
-                      id: targetUnit.GdrivePublicID!,
-                      name: targetUnit.MediumTitle!,
-                    };
-
-                    return {
-                      id: itemA.id!,
-                      name: itemA.name!,
-                      parentFolder,
-                    };
+                  const lessonsFolder = unitGDriveChildItems.find((itemB) => {
+                    return itemB.id === itemA.parentFolderId;
                   });
+
+                  console.log("lessonsFolder, python: ", lessonsFolder);
+
+                  // if lessonsFolder.pathFile === '', then the item is located at the root of the google drive folder
+                  const parentFolder = lessonsFolder
+                    ? { id: lessonsFolder.id!, name: lessonsFolder.name! }
+                    : {
+                        id: targetUnit.GdrivePublicID!,
+                        name: targetUnit.MediumTitle!,
+                      };
+
+                  return {
+                    id: itemA.id!,
+                    name: itemA.name!,
+                    parentFolder,
+                  };
+                });
 
               console.log(
                 "targetGDriveLessonFolder: ",

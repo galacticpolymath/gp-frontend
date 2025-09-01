@@ -143,6 +143,10 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
     }
 
     const targetLessonFolder = sharedGDriveLessonFolders.find((folder) => {
+      if(lsnNum == 100){
+        return folder.name === "assessments";
+      }
+
       const parentFolderGradeType = folder.parentFolder?.name
         ?.split("_")
         ?.at(-1);

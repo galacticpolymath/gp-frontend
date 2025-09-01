@@ -12,7 +12,7 @@ import {
 interface IQueryParams {
   unitId: string;
   lessonNumIds: string[];
-  gradePrefix?: string;
+  grades?: string;
 }
 
 export default async function handler(
@@ -22,15 +22,15 @@ export default async function handler(
   const nonExistingLessonFolderIds: string[] = [];
   let userEmail: string | null = null;
 
-  console.log("request.query: ", request.query);
-  const { lessonNumIds, unitId, gradePrefix } =
+  console.log("request.query, get-gdrive-lessons-ids: ", request.query);
+  const { lessonNumIds, unitId, grades } =
     request.query as unknown as IQueryParams;
   try {
-    if (!gradePrefix || typeof gradePrefix !== "string") {
-      console.log("gradePrefix query parameter is required");
+    if (!grades || typeof grades !== "string") {
+      console.log("grades query parameter is required");
       return response
         .status(400)
-        .json({ error: "'gradePrefix' query parameter is required" });
+        .json({ error: "'grades' query parameter is required" });
     }
 
     if (!lessonNumIds) {
@@ -130,7 +130,7 @@ export default async function handler(
     const queriedGDriveItemResults = await Promise.all(
       targetUnitGDriveLessonObj.lessonDriveIds.map(
         async (lessonDriveFolder) => {
-          if (lessonDriveFolder.gradePrefix !== gradePrefix) {
+          if (lessonDriveFolder.gradesRange !== grades) {
             return null;
           }
 

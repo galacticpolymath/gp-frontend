@@ -20,7 +20,7 @@ const GoogleSignIn = ({
     executeExtraBtnClickLogic = null,
     executeFinallyBlockLogic = null,
 }) => {
-    const { removeAppCookies, getCookies } = useCustomCookies();
+    const { removeAppCookies } = useCustomCookies();
 
     if (!children) {
         children = (
@@ -36,8 +36,6 @@ const GoogleSignIn = ({
             event.preventDefault();
 
             removeAppCookies(["gdriveAccessToken", "gdriveAccessTokenExp", "gdriveRefreshToken"])
-
-            // TODo: delete all cookies
 
             if (typeof executeExtraBtnClickLogic === "function") {
                 executeExtraBtnClickLogic();
