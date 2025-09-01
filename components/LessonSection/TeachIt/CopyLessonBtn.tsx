@@ -31,18 +31,19 @@ import { INewUnitSchema } from "../../../backend/models/Unit/types/unit";
 import { EventSourcePolyfill } from "event-source-polyfill";
 import { toast } from "react-toastify";
 import { nanoid } from "nanoid";
+import { ILessonPartProps } from "./LessonPart";
 
 export interface ICopyLessonBtnProps
   extends Pick<INewUnitLesson, "allUnitLessons" | "lessonsFolder">,
-    Pick<INewUnitSchema, "GdrivePublicID"> {
-  _userGDriveLessonFolderId?: Pick<
+    Pick<INewUnitSchema, "GdrivePublicID">, Pick<ILessonPartProps, "setParts" | "lsnNum"> {
+  userGDriveLessonFolderId?: Pick<
     INewUnitLesson,
     "userGDriveLessonFolderId"
   >["userGDriveLessonFolderId"];
   unitId: string;
   MediumTitle: string;
   lessonName: string;
-  lessonsGradePrefix?: IResource<ILessonForUI>["gradePrefix"];
+  lessonsGrades?: IResource<ILessonForUI>["grades"];
   lessonId: string | number;
   sharedDriveLessonFolderId?: string;
   lessonSharedDriveFolderName?: string;
@@ -117,13 +118,15 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
   unitId,
   lessonId,
   lessonName,
-  lessonsGradePrefix,
+  lessonsGrades,
   lessonSharedDriveFolderName,
-  _userGDriveLessonFolderId,
+  userGDriveLessonFolderId,
   allUnitLessons,
   GdrivePublicID,
   lessonsFolder,
   isRetrievingLessonFolderIds,
+  setParts,
+  lsnNum
 }) => {
   const btnRef = useRef<HTMLButtonElement | null>(null);
   const { _isGpPlusMember, _isCopyUnitBtnDisabled } = useUserContext();
@@ -146,11 +149,9 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
   const [isCopyingLesson, setIsCopyingLesson] = useState(false);
   const [, setIsGpPlusModalDisplayed] = _isGpPlusModalDisplayed;
   const didInitialRenderOccur = useRef(false);
-  const [userGDriveLessonFolderId, setUserGDriveLessonFolderId] = useState("");
 
   useEffect(() => {
     console.log("userGDriveLessonFolderId: ", userGDriveLessonFolderId);
-    console.log("_userGDriveLessonFolderId: ", _userGDriveLessonFolderId);
     console.log(
       "sharedGDriveLessonFolderId, sup there: ",
       sharedGDriveLessonFolderId
@@ -178,10 +179,19 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
       return;
     }
 
+    console.log(
+      "sharedGDriveLessonFolderId: ",
+      sharedGDriveLessonFolderId,
+      " lessonSharedDriveFolderName: ",
+      lessonSharedDriveFolderName,
+      " lessonsGrades: ",
+      lessonsGrades
+    );
+
     if (
       !sharedGDriveLessonFolderId ||
       !lessonSharedDriveFolderName ||
-      !lessonsGradePrefix
+      !lessonsGrades
     ) {
       alert(
         "ERROR! Can't open the target lesson folder. Please refresh the page or contact support if the issue persists."
@@ -310,7 +320,7 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
             lessonName: lessonName,
             lessonSharedGDriveFolderId: sharedGDriveLessonFolderId,
             lessonSharedDriveFolderName,
-            lessonsGradePrefix: lessonsGradePrefix,
+            lessonsGrades: lessonsGrades,
           };
 
           console.log("reqQueryParams: ", reqQueryParams);
@@ -409,6 +419,29 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
 
               console.log("data, python: ", parsedData);
 
+              if(isJobDone && wasSuccessful){
+                setParts(parts => {
+                  const targetPartIndex = parts.findIndex(
+                    (part) => {
+                      return part.lsn && lsnNum && part.lsn == lsnNum;
+                    }
+                  );
+                  const targetPart = parts[targetPartIndex]
+
+                  if(!targetPart){
+                    return parts
+                  }
+
+                  parts[targetPartIndex] = {
+                    ...targetPart,
+                    userGDriveLessonFolderId: targetFolderId
+                  }
+                  
+                  return parts
+                });
+              }
+
+
               if (isJobDone) {
                 const title = wasSuccessful
                   ? `Successfully copied '${lessonName}'`
@@ -449,7 +482,6 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
                   closeButton: false,
                   toastId,
                 });
-                setUserGDriveLessonFolderId(targetFolderId!);
                 eventSource.close();
                 return;
               }
@@ -642,7 +674,7 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
                   )}
                   {isGpPlusMember &&
                     gdriveAccessToken &&
-                    (userGDriveLessonFolderId || _userGDriveLessonFolderId
+                    (userGDriveLessonFolderId
                       ? "Bulk copy to my Google Drive again"
                       : "Bulk copy to my Google Drive")}
                   {!isGpPlusMember && (
@@ -665,22 +697,19 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
         style={{ fontSize: "18px", height: "30px" }}
         className="text-break mx-auto text-center mt-1"
       >
-        {(userGDriveLessonFolderId || _userGDriveLessonFolderId) &&
-          !isCopyingLesson && (
-            <>
-              Your latest copy of this lesson is linked
-              <Link
-                target="_blank"
-                className="ms-1 text-start text-lg-center"
-                href={`${GDRIVE_FOLDER_ORIGIN_AND_PATH}/${
-                  userGDriveLessonFolderId || _userGDriveLessonFolderId
-                }`}
-              >
-                here
-              </Link>
-              .
-            </>
-          )}
+        {userGDriveLessonFolderId && !isCopyingLesson && (
+          <>
+            Your latest copy of this lesson is linked
+            <Link
+              target="_blank"
+              className="ms-1 text-start text-lg-center"
+              href={`${GDRIVE_FOLDER_ORIGIN_AND_PATH}/${userGDriveLessonFolderId}`}
+            >
+              here
+            </Link>
+            .
+          </>
+        )}
       </div>
     </div>
   );

@@ -293,7 +293,10 @@ const TeachItUI = <
                 };
               }
 
-              return part;
+              return {
+                ...part,
+                userGDriveLessonFolderId: undefined
+              };
             });
             setParts(_parts);
 
@@ -605,6 +608,7 @@ const TeachItUI = <
                 return (
                   <LessonPart
                     {...lessonTilesObj}
+                    setParts={setParts}
                     isRetrievingLessonFolderIds={isFetching}
                     userGDriveLessonFolderId={
                       "userGDriveLessonFolderId" in part &&

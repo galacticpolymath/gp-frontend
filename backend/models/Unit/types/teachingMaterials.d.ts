@@ -182,7 +182,12 @@ interface IChunkStep {
   
 }
 
-interface ISharedGDriveLessonFolder{
+export interface IGDriveItem{
+  id: string;
+  name: string
+}
+
+export interface ISharedGDriveLessonFolder{
   id: string,
   name: string,
   parentFolder: {
@@ -191,7 +196,7 @@ interface ISharedGDriveLessonFolder{
   }
 }
 
-interface INewUnitLesson<TItem extends IItem = IItem> {
+interface INewUnitLesson<TItem extends IItem = IItemV2> {
   userGDriveLessonFolderId?: string;
   sharedGDriveLessonFolders?: ISharedGDriveLessonFolder[] 
   allUnitLessons?: { id: string, sharedGDriveId: string }[]

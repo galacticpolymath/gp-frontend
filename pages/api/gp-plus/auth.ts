@@ -61,6 +61,9 @@ export default async function handler(
   response: NextApiResponse
 ) {
   try {
+    console.log("Request headers: ", request.headers);
+    
+
     const { payload } = (await getJwtPayloadPromise(request.headers.authorization)) ?? {};
 
     if (!payload || !payload.email) {

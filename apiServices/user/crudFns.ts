@@ -2,7 +2,7 @@
 /* eslint-disable no-debugger */
 /* eslint-disable no-console */
 /* eslint-disable indent */
-import axios, { AxiosError } from "axios";
+import axios, { AxiosError, AxiosHeaders } from "axios";
 import cookies from "js-cookie";
 import {
   TGpPlusSubscriptionForClient,
@@ -11,6 +11,7 @@ import {
 import { IErr, IUpdatedUserReqBody } from "../../types/global";
 import { IGoogleDriveAuthResBody } from "../../pages/api/gp-plus/auth";
 import { IPlan } from "../../backend/services/outsetaServices";
+import Cookies from "js-cookie";
 
 export const updateUser = async (
   query: Omit<Partial<TUserSchemaV2>, "password"> = {},
@@ -149,11 +150,43 @@ export const deleteUserFromServerCache = async (token: string) => {
   }
 };
 
-export const authenticateUserWithGDrive = async (code: string) => {
+export class CustomHeaders extends AxiosHeaders{
+  Authorization: string
+  "gdrive-token": string
+  "gdrive-token-refresh": string
+
+  constructor(appAccessToken: string){
+    super();
+    this.Authorization = `Bearer ${appAccessToken}`;
+    const gdriveAccessToken = Cookies.get("gdrive-token");
+
+    if(gdriveAccessToken){
+      this['gdrive-token'] = gdriveAccessToken
+    }
+
+    const gdriveRefreshToken = Cookies.get("gdrive-token-refresh");
+
+    if(gdriveRefreshToken){
+      this['gdrive-token-refresh'] = gdriveRefreshToken;
+    }
+  }
+}
+
+export const authenticateUserWithGDrive = async (code: string, accessToken: string) => {
   try {
+    if(!accessToken){
+      throw new Error("No access token provided. Cannot authenticate user with Google Drive");
+    }
+
+    const headers = new CustomHeaders(accessToken);
+
+    console.log("headers: ", headers);
+    
+    
+
     const { status, data } = await axios.post<
       IErr | { data: Partial<IGoogleDriveAuthResBody> }
-    >("/api/gp-plus/auth", { code });
+    >("/api/gp-plus/auth", { code }, { headers});
 
     if (status !== 200) {
       throw new Error(

@@ -1022,34 +1022,38 @@ export const getStaticProps = async (arg: {
                 }
               }
 
-              const targetGDriveSharedLessonFolders = unitGDriveChildItems
-                ?.filter((item) => {
-                  const lessonName = item?.name?.split("_").at(-1);
+              const targetGDriveSharedLessonFolders: ISharedGDriveLessonFolder[] | undefined =
+                unitGDriveChildItems
+                  ?.filter((item) => {
+                    const lessonName = item?.name?.split("_").at(-1);
 
-                  return (
-                    lessonName &&
-                    lesson.title &&
-                    lessonName.toLowerCase() === lesson.title.toLowerCase()
-                  );
-                })
-                ?.map((itemA) => {
-                  console.log("item, sup there: ", itemA);
+                    return (
+                      lessonName &&
+                      lesson.title &&
+                      lessonName.toLowerCase() === lesson.title.toLowerCase()
+                    );
+                  })
+                  ?.map((itemA) => {
+                    console.log("item, sup there: ", itemA);
 
-                  const lessonsFolder = unitGDriveChildItems.find((itemB) => {
-                    return itemB.id === itemA.parentFolderId;
-                  })!;
+                    const lessonsFolder = unitGDriveChildItems.find((itemB) => {
+                      return itemB.id === itemA.parentFolderId;
+                    });
 
-                  console.log("lessonsFolder, sup there: ", lessonsFolder);
+                    console.log("lessonsFolder, python: ", lessonsFolder);
+                    
+                    // if lessonsFolder.pathFile === '', then the item is located at the root of the google drive folder
+                    const parentFolder = lessonsFolder ? { id: lessonsFolder.id!, name: lessonsFolder.name! } : {
+                      id: targetUnit.GdrivePublicID!,
+                      name: targetUnit.MediumTitle!,
+                    };
 
-                  return {
-                    id: itemA.id!,
-                    name: itemA.name!,
-                    parentFolder: {
-                      id: lessonsFolder.id!,
-                      name: lessonsFolder.name!,
-                    },
-                  };
-                });
+                    return {
+                      id: itemA.id!,
+                      name: itemA.name!,
+                      parentFolder,
+                    };
+                  });
 
               console.log(
                 "targetGDriveLessonFolder: ",

@@ -30,6 +30,7 @@ export const EXPIRATION_DATE_TIME = new Date(
 const GoogleDriveAuthResult = () => {
   const { status } = useSiteSession();
   const { setAppCookie, cookies } = useCustomCookies();
+  const { token } = useSiteSession();
   const { _isLoginModalDisplayed } = useModalContext();
   const gpPlusFeatureLocation = getLocalStorageItem("gpPlusFeatureLocation");
   const [willRedirectUser, setWillRedirectUser] = useState(false);
@@ -94,14 +95,12 @@ const GoogleDriveAuthResult = () => {
       console.log("The code from the url: ", code);
 
       if (!code) {
-        setLocalStorageItem("didGpSignInAttemptOccur", true);
-
         return false;
       }
       
       console.log("Yo there, will authenticate the user with google drive...")
 
-      const responseBody = await authenticateUserWithGDrive(code);
+      const responseBody = await authenticateUserWithGDrive(code, token);
 
       console.log("Authentication, responseBody: ", responseBody);
 
@@ -112,14 +111,10 @@ const GoogleDriveAuthResult = () => {
         !responseBody.email ||
         !responseBody.expires_at
       ) {
-        setLocalStorageItem("didGpSignInAttemptOccur", true);
-
         return false
       }
 
       if ("errType" in responseBody) {
-        setLocalStorageItem("didGpSignInAttemptOccur", true);
-
         console.error(`errType: ${responseBody?.errType}`);
 
         return false;

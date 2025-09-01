@@ -30,6 +30,7 @@ import {
 import {
   IItemForClient,
   ILessonForUI,
+  TSetter,
   TUseStateReturnVal,
 } from "../../../types/global";
 import { checkIfElementClickedWasClipboard } from "../../../shared/fns";
@@ -61,7 +62,7 @@ const SignInSuggestion = ({
   );
 };
 
-interface ILessonPartProps
+export interface ILessonPartProps
   extends Pick<
       INewUnitLesson,
       | "allUnitLessons"
@@ -97,6 +98,7 @@ interface ILessonPartProps
   unitMediumTitle?: string | null;
   GdrivePublicID?: string | null;
   unitId: Pick<INewUnitSchema, "_id">["_id"];
+  setParts: TSetter<(INewUnitLesson<IItemV2> | ILessonForUI)[]>;
 }
 
 const LessonPart: React.FC<ILessonPartProps> = (props) => {
@@ -129,14 +131,10 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
     ComingSoonLessonEmailSignUp = null,
     accordionBtnStyle = {},
     isAccordionExpandable = true,
-    lessonsFolder,
+    setParts,
     sharedGDriveLessonFolders,
     selectedGrade,
   } = props;
-
-  useEffect(() => {
-    console.log("sharedGDriveLessonFolders: ", sharedGDriveLessonFolders);
-  });
 
   const sharedGDriveLessonFolder = useMemo(() => {
     if (!sharedGDriveLessonFolders) {
@@ -149,11 +147,15 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
         ?.split("_")
         ?.at(-1);
 
+      console.log("parentFolderGradeType: ", parentFolderGradeType);
+
+      console.log("selectedGrade: ", selectedGrade);
+
       return (
         parentFolderGradeType &&
-        selectedGrade.gradePrefix &&
+        selectedGrade.grades &&
         parentFolderGradeType.toLowerCase() ===
-          selectedGrade.gradePrefix.toLowerCase()
+          selectedGrade.grades.toLowerCase()
       );
     });
 
@@ -161,6 +163,14 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
 
     return targetLessonFolder;
   }, [selectedGrade]);
+
+  useEffect(() => {
+    console.log("sharedGDriveLessonFolders: ", sharedGDriveLessonFolders);
+
+    console.log("sharedGDriveLessonFolder: ", sharedGDriveLessonFolder);
+    
+  });
+
   const { _isUserTeacher } = useUserContext();
   const { _isLoginModalDisplayed, _lessonItemModal } = useModalContext();
   const [isUserTeacher] = _isUserTeacher;
@@ -610,6 +620,7 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
             </div>
             {lsnNum && lsnTitle && GdrivePublicID && unitMediumTitle && (
               <CopyLessonBtn
+                setParts={setParts}
                 unitId={unitId!}
                 isRetrievingLessonFolderIds={isRetrievingLessonFolderIds}
                 GdrivePublicID={GdrivePublicID}
@@ -622,9 +633,9 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                   name: sharedGDriveLessonFolder?.parentFolder.name,
                   sharedGDriveId: sharedGDriveLessonFolder?.parentFolder.id,
                 }}
-                lessonsGradePrefix={selectedGrade.gradePrefix}
+                lessonsGrades={selectedGrade.grades}
                 lessonSharedDriveFolderName={sharedGDriveLessonFolder?.name}
-                _userGDriveLessonFolderId={userGDriveLessonFolderId}
+                userGDriveLessonFolderId={userGDriveLessonFolderId}
               />
             )}
             <ol className="mt-2 materials-list">

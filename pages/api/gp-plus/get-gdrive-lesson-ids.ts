@@ -1,6 +1,9 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { getJwtPayloadPromise } from "../../../nondependencyFns";
-import { getUserByEmail } from "../../../backend/services/userServices";
+import {
+  getUserByEmail,
+  updateUserCustom,
+} from "../../../backend/services/userServices";
 import {
   getGDriveItem,
   getUserChildItemsOfFolder,
@@ -9,19 +12,20 @@ import {
 interface IQueryParams {
   unitId: string;
   lessonNumIds: string[];
-  gradePrefix?: string
+  gradePrefix?: string;
 }
 
 export default async function handler(
   request: NextApiRequest,
   response: NextApiResponse
 ) {
-  const nonExistingLessonFolders: string[] = [];
+  const nonExistingLessonFolderIds: string[] = [];
+  let userEmail: string | null = null;
 
+  console.log("request.query: ", request.query);
+  const { lessonNumIds, unitId, gradePrefix } =
+    request.query as unknown as IQueryParams;
   try {
-    console.log("request.query: ", request.query);
-    const { lessonNumIds, unitId, gradePrefix } = request.query as unknown as IQueryParams;
-
     if (!gradePrefix || typeof gradePrefix !== "string") {
       console.log("gradePrefix query parameter is required");
       return response
@@ -72,11 +76,9 @@ export default async function handler(
     ) {
       console.log("gdriveAccessToken or gdriveRefreshToken is required");
 
-      return response
-        .status(401)
-        .json({
-          error: "gdriveAccessToken and gdriveRefreshToken are BOTH required",
-        });
+      return response.status(401).json({
+        error: "gdriveAccessToken and gdriveRefreshToken are BOTH required",
+      });
     }
 
     if (!authorization) {
@@ -94,6 +96,7 @@ export default async function handler(
       return response.status(401).json({ error: "User is not authenticated" });
     }
 
+    userEmail = email;
     const targetUser = await getUserByEmail(email, { unitGDriveLessons: 1 });
 
     console.log("targetUser: ", targetUser);
@@ -127,8 +130,8 @@ export default async function handler(
     const queriedGDriveItemResults = await Promise.all(
       targetUnitGDriveLessonObj.lessonDriveIds.map(
         async (lessonDriveFolder) => {
-          if (lessonDriveFolder.gradePrefix !== gradePrefix){
-            return null
+          if (lessonDriveFolder.gradePrefix !== gradePrefix) {
+            return null;
           }
 
           const gdriveItem = await getGDriveItem(
@@ -140,8 +143,10 @@ export default async function handler(
 
           console.log("gdriveItem, sup there: ", gdriveItem);
 
-          if(!("id" in gdriveItem && gdriveItem.id && !gdriveItem.labels.trashed)){
-            nonExistingLessonFolders.push(lessonDriveFolder.lessonDriveId)
+          if (
+            !("id" in gdriveItem && gdriveItem.id && !gdriveItem.labels.trashed)
+          ) {
+            nonExistingLessonFolderIds.push(lessonDriveFolder.lessonDriveId);
             return null;
           }
 
@@ -149,7 +154,8 @@ export default async function handler(
         }
       )
     );
-    const existingLessonFolderGDriveIds = queriedGDriveItemResults.filter(Boolean);
+    const existingLessonFolderGDriveIds =
+      queriedGDriveItemResults.filter(Boolean);
 
     console.log(
       "existingLessonFolderGDriveIds: ",
@@ -162,10 +168,37 @@ export default async function handler(
 
     return response.status(500).json({ error: "Internal server error" });
   } finally {
-    console.log("nonExistingLessonFolders: ", nonExistingLessonFolders);
-    if(nonExistingLessonFolders?.length){
+    console.log("nonExistingLessonFolderIds: ", nonExistingLessonFolderIds);
+
+    if (nonExistingLessonFolderIds?.length && userEmail && unitId) {
       console.log("will delete lesson folders from the database...");
-      // delete the lesson folders from the target gdrive document
+      
+      const targetLessonDeletionResult = await updateUserCustom(
+        {
+          email: userEmail,
+        },
+        {
+          $pull: {
+            "unitGDriveLessons.$[unitGDriveLessonsObj].lessonDriveIds": {
+              lessonDriveId: {
+                $in: nonExistingLessonFolderIds,
+              },
+            },
+          },
+        },
+        {
+          arrayFilters: [
+            {
+              "unitGDriveLessonsObj.unitId": unitId,
+            },
+          ],
+        }
+      );
+
+      console.log(
+        "targetLessonDeletionResult, yo: ",
+        targetLessonDeletionResult
+      );
     }
   }
 }

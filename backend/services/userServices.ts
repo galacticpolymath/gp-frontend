@@ -13,9 +13,8 @@ import {
   TUserSchemaV2,
 } from "../models/User/types.js";
 import User from "../models/User/index";
-import { AnyBulkWriteOperation, Model, UpdateWriteOpResult } from "mongoose";
+import { AnyBulkWriteOperation, UpdateWriteOpResult,  } from "mongoose";
 import { waitWithExponentialBackOff } from "../../globalFns.js";
-import { UpdateOptions } from "mongodb";
 
 export const getUsers = async <
   TUsers extends IUserSchemaBaseProps = TUserSchemaV2
@@ -581,10 +580,12 @@ export const createDbArrFilter = (key: TArrFilterKey, val: unknown) => {
   };
 };
 
+// type x = Parameters<typeof User.updateOne>
+
 export const updateUserCustom = async (
   filterQuery: Omit<Partial<TUserSchemaV2>, "password"> = {},
   updatedUserProperties: object,
-  updateOpts?: UpdateOptions,
+  updateOpts?: object,
   tries = 3
 ): Promise<{
   wasSuccessful: boolean;
