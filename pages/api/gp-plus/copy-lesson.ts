@@ -1387,7 +1387,8 @@ export default async function handler(
             ? fileCopyResult.errMsg
             : JSON.stringify(fileCopyResult);
 
-        await logFailedFileCopyToExcel({
+        if(process.env.HOST === 'localhost'){  
+          await logFailedFileCopyToExcel({
           lessonName: reqQueryParams.lessonName || "Unknown",
           unitName: reqQueryParams.unitName || "Unknown",
           lessonFolderLink,
@@ -1398,6 +1399,7 @@ export default async function handler(
           timestamp: new Date().toISOString(),
           userEmail: email,
         });
+      }  
       }
     }
     console.log("targetLessonFolder.id, java: ", targetLessonFolderInUserDrive);

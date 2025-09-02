@@ -1537,18 +1537,20 @@ export const copyFiles = async (
       
       const errorType = 'errType' in fileCopyResult && typeof fileCopyResult.errType === 'string' ? fileCopyResult.errType : 'unknown';
       const errorMessage = 'errMsg' in fileCopyResult && typeof fileCopyResult.errMsg === 'string' ? fileCopyResult.errMsg : JSON.stringify(fileCopyResult);
-      
-      await logFailedFileCopyToExcel({
-        lessonName,
-        unitName,
-        lessonFolderLink,
-        fileName: fileNames[fileIdIndex],
-        fileLink,
-        errorType,
-        errorMessage,
-        timestamp: new Date().toISOString(),
-        userEmail: email
-      });
+
+      if(process.env.HOST === 'localhost'){ 
+        await logFailedFileCopyToExcel({
+          lessonName,
+          unitName,
+          lessonFolderLink,
+          fileName: fileNames[fileIdIndex],
+          fileLink,
+          errorType,
+          errorMessage,
+          timestamp: new Date().toISOString(),
+          userEmail: email
+        });
+      }
     }
   }
 
