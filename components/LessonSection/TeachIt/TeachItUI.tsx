@@ -201,6 +201,11 @@ const TeachItUI = <
     unitId,
     handleOnChange,
   } = props;
+
+  useEffect(() => {
+    console.log("unitId, sup there: ", unitId);
+  });
+
   const didInitialRenderOccur = useRef(false);
   const copyUnitBtnRef = useRef<HTMLButtonElement | null>(null);
   const {
@@ -238,6 +243,7 @@ const TeachItUI = <
 
   useEffect(() => {
     console.log("parts, sup there: ", parts);
+    console.log("parts, sup there, selectedGrade: ", selectedGrade);
   });
 
   const { isFetching } = useQuery({
@@ -428,12 +434,12 @@ const TeachItUI = <
                       className="form-check-input me-2 grade-variation-testing"
                       type="radio"
                       name="gradeVariation"
-                      id={variation.grades as string}
-                      value={variation.grades as string}
-                      checked={variation.grades === selectedGrade.grades}
+                      id={variation.gradePrefix as string}
+                      value={variation.gradePrefix as string}
+                      checked={variation.gradePrefix === selectedGrade.gradePrefix}
                       onChange={() => handleOnChange(variation)}
                     />
-                    {variation.grades}
+                    {variation.gradePrefix}
                   </label>
                 ))}
             </div>

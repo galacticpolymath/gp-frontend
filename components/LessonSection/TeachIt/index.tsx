@@ -104,7 +104,7 @@ export const DisplayLessonTile: React.FC<IDisplayLessonTileProps> = ({
 
 const TeachIt: React.FC<TeachItProps> = (props) => {
   useEffect(() => {
-    console.log(props);
+    console.log("props, teachit: ", props);
   });
 
   let {
