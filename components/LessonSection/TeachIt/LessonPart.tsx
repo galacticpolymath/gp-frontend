@@ -142,6 +142,8 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
       return undefined;
     }
 
+    console.log("sharedGDriveLessonFolders: ", sharedGDriveLessonFolders);
+
     const targetLessonFolder = sharedGDriveLessonFolders.find((folder) => {
       if (lsnNum == 100) {
         return folder.name === "assessments";
@@ -150,7 +152,7 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
       const parentFolderGradeType = folder.parentFolder?.name
         ?.split("_")
         ?.at(-1)
-        ?.replace(/[a-zA-Z]/g, "");
+        ?.toLowerCase();
 
       console.log("parentFolderGradeType: ", parentFolderGradeType);
 
@@ -158,9 +160,10 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
 
       return (
         parentFolderGradeType &&
-        selectedGrade.grades &&
-        parentFolderGradeType.toLowerCase() ===
-          selectedGrade.grades.toLowerCase()
+          ((selectedGrade.gradePrefix &&
+          parentFolderGradeType === selectedGrade.gradePrefix?.toLowerCase()) ||
+        (selectedGrade.grades &&
+          parentFolderGradeType === selectedGrade.grades?.toLowerCase()))
       );
     });
 
@@ -630,7 +633,10 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
             <div className="d-flex align-items-start">
               <i className="bi bi-ui-checks-grid me-2 fw-bolder"></i>
               <h5 className="fw-bold" id="materials-title">
-                Materials for {GradesOrYears} {ForGrades}
+                Materials for{" "}
+                {lsnNum == 100
+                  ? `Assessments`
+                  : `${selectedGrade.gradePrefix} (Lesson ${lsnNum})`}
               </h5>
             </div>
             {lsnNum && lsnTitle && GdrivePublicID && unitMediumTitle && (

@@ -15,9 +15,7 @@ export const useGpPlusModalInteraction = (
   const { status, token } = useSiteSession();
   const mutationOberserverRef = useRef<MutationObserver | null>(null);
 
-  const handleOnClickPlanChangeLogic = (
-    event: MouseEvent,
-  ) => {
+  const handleOnClickPlanChangeLogic = (event: MouseEvent) => {
     console.log("Event, sup there: ", event.target);
 
     const _target = event.target as HTMLElement;
@@ -65,11 +63,10 @@ export const useGpPlusModalInteraction = (
       console.log("savingsElement: ", savingsElement);
       console.log("billingTermsOptsContainer: ", billingTermsOptsContainer);
 
-      
       if (_target.textContent === "Billed yearly" && savingsElement) {
-        savingsElement.classList.add('fw-bolder')
+        savingsElement.classList.add("fw-bolder");
         savingsElement.classList.remove("text-decoration-line-through");
-      } else if (savingsElement){
+      } else if (savingsElement) {
         savingsElement.classList.remove("fw-bolder");
         savingsElement.classList.add("text-decoration-line-through");
       }
@@ -78,6 +75,8 @@ export const useGpPlusModalInteraction = (
 
   const handleUserInteractionWithGpPlusModal = async () => {
     const userPlanDetail = await getUserPlanDetails(token);
+
+    console.log("userPlanDetail: ", userPlanDetail);
 
     const _handleOnClickPlanChangeLogic = (event: MouseEvent) => {
       handleOnClickPlanChangeLogic(event);
@@ -89,46 +88,52 @@ export const useGpPlusModalInteraction = (
       for (const element of elements) {
         console.log("Element, sup bacon: ", element.target);
 
-        
-        const isChangePlanUI = element.target.firstChild?.firstChild?.textContent === "Change plan";
-        const billingTypeOptsContainer = element.target.lastChild?.firstChild?.firstChild?.firstChild?.firstChild;
+        const isChangePlanUI =
+          element.target.firstChild?.firstChild?.textContent === "Change plan";
+        const billingTypeOptsContainer =
+          element.target.lastChild?.firstChild?.firstChild?.firstChild
+            ?.firstChild;
         const billingOptionsContainer =
           element.target.lastChild?.firstChild?.lastChild?.firstChild
             ?.firstChild?.firstChild;
 
         if (isChangePlanUI && billingTypeOptsContainer) {
-          const savingsElement = document.createElement('span')
+          const savingsElement = document.createElement("span");
           savingsElement.className = "gp-plus-color text-center ms-2";
-          savingsElement.textContent = `Save ${userPlanDetail?.percentageSaved ?? 50}%`
+          savingsElement.textContent = `Save ${
+            userPlanDetail?.percentageSaved ?? 50
+          }%`;
 
           savingsElement.classList.add("text-decoration-line-through");
 
           billingTypeOptsContainer.appendChild(savingsElement);
-          
+
           console.log("Something changed in the plan change UI");
         }
-        
+
         const gpPlusModal = document.querySelector(".o--Widget--widgetBody");
-        
+
         if (billingOptionsContainer?.childNodes?.length && gpPlusBillingTerm) {
           const childElements = Array.from(
             billingOptionsContainer.childNodes
           ) as HTMLElement[];
           console.log("childElements: ", childElements);
-          
+
           // if 0, then monthly was selected
           // if 1, then yearly was selected
-
-
+          const yearlyOptionLinkElement = childElements[1]
+            ?.firstChild as HTMLButtonElement;
           const selectedOption = childElements.find((element) => {
             return element.className === "o--HorizontalToggle--active";
           });
           const selectionOptionTxt = selectedOption?.textContent?.toLowerCase();
-          const isCurrentBillingPlan = selectionOptionTxt?.includes(
+          const isCurrentBillingPlan = !!selectionOptionTxt?.includes(
             gpPlusBillingTerm?.toLowerCase()
           );
 
           console.log("isCurrentBillingPlan: ", isCurrentBillingPlan);
+
+          console.log("yearlyOptionLinkElement: ", yearlyOptionLinkElement);
 
           if (isCurrentBillingPlan) {
             const currentPlanTxtElement = document.querySelector<HTMLElement>(
@@ -141,9 +146,25 @@ export const useGpPlusModalInteraction = (
 
             if (currentPlanTxtElement) {
               currentPlanTxtElement.classList.add("show-gp-plus-element");
-            } else {
-
             }
+          } else {
+            yearlyOptionLinkElement.click();
+            const billingTermsOptsContainer = document.querySelector(
+              ".o--HorizontalToggle--displayMode-light"
+            );
+            const savingsElement =
+              billingTermsOptsContainer?.childElementCount === 3
+                ? (billingTermsOptsContainer.lastChild as HTMLElement)
+                : null;
+            const currentPlanTxtElement = document.querySelector<HTMLElement>(
+              ".o--Badge--displayMode-light"
+            );
+
+            console.log("savingsElement: ", savingsElement);
+
+            savingsElement?.classList.add("fw-bolder");
+            savingsElement?.classList.remove("text-decoration-line-through");
+            currentPlanTxtElement?.classList.add("show-gp-plus-element");
           }
         }
 

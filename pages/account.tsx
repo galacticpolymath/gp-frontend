@@ -15,10 +15,7 @@ import { useRouter } from "next/router";
 import { useModalContext } from "../providers/ModalProvider";
 import axios from "axios";
 import { Modal, Spinner } from "react-bootstrap";
-import {
-  getAllUrlVals,
-  resetUrl,
-} from "../globalFns";
+import { getAllUrlVals, resetUrl } from "../globalFns";
 import { FaUserAlt } from "react-icons/fa";
 import BootstrapButton from "react-bootstrap/Button";
 import { useGetAboutUserForm } from "../customHooks/useGetAboutUserForm";
@@ -195,7 +192,7 @@ const AccountPg: React.FC = () => {
         );
         idToken = await magic.auth.loginWithMagicLink({
           email: userAccount?.gpPlusSubscription?.person?.Email,
-          // redirectURI: window.location.href,
+          redirectURI: window.location.href,
         });
 
         if (idToken) {

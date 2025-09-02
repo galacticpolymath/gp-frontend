@@ -219,7 +219,6 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
       showUploadView: true,
       setParentFolder: sharedGDriveLessonFolderId,
       showUploadFolders: true,
-      setIncludeFolders: true,
       customScopes: [
         "https://www.googleapis.com/auth/drive.file",
         "https://www.googleapis.com/auth/userinfo.email",

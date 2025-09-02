@@ -56,8 +56,8 @@ export const revokeGoogleAuthToken = async (token: string) => {
 
     const { data, status } = response;
 
-    if (status >= 200 && status < 300) {
-      throw new Error(`Failed to revoke token: ${data.error}`);
+    if (!(status >= 200 && status < 300)) {
+      throw new Error(`Failed to revoke token: ${data?.error}`);
     }
     
     return {
