@@ -161,9 +161,9 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
       return (
         parentFolderGradeType &&
           ((selectedGrade.gradePrefix &&
-          parentFolderGradeType === selectedGrade.gradePrefix?.toLowerCase()) ||
+          parentFolderGradeType === selectedGrade.gradePrefix.toLowerCase()) ||
         (selectedGrade.grades &&
-          parentFolderGradeType === selectedGrade.grades?.toLowerCase()))
+          parentFolderGradeType === selectedGrade.grades.toLowerCase()))
       );
     });
 
