@@ -154,15 +154,10 @@ const useHandleOpeningGpPlusAccount = (
         const magic = new Magic(
           process.env.NEXT_PUBLIC_MAGIC_LINK_PK as string
         );
-        const loginConfiguration =
-          process.env.NEXT_PUBLIC_HOST === "localhost"
-            ? {
-                email: userAccount?.gpPlusSubscription?.person?.Email,
-              }
-            : {
-                email: userAccount?.gpPlusSubscription?.person?.Email,
-                redirectURI: window.location.href,
-              };
+        const loginConfiguration = {
+          email: userAccount?.gpPlusSubscription?.person?.Email,
+          redirectURI: window.location.href,
+        };
         idToken = await magic.auth.loginWithMagicLink(loginConfiguration);
 
         if (idToken) {

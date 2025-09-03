@@ -501,7 +501,7 @@ const AccountPg: React.FC = () => {
           </section>
           <section className="col-12 d-flex justify-content-center align-items-center flex-column mt-1 pt-2">
             {gpPlusSub?.AccountStageLabel &&
-            ["Expired", "NonMember"].includes(gpPlusSub.AccountStageLabel) ? (
+            !["Expired", "NonMember"].includes(gpPlusSub.AccountStageLabel) ? (
               <>
                 <BootstrapBtn
                   onClick={handleGpPlusAccountBtnClick}
