@@ -24,26 +24,7 @@ export const useHandleGpPlusLogin = () => {
         setCheckForOutsetaPropCount((state) => state + 1);
       }, 1_000);
     } else if (idToken && status === "authenticated") {
-      try {
-        (async () => {
-          console.log("will set id token");
-
-          (window as any).Outseta.setMagicLinkIdToken(idToken);
-
-          const gpPlusBtnElement = document.getElementById("gpPlusBtn");
-
-          console.log("gpPlusBtnElement: ", gpPlusBtnElement);
-
-          if (gpPlusBtnElement){
-            gpPlusBtnElement.click();
-          } 
-          
-
-          resetUrl(router);
-        })();
-      } catch (error) {
-        console.error("an error occurred: ", error);
-      }
+      (window as any).Outseta.setMagicLinkIdToken(idToken);
     }
   }, [status, checkForOutsetaPropCount]);
 

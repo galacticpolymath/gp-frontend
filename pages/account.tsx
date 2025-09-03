@@ -194,7 +194,7 @@ const AccountPg: React.FC = () => {
         );
         const loginConfiguration = {
           email: gpPlusSub.person.Email,
-          redirectURI: window.location.href,
+          // redirectURI: window.location.href,
         };
         idToken = await magic.auth.loginWithMagicLink(loginConfiguration);
 
