@@ -32,10 +32,10 @@ export default async function handler(
       
     }
 
-    return response.json({})
+    // return response.json({})
   } catch (error: any) {
     console.error("Error updating account subscription:", error);
 
-    return response.status(500).json({})
+    // return response.status(500).json({})
   }
 }
