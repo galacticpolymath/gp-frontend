@@ -127,7 +127,11 @@ const AccountPg: React.FC = () => {
         userAccount?.gpPlusSubscription
       );
 
-      if (!userAccount?.gpPlusSubscription?.person?.Email) {
+      if (
+        !userAccount?.gpPlusSubscription?.person?.Email ||
+        !gpPlusSub ||
+        !gpPlusSub.person?.Email
+      ) {
         setNotifyModal({
           isDisplayed: true,
           headerTxt: "GP Plus data retrieval error",
@@ -190,9 +194,10 @@ const AccountPg: React.FC = () => {
         const magic = new Magic(
           process.env.NEXT_PUBLIC_MAGIC_LINK_PK as string
         );
+        const redirectURI = `${window.location.origin}${window.location.pathname}?show_gp_plus_account_modal=true`;
         const loginConfiguration = {
-          email: userAccount?.gpPlusSubscription?.person?.Email,
-          redirectURI: window.location.href,
+          email: gpPlusSub.person.Email,
+          redirectURI,
         };
         idToken = await magic.auth.loginWithMagicLink(loginConfiguration);
 
@@ -291,6 +296,18 @@ const AccountPg: React.FC = () => {
       params.get("gp_plus_subscription_bought") === "true"
     ) {
       setIsThankYouModalDisplayed(true);
+      resetUrl(router);
+    }
+
+    const idToken = url.searchParams.get("magic_credential");
+
+    if (
+      (gpPlusSub?.AccountStageLabel === "Subscribing" ||
+        gpPlusSub?.AccountStageLabel === "Cancelling") &&
+      idToken
+    ) {
+      console.log("GP+ page loaded with idToken: ", idToken);
+      (window as any).Outseta.setMagicLinkIdToken(idToken);
       resetUrl(router);
     }
   }, [status, gpPlusSub]);
