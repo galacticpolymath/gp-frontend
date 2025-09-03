@@ -33,6 +33,10 @@ export const useHandleGpPlusLogin = () => {
 
         console.log("accessToken: ", accessToken);
 
+        const outsetaUser = (window as any).Outseta?.getUser();
+
+        console.log("outsetaUser: ", outsetaUser);
+
         (window as any).Outseta.profile.open();
 
         resetUrl(router);
