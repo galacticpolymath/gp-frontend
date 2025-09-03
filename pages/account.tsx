@@ -194,10 +194,9 @@ const AccountPg: React.FC = () => {
         const magic = new Magic(
           process.env.NEXT_PUBLIC_MAGIC_LINK_PK as string
         );
-        const redirectURI = `${window.location.origin}${window.location.pathname}?show_gp_plus_account_modal=true`;
         const loginConfiguration = {
           email: gpPlusSub.person.Email,
-          redirectURI,
+          redirectURI: window.location.href,
         };
         idToken = await magic.auth.loginWithMagicLink(loginConfiguration);
 

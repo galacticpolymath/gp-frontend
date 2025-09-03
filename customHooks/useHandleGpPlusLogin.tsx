@@ -6,8 +6,8 @@ import { useRouter } from "next/router";
 export const useHandleGpPlusLogin = () => {
   const { status } = useSession();
   const router = useRouter();
-  const [checkForOutsetaPropCount, setCheckForOutsetaPropCount] = useState(0)
-  
+  const [checkForOutsetaPropCount, setCheckForOutsetaPropCount] = useState(0);
+
   useEffect(() => {
     const url = new URL(window.location.href);
     const idToken = url.searchParams.get("magic_credential");
@@ -21,17 +21,22 @@ export const useHandleGpPlusLogin = () => {
       checkForOutsetaPropCount <= 5
     ) {
       setTimeout(() => {
-        setCheckForOutsetaPropCount(state => state + 1);
-      }, 1_000)
+        setCheckForOutsetaPropCount((state) => state + 1);
+      }, 1_000);
     } else if (idToken && status === "authenticated") {
+      console.log("will set id token");
+
       (window as any).Outseta.setMagicLinkIdToken(idToken);
 
+      const accessToken = window.Outseta?.getAccessToken();
+
+      console.log("accessToken: ", accessToken);
+      
       (window as any).Outseta.profile.open();
 
       resetUrl(router);
     }
   }, [status, checkForOutsetaPropCount]);
 
-
-  return
+  return;
 };

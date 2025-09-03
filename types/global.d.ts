@@ -25,6 +25,7 @@ declare global {
       setMagicLinkIdToken: (idToken: string) => void;
       getUser: () => Promise<Record<string, unknown>>;
       setAccessToken: (token: string | null) => void;
+      getAccessToken: () => string | null;
       auth: {
         close: () => Promise<void>;
       }

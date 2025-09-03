@@ -34,6 +34,7 @@ import {
   getPlans,
   TAccountStageLabel,
 } from "../backend/services/outsetaServices";
+import { useHandleGpPlusLogin } from "../customHooks/useHandleGpPlusLogin";
 
 interface IProps {
   liveUnitsTotal?: number;
@@ -403,16 +404,7 @@ const GpPlus: React.FC<IProps> = ({
     }
   }, [isSignupModalDisplayed]);
 
-  useEffect(() => {
-    const url = new URL(window.location.href);
-    const idToken = url.searchParams.get("magic_credential");
-
-    if (idToken) {
-      console.log("GP+ page loaded with idToken: ", idToken);
-      (window as any).Outseta.setMagicLinkIdToken(idToken);
-      resetUrl(router);
-    }
-  }, []);
+  useHandleGpPlusLogin();
 
   const isGpLiteBtnDisabled = !wasGpPlusSubRetrieved || wasGpLiteBtnClicked;
 
