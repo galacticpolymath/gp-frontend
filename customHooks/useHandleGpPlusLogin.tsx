@@ -24,6 +24,7 @@ export const useHandleGpPlusLogin = () => {
         setCheckForOutsetaPropCount((state) => state + 1);
       }, 1_000);
     } else if (idToken && status === "authenticated") {
+      (window as any).Outseta.debugOn();
       (window as any).Outseta.setMagicLinkIdToken(idToken);
       resetUrl(router);
     }
