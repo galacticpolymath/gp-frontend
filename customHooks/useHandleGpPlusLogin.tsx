@@ -29,7 +29,7 @@ export const useHandleGpPlusLogin = () => {
 
         (window as any).Outseta.setMagicLinkIdToken(idToken);
 
-        const accessToken = window.Outseta?.getAccessToken();
+        const accessToken = (window as any).Outseta?.getAccessToken();
 
         console.log("accessToken: ", accessToken);
 
