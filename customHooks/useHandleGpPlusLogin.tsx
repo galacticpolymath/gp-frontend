@@ -25,21 +25,24 @@ export const useHandleGpPlusLogin = () => {
       }, 1_000);
     } else if (idToken && status === "authenticated") {
       try {
-        console.log("will set id token");
+        (async () => {
 
-        (window as any).Outseta.setMagicLinkIdToken(idToken);
-
-        const accessToken = (window as any).Outseta?.getAccessToken();
-
-        console.log("accessToken: ", accessToken);
-
-        const outsetaUser = (window as any).Outseta?.getUser();
-
-        console.log("outsetaUser: ", outsetaUser);
-
-        (window as any).Outseta.profile.open();
-
-        resetUrl(router);
+          console.log("will set id token");
+          
+          (window as any).Outseta.setMagicLinkIdToken(idToken);
+          
+          const accessToken = (window as any).Outseta?.getAccessToken();
+          
+          console.log("accessToken: ", accessToken);
+          
+          const outsetaUser = await (window as any).Outseta?.getUser();
+          
+          console.log("outsetaUser: ", outsetaUser);
+          
+          (window as any).Outseta.profile.open();
+          
+          resetUrl(router);
+        })();
       } catch (error) {
         console.error("an error occurred: ", error);
       }
