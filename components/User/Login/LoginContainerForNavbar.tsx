@@ -46,11 +46,15 @@ const HAS_MEMBERSHIP_STATUSES: Set<TAccountStageLabel> = new Set([
 
 export const revokeGoogleAuthToken = async (token: string) => {
   try {
-    const response = await axios.post("https://oauth2.googleapis.com/revoke", null, {
-      params: {
-        token,
-      },
-    });
+    const response = await axios.post(
+      "https://oauth2.googleapis.com/revoke",
+      null,
+      {
+        params: {
+          token,
+        },
+      }
+    );
 
     console.log("Response from revoking Google Auth token:", response);
 
@@ -59,7 +63,7 @@ export const revokeGoogleAuthToken = async (token: string) => {
     if (!(status >= 200 && status < 300)) {
       throw new Error(`Failed to revoke token: ${data?.error}`);
     }
-    
+
     return {
       wasSuccessful: true,
     };
@@ -89,11 +93,12 @@ const LoginContainerForNavbar = ({ _modalAnimation }: IProps) => {
       : {}
   ) as TAboutUserForm;
   const [modalAnimation, setModalAnimation] = _modalAnimation;
-  const { status, user, token, gdriveAccessToken, gdriveRefreshToken } = useSiteSession();
+  const { status, user, token, gdriveAccessToken, gdriveRefreshToken } =
+    useSiteSession();
   const { image } = user ?? {};
   const [, setIsAccountModalMobileOn] = _isAccountModalMobileOn;
   const [isSigningUserOut, setIsSigningUserOut] = useState(false);
-  const { clearCookies } = useCustomCookies();
+  const { clearCookies, removeAppCookies } = useCustomCookies();
   const [gpPlusSubscription, setGpPlusSubscription] =
     useState<TGpPlusSubscriptionForClient | null>(null);
   const [wasUIDataLoaded, setWasUIDataLoaded] = useState(false);
@@ -128,9 +133,15 @@ const LoginContainerForNavbar = ({ _modalAnimation }: IProps) => {
   const handleSignOutBtnClick = async () => {
     setIsSigningUserOut(true);
 
-    if(gdriveAccessToken){
+    if (gdriveAccessToken) {
       await revokeGoogleAuthToken(gdriveAccessToken);
     }
+
+    removeAppCookies([
+      "gdriveAccessToken",
+      "gdriveAccessTokenExp",
+      "gdriveRefreshToken",
+    ]);
 
     await deleteUserFromServerCache(token);
     await signOut({ redirect: false });

@@ -131,10 +131,10 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
 }) => {
   const btnRef = useRef<HTMLButtonElement | null>(null);
   const { _isGpPlusMember, _isCopyUnitBtnDisabled } = useUserContext();
-  const { _lessonToCopy } = useLessonContext();
+  const { _lessonsCopyJobs } = useLessonContext();
   const router = useRouter();
   const { _isGpPlusModalDisplayed } = useModalContext();
-  const [, setLessonToCopy] = _lessonToCopy;
+  const [lessonsCopyJobs, setLessonsCopyJobs] = _lessonsCopyJobs;
   const [isGpPlusMember] = _isGpPlusMember;
   const {
     gdriveAccessToken,
@@ -150,6 +150,10 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
   const [isCopyingLesson, setIsCopyingLesson] = useState(false);
   const [, setIsGpPlusModalDisplayed] = _isGpPlusModalDisplayed;
   const didInitialRenderOccur = useRef(false);
+  const [copyLessonJobLatestMsg, setCopyLessonJobLatestMsg] = useState<Partial<
+    TCopyFilesMsg & { toastId: string }
+  > | null>(null);
+  const isJobDone = useRef<string | null>(null);
 
   useEffect(() => {
     console.log("userGDriveLessonFolderId: ", userGDriveLessonFolderId);
@@ -247,6 +251,23 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
           }
 
           const toastId = nanoid();
+
+          // -can only have two toasts displayed at a time
+          // -the user wants to a copy a lesson, presses copy
+          // -implement a stack:
+          //-push the job id onto the stack
+
+          setLessonsCopyJobs((state) => {
+            const stateClone = structuredClone(state);
+
+            if (stateClone.length === 2) {
+              stateClone.pop();
+            }
+
+            stateClone.push(toastId);
+
+            return stateClone;
+          });
 
           toast(
             <CopyingUnitToast
@@ -421,6 +442,33 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
                 targetFolderId: _targetFolderId,
               } = parsedData;
               targetFolderId = _targetFolderId;
+              let canDisplayToast = true;
+
+              setCopyLessonJobLatestMsg((state) => {
+                if (!state) {
+                  return {
+                    toastId,
+                    ...parsedData,
+                  };
+                }
+
+                return {
+                  ...parsedData,
+                };
+              });
+
+              setLessonsCopyJobs((state) => {
+                canDisplayToast = state.includes(toastId);
+
+                return state;
+              });
+
+              if (!canDisplayToast) {
+                console.log(
+                  "Cannot display toast - toastId not found in lessonsCopyJobs"
+                );
+                return;
+              }
 
               console.log("data, python: ", parsedData);
 

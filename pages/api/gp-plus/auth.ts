@@ -3,7 +3,11 @@
 import axios from "axios";
 import { NextApiRequest, NextApiResponse } from "next";
 import { GOOGLE_DRIVE_PROJECT_CLIENT_ID } from "../../../globalVars";
-import { createGoogleAdminService, getGoogleGroupMember, insertGoogleGroupMember } from "../../../backend/services/googleGroupServices";
+import {
+  createGoogleAdminService,
+  getGoogleGroupMember,
+  insertGoogleGroupMember,
+} from "../../../backend/services/googleGroupServices";
 import { CustomError } from "../../../backend/utils/errors";
 import { updateUserCustom } from "../../../backend/services/userServices";
 import { TUserSchemaV2 } from "../../../backend/models/User/types";
@@ -62,9 +66,9 @@ export default async function handler(
 ) {
   try {
     console.log("Request headers: ", request.headers);
-    
 
-    const { payload } = (await getJwtPayloadPromise(request.headers.authorization)) ?? {};
+    const { payload } =
+      (await getJwtPayloadPromise(request.headers.authorization)) ?? {};
 
     if (!payload || !payload.email) {
       throw new CustomError("Unauthorized. Please try logging in again.", 401);
@@ -123,34 +127,45 @@ export default async function handler(
       }
     );
 
-    if(userInfoRes?.status !== 200){
-      throw new Error("Retrieved a non-200 response from the google drive server.");
+    if (userInfoRes?.status !== 200) {
+      throw new Error(
+        "Retrieved a non-200 response from the google drive server."
+      );
     }
 
-    if(!userInfoRes.data?.email){
+    if (!userInfoRes.data?.email) {
       throw new CustomError("No user email found in the response.", 404);
     }
 
-    const googleAdminService = await createGoogleAdminService()
+    const googleAdminService = await createGoogleAdminService();
 
-    if(!googleAdminService){
+    if (!googleAdminService) {
       throw new CustomError("Failed to create service.", 500);
     }
 
-    const userGroupMember = await getGoogleGroupMember(userInfoRes.data.email, googleAdminService);
+    const userGroupMember = await getGoogleGroupMember(
+      userInfoRes.data.email,
+      googleAdminService
+    );
 
-    console.log("Retrieved google group member: ", userGroupMember);    
+    console.log("Retrieved google group member: ", userGroupMember);
 
-    if(!userGroupMember){
-      const insertionResult = await insertGoogleGroupMember(userInfoRes.data.email, googleAdminService)
+    if (!userGroupMember) {
+      const insertionResult = await insertGoogleGroupMember(
+        userInfoRes.data.email,
+        googleAdminService
+      );
       const userDbUpatedResult = await updateUserCustom(
         { email: payload.email },
         {
           $addToSet: {
-            gdriveAuthEmails: userInfoRes.data.email
-          } as Record<keyof Pick<TUserSchemaV2, "gdriveAuthEmails">, string>
+            gdriveAuthEmails: userInfoRes.data.email,
+          } as Record<keyof Pick<TUserSchemaV2, "gdriveAuthEmails">, string>,
         },
-      )
+        {
+          upsert: true,
+        }
+      );
 
       console.log("User DB updated result: ", userDbUpatedResult);
 

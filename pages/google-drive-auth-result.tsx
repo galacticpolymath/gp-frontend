@@ -68,21 +68,6 @@ const GoogleDriveAuthResult = () => {
     refetchOnWindowFocus: false,
     queryKey: [status],
     queryFn: async () => {
-      const didGpSignInAttemptOccur = getLocalStorageItem(
-        "didGpSignInAttemptOccur"
-      );
-
-      console.log("didGpSignInAttemptOccur: ", didGpSignInAttemptOccur);
-
-      console.log("Will Attempt to sign the target user into google drive.")
-
-      console.log("status: ", status);
-      
-      if (didGpSignInAttemptOccur) {
-        console.log("Will redirect user because didGpSignInAttemptOccur is true.");
-        return true;
-      }
-
       if (status !== "authenticated") {
         console.log("The user is unauthenticated. Please log in first.");
 
@@ -97,8 +82,8 @@ const GoogleDriveAuthResult = () => {
       if (!code) {
         return false;
       }
-      
-      console.log("Yo there, will authenticate the user with google drive...")
+
+      console.log("Yo there, will authenticate the user with google drive...");
 
       const responseBody = await authenticateUserWithGDrive(code, token);
 
@@ -111,7 +96,7 @@ const GoogleDriveAuthResult = () => {
         !responseBody.email ||
         !responseBody.expires_at
       ) {
-        return false
+        throw new Error("AUTH FAILED");
       }
 
       if ("errType" in responseBody) {
@@ -192,11 +177,7 @@ const GoogleDriveAuthResult = () => {
                 ? "Authenticating with Google Drive..."
                 : "Loading, please wait..."}
               <span className="d-inline-flex align-items-center justify-content-center">
-                <Spinner 
-                  animation="border" 
-                  role="status" 
-                  className="mt-2"
-                >
+                <Spinner animation="border" role="status" className="mt-2">
                   <span className="visually-hidden">Loading...</span>
                 </Spinner>
               </span>

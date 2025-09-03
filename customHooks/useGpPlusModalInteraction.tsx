@@ -74,17 +74,13 @@ export const useGpPlusModalInteraction = (
   };
 
   const handleUserInteractionWithGpPlusModal = async () => {
-    const userPlanDetail = await getUserPlanDetails(token);
-
-    console.log("userPlanDetail: ", userPlanDetail);
-
     const _handleOnClickPlanChangeLogic = (event: MouseEvent) => {
       handleOnClickPlanChangeLogic(event);
     };
 
     // if the user selects yearly and if they are on the yearly plan, then
 
-    const mutationOberserver = new MutationObserver((elements) => {
+    const mutationOberserver = new MutationObserver(async (elements) => {
       for (const element of elements) {
         console.log("Element, sup bacon: ", element.target);
 
@@ -98,6 +94,29 @@ export const useGpPlusModalInteraction = (
             ?.firstChild?.firstChild;
 
         if (isChangePlanUI && billingTypeOptsContainer) {
+          console.log("Something changed in the plan change UI");
+        }
+
+        const gpPlusModal = document.querySelector(".o--Widget--widgetBody");
+        const modalHeaderTxt = document.querySelector(
+          ".o--SectionGroup--sectionGroup"
+        )?.firstChild?.firstChild?.textContent;
+
+        console.log("modalHeaderTxt: ", modalHeaderTxt);
+
+        let userPlanDetail: Awaited<
+          ReturnType<typeof getUserPlanDetails>
+        > | null = null;
+
+        if (
+          billingOptionsContainer?.childNodes?.length &&
+          gpPlusBillingTerm &&
+          modalHeaderTxt === "Change plan" &&
+          billingTypeOptsContainer
+        ) {
+          userPlanDetail = await getUserPlanDetails(token);
+
+          console.log("userPlanDetail: ", userPlanDetail);
           const savingsElement = document.createElement("span");
           savingsElement.className = "gp-plus-color text-center ms-2";
           savingsElement.textContent = `Save ${
@@ -108,12 +127,6 @@ export const useGpPlusModalInteraction = (
 
           billingTypeOptsContainer.appendChild(savingsElement);
 
-          console.log("Something changed in the plan change UI");
-        }
-
-        const gpPlusModal = document.querySelector(".o--Widget--widgetBody");
-
-        if (billingOptionsContainer?.childNodes?.length && gpPlusBillingTerm) {
           const childElements = Array.from(
             billingOptionsContainer.childNodes
           ) as HTMLElement[];

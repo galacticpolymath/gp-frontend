@@ -111,7 +111,7 @@ const CopyingUnitToast: React.FC<CopyingUnitToastProps> = ({
       style={{
         background: "#212529",
         borderRadius: 10,
-        minHeight: "250px",
+        maxHeight: "265px",
         boxShadow: "0 4px 16px rgba(44, 62, 80, 0.18)",
         padding: "24px 32px 24px 24px",
         color: "#fff",

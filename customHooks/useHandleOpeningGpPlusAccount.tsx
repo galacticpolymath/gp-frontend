@@ -21,7 +21,6 @@ const useHandleOpeningGpPlusAccount = (
   );
 
   const queryFn = async () => {
-
     if (willGetGpPlusMembership && status === "authenticated") {
       const gpPlusSub = await getIndividualGpPlusSubscription(token);
 
@@ -44,7 +43,7 @@ const useHandleOpeningGpPlusAccount = (
 
     return null;
   };
-  
+
   const { isFetching, data: gpPlusSubscription } = useQuery({
     retry: 2,
     refetchOnWindowFocus: false,
@@ -155,10 +154,16 @@ const useHandleOpeningGpPlusAccount = (
         const magic = new Magic(
           process.env.NEXT_PUBLIC_MAGIC_LINK_PK as string
         );
-        idToken = await magic.auth.loginWithMagicLink({
-          email: userAccount?.gpPlusSubscription.person?.Email,
-          redirectURI: window.location.href,
-        });
+        const loginConfiguration =
+          process.env.NEXT_PUBLIC_HOST === "localhost"
+            ? {
+                email: userAccount?.gpPlusSubscription?.person?.Email,
+              }
+            : {
+                email: userAccount?.gpPlusSubscription?.person?.Email,
+                redirectURI: window.location.href,
+              };
+        idToken = await magic.auth.loginWithMagicLink(loginConfiguration);
 
         if (idToken) {
           window.Outseta?.setMagicLinkIdToken(idToken);

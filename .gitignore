@@ -5,6 +5,7 @@
 .env
 
 failed-file-copies.xlsx
+~$failed-file-copies.xlsx
 
 creds.json
 getLessons.js
