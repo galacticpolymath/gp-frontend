@@ -1,7 +1,7 @@
 /* eslint-disable quotes */
 
 import { NextApiRequest, NextApiResponse } from "next";
-import { getUserByEmail } from "../../../backend/services/userServices";
+import { getUserByEmail, updateUserCustom } from "../../../backend/services/userServices";
 import { verifyJwt } from "../../../nondependencyFns";
 import cache from "../../../backend/utils/cache";
 import {
@@ -15,6 +15,7 @@ import {
   TAccountStageLabel,
   TGpPlusMembershipRetrieved,
 } from "../../../backend/services/outsetaServices";
+import { deleteGoogleGroupMember } from "../../../backend/services/googleGroupServices";
 
 const HAS_MEMBERSHIP_STATUSES: Set<TAccountStageLabel> = new Set([
   "Cancelling",
@@ -123,6 +124,27 @@ export default async function handler(
       membership = (await getGpPlusMembership(
         user.outsetaAccountEmail
       )) as TGpPlusMembershipRetrieved;
+    }
+
+    if(user.gdriveAuthEmails?.length && (membership?.AccountStageLabel === "Expired" || membership?.AccountStageLabel === "NonMember")){
+      for(const userEmail of user.gdriveAuthEmails){
+        const deletionResult = await deleteGoogleGroupMember(userEmail)
+
+        console.log("Was deletion successful: ", deletionResult);
+      }
+
+      const resetGDriveAuthEmailsResult = await updateUserCustom(
+        { 
+          email: jwtVerificationResult.payload.email 
+        },
+        {
+          $set: {
+            gdriveAuthEmails: []
+          }
+        }
+      );
+
+      console.log("resetGDriveAuthEmailsResult: ", resetGDriveAuthEmailsResult);
     }
 
     console.log("membership: ", membership);

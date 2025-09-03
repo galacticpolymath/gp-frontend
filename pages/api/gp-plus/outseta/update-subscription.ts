@@ -29,7 +29,7 @@ export default async function handler(
     const reqBody = request.body as IOutsetaReqBody;
 
     if(reqBody.AccountStageLabel === "Expired"){
-
+      
     }
 
     return response.json({})
