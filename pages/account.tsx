@@ -112,8 +112,6 @@ const AccountPg: React.FC = () => {
       ? getBillingTerm(gpPlusSub?.BillingRenewalTerm)
       : undefined
   );
-  useHandleGpPlusLogin();
-  useOutsetaInputValidation();
 
   const handleGpPlusAccountBtnClick = async () => {
     let wasGpPlusAccountRetrievalSuccessful = false;
@@ -421,6 +419,9 @@ const AccountPg: React.FC = () => {
     }
   }, [status]);
 
+  useHandleGpPlusLogin();
+  useOutsetaInputValidation();
+
   if (status === "loading" || isRetrievingUserData) {
     return (
       <Layout
@@ -557,6 +558,7 @@ const AccountPg: React.FC = () => {
                     zIndex: -10,
                     opacity: 0,
                   }}
+                  id="gpPlusBtn"
                   className="no-underline"
                   href="https://galactic-polymath.outseta.com/profile?tab=account#o-authenticated"
                 ></a>

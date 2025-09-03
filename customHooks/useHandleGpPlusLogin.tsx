@@ -26,21 +26,19 @@ export const useHandleGpPlusLogin = () => {
     } else if (idToken && status === "authenticated") {
       try {
         (async () => {
-
           console.log("will set id token");
-          
+
           (window as any).Outseta.setMagicLinkIdToken(idToken);
+
+          const gpPlusBtnElement = document.getElementById("gpPlusBtn");
+
+          console.log("gpPlusBtnElement: ", gpPlusBtnElement);
+
+          if (gpPlusBtnElement){
+            gpPlusBtnElement.click();
+          } 
           
-          const accessToken = (window as any).Outseta?.getAccessToken();
-          
-          console.log("accessToken: ", accessToken);
-          
-          const outsetaUser = await (window as any).Outseta?.getUser();
-          
-          console.log("outsetaUser: ", outsetaUser);
-          
-          (window as any).Outseta.profile.open();
-          
+
           resetUrl(router);
         })();
       } catch (error) {
