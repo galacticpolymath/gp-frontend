@@ -1386,7 +1386,7 @@ export default async function handler(
             ? fileCopyResult.errMsg
             : JSON.stringify(fileCopyResult);
 
-        if(process.env.HOST === 'localhost'){  
+        if(process.env.NEXT_PUBLIC_HOST === 'localhost'){  
           await logFailedFileCopyToExcel({
           lessonName: reqQueryParams.lessonName || "Unknown",
           unitName: reqQueryParams.unitName || "Unknown",

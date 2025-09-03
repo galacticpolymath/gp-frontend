@@ -1538,7 +1538,7 @@ export const copyFiles = async (
       const errorType = 'errType' in fileCopyResult && typeof fileCopyResult.errType === 'string' ? fileCopyResult.errType : 'unknown';
       const errorMessage = 'errMsg' in fileCopyResult && typeof fileCopyResult.errMsg === 'string' ? fileCopyResult.errMsg : JSON.stringify(fileCopyResult);
 
-      if(process.env.HOST === 'localhost'){ 
+      if(process.env.NEXT_PUBLIC_HOST === 'localhost'){ 
         await logFailedFileCopyToExcel({
           lessonName,
           unitName,
