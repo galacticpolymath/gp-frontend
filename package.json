@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@as-integrations/next": "^4.0.0",
-    "@fortawesome/fontawesome-free": "^7.0.0",
+    "@fortawesome/fontawesome-free": "^7.0.1",
     "@fortawesome/react-fontawesome": "^3.0.2",
     "@getbrevo/brevo": "^3.0.1",
     "@google-cloud/iam": "^2.3.0",
