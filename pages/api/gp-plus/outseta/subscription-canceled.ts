@@ -28,14 +28,16 @@ export default async function handler(
     
     const reqBody = request.body as IOutsetaReqBody;
 
-    if(reqBody.AccountStageLabel === "Expired"){
-      
+    if(reqBody.AccountStageLabel === "Cancelling" && reqBody.PersonAccount?.[0]?.Account?.Name){
+      const personAccountName = reqBody.PersonAccount[0].Account.Name
+
+      console.log("personAccountName: ", personAccountName);
     }
 
-    // return response.json({})
+    return response.json({})
   } catch (error: any) {
     console.error("Error updating account subscription:", error);
 
-    // return response.status(500).json({})
+    return response.status(500).json({})
   }
 }
