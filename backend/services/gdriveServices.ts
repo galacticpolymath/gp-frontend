@@ -1221,7 +1221,8 @@ export const shareFilesWithUser = async (
 export const shareFileWithUser = async (
   fileId: string,
   userEmail: string,
-  drive?: drive_v3.Drive
+  drive?: drive_v3.Drive,
+  role: "fileOrganizer" | "writer" | "viewer" | "reader" = "fileOrganizer"
 ) => {
   try {
     let _drive = drive;
@@ -1234,7 +1235,7 @@ export const shareFileWithUser = async (
     const permissionUpdateResult = await _drive!.permissions.create({
       requestBody: {
         type: "user",
-        role: "fileOrganizer",
+        role,
         emailAddress: userEmail,
       },
       fileId: fileId,
@@ -1246,7 +1247,7 @@ export const shareFileWithUser = async (
       driveId: process.env.GOOGLE_DRIVE_ID,
     });
 
-    return permissionUpdateResult as drive_v3.Schema$Permission;
+    return permissionUpdateResult as unknown as { data: drive_v3.Schema$Permission};
   } catch (error: any) {
     console.error(
       "Failed to share files with the target user. Reason: ",
@@ -1281,33 +1282,35 @@ export const updatePermissionsForSharedFileItems = async (
     throw new CustomError("The file does not have a parent folder.", 500);
   }
 
-  const shareParentFolderResult = await shareFileWithUser(
-    parentFolderId,
-    email,
-    drive
-  );
+  const shareParentFolderResult = await shareFileWithUser(parentFolderId, email, drive)
 
-  if (!shareParentFolderResult) {
-    throw new CustomError(
-      "Failed to share the target parent folder with the user.",
-      500
-    );
-  }
+  console.log("shareParentFolderResult: ", shareParentFolderResult);
 
   await sleep(1_500);
+
+  console.log(`Updating permissions for shared file items. Email: ${email}, File IDs: ${fileIds.join(', ')}`);
 
   let targetPermission = await getTargetUserPermission(
     parentFolderId,
     email,
     drive
   );
+
+  console.log("targetPermission: ", targetPermission);
+
   let tries = 4;
+  let didFailToGetTargetPermission = false;
 
   while (!targetPermission) {
     console.log(
       "Checking if the parent folder was successfully shared with the target user. Tries left: ",
       tries
     );
+
+    if(tries <= 0){
+      didFailToGetTargetPermission = true;
+      break;
+    }
 
     await waitWithExponentialBackOff(tries);
 
@@ -1321,6 +1324,13 @@ export const updatePermissionsForSharedFileItems = async (
 
   console.log("targetPermission: ", targetPermission);
 
+  if (didFailToGetTargetPermission) {
+    throw new CustomError(
+      "Failed to get target user permission after multiple attempts.",
+      500
+    );
+  }
+
   if (!targetPermission?.id) {
     throw new CustomError(
       "The target permission for the gp plus user was not found.",
@@ -1329,6 +1339,15 @@ export const updatePermissionsForSharedFileItems = async (
   }
 
   console.log("Will update the permission of the target file.");
+
+  const shareFilesResultPromises = fileIds.map(fileId => {
+    return shareFileWithUser(fileId, email, drive, "writer")
+  });
+  const shareFilesResults = await Promise.all(shareFilesResultPromises);
+
+  shareFilesResults.forEach(result => {
+    console.log("Share file result: ", result?.data?.role)
+  })
 
   // make the target files read only
   for (const fileId of fileIds) {

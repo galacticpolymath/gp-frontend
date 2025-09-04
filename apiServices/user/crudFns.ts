@@ -12,6 +12,7 @@ import { IErr, IUpdatedUserReqBody } from "../../types/global";
 import { IGoogleDriveAuthResBody } from "../../pages/api/gp-plus/auth";
 import { IPlan } from "../../backend/services/outsetaServices";
 import Cookies from "js-cookie";
+import { TReqQueryResetOutsetaEmail, TSuccessType } from "../../pages/api/gp-plus/outseta/reset-outseta-email";
 
 export const updateUser = async (
   query: Omit<Partial<TUserSchemaV2>, "password"> = {},
@@ -240,7 +241,7 @@ export const getIndividualGpPlusSubscription = async (token: string) => {
       },
     });
 
-    console.log("Response: ", response.data);
+    console.log("Response, sup there: ", response.data);
     console.log("Response status: ", response.status);
 
     if (response.status !== 200) {
@@ -296,5 +297,37 @@ export const getUserPlanDetails = async (appAuthToken: string) => {
     console.error("An error has ocurrred. Failed to get subscription: ", error);
 
     return null;
+  }
+};
+
+export const deleteUserOutsetaEmail = async (email: string, appAuthToken: string) => {
+  try {
+    const params: TReqQueryResetOutsetaEmail = {
+      userInputEmail: email
+    }
+    const response = await axios.delete<TSuccessType>(
+      `${window.location.origin}/api/gp-plus/outseta/reset-outseta-email`,
+      {
+        headers: {
+          Authorization: `Bearer ${appAuthToken}`,
+        },
+        params
+      }
+    );
+
+    console.log("Response, outseta account deletion: ", response.data);
+    console.log("Response status: ", response.status);
+
+    if (response.status !== 200) {
+      throw new Error(
+        `Failed to delete the Outseta email. Status code: ${response.status}`
+      );
+    }
+
+    return response.data;
+  } catch (error) {
+    console.error("Failed to delete the Outseta email: ", error);
+
+    return { wasSuccessful: false };
   }
 };

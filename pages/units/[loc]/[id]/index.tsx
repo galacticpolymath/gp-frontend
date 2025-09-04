@@ -958,9 +958,9 @@ export const getStaticProps = async (arg: {
         console.log("unitGDriveChildItems, second: ", unitGDriveChildItems);
 
         const resourcesForUIPromises = resources.map(async (resource) => {
-          if(resource?.lessons?.length){
-            resource.lessons = resource.lessons.filter(lesson => {
-              if(!lesson.title){
+          if (resource?.lessons?.length) {
+            resource.lessons = resource.lessons.filter((lesson) => {
+              if (!lesson.title || lesson?.status?.toLowerCase() === "proto") {
                 return false;
               }
 

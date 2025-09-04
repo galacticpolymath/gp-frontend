@@ -409,6 +409,10 @@ export async function middleware(request) {
       (nextUrl.pathname == "/api/get-user-account-data" &&
         method === "GET" &&
         authorizationStr)
+      // || 
+      // (nextUrl.pathname == "/api/gp-plus/outseta/reset-outseta-email" &&
+      //   method === "DELETE" &&
+      //   authorizationStr)
     ) {
       const willCheckIfUserIsDbAdmin = DB_ADMIN_ROUTES_SET.has(
         nextUrl.pathname

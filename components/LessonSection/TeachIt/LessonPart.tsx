@@ -567,7 +567,7 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
           </div>
         }
       >
-        <div className="p-0 lessonPartContent">
+        <div className="p-0 lessonPartContent pb-3">
           {!!restOfTags?.length && (
             <div className="d-flex mt-0 mt-md-1 justify-content-sm-start tagPillContainer flex-wrap">
               {restOfTags.map((tag: string, index) => (

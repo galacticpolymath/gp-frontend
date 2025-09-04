@@ -225,6 +225,29 @@ export const getAboutUserFormForClient = (
   return { userAccountForClient, gpPlusSubscription };
 };
 
+const getUserAccountData = async (token: string) => {
+  try {
+    const paramsAndHeaders = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    const response = await axios.get<
+      TUserSchemaForClient<TUserSchemaV2 & IUserSchema>
+    >("/api/get-user-account-data", paramsAndHeaders);
+
+    console.log("userAccount data: ", response.data);
+
+    if (response.status !== 200) {
+      throw new Error("Failed to get 'AboutUser' form for the target user.");
+    }
+
+    return response.data;
+  } catch(error){
+    console.error("Error in getUserAccountData: ", error);
+  }
+}
+
 export const useGetAboutUserForm = (willGetData: boolean = true) => {
   const { status, data } = useSession();
   const { _aboutUserForm } = useUserContext();
@@ -246,6 +269,7 @@ export const useGetAboutUserForm = (willGetData: boolean = true) => {
               Authorization: `Bearer ${token}`,
             },
           };
+          
           const response = await axios.get<
             TUserSchemaForClient<TUserSchemaV2 & IUserSchema>
           >("/api/get-user-account-data", paramsAndHeaders);

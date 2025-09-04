@@ -75,6 +75,8 @@ export default async function handler(
         userCached?.outsetaAccountEmail
       )) as TGpPlusMembershipRetrieved;
 
+      console.log("Membership, after retrieval: ", membership);
+
       if (membership.AccountStageLabel !== "NonMember") {
         const membershipForClient = {
           ...membership,
@@ -129,11 +131,17 @@ export default async function handler(
       )) as TGpPlusMembershipRetrieved;
     }
 
+    console.log("The membership is, hi: ", membership);
+
     if (
       user.gdriveAuthEmails?.length &&
       (membership?.AccountStageLabel === "Expired" ||
         membership?.AccountStageLabel === "NonMember")
     ) {
+      console.log(
+        "User is not a GP+ member, clearing the auth emails from the user document..."
+      );
+
       for (const userEmail of user.gdriveAuthEmails) {
         const deletionResult = await deleteGoogleGroupMember(userEmail);
 
@@ -175,6 +183,7 @@ export default async function handler(
         : null,
     };
 
+    console.log("Will send the following: ", { membership: membershipForClient });
     response.status(200).json({ membership: membershipForClient });
   } catch (error) {
     console.error(error);

@@ -7,7 +7,7 @@ import { useSession } from "next-auth/react";
 import { IUserSession } from "../types/global";
 import { CONTACT_SUPPORT_EMAIL } from "../globalVars";
 import CustomLink from "../components/CustomLink";
-import { updateUser } from "../apiServices/user/crudFns";
+import { deleteUserOutsetaEmail, updateUser } from "../apiServices/user/crudFns";
 import useSiteSession from "./useSiteSession";
 
 const useOutsetaInputValidation = () => {
@@ -138,12 +138,23 @@ const useOutsetaInputValidation = () => {
 
         console.log("Will save the email the user inputted.");
 
+        // const deleteUserOutsetaEmailResult = await deleteUserOutsetaEmail(
+        //   userGpAccountEmail,
+        //   token
+        // );
+
+        // console.log("deleteUserOutsetaEmailResult: ", deleteUserOutsetaEmailResult);
+
         const updateUserResponse = await updateUser(
           { email: userGpAccountEmail },
           { outsetaAccountEmail: outsetaEmail },
           {},
           token
         );
+
+        
+        console.log("updateUserResponse: ", updateUserResponse);
+        
 
         if (!updateUserResponse?.wasSuccessful) {
           setNotifyModal({

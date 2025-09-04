@@ -44,7 +44,7 @@ import {
 } from "../../../backend/services/gdriveServices";
 
 export const maxDuration = 240;
-export const VALID_WRITABLE_ROLES = new Set(["fileOrganizer", "organizer"]);
+export const VALID_WRITABLE_ROLES = new Set(["fileOrganizer", "organizer", "writer"]);
 
 export type TCopyFilesMsg = Partial<{
   msg: string;
@@ -127,6 +127,7 @@ export default async function handler(
   response.setHeader("Content-Encoding", "none");
 
   let isStreamOpen = true;
+  let userEmail: string | null = null;
 
   const gDriveAccessToken = (
     Array.isArray(request.headers?.["gdrive-token"])
@@ -276,6 +277,7 @@ export default async function handler(
     }
 
     const { email } = jwtPayload.payload;
+    userEmail = email;
     const user = await getUserByEmail(jwtPayload.payload.email, {
       unitGDriveLessons: 1,
       gpPlusDriveFolderId: 1,
@@ -516,6 +518,7 @@ export default async function handler(
           msg: `'${reqQueryParams.unitName}' unit folder created.`,
         });
 
+        
         if (!isStreamOpen) {
           throw new CustomError("The stream has ended.", 500);
         }
@@ -609,7 +612,6 @@ export default async function handler(
           _lessonsFolderInSharedDrive.name
         );
 
-        // todo: BUG OCCURING
         const clientOrigin = new URL(request.headers.referer ?? "").origin;
         const unitFolderChildItems = await getUserChildItemsOfFolder(
           unitDriveId!,
@@ -845,6 +847,8 @@ export default async function handler(
           msg: "Copying lesson files...",
         });
 
+        console.log("Will update the permissiosn for the target files.");
+
         // make the target shared drive files read only to prevent writes during the copy operation
         const copyItemsParentFolder = await updatePermissionsForSharedFileItems(
           drive,
@@ -868,9 +872,9 @@ export default async function handler(
           didRetrieveAllItems: true,
         });
 
-        sendMessage(response, {
-          msg: "Copying lesson files...",
-        });
+        // throw new Error("Stop");
+
+        console.log("About to copy files to existing lesson folder");
 
         const wasSuccessful = await copyFiles(
           reqQueryParams.fileIds,
@@ -1227,7 +1231,9 @@ export default async function handler(
 
     const result = await shareFileWithUser(parentFolderId, email);
 
-    console.log("share result: ", result);
+    console.log("share result, sup: ", result);
+
+    // throw new Error("python, yo");
 
     if (!isStreamOpen) {
       throw new CustomError("The stream has ended.", 500);
@@ -1447,8 +1453,9 @@ export default async function handler(
 
     if (reqQueryParams.fileIds) {
       console.log("Making all file readable...");
+      const drive = await createDrive();
+
       for (const fileId of reqQueryParams.fileIds) {
-        const drive = await createDrive();
         // @ts-ignore
         const fileUpdated = await drive.files.update({
           fileId: fileId,
@@ -1459,6 +1466,16 @@ export default async function handler(
             },
           },
         });
+      }
+    }
+
+    if(reqQueryParams && userEmail){
+      const drive = await createDrive();
+
+      for (const fileId of reqQueryParams.fileIds){
+        const shareFileResult = await shareFileWithUser(fileId, userEmail, drive, "reader");
+
+        console.log("shareFileResult: ", shareFileResult);
       }
     }
 

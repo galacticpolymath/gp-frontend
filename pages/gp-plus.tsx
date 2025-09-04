@@ -16,7 +16,6 @@ import {
 import CustomLink from "../components/CustomLink";
 import { CONTACT_SUPPORT_EMAIL } from "../globalVars";
 import useHandleOpeningGpPlusAccount from "../customHooks/useHandleOpeningGpPlusAccount";
-import { resetUrl } from "../globalFns";
 import { useRouter } from "next/router";
 import { useGpPlusModalInteraction } from "../customHooks/useGpPlusModalInteraction";
 import {
@@ -403,8 +402,6 @@ const GpPlus: React.FC<IProps> = ({
       });
     }
   }, [isSignupModalDisplayed]);
-
-  useHandleGpPlusLogin();
 
   const isGpLiteBtnDisabled = !wasGpPlusSubRetrieved || wasGpLiteBtnClicked;
 
