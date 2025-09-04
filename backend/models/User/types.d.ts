@@ -83,13 +83,14 @@ export interface ILessonGDriveId {
   lessonNum: string;
   lessonDriveId: string;
   lessonSharedGDriveFolderId: string;
-  gradesRange: string
+  gradesRange: string;
 }
 
 export interface IUnitGDriveLesson {
   unitId: string;
   unitDriveId: string;
   lessonDriveIds?: ILessonGDriveId[];
+  gmail: string;
 }
 
 export type TUserSchemaV2 = IUserSchemaBaseProps &
@@ -97,7 +98,7 @@ export type TUserSchemaV2 = IUserSchemaBaseProps &
   TOutseta & {
     gpPlusDriveFolderId: string;
     unitGDriveLessons: IUnitGDriveLesson[];
-    gdriveAuthEmails: string[]
+    gdriveAuthEmails: string[];
   };
 
 type TGpPlusMembershipStatus = Awaited<ReturnType<typeof getGpPlusMembership>>;

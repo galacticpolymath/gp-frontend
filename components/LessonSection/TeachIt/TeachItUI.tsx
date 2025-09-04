@@ -165,7 +165,9 @@ const getUserLessonsGDriveFolderIds = async (
   } catch (error) {
     console.error("Error in getUserLessonsGDriveFolderIds: ", error);
 
-    alert("Failed to get your lesson folder links. Please refresh the page and try again.");
+    alert(
+      "Failed to get your lesson folder links. Please refresh the page and try again."
+    );
 
     return null;
   }
@@ -270,7 +272,10 @@ const TeachItUI = <
         try {
           // TODO: present the loading button for all copy lessons buttons when you are getting the id of the lesson folder of the user
 
-          console.log("selectedGrade.grades, will get lesson folder ids: ", selectedGrade.grades);
+          console.log(
+            "selectedGrade.grades, will get lesson folder ids: ",
+            selectedGrade.grades
+          );
 
           const userGDriveLessonFolderIds = await getUserLessonsGDriveFolderIds(
             token,
@@ -281,8 +286,10 @@ const TeachItUI = <
             ensureValidToken
           );
 
-          console.log("userGDriveLessonFolderIds, after req: ", userGDriveLessonFolderIds);
-          
+          console.log(
+            "userGDriveLessonFolderIds, after req: ",
+            userGDriveLessonFolderIds
+          );
 
           if (userGDriveLessonFolderIds?.length) {
             const _parts = parts.map((part) => {
@@ -301,7 +308,7 @@ const TeachItUI = <
 
               return {
                 ...part,
-                userGDriveLessonFolderId: undefined
+                userGDriveLessonFolderId: undefined,
               };
             });
             setParts(_parts);
@@ -436,7 +443,9 @@ const TeachItUI = <
                       name="gradeVariation"
                       id={variation.gradePrefix as string}
                       value={variation.gradePrefix as string}
-                      checked={variation.gradePrefix === selectedGrade.gradePrefix}
+                      checked={
+                        variation.gradePrefix === selectedGrade.gradePrefix
+                      }
                       onChange={() => handleOnChange(variation)}
                     />
                     {variation.gradePrefix}
@@ -511,7 +520,7 @@ const TeachItUI = <
                         </>
                       ) : (
                         <>
-                          Browse on
+                          Browse on Entire Unit on
                           <em
                             style={{ paddingLeft: "2px", paddingRight: "6px" }}
                           >

@@ -525,7 +525,7 @@ const AccountPg: React.FC = () => {
                   disabled={false}
                   style={{
                     backgroundColor: "#2D69D1",
-                    width: "225px",
+                    minWidth: "260px",
                     height: "64px",
                   }}
                 >
@@ -533,7 +533,6 @@ const AccountPg: React.FC = () => {
                     <Spinner className="text-dark" />
                   ) : (
                     <>
-                      <span className="text-white">View</span>
                       <Image
                         src="/imgs/gp-logos/gp_submark.png"
                         alt="gp_plus_logo"
@@ -546,7 +545,7 @@ const AccountPg: React.FC = () => {
                         }}
                         className="mx-1"
                       />
-                      <span className="text-white">Account</span>
+                      <span className="text-white">My subscription</span>
                     </>
                   )}
                 </BootstrapBtn>

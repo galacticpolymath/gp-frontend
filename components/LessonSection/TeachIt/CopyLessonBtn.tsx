@@ -142,6 +142,7 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
     gdriveRefreshToken,
     status,
     gdriveAccessTokenExp,
+    gdriveEmail
   } = useSiteSession();
   const { setAppCookie } = useCustomCookies();
   const [openPicker, authResult] = useDrivePicker();
@@ -241,7 +242,7 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
 
           console.log("validToken: ", validToken);
 
-          if (!validToken) {
+          if (!validToken || !gdriveEmail) {
             setLocalStorageItem(
               "gpPlusFeatureLocation",
               `${window.location.protocol}//${window.location.host}${window.location.pathname}#teaching-materials`
@@ -356,6 +357,7 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
             Authorization: `Bearer ${token}`,
             "gdrive-token": validToken,
             "gdrive-token-refresh": gdriveRefreshToken!,
+            "user-gmail": gdriveEmail,
           };
           const url = new URL(
             `${window.location.origin}/api/gp-plus/copy-lesson`

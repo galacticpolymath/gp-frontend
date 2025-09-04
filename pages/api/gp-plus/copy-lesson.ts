@@ -138,6 +138,12 @@ export default async function handler(
       ? request.headers["gdrive-token-refresh"][0]
       : request.headers["gdrive-token-refresh"]
   ) as string | undefined;
+  const userGmail = request.headers["user-gmail"];
+
+  if (!userGmail || Array.isArray(userGmail)) {
+    throw new CustomError("User Gmail is required and must be a string.", 400);
+  }
+
   const reqQueryParams = request.query as unknown as TCopyLessonReqQueryParams;
   let parentFolder: { id: string; permissionId: string } | null = null;
 
@@ -162,7 +168,7 @@ export default async function handler(
     }
 
     if (!wasUserRolesAndFileMetaDataReseted && reqQueryParams.fileIds) {
-      console.log("Making all file readable...");
+      console.log("Making all file readable, stream closed");
       for (const fileId of reqQueryParams.fileIds) {
         const drive = await createDrive();
         // @ts-ignore
@@ -177,6 +183,8 @@ export default async function handler(
         });
 
         console.log("fileUpdated: ", fileUpdated);
+
+        response.end(`data: ${{ isJobDone: true }}\n\n`);
       }
     }
   });
@@ -404,16 +412,16 @@ export default async function handler(
           throw new CustomError("The stream has ended.", 500);
         }
 
+        const unitDriveIdObj: Pick<IUnitGDriveLesson, "unitDriveId"> = {
+          unitDriveId,
+        };
         const targetUnitDeletionResult = await updateUserCustom(
           {
             email,
           },
           {
             $pull: {
-              unitGDriveLessons: { unitDriveId } as Pick<
-                IUnitGDriveLesson,
-                "unitDriveId"
-              >,
+              unitGDriveLessons: unitDriveIdObj,
             },
           }
         );
@@ -500,7 +508,8 @@ export default async function handler(
           clientOrigin,
           email,
           _allUnitLessons,
-          lessonsFolderGradesRange
+          lessonsFolderGradesRange,
+          userGmail
         );
 
         sendMessage(response, {
@@ -978,10 +987,11 @@ export default async function handler(
       msg: `'${reqQueryParams.unitName}' folder was created.`,
     });
 
-    let unitGDriveLesson = {
+    let unitGDriveLesson: IUnitGDriveLesson = {
       unitDriveId: targetUnitFolderCreation.folderId,
       unitId: reqQueryParams.unitId,
-    } as IUnitGDriveLesson;
+      gmail: userGmail,
+    };
 
     console.log("unitGDriveLesson: ", unitGDriveLesson);
 
@@ -1386,19 +1396,19 @@ export default async function handler(
             ? fileCopyResult.errMsg
             : JSON.stringify(fileCopyResult);
 
-        if(process.env.NEXT_PUBLIC_HOST === 'localhost'){  
+        if (process.env.NEXT_PUBLIC_HOST === "localhost") {
           await logFailedFileCopyToExcel({
-          lessonName: reqQueryParams.lessonName || "Unknown",
-          unitName: reqQueryParams.unitName || "Unknown",
-          lessonFolderLink,
-          fileName: reqQueryParams.fileNames[fileIdIndex],
-          fileLink,
-          errorType,
-          errorMessage,
-          timestamp: new Date().toISOString(),
-          userEmail: email,
-        });
-      }  
+            lessonName: reqQueryParams.lessonName || "Unknown",
+            unitName: reqQueryParams.unitName || "Unknown",
+            lessonFolderLink,
+            fileName: reqQueryParams.fileNames[fileIdIndex],
+            fileLink,
+            errorType,
+            errorMessage,
+            timestamp: new Date().toISOString(),
+            userEmail: email,
+          });
+        }
       }
     }
     console.log("targetLessonFolder.id, java: ", targetLessonFolderInUserDrive);

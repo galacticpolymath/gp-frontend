@@ -101,7 +101,8 @@ const LessonGDriveId = new Schema<ILessonGDriveId>({
 const UnitGDriveLessons = new Schema<IUnitGDriveLesson>({
   unitDriveId: String,
   unitId: String,
-  lessonDriveIds: [LessonGDriveId]
+  lessonDriveIds: [LessonGDriveId],
+  gmail: String
 }, {
   _id: false
 });

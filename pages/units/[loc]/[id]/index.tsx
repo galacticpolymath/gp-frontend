@@ -958,6 +958,15 @@ export const getStaticProps = async (arg: {
         console.log("unitGDriveChildItems, second: ", unitGDriveChildItems);
 
         const resourcesForUIPromises = resources.map(async (resource) => {
+          if(resource?.lessons?.length){
+            resource.lessons = resource.lessons.filter(lesson => {
+              if(!lesson.title){
+                return false;
+              }
+
+              return true;
+            });
+          }
           const allUnitLessons: Pick<
             INewUnitLesson,
             "allUnitLessons"

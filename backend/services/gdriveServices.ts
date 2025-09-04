@@ -698,8 +698,6 @@ export const getUnitGDriveChildItems = async (unitId: string) => {
   }
 };
 
-
-
 /**
  * Create a folder in the user's Google Drive account.
  * @param {string} folderName The name of the folder to create.
@@ -881,13 +879,13 @@ export const copyGDriveItem = async (
   }
 };
 
-interface TGDriveItem{
+interface TGDriveItem {
   id: string;
   labels: {
     trashed: boolean;
     [key: string]: boolean;
   };
-  [key: string]: unknown
+  [key: string]: unknown;
 }
 
 export const getGDriveItem = async (
@@ -981,7 +979,8 @@ export const createUnitFolder = async (
   allUnitLessons: NonNullable<
     Pick<INewUnitLesson, "allUnitLessons">["allUnitLessons"]
   >,
-  gradesRange: string
+  gradesRange: string,
+  userGmail: string
 ) => {
   const targetUnitFolderCreation = await createGDriveFolder(
     unit.name,
@@ -1001,14 +1000,16 @@ export const createUnitFolder = async (
     );
   }
 
+  const unitGDriveLesson: IUnitGDriveLesson = {
+    unitDriveId: targetUnitFolderCreation.folderId,
+    unitId: unit.id,
+    gmail: userGmail,
+  };
   const userUpdatedWithNewUnitObjResult = await updateUserCustom(
     { email },
     {
       $push: {
-        unitGDriveLessons: {
-          unitDriveId: targetUnitFolderCreation.folderId,
-          unitId: unit.id,
-        } as IUnitGDriveLesson,
+        unitGDriveLessons: unitGDriveLesson,
       },
     }
   );
@@ -1046,35 +1047,42 @@ export const createUnitFolder = async (
   }
 
   let allChildItems = await getFolderChildItems(gdriveResponse.data.files);
-  const targetLessonFolderInSharedDrive = allChildItems.find(item => {
-    return item.id === lesson.sharedGDriveId
+  const targetLessonFolderInSharedDrive = allChildItems.find((item) => {
+    return item.id === lesson.sharedGDriveId;
   });
 
-  console.log("targetLessonFolderInSharedDrive: ", targetLessonFolderInSharedDrive);
+  console.log(
+    "targetLessonFolderInSharedDrive: ",
+    targetLessonFolderInSharedDrive
+  );
 
-  if(!targetLessonFolderInSharedDrive){
+  if (!targetLessonFolderInSharedDrive) {
     throw new CustomError(
       `The lesson folder with ID ${lesson.sharedGDriveId} was not found in the unit ${unit.name}.`,
       404
     );
   }
 
-  console.log("allChildItems, will get the all of the lesson folder ids before filter: ", allChildItems.length);
-  
-  allChildItems = allChildItems.filter(item => {
-      if (
-        item.id &&
-        item.parentFolderId === targetLessonFolderInSharedDrive.parentFolderId
-      ) {
-        return targetLessonFolderInSharedDrive.id === item.id;
-      }
+  console.log(
+    "allChildItems, will get the all of the lesson folder ids before filter: ",
+    allChildItems.length
+  );
 
-      return (
-        item.id === targetLessonFolderInSharedDrive.parentFolderId
-      );
+  allChildItems = allChildItems.filter((item) => {
+    if (
+      item.id &&
+      item.parentFolderId === targetLessonFolderInSharedDrive.parentFolderId
+    ) {
+      return targetLessonFolderInSharedDrive.id === item.id;
+    }
+
+    return item.id === targetLessonFolderInSharedDrive.parentFolderId;
   });
 
-  console.log("allChildItems, will get the all of the lesson folder ids after filter: ", allChildItems.length);
+  console.log(
+    "allChildItems, will get the all of the lesson folder ids after filter: ",
+    allChildItems.length
+  );
 
   console.log("allChildItems: ", allChildItems);
 
@@ -1112,20 +1120,28 @@ export const createUnitFolder = async (
       (unitLesson) => unitLesson.sharedGDriveId === folderSubItem.originalFileId
     );
 
-    if (targetUnitLesson && folderSubItem.id && folderSubItem.originalFileId === targetLessonFolder.originalFileId) {
-    console.log("Found the target lesson folder. Will update the user with the new lesson drive id.");
+    if (
+      targetUnitLesson &&
+      folderSubItem.id &&
+      folderSubItem.originalFileId === targetLessonFolder.originalFileId
+    ) {
+      console.log(
+        "Found the target lesson folder. Will update the user with the new lesson drive id."
+      );
       allUnitLessonFolders.push({
         lessonDriveId: folderSubItem.id,
         lessonNum: targetUnitLesson.id,
         lessonSharedGDriveFolderId: targetUnitLesson.sharedGDriveId,
-        gradesRange: gradesRange
+        gradesRange: gradesRange,
       });
       break;
     }
   }
 
-
-  console.log("allUnitLessonFolders after updates: ", allUnitLessonFolders.length);
+  console.log(
+    "allUnitLessonFolders after updates: ",
+    allUnitLessonFolders.length
+  );
 
   const lessonDriveIdUpdatedResult = await updateUserCustom(
     { email },
@@ -1288,7 +1304,10 @@ export const updatePermissionsForSharedFileItems = async (
   let tries = 4;
 
   while (!targetPermission) {
-    console.log("Checking if the parent folder was successfully shared with the target user. Tries left: ", tries);
+    console.log(
+      "Checking if the parent folder was successfully shared with the target user. Tries left: ",
+      tries
+    );
 
     await waitWithExponentialBackOff(tries);
 
@@ -1320,7 +1339,8 @@ export const updatePermissionsForSharedFileItems = async (
       requestBody: {
         contentRestrictions: {
           readOnly: true,
-          reason: "Making a copy for GP plus user. Making file readonly temporarily.",
+          reason:
+            "Making a copy for GP plus user. Making file readonly temporarily.",
         },
       },
     });
@@ -1361,13 +1381,14 @@ export const logFailedFileCopyToExcel = async (failedCopy: IFailedFileCopy) => {
       { header: "Error Type", key: "errorType", width: 20 },
       { header: "Error Message", key: "errorMessage", width: 40 },
       { header: "Timestamp", key: "timestamp", width: 20 },
-      { header: "User Email", key: "userEmail", width: 30 }
+      { header: "User Email", key: "userEmail", width: 30 },
     ];
 
     // Load or create workbook & worksheet
     if (fs.existsSync(excelFilePath)) {
       await workbook.xlsx.readFile(excelFilePath);
-      worksheet = workbook.getWorksheet(sheetName) || workbook.addWorksheet(sheetName);
+      worksheet =
+        workbook.getWorksheet(sheetName) || workbook.addWorksheet(sheetName);
     } else {
       worksheet = workbook.addWorksheet(sheetName);
       worksheet.columns = columns;
@@ -1378,7 +1399,7 @@ export const logFailedFileCopyToExcel = async (failedCopy: IFailedFileCopy) => {
       headerRow.fill = {
         type: "pattern",
         pattern: "solid",
-        fgColor: { argb: "FFE0E0E0" }
+        fgColor: { argb: "FFE0E0E0" },
       };
       headerRow.commit && headerRow.commit(); // safe for streaming writers
     }
@@ -1391,9 +1412,9 @@ export const logFailedFileCopyToExcel = async (failedCopy: IFailedFileCopy) => {
     if (worksheet.rowCount > 1) {
       for (let i = 2; i <= worksheet.rowCount; i++) {
         const row = worksheet.getRow(i);
-        const rowFileName = row.getCell('fileName').value;
-        const rowFileLink = row.getCell('fileLink').value;
-        const rowUserEmail = row.getCell('userEmail').value;
+        const rowFileName = row.getCell("fileName").value;
+        const rowFileLink = row.getCell("fileLink").value;
+        const rowUserEmail = row.getCell("userEmail").value;
         if (
           rowFileName === failedCopy.fileName &&
           rowFileLink === failedCopy.fileLink &&
@@ -1406,7 +1427,9 @@ export const logFailedFileCopyToExcel = async (failedCopy: IFailedFileCopy) => {
     }
 
     if (isAlreadyTracked) {
-      console.log(`File ${failedCopy.fileName} has already been tracked in Excel, skipping duplicate entry.`);
+      console.log(
+        `File ${failedCopy.fileName} has already been tracked in Excel, skipping duplicate entry.`
+      );
       return;
     }
 
@@ -1419,7 +1442,7 @@ export const logFailedFileCopyToExcel = async (failedCopy: IFailedFileCopy) => {
       errorType: failedCopy.errorType || "",
       errorMessage: failedCopy.errorMessage || "",
       timestamp: failedCopy.timestamp,
-      userEmail: failedCopy.userEmail
+      userEmail: failedCopy.userEmail,
     });
 
     await workbook.xlsx.writeFile(excelFilePath);
@@ -1428,7 +1451,6 @@ export const logFailedFileCopyToExcel = async (failedCopy: IFailedFileCopy) => {
     console.error("Failed to log to Excel:", error);
   }
 };
-
 
 export const copyFiles = async (
   fileIds: string[],
@@ -1463,9 +1485,13 @@ export const copyFiles = async (
       continue;
     }
 
+    console.log(`Processing file: ${fileNames[fileIdIndex]}`);
+
     console.log(
       "Made the target file read only and changed the target user's permission to writer."
     );
+
+    let didFailedToUpdateFilePermissions = false
 
     console.log(`userUpdatedRole: ${userUpdatedRole}`);
 
@@ -1477,11 +1503,9 @@ export const copyFiles = async (
         console.error(
           "Reached max tries. Failed to update the target user's permission."
         );
+        didFailedToUpdateFilePermissions = true;
 
-        throw new CustomError(
-          "Failed to update the target user's permission after reaching max tries.",
-          500
-        );
+        break;
       }
 
       await waitWithExponentialBackOff(tries);
@@ -1490,6 +1514,11 @@ export const copyFiles = async (
 
       userUpdatedRole = permission?.role;
       tries -= 1;
+    }
+
+    if(didFailedToUpdateFilePermissions){
+      wasJobSuccessful = false;
+      continue;
     }
 
     console.log(`The role of the user is: ${userUpdatedRole}`);
@@ -1534,11 +1563,18 @@ export const copyFiles = async (
       // Log failed copy to Excel
       const lessonFolderLink = `https://drive.google.com/drive/folders/${lessonFolderId}`;
       const fileLink = `https://drive.google.com/file/d/${fileId}/view`;
-      
-      const errorType = 'errType' in fileCopyResult && typeof fileCopyResult.errType === 'string' ? fileCopyResult.errType : 'unknown';
-      const errorMessage = 'errMsg' in fileCopyResult && typeof fileCopyResult.errMsg === 'string' ? fileCopyResult.errMsg : JSON.stringify(fileCopyResult);
 
-      if(process.env.NEXT_PUBLIC_HOST === 'localhost'){ 
+      const errorType =
+        "errType" in fileCopyResult &&
+        typeof fileCopyResult.errType === "string"
+          ? fileCopyResult.errType
+          : "unknown";
+      const errorMessage =
+        "errMsg" in fileCopyResult && typeof fileCopyResult.errMsg === "string"
+          ? fileCopyResult.errMsg
+          : JSON.stringify(fileCopyResult);
+
+      if (process.env.NEXT_PUBLIC_HOST === "localhost") {
         await logFailedFileCopyToExcel({
           lessonName,
           unitName,
@@ -1548,7 +1584,7 @@ export const copyFiles = async (
           errorType,
           errorMessage,
           timestamp: new Date().toISOString(),
-          userEmail: email
+          userEmail: email,
         });
       }
     }
