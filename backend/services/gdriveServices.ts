@@ -1517,7 +1517,7 @@ export const copyFiles = async (
     }
 
     if(didFailedToUpdateFilePermissions){
-      wasJobSuccessful = false;
+      wasJobSuccessful = false
       continue;
     }
 
