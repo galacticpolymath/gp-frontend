@@ -48,7 +48,7 @@ export const getUser = async <
   try {
     const user = await User.findOne(queryObj, projectionObj).lean();
 
-    return { user: user as TUser };
+    return { user: user as Pick<TUser, TUserKey> };
   } catch (error: any) {
     console.error("An error has occurred in getting the target user: ", error);
     console.log(error);

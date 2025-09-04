@@ -1,7 +1,10 @@
 /* eslint-disable quotes */
 
 import { NextApiRequest, NextApiResponse } from "next";
-import { getUserByEmail, updateUserCustom } from "../../../backend/services/userServices";
+import {
+  getUserByEmail,
+  updateUserCustom,
+} from "../../../backend/services/userServices";
 import { verifyJwt } from "../../../nondependencyFns";
 import cache from "../../../backend/utils/cache";
 import {
@@ -126,21 +129,26 @@ export default async function handler(
       )) as TGpPlusMembershipRetrieved;
     }
 
-    if(user.gdriveAuthEmails?.length && (membership?.AccountStageLabel === "Expired" || membership?.AccountStageLabel === "NonMember")){
-      for(const userEmail of user.gdriveAuthEmails){
-        const deletionResult = await deleteGoogleGroupMember(userEmail)
+    if (
+      user.gdriveAuthEmails?.length &&
+      (membership?.AccountStageLabel === "Expired" ||
+        membership?.AccountStageLabel === "NonMember")
+    ) {
+      for (const userEmail of user.gdriveAuthEmails) {
+        const deletionResult = await deleteGoogleGroupMember(userEmail);
 
         console.log("Was deletion successful: ", deletionResult);
       }
 
+      const updates: Partial<TUserSchemaV2> = {
+        gdriveAuthEmails: [],
+      };
       const resetGDriveAuthEmailsResult = await updateUserCustom(
-        { 
-          email: jwtVerificationResult.payload.email 
+        {
+          email: jwtVerificationResult.payload.email,
         },
         {
-          $set: {
-            gdriveAuthEmails: []
-          }
+          $set: updates,
         }
       );
 
