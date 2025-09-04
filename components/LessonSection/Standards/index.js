@@ -21,7 +21,7 @@ const Standards = ({
     <div className='container mb-4 px-0'>
       {/* if there are no target standards, then show the arrow for the first section for the connected standars */}
       <h4 className='fs-5 fw-bold mt-2 mb-1'><i className="bi bi-bullseye me-2" />Target Standard(s)</h4>
-      <div className="mb-3">
+      <div id="learning_standards" className="mb-3">
         Skills and concepts directly taught or reinforced by this lesson
       </div>
       {Data.filter(({ target }) => target).map((subject, i) => (

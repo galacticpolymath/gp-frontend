@@ -469,9 +469,9 @@ export const createPasswordResetEmail = (recipientName, passwordResetUrl, imgOri
                 <table class="email-content" width="100%" cellpadding="0" cellspacing="0" role="presentation">
                     <tr>
                     <td class="email-masthead">
-                        <a href="https://example.com" class="f-fallback email-masthead_name">
+                        <a href="https://teach.galacticpolymath.com/" class="f-fallback email-masthead_name">
                           <img
-                            src="${imgOrigin}/GP_bubbleLogo300px.png"
+                            src="https://teach.galacticpolymath.com/GP_bubbleLogo300px.png"
                             alt="logo"
                             class="gp-logo"
                           />
@@ -532,7 +532,7 @@ export const createPasswordResetEmail = (recipientName, passwordResetUrl, imgOri
                                 Galactic Polymath 
                             </p>
                             <img 
-                              src="${imgOrigin}/GP_bubbleLogo300px.png"
+                              src="https://teach.galacticpolymath.com/GP_bubbleLogo300px.png"
                             alt="logo"
                             class="gp-logo"
                             />

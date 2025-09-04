@@ -57,7 +57,7 @@ const Notify = () => {
     const [, setIsCreateAccountModalDisplayed] = _isCreateAccountModalDisplayed;
     const [customModalFooter] = _customModalFooter;
     const [notifyModal, setNotifyModal] = _notifyModal;
-    const { bodyTxt, headerTxt, handleOnHide, bodyElements } = notifyModal;
+    const { bodyTxt, headerTxt, handleOnHide, bodyElements, closeBtnTxt } = notifyModal;
 
     const openUserEntryModal = (setModal = setIsLoginModalDisplayed) => {
         const url = router.asPath;
@@ -239,7 +239,7 @@ const Notify = () => {
             {customModalFooter ?? (
                 <Modal.Footer>
                     <Button onClick={closeModal} className="px-3 py-1">
-                        CLOSE
+                        {closeBtnTxt ?? "CLOSE"}
                     </Button>
                 </Modal.Footer>
             )}

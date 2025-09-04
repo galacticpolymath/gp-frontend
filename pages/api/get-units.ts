@@ -5,11 +5,15 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { connectToMongodb } from "../../backend/utils/connection";
 import { CustomError } from "../../backend/utils/errors";
-import {
-  retrieveUnits,
-  TProjections,
-} from "../../backend/services/unitServices";
+import { retrieveUnits } from "../../backend/services/unitServices";
 import { INewUnitSchema, IUnit } from "../../backend/models/Unit/types/unit";
+
+type TReqQuery = Partial<{
+  filterObj: string;
+  projectionsObj: string;
+  dbType?: "dev" | "production";
+  willGetOnlyNum?: boolean;
+}>;
 
 export default async function handler(
   request: NextApiRequest,
@@ -29,11 +33,8 @@ export default async function handler(
       throw new CustomError("This route only accepts GET requests.", 404);
     }
 
-    const { filterObj, projectionsObj, dbType } = (query ?? {}) as {
-      filterObj: string;
-      projectionsObj: string;
-      dbType?: "dev" | "production";
-    };
+    const { filterObj, projectionsObj, dbType, willGetOnlyNum } = (query ??
+      {}) as TReqQuery;
 
     const dbProjections: unknown =
       typeof projectionsObj === "string"
@@ -41,9 +42,6 @@ export default async function handler(
         : projectionsObj;
     const dbFilter: Record<keyof INewUnitSchema, unknown> | null =
       typeof filterObj === "string" ? JSON.parse(filterObj) : null;
-
-    // print dbFilter
-    console.log("dbFilter: ", dbFilter);
 
     if (
       dbProjections &&
@@ -87,6 +85,10 @@ export default async function handler(
 
     if (errMsg) {
       throw new CustomError(errMsg, 500);
+    }
+
+    if (willGetOnlyNum) {
+      return response.status(200).json({ units: data?.length ?? 0 });
     }
 
     return response.status(200).json({ units: data });

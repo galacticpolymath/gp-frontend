@@ -5,7 +5,7 @@
 /* eslint-disable quotes */
 /* eslint-disable indent */
 
-import {
+import React, {
   useState,
   useRef,
   useEffect,
@@ -13,7 +13,6 @@ import {
   ReactNode,
   CSSProperties,
 } from "react";
-import PropTypes from "prop-types";
 import useLessonElementInView from "../../../customHooks/useLessonElementInView";
 import Image from "next/image";
 import Pill from "../../Pill";
@@ -40,14 +39,14 @@ export interface ILessonTileProps {
   id?: { id: string } | {};
 }
 
-const LessonTile = ({
+const LessonTile: React.FC<ILessonTileProps> = ({
   lessonTileUrl,
   imgContainerClassNameStr,
   imgStyle = { objectFit: "contain" },
   imgContainerStyle = { width: 150, height: 150 },
   Pill = null,
   id = {},
-}: ILessonTileProps) => {
+}) => {
   return (
     <div style={imgContainerStyle} className={imgContainerClassNameStr}>
       {Pill}
@@ -73,12 +72,12 @@ interface IDisplayLessonTileProps {
   id?: { id: string };
 }
 
-export const DisplayLessonTile = ({
+export const DisplayLessonTile: React.FC<IDisplayLessonTileProps> = ({
   status,
   imgContainerClassNameStr,
   lessonTileUrl,
   id,
-}: IDisplayLessonTileProps) => {
+}) => {
   const tileId = id ? { id } : {};
 
   if (status === "Beta") {
@@ -103,7 +102,11 @@ export const DisplayLessonTile = ({
   );
 };
 
-const TeachIt = (props: TeachItProps) => {
+const TeachIt: React.FC<TeachItProps> = (props) => {
+  useEffect(() => {
+    console.log("props, teachit: ", props);
+  });
+
   let {
     _sectionDots,
     SectionTitle,
@@ -112,6 +115,10 @@ const TeachIt = (props: TeachItProps) => {
     classroom,
     unitDur,
     unitPreface,
+    GdrivePublicID,
+    Title: unitTitle,
+    MediumTitle,
+    unitId,
   } = props;
   let Data = props?.Data ?? props;
   const [, setSectionDots] = _sectionDots;
@@ -163,9 +170,8 @@ const TeachIt = (props: TeachItProps) => {
       selectedEnvironment
     ]?.resources as IResource<ILessonForUI>[];
   }
-  const [selectedGradeResources, setSelectedGradeResources] = useState<ILink | null>(
-    allResources?.[0]?.links ?? ({} as ILink)
-  );
+  const [selectedGradeResources, setSelectedGradeResources] =
+    useState<ILink | null>(allResources?.[0]?.links ?? ({} as ILink));
   const handleOnChangeForNewUnitResources = (
     selectedGrade: IResource<INewUnitLesson>
   ) => {
@@ -174,17 +180,11 @@ const TeachIt = (props: TeachItProps) => {
   };
   // the above is based on the new schema
 
-  // TODO: will cease to be used when the new schema is implemented
   const [selectedGrade, setSelectedGrade] = useState(
     gradeVariations?.length
       ? gradeVariations[0]
       : ({} as IResource<ILessonForUI>)
   );
-  const handleOnChange = (selectedGrade: IResource<ILessonForUI>) => {
-    console.log("selectedGrade, hey there: ", selectedGrade);
-    // setSelectedGradeResources(selectedGrade.links as ILink);
-    // setSelectedGrade(selectedGrade);
-  };
 
   useEffect(() => {
     console.log("selectedGrade, sup there: ", selectedGrade);
@@ -253,6 +253,18 @@ const TeachIt = (props: TeachItProps) => {
     }
   }, []);
 
+  // the user clicks on lesson to copy
+  // todo: fx BUG: the wrong lesson folder is being presented onto the ui
+
+  const handleOnChange = (selectedGrade: unknown) => {
+    console.log("selectedGrade, hey there: ", selectedGrade);
+    const _selectedGrade = selectedGrade as
+      | IResource<INewUnitLesson<IItem>>
+      | IResource<ILessonForUI>;
+    setSelectedGrade(_selectedGrade);
+    setSelectedGradeResources(_selectedGrade.links);
+  };
+
   if (!Data) {
     return <div>No lessons to display.</div>;
   }
@@ -262,6 +274,7 @@ const TeachIt = (props: TeachItProps) => {
       ref={ref}
       setSelectedGrade={setSelectedGrade}
       setSelectedGradeResources={setSelectedGradeResources}
+      unitId={unitId}
       ForGrades={ForGrades}
       lessonDur={Data.lessonDur}
       lessonPreface={Data.lessonPreface}
@@ -276,14 +289,21 @@ const TeachIt = (props: TeachItProps) => {
       parts={parts}
       dataLesson={dataLesson}
       GradesOrYears={GradesOrYears}
+      GdrivePublicID={GdrivePublicID}
+      Title={unitTitle}
+      MediumTitle={MediumTitle}
       resources={resources}
+      handleOnChange={handleOnChange}
     />
   ) : (
     <TeachItUI<INewUnitLesson, IResource<ILessonForUI>>
       ref={ref}
+      handleOnChange={handleOnChange}
       setSelectedGrade={setSelectedGrade}
       ForGrades={ForGrades}
+      MediumTitle={MediumTitle}
       lessonDur={unitDur}
+      unitId={unitId}
       lessonPreface={unitPreface}
       SectionTitle={SectionTitle}
       _sectionDots={_sectionDots}
@@ -298,14 +318,10 @@ const TeachIt = (props: TeachItProps) => {
       dataLesson={dataLesson}
       GradesOrYears={GradesOrYears}
       resources={resources}
+      GdrivePublicID={GdrivePublicID}
+      Title={unitTitle}
     />
   );
-};
-
-TeachIt.propTypes = {
-  index: PropTypes.number,
-  SectionTitle: PropTypes.string,
-  Data: PropTypes.object,
 };
 
 export default TeachIt;

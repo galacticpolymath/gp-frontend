@@ -130,7 +130,7 @@ export type TFeaturedMultimediaForUI = Partial<{
 
 export interface IUnit extends Omit<IUnitOld, "LsnStatuses"> {}
 
-interface INewUnitSchema<TSection extends ISections = ISections, TFeaturedMultimedia extends IFeaturedMultimedia = TFeaturedMultimediaForUI> {
+export interface INewUnitSchema<TSection extends ISections = ISections, TFeaturedMultimedia extends IFeaturedMultimedia = TFeaturedMultimediaForUI> {
   _id: string | null;
   numID: number | null;
   ShortTitle: string | null;

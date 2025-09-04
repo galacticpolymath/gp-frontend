@@ -117,7 +117,49 @@ const LessonsSecsNavDots = ({
   const [sectionId, setSectionId] = useState("");
 
   const handleDotClick = (sectionId: string) => {
+    clearTimeout(timerForHandleDotClick);
     console.log("handleDotClick, yo there!");
+    const viewPortWidth = Math.max(
+      document.documentElement.clientWidth || 0,
+      window.innerWidth || 0
+    );
+
+    if (viewPortWidth >= 768) {
+      setWillScrollElemIntoView(true);
+      setSectionDots((sectionDots) => {
+        return {
+          ...sectionDots,
+          clickedSectionId: sectionId,
+          dots: sectionDots.dots.map((sectionDot) => {
+            return {
+              ...sectionDot,
+              willShowTitle: true,
+            };
+          }),
+        };
+      });
+      timerForHandleDotClick = setTimeout(() => {
+        setSectionDots((sectionDots) => {
+          return {
+            clickedSectionId: sectionId,
+            dots: sectionDots.dots.map((dot) => {
+              if (dot.sectionDotId === `sectionDot-${sectionId}`) {
+                return {
+                  ...dot,
+                  isInView: true,
+                };
+              }
+              return {
+                ...dot,
+                isInView: false,
+              };
+            }),
+          };
+        });
+      }, 1000);
+      return;
+    }
+
     setIsScrollListenerOn(false);
     setSectionId(sectionId);
     setWillScrollElemIntoView(true);
@@ -186,28 +228,36 @@ const LessonsSecsNavDots = ({
       clearTimeout(timerForGoToSectionFn);
       scrollSectionIntoView(sectionDots.clickedSectionId);
       setWillScrollElemIntoView(false);
-      setSectionDots((sectionDots) => {
-        return {
-          clickedSectionId: sectionId,
-          dots: sectionDots.dots.map((dot) => {
-            if (dot.sectionDotId === `sectionDot-${sectionId}`) {
+
+      const viewPortWidth = Math.max(
+        document.documentElement.clientWidth || 0,
+        window.innerWidth || 0
+      );
+
+      if (viewPortWidth >= 768) {
+        setSectionDots((sectionDots) => {
+          return {
+            clickedSectionId: sectionId,
+            dots: sectionDots.dots.map((dot) => {
+              if (dot.sectionDotId === `sectionDot-${sectionId}`) {
+                return {
+                  ...dot,
+                  isInView: true,
+                };
+              }
+
               return {
                 ...dot,
-                isInView: true,
+                isInView: false,
               };
-            }
+            }),
+          };
+        });
 
-            return {
-              ...dot,
-              isInView: false,
-            };
-          }),
-        };
-      });
-
-      timerForGoToSectionFn = setTimeout(() => {
-        setIsScrollListenerOn(true);
-      }, 1_000);
+        timerForHandleDotClick = setTimeout(() => {
+          setIsScrollListenerOn(true);
+        }, 1_000);
+      }
     }
   }, [willScrollElemIntoView]);
 

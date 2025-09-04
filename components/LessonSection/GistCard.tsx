@@ -1,4 +1,6 @@
-import React from 'react';
+/* eslint-disable quotes */
+
+import React, { useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import RichText from '../RichText';
@@ -21,7 +23,7 @@ type TProps = {
   className?: string;
 };
 
-const GistCard = ({
+const GistCard: React.FC<TProps> = ({
   LearningSummary,
   standards,
   TargetSubject,
@@ -33,7 +35,7 @@ const GistCard = ({
   areTargetStandardsValid,
   TargetStandardsCodes,
   className,
-}: TProps) => {
+}) => {
   const handleLinkClick = (
     event: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
     descriptor: Omit<ITargetStandardsCode, 'set'>
@@ -70,6 +72,18 @@ const GistCard = ({
       }, 3500);
       return;
     }
+  };
+
+  const learningStandardsRef = useRef<HTMLElement | null>(null);
+
+  const handleEpauletteClick = () => {
+    const learningStandardsCollapsibleBtn = document.getElementById("learning_standards");
+
+    if(!learningStandardsRef.current){
+      learningStandardsRef.current = learningStandardsCollapsibleBtn;
+    }
+
+    learningStandardsRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
   };
 
   return (
@@ -179,12 +193,12 @@ const GistCard = ({
               SteamEpaulette_vert={SteamEpaulette_vert}
             />
           ) : (
-            <Link passHref href="#learning_standards">
+            <button onClick={handleEpauletteClick} className='no-btn-styles underline-on-hover text-primary'>
               <SubjectBreakDown
                 SteamEpaulette={SteamEpaulette}
                 SteamEpaulette_vert={SteamEpaulette_vert}
               />
-            </Link>
+            </button>
           ))}
       </section>
     </div>

@@ -7,6 +7,8 @@ import { TUseStateReturnVal } from "../types/global";
 import {
   IAgeGroupsSelection,
   TAboutUserForm,
+  TUserSchemaForClient,
+  TUserSchemaV2,
 } from "../backend/models/User/types";
 
 /**
@@ -46,10 +48,13 @@ export type TUserAccount = Omit<
 };
 export type TAboutUserFormForUI = {
   isTeacherConfirmed: boolean;
-} & TAboutUserForm<Map<string, string>>;
+} & TAboutUserForm<Map<string, string>> &
+  Pick<TUserSchemaForClient, "isGpPlusMember">;
 
 export const userAccountDefault: TAboutUserFormForUI = {
   schoolTypeDefaultSelection: null,
+  outsetaAccountEmail: "",
+  isGpPlusMember: false,
   schoolTypeOther: null,
   siteVisitReasonsCustom: null,
   subjectsTaughtCustom: undefined,
@@ -72,7 +77,11 @@ export const userAccountDefault: TAboutUserFormForUI = {
 export type TUserProviderValue = {
   _aboutUserForm: TUseStateReturnVal<TAboutUserFormForUI>;
   _isUserTeacher: TUseStateReturnVal<boolean>;
+  _didAttemptRetrieveUserData: TUseStateReturnVal<boolean>;
   _accountForm: TUseStateReturnVal<TAccountForm>;
+  _isGpPlusMember: TUseStateReturnVal<boolean>;
+  _isCopyUnitBtnDisabled: TUseStateReturnVal<boolean>;
+  _userLatestCopyUnitFolderId: TUseStateReturnVal<string | null>;
 };
 export interface TAccountForm {
   firstName: string;
@@ -84,16 +93,33 @@ export const UserContext = createContext<TUserProviderValue | null>(null);
 
 export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const [aboutUserForm, setAboutUserForm] = useState(userAccountDefault);
+  const [isCopyUnitBtnDisabled, setIsCopyUnitBtnDisabled] = useState(true);
   const [accountForm, setAccountForm] = useState({
     firstName: "",
     lastName: "",
     isOnMailingList: true,
   });
+  const [userLatestCopyUnitFolderId, setUserLatestCopyUnitFolderId] = useState<
+    string | null
+  >(null);
+  const [didAttemptRetrieveUserData, setDidAttemptRetrieveUserData] =
+    useState(false);
   const [isUserTeacher, setIsUserTeacher] = useState(false);
+  const [isGpPlusMember, setIsGpPlusMember] = useState(false);
   const value: TUserProviderValue = {
     _aboutUserForm: [aboutUserForm, setAboutUserForm],
     _isUserTeacher: [isUserTeacher, setIsUserTeacher],
     _accountForm: [accountForm, setAccountForm],
+    _isGpPlusMember: [isGpPlusMember, setIsGpPlusMember],
+    _isCopyUnitBtnDisabled: [isCopyUnitBtnDisabled, setIsCopyUnitBtnDisabled],
+    _didAttemptRetrieveUserData: [
+      didAttemptRetrieveUserData,
+      setDidAttemptRetrieveUserData,
+    ],
+    _userLatestCopyUnitFolderId: [
+      userLatestCopyUnitFolderId,
+      setUserLatestCopyUnitFolderId,
+    ],
   };
 
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;

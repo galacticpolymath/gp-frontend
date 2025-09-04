@@ -18,7 +18,7 @@ import { addUserToEmailList } from '../services/emailServices';
 import User from '../models/User/index';
 
 const VALID_FORMS = ['createAccount', 'login'];
-export const cache = new NodeCache({ stdTTL: 100 });
+export const cache = new NodeCache({ stdTTL: 60 * 60 * 3 });
 
 /** @return { import("next-auth/adapters").Adapter } */
 export default function MyAdapter() {
@@ -148,6 +148,11 @@ export const authOptions = {
     GoogleProvider({
       clientId: process.env.AUTH_CLIENT_ID,
       clientSecret: process.env.AUTH_CLIENT_SECRET,
+      authorization: {
+        params: {
+          prompt: "select_account",
+        },
+      }
     }),
     CredentialsProvider({
       async authorize(credentials) {
@@ -287,12 +292,18 @@ export const authOptions = {
       try {
         const { token, secret } = param;
         const { email, name, picture } = token?.payload ?? token;
+        const targetUser = await getUserByEmail(email);
+
+        if (!targetUser) {
+          throw new Error("The target user doesn't exist.");
+        }
+
         const canUserWriteToDb = await getCanUserWriteToDb(email);
 
         // get the user from the db, to get their first name last name, image
         const allowedRoles = canUserWriteToDb ? ['user', 'dbAdmin'] : ['user'];
-        const refreshToken = await signJwt({ email, roles: allowedRoles, name, picture }, secret, '1 day');
-        const accessToken = await signJwt({ email, roles: allowedRoles, name, picture }, secret, '12hr');
+        const refreshToken = await signJwt({ email, roles: allowedRoles, name, picture, userId: targetUser._id }, secret, '1 day');
+        const accessToken = await signJwt({ email, roles: allowedRoles, name, picture, userId: targetUser._id }, secret, '12hr');
 
         if (!token?.payload && canUserWriteToDb) {
           console.log("will save jwt to db.");
@@ -316,6 +327,12 @@ export const authOptions = {
 
       return decodedToken;
     },
+  },
+  events: {
+    signOut: async (param) => {
+      console.log('param.session, signout: ', param)
+      cache.del(param.token.email);
+    }
   },
   callbacks: {
     async signIn(param) {
@@ -500,10 +517,10 @@ export const authOptions = {
        * @type {{ email: string, roles: string[], name: { first: string, last: string }, picture: string }}
        */
       let { email, roles, name, picture } = token.payload;
-      /** @type { import('../models/User').TUserSchema } */
       const targetUser = cache.get(email) ?? {};
       let isTeacher = false;
       let occupation = null;
+      let userId = targetUser?._id ?? null;
 
       if (targetUser && targetUser.occupation && targetUser.name) {
         occupation = targetUser.occupation;
@@ -528,6 +545,7 @@ export const authOptions = {
         occupation = dbUser.occupation ?? null;
         name = { first: dbUser.firstName ?? dbUser?.name?.first, last: dbUser.lastName ?? dbUser?.name?.last } ?? name;
         isTeacher = dbUser.isTeacher;
+        userId = dbUser._id;
 
         delete dbUser.password;
 
@@ -550,6 +568,7 @@ export const authOptions = {
       session.refresh = refreshToken;
       session.user = {
         email: email,
+        userId: userId,
         name: name,
         image: picture,
         isTeacher,

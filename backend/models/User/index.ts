@@ -1,6 +1,6 @@
 /* eslint-disable quotes */
 import Mongoose from "mongoose";
-import { IUserSchema, TUserSchemaV2 } from "./types";
+import { ILessonGDriveId, IUnitGDriveLesson, IUserSchema, TUserSchemaV2 } from "./types";
 
 class StringValidator {
   validate: (val: string) => boolean;
@@ -90,11 +90,28 @@ export const UserSchemaDeprecatedV1 = new Schema<IUserSchema>(
   }
 );
 
+const LessonGDriveId = new Schema<ILessonGDriveId>({
+    lessonNum: String,
+    lessonDriveId: String,
+    lessonSharedGDriveFolderId: String,
+    gradesRange: String
+  }, {
+  _id: false
+});
+const UnitGDriveLessons = new Schema<IUnitGDriveLesson>({
+  unitDriveId: String,
+  unitId: String,
+  lessonDriveIds: [LessonGDriveId],
+  gmail: String
+}, {
+  _id: false
+});
 
 export const UserSchema = new Schema<TUserSchemaV2>(
   {
     _id: { type: String, required: true },
-    email: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
+    outsetaAccountEmail: { type: String, unique: true },
     mailingListConfirmationEmailId: { type: String, required: false },
     password: {
       hash: { type: String, required: false },
@@ -102,6 +119,8 @@ export const UserSchema = new Schema<TUserSchemaV2>(
       iterations: { type: Number, required: false },
     },
     provider: String,
+    gpPlusDriveFolderId: String,
+    unitGDriveLessons: [UnitGDriveLessons],
     isTeacher: { type: Boolean, required: true, default: () => false },
     providerAccountId: String,
     emailVerified: { type: Date, required: false },
@@ -119,10 +138,10 @@ export const UserSchema = new Schema<TUserSchemaV2>(
           "Last name is required and must be a string."
         ),
       },
-    picture: { type: String, required: false },
-    occupation: { type: String, required: false },
-    country: { type: String, required: false },
-    zipCode: { type: String, required: false },
+    picture: String,
+    occupation: String,
+    country: String,
+    zipCode: String,
     institution: String,
     gradesType: String, 
     gradesTaught: [String], 
@@ -133,12 +152,13 @@ export const UserSchema = new Schema<TUserSchemaV2>(
     subjectsTaughtDefault: [String],
     subjectsTaughtCustom: [String],
     classSize: Number,
+    gdriveAuthEmails: [String],
     isNotTeaching: Boolean,
     siteVisitReasonsDefault: [String],
     siteVisitReasonsCustom: String,
     roles: { type: [String], required: true },
     totalSignIns: { type: Number, required: false, default: () => 0 },
-    lastSignIn: { type: Date, required: false },
+    lastSignIn: Date,
   },
   {
     timestamps: true,

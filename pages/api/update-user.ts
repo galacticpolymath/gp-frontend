@@ -65,6 +65,8 @@ export default async function handler(request: NextApiRequest, response: NextApi
       true
     );
 
+    console.log("request.body: ", request.body);
+    
     if (!wasConnectionSuccessful) {
       throw new CustomError("Failed to connect to the database.", 500);
     }
@@ -78,15 +80,19 @@ export default async function handler(request: NextApiRequest, response: NextApi
       const { wasSuccessful } = await addUserToEmailList(payload.email, clientUrl);
 
       console.log("Was user added to mailing list: ", wasSuccessful);
+
+      return response.status(200).json({ msg: "User added to mailing list.", wasSuccessful });
     } else if (willSendEmailListingSubConfirmationEmail === false) {
       console.log("will delete the user  from the mailing list...");
       const { wasSuccessful } = await deleteUserFromMailingList(payload.email as string);
 
       console.log("Was user successfully deleted? ", wasSuccessful);
+
+      return response.status(200).json({ msg: "User deleted from mailing list.", wasSuccessful });
     }
 
     if (willUpdateMailingListStatusOnly) {
-      return response.status(200).json({ msg: "User updated successfully." });
+      return response.status(200).json({ msg: "User updated successfully.", wasSuccessful: true });
     }
 
     const { updatedUser: updatedUserFromDb, wasSuccessful } = await updateUser(
@@ -101,7 +107,7 @@ export default async function handler(request: NextApiRequest, response: NextApi
 
     cache.set(payload.email, updatedUserFromDb);
 
-    return response.status(200).json({ msg: "User updated successfully." });
+    return response.status(200).json({ msg: "User updated successfully.", wasSuccessful });
   } catch (error: any) {
     console.error(
       "An error has occurred, failed to update user. Reason: ",
@@ -111,6 +117,6 @@ export default async function handler(request: NextApiRequest, response: NextApi
 
     return response
       .status(code ?? 500)
-      .json({ msg: message ?? "Failed to update user." });
+      .json({ msg: message ?? "Failed to update user.", wasSuccessful: false });
   }
 }

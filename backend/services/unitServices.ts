@@ -15,7 +15,8 @@ import moment from "moment";
 import { nanoid } from "nanoid";
 import { getLiveUnits } from "../../shared/fns";
 import { UNITS_URL_PATH } from "../../shared/constants";
-import dbWebApps, { TWebAppForUI } from "../models/WebApp";
+import { TWebAppForUI } from "../models/WebApp";
+import dbWebApps from "../models/WebApp";
 
 const insertUnit = async (unit: INewUnitSchema) => {
   try {
@@ -207,7 +208,7 @@ const updateUnit = async (
     if (customUpdate) {
       console.log("Making a custom update.");
 
-      const result = await Unit.updateMany(filterObj, customUpdate).lean();
+      const result = await Unit.updateMany(filterObj, customUpdate);
 
       if (result.matchedCount === 0) {
         return { errMsg: "No matching units were found in the database." };
@@ -220,7 +221,7 @@ const updateUnit = async (
 
     const { modifiedCount, matchedCount } = await Unit.updateMany(filterObj, {
       $set: updatedProps,
-    }).lean();
+    });
 
     if (matchedCount === 0) {
       return { errMsg: "No matching units were found in the database." };
@@ -527,8 +528,12 @@ const getIsUnitNew = (releaseDate: Date, now: number) => {
   return isNew;
 };
 
-const filterInShowableUnits = (units: INewUnitSchema[], nowMs: number) => {
+const filterInShowableUnits = (units: INewUnitSchema[], nowMs: number, willGetUnitMetaData = true) => {
   const liveUnits = getLiveUnits(units).filter((unit) => unit?.ReleaseDate);
+
+  if(!willGetUnitMetaData){
+    return liveUnits as ILiveUnit[];
+  }
 
   return liveUnits.map((unit) => {
     const individualLessonsNum =

@@ -4,6 +4,12 @@
   }
 }
 
+.sign-up-header-container{
+  @media (min-width: 1200px) {
+    height: 70px;
+  }
+}
+
 .create-account-toggle-btn-container {
   @media (min-width: 577px) {
     min-width: 350px;

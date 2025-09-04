@@ -21,7 +21,7 @@ export type TDbWebApp = Pick<
   | "webAppLink"
 > &
   TDbWebAppProps;
-let webApp = models.webApps as Model<TDbWebApp, {}, {}, {}, any, any>;
+let webApp = models.webapps as Model<TDbWebApp, {}, {}, {}, any, any>;
 
 if (!webApp) {
   const WebAppSchema = new Schema<TDbWebApp>({
@@ -35,7 +35,7 @@ if (!webApp) {
     description: String,
   });
 
-  webApp = model("webApps", WebAppSchema);
+  webApp = model("webapps", WebAppSchema);
 }
 
 export default webApp;

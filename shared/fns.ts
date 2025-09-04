@@ -1,7 +1,7 @@
 import moment from "moment";
 import { INewUnitSchema } from "../backend/models/Unit/types/unit";
-import { IUnitForUnitsPg, TLiveUnit } from "../types/global";
-import { STATUSES_OF_SHOWABLE_LESSONS } from "../globalVars";
+import { ILocalStorage, IUnitForUnitsPg, TLiveUnit } from "../types/global";
+import { GOOGLE_DRIVE_PROJECT_CLIENT_ID, STATUSES_OF_SHOWABLE_LESSONS } from "../globalVars";
 
 export const random = (min: number, max: number) => Math.floor(Math.random() * (max - min)) + min;
 
@@ -128,3 +128,148 @@ export const getTotalUnitLessons = (unit: INewUnitSchema) => {
 
   return unitObjUpdated;
 };
+
+export const removeLocalStorageItem = (key: keyof ILocalStorage) => {
+    localStorage.removeItem(key);
+}
+
+export const setLocalStorageItem = <TKey extends keyof ILocalStorage,
+  TVal extends ILocalStorage[TKey]>(key: TKey, val: TVal) => {
+    localStorage.setItem(key, JSON.stringify(val)); 
+}
+
+export const getLocalStorageItem = <TKey extends keyof ILocalStorage,
+  TVal extends ILocalStorage[TKey]>(key: TKey): TVal | null => {
+    try {
+      if(typeof localStorage === "undefined") {
+        return null;
+      }
+
+      const parsableVal = localStorage.getItem(key);
+
+      if (!parsableVal) {
+        return null;
+      }
+
+      return JSON.parse(parsableVal) as TVal; 
+    } catch(error){
+      console.error("Failed to retrieve the target item. Reason: ", error);
+
+      return null;
+    }
+}
+
+export const createGDriveAuthUrl = () => {
+  const authUrl = new URL("https://accounts.google.com/o/oauth2/auth");
+  // protects against CSRF attacks
+  const state = Math.random().toString(36).substring(7);
+  const _redirectUri = new URL(`${window.location.origin}/google-drive-auth-result`);
+
+
+  console.log("_redirectUri: ", _redirectUri.href);
+
+  const scopes = "https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/userinfo.email";
+  const params = [
+    ["state", state],
+    [
+      "client_id",
+      GOOGLE_DRIVE_PROJECT_CLIENT_ID,
+    ],
+    ["redirect_uri", _redirectUri.href],
+    ["scope", scopes],
+    ["response_type", "code"],
+    ["access_type", "offline"],
+    ["prompt", "consent"],
+  ];
+
+  for (const [key, val] of params) {
+    authUrl.searchParams.append(key.trim(), val.trim());
+  }
+
+  return authUrl.href;
+}
+
+const getIsWithinTargetElements = (selectorName: Set<string>, targetAttributeVal: string) => {
+  const selectorNames = Array.from(selectorName);
+  let isWithinElement = false;
+
+  for (const selectorName of selectorNames) {
+    if(selectorName.includes(targetAttributeVal)){
+      isWithinElement = true;
+
+      return isWithinElement;
+    }
+  }
+
+
+  return isWithinElement;
+}
+
+export const getIsWithinParentElement = (
+  element: HTMLElement,
+  selectorName: string | Set<string>,
+  attributeType: "className" | "id" = "className",
+  comparisonType: "includes" | "strictEquals"
+): boolean => {
+  if (
+    !element?.parentElement ||
+    (element?.parentElement &&
+      attributeType in element.parentElement &&
+      element?.parentElement[attributeType] === undefined)
+  ) {
+    console.log("Reached end of document.");
+    return false;
+  }
+
+  let isWithinParentElement = false;
+
+  // if selectorName is a Set string, then using the value for attributeType query, check if the value appears in the array
+
+  if (comparisonType === "includes" && element.parentElement[attributeType]) {
+    const attributeVal = element.parentElement[attributeType];
+    const isStr = typeof element.parentElement?.[attributeType] === 'string';
+    isWithinParentElement =
+      typeof selectorName === "string"
+        ? isStr ? element.parentElement?.[attributeType]?.includes(selectorName) : false
+        : getIsWithinTargetElements(selectorName, attributeVal);
+  } else if (
+    comparisonType === "strictEquals" &&
+    element.parentElement[attributeType]
+  ) {
+    const attributeVal = element.parentElement[attributeType];
+    isWithinParentElement =
+      element.parentElement[attributeType] === selectorName;
+    isWithinParentElement =
+      typeof selectorName === "string"
+        ? attributeVal === selectorName
+        : selectorName.has(attributeVal);
+  }
+
+  if (
+    element?.parentElement != null &&
+    typeof element?.parentElement === "object" &&
+    typeof element.parentElement[attributeType] === "string" &&
+    isWithinParentElement
+  ) {
+    return true;
+  }
+
+  return getIsWithinParentElement(
+    element.parentElement,
+    selectorName,
+    attributeType,
+    comparisonType
+  );
+}
+export const getBillingTerm = (billingTermNum: 1 | 2) => billingTermNum === 1 ? "Monthly" : "Yearly";
+
+export const calculatePercentSaved = (
+  expensivePlanPerMonth: number,
+  cheapPlanPerMonth: number
+) => {
+  return Math.floor(
+    ((expensivePlanPerMonth * 12 - cheapPlanPerMonth * 12) /
+      (expensivePlanPerMonth * 12)) *
+      100
+  );
+}

@@ -3,13 +3,14 @@ import { useEffect, useState } from "react";
 import { IUserSession } from "../types/global";
 import axios from "axios";
 import {
-  TUserAccount,
   userAccountDefault,
   useUserContext,
 } from "../providers/UserProvider";
-import { TAboutUserForm } from "../backend/models/User/types";
+import { IUserSchema, TUserSchemaForClient, TUserSchemaV2 } from "../backend/models/User/types";
 
-export const getAboutUserFormForClient = (userAccount: TUserAccount) => {
+export const getAboutUserFormForClient = (
+  userAccount: TUserSchemaForClient<TUserSchemaV2 & IUserSchema>
+) => {
   let userAccountForClient = { ...userAccountDefault };
   const {
     reasonsForSiteVisit,
@@ -19,11 +20,12 @@ export const getAboutUserFormForClient = (userAccount: TUserAccount) => {
     zipCode,
     country,
     occupation,
+    gpPlusSubscription,
+    isGpPlusMember,
     isTeacher,
     name,
     firstName,
     lastName,
-    subjectsTaughtCustom,
     referredByDefault,
     referredByOther,
     schoolTypeDefaultSelection,
@@ -31,6 +33,7 @@ export const getAboutUserFormForClient = (userAccount: TUserAccount) => {
     classSize,
     subjectsTaughtDefault,
     institution,
+    subjectsTaughtCustom,
     siteVisitReasonsCustom,
     siteVisitReasonsDefault,
     isNotTeaching,
@@ -38,10 +41,27 @@ export const getAboutUserFormForClient = (userAccount: TUserAccount) => {
     gradesType,
   } = userAccount;
 
+  if (reasonsForSiteVisit && Object.entries(reasonsForSiteVisit).length > 0) {
+    const reasonsForSiteVisitMap = new Map(
+      Object.entries(reasonsForSiteVisit)
+    ) as Map<string, string>;
+    userAccountForClient = {
+      ...userAccountForClient,
+      reasonsForSiteVisit: reasonsForSiteVisitMap,
+    };
+  }
+
   if (referredByOther) {
     userAccountForClient = {
       ...userAccountForClient,
       referredByOther,
+    };
+  }
+
+  if (typeof isGpPlusMember === "boolean") {
+    userAccountForClient = {
+      ...userAccountForClient,
+      isGpPlusMember,
     };
   }
 
@@ -59,11 +79,25 @@ export const getAboutUserFormForClient = (userAccount: TUserAccount) => {
     };
   }
 
-  if (classSize) {
+  userAccountForClient = {
+    ...userAccountForClient,
+    isNotTeaching: !!isNotTeaching,
+  };
+
+  if (typeof classSize === "number") {
     userAccountForClient = {
       ...userAccountForClient,
       classSize,
     };
+  }
+
+  if (
+    typeof classSize === "number" &&
+    typeof isNotTeaching === "undefined" &&
+    typeof classroomSize === "object" &&
+    classroomSize
+  ) {
+    userAccountForClient.classroomSize = classroomSize;
   }
 
   if (subjectsTaughtDefault) {
@@ -75,7 +109,7 @@ export const getAboutUserFormForClient = (userAccount: TUserAccount) => {
 
   console.log("institution, sup there: ", institution);
 
-  if (institution) {
+  if (institution || institution == null) {
     userAccountForClient = {
       ...userAccountForClient,
       institution,
@@ -103,11 +137,6 @@ export const getAboutUserFormForClient = (userAccount: TUserAccount) => {
     };
   }
 
-  userAccountForClient = {
-    ...userAccountForClient,
-    isNotTeaching: !!isNotTeaching,
-  };
-
   if (gradesTaught) {
     userAccountForClient = {
       ...userAccountForClient,
@@ -129,26 +158,44 @@ export const getAboutUserFormForClient = (userAccount: TUserAccount) => {
     };
   }
 
-  if (reasonsForSiteVisit && Object.entries(reasonsForSiteVisit).length > 0) {
-    const reasonsForSiteVisitMap = new Map(Object.entries(reasonsForSiteVisit));
-    userAccountForClient.reasonsForSiteVisit = reasonsForSiteVisitMap;
-  }
-
   if (subjects && Object.entries(subjects).length > 0) {
     const subjectsTeaching = new Map(Object.entries(subjects));
-    userAccountForClient.subjects = subjectsTeaching;
+    userAccountForClient = {
+      ...userAccountForClient,
+      subjects: subjectsTeaching as Map<string, string>,
+    };
   } else if (subjects && Object.entries(subjects).length == 0) {
     userAccountForClient.subjects = userAccountDefault.subjects;
   }
 
-  if (gradesOrYears && Object.entries(gradesOrYears).length > 0) {
+  if (
+    gradesOrYears &&
+    Object.entries(gradesOrYears).length > 0 &&
+    gradesOrYears.selection
+  ) {
     userAccountForClient.gradesOrYears = gradesOrYears;
-  } else if (gradesOrYears && Object.entries(gradesOrYears).length === 0) {
-    userAccountForClient.gradesOrYears = userAccountDefault.gradesOrYears;
+  } else if (
+    gradesOrYears &&
+    (Object.entries(gradesOrYears).length === 0 ||
+      !gradesOrYears.selection ||
+      !gradesOrYears?.ageGroupsTaught?.length)
+  ) {
+    userAccountForClient.gradesOrYears = {
+      selection: "U.S.",
+      ageGroupsTaught: [],
+    };
   }
 
-  if (classroomSize) {
-    userAccountForClient.classroomSize = classroomSize;
+  if (
+    userAccount &&
+    (Object.entries(userAccount).length === 0 ||
+      !gradesOrYears?.selection ||
+      !gradesOrYears?.ageGroupsTaught?.length)
+  ) {
+    userAccount.gradesOrYears = {
+      selection: "U.S.",
+      ageGroupsTaught: [],
+    };
   }
 
   if (zipCode) {
@@ -169,27 +216,48 @@ export const getAboutUserFormForClient = (userAccount: TUserAccount) => {
       firstName: firstName ?? name?.first,
       lastName: lastName ?? name?.first,
     };
-  } else if (name?.first && name?.last) {
-    userAccountForClient.name = {
-      first: name.first,
-      last: name.last,
-    };
   }
+
+  console.log("userAccountForClient: ", userAccountForClient);
 
   userAccountForClient.isTeacher = isTeacher ?? false;
 
-  return userAccountForClient;
+  return { userAccountForClient, gpPlusSubscription };
 };
+
+const getUserAccountData = async (token: string) => {
+  try {
+    const paramsAndHeaders = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    const response = await axios.get<
+      TUserSchemaForClient<TUserSchemaV2 & IUserSchema>
+    >("/api/get-user-account-data", paramsAndHeaders);
+
+    console.log("userAccount data: ", response.data);
+
+    if (response.status !== 200) {
+      throw new Error("Failed to get 'AboutUser' form for the target user.");
+    }
+
+    return response.data;
+  } catch(error){
+    console.error("Error in getUserAccountData: ", error);
+  }
+}
 
 export const useGetAboutUserForm = (willGetData: boolean = true) => {
   const { status, data } = useSession();
   const { _aboutUserForm } = useUserContext();
-  const [, setAboutUserForm] = _aboutUserForm;
+  const [aboutUserForm, setAboutUserForm] = _aboutUserForm;
+  const [gpPlusSub, setGpPlusSub] = useState<TUserSchemaForClient["gpPlusSubscription"] | null>(null);
   const { user, token } = (data ?? {}) as IUserSession;
   const [isRetrievingUserData, setIsRetrievingUserData] = useState(true);
 
   useEffect(() => {
-    if (!willGetData) {
+    if (!willGetData && Object.keys(aboutUserForm).length) {
       return;
     }
 
@@ -201,10 +269,10 @@ export const useGetAboutUserForm = (willGetData: boolean = true) => {
               Authorization: `Bearer ${token}`,
             },
           };
-          const response = await axios.get<TAboutUserForm>(
-            "/api/get-user-account-data",
-            paramsAndHeaders
-          );
+          
+          const response = await axios.get<
+            TUserSchemaForClient<TUserSchemaV2 & IUserSchema>
+          >("/api/get-user-account-data", paramsAndHeaders);
 
           console.log("userAccount data: ", response.data);
 
@@ -224,6 +292,8 @@ export const useGetAboutUserForm = (willGetData: boolean = true) => {
             zipCode,
             country,
             occupation,
+            gpPlusSubscription,
+            isGpPlusMember,
             isTeacher,
             name,
             firstName,
@@ -243,6 +313,10 @@ export const useGetAboutUserForm = (willGetData: boolean = true) => {
             gradesType,
           } = userAccount;
 
+          if(gpPlusSubscription) {
+            setGpPlusSub(gpPlusSubscription);
+          }
+
           if (
             reasonsForSiteVisit &&
             Object.entries(reasonsForSiteVisit).length > 0
@@ -260,6 +334,13 @@ export const useGetAboutUserForm = (willGetData: boolean = true) => {
             userAccountForClient = {
               ...userAccountForClient,
               referredByOther,
+            };
+          }
+
+          if (typeof isGpPlusMember === "boolean") {
+            userAccountForClient = {
+              ...userAccountForClient,
+              isGpPlusMember,
             };
           }
 
@@ -444,5 +525,6 @@ export const useGetAboutUserForm = (willGetData: boolean = true) => {
     status,
     data,
     token,
-  };
+    _gpPlusSub: [gpPlusSub, setGpPlusSub],
+  } as const;
 };

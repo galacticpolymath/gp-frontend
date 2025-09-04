@@ -7,6 +7,9 @@ import { findMailingListConfirmationsByEmails } from "../../backend/services/mai
 import {
     getUsers,
 } from "../../backend/services/userServices";
+import {
+    getCopyFolderJobsOfUsers,
+} from "../../backend/services/copyUnitJobResultServices";
 import { connectToMongodb } from "../../backend/utils/connection";
 
 export const config = {
@@ -128,7 +131,9 @@ export default async function handler(request, response) {
             });
         }
 
-        if (errMsg || !users) {
+        const usersWithCopyUnitJobResults = await getCopyFolderJobsOfUsers(users);
+
+        if (errMsg || !usersWithCopyUnitJobResults) {
             return response
                 .status(500)
                 .json({ errMsg: errMsg ?? "Failed to retrieve all users." });
@@ -139,7 +144,7 @@ export default async function handler(request, response) {
         }
 
         return response.status(200).json({
-            users,
+            users: usersWithCopyUnitJobResults,
         });
     } catch (error) {
         console.error(

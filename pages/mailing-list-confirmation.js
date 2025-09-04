@@ -59,7 +59,7 @@ const MailingListConfirmation = () => {
       : getConfirmationMailListingId();
   }, []);
   const mailListConfirmationIdKey = confirmationMaliingListId ?? "";
-  const { setCookie, cookies } = useCustomCookies([mailListConfirmationIdKey]);
+  const { setAppCookie, cookies } = useCustomCookies([mailListConfirmationIdKey]);
   const [
     isRetrievingUserMailingListStatus,
     setIsRetrievingUserMailingListStatus,
@@ -210,7 +210,7 @@ const MailingListConfirmation = () => {
     } finally {
       setIsRetrievingUserMailingListStatus(false);
       wasStatusRetrievalCompleted.current = true;
-      setCookie(confirmationMaliingListId, isOnMailingList);
+      setAppCookie(confirmationMaliingListId, isOnMailingList);
     }
   };
 

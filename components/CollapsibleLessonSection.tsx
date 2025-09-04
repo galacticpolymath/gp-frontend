@@ -22,7 +22,9 @@ interface CollapsibleLessonSectionProps {
   SectionTitleClassName?: string;
   SectionTitleId?: string;
   className?: string;
+  btnId?: string;
   children: ReactElement;
+  sectionBanner?: ReactElement | null;
   initiallyExpanded?: boolean;
   accordionId?: string;
   _sectionDots?: TUseStateReturnVal<ISectionDots>;
@@ -33,21 +35,31 @@ interface CollapsibleLessonSectionProps {
   accordionStyleObj?: React.CSSProperties;
 }
 
-const CollapsibleLessonSection = ({
+const CollapsibleLessonSection: React.FC<CollapsibleLessonSectionProps> = ({
   SectionTitle = "",
   className = "",
   children,
   initiallyExpanded = false,
+  sectionBanner = null,
   accordionId,
   _sectionDots,
+  btnId,
   SectionTitleId,
   accordionChildrenClasses = "",
   highlighted = false,
   scrollToTranslateVal = "translateY(-90px)",
   SectionTitleClassName = "",
   accordionStyleObj = {},
-}: CollapsibleLessonSectionProps) => {
+}) => {
   const ref = useRef<HTMLHeadingElement>(null);
+  let btnAttributes = {};
+
+  if (btnId) {
+    btnAttributes = {
+      id: btnId,
+    };
+  }
+
   const router = useRouter();
   const [isAccordionContentOpen, setIsAccordionContentOpen] =
     useState(initiallyExpanded);
@@ -104,7 +116,7 @@ const CollapsibleLessonSection = ({
     event: React.MouseEvent<HTMLButtonElement>
   ) => {
     const wasClipboardIconClicked = checkIfElementClickedWasClipboard(
-      event.target
+      event.target as unknown
     );
 
     if (wasClipboardIconClicked) {
@@ -160,6 +172,7 @@ const CollapsibleLessonSection = ({
       style={accordionStyleObj}
       button={(
         <div
+          {...btnAttributes}
           className={`SectionHeading ${SectionTitle.replace(
             /[\s!]/gi,
             "_"
@@ -215,7 +228,12 @@ const CollapsibleLessonSection = ({
         </div>
       )}
     >
-      <Collapse in={isAccordionContentOpen}>{children}</Collapse>
+      <Collapse in={isAccordionContentOpen}>
+        <>
+          {sectionBanner}
+          {children}
+        </>
+      </Collapse>
     </Accordion>
   );
 };

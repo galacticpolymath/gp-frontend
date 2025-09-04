@@ -61,7 +61,8 @@ const getUserResults = async () => {
     try {
         // https://dev.galacticpolymath.com/
         // http://localhost:3000/api/get-users
-        const url = new URL("https://dev.galacticpolymath.com/api/get-users");
+        // https://dev.galacticpolymath.com/api/get-users
+        const url = new URL("http://localhost:3000/api/get-users");
         const auth = `Bearer ${accessToken}`;
         const { status, data } = await axios.get(url.href, {
             headers: { Authorization: auth },

@@ -60,7 +60,6 @@ const VideoCard = ({
                     />
                     <div
                         onClick={handleOnClick}
-                        style={{ zIndex: 101 }}
                         className='position-absolute w-100 h-100 pointer'
                     />
                 </div>

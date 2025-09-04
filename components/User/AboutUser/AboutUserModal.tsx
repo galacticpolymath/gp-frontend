@@ -44,6 +44,7 @@ import { TReferredByOpt } from "../../../types/global";
 import InstitutionAndSchoolType from "./sections/InstitutionAndSchoolType";
 import ReasonsForSiteVisitSec from "./sections/ReasonsForSiteVisitSec";
 import { getAboutUserFormForClient } from "../../../customHooks/useGetAboutUserForm";
+import { TUserSchemaForClient } from "../../../backend/models/User/types";
 const INPUT_MAX_WIDTH = "400px";
 
 type TAccordionToggleBtnProps = {
@@ -189,9 +190,11 @@ const AboutUserModal = () => {
 
     if (userAccountStringified) {
       setTimeout(() => {
-        const userAccount = JSON.parse(userAccountStringified) as TUserAccount;
+        const userAccount = JSON.parse(
+          userAccountStringified
+        ) as TUserSchemaForClient;
 
-        setAboutUserForm(getAboutUserFormForClient(userAccount));
+        setAboutUserForm(getAboutUserFormForClient(userAccount).userAccountForClient);
       }, 300);
     }
 
