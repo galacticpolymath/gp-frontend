@@ -29,6 +29,7 @@ export default async function handler(
     const reqBody = request.body as IOutsetaReqBody;
 
     if(reqBody.AccountStageLabel === "Cancelling" && reqBody.PersonAccount?.[0]?.Account?.Name){
+      console.log("Received request to cancel subscription for: ");
       const personAccountName = reqBody.PersonAccount[0].Account.Name
 
       console.log("personAccountName: ", personAccountName);

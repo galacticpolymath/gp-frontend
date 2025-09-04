@@ -192,11 +192,9 @@ const AccountPg: React.FC = () => {
         const magic = new Magic(
           process.env.NEXT_PUBLIC_MAGIC_LINK_PK as string
         );
-        const loginConfiguration = {
+        idToken = await magic.auth.loginWithEmailOTP({
           email: gpPlusSub.person.Email,
-          redirectURI: window.location.href,
-        };
-        idToken = await magic.auth.loginWithMagicLink(loginConfiguration);
+        });
 
         if (idToken) {
           window.Outseta?.setMagicLinkIdToken(idToken);
