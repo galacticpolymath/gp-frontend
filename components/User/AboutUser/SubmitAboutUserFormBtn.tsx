@@ -369,6 +369,7 @@ const SubmitAboutUserFormBtn: React.FC<IProps> = ({
       setWasBtnClicked(false);
     }
   };
+  
   return (
     <Button
       onClick={handleSubmitBtnClick}

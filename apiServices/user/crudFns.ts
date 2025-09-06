@@ -241,6 +241,7 @@ export const getIndividualGpPlusSubscription = async (token: string) => {
       },
     });
 
+    console.log("Response object: ", response);
     console.log("Response, sup there: ", response.data);
     console.log("Response status: ", response.status);
 

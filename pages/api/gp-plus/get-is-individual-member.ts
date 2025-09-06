@@ -114,7 +114,7 @@ export default async function handler(
       }
     );
 
-    if (!user || !user.email || !user.outsetaAccountEmail) {
+    if (!user || !user.email) {
       return response
         .status(404)
         .json({ message: "User not found", errType: "userNotFound" });

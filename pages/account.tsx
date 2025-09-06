@@ -10,7 +10,7 @@ import Layout from "../components/Layout";
 import LoginUI from "../components/User/Login/LoginUI";
 import Button from "../components/General/Button";
 import BootstrapBtn from "react-bootstrap/Button";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import { useModalContext } from "../providers/ModalProvider";
 import axios from "axios";
@@ -35,6 +35,7 @@ import ThankYouModal from "../components/GpPlus/ThankYouModal";
 import { SELECTED_GP_PLUS_BILLING_TYPE } from "./gp-plus";
 import { ILocalStorage } from "../types/global";
 import useOutsetaInputValidation from "../customHooks/useOutsetaInputValidation";
+import { useHandleGpPlusCheckoutSessionModal } from "../customHooks/useHandleGpPlusCheckoutSessionModal";
 
 export const getUserAccountData = async (
   token: string,
@@ -103,9 +104,13 @@ const AccountPg: React.FC = () => {
   const firstName = aboutUserForm.firstName;
   const lastName = aboutUserForm.lastName;
   const gpPlusAnchorElementRef = useRef<HTMLAnchorElement | null>(null);
+  const selectedBillingPeriod = useMemo(() => {
+    const selectedGpPlusBillingType = getLocalStorageItem("selectedGpPlusBillingType");
 
-  console.log("gpPlus, yo there: ", gpPlusSub);
+    return selectedGpPlusBillingType === "month" ? "monthly" : "yearly"
+  }, [])
 
+  useHandleGpPlusCheckoutSessionModal(selectedBillingPeriod);
   useGpPlusModalInteraction(
     gpPlusSub?.BillingRenewalTerm
       ? getBillingTerm(gpPlusSub?.BillingRenewalTerm)
