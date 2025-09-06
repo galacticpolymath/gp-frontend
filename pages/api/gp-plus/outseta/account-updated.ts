@@ -21,6 +21,7 @@ type TOutsetaReqBody = Partial<{
   PersonAccount: IPersonAccount[];
   AccountStageLabel: TAccountStageLabel;
   Name: string;
+  Uid: string
 }>;
 
 export default async function handler(
@@ -125,6 +126,8 @@ export default async function handler(
 
           return response.status(500).json({});
         }
+
+        // todo: delete the user's account and person on outseta
 
 
         return response.json({});

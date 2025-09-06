@@ -31,7 +31,6 @@ import { Magic } from "magic-sdk";
 import CustomLink from "../components/CustomLink";
 import { CONTACT_SUPPORT_EMAIL } from "../globalVars";
 import { useGpPlusModalInteraction } from "../customHooks/useGpPlusModalInteraction";
-import { useHandleGpPlusLogin } from "../customHooks/useHandleGpPlusLogin";
 import ThankYouModal from "../components/GpPlus/ThankYouModal";
 import { SELECTED_GP_PLUS_BILLING_TYPE } from "./gp-plus";
 import { ILocalStorage } from "../types/global";
@@ -417,7 +416,6 @@ const AccountPg: React.FC = () => {
     }
   }, [status]);
 
-  useHandleGpPlusLogin();
   useOutsetaInputValidation();
 
   if (status === "loading" || isRetrievingUserData) {

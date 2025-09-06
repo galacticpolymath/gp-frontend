@@ -270,8 +270,6 @@ const TeachItUI = <
         selectedGrade.grades
       ) {
         try {
-          // TODO: present the loading button for all copy lessons buttons when you are getting the id of the lesson folder of the user
-
           console.log(
             "selectedGrade.grades, will get lesson folder ids: ",
             selectedGrade.grades
