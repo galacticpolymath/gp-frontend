@@ -10,7 +10,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { verifyJwt } from "../../../nondependencyFns";
 import { getUserByEmail } from "../../../backend/services/userServices";
-import { getGpPlusMembership, getPlans } from "../../../backend/services/outsetaServices";
+import { getGpPlusMembership, getPlans, getSavings } from "../../../backend/services/outsetaServices";
 import { CustomError } from "../../../backend/utils/errors";
 import { calculatePercentSaved } from "../../../shared/fns";
 import { IPlanDetails } from "../../../apiServices/user/crudFns";
@@ -23,9 +23,11 @@ type TReqQueryParams = {
 export default async function handler(request: NextApiRequest, response: NextApiResponse){
   try {
     const authHeader = request.headers["authorization"];
-    const willComputeSavings = "willComputeSavings" in request.query ? request.query.willComputeSavings : false;
+    const willGetUserPlan = request.query["willGetUserPlan"] === 'true'
+    const willComputeSavings = request.query['willComputeSavings'] === 'true';
 
-    throw new Error("error");
+    console.log("willComputeSavings: ", willComputeSavings);
+    console.log("willGetUserPlan: ", willGetUserPlan);
 
     if (!authHeader) {
       return response.status(401).json({
@@ -45,9 +47,9 @@ export default async function handler(request: NextApiRequest, response: NextApi
       });
     }
 
-    const gpPlusMembership = await getGpPlusMembership(jwtVerificationResult.payload.email);
+    const gpPlusMembership = willGetUserPlan ? await getGpPlusMembership(jwtVerificationResult.payload.email) : null;
 
-    if(!gpPlusMembership || (gpPlusMembership.AccountStageLabel === "NonMember")){
+    if(willGetUserPlan && (!gpPlusMembership || (gpPlusMembership.AccountStageLabel === "NonMember"))){
       throw new CustomError({
         message: "The user doesn't have a GP+ subscription",
         status: 404,
@@ -65,24 +67,31 @@ export default async function handler(request: NextApiRequest, response: NextApi
       });    
     }
 
-    const targetPlan = plans.find(plan => {
+    const targetPlan = gpPlusMembership ? plans.find(plan => {
       return plan.Name === gpPlusMembership.PlanName;
-    });
+    }) : null;
 
-    if(!targetPlan){
+    if(willGetUserPlan && !targetPlan){
       throw new CustomError({
-        message: `The user is subscribed to a GP+ plan that doesn't exist. Plan name: ${gpPlusMembership.PlanName}`,
+        message: `The user is subscribed to a GP+ plan that doesn't exist. Plan name: ${gpPlusMembership?.PlanName}`,
         status: 404,
         errType: "gpPlusPlanNotFound",
       });
     }
 
-    let percentageSaved: number | undefined;
+    let percentageSaved: number | null | undefined = null;
 
     if(willComputeSavings){
-      const monthlyRateForYearlyPlan = Math.ceil(targetPlan.AnnualRate / 12)
-      percentageSaved = calculatePercentSaved(targetPlan.MonthlyRate, monthlyRateForYearlyPlan);
+      console.log("will compute saving here");      
+      
+      const planSavings = await getSavings();
+
+      console.log("planSavings: ", planSavings);
+
+      percentageSaved = planSavings?.individualGpPlusPlanSavings; 
     }
+
+    console.log("percentageSaved: ", percentageSaved)
 
     return response.status(200).json({ currentUserPlan: targetPlan, percentageSaved } as IPlanDetails);
   } catch (error: any) {

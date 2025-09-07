@@ -10,7 +10,8 @@ const SELECTED_OPTION_CLASSNAME = "o--HorizontalToggle--active";
 export const useGpPlusModalInteraction = (
   gpPlusBillingTerm?: NonNullable<
     TGpPlusSubscriptionForClient["BillingRenewalTerm"]
-  >
+  >,
+  willGetUserPlan: boolean = true
 ) => {
   const { status, token } = useSiteSession();
   const mutationOberserverRef = useRef<MutationObserver | null>(null);
@@ -74,9 +75,10 @@ export const useGpPlusModalInteraction = (
   };
 
   const handleUserInteractionWithGpPlusModal = async () => {
-    const userPlanDetail = await getUserPlanDetails(token, true);
+    const { percentageSaved } =
+      (await getUserPlanDetails(token, willGetUserPlan)) ?? {};
 
-    console.log("userPlanDetail: ", userPlanDetail);
+    console.log("percentageSaved: ", percentageSaved);
 
     const _handleOnClickPlanChangeLogic = (event: MouseEvent) => {
       handleOnClickPlanChangeLogic(event);
@@ -98,9 +100,7 @@ export const useGpPlusModalInteraction = (
         if (isChangePlanUI && billingTypeOptsContainer) {
           const savingsElement = document.createElement("span");
           savingsElement.className = "gp-plus-color text-center ms-2";
-          savingsElement.textContent = `Save ${
-            userPlanDetail?.percentageSaved ?? 50
-          }%`;
+          savingsElement.textContent = `Save ${percentageSaved ?? 50}%`;
 
           savingsElement.classList.add("text-decoration-line-through");
 
@@ -170,7 +170,7 @@ export const useGpPlusModalInteraction = (
           }
         }
 
-        if (gpPlusModal && userPlanDetail) {
+        if (gpPlusModal && typeof percentageSaved === "number") {
           document.addEventListener("click", _handleOnClickPlanChangeLogic);
         } else if (!gpPlusModal) {
           document.removeEventListener("click", _handleOnClickPlanChangeLogic);

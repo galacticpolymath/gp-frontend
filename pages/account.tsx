@@ -105,17 +105,32 @@ const AccountPg: React.FC = () => {
   const lastName = aboutUserForm.lastName;
   const gpPlusAnchorElementRef = useRef<HTMLAnchorElement | null>(null);
   const selectedBillingPeriod = useMemo(() => {
-    const selectedGpPlusBillingType = getLocalStorageItem("selectedGpPlusBillingType");
+    const selectedGpPlusBillingType = getLocalStorageItem(
+      "selectedGpPlusBillingType"
+    );
 
-    return selectedGpPlusBillingType === "month" ? "monthly" : "yearly"
-  }, [])
+    return selectedGpPlusBillingType;
+  }, []);
 
-  useHandleGpPlusCheckoutSessionModal(selectedBillingPeriod);
-  useGpPlusModalInteraction(
-    gpPlusSub?.BillingRenewalTerm
-      ? getBillingTerm(gpPlusSub?.BillingRenewalTerm)
-      : undefined
+  useHandleGpPlusCheckoutSessionModal(
+    selectedBillingPeriod === "month" ? "monthly" : "yearly"
   );
+
+  const gpPlusBillingTerm = useMemo(() => {
+    if (gpPlusSub?.BillingRenewalTerm) {
+      return getBillingTerm(gpPlusSub?.BillingRenewalTerm);
+    }
+
+    if (selectedBillingPeriod) {
+      return getBillingTerm(selectedBillingPeriod === "month" ? 1 : 2);
+    }
+
+    return undefined;
+  }, []);
+
+  console.log("gpPlusSub: ", gpPlusSub);
+
+  useGpPlusModalInteraction(gpPlusBillingTerm, !!gpPlusSub);
 
   const handleGpPlusAccountBtnClick = async () => {
     let wasGpPlusAccountRetrievalSuccessful = false;

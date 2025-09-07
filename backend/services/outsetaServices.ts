@@ -1,5 +1,6 @@
 import axios, { AxiosHeaders } from "axios";
 import { sleep, waitWithExponentialBackOff } from "../../globalFns";
+import { calculatePercentSaved } from "../../shared/fns";
 
 const OUTSETA_API_ORIGIN = "https://galactic-polymath.outseta.com";
 const OUTSETA_API_VERSION_PATH = "api/v1";
@@ -278,6 +279,32 @@ export const deletePerson = async (
     return { wasSuccessful: false, errObj: error };
   }
 };
+
+export const getSavings = async () => {
+  try {
+    const plans = await getPlans();
+    const plusPlan = plans
+      ? plans.find((plan) => plan.Name === "Galactic Polymath Plus")
+      : undefined;
+    let plusPlanPercentSaved: number | undefined;
+
+    if (plans?.length && plusPlan) {
+      const monthlyRateForYearlyPlan = Math.ceil(plusPlan.AnnualRate / 12);
+      plusPlanPercentSaved = calculatePercentSaved(
+        plusPlan.MonthlyRate,
+        monthlyRateForYearlyPlan
+      );
+    }
+
+    return {
+      individualGpPlusPlanSavings: plusPlanPercentSaved
+    }
+  } catch(error){
+    console.error("An error has occurred. Failed to get savings: ", error);
+
+    return null;
+  }
+} 
 
 export const deleteAccount = async (
   accountId: string,
