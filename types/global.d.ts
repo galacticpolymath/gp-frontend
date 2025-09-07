@@ -188,6 +188,7 @@ export interface ILocalStorage{
   willShowGpPlusPurchaseThankYouModal: boolean
   didGpSignInAttemptOccur: boolean;
   wasUserDeleted: boolean;
+  wasContinueToCheckoutBtnClicked: boolean;
   userAccount: TUserSchemaForClient;
   selectedGpPlusBillingType: "month" | "year";
 }

@@ -5,7 +5,7 @@ import { TGpPlusSubscriptionForClient } from "../backend/models/User/types";
 import { getUserPlanDetails, IPlanDetails } from "../apiServices/user/crudFns";
 import { getIsWithinParentElement } from "../shared/fns";
 
-const SELECTED_OPTION_CLASSNAME = "o--HorizontalToggle--active";
+export const SELECTED_OPTION_CLASSNAME = "o--HorizontalToggle--active";
 
 export const useGpPlusModalInteraction = (
   gpPlusBillingTerm?: NonNullable<

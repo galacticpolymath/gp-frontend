@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   defautlNotifyModalVal,
   useModalContext,
@@ -7,16 +7,187 @@ import CustomLink from "../components/CustomLink";
 import { CONTACT_SUPPORT_EMAIL } from "../globalVars";
 import useSiteSession from "./useSiteSession";
 import { getUserPlanDetails, updateUser } from "../apiServices/user/crudFns";
+import { SELECTED_OPTION_CLASSNAME } from "./useGpPlusModalInteraction";
+import {
+  getIsWithinParentElement,
+  getLocalStorageItem,
+  setLocalStorageItem,
+} from "../shared/fns";
 
-export const useHandleGpPlusCheckoutSessionModal = (
-  billingPeriod: "monthly" | "yearly"
-) => {
+export const useHandleGpPlusCheckoutSessionModal = () => {
   const { _notifyModal, _isGpPlusSignUpModalDisplayed } = useModalContext();
   const [isSignupModalDisplayed, setIsSignupModalDisplayed] =
     _isGpPlusSignUpModalDisplayed;
   const [, setNotifyModal] = _notifyModal;
-  const { user, token, logUserOut, status } = useSiteSession();
   const [getEmailInputRetryCount, setGetEmailInputRetryCount] = useState(1);
+  const selectedBillingPeriod = useMemo(() => {
+    const selectedGpPlusBillingType = getLocalStorageItem(
+      "selectedGpPlusBillingType"
+    );
+
+    return selectedGpPlusBillingType === "month" ? "monthly" : "yearly";
+  }, []);
+  const { user, token, logUserOut, status } = useSiteSession();
+  const mutationOberserverRef = useRef<MutationObserver | null>(null);
+
+  const handleOnClickPlanChangeLogic = (event: MouseEvent) => {
+    console.log("Event, sup there: ", event.target);
+
+    const _target = event.target as HTMLElement;
+
+    if (_target.className === SELECTED_OPTION_CLASSNAME) {
+      console.log("billing option selected");
+      return;
+    }
+
+    const wasABillingOptSelected = getIsWithinParentElement(
+      _target,
+      SELECTED_OPTION_CLASSNAME,
+      "className",
+      "includes"
+    );
+
+    console.log("Current GP Plus Billing Term: ", selectedBillingPeriod);
+
+    console.log("wasABillingOptSelected: ", wasABillingOptSelected);
+
+    if (wasABillingOptSelected) {
+      const isCurrentBillingPlanOfUser = _target.textContent
+        ?.toLowerCase()
+        ?.includes(selectedBillingPeriod);
+      console.log("isCurrentBillingPlanOfUser: ", isCurrentBillingPlanOfUser);
+      const currentPlanTxtElement = document.querySelector<HTMLElement>(
+        ".o--Badge--displayMode-light"
+      );
+
+      console.log("IS CURRENT PLAN: ", currentPlanTxtElement);
+
+      if (currentPlanTxtElement && isCurrentBillingPlanOfUser) {
+        currentPlanTxtElement.classList.add("show-gp-plus-element");
+      } else if (currentPlanTxtElement) {
+        currentPlanTxtElement.classList.remove("show-gp-plus-element");
+      }
+
+      const billingTermsOptsContainer = document.querySelector(
+        ".o--HorizontalToggle--displayMode-light"
+      );
+      // const savingsElement =
+      //   document.querySelector<HTMLSpanElement>("#gp-plus-savings");
+      const savingsElement =
+        billingTermsOptsContainer?.childElementCount === 3 &&
+        (billingTermsOptsContainer.lastChild as HTMLElement);
+
+      console.log("savingsElement: ", savingsElement);
+      console.log("billingTermsOptsContainer: ", billingTermsOptsContainer);
+
+      if (_target.textContent === "Billed yearly" && savingsElement) {
+        savingsElement.classList.add("fw-bolder");
+        savingsElement.classList.remove("text-decoration-line-through");
+        setLocalStorageItem("selectedGpPlusBillingType", "year");
+      } else if (savingsElement) {
+        setLocalStorageItem("selectedGpPlusBillingType", "month");
+        savingsElement.classList.remove("fw-bolder");
+        savingsElement.classList.add("text-decoration-line-through");
+      }
+    }
+  };
+
+  const [billingTypeOptsContainer, setBillingTypeOptsContainer] =
+    useState<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (billingTypeOptsContainer) {
+      setBillingTypeOptsContainer(null);
+    }
+  }, [billingTypeOptsContainer]);
+
+  const handleUserInteractionWithGpPlusModal = async () => {
+    const { percentageSaved } = (await getUserPlanDetails(token, false)) ?? {};
+
+    console.log("percentageSaved: ", percentageSaved);
+
+    const _handleOnClickPlanChangeLogic = (event: MouseEvent) => {
+      handleOnClickPlanChangeLogic(event);
+    };
+
+    // if the user selects yearly and if they are on the yearly plan, then
+
+    const mutationOberserver = new MutationObserver((elements) => {
+      for (const _ of elements) {
+        const wasContinueToCheckoutBtnClicked = getLocalStorageItem(
+          "wasContinueToCheckoutBtnClicked"
+        );
+
+
+        const billingTypeOptsContainer = document.querySelector<HTMLDivElement>(
+          ".o--HorizontalToggle--horizontalToggle"
+        );
+        const gpPlusSavingsElement =
+          document.querySelector<HTMLSpanElement>("#gp-plus-savings");
+        const monthlyOption = billingTypeOptsContainer?.firstChild?.firstChild
+          ?.firstChild as HTMLElement | undefined;
+        const yearlyOption = billingTypeOptsContainer?.firstChild?.lastChild
+          ?.firstChild as HTMLElement | undefined;
+
+        if (
+          !wasContinueToCheckoutBtnClicked && selectedBillingPeriod === "monthly" &&
+          monthlyOption
+        ) {
+          monthlyOption.click();
+        } else if (
+          !wasContinueToCheckoutBtnClicked && selectedBillingPeriod === "yearly" &&
+          yearlyOption
+        ) {
+          yearlyOption.click();
+        }
+
+        console.log("gpPlusSavingsElement: ", gpPlusSavingsElement);
+
+        if (billingTypeOptsContainer && !gpPlusSavingsElement) {
+          const savingsElement = document.createElement("span");
+          savingsElement.className = "gp-plus-color text-center ms-2";
+          savingsElement.id = "gp-plus-savings";
+          savingsElement.textContent = `Save ${percentageSaved ?? 50}%`;
+          const gpPlusBillingType = getLocalStorageItem("selectedGpPlusBillingType");
+
+          console.log("gpPlusBillingType, python: ", gpPlusBillingType);
+
+          //TODO: get the local storage item that has the final result when the user clicks on the continue button
+          savingsElement.classList.add(
+            gpPlusBillingType === "month"
+              ? "text-decoration-line-through"
+              : "fw-bolder"
+          );
+
+          console.log("billingTypeOptsContainer: ", billingTypeOptsContainer);
+
+          billingTypeOptsContainer.appendChild(savingsElement);
+        }
+
+        if (billingTypeOptsContainer && typeof percentageSaved === "number") {
+          document.addEventListener("click", _handleOnClickPlanChangeLogic);
+        } else if (!billingTypeOptsContainer) {
+          document.removeEventListener("click", _handleOnClickPlanChangeLogic);
+        }
+      }
+    });
+
+    mutationOberserver.observe(document.body, {
+      childList: true,
+      subtree: true,
+    });
+    mutationOberserverRef.current = mutationOberserver;
+  };
+
+  useEffect(() => {
+    if (status === "authenticated") {
+      handleUserInteractionWithGpPlusModal();
+
+      return () => {
+        mutationOberserverRef.current?.disconnect();
+      };
+    }
+  }, [status]);
 
   useEffect(() => {
     if (isSignupModalDisplayed && status === "authenticated") {
@@ -33,134 +204,123 @@ export const useHandleGpPlusCheckoutSessionModal = (
         return;
       }
 
+      console.log("emailInput value: ", emailInput);
+
+      if (emailInput) {
+        emailInput.value = user.email ?? "";
+        emailInput.dispatchEvent(new Event("input", { bubbles: true }));
+      }
+
       // get the saving from the backend
-      (async () => {
-        const continueToCheckoutBtn = document.querySelector<HTMLButtonElement>(
-          ".o--Register--nextButton"
-        );
-        const payPeriodToggle = document.querySelector<HTMLButtonElement>(
-          ".o--HorizontalToggle--horizontalToggle"
-        );
-        const monthlyOption = payPeriodToggle?.firstChild?.firstChild
-          ?.firstChild as HTMLElement | undefined;
-        const yearlyOption = payPeriodToggle?.firstChild?.lastChild
-          ?.firstChild as HTMLElement | undefined;
+      const continueToCheckoutBtn = document.querySelector<HTMLButtonElement>(
+        ".o--Register--nextButton"
+      );
 
-        console.log("emailInput value: ", emailInput);
+      console.log("continueToCheckoutBtn: ", continueToCheckoutBtn);
 
-        if (emailInput) {
-          emailInput.value = user.email ?? "";
-        }
-        if (billingPeriod === "monthly" && monthlyOption) {
-          monthlyOption.click();
-        } else if (billingPeriod === "yearly" && yearlyOption) {
-          yearlyOption.click();
+      setLocalStorageItem("wasContinueToCheckoutBtnClicked", true);
+
+      continueToCheckoutBtn?.addEventListener("click", async (event) => {
+        console.log("The continue button was clicked...");
+
+        if ((event.target as HTMLButtonElement).disabled) {
+          console.log("The button is disabled.");
+          return;
         }
 
-        console.log("continueToCheckoutBtn: ", continueToCheckoutBtn);
+        const emailInput = document.querySelector(
+          '[name="Person.Email"]'
+        ) as HTMLInputElement | null;
+        const outsetaEmail = emailInput
+          ? (emailInput as HTMLInputElement).value
+          : "";
 
-        continueToCheckoutBtn?.addEventListener("click", async (event) => {
-          console.log("The continue button was clicked...");
+        console.log("outsetaEmail, sup there: ", outsetaEmail);
 
-          if ((event.target as HTMLButtonElement).disabled) {
-            console.log("The button is disabled.");
-            return;
-          }
+        if (!outsetaEmail) {
+          setNotifyModal({
+            headerTxt: "An error has occurred",
+            bodyTxt: (
+              <>
+                Unable to start your checkout session. If this error persists,
+                please contact{" "}
+                <CustomLink
+                  hrefStr={CONTACT_SUPPORT_EMAIL}
+                  className="ms-1 mt-2 text-break"
+                >
+                  feedback@galacticpolymath.com
+                </CustomLink>
+                .
+              </>
+            ),
+            isDisplayed: true,
+            handleOnHide() {
+              setNotifyModal(defautlNotifyModalVal);
+              window.location.reload();
+            },
+          });
+          setIsSignupModalDisplayed(false);
+          return;
+        }
 
-          const emailInput = document.querySelector(
-            '[name="Person.Email"]'
-          ) as HTMLInputElement | null;
-          const outsetaEmail = emailInput
-            ? (emailInput as HTMLInputElement).value
-            : "";
+        if (!user?.email || !token) {
+          setNotifyModal({
+            headerTxt: "An error has occurred",
+            bodyTxt: (
+              <>
+                Unable to start your checkout session. You are not logged in.
+                The page will refresh after you close this modal.
+              </>
+            ),
+            isDisplayed: true,
+            handleOnHide() {
+              setNotifyModal(defautlNotifyModalVal);
+              logUserOut();
+              window.location.reload();
+            },
+          });
+          setIsSignupModalDisplayed(false);
+          return;
+        }
 
-          console.log("outsetaEmail, sup there: ", outsetaEmail);
+        console.log(
+          "Will save the email the user inputted. Email: ",
+          outsetaEmail
+        );
 
-          if (!outsetaEmail) {
-            setNotifyModal({
-              headerTxt: "An error has occurred",
-              bodyTxt: (
-                <>
-                  Unable to start your checkout session. If this error persists,
-                  please contact{" "}
-                  <CustomLink
-                    hrefStr={CONTACT_SUPPORT_EMAIL}
-                    className="ms-1 mt-2 text-break"
-                  >
-                    feedback@galacticpolymath.com
-                  </CustomLink>
-                  .
-                </>
-              ),
-              isDisplayed: true,
-              handleOnHide() {
-                setNotifyModal(defautlNotifyModalVal);
-                window.location.reload();
-              },
-            });
-            setIsSignupModalDisplayed(false);
-            return;
-          }
+        const updateUserResponse = await updateUser(
+          { email: user.email },
+          { outsetaAccountEmail: outsetaEmail },
+          {},
+          token
+        );
 
-          if (!user?.email || !token) {
-            setNotifyModal({
-              headerTxt: "An error has occurred",
-              bodyTxt: (
-                <>
-                  Unable to start your checkout session. You are not logged in.
-                  The page will refresh after you close this modal.
-                </>
-              ),
-              isDisplayed: true,
-              handleOnHide() {
-                setNotifyModal(defautlNotifyModalVal);
-                logUserOut();
-                window.location.reload();
-              },
-            });
-            setIsSignupModalDisplayed(false);
-            return;
-          }
-
-          console.log(
-            "Will save the email the user inputted. Email: ",
-            outsetaEmail
-          );
-
-          const updateUserResponse = await updateUser(
-            { email: user.email },
-            { outsetaAccountEmail: outsetaEmail },
-            {},
-            token
-          );
-
-          if (!updateUserResponse?.wasSuccessful) {
-            setNotifyModal({
-              headerTxt: "An error has occurred",
-              bodyTxt: (
-                <>
-                  An error has occurred while trying to update the user's email.
-                  If this error persists, please contact{" "}
-                  <CustomLink
-                    hrefStr={CONTACT_SUPPORT_EMAIL}
-                    className="ms-1 mt-2 text-break"
-                  >
-                    feedback@galacticpolymath.com
-                  </CustomLink>
-                  .
-                </>
-              ),
-              isDisplayed: true,
-              handleOnHide() {
-                setNotifyModal(defautlNotifyModalVal);
-                window.location.reload();
-              },
-            });
-            setIsSignupModalDisplayed(false);
-            return;
-          }
-        });
-      })();
+        if (!updateUserResponse?.wasSuccessful) {
+          setNotifyModal({
+            headerTxt: "An error has occurred",
+            bodyTxt: (
+              <>
+                An error has occurred while trying to update the user's email.
+                If this error persists, please contact{" "}
+                <CustomLink
+                  hrefStr={CONTACT_SUPPORT_EMAIL}
+                  className="ms-1 mt-2 text-break"
+                >
+                  feedback@galacticpolymath.com
+                </CustomLink>
+                .
+              </>
+            ),
+            isDisplayed: true,
+            handleOnHide() {
+              setNotifyModal(defautlNotifyModalVal);
+              window.location.reload();
+            },
+          });
+          setIsSignupModalDisplayed(false);
+          return;
+        }
+      });
     }
   }, [isSignupModalDisplayed, status, getEmailInputRetryCount]);
 };

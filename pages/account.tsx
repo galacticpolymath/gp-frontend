@@ -105,6 +105,11 @@ const AccountPg: React.FC = () => {
   const lastName = aboutUserForm.lastName;
   const gpPlusAnchorElementRef = useRef<HTMLAnchorElement | null>(null);
   const selectedBillingPeriod = useMemo(() => {
+    if(typeof window === 'undefined'){
+      return "year";
+    };
+    
+    setLocalStorageItem("selectedGpPlusBillingType", "year");
     const selectedGpPlusBillingType = getLocalStorageItem(
       "selectedGpPlusBillingType"
     );
@@ -112,9 +117,8 @@ const AccountPg: React.FC = () => {
     return selectedGpPlusBillingType;
   }, []);
 
-  useHandleGpPlusCheckoutSessionModal(
-    selectedBillingPeriod === "month" ? "monthly" : "yearly"
-  );
+  useHandleGpPlusCheckoutSessionModal();
+
 
   const gpPlusBillingTerm = useMemo(() => {
     if (gpPlusSub?.BillingRenewalTerm) {
@@ -651,7 +655,7 @@ const AccountPg: React.FC = () => {
       <Modal
         show={isGpPlusSignUpModalDisplayed}
         onShow={() => {
-          removeLocalStorageItem("selectedGpPlusBillingType");
+          removeLocalStorageItem("wasContinueToCheckoutBtnClicked");
         }}
         onHide={() => {
           setIsGpPlusSignUpModalDisplayed(false);
