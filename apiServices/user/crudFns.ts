@@ -265,21 +265,20 @@ export type IPlanDetails = NonNullable<
   Awaited<ReturnType<typeof getUserPlanDetails>>
 >;
 
-export const getUserPlanDetails = async (appAuthToken: string) => {
+export const getUserPlanDetails = async (appAuthToken: string, willGetUserPlan: boolean) => {
   try {
-    const url = new URL(
-      `${window.location.origin}/api/gp-plus/get-user-plan-details`
-    );
-
-    url.searchParams.append("willComputeSavings", "true");
-
+    const url = `${window.location.origin}/api/gp-plus/get-user-plan-details`
     const response = await axios.get<{
       currentUserPlan?: IPlan;
       percentageSaved?: number;
-    }>(url.href, {
+    }>(url, {
       headers: {
         Authorization: `Bearer ${appAuthToken}`,
       },
+      params: {
+        willGetUserPlan,
+        willComputeSavings: true
+      }
     });
 
     console.log("Response: ", response.data);

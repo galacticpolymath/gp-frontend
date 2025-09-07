@@ -1,38 +1,58 @@
-import { useEffect } from "react";
-import { defautlNotifyModalVal, useModalContext } from "../providers/ModalProvider";
+import { useEffect, useState } from "react";
+import {
+  defautlNotifyModalVal,
+  useModalContext,
+} from "../providers/ModalProvider";
 import CustomLink from "../components/CustomLink";
 import { CONTACT_SUPPORT_EMAIL } from "../globalVars";
 import useSiteSession from "./useSiteSession";
-import { updateUser } from "../apiServices/user/crudFns";
+import { getUserPlanDetails, updateUser } from "../apiServices/user/crudFns";
 
 export const useHandleGpPlusCheckoutSessionModal = (
-  billingPeriod: "monthly" | "yearly",
+  billingPeriod: "monthly" | "yearly"
 ) => {
   const { _notifyModal, _isGpPlusSignUpModalDisplayed } = useModalContext();
   const [isSignupModalDisplayed, setIsSignupModalDisplayed] =
     _isGpPlusSignUpModalDisplayed;
   const [, setNotifyModal] = _notifyModal;
-  const { user, token, logUserOut } = useSiteSession();
+  const { user, token, logUserOut, status } = useSiteSession();
+  const [getEmailInputRetryCount, setGetEmailInputRetryCount] = useState(0);
 
   useEffect(() => {
-    if (isSignupModalDisplayed) {
+    if (isSignupModalDisplayed && status === "authenticated") {
       console.log("sign up modal displayed");
 
-      setTimeout(() => {
+      const emailInput = document.querySelector<HTMLInputElement>(
+        '[name="Person.Email"]'
+      );
 
-      }, 500);
+      if (!emailInput) {
+        setTimeout(() => {
+          setGetEmailInputRetryCount((state) => state + 1);
+        }, 200);
+        return;
+      }
 
-      const continueToCheckoutBtn = document.querySelector(
+      // get the saving from the backend
+      (async () => {
+        const { percentageSaved } = await getUserPlanDetails(token, false) ?? {};
+      })();
+      const continueToCheckoutBtn = document.querySelector<HTMLButtonElement>(
         ".o--Register--nextButton"
-      ) as HTMLButtonElement | null;
-      const payPeriodToggle = document.querySelector(
+      );
+      const payPeriodToggle = document.querySelector<HTMLButtonElement>(
         ".o--HorizontalToggle--horizontalToggle"
-      ) as HTMLButtonElement | null;
+      );
       const monthlyOption = payPeriodToggle?.firstChild?.firstChild
         ?.firstChild as HTMLElement | undefined;
       const yearlyOption = payPeriodToggle?.firstChild?.lastChild
         ?.firstChild as HTMLElement | undefined;
 
+      console.log("emailInput value: ", emailInput);
+
+      if (emailInput) {
+        emailInput.value = user.email ?? "";
+      }
       if (billingPeriod === "monthly" && monthlyOption) {
         monthlyOption.click();
       } else if (billingPeriod === "yearly" && yearlyOption) {
@@ -143,5 +163,5 @@ export const useHandleGpPlusCheckoutSessionModal = (
         }
       });
     }
-  }, [isSignupModalDisplayed]);
+  }, [isSignupModalDisplayed, status, getEmailInputRetryCount]);
 };

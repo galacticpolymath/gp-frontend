@@ -74,7 +74,7 @@ export const useGpPlusModalInteraction = (
   };
 
   const handleUserInteractionWithGpPlusModal = async () => {
-    const userPlanDetail = await getUserPlanDetails(token);
+    const userPlanDetail = await getUserPlanDetails(token, true);
 
     console.log("userPlanDetail: ", userPlanDetail);
 

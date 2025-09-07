@@ -15,10 +15,17 @@ import { CustomError } from "../../../backend/utils/errors";
 import { calculatePercentSaved } from "../../../shared/fns";
 import { IPlanDetails } from "../../../apiServices/user/crudFns";
 
-const handler = async (request: NextApiRequest, response: NextApiResponse) => {
+type TReqQueryParams = {
+  willComputeSavings: boolean
+  willGetUserPlan: boolean
+}
+
+export default async function handler(request: NextApiRequest, response: NextApiResponse){
   try {
     const authHeader = request.headers["authorization"];
     const willComputeSavings = "willComputeSavings" in request.query ? request.query.willComputeSavings : false;
+
+    throw new Error("error");
 
     if (!authHeader) {
       return response.status(401).json({
@@ -87,5 +94,3 @@ const handler = async (request: NextApiRequest, response: NextApiResponse) => {
     });
   }
 };
-
-export default handler;
