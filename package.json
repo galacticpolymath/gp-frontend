@@ -93,7 +93,7 @@
     "react-toastify": "^11.0.5",
     "react-wavify": "^1.11.1",
     "sharp": "^0.34.3",
-    "start-server-and-test": "^2.0.13",
+    "start-server-and-test": "^2.1.0",
     "styled-components": "^6.1.19",
     "swr": "^2.3.6",
     "tls": "^0.0.1",
