@@ -77,7 +77,7 @@ export const ModalProvider = ({ children }: Pick<IComponent, "children">) => {
   const [isAccountModalMobileOn, setIsAccountModalMobileOn] = useState(false);
   const [isPasswordResetModalOn, setIsPasswordResetModalOn] = useState(false);
   const [isGpPlusSignUpModalDisplayed, setIsGpPlusSignUpModalDisplayed] =
-    useState(true);
+    useState(false);
   const [lessonItemModal, setLessonItemModal] = useState<TLessonItemModal>({
     isDisplayed: false,
   });

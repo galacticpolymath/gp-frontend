@@ -34,6 +34,7 @@ import {
   TAccountStageLabel,
 } from "../backend/services/outsetaServices";
 import { useHandleGpPlusLogin } from "../customHooks/useHandleGpPlusLogin";
+import { useHandleGpPlusCheckoutSessionModal } from "../customHooks/useHandleGpPlusCheckoutSessionModal";
 
 interface IProps {
   liveUnitsTotal?: number;
@@ -84,8 +85,6 @@ const CardTitle: React.FC<{ children: ReactNode }> = ({ children }) => {
 
 const GpPlus: React.FC<IProps> = ({
   liveUnitsTotal,
-  errObj,
-  errType,
   plusPlanPercentSaved,
 }) => {
   const [billingPeriod, setBillingPeriod] = useState<"monthly" | "yearly">(
@@ -110,6 +109,7 @@ const GpPlus: React.FC<IProps> = ({
 
   useGpPlusModalInteraction(gpPlusSubscription?.membership?.BillingRenewalTerm);
   useOutsetaInputValidation();
+  useHandleGpPlusCheckoutSessionModal();
 
   const [didUserSignUp, setDidUserSignUp] = useState(false);
   const monthlyPrice = 10;
@@ -138,12 +138,6 @@ const GpPlus: React.FC<IProps> = ({
 
     return "Sign up for free";
   }, [status]);
-
-  useEffect(() => {
-    console.log("gpPlusSubscription, sup there: ", gpPlusSubscription);
-    console.log("gpPlusBtnTxt, yo there: ", gpPlusBtnTxt);
-    console.log("wasGpPlusSubRetrieved, yo there: ", wasGpPlusSubRetrieved);
-  });
 
   const handleToggle = () => {
     setBillingPeriod((prev) => (prev === "monthly" ? "yearly" : "monthly"));

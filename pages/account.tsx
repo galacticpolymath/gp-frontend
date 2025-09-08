@@ -109,7 +109,6 @@ const AccountPg: React.FC = () => {
       return "year";
     };
     
-    setLocalStorageItem("selectedGpPlusBillingType", "year");
     const selectedGpPlusBillingType = getLocalStorageItem(
       "selectedGpPlusBillingType"
     );
