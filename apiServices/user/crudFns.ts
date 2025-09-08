@@ -12,7 +12,10 @@ import { IErr, IUpdatedUserReqBody } from "../../types/global";
 import { IGoogleDriveAuthResBody } from "../../pages/api/gp-plus/auth";
 import { IPlan } from "../../backend/services/outsetaServices";
 import Cookies from "js-cookie";
-import { TReqQueryResetOutsetaEmail, TSuccessType } from "../../pages/api/gp-plus/outseta/reset-outseta-email";
+import {
+  TReqQueryResetOutsetaEmail,
+  TSuccessType,
+} from "../../pages/api/gp-plus/outseta/reset-outseta-email";
 
 export const updateUser = async (
   query: Omit<Partial<TUserSchemaV2>, "password"> = {},
@@ -72,18 +75,8 @@ export const updateUser = async (
   }
 };
 
-/**
- * Makes a delete request to the server to delete the user with the given id.
- * @param {string} email The id of the user to be deleted.
- * @return {Promise<{ wasSuccessful: boolean }>} A promise that resolves to an object with a boolean indicating whether the operation was successful.
- * @throws An error has occurred if the server responds with a status code that is not 200 or the wrong parameter type is passed.
- */
-export const sendDeleteUserReq = async (email: string, token: string) => {
+export const sendDeleteUserReq = async (token: string) => {
   try {
-    if (typeof email !== "string") {
-      throw new Error('The "userId" parameter must be a string.');
-    }
-
     if (!token) {
       throw new Error('The "token" parameter cannot be empty.');
     }
@@ -92,7 +85,7 @@ export const sendDeleteUserReq = async (email: string, token: string) => {
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
     };
-    const response = await axios.delete(`/api/delete-user?email=${email}`, {
+    const response = await axios.delete(`/api/delete-user`, {
       headers,
     });
 
@@ -104,7 +97,7 @@ export const sendDeleteUserReq = async (email: string, token: string) => {
 
     return { wasSuccessful: true };
   } catch (error: any) {
-    if(error.response?.data?.errType === 'userNotFound'){
+    if (error.response?.data?.errType === "userNotFound") {
       return { wasSuccessful: false, errType: "userNotFound" };
     }
 
@@ -151,43 +144,46 @@ export const deleteUserFromServerCache = async (token: string) => {
   }
 };
 
-export class CustomHeaders extends AxiosHeaders{
-  Authorization: string
-  "gdrive-token": string
-  "gdrive-token-refresh": string
+export class CustomHeaders extends AxiosHeaders {
+  Authorization: string;
+  "gdrive-token": string;
+  "gdrive-token-refresh": string;
 
-  constructor(appAccessToken: string){
+  constructor(appAccessToken: string) {
     super();
     this.Authorization = `Bearer ${appAccessToken}`;
     const gdriveAccessToken = Cookies.get("gdrive-token");
 
-    if(gdriveAccessToken){
-      this['gdrive-token'] = gdriveAccessToken
+    if (gdriveAccessToken) {
+      this["gdrive-token"] = gdriveAccessToken;
     }
 
     const gdriveRefreshToken = Cookies.get("gdrive-token-refresh");
 
-    if(gdriveRefreshToken){
-      this['gdrive-token-refresh'] = gdriveRefreshToken;
+    if (gdriveRefreshToken) {
+      this["gdrive-token-refresh"] = gdriveRefreshToken;
     }
   }
 }
 
-export const authenticateUserWithGDrive = async (code: string, accessToken: string) => {
+export const authenticateUserWithGDrive = async (
+  code: string,
+  accessToken: string
+) => {
   try {
-    if(!accessToken){
-      throw new Error("No access token provided. Cannot authenticate user with Google Drive");
+    if (!accessToken) {
+      throw new Error(
+        "No access token provided. Cannot authenticate user with Google Drive"
+      );
     }
 
     const headers = new CustomHeaders(accessToken);
 
     console.log("headers: ", headers);
-    
-    
 
     const { status, data } = await axios.post<
       IErr | { data: Partial<IGoogleDriveAuthResBody> }
-    >("/api/gp-plus/auth", { code }, { headers});
+    >("/api/gp-plus/auth", { code }, { headers });
 
     if (status !== 200) {
       throw new Error(
@@ -265,9 +261,12 @@ export type IPlanDetails = NonNullable<
   Awaited<ReturnType<typeof getUserPlanDetails>>
 >;
 
-export const getUserPlanDetails = async (appAuthToken: string, willGetUserPlan: boolean) => {
+export const getUserPlanDetails = async (
+  appAuthToken: string,
+  willGetUserPlan: boolean
+) => {
   try {
-    const url = `${window.location.origin}/api/gp-plus/get-user-plan-details`
+    const url = `${window.location.origin}/api/gp-plus/get-user-plan-details`;
     const response = await axios.get<{
       currentUserPlan?: IPlan;
       percentageSaved?: number;
@@ -277,8 +276,8 @@ export const getUserPlanDetails = async (appAuthToken: string, willGetUserPlan: 
       },
       params: {
         willGetUserPlan,
-        willComputeSavings: true
-      }
+        willComputeSavings: true,
+      },
     });
 
     console.log("Response: ", response.data);
@@ -300,18 +299,21 @@ export const getUserPlanDetails = async (appAuthToken: string, willGetUserPlan: 
   }
 };
 
-export const deleteUserOutsetaEmail = async (email: string, appAuthToken: string) => {
+export const deleteUserOutsetaEmail = async (
+  email: string,
+  appAuthToken: string
+) => {
   try {
     const params: TReqQueryResetOutsetaEmail = {
-      userInputEmail: email
-    }
+      userInputEmail: email,
+    };
     const response = await axios.delete<TSuccessType>(
       `${window.location.origin}/api/gp-plus/outseta/reset-outseta-email`,
       {
         headers: {
           Authorization: `Bearer ${appAuthToken}`,
         },
-        params
+        params,
       }
     );
 

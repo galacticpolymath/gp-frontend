@@ -14,6 +14,16 @@ import {
   getGpPlusMembership,
 } from "../../backend/services/outsetaServices";
 import { sendEmail } from "../../backend/services/emailServices";
+import { z } from 'zod';
+import { getJwtPayloadPromise } from "../../nondependencyFns";
+
+const QueryParamsSchema = z.object({
+  dbType: z.string().min(1),
+  userIds: z.union([
+    z.string().min(1),
+    z.array(z.string().min(1)).min(1)
+  ]).transform(val => Array.isArray(val) ? val : [val])
+});
 
 export default async function handler(
   request: NextApiRequest,
@@ -27,9 +37,23 @@ export default async function handler(
       );
     }
 
-    if (!request.query.email || typeof request.query.email !== "string") {
-      throw new CustomError("'email' is not present in the request url.", 404);
+    const authorization = request.headers.authorization;
+    
+    if (!authorization) {
+      throw new CustomError("Authorization header is required.", 401);
     }
+
+    const jwtPayload = await getJwtPayloadPromise(authorization);
+    
+    if (!jwtPayload) {
+      throw new CustomError("Invalid or expired token.", 401);
+    }
+    
+    if (!jwtPayload.payload.email) {
+      throw new CustomError("Email not found in token.", 401);
+    }
+
+    const { email } = jwtPayload.payload;
 
     const { wasSuccessful: isDbConnected } = await connectToMongodb(
       15_000,
@@ -41,7 +65,7 @@ export default async function handler(
       throw new CustomError("Failed to connect to the database.", 500);
     }
 
-    const targetUser = await getUserByEmail(request.query.email, {
+    const targetUser = await getUserByEmail(email, {
       outsetaAccountEmail: 1,
     });
 
@@ -61,7 +85,7 @@ export default async function handler(
         "User has an Outseta account email, proceeding with membership check."
       );
 
-      const userAccountDeletionResult = await deleteUserByEmail(request.query.email);
+      const userAccountDeletionResult = await deleteUserByEmail(email);
 
       console.log("userAccountDeletionResult: ", userAccountDeletionResult);
 
@@ -128,11 +152,9 @@ export default async function handler(
         .json({ msg: "Successfully deleted the user's account from the db." });
     }
 
-    const { wasSuccessful: wasUserDeletedFromDb } = await deleteUserByEmail(
-      request.query.email
-    );
+    const { wasSuccessful: wasUserDeletedFromDb } = await deleteUserByEmail(email);
 
-    cache.del(request.query.email);
+    cache.del(email);
 
     if (!wasUserDeletedFromDb) {
       throw new CustomError("Failed to delete the target user.", 500);

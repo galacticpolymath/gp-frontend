@@ -109,7 +109,7 @@ const AccountSettings = () => {
       ? !!(await window.Outseta.getUser())
       : false;
     const { wasSuccessful: didDeleteUserSuccessfully, errType } =
-      await sendDeleteUserReq(email, token);
+      await sendDeleteUserReq(token);
     const wasUserNotFound = errType === "userNotFound";
 
     if ((didDeleteUserSuccessfully || wasUserNotFound) && gdriveAccessToken) {
