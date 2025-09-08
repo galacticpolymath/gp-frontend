@@ -50,6 +50,7 @@ const getUnitNum = (pathName) =>
       )
   );
 const UNITS_PATH_NAME = "units";
+const VALID_CLIENT_DOMAINS = new Set(['https://dev.galacticpolymath.com', 'http://localhost:3000', 'https://teach.galacticpolymath.com']);
 
 export async function middleware(request) {
   try {
@@ -58,6 +59,16 @@ export async function middleware(request) {
      * @type {{ pathname: string, search: string }}
      */
     let { pathname, search } = nextUrl;
+
+    console.log(`Request origin: ${nextUrl.origin}`);
+
+    if (!VALID_CLIENT_DOMAINS.has(nextUrl.origin)) {
+      console.error(`Invalid client domain detected: ${nextUrl.origin}`);
+
+      return NextResponse.redirect('https://teach.galacticpolymath.com/error');
+    }
+
+    
 
     if (pathname === "/password-reset") {
       search = search.replace("?", "");
