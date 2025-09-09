@@ -29,7 +29,7 @@
     "axios": "^1.11.0",
     "bootstrap": "^5.3.8",
     "bootstrap-icons": "^1.13.1",
-    "chalk": "^5.6.0",
+    "chalk": "^5.6.2",
     "d3": "^7.9.0",
     "date-fns": "^4.1.0",
     "dotenv": "^17.2.2",
