@@ -13,7 +13,7 @@ import {
   TUserSchemaV2,
 } from "../models/User/types.js";
 import User from "../models/User/index";
-import { AnyBulkWriteOperation, UpdateWriteOpResult,  } from "mongoose";
+import { AnyBulkWriteOperation, UpdateWriteOpResult } from "mongoose";
 import { waitWithExponentialBackOff } from "../../globalFns.js";
 
 export const getUsers = async <
@@ -459,7 +459,7 @@ export const getUserByEmail = async <
 ) => {
   try {
     const targetUser = await User.findOne(
-      { email: email },
+      { email: { $eq: email } },
       projectionsObj
     ).lean();
 
@@ -484,7 +484,7 @@ export const getUserById = async <
 ): Promise<Pick<TUser, TProjectionKeys> | null> => {
   try {
     const targetUser = await User.findOne(
-      { _id: userId },
+      { _id: { $eq: userId } },
       projectionsObj
     ).lean();
 
@@ -580,8 +580,6 @@ export const createDbArrFilter = (key: TArrFilterKey, val: unknown) => {
   };
 };
 
-// type x = Parameters<typeof User.updateOne>
-
 export const updateUserCustom = async (
   filterQuery: Omit<Partial<TUserSchemaV2>, "password"> = {},
   updatedUserProperties: object,
@@ -593,6 +591,12 @@ export const updateUserCustom = async (
   result?: UpdateWriteOpResult;
 }> => {
   try {
+    if (!getCanUpdateUser(updatedUserProperties)) {
+      throw new Error(
+        "Cannot update user: forbidden fields detected in update properties"
+      );
+    }
+
     const updateUserResult = await User.updateOne(
       filterQuery,
       updatedUserProperties,
@@ -627,9 +631,34 @@ export const updateUserCustom = async (
   }
 };
 
+type TForbiddenUpdateFields =
+  | "password"
+  | "email"
+  | "provider"
+  | "providerAccountId"
+  | "roles"
+  | "totalSignIns"
+  | "_id"
+  | "lastSignIn";
+
+const getCanUpdateUser = (
+  updatedUserProps: Omit<Partial<TUserSchemaV2>, TForbiddenUpdateFields>
+) => {
+  return !(
+    "password" in updatedUserProps ||
+    "email" in updatedUserProps ||
+    "provider" in updatedUserProps ||
+    "providerAccountId" in updatedUserProps ||
+    "roles" in updatedUserProps ||
+    "totalSignIns" in updatedUserProps ||
+    "_id" in updatedUserProps ||
+    "lastSignIn" in updatedUserProps
+  );
+};
+
 export const updateUser = async (
   filterQuery: Omit<Partial<TUserSchemaV2>, "password"> = {},
-  updatedUserProperties: Omit<Partial<TUserSchemaV2>, "password">,
+  updatedUserProperties: Omit<Partial<TUserSchemaV2>, TForbiddenUpdateFields>,
   updatedUserPropsToFilterOut?: (keyof TUserSchemaV2)[],
   tries = 3
 ): Promise<{
@@ -638,6 +667,12 @@ export const updateUser = async (
   errMsg?: string;
 }> => {
   try {
+    if (!getCanUpdateUser(updatedUserProperties)) {
+      throw new Error(
+        "Cannot update _id, password, email, provider, providerAccountId, roles, totalSignIns, or lastSignIn fields through this method."
+      );
+    }
+
     if (updatedUserProperties.isTeacher === false) {
       updatedUserProperties = {
         ...updatedUserProperties,
@@ -831,9 +866,13 @@ export const deleteUserById = async (userId: string) => {
   }
 };
 
-export const deleteUserByEmail = async (email: string) => {
+export const deleteUserByEmail = async (email: unknown) => {
   try {
-    await User.deleteOne({ email: email });
+    if (typeof email !== "string") {
+      throw new Error("Email must be a string.");
+    }
+
+    await User.deleteOne({ email: { $eq: email } });
 
     return { wasSuccessful: true };
   } catch (error) {

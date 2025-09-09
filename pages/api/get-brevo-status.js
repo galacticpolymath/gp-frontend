@@ -18,14 +18,18 @@ export default async function handler(request, response) {
       throw new Error("Incorrect request method. Must be a 'GET'.");
     }
 
-    if (!request.query || !request.query.mailingListConfirmationId) {
+    if (
+      !request.query ||
+      !request.query.mailingListConfirmationId ||
+      typeof request.query.mailingListConfirmationId !== "string"
+    ) {
       throw new Error(
         "The 'mailingListConfirmationId' param is not found in the request param."
       );
     }
 
     const mailingListConfirmationIdDoc = await MailingListConfirmations.findOne(
-      { _id: request.query.mailingListConfirmationId }
+      { _id: { $eq: request.query.mailingListConfirmationId } }
     ).lean();
 
     if (!mailingListConfirmationIdDoc || !mailingListConfirmationIdDoc.email) {
@@ -45,8 +49,11 @@ export default async function handler(request, response) {
         deleteMailingListConfirmationByEmailPromise,
       ]);
 
-    if (typeof deleteMailingListConfirmationByEmailResult === 'number') {
-      console.log("Able to delete the confirmation email result document in db: ", deleteMailingListConfirmationByEmailResult);
+    if (typeof deleteMailingListConfirmationByEmailResult === "number") {
+      console.log(
+        "Able to delete the confirmation email result document in db: ",
+        deleteMailingListConfirmationByEmailResult
+      );
     }
 
     if (!mailingListContact) {

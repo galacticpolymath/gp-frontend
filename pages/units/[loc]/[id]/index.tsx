@@ -11,6 +11,7 @@
 /* eslint-disable indent */
 
 import Layout from "../../../../components/Layout";
+import sanitizeHtml from "sanitize-html";
 import { useEffect, useMemo, useRef, useState } from "react";
 import ParentLessonSection from "../../../../components/LessonSection/ParentLessonSection";
 import { ToastContainer } from "react-toastify";
@@ -703,7 +704,7 @@ const LessonDetails: React.FC<IProps> = ({ lesson, unit }) => {
   const layoutProps = {
     title: `Mini-Unit: ${_unit.Title}`,
     description: _unit?.Sections?.overview?.TheGist
-      ? removeHtmlTags(_unit.Sections.overview.TheGist)
+      ? sanitizeHtml(_unit.Sections.overview.TheGist)
       : `Description for ${_unit.Title}.`,
     imgSrc: unitBanner,
     url: _unit.URL,

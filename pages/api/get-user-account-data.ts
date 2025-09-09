@@ -68,9 +68,6 @@ export default async function handler(
 ) {
   try {
     const authorization = request?.headers?.["authorization"] ?? "";
-    const gdriveAccessToken = request?.headers?.["gdrive-token"] ?? "";
-    const gdriveRefreshToken = request?.headers?.["gdrive-token-refresh"] ?? "";
-    const origin = new URL(request.headers.referer ?? "").origin;
     const authSplit = authorization.split(" ");
 
     if (authSplit.length !== 2) {

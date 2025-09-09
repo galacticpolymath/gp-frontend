@@ -25,7 +25,7 @@ export default async function handler(request, response) {
       throw new CustomError('Failed to connect to the database.', 500);
     }
 
-    const jwtDoc = await JwtModel.findOne({ _id: request.body.email }).lean();
+    const jwtDoc = await JwtModel.findOne({ _id: { $eq: request.body.email} }).lean();
 
     if (!jwtDoc) {
       return response.status(404).json({
@@ -33,7 +33,7 @@ export default async function handler(request, response) {
       });
     }
 
-    await JwtModel.deleteOne({ _id: request.body.email });
+    await JwtModel.deleteOne({ _id: { $eq: request.body.email} });
 
     return response.status(200).json({ access: jwtDoc.access, refresh: jwtDoc.refresh });
   } catch (error) {

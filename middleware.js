@@ -10,6 +10,17 @@ import {
 import { PASSWORD_RESET_CODE_VAR_NAME } from "./globalVars";
 import axios from "axios";
 
+const escapeHtml = (str) => {
+  if (!str) return "";
+
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#x27;");
+}
+
 const DB_ADMIN_ROUTES = [
   "/api/insert-lesson",
   "/api/delete-lesson",
@@ -442,7 +453,8 @@ export async function middleware(request) {
       status: 400,
     });
   } catch (error) {
-    const errMsg = `An error has occurred in the middleware: ${error}`;
+    const errMsgForClient = escapeHtml(JSON.stringify(error))
+    const errMsg = `An error has occurred in the middleware: ${errMsgForClient}`;
 
     console.error("Middleware errror: ", errMsg);
 

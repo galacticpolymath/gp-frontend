@@ -46,7 +46,7 @@ const insertUnit = async (unit: INewUnitSchema) => {
   }
 };
 
-const deleteUnit = async (_id?: string, queryPair?: [string, unknown]) => {
+const deleteUnit = async (_id?: unknown, queryPair?: [string, unknown]) => {
   try {
     console.log(
       `Attempting to delete unit with id ${_id} and queryPair ${JSON.stringify(
@@ -67,13 +67,19 @@ const deleteUnit = async (_id?: string, queryPair?: [string, unknown]) => {
       };
     }
 
+    if(_id && (typeof _id !== 'string')){
+      throw new Error(
+        "`_id` must be a string."
+      );
+    }
+
     let deletionResult: DeleteResult;
 
     if (queryPair && queryPair.length > 0) {
       const [key, val] = queryPair;
       deletionResult = await Unit.deleteOne({ [key]: val });
     } else {
-      deletionResult = await Unit.deleteOne({ _id });
+      deletionResult = await Unit.deleteOne({ _id: { $eq: _id } });
     }
 
     if (deletionResult.deletedCount === 0) {
@@ -197,8 +203,6 @@ const updateUnit = async (
   customUpdate?: TCustomUpdate
 ) => {
   try {
-    // an example of lesson being updated:
-    // section.participants[0].name = "John Doe"
     if (!Unit) {
       throw new Error(
         "Failed to connect to the database. `Units` collections does not exist."

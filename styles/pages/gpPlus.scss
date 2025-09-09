@@ -67,6 +67,7 @@ $gpGroup: #1ca9e5;
   height: 65px;
   min-width: 65px;
   min-height: 65px;
+
   @media (min-width: 576px) {
     width: 100px;
     height: 100px;
@@ -74,7 +75,6 @@ $gpGroup: #1ca9e5;
 }
 
 .o--Select--select .o--tab-profile {
-  border: solid 1px pink;
   font-size: 0;
   content: "Email";
   font-size: 14px;
@@ -122,7 +122,7 @@ $gpGroup: #1ca9e5;
   }
 }
 
-.gp-plus-signup-modal{
+.gp-plus-signup-modal {
   width: 90%;
 
   @media (min-width: 576px) {
@@ -146,7 +146,7 @@ $gpGroup: #1ca9e5;
   background: linear-gradient(to right, #f5e3f4, #e8e8fa);
 }
 
-.gp-plus-color{
+.gp-plus-color {
   color: $gpPlus !important;
 }
 
@@ -554,7 +554,7 @@ $gpGroup: #1ca9e5;
   }
 }
 
-.o--Widget--widget.o--App--profileWidget{
+.o--Widget--widget.o--App--profileWidget {
   width: 95vw;
 }
 
@@ -568,19 +568,13 @@ $gpGroup: #1ca9e5;
   justify-content: center;
 }
 
-.gp-plus-user-color{
-  background: linear-gradient(
-    -43deg,
-    #E536A8 0%,
-    #5C24CF 59%,
-    #0AACE8 100%
-  );
+.gp-plus-user-color {
+  background: linear-gradient(-43deg, #e536a8 0%, #5c24cf 59%, #0aace8 100%);
 }
 
-.free-user-color{
-  background: #00aceb
+.free-user-color {
+  background: #00aceb;
 }
-
 
 .avatar-ring img {
   width: 100%;
@@ -589,15 +583,15 @@ $gpGroup: #1ca9e5;
   object-fit: cover;
 }
 
-.o--Badge--displayMode-light{
+.o--Badge--displayMode-light {
   display: none !important;
 }
 
-.show-gp-plus-element{
+.show-gp-plus-element {
   display: inline-block !important;
 }
 
-.o--HorizontalToggle--displayMode-light{
+.o--HorizontalToggle--displayMode-light {
   display: flex;
   justify-content: center;
   align-items: center;
