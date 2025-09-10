@@ -222,7 +222,7 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
       viewId: "DOCS",
       token: validToken,
       showUploadView: true,
-      // setParentFolder: sharedGDriveLessonFolderId,
+      setParentFolder: sharedGDriveLessonFolderId,
       showUploadFolders: true,
       customScopes: [
         "https://www.googleapis.com/auth/drive.file",
