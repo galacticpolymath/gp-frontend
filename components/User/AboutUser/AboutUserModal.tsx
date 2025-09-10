@@ -20,7 +20,6 @@ import {
   SCHOOL_TYPES,
   SCHOOL_TYPES_SET,
   TSchoolType,
-  TUserAccount,
   useUserContext,
 } from "../../../providers/UserProvider";
 import CountrySection from "./sections/CountrySection";
@@ -45,6 +44,7 @@ import InstitutionAndSchoolType from "./sections/InstitutionAndSchoolType";
 import ReasonsForSiteVisitSec from "./sections/ReasonsForSiteVisitSec";
 import { getAboutUserFormForClient } from "../../../customHooks/useGetAboutUserForm";
 import { TUserSchemaForClient } from "../../../backend/models/User/types";
+import { getLocalStorageItem } from "../../../shared/fns";
 const INPUT_MAX_WIDTH = "400px";
 
 type TAccordionToggleBtnProps = {
@@ -123,13 +123,11 @@ const AboutUserModal = () => {
       return { first: "", last: "" };
     }
 
-    const userAccountSaved = JSON.parse(
-      localStorage.getItem("userAccount") ?? "{}"
-    );
+    const userAccountSaved = getLocalStorageItem("userAccount");
 
     return {
-      first: userAccountSaved?.firstName ?? userAccountSaved?.name?.first ?? "",
-      last: userAccountSaved?.lastName ?? userAccountSaved?.name?.last ?? "",
+      first: userAccountSaved?.firstName ?? "",
+      last: userAccountSaved?.lastName ?? "",
     } as { first: string; last: string };
   };
 
@@ -186,15 +184,13 @@ const AboutUserModal = () => {
       return;
     }
 
-    const userAccountStringified = localStorage.getItem("userAccount");
+    const userAccount = getLocalStorageItem("userAccount");
 
-    if (userAccountStringified) {
+    if (userAccount) {
       setTimeout(() => {
-        const userAccount = JSON.parse(
-          userAccountStringified
-        ) as TUserSchemaForClient;
-
-        setAboutUserForm(getAboutUserFormForClient(userAccount).userAccountForClient);
+        setAboutUserForm(
+          getAboutUserFormForClient(userAccount).userAccountForClient
+        );
       }, 300);
     }
 

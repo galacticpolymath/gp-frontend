@@ -157,7 +157,7 @@ export const setLocalStorageItem = <
 
   if (KEYS_OF_VALUES_TO_ENCRYPT.has(key) && key === "userAccount") {
     console.log("Encrypting user account data for localStorage");
-    
+
     const encryptedVal = CryptoJS.AES.encrypt(
       JSON.stringify(val),
       process.env.NEXT_PUBLIC_ENCRYPTION_KEY!
@@ -189,11 +189,16 @@ export const getLocalStorageItem = <
     if (KEYS_OF_VALUES_TO_ENCRYPT.has(key) && key === "userAccount") {
       console.log("Decrypting user account data from localStorage");
 
+      console.log("parsableVal: ", parsableVal);
+
+      console.log("process.env.NEXT_PUBLIC_ENCRYPTION_KEY: ", process.env.NEXT_PUBLIC_ENCRYPTION_KEY);
+
       const bytes = CryptoJS.AES.decrypt(
         parsableVal,
         process.env.NEXT_PUBLIC_ENCRYPTION_KEY!
-      ).toString();
-      const userAccountData: TVal = JSON.parse(bytes.toString());
+      );
+      const str = bytes.toString(CryptoJS.enc.Utf8)
+      const userAccountData: TVal = JSON.parse(str);
 
       return userAccountData;
     }

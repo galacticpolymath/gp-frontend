@@ -2,11 +2,13 @@ import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { IUserSession } from "../types/global";
 import axios from "axios";
+import { userAccountDefault, useUserContext } from "../providers/UserProvider";
 import {
-  userAccountDefault,
-  useUserContext,
-} from "../providers/UserProvider";
-import { IUserSchema, TUserSchemaForClient, TUserSchemaV2 } from "../backend/models/User/types";
+  IUserSchema,
+  TUserSchemaForClient,
+  TUserSchemaV2,
+} from "../backend/models/User/types";
+import { setLocalStorageItem } from "../shared/fns";
 
 export const getAboutUserFormForClient = (
   userAccount: TUserSchemaForClient<TUserSchemaV2 & IUserSchema>
@@ -243,16 +245,18 @@ const getUserAccountData = async (token: string) => {
     }
 
     return response.data;
-  } catch(error){
+  } catch (error) {
     console.error("Error in getUserAccountData: ", error);
   }
-}
+};
 
 export const useGetAboutUserForm = (willGetData: boolean = true) => {
   const { status, data } = useSession();
   const { _aboutUserForm } = useUserContext();
   const [aboutUserForm, setAboutUserForm] = _aboutUserForm;
-  const [gpPlusSub, setGpPlusSub] = useState<TUserSchemaForClient["gpPlusSubscription"] | null>(null);
+  const [gpPlusSub, setGpPlusSub] = useState<
+    TUserSchemaForClient["gpPlusSubscription"] | null
+  >(null);
   const { user, token } = (data ?? {}) as IUserSession;
   const [isRetrievingUserData, setIsRetrievingUserData] = useState(true);
 
@@ -269,7 +273,7 @@ export const useGetAboutUserForm = (willGetData: boolean = true) => {
               Authorization: `Bearer ${token}`,
             },
           };
-          
+
           const response = await axios.get<
             TUserSchemaForClient<TUserSchemaV2 & IUserSchema>
           >("/api/get-user-account-data", paramsAndHeaders);
@@ -313,7 +317,7 @@ export const useGetAboutUserForm = (willGetData: boolean = true) => {
             gradesType,
           } = userAccount;
 
-          if(gpPlusSubscription) {
+          if (gpPlusSubscription) {
             setGpPlusSub(gpPlusSubscription);
           }
 
@@ -501,7 +505,9 @@ export const useGetAboutUserForm = (willGetData: boolean = true) => {
 
           userAccountForClient.isTeacher = isTeacher ?? false;
 
-          localStorage.setItem("userAccount", JSON.stringify(userAccount));
+          // localStorage.setItem("userAccount", JSON.stringify(userAccount));
+
+          setLocalStorageItem("userAccount", userAccount);
 
           setAboutUserForm(userAccountForClient);
         } catch (error) {

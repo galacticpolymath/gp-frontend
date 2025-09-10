@@ -18,7 +18,11 @@ import {
   TGpPlusSubscriptionForClient,
 } from "../../../backend/models/User/types";
 import { Spinner } from "react-bootstrap";
-import { getIsWithinParentElement, removeLocalStorageItem } from "../../../shared/fns";
+import {
+  getIsWithinParentElement,
+  getLocalStorageItem,
+  removeLocalStorageItem,
+} from "../../../shared/fns";
 import {
   deleteUserFromServerCache,
   getIndividualGpPlusSubscription,
@@ -88,8 +92,8 @@ const LoginContainerForNavbar = ({ _modalAnimation }: IProps) => {
   const [aboutUserForm] = _aboutUserForm;
   const [isRetrievingUserData] = _isRetrievingUserData;
   const userAccountSaved = (
-    typeof localStorage !== "undefined" && localStorage.getItem("userAccount")
-      ? JSON.parse(localStorage.getItem("userAccount") ?? "{}")
+    typeof localStorage !== "undefined"
+      ? getLocalStorageItem("userAccount") ?? {}
       : {}
   ) as TAboutUserForm;
   const [modalAnimation, setModalAnimation] = _modalAnimation;
