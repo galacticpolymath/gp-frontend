@@ -102,7 +102,8 @@ type TGoogleAuthScopes =
   | "https://www.googleapis.com/auth/admin.directory.group"
   | "https://www.googleapis.com/auth/admin.directory.user";
 
-export const getIsValidFileId = (id: unknown) => typeof id === 'string' && /^[a-zA-Z0-9_-]{10,}$/.test(id);
+export const getIsValidFileId = (id: unknown) =>
+  typeof id === "string" && /^[a-zA-Z0-9_-]{10,}$/.test(id);
 
 export const createDrive = async (
   scopes: TGoogleAuthScopes[] = ["https://www.googleapis.com/auth/drive"],
@@ -1505,9 +1506,11 @@ export const copyFiles = async (
   // check if the permission were propagated to all of the files to copy
   for (const fileIdIndex in fileIds) {
     const fileId = fileIds[fileIdIndex];
-    
-    if(!getIsValidFileId(fileId)){
-      console.error(`Invalid file ID: ${fileId}. Skipping file: ${fileNames[fileIdIndex]}`);
+
+    if (!getIsValidFileId(fileId)) {
+      console.error(
+        `Invalid file ID: ${fileId}. Skipping file: ${fileNames[fileIdIndex]}`
+      );
       wasJobSuccessful = false;
       continue;
     }
@@ -1591,8 +1594,11 @@ export const copyFiles = async (
     } else if (fileNames[fileIdIndex] && fileCopyResult?.errType) {
       wasJobSuccessful = false;
       console.error(
-        `Failed to copy file ${fileNames[fileIdIndex]} for user with email ${email}. Reason: `,
-        fileCopyResult
+        "Failed to copy file for user.",
+        "Filename: ",
+        fileNames[fileIdIndex],
+        "Email: ",
+        email,
       );
       sendMessageToClient({
         failedCopiedFile: fileNames[fileIdIndex],
