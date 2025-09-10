@@ -18,7 +18,7 @@ import {
   TGpPlusSubscriptionForClient,
 } from "../../../backend/models/User/types";
 import { Spinner } from "react-bootstrap";
-import { getIsWithinParentElement } from "../../../shared/fns";
+import { getIsWithinParentElement, removeLocalStorageItem } from "../../../shared/fns";
 import {
   deleteUserFromServerCache,
   getIndividualGpPlusSubscription,
@@ -157,7 +157,9 @@ const LoginContainerForNavbar = ({ _modalAnimation }: IProps) => {
       return false;
     });
 
-    window.Outseta?.logout();
+    window.Outseta?.on("signup", () => {
+      removeLocalStorageItem("selectedGpPlusBillingType");
+    });
   };
 
   const closeModal = () => {

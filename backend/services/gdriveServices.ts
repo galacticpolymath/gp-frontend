@@ -102,6 +102,8 @@ type TGoogleAuthScopes =
   | "https://www.googleapis.com/auth/admin.directory.group"
   | "https://www.googleapis.com/auth/admin.directory.user";
 
+const getIsValidFileId = (id: unknown) => typeof id === 'string' && /^[a-zA-Z0-9_-]{10,}$/.test(id);
+
 export const createDrive = async (
   scopes: TGoogleAuthScopes[] = ["https://www.googleapis.com/auth/drive"],
   clientOptions?: GoogleAuthOptions["clientOptions"]
@@ -1247,7 +1249,9 @@ export const shareFileWithUser = async (
       driveId: process.env.GOOGLE_DRIVE_ID,
     });
 
-    return permissionUpdateResult as unknown as { data: drive_v3.Schema$Permission};
+    return permissionUpdateResult as unknown as {
+      data: drive_v3.Schema$Permission;
+    };
   } catch (error: any) {
     console.error(
       "Failed to share files with the target user. Reason: ",
@@ -1282,13 +1286,21 @@ export const updatePermissionsForSharedFileItems = async (
     throw new CustomError("The file does not have a parent folder.", 500);
   }
 
-  const shareParentFolderResult = await shareFileWithUser(parentFolderId, email, drive)
+  const shareParentFolderResult = await shareFileWithUser(
+    parentFolderId,
+    email,
+    drive
+  );
 
   console.log("shareParentFolderResult: ", shareParentFolderResult);
 
   await sleep(1_500);
 
-  console.log(`Updating permissions for shared file items. Email: ${email}, File IDs: ${fileIds.join(', ')}`);
+  console.log(
+    `Updating permissions for shared file items. Email: ${email}, File IDs: ${fileIds.join(
+      ", "
+    )}`
+  );
 
   let targetPermission = await getTargetUserPermission(
     parentFolderId,
@@ -1307,7 +1319,7 @@ export const updatePermissionsForSharedFileItems = async (
       tries
     );
 
-    if(tries <= 0){
+    if (tries <= 0) {
       didFailToGetTargetPermission = true;
       break;
     }
@@ -1340,14 +1352,14 @@ export const updatePermissionsForSharedFileItems = async (
 
   console.log("Will update the permission of the target file.");
 
-  const shareFilesResultPromises = fileIds.map(fileId => {
-    return shareFileWithUser(fileId, email, drive, "writer")
+  const shareFilesResultPromises = fileIds.map((fileId) => {
+    return shareFileWithUser(fileId, email, drive, "writer");
   });
   const shareFilesResults = await Promise.all(shareFilesResultPromises);
 
-  shareFilesResults.forEach(result => {
-    console.log("Share file result: ", result?.data?.role)
-  })
+  shareFilesResults.forEach((result) => {
+    console.log("Share file result: ", result?.data?.role);
+  });
 
   // make the target files read only
   for (const fileId of fileIds) {
@@ -1493,6 +1505,13 @@ export const copyFiles = async (
   // check if the permission were propagated to all of the files to copy
   for (const fileIdIndex in fileIds) {
     const fileId = fileIds[fileIdIndex];
+    
+    if(!getIsValidFileId(fileId)){
+      console.error(`Invalid file ID: ${fileId}. Skipping file: ${fileNames[fileIdIndex]}`);
+      wasJobSuccessful = false;
+      continue;
+    }
+
     const permission = await getTargetUserPermission(fileId, email, drive);
 
     let userUpdatedRole = permission?.role;
@@ -1510,7 +1529,7 @@ export const copyFiles = async (
       "Made the target file read only and changed the target user's permission to writer."
     );
 
-    let didFailedToUpdateFilePermissions = false
+    let didFailedToUpdateFilePermissions = false;
 
     console.log(`userUpdatedRole: ${userUpdatedRole}`);
 
@@ -1535,8 +1554,8 @@ export const copyFiles = async (
       tries -= 1;
     }
 
-    if(didFailedToUpdateFilePermissions){
-      wasJobSuccessful = false
+    if (didFailedToUpdateFilePermissions) {
+      wasJobSuccessful = false;
       continue;
     }
 
