@@ -151,9 +151,24 @@ export default async function handler(
 
   const reqQueryParams = request.query as unknown as TCopyLessonReqQueryParams;
   let parentFolder: { id: string; permissionId: string } | null = null;
-
   let wasUserRolesAndFileMetaDataReseted = false;
   let _fileIds = typeof reqQueryParams.fileIds === 'string' ? [reqQueryParams.fileIds] : reqQueryParams.fileIds
+  const clientOrigin = new URL(request.headers.referer ?? "").origin;
+
+  for (const fileId of _fileIds){
+    const result = await copyGDriveItem(
+        gDriveAccessToken!,
+        [],
+        fileId,
+        gDriveRefreshToken!,
+        clientOrigin
+      );
+      
+    console.log("Result: ", result);    
+  }
+
+
+  throw new Error("An error has occurred.");
 
   response.on("close", async () => {
     console.log("The user closed the stream.");
