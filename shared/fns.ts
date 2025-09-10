@@ -1,12 +1,21 @@
 import moment from "moment";
 import { INewUnitSchema } from "../backend/models/Unit/types/unit";
 import { ILocalStorage, IUnitForUnitsPg, TLiveUnit } from "../types/global";
-import { GOOGLE_DRIVE_PROJECT_CLIENT_ID, STATUSES_OF_SHOWABLE_LESSONS } from "../globalVars";
+import {
+  GOOGLE_DRIVE_PROJECT_CLIENT_ID,
+  STATUSES_OF_SHOWABLE_LESSONS,
+} from "../globalVars";
+import CryptoJS from "crypto-js";
+import { TUserSchemaForClient } from "../backend/models/User/types";
 
-export const random = (min: number, max: number) => Math.floor(Math.random() * (max - min)) + min;
+export const random = (min: number, max: number) =>
+  Math.floor(Math.random() * (max - min)) + min;
 
-export function getIsMouseInsideElement(element: HTMLElement, { xCordinate, yCordinate }: { xCordinate: number, yCordinate: number }) {
-  const rect = element.getBoundingClientRect();;
+export function getIsMouseInsideElement(
+  element: HTMLElement,
+  { xCordinate, yCordinate }: { xCordinate: number; yCordinate: number }
+) {
+  const rect = element.getBoundingClientRect();
 
   return (
     xCordinate > rect.left &&
@@ -129,54 +138,89 @@ export const getTotalUnitLessons = (unit: INewUnitSchema) => {
   return unitObjUpdated;
 };
 
-const KEYS_OF_VALUES_TO_ENCRYPT = ["userAccount"] as const;
+const KEYS_OF_VALUES_TO_ENCRYPT = new Set([
+  "userAccount",
+] as (keyof ILocalStorage)[]);
 
 export const removeLocalStorageItem = (key: keyof ILocalStorage) => {
-    localStorage.removeItem(key);
-}
+  localStorage.removeItem(key);
+};
 
-export const setLocalStorageItem = <TKey extends keyof ILocalStorage,
-  TVal extends ILocalStorage[TKey]>(key: TKey, val: TVal) => {
-    localStorage.setItem(key, JSON.stringify(val)); 
-}
+export const setLocalStorageItem = <
+  TKey extends keyof ILocalStorage,
+  TVal extends ILocalStorage[TKey]
+>(
+  key: TKey,
+  val: TVal
+) => {
+  console.log("Setting localStorage item:", key, val);
 
-export const getLocalStorageItem = <TKey extends keyof ILocalStorage,
-  TVal extends ILocalStorage[TKey]>(key: TKey): TVal | null => {
-    try {
-      if(typeof localStorage === "undefined") {
-        return null;
-      }
+  if (KEYS_OF_VALUES_TO_ENCRYPT.has(key) && key === "userAccount") {
+    console.log("Encrypting user account data for localStorage");
+    
+    const encryptedVal = CryptoJS.AES.encrypt(
+      JSON.stringify(val),
+      process.env.NEXT_PUBLIC_ENCRYPTION_KEY!
+    ).toString();
+    localStorage.setItem(key, encryptedVal);
+    return;
+  }
 
-      const parsableVal = localStorage.getItem(key);
+  localStorage.setItem(key, JSON.stringify(val));
+};
 
-      if (!parsableVal) {
-        return null;
-      }
-
-      return JSON.parse(parsableVal) as TVal; 
-    } catch(error){
-      console.error("Failed to retrieve the target item. Reason: ", error);
-
+export const getLocalStorageItem = <
+  TKey extends keyof ILocalStorage,
+  TVal extends ILocalStorage[TKey]
+>(
+  key: TKey
+): TVal | null => {
+  try {
+    if (typeof localStorage === "undefined") {
       return null;
     }
-}
+
+    const parsableVal = localStorage.getItem(key);
+
+    if (!parsableVal) {
+      return null;
+    }
+
+    if (KEYS_OF_VALUES_TO_ENCRYPT.has(key) && key === "userAccount") {
+      console.log("Decrypting user account data from localStorage");
+
+      const bytes = CryptoJS.AES.decrypt(
+        parsableVal,
+        process.env.NEXT_PUBLIC_ENCRYPTION_KEY!
+      ).toString();
+      const userAccountData: TVal = JSON.parse(bytes.toString());
+
+      return userAccountData;
+    }
+
+    return JSON.parse(parsableVal) as TVal;
+  } catch (error) {
+    console.error("Failed to retrieve the target item. Reason: ", error);
+
+    return null;
+  }
+};
 
 export const createGDriveAuthUrl = () => {
   const authUrl = new URL("https://accounts.google.com/o/oauth2/auth");
   // protects against CSRF attacks
   const state = Math.random().toString(36).substring(7);
-  const _redirectUri = new URL(`${window.location.origin}/google-drive-auth-result`);
-
+  const _redirectUri = new URL(
+    `${window.location.origin}/google-drive-auth-result`
+  );
 
   console.log("_redirectUri: ", _redirectUri.href);
 
-  const scopes = "https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/userinfo.email";
+  const scopes =
+    "https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/userinfo.email";
   const params = [
     ["state", state],
-    [
-      "client_id",
-      GOOGLE_DRIVE_PROJECT_CLIENT_ID,
-    ],
+    ["client_id", GOOGLE_DRIVE_PROJECT_CLIENT_ID],
     ["redirect_uri", _redirectUri.href],
     ["scope", scopes],
     ["response_type", "code"],
@@ -189,23 +233,25 @@ export const createGDriveAuthUrl = () => {
   }
 
   return authUrl.href;
-}
+};
 
-const getIsWithinTargetElements = (selectorName: Set<string>, targetAttributeVal: string) => {
+const getIsWithinTargetElements = (
+  selectorName: Set<string>,
+  targetAttributeVal: string
+) => {
   const selectorNames = Array.from(selectorName);
   let isWithinElement = false;
 
   for (const selectorName of selectorNames) {
-    if(selectorName.includes(targetAttributeVal)){
+    if (selectorName.includes(targetAttributeVal)) {
       isWithinElement = true;
 
       return isWithinElement;
     }
   }
 
-
   return isWithinElement;
-}
+};
 
 export const getIsWithinParentElement = (
   element: HTMLElement,
@@ -229,10 +275,12 @@ export const getIsWithinParentElement = (
 
   if (comparisonType === "includes" && element.parentElement[attributeType]) {
     const attributeVal = element.parentElement[attributeType];
-    const isStr = typeof element.parentElement?.[attributeType] === 'string';
+    const isStr = typeof element.parentElement?.[attributeType] === "string";
     isWithinParentElement =
       typeof selectorName === "string"
-        ? isStr ? element.parentElement?.[attributeType]?.includes(selectorName) : false
+        ? isStr
+          ? element.parentElement?.[attributeType]?.includes(selectorName)
+          : false
         : getIsWithinTargetElements(selectorName, attributeVal);
   } else if (
     comparisonType === "strictEquals" &&
@@ -262,8 +310,9 @@ export const getIsWithinParentElement = (
     attributeType,
     comparisonType
   );
-}
-export const getBillingTerm = (billingTermNum: 1 | 2) => billingTermNum === 1 ? "Monthly" : "Yearly";
+};
+export const getBillingTerm = (billingTermNum: 1 | 2) =>
+  billingTermNum === 1 ? "Monthly" : "Yearly";
 
 export const calculatePercentSaved = (
   expensivePlanPerMonth: number,
@@ -274,4 +323,4 @@ export const calculatePercentSaved = (
       (expensivePlanPerMonth * 12)) *
       100
   );
-}
+};
