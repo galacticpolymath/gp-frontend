@@ -26,10 +26,13 @@ import {
   getGDriveItem,
   createUnitFolder,
   copyFiles,
-  shareFilesWithUser,
   shareFileWithUser,
   getIsValidFileId,
-} from "../../../backend/services/gdriveServices";
+  updatePermissionsForSharedFileItems,
+  logFailedFileCopyToExcel,
+  IFailedFileCopy,
+  renameFiles
+} from "../../../backend/services/gdriveServices/index";
 import { sleep, waitWithExponentialBackOff } from "../../../globalFns";
 import { drive_v3 } from "googleapis";
 import {
@@ -38,11 +41,7 @@ import {
 } from "../../../backend/models/User/types";
 import { INewUnitLesson } from "../../../backend/models/Unit/types/teachingMaterials";
 import { connectToMongodb } from "../../../backend/utils/connection";
-import {
-  updatePermissionsForSharedFileItems,
-  logFailedFileCopyToExcel,
-  IFailedFileCopy,
-} from "../../../backend/services/gdriveServices";
+import { TFilesToRename } from "../../../backend/services/gdriveServices/types";
 
 export const maxDuration = 240;
 export const VALID_WRITABLE_ROLES = new Set([
@@ -222,13 +221,10 @@ export default async function handler(
       );
     }
 
-    console.log("reqQueryParams?.fileIds: ", reqQueryParams?.fileIds);
-
     if (
       !reqQueryParams.unitId ||
       !reqQueryParams.unitName ||
       !reqQueryParams.unitSharedGDriveId ||
-      !Array.isArray(reqQueryParams?.fileIds) ||
       !reqQueryParams?.fileIds?.length ||
       !reqQueryParams?.lessonId ||
       !reqQueryParams?.lessonSharedDriveFolderName ||
@@ -1306,6 +1302,8 @@ export default async function handler(
       "Made the target file read only and changed the target user's permission to writer. Will copy files."
     );
 
+    let copiedFiles: TFilesToRename = [];
+
     // check if the permission were propagated to all of the files to copy
     for (const fileIdIndex in reqQueryParams.fileIds) {
       const fileId = reqQueryParams.fileIds[fileIdIndex];
@@ -1388,6 +1386,14 @@ export default async function handler(
         console.log(
           `Successfully copied file ${reqQueryParams.fileNames[fileIdIndex]}`
         );
+        
+        const fileToCopy = {
+          id: fileCopyResult.id,
+          name: reqQueryParams.fileNames[fileIdIndex]
+        }
+
+        copiedFiles.push(fileToCopy)
+        
         sendMessage(response, {
           fileCopied: reqQueryParams.fileNames[fileIdIndex],
         });
@@ -1439,6 +1445,18 @@ export default async function handler(
       }
     }
     console.log("targetLessonFolder.id, java: ", targetLessonFolderInUserDrive);
+
+    console.log("copiedFiles: ", copiedFiles);
+
+    if(copiedFiles.length){
+      const copyFilesResult = await renameFiles(copiedFiles, gDriveAccessToken, gDriveRefreshToken, clientOrigin)
+
+      console.log("The file names update results: ", copyFilesResult);
+      
+      if(!copyFilesResult.wasSuccessful){
+        console.error("Failed to rename copied files. Error type: ", copyFilesResult.errType);
+      }
+    }
 
     sendMessage(response, {
       isJobDone: true,

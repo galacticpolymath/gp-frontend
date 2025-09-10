@@ -33,7 +33,6 @@ import {
   getPlans,
   TAccountStageLabel,
 } from "../backend/services/outsetaServices";
-import { useHandleGpPlusLogin } from "../customHooks/useHandleGpPlusLogin";
 import { useHandleGpPlusCheckoutSessionModal } from "../customHooks/useHandleGpPlusCheckoutSessionModal";
 
 interface IProps {
@@ -83,10 +82,7 @@ const CardTitle: React.FC<{ children: ReactNode }> = ({ children }) => {
   );
 };
 
-const GpPlus: React.FC<IProps> = ({
-  liveUnitsTotal,
-  plusPlanPercentSaved,
-}) => {
+const GpPlus: React.FC<IProps> = ({ liveUnitsTotal, plusPlanPercentSaved }) => {
   const [billingPeriod, setBillingPeriod] = useState<"monthly" | "yearly">(
     "yearly"
   );
@@ -710,10 +706,12 @@ const GpPlus: React.FC<IProps> = ({
                         height: BTN_HEIGHT,
                       }}
                       onClick={() => {
-                        window.open(
-                          "https://www.galacticpolymath.com/gp-group-pricing",
-                          "_blank"
-                        )?.focus();
+                        window
+                          .open(
+                            "https://www.galacticpolymath.com/gp-group-pricing",
+                            "_blank"
+                          )
+                          ?.focus();
                       }}
                     >
                       Request a quote

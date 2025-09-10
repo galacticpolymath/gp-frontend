@@ -105,10 +105,10 @@ const AccountPg: React.FC = () => {
   const lastName = aboutUserForm.lastName;
   const gpPlusAnchorElementRef = useRef<HTMLAnchorElement | null>(null);
   const selectedBillingPeriod = useMemo(() => {
-    if(typeof window === 'undefined'){
+    if (typeof window === "undefined") {
       return "year";
-    };
-    
+    }
+
     const selectedGpPlusBillingType = getLocalStorageItem(
       "selectedGpPlusBillingType"
     );
@@ -117,7 +117,6 @@ const AccountPg: React.FC = () => {
   }, []);
 
   useHandleGpPlusCheckoutSessionModal();
-
 
   const gpPlusBillingTerm = useMemo(() => {
     if (gpPlusSub?.BillingRenewalTerm) {
@@ -545,7 +544,7 @@ const AccountPg: React.FC = () => {
                   className="d-flex justify-content-center align-items-center border-0 rounded px-2 py-1"
                   disabled={false}
                   style={{
-                    backgroundColor: "#2D69D1",
+                    backgroundColor: "#1C28BD",
                     minWidth: "260px",
                     height: "64px",
                   }}
@@ -555,18 +554,18 @@ const AccountPg: React.FC = () => {
                   ) : (
                     <>
                       <Image
-                        src="/imgs/gp-logos/gp_submark.png"
+                        src="/plus/plus.png"
                         alt="gp_plus_logo"
-                        width={55}
-                        height={55}
+                        width={40}
+                        height={40}
                         style={{
-                          width: "55px",
-                          height: "55px",
+                          width: "40px",
+                          height: "40px",
                           objectFit: "contain",
                         }}
                         className="mx-1"
                       />
-                      <span className="text-white">My subscription</span>
+                      <span className="text-white ms-1">My subscription</span>
                     </>
                   )}
                 </BootstrapBtn>

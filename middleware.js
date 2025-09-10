@@ -19,7 +19,7 @@ const escapeHtml = (str) => {
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#x27;");
-}
+};
 
 const DB_ADMIN_ROUTES = [
   "/api/insert-lesson",
@@ -61,7 +61,11 @@ const getUnitNum = (pathName) =>
       )
   );
 const UNITS_PATH_NAME = "units";
-const VALID_CLIENT_DOMAINS = new Set(['https://dev.galacticpolymath.com', 'http://localhost:3000', 'https://teach.galacticpolymath.com']);
+const VALID_CLIENT_DOMAINS = new Set([
+  "https://dev.galacticpolymath.com",
+  "http://localhost:3000",
+  "https://teach.galacticpolymath.com",
+]);
 
 export async function middleware(request) {
   try {
@@ -76,10 +80,8 @@ export async function middleware(request) {
     if (!VALID_CLIENT_DOMAINS.has(nextUrl.origin)) {
       console.error(`Invalid client domain detected: ${nextUrl.origin}`);
 
-      return NextResponse.redirect('https://teach.galacticpolymath.com/error');
+      return NextResponse.redirect("https://teach.galacticpolymath.com/error");
     }
-
-    
 
     if (pathname === "/password-reset") {
       search = search.replace("?", "");
@@ -329,11 +331,14 @@ export async function middleware(request) {
         return errResponse;
       }
 
-      const { data, status } = axios.get("/api/gp-plus/get-is-individual-member", {
-        headers: {
-          authorization: authorizationStr,
-        },
-      });
+      const { data, status } = axios.get(
+        "/api/gp-plus/get-is-individual-member",
+        {
+          headers: {
+            authorization: authorizationStr,
+          },
+        }
+      );
       const { errType, isGpPlusMember } = data ?? {};
 
       console.log("Status, get is user a gp plus member: ", status);
@@ -430,11 +435,10 @@ export async function middleware(request) {
         authorizationStr) ||
       (nextUrl.pathname == "/api/get-user-account-data" &&
         method === "GET" &&
+        authorizationStr) ||
+      (nextUrl.pathname == "/api/gp-plus/copy-lesson" &&
+        method === "GET" &&
         authorizationStr)
-      // || 
-      // (nextUrl.pathname == "/api/gp-plus/outseta/reset-outseta-email" &&
-      //   method === "DELETE" &&
-      //   authorizationStr)
     ) {
       const willCheckIfUserIsDbAdmin = DB_ADMIN_ROUTES_SET.has(
         nextUrl.pathname
@@ -453,7 +457,7 @@ export async function middleware(request) {
       status: 400,
     });
   } catch (error) {
-    const errMsgForClient = escapeHtml(JSON.stringify(error))
+    const errMsgForClient = escapeHtml(JSON.stringify(error));
     const errMsg = `An error has occurred in the middleware: ${errMsgForClient}`;
 
     console.error("Middleware errror: ", errMsg);

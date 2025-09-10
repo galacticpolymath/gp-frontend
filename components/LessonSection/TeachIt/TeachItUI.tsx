@@ -518,7 +518,7 @@ const TeachItUI = <
                         </>
                       ) : (
                         <>
-                          Browse on Entire Unit on
+                          Browse the Entire Unit on
                           <em
                             style={{ paddingLeft: "2px", paddingRight: "6px" }}
                           >

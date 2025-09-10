@@ -296,6 +296,7 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
                   toastId,
                   autoClose: 3000,
                 });
+                setIsCopyingLesson(false);
               }}
               jobStatus="ongoing"
             />,
