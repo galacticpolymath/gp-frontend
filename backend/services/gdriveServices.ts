@@ -1675,3 +1675,128 @@ export const addNewGDriveLessonToTargetUser = async (
     };
   }
 };
+
+const renameFiles = async (
+  fileCopies: { id: string; name: string }[],
+  gdriveAccessToken: string,
+  gdriveRefreshToken: string,
+  origin: string,
+  tries = 5
+) => {
+  try {
+    const fileUpdatesPromises = fileCopies.map((file) => {
+      return updateFile(file.id, { title: file.name }, gdriveAccessToken);
+    });
+    const fileUpdatesResults = await Promise.all(fileUpdatesPromises);
+    const filesUpdateFailedDueToTimeout = fileUpdatesResults.filter(
+      (result) => {
+        return result.errType === "timeout";
+      }
+    );
+    const filesUpdateFailedDueInvalidAuthToken = fileUpdatesResults.filter(
+      (result) => {
+        return result.errType === "unauthenticated";
+      }
+    );
+
+    if (
+      !filesUpdateFailedDueInvalidAuthToken.length &&
+      !filesUpdateFailedDueToTimeout.length
+    ) {
+      console.log("All files have been successfully renamed.");
+
+      return {
+        wasSuccessful: true,
+      };
+    }
+
+    if (filesUpdateFailedDueInvalidAuthToken.length && tries > 0) {
+      tries -= 1;
+      const refreshTokenRes =
+        (await refreshAuthToken(gdriveRefreshToken, origin)) ?? {};
+      const { accessToken, wasSuccessful } = refreshTokenRes;
+
+      if (!wasSuccessful) {
+        return {
+          wasSuccessful: false,
+          errType: "invalidAuthToken",
+        };
+      }
+
+      const filesToUpdateRetry: Parameters<typeof renameFiles>[0] = [];
+
+      for (const fileUpdateResult of fileUpdatesResults) {
+        console.log("fileUpdateResult: ", fileUpdateResult);
+
+        if (
+          "errType" in fileUpdateResult &&
+          (fileUpdateResult.errType === "timeout" ||
+            fileUpdateResult.errType === "unauthenticated")
+        ) {
+          filesToUpdateRetry.push({
+            id: fileUpdateResult.fileId as string,
+            name: (fileUpdateResult.reqBody as IFile).title,
+          });
+        }
+      }
+
+      return await renameFiles(
+        filesToUpdateRetry,
+        accessToken,
+        gdriveRefreshToken,
+        origin,
+        tries
+      );
+    }
+
+    if (filesUpdateFailedDueToTimeout.length && tries > 0) {
+      const filesToUpdateRetry: Parameters<typeof renameFiles>[0] = [];
+
+      for (const fileUpdateResult of filesUpdateFailedDueToTimeout) {
+        console.log("fileUpdateResult: ", fileUpdateResult);
+
+        if (
+          "errType" in fileUpdateResult &&
+          fileUpdateResult.errType === "timeout"
+        ) {
+          filesToUpdateRetry.push({
+            id: fileUpdateResult.fileId as string,
+            name: (fileUpdateResult.reqBody as IFile).title,
+          });
+        }
+      }
+
+      tries -= 1;
+      await waitWithExponentialBackOff(tries, [2_000, 5_000]);
+
+      return await renameFiles(
+        filesToUpdateRetry,
+        gdriveAccessToken,
+        gdriveRefreshToken,
+        origin,
+        tries
+      );
+    }
+
+    const filesFailedToUpdated = fileUpdatesResults.map((fileUpdateResult) => {
+      return (
+        "errType" in fileUpdateResult &&
+        (fileUpdateResult.errType === "timeout" ||
+          fileUpdateResult.errType === "unauthenticated")
+      );
+    });
+
+    return {
+      failedUpdatedFiles: filesFailedToUpdated,
+      wasSuccessful: false,
+      errType: "fileUpdateErr",
+    };
+  } catch (error) {
+    console.error("Error renaming files:", error);
+
+    return {
+      errType: "renameFilesFailed",
+      wasSuccessful: false,
+    };
+  }
+};
