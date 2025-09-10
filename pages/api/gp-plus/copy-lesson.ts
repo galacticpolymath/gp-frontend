@@ -77,7 +77,7 @@ export type TCopyLessonReqQueryParams = {
   unitId: string | undefined;
   unitName: string | undefined;
   unitSharedGDriveId: string | undefined;
-  fileIds: string[];
+  fileIds: string[] | string;
   fileNames: string[];
   allUnitLessons: string | undefined;
   lessonsFolder: string | undefined;
@@ -153,6 +153,7 @@ export default async function handler(
   let parentFolder: { id: string; permissionId: string } | null = null;
 
   let wasUserRolesAndFileMetaDataReseted = false;
+  let _fileIds = typeof reqQueryParams.fileIds === 'string' ? [reqQueryParams.fileIds] : reqQueryParams.fileIds
 
   response.on("close", async () => {
     console.log("The user closed the stream.");
@@ -172,9 +173,9 @@ export default async function handler(
       console.log("filePermissionsUpdated: ", filePermissionsUpdated.data);
     }
 
-    if (!wasUserRolesAndFileMetaDataReseted && reqQueryParams.fileIds) {
+    if (!wasUserRolesAndFileMetaDataReseted && _fileIds.length) {
       console.log("Making all file readable, stream closed");
-      for (const fileId of reqQueryParams.fileIds) {
+      for (const fileId of _fileIds) {
         const drive = await createDrive();
         // @ts-ignore
         const fileUpdated = await drive.files.update({
@@ -231,6 +232,7 @@ export default async function handler(
       !reqQueryParams?.lessonSharedGDriveFolderId ||
       !reqQueryParams?.allUnitLessons ||
       !reqQueryParams?.lessonsFolder ||
+      !_fileIds?.length ||
       !reqQueryParams?.lessonsFolderGradesRange ||
       !reqQueryParams?.lessonName
     ) {
@@ -526,7 +528,7 @@ export default async function handler(
         const copyItemsParentFolder = await updatePermissionsForSharedFileItems(
           drive,
           email,
-          reqQueryParams.fileIds
+          _fileIds
         );
         parentFolder = {
           id: copyItemsParentFolder.id,
@@ -538,7 +540,7 @@ export default async function handler(
         }
 
         sendMessage(response, {
-          filesToCopy: reqQueryParams.fileIds.length,
+          filesToCopy: _fileIds.length,
         });
 
         sendMessage(response, {
@@ -546,7 +548,7 @@ export default async function handler(
         });
 
         const wasSuccessful = await copyFiles(
-          reqQueryParams.fileIds,
+          _fileIds,
           email,
           drive,
           gDriveAccessToken,
@@ -782,7 +784,7 @@ export default async function handler(
         const copyItemsParentFolder = await updatePermissionsForSharedFileItems(
           drive,
           email,
-          reqQueryParams.fileIds
+          _fileIds
         );
         parentFolder = {
           id: copyItemsParentFolder.id,
@@ -794,7 +796,7 @@ export default async function handler(
         }
 
         sendMessage(response, {
-          filesToCopy: reqQueryParams.fileIds.length,
+          filesToCopy: _fileIds.length,
         });
 
         sendMessage(response, {
@@ -806,7 +808,7 @@ export default async function handler(
         });
 
         const wasSuccessful = await copyFiles(
-          reqQueryParams.fileIds,
+          _fileIds,
           email,
           drive,
           gDriveAccessToken,
@@ -854,7 +856,7 @@ export default async function handler(
         const copyItemsParentFolder = await updatePermissionsForSharedFileItems(
           drive,
           email,
-          reqQueryParams.fileIds
+          _fileIds
         );
         parentFolder = {
           id: copyItemsParentFolder.id,
@@ -866,7 +868,7 @@ export default async function handler(
         }
 
         sendMessage(response, {
-          filesToCopy: reqQueryParams.fileIds.length,
+          filesToCopy: _fileIds.length,
         });
 
         sendMessage(response, {
@@ -878,7 +880,7 @@ export default async function handler(
         console.log("About to copy files to existing lesson folder");
 
         const wasSuccessful = await copyFiles(
-          reqQueryParams.fileIds,
+          _fileIds,
           email,
           drive,
           gDriveAccessToken,
@@ -1216,7 +1218,7 @@ export default async function handler(
     // get the parent folder id of the files to copy
     const parentFolderId = (
       await drive.files.get({
-        fileId: reqQueryParams.fileIds[0],
+        fileId: _fileIds[0],
         fields: "*",
         supportsAllDrives: true,
       })
@@ -1270,7 +1272,7 @@ export default async function handler(
     }
 
     // make the target files read only
-    for (const fileId of reqQueryParams.fileIds) {
+    for (const fileId of _fileIds) {
       console.log("Copying file: ", fileId);
       // @ts-ignore
       const fileUpdated = await drive.files.update({
@@ -1287,7 +1289,7 @@ export default async function handler(
     }
 
     sendMessage(response, {
-      filesToCopy: reqQueryParams.fileIds.length,
+      filesToCopy: _fileIds.length,
     });
     sendMessage(response, {
       didRetrieveAllItems: true,
@@ -1305,8 +1307,8 @@ export default async function handler(
     let copiedFiles: TFilesToRename = [];
 
     // check if the permission were propagated to all of the files to copy
-    for (const fileIdIndex in reqQueryParams.fileIds) {
-      const fileId = reqQueryParams.fileIds[fileIdIndex];
+    for (const fileIdIndex in _fileIds) {
+      const fileId = _fileIds[fileIdIndex];
 
       if (!getIsValidFileId(fileId)) {
         console.error(
@@ -1490,11 +1492,11 @@ export default async function handler(
       });
     }
 
-    if (reqQueryParams.fileIds) {
+    if (_fileIds) {
       console.log("Making all file readable...");
       const drive = await createDrive();
 
-      for (const fileId of reqQueryParams.fileIds) {
+      for (const fileId of _fileIds) {
         // @ts-ignore
         const fileUpdated = await drive.files.update({
           fileId: fileId,
@@ -1511,7 +1513,7 @@ export default async function handler(
     if (reqQueryParams && userEmail) {
       const drive = await createDrive();
 
-      for (const fileId of reqQueryParams.fileIds) {
+      for (const fileId of _fileIds) {
         const shareFileResult = await shareFileWithUser(
           fileId,
           userEmail,
