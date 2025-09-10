@@ -129,6 +129,8 @@ export const getTotalUnitLessons = (unit: INewUnitSchema) => {
   return unitObjUpdated;
 };
 
+const KEYS_OF_VALUES_TO_ENCRYPT = ["userAccount"] as const;
+
 export const removeLocalStorageItem = (key: keyof ILocalStorage) => {
     localStorage.removeItem(key);
 }
