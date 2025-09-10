@@ -45,7 +45,11 @@ import {
 } from "../../../backend/services/gdriveServices";
 
 export const maxDuration = 240;
-export const VALID_WRITABLE_ROLES = new Set(["fileOrganizer", "organizer", "writer"]);
+export const VALID_WRITABLE_ROLES = new Set([
+  "fileOrganizer",
+  "organizer",
+  "writer",
+]);
 
 export type TCopyFilesMsg = Partial<{
   msg: string;
@@ -224,6 +228,7 @@ export default async function handler(
       !reqQueryParams.unitId ||
       !reqQueryParams.unitName ||
       !reqQueryParams.unitSharedGDriveId ||
+      !Array.isArray(reqQueryParams?.fileIds) ||
       !reqQueryParams?.fileIds?.length ||
       !reqQueryParams?.lessonId ||
       !reqQueryParams?.lessonSharedDriveFolderName ||
@@ -519,7 +524,6 @@ export default async function handler(
           msg: `'${reqQueryParams.unitName}' unit folder created.`,
         });
 
-        
         if (!isStreamOpen) {
           throw new CustomError("The stream has ended.", 500);
         }
@@ -1306,8 +1310,12 @@ export default async function handler(
     for (const fileIdIndex in reqQueryParams.fileIds) {
       const fileId = reqQueryParams.fileIds[fileIdIndex];
 
-      if(!getIsValidFileId(fileId)){
-        console.error(`Invalid file ID: ${fileId}. Skipping file: ${reqQueryParams.fileNames?.[fileIdIndex] || 'Unknown file'}`);
+      if (!getIsValidFileId(fileId)) {
+        console.error(
+          `Invalid file ID: ${fileId}. Skipping file: ${
+            reqQueryParams.fileNames?.[fileIdIndex] || "Unknown file"
+          }`
+        );
         wasJobSuccessful = false;
         continue;
       }
@@ -1389,7 +1397,12 @@ export default async function handler(
       ) {
         wasJobSuccessful = false;
         console.error(
-          `Failed to copy file '${reqQueryParams.fileNames[fileIdIndex]}' for user with email ${email}. Reason: `,
+          "Failed to copy file for user.",
+          "Filename:",
+          reqQueryParams.fileNames[fileIdIndex],
+          "Email:",
+          email,
+          "Reason:",
           fileCopyResult
         );
         sendMessage(response, {
@@ -1477,11 +1490,16 @@ export default async function handler(
       }
     }
 
-    if(reqQueryParams && userEmail){
+    if (reqQueryParams && userEmail) {
       const drive = await createDrive();
 
-      for (const fileId of reqQueryParams.fileIds){
-        const shareFileResult = await shareFileWithUser(fileId, userEmail, drive, "reader");
+      for (const fileId of reqQueryParams.fileIds) {
+        const shareFileResult = await shareFileWithUser(
+          fileId,
+          userEmail,
+          drive,
+          "reader"
+        );
 
         console.log("shareFileResult: ", shareFileResult);
       }

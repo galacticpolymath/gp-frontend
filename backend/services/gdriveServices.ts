@@ -1599,6 +1599,8 @@ export const copyFiles = async (
         fileNames[fileIdIndex],
         "Email: ",
         email,
+        "Reason: ",
+        fileCopyResult
       );
       sendMessageToClient({
         failedCopiedFile: fileNames[fileIdIndex],
