@@ -28,6 +28,7 @@ import {
   copyFiles,
   shareFilesWithUser,
   shareFileWithUser,
+  getIsValidFileId,
 } from "../../../backend/services/gdriveServices";
 import { sleep, waitWithExponentialBackOff } from "../../../globalFns";
 import { drive_v3 } from "googleapis";
@@ -1304,6 +1305,13 @@ export default async function handler(
     // check if the permission were propagated to all of the files to copy
     for (const fileIdIndex in reqQueryParams.fileIds) {
       const fileId = reqQueryParams.fileIds[fileIdIndex];
+
+      if(!getIsValidFileId(fileId)){
+        console.error(`Invalid file ID: ${fileId}. Skipping file: ${reqQueryParams.fileNames?.[fileIdIndex] || 'Unknown file'}`);
+        wasJobSuccessful = false;
+        continue;
+      }
+
       const permission = await getTargetUserPermission(fileId, email, drive);
 
       console.log("permission, sup there: ", permission);

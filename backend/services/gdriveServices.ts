@@ -102,7 +102,7 @@ type TGoogleAuthScopes =
   | "https://www.googleapis.com/auth/admin.directory.group"
   | "https://www.googleapis.com/auth/admin.directory.user";
 
-const getIsValidFileId = (id: unknown) => typeof id === 'string' && /^[a-zA-Z0-9_-]{10,}$/.test(id);
+export const getIsValidFileId = (id: unknown) => typeof id === 'string' && /^[a-zA-Z0-9_-]{10,}$/.test(id);
 
 export const createDrive = async (
   scopes: TGoogleAuthScopes[] = ["https://www.googleapis.com/auth/drive"],
