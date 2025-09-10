@@ -113,7 +113,7 @@ const LessonsCarousel = ({ mediaItems }) => {
                     <i className="fs-1 text-black bi-arrow-right-circle-fill lh-1 d-block" />
                 </button>
             </section>
-            <section className="mt-1">
+            <section className="mt-1 mb-2">
                 <ul className='ps-0 mb-0 d-flex flex-wrap justify-content-center align-items-center' style={{ transform: 'translate3d(0px, 0px, 0px)', 'transitionDuration': '3500ms', transition: 'all .15s ease-in', listStyle: 'none' }}>
                     {controlDots?.length && controlDots.map((item, index) => {
                         const { type, title, mainLink, isVisible, webAppPreviewImg } = item;

@@ -8,46 +8,10 @@ import { useState } from "react";
 import { IoMdEye, IoMdEyeOff } from "react-icons/io";
 import { ERROR_INPUT_BORDER_COLOR } from "../../globalVars";
 
-/**
- * @typedef {(
- *   "button" |
- *   "checkbox" |
- *   "color" |
- *   "date" |
- *   "datetime-local" |
- *   "email" |
- *   "file" |
- *   "hidden" |
- *   "image" |
- *   "month" |
- *   "number" |
- *   "password" |
- *   "radio" |
- *   "range" |
- *   "reset" |
- *   "search" |
- *   "submit" |
- *   "tel" |
- *   "text" |
- *   "time" |
- *   "url" |
- *   "week"
- * )} TInputType
-
-/**
- *  @global 
- * * @typedef {'input-focus-blue' | 'border-grey-dark'} TFocusCss
- * 
- */
-
-/**
- * 
- * @param {{ inputType: TInputType }} param0 
- * @returns 
- */
 export const CustomInput = ({
-    onChange = () => { },
+    onChange,
     placeholder = '',
+    handleShowPasswordTxtBtnClick,
     inputId,
     inputName,
     autoFocus = false,
@@ -63,9 +27,7 @@ export const CustomInput = ({
     onKeyDown = () => { },
     onKeyDownCapture = () => { },
     onKeyUpCapture = () => { },
-    handleShowPasswordTxtBtnClickCustom,
     noInputBorderColorOnBlur = false,
-    willUseDefaultTxtShowToggle,
 }) => {
     /**
     * @type {[TFocusCss, import('react').Dispatch<import('react').SetStateAction<TFocusCss>>]}
@@ -81,10 +43,6 @@ export const CustomInput = ({
         setFocusCssInput(focusCssInput);
     };
 
-    const handleShowPasswordTxtBtnClickDefault = () => {
-        setIsPasswordTxtShown(state => !state);
-    };
-
     return (
         <div style={inputContainerStyle} className={`${inputContainerCss} ${focusCssInput}`}>
             <input
@@ -94,7 +52,7 @@ export const CustomInput = ({
                 autoFocus={autoFocus}
                 onFocus={handleFocusabilityCss('input-focus-blue')}
                 onBlur={handleFocusabilityCss(noInputBorderColorOnBlur ? '' : 'border-grey-dark')}
-                type={(isPasswordInput && !handleShowPasswordTxtBtnClickCustom) ? (isPasswordTxtShown ? 'text' : 'password') : inputType}
+                type={inputType}
                 onChange={onChange}
                 placeholder={placeholder}
                 className={inputClassName}
@@ -109,12 +67,12 @@ export const CustomInput = ({
                     className={iconContainerClassName}
                 >
                     <div style={{ height: '95%' }} className='ps-1 d-flex justify-content-center align-items-center'>
-                        {(willUseDefaultTxtShowToggle ? isPasswordTxtShown : (inputType === "text")) ?
+                        {inputType === "text" ?
                             (
                                 <IoMdEye
                                     fontSize="25px"
                                     className='pointer'
-                                    onClick={handleShowPasswordTxtBtnClickCustom ?? handleShowPasswordTxtBtnClickDefault}
+                                    onClick={handleShowPasswordTxtBtnClick}
                                 />
                             )
                             :
@@ -122,7 +80,7 @@ export const CustomInput = ({
                                 <IoMdEyeOff
                                     fontSize="25px"
                                     className='pointer'
-                                    onClick={handleShowPasswordTxtBtnClickCustom ?? handleShowPasswordTxtBtnClickDefault}
+                                    onClick={handleShowPasswordTxtBtnClick}
                                 />
                             )
                         }
@@ -146,14 +104,13 @@ export const InputSection = ({
     inputClassName = "border-0 p-1 w-100 py-2",
     inputStyle = { borderRadius: '5px', fontSize: '18px', background: '#D6D6D6' },
     inputElement = null,
-    handleOnInputChange = () => { },
+    handleOnInputChange,
     onKeyUp = () => { },
     onKeyDown = () => { },
     onKeyDownCapture = () => { },
     onKeyUpCapture = () => { },
-    onFocus = () => { },
-    onBlur = () => { },
-
+    onFocus,
+    onBlur,
 }) => {
     return (
         <div className={containerClassName}>

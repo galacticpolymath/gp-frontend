@@ -6,7 +6,7 @@
 /* eslint-disable quotes */
 /* eslint-disable indent */
 
-import React from "react";
+import React, { useEffect } from "react";
 import { nanoid } from "nanoid";
 import {
   filterInShowableUnits,
@@ -18,13 +18,45 @@ import {
 import { INewUnitSchema } from "../backend/models/Unit/types/unit";
 import UnitsPg from "../components/LessonsPg";
 import { ICurrentUnits } from "../types/global";
-import { createDbProjections } from "../shared/fns";
+import {
+  createDbProjections,
+  getLocalStorageItem,
+  removeLocalStorageItem,
+} from "../shared/fns";
+import useSiteSession from "../customHooks/useSiteSession";
+import { useModalContext } from "../providers/ModalProvider";
+import { useRouter } from "next/router";
+import {
+  DrivePickerElement,
+  DrivePickerDocsViewElement,
+} from "@googleworkspace/drive-picker-element";
 
 interface IProps {
   currentUnits: ICurrentUnits | null;
 }
 
 const LessonsPage = ({ currentUnits }: IProps) => {
+  const { _notifyModal } = useModalContext();
+  const [, setNotifyModal] = _notifyModal;
+  const { status } = useSiteSession();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (status === "unauthenticated" && getLocalStorageItem("wasUserDeleted")) {
+      setNotifyModal({
+        isDisplayed: true,
+        headerTxt: "Success!",
+        bodyTxt:
+          "Your account was successfully deleted. Fairwell 👋! We hope to see you again .",
+        handleOnHide: () => {
+          const url = router.asPath;
+          router.replace(url.split("?")[0]);
+        },
+      });
+      removeLocalStorageItem("wasUserDeleted");
+    }
+  }, [status]);
+
   return (
     <UnitsPg
       units={currentUnits?.units ?? null}

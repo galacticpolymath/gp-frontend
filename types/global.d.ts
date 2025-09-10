@@ -1,29 +1,69 @@
 import { ReactNode, CSSProperties } from "react";
-import { IItem, ILesson } from "../backend/models/Unit/types/teachingMaterials";
+import { IItem, IItemV2, ILesson } from "../backend/models/Unit/types/teachingMaterials";
 import { REFERRED_BY_OPTS } from '../shared/constants';
 import {
   IFeaturedMultimedia,
   INewUnitSchema,
 } from "../backend/models/Unit/types/unit";
 import { Session } from "next-auth";
-import { TAboutUserForm } from "../backend/models/User/types";
+import { TAboutUserForm, TUserSchemaForClient } from "../backend/models/User/types";
 import { TWebAppForUI } from "../backend/models/WebApp";
+import { TUserAccount } from "../providers/UserProvider";
 
-// front-end
+interface IRequestArgs{
+    path: string;
+    method?: "GET" | "POST" | "PUT" | "DELETE";
+    params?: Record<string, string>;
+    headers?: Record<string, string>;
+    body?: string | object;
+}
+
+declare global {
+  interface Window {
+    Outseta?: {
+      logout: () => Promise<void>;
+      setMagicLinkIdToken: (idToken: string) => void;
+      getUser: () => Promise<Record<string, unknown>>;
+      setAccessToken: (token: string | null) => void;
+      getAccessToken: () => string | null;
+      auth: {
+        close: () => Promise<void>;
+      }
+      on: (event: "logout" | "redirect" | "signup", callback: (...args: unknown[]) => void | boolean | Promise<void | boolean>) => void;
+    };
+    gapi: {
+    client: {
+      request: (args: IRequestArgs) => Promise<unknown>
+    }
+    auth: {
+      getToken: () => {
+        access_token: string,
+        [key: string]: string | number
+      }
+    }
+  }
+  }
+}
 interface IComponent {
   index: number;
   children: ReactNode;
   className: string;
   style: CSSProperties;
 }
-type TSetter<TData> = React.Dispatch<React.SetStateAction<TData>>;
+export type TSetter<TData> = React.Dispatch<React.SetStateAction<TData>>;
 type TUseStateReturnVal<TData> = [TData, TSetter<TData>];
 export interface ILessonForUI extends ILesson {
   lsn: string;
   status: string;
 }
-export interface IUserSession extends Session {
+
+
+export interface ICustomUserOfSession extends NonNullable<Session["user"]>{
+  userId: string
+}
+export interface IUserSession extends Pick<Session, "expires"> {
   token: string;
+  user: ICustomUserOfSession
 }
 
 // For the unit page
@@ -35,7 +75,7 @@ interface ISectionDot {
   sectionDotId: string;
 }
 
-interface IItemForClient extends IItem {
+interface IItemForClient extends IItemV2 {
   filePreviewImg: string;
 }
 
@@ -89,7 +129,7 @@ export interface IUnitForUnitsPg extends INewUnitSchema {
 }
 
 type TLiveUnit = INewUnitSchema & {
-  individualLessonsNum: number;
+  individualLessonsNum?: number;
   isNew?: boolean;
 };
 
@@ -141,10 +181,25 @@ export interface IUpdatedUserReqBody{
 } 
 
 export interface IUpdatedAboutUserForm{
-aboutUserForm: TAboutUserForm<Map>
+  aboutUserForm: TAboutUserForm<Map>
+}
+export interface ILocalStorage{
+  gpPlusFeatureLocation: string;
+  willShowGpPlusPurchaseThankYouModal: boolean
+  didGpSignInAttemptOccur: boolean;
+  wasUserDeleted: boolean;
+  wasContinueToCheckoutBtnClicked: boolean;
+  userAccount: TUserSchemaForClient;
+  selectedGpPlusBillingType: "month" | "year";
+}
+
+interface IErr<TErrType extends string = string>{
+  errType: TErrType,
+  errMsg: string
 }
 
 export {
+  IErr,
   TReferredByOpt,
   IGpUnitsItemsPg,
   TLiveUnit,

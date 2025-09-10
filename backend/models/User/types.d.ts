@@ -1,6 +1,14 @@
 import { SUBJECTS_OPTIONS } from "../../../components/User/AboutUser/AboutUserModal";
-import { TSchoolType } from "../../../providers/UserProvider";
+import { TSchoolType, TUserAccount } from "../../../providers/UserProvider";
 import { TReferredByOpt } from "../../../types/global";
+import {
+  getBillingType,
+  getGpPlusMembership,
+} from "../../services/outsetaServices";
+import {
+  TAccountStageLabel,
+  TGpPlusMembershipRetrieved,
+} from "../../services/userServices";
 import { TAboutUserFormDeprecated } from "./deprecated";
 
 export type TAgeGroupSelection = "U.S." | "Outside U.S.";
@@ -10,9 +18,12 @@ export interface IAgeGroupsSelection {
   ageGroupsTaught: string[];
 }
 
-export type TDefaultSubject = Exclude<(typeof SUBJECTS_OPTIONS)[number], "other:">;
+export type TDefaultSubject = Exclude<
+  (typeof SUBJECTS_OPTIONS)[number],
+  "other:"
+>;
 
-interface IAboutUserFormNewFieldsV1{
+interface IAboutUserFormNewFieldsV1 {
   gradesType?: IAgeGroupsSelection["selection"];
   gradesTaught?: string[];
   firstName?: string;
@@ -20,26 +31,30 @@ interface IAboutUserFormNewFieldsV1{
   subjectsTaughtDefault?: TDefaultSubject[];
   subjectsTaughtCustom?: string[];
   classSize?: number;
-  institution: string | null;
+  institution?: string | null;
   isNotTeaching?: boolean;
-  schoolTypeDefaultSelection: TSchoolType | null;
-  schoolTypeOther: string | null;
-  referredByDefault?: TReferredByOpt | null,
-  referredByOther?: string | null,
+  schoolTypeDefaultSelection?: TSchoolType | null;
+  schoolTypeOther?: string | null;
+  referredByDefault?: TReferredByOpt | null;
+  referredByOther?: string | null;
   siteVisitReasonsDefault?: string[] | null;
   siteVisitReasonsCustom?: string | null;
 }
 
-export interface TAboutUserFormBaseProps extends IAboutUserFormNewFieldsV1{
-  country: string;
-  occupation: string;
-  zipCode: string | null | number;
+export interface TAboutUserFormBaseProps extends IAboutUserFormNewFieldsV1 {
+  country?: string;
+  occupation?: string;
+  zipCode?: string | null | number;
   isTeacher?: boolean;
 }
 
-export interface TAboutUserForm<TMutableObj extends object = Record<string, unknown>> extends TAboutUserFormDeprecated<TMutableObj>, TAboutUserFormBaseProps {}
+export interface TAboutUserForm<
+  TMutableObj extends object = Record<string, unknown>
+> extends TAboutUserFormDeprecated<TMutableObj>,
+    TAboutUserFormBaseProps,
+    TOutseta {}
 
-export interface IUserSchemaBaseProps{
+export interface IUserSchemaBaseProps {
   _id: string;
   email: string;
   mailingListConfirmationEmailId?: string;
@@ -60,7 +75,46 @@ export interface IUserSchemaBaseProps{
 // user schema v1, has the deprecated fields and the v2 fields
 export interface IUserSchema extends TAboutUserForm, IUserSchemaBaseProps {}
 
-// does not contain the deprecated props, only the v2 fields
-export type TUserSchemaV2 = IUserSchemaBaseProps & TAboutUserFormBaseProps
+export type TOutseta = {
+  outsetaAccountEmail?: string;
+};
 
-export type TUserSchemaForClient = IUserSchema & { isOnMailingList?: boolean };
+export interface ILessonGDriveId {
+  lessonNum: string;
+  lessonDriveId: string;
+  lessonSharedGDriveFolderId: string;
+  gradesRange: string;
+}
+
+export interface IUnitGDriveLesson {
+  unitId: string;
+  unitDriveId: string;
+  lessonDriveIds?: ILessonGDriveId[];
+  gmail: string;
+}
+
+export type TUserSchemaV2 = IUserSchemaBaseProps &
+  TAboutUserFormBaseProps &
+  TOutseta & {
+    gpPlusDriveFolderId: string;
+    unitGDriveLessons: IUnitGDriveLesson[];
+    gdriveAuthEmails: string[];
+  };
+
+type TGpPlusMembershipStatus = Awaited<ReturnType<typeof getGpPlusMembership>>;
+
+export type TGpPlusSubscriptionForClient = Omit<
+  Awaited<ReturnType<typeof getGpPlusMembership>>,
+  "BillingRenewalTerm" | "AccountStageLabel" | "Account" | "email"
+> & {
+  BillingRenewalTerm?: ReturnType<typeof getBillingType>[0];
+  AccountStageLabel: TAccountStageLabel;
+};
+export type TUserClientProps = {
+  isOnMailingList?: boolean;
+  isGpPlusMember?: boolean;
+  gpPlusSubscription?: TGpPlusMembershipStatus;
+  viewingUnitFolderCopyId?: string;
+};
+export type TUserSchemaForClient<TUserSchema extends object = TUserSchemaV2> =
+  TUserSchema & TUserClientProps & Pick<TUserAccount, "isOnMailingList">;

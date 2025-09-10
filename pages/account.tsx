@@ -1,29 +1,41 @@
+/* eslint-disable react/jsx-closing-tag-location */
 /* eslint-disable semi */
 /* eslint-disable no-debugger */
 /* eslint-disable no-console */
 /* eslint-disable quotes */
 /* eslint-disable react/jsx-indent-props */
 /* eslint-disable react/jsx-curly-brace-presence */
-/* eslint-disable indent */
-/* eslint-disable react/jsx-indent */
+
 import Layout from "../components/Layout";
 import LoginUI from "../components/User/Login/LoginUI";
 import Button from "../components/General/Button";
-import { useEffect } from "react";
-import { NextRouter, useRouter } from "next/router";
+import BootstrapBtn from "react-bootstrap/Button";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { useRouter } from "next/router";
 import { useModalContext } from "../providers/ModalProvider";
 import axios from "axios";
-import { Spinner } from "react-bootstrap";
-import {
-  getAllUrlVals,
-  getChunks,
-  getIsParsable,
-  resetUrl,
-} from "../globalFns";
+import { Modal, Spinner } from "react-bootstrap";
+import { getAllUrlVals, resetUrl } from "../globalFns";
 import { FaUserAlt } from "react-icons/fa";
 import BootstrapButton from "react-bootstrap/Button";
 import { useGetAboutUserForm } from "../customHooks/useGetAboutUserForm";
 import AboutUserModal from "../components/User/AboutUser/AboutUserModal";
+import Image from "next/image";
+import {
+  getBillingTerm,
+  getLocalStorageItem,
+  removeLocalStorageItem,
+  setLocalStorageItem,
+} from "../shared/fns";
+import { Magic } from "magic-sdk";
+import CustomLink from "../components/CustomLink";
+import { CONTACT_SUPPORT_EMAIL } from "../globalVars";
+import { useGpPlusModalInteraction } from "../customHooks/useGpPlusModalInteraction";
+import ThankYouModal from "../components/GpPlus/ThankYouModal";
+import { SELECTED_GP_PLUS_BILLING_TYPE } from "./gp-plus";
+import { ILocalStorage } from "../types/global";
+import useOutsetaInputValidation from "../customHooks/useOutsetaInputValidation";
+import { useHandleGpPlusCheckoutSessionModal } from "../customHooks/useHandleGpPlusCheckoutSessionModal";
 
 export const getUserAccountData = async (
   token: string,
@@ -44,11 +56,7 @@ export const getUserAccountData = async (
       },
     };
     const url = `${window.location.origin}/api/get-user-account-data`;
-    console.log("url: ", url);
     const response = await axios.get(url, paramsAndHeaders);
-
-    // print the response
-    console.log("response.data: ", response.data);
 
     if (response.status !== 200) {
       throw new Error("Received a non 200 response from the server.");
@@ -62,42 +70,193 @@ export const getUserAccountData = async (
   }
 };
 
-export const getUrlVal = (router: NextRouter, urlField: string) => {
-  const paths = router.asPath?.split("?");
-  const urlKeyAndVal = paths?.[1]?.split("=");
-
-  if (urlKeyAndVal?.length && urlKeyAndVal?.[0] === urlField) {
-    return paths[1].split("=")?.[1];
-  }
-
-  return null;
-};
-
-const AccountPg = () => {
+const AccountPg: React.FC = () => {
   const router = useRouter();
   const {
     _isAboutMeFormModalDisplayed,
     _notifyModal,
     _isAccountSettingModalOn,
+    _isThankYouModalDisplayed,
+    _isGpPlusSignUpModalDisplayed,
   } = useModalContext();
+  const [, setIsThankYouModalDisplayed] = _isThankYouModalDisplayed;
   const [, setIsAboutMeFormModalDisplayed] = _isAboutMeFormModalDisplayed;
   const [, setIsAccountSettingsModalOn] = _isAccountSettingModalOn;
-  /**
-   * @type {[import('../providers/UserProvider').TUserAccount, import('react').Dispatch<import('react').SetStateAction<import('../providers/UserProvider').TUserAccount>>]} */
+  const [wasGpPlusBtnClicked, setWasGpPlusBtnClicked] = useState(false);
+  const [isGpPlusSignUpModalDisplayed, setIsGpPlusSignUpModalDisplayed] =
+    _isGpPlusSignUpModalDisplayed;
+  const [gpPlusBillingPeriod, setGpPlusBillingPeriod] = useState<
+    "month" | "year"
+  >("year");
   const [, setNotifyModal] = _notifyModal;
-  const occupation =
-    typeof localStorage === "undefined"
-      ? null
-      : JSON.parse(localStorage.getItem("userAccount") ?? "{}").occupation;
-  const { _aboutUserForm, status, token, user, _isRetrievingUserData } =
-    useGetAboutUserForm();
+  const {
+    _aboutUserForm,
+    status,
+    token,
+    user,
+    _isRetrievingUserData,
+    _gpPlusSub,
+  } = useGetAboutUserForm();
   const { email, image } = user ?? {};
   const [isRetrievingUserData] = _isRetrievingUserData;
   const [aboutUserForm] = _aboutUserForm;
+  const [gpPlusSub] = _gpPlusSub;
   const firstName = aboutUserForm.firstName;
   const lastName = aboutUserForm.lastName;
+  const gpPlusAnchorElementRef = useRef<HTMLAnchorElement | null>(null);
+  const selectedBillingPeriod = useMemo(() => {
+    if (typeof window === "undefined") {
+      return "year";
+    }
+
+    const selectedGpPlusBillingType = getLocalStorageItem(
+      "selectedGpPlusBillingType"
+    );
+
+    return selectedGpPlusBillingType;
+  }, []);
+
+  useHandleGpPlusCheckoutSessionModal();
+
+  const gpPlusBillingTerm = useMemo(() => {
+    if (gpPlusSub?.BillingRenewalTerm) {
+      return getBillingTerm(gpPlusSub?.BillingRenewalTerm);
+    }
+
+    if (selectedBillingPeriod) {
+      return getBillingTerm(selectedBillingPeriod === "month" ? 1 : 2);
+    }
+
+    return undefined;
+  }, []);
+
+  console.log("gpPlusSub: ", gpPlusSub);
+
+  useGpPlusModalInteraction(gpPlusBillingTerm, !!gpPlusSub);
+
+  const handleGpPlusAccountBtnClick = async () => {
+    let wasGpPlusAccountRetrievalSuccessful = false;
+
+    try {
+      const userAccount = getLocalStorageItem("userAccount");
+      setWasGpPlusBtnClicked(true);
+
+      console.log(
+        "userAccount?.gpPlusSubscription: ",
+        userAccount?.gpPlusSubscription
+      );
+
+      if (
+        !userAccount?.gpPlusSubscription?.person?.Email ||
+        !gpPlusSub ||
+        !gpPlusSub.person?.Email
+      ) {
+        setNotifyModal({
+          isDisplayed: true,
+          headerTxt: "GP Plus data retrieval error",
+          bodyTxt: (
+            <>
+              Unable to retrieve your GP Plus email. If this error persists,
+              please contact{" "}
+              <CustomLink
+                hrefStr={CONTACT_SUPPORT_EMAIL}
+                className="ms-1 mt-2 text-break"
+              >
+                feedback@galacticpolymath.com
+              </CustomLink>
+              .
+            </>
+          ),
+          handleOnHide: () => {
+            setNotifyModal((state) => ({
+              ...state,
+              isDisplayed: false,
+            }));
+          },
+        });
+        setWasGpPlusBtnClicked(false);
+        return;
+      }
+
+      if (!("Outseta" in window)) {
+        setNotifyModal({
+          isDisplayed: true,
+          headerTxt: "GP Plus data retrieval error",
+          bodyTxt: (
+            <>
+              An error in loading your GP Plus data. Please refresh the page. If
+              this error persists, please contact{" "}
+              <CustomLink
+                hrefStr={CONTACT_SUPPORT_EMAIL}
+                className="ms-1 mt-2 text-break"
+              >
+                feedback@galacticpolymath.com
+              </CustomLink>
+              .
+            </>
+          ),
+          handleOnHide: () => {
+            setNotifyModal((state) => ({
+              ...state,
+              isDisplayed: false,
+            }));
+          },
+        });
+        setWasGpPlusBtnClicked(false);
+        return;
+      }
+
+      const outseta = (window as any).Outseta;
+      let idToken = outseta.getAccessToken() as string | null;
+
+      if (!idToken) {
+        const magic = new Magic(
+          process.env.NEXT_PUBLIC_MAGIC_LINK_PK as string
+        );
+        idToken = await magic.auth.loginWithEmailOTP({
+          email: gpPlusSub.person.Email,
+        });
+
+        if (idToken) {
+          window.Outseta?.setMagicLinkIdToken(idToken);
+        }
+      }
+
+      wasGpPlusAccountRetrievalSuccessful = true;
+
+      setTimeout(() => {
+        setWasGpPlusBtnClicked(false);
+        gpPlusAnchorElementRef.current?.click();
+      }, 500);
+    } catch (error) {
+      console.error("Failed to display gp plus account modal: ", error);
+    } finally {
+      if (!wasGpPlusAccountRetrievalSuccessful) {
+        setWasGpPlusBtnClicked(false);
+      }
+    }
+  };
 
   useEffect(() => {
+    const url = new URL(window.location.href);
+
+    if (
+      url.searchParams.get("show_gp_plus_account_modal") === "true" &&
+      status === "authenticated" &&
+      (gpPlusSub?.AccountStageLabel === "Subscribing" ||
+        gpPlusSub?.AccountStageLabel === "Cancelling")
+    ) {
+      console.log("hi there will click the gp plus button...");
+      setWasGpPlusBtnClicked(true);
+
+      setTimeout(() => {
+        gpPlusAnchorElementRef?.current?.click();
+        setWasGpPlusBtnClicked(false);
+      }, 500);
+      resetUrl(router);
+      return;
+    }
+
     if (
       status === "unauthenticated" &&
       router.asPath.includes("?") &&
@@ -131,20 +290,10 @@ const AccountPg = () => {
       }, 300);
     }
 
-    const urlVals = getAllUrlVals(router)?.flatMap((urlVal) =>
-      urlVal.split("=")
-    ) as unknown as string[][];
-    const urlValsChunks = urlVals?.length ? getChunks(urlVals, 2) : [];
-    const didPasswordChange =
-      urlValsChunks.find(([key, val]) => {
-        if (key === "password_changed" && getIsParsable(val)) {
-          return JSON.parse(val);
-        }
+    const params = new URLSearchParams(window.location.search);
+    const didPasswordChange = params.get("password_changed");
 
-        return false;
-      }) !== undefined;
-
-    if (status === "unauthenticated" && didPasswordChange) {
+    if (status === "unauthenticated" && didPasswordChange === "true") {
       setTimeout(() => {
         setNotifyModal({
           isDisplayed: true,
@@ -156,33 +305,55 @@ const AccountPg = () => {
         });
       }, 300);
     }
-  }, [status]);
-
-  useEffect(() => {
-    const urlVals = getAllUrlVals(router, true) as unknown as string[][];
-    const urlVal = urlVals?.length
-      ? urlVals.find(([urlKey]) => urlKey === "show_about_user_form")
-      : null;
-    const accountSettingsModalOnUrlVals = urlVals?.length
-      ? urlVals.find(([urlKey]) => urlKey === "will-open-account-setting-modal")
-      : null;
 
     if (
       status === "authenticated" &&
-      urlVal?.length === 2 &&
-      getIsParsable(urlVal[1]) &&
-      JSON.parse(urlVal[1])
+      gpPlusSub &&
+      params.get("gp_plus_subscription_bought") === "true"
+    ) {
+      setIsThankYouModalDisplayed(true);
+      resetUrl(router);
+    }
+
+    const idToken = url.searchParams.get("magic_credential");
+
+    if (
+      (gpPlusSub?.AccountStageLabel === "Subscribing" ||
+        gpPlusSub?.AccountStageLabel === "Cancelling") &&
+      idToken
+    ) {
+      console.log("GP+ page loaded with idToken: ", idToken);
+      (window as any).Outseta.setMagicLinkIdToken(idToken);
+      resetUrl(router);
+    }
+  }, [status, gpPlusSub]);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const gpPlusBillingType = params.get(SELECTED_GP_PLUS_BILLING_TYPE);
+
+    console.log("gpPlusBillingType: ", gpPlusBillingType);
+
+    if (status === "authenticated" && gpPlusBillingType) {
+      setLocalStorageItem(
+        "selectedGpPlusBillingType",
+        gpPlusBillingType as ILocalStorage["selectedGpPlusBillingType"]
+      );
+      setGpPlusBillingPeriod(
+        gpPlusBillingType as ILocalStorage["selectedGpPlusBillingType"]
+      );
+    }
+
+    if (
+      status === "authenticated" &&
+      params.get("show_about_user_form") === "true"
     ) {
       setTimeout(() => {
         setIsAboutMeFormModalDisplayed(true);
       }, 300);
-
-      // the second value in 'accountSettingsModalOnUrlVals is a boolean
     } else if (
       status === "authenticated" &&
-      accountSettingsModalOnUrlVals?.length === 2 &&
-      getIsParsable(accountSettingsModalOnUrlVals[1]) &&
-      JSON.parse(accountSettingsModalOnUrlVals[1])
+      params.get("will-open-account-settings-modal") === "true"
     ) {
       setTimeout(() => {
         setIsAccountSettingsModalOn(true);
@@ -229,21 +400,45 @@ const AccountPg = () => {
       })();
     }
 
-    const urlValsChunks = urlVals?.length ? getChunks(urlVals.flat(), 2) : [];
-    const willOpenAccountSettingsModal =
-      urlValsChunks.find(([key, val]) => {
-        if (key === "will-open-account-settings-modal" && getIsParsable(val)) {
-          return JSON.parse(val);
+    if (
+      status === "authenticated" &&
+      gpPlusSub?.AccountStageLabel !== "NonMember"
+    ) {
+      window.Outseta?.on("signup", () => {
+        console.log("The user has signed up.");
+
+        const gpPlusFeatureLocation = getLocalStorageItem(
+          "gpPlusFeatureLocation"
+        );
+
+        console.log("gpPlusFeatureLocation: ", gpPlusFeatureLocation);
+
+        // will redirect to the selected unit so that user can copy it
+        if (gpPlusFeatureLocation?.includes("#")) {
+          setLocalStorageItem("willShowGpPlusPurchaseThankYouModal", true);
+
+          window.location.href = gpPlusFeatureLocation;
+
+          return false;
         }
 
-        return false;
-      }) !== undefined;
+        // will redirect to the account page
+        if (gpPlusFeatureLocation) {
+          console.log("Will redirect the user.");
+          window.location.href = `${gpPlusFeatureLocation}?gp_plus_subscription_bought=true`;
 
-    // if the user is authenticated, if there is action parameter that contains 'open-account-settings-modal', then open the account setting modal
-    if (status === "authenticated" && willOpenAccountSettingsModal) {
-      setIsAccountSettingsModalOn(true);
+          return false;
+        }
+
+        const currentUrl = `${window.location.href}?gp_plus_subscription_bought=true`;
+        window.location.href = currentUrl;
+
+        return false;
+      });
     }
   }, [status]);
+
+  useOutsetaInputValidation();
 
   if (status === "loading" || isRetrievingUserData) {
     return (
@@ -340,15 +535,78 @@ const AccountPg = () => {
             <span>{email}</span>
           </section>
           <section className="col-12 d-flex justify-content-center align-items-center flex-column mt-1 pt-2">
-            <span className="d-inline-flex justify-content-center align-tiems-center">
-              Occupation:{" "}
-            </span>
-            <span
-              style={{ fontStyle: "italic" }}
-              className="d-inline-flex justify-content-center align-tiems-center "
-            >
-              {occupation ?? "UNANSWERED"}
-            </span>
+            {gpPlusSub?.AccountStageLabel &&
+            !["Expired", "NonMember"].includes(gpPlusSub.AccountStageLabel) ? (
+              <>
+                <BootstrapBtn
+                  onClick={handleGpPlusAccountBtnClick}
+                  variant="secondary"
+                  className="d-flex justify-content-center align-items-center border-0 rounded px-2 py-1"
+                  disabled={false}
+                  style={{
+                    backgroundColor: "#1C28BD",
+                    minWidth: "260px",
+                    height: "64px",
+                  }}
+                >
+                  {wasGpPlusBtnClicked ? (
+                    <Spinner className="text-dark" />
+                  ) : (
+                    <>
+                      <Image
+                        src="/plus/plus.png"
+                        alt="gp_plus_logo"
+                        width={40}
+                        height={40}
+                        style={{
+                          width: "40px",
+                          height: "40px",
+                          objectFit: "contain",
+                        }}
+                        className="mx-1"
+                      />
+                      <span className="text-white ms-1">My subscription</span>
+                    </>
+                  )}
+                </BootstrapBtn>
+                <a
+                  ref={gpPlusAnchorElementRef}
+                  style={{
+                    zIndex: -10,
+                    opacity: 0,
+                  }}
+                  id="gpPlusBtn"
+                  className="no-underline"
+                  href="https://galactic-polymath.outseta.com/profile?tab=account#o-authenticated"
+                ></a>
+              </>
+            ) : (
+              <BootstrapBtn
+                onClick={() => {
+                  setLocalStorageItem(
+                    "gpPlusFeatureLocation",
+                    window.location.href
+                  );
+                  router.push("/gp-plus");
+                }}
+                variant="secondary"
+                className="d-flex justify-content-center align-items-center border-0 rounded px-2 py-1"
+              >
+                <span className="text-white">Upgrade To </span>
+                <Image
+                  src="/imgs/gp-logos/gp_submark.png"
+                  alt="gp_plus_logo"
+                  width={55}
+                  height={55}
+                  style={{
+                    width: "55px",
+                    height: "55px",
+                    objectFit: "contain",
+                  }}
+                  className="ms-1"
+                />
+              </BootstrapBtn>
+            )}
           </section>
           <section className="col-12 d-flex justify-content-center align-items-center flex-column mt-1 pt-2">
             <Button
@@ -391,6 +649,33 @@ const AccountPg = () => {
         </section>
       </div>
       <AboutUserModal />
+      <ThankYouModal />
+      <Modal
+        show={isGpPlusSignUpModalDisplayed}
+        onShow={() => {
+          removeLocalStorageItem("wasContinueToCheckoutBtnClicked");
+        }}
+        onHide={() => {
+          setIsGpPlusSignUpModalDisplayed(false);
+        }}
+        size="lg"
+        centered
+        className="rounded"
+        keyboard={false}
+        style={{
+          zIndex: 10000,
+        }}
+      >
+        <div
+          id="outseta-sign-up"
+          data-o-auth="1"
+          data-widget-mode="register"
+          data-plan-uid="rmkkjamg"
+          data-plan-payment-term={gpPlusBillingPeriod}
+          data-skip-plan-options="false"
+          data-mode="embed"
+        />
+      </Modal>
     </Layout>
   );
 };

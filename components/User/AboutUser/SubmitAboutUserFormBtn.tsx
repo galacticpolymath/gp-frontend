@@ -20,6 +20,7 @@ import {
   TUseStateReturnVal,
 } from "../../../types/global";
 import { TAboutUserForm } from "../../../backend/models/User/types";
+import { getLocalStorageItem } from "../../../shared/fns";
 
 interface IProps {
   setErrors: TUseStateReturnVal<Map<string, string>>[1];
@@ -39,13 +40,17 @@ const SubmitAboutUserFormBtn: React.FC<IProps> = ({
   const { _aboutUserForm } = useUserContext();
   const [subjectsTaughtCustom] = _subjectsTaughtCustom;
   const [, setWasFormSubmitted] = _wasFormSubmitted;
-  const { _notifyModal, _isAboutMeFormModalDisplayed } = useModalContext();
+  const {
+    _notifyModal,
+    _isAboutMeFormModalDisplayed,
+    _isGpPlusSignUpModalDisplayed,
+  } = useModalContext();
   const { data, update } = useSession();
   const [aboutUserForm] = _aboutUserForm;
   const [wasBtnClicked, setWasBtnClicked] = _wasBtnClicked;
-
   const [name] = _name;
   const [, setIsAboutUserModalDisplayed] = _isAboutMeFormModalDisplayed;
+  const [, setIsGpPlusSignUpModalDisplayed] = _isGpPlusSignUpModalDisplayed;
   const [, setNotifyModal] = _notifyModal;
   const { user, token } = (data ?? {}) as IUserSession;
 
@@ -112,12 +117,11 @@ const SubmitAboutUserFormBtn: React.FC<IProps> = ({
       }
 
       if (
-        isTeacher && (
-          (!schoolTypeDefaultSelection && !schoolTypeOther) ||
-            (schoolTypeOther?.length && schoolTypeOther?.trim().length === 0) ||
-            (schoolTypeDefaultSelection?.length &&
-              schoolTypeDefaultSelection?.trim().length === 0)
-        )
+        isTeacher &&
+        ((!schoolTypeDefaultSelection && !schoolTypeOther) ||
+          (schoolTypeOther?.length && schoolTypeOther?.trim().length === 0) ||
+          (schoolTypeDefaultSelection?.length &&
+            schoolTypeDefaultSelection?.trim().length === 0))
       ) {
         errors.set("schoolType", "This field is required.");
       }
@@ -135,7 +139,11 @@ const SubmitAboutUserFormBtn: React.FC<IProps> = ({
         errors.set("gradesOrYears", "Please select atleast one grade or year.");
       }
 
-      if (isTeacher && gradesType && !["Outside U.S.", "U.S."].includes(gradesType)) {
+      if (
+        isTeacher &&
+        gradesType &&
+        !["Outside U.S.", "U.S."].includes(gradesType)
+      ) {
         errors.set(
           "gradesOrYears",
           "*Invalid selection. Please refresh the page and try again."
@@ -170,19 +178,23 @@ const SubmitAboutUserFormBtn: React.FC<IProps> = ({
         errors.set("isTeacherConfirmationErr", "*This field is required.");
       }
 
-      if (
+      if (country && country?.length <= 0) {
+        errors.set("country", "*This field is required.");
+      } else if (country && !COUNTRY_NAMES.has(country)) {
+        errors.set("country", "*Invalid country name.");
+      } else if (
         country?.toLowerCase() === "united states" &&
         (!zipCodeStr || zipCodeStr?.length == 0)
       ) {
         errors.set("zipCode", "This field is required.");
       } else if (
-        country.toLowerCase() === "united states" &&
+        country?.toLowerCase() === "united states" &&
         ((typeof zipCode === "number" && zipCode < 0) ||
           (typeof zipCode === "string" && parseInt(zipCode) < 0))
       ) {
         errors.set("zipCode", "Cannot be a negative number.");
       } else if (
-        country.toLowerCase() === "united states" &&
+        country?.toLowerCase() === "united states" &&
         ((zipCodeStr?.length > 0 && zipCodeStr?.length < 5) ||
           zipCodeStr.length > 5)
       ) {
@@ -193,11 +205,6 @@ const SubmitAboutUserFormBtn: React.FC<IProps> = ({
         errors.set("occupation", "*This field is required.");
       }
 
-      if (country?.length <= 0) {
-        errors.set("country", "*This field is required.");
-      } else if (!COUNTRY_NAMES.has(country)) {
-        errors.set("country", "*Invalid country name.");
-      }
 
       if (isTeacher && !isNotTeaching && !classSize) {
         errors.set(
@@ -316,15 +323,27 @@ const SubmitAboutUserFormBtn: React.FC<IProps> = ({
       };
       console.log("aboutUserFormClone: ", aboutUserFormClone);
       localStorage.setItem("userAccount", JSON.stringify(aboutUserFormClone));
+      const selectedGpPlusBillingTerm = getLocalStorageItem(
+        "selectedGpPlusBillingType"
+      );
       setErrors(new Map());
       setTimeout(() => {
         setIsAboutUserModalDisplayed(false);
         setWasBtnClicked(false);
         setNotifyModal({
           isDisplayed: true,
-          bodyTxt: "",
+          closeBtnTxt: selectedGpPlusBillingTerm ? "Start sesssion" : undefined,
+          bodyTxt: selectedGpPlusBillingTerm
+            ? "The GP+ checkout session will start when you close this modal."
+            : "",
           headerTxt: "Form Saved! Thank you!",
-          handleOnHide: () => {},
+          handleOnHide: () => {
+            if (selectedGpPlusBillingTerm) {
+              setTimeout(() => {
+                setIsGpPlusSignUpModalDisplayed(true);
+              }, 200);
+            }
+          },
         });
         update();
       }, 300);
@@ -350,6 +369,7 @@ const SubmitAboutUserFormBtn: React.FC<IProps> = ({
       setWasBtnClicked(false);
     }
   };
+  
   return (
     <Button
       onClick={handleSubmitBtnClick}

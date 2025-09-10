@@ -10,9 +10,7 @@ import {
   IFeatureLocation,
   IFeatureName,
   IFeaturing,
-  ILsnStatus,
   INewUnitSchema,
-  ISections,
 } from "./types/unit";
 import { StandardsSchema } from "./Standards";
 import { ITargetStandardsCode } from "./types/standards";

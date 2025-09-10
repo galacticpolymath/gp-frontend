@@ -4,6 +4,7 @@ import {
   IChunkStep,
   IGoingFurtherVal,
   IItem,
+  IItemV2,
   ILink,
   ILsnPrep,
   INewUnitLesson,
@@ -11,6 +12,11 @@ import {
   IUnitTeachingMaterials,
   IVocab,
 } from "./types/teachingMaterials";
+import {
+  ICustomProp,
+  IRootFieldToRetrieve,
+  RootFieldToRetrieve,
+} from "./RootFieldsToRetrieve";
 
 const GatheredVocabSchema = new Schema<IVocab>(
   {
@@ -31,6 +37,20 @@ const ItemSchema = new Schema<IItem>(
     itemTitle: String,
     itemDescription: String,
     itemCat: String,
+    links: [LinkSchema],
+  },
+  { _id: false }
+);
+const ItemSchemaV2 = new Schema<IItemV2>(
+  {
+    itemTitle: String,
+    itemDescription: String,
+    itemCat: String,
+    itemType: String,
+    mimeType: String,
+    gdriveRoot: String,
+    isExportable: Boolean,
+    externalUrl: String,
     links: [LinkSchema],
   },
   { _id: false }
@@ -92,7 +112,7 @@ const NewUnitLessonSchema = new Schema<INewUnitLesson>(
     gradeVarNote: String,
     preface: String,
     tile: String,
-    itemList: [ItemSchema],
+    itemList: [ItemSchemaV2],
     lsnDur: Number,
     lsnPreface: String,
     learningObj: [String],
@@ -111,7 +131,11 @@ const ResourcesSchema = new Schema<IResource<INewUnitLesson>>(
   },
   { _id: false }
 );
-export const TeachingMaterialsSchema = new Schema<IUnitTeachingMaterials>(
+export const TeachingMaterialsSchema = new Schema<
+  IUnitTeachingMaterials & {
+    rootFieldsToRetrieveForUI: ICustomProp<IRootFieldToRetrieve[]>;
+  }
+>(
   {
     unitDur: String,
     unitPreface: String,
@@ -122,6 +146,27 @@ export const TeachingMaterialsSchema = new Schema<IUnitTeachingMaterials>(
     __component: String,
     InitiallyExpanded: Boolean,
     SectionTitle: String,
+    rootFieldsToRetrieveForUI: {
+      type: [RootFieldToRetrieve],
+      default: () => [
+          {
+            name: "Title",
+            as: "Title",
+          },
+          {
+            name: "GdrivePublicID",
+            as: "GdrivePublicID",
+          },
+          {
+            name: "MediumTitle",
+            as: "MediumTitle",
+          },
+          {
+            name: "_id",
+            as: "unitId",
+          },
+        ]
+    },
   },
   { _id: false }
 );

@@ -8,14 +8,10 @@
 import { FcGoogle } from "react-icons/fc";
 import Button from "../General/Button";
 import { signIn } from "next-auth/react";
+import { useCustomCookies } from "../../customHooks/useCustomCookies";
 
 const GoogleSignIn = ({
-    children = (
-        <>
-            <FcGoogle className="mx-2" />
-            <span style={{ fontSize: "16px" }}>Sign in with Google.</span>
-        </>
-    ),
+    children,
     callbackUrl = "",
     handleGoogleBtnClickCustom,
     style = {},
@@ -24,10 +20,22 @@ const GoogleSignIn = ({
     executeExtraBtnClickLogic = null,
     executeFinallyBlockLogic = null,
 }) => {
+    const { removeAppCookies } = useCustomCookies();
+
+    if (!children) {
+        children = (
+            <>
+                <FcGoogle className="mx-2" />
+                <span style={{ fontSize: "16px" }}>Sign in with Google.</span>
+            </>
+        );
+    }
 
     const handleGoogleBtnClickDefault = (event) => {
         try {
             event.preventDefault();
+
+            removeAppCookies(["gdriveAccessToken", "gdriveAccessTokenExp", "gdriveRefreshToken"])
 
             if (typeof executeExtraBtnClickLogic === "function") {
                 executeExtraBtnClickLogic();

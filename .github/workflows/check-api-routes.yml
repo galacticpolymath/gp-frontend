@@ -10,6 +10,8 @@ jobs:
     name: Run Integration Tests
     if: github.actor != 'dependabot[bot]'
     environment: Preview
+    permissions:
+      contents: read
     runs-on: ubuntu-latest
 
     steps:

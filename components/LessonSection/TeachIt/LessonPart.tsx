@@ -8,7 +8,7 @@ import PropTypes from "prop-types";
 import Accordion from "../../Accordion";
 import LessonChunk from "./LessonChunk";
 import RichText from "../../RichText";
-import { CSSProperties, memo, ReactNode, useState } from "react";
+import { CSSProperties, memo, ReactNode, useMemo, useState } from "react";
 import Link from "next/link";
 import CopyableTxt from "../../CopyableTxt";
 import { useRouter } from "next/router";
@@ -20,13 +20,23 @@ import { useUserContext } from "../../../providers/UserProvider";
 import {
   IChunk,
   IGoingFurtherVal,
+  IItemV2,
+  IItemV2Props,
   ILsnExt,
+  INewUnitLesson,
   IResource,
   IStep,
 } from "../../../backend/models/Unit/types/teachingMaterials";
-import { IItemForClient, TUseStateReturnVal } from "../../../types/global";
+import {
+  IItemForClient,
+  ILessonForUI,
+  TSetter,
+  TUseStateReturnVal,
+} from "../../../types/global";
 import { checkIfElementClickedWasClipboard } from "../../../shared/fns";
 import { LAST_LESSON_NUM_ID, UNITS_URL_PATH } from "../../../shared/constants";
+import CopyLessonBtn, { ICopyLessonBtnProps } from "./CopyLessonBtn";
+import { INewUnitSchema } from "../../../backend/models/Unit/types/unit";
 
 const LESSON_PART_BTN_COLOR = "#2C83C3";
 
@@ -52,10 +62,19 @@ const SignInSuggestion = ({
   );
 };
 
-interface ILessonPartProps {
+export interface ILessonPartProps
+  extends Pick<
+      INewUnitLesson,
+      | "allUnitLessons"
+      | "lessonsFolder"
+      | "userGDriveLessonFolderId"
+      | "sharedGDriveLessonFolders"
+    >,
+    Pick<ICopyLessonBtnProps, "isRetrievingLessonFolderIds"> {
   resources?: IResource;
   GradesOrYears?: string | null;
   removeClickToSeeMoreTxt: () => void;
+  selectedGrade: IResource<ILessonForUI>;
   ClickToSeeMoreComp?: ReactNode;
   FeedbackComp?: ReactNode;
   partsArr: any[];
@@ -76,36 +95,94 @@ interface ILessonPartProps {
   isAccordionExpandable: boolean;
   accordionBtnStyle?: CSSProperties;
   gradeVarNote?: string | null;
+  unitMediumTitle?: string | null;
+  GdrivePublicID?: string | null;
+  unitId: Pick<INewUnitSchema, "_id">["_id"];
+  setParts: TSetter<(INewUnitLesson<IItemV2> | ILessonForUI)[]>;
 }
 
-const LessonPart = ({
-  lsnNum,
-  lsnTitle,
-  lsnPreface,
-  lsnExt,
-  itemList,
-  goingFurther,
-  learningObjectives,
-  partsArr,
-  chunks = [],
-  resources,
-  ForGrades,
-  GradesOrYears,
-  gradeVarNote,
-  _numsOfLessonPartsThatAreExpanded,
-  removeClickToSeeMoreTxt,
-  lessonTileForDesktop = null,
-  lessonTileForMobile = null,
-  ClickToSeeMoreComp = null,
-  FeedbackComp = null,
-  ComingSoonLessonEmailSignUp = null,
-  accordionBtnStyle = {},
-  isAccordionExpandable = true,
-}: ILessonPartProps) => {
+const LessonPart: React.FC<ILessonPartProps> = (props) => {
+  const {
+    unitMediumTitle,
+    isRetrievingLessonFolderIds,
+    allUnitLessons,
+    GdrivePublicID,
+    lsnNum,
+    lsnTitle,
+    lsnPreface,
+    lsnExt,
+    itemList,
+    goingFurther,
+    learningObjectives,
+    partsArr,
+    chunks = [],
+    resources,
+    userGDriveLessonFolderId,
+    ForGrades,
+    GradesOrYears,
+    gradeVarNote,
+    _numsOfLessonPartsThatAreExpanded,
+    removeClickToSeeMoreTxt,
+    lessonTileForDesktop = null,
+    lessonTileForMobile = null,
+    ClickToSeeMoreComp = null,
+    unitId,
+    FeedbackComp = null,
+    ComingSoonLessonEmailSignUp = null,
+    accordionBtnStyle = {},
+    isAccordionExpandable = true,
+    setParts,
+    sharedGDriveLessonFolders,
+    selectedGrade,
+  } = props;
+
+  const sharedGDriveLessonFolder = useMemo(() => {
+    if (!sharedGDriveLessonFolders) {
+      console.log("No shared Google Drive lesson folders available");
+      return undefined;
+    }
+
+    console.log("sharedGDriveLessonFolders: ", sharedGDriveLessonFolders);
+
+    const targetLessonFolder = sharedGDriveLessonFolders.find((folder) => {
+      if (lsnNum == 100) {
+        return folder.name === "assessments";
+      }
+
+      const parentFolderGradeType = folder.parentFolder?.name
+        ?.split("_")
+        ?.at(-1)
+        ?.toLowerCase();
+
+      console.log("parentFolderGradeType: ", parentFolderGradeType);
+
+      console.log("selectedGrade: ", selectedGrade);
+
+      return (
+        parentFolderGradeType &&
+          ((selectedGrade.gradePrefix &&
+          parentFolderGradeType === selectedGrade.gradePrefix.toLowerCase()) ||
+        (selectedGrade.grades &&
+          parentFolderGradeType === selectedGrade.grades.toLowerCase()))
+      );
+    });
+
+    console.log("targetLessonFolder, yo there: ", targetLessonFolder);
+
+    return targetLessonFolder;
+  }, [selectedGrade]);
+
+  useEffect(() => {
+    console.log("sharedGDriveLessonFolders: ", sharedGDriveLessonFolders);
+
+    console.log("sharedGDriveLessonFolder: ", sharedGDriveLessonFolder);
+  });
+
   const { _isUserTeacher } = useUserContext();
-  const { _isLoginModalDisplayed } = useModalContext();
+  const { _isLoginModalDisplayed, _lessonItemModal } = useModalContext();
   const [isUserTeacher] = _isUserTeacher;
   const [, setIsLoginModalDisplayed] = _isLoginModalDisplayed;
+  const [, setLessonItemModal] = _lessonItemModal;
   const router = useRouter();
   const { status } = useSession();
   const [isExpanded, setIsExpanded] = useState(false);
@@ -134,6 +211,23 @@ const LessonPart = ({
   }
 
   const _accordionId = `part_${lsnNum}`;
+
+  const handlePreviewDownloadBtnClick = (
+    item: IItemV2Props & Pick<IItemV2, "itemCat" | "links">
+  ) => {
+    console.log("handlePreviewDownloadBtnClick: item: ", item);
+
+    setLessonItemModal((state) => ({
+      ...state,
+      ...item,
+      externalUrl: item.externalUrl ?? item.links?.[0]?.url,
+      isDisplayed: true,
+      docUrl:
+        item.itemType === "presentation"
+          ? `${item.gdriveRoot}/view`
+          : `${item.gdriveRoot}/preview`,
+    }));
+  };
 
   const handleClipBoardIconClick = () => {
     let url = window.location.href;
@@ -273,6 +367,17 @@ const LessonPart = ({
     boxShadow: isExpanded ? highlightedGlow : "none",
     pointerEvent: "none",
   };
+  const lessonsFolder =
+    lsnNum == 100
+      ? // will use the assessments folder itself as the parent folder
+        {
+          name: sharedGDriveLessonFolder?.name,
+          sharedGDriveId: sharedGDriveLessonFolder?.id,
+        }
+      : {
+          name: sharedGDriveLessonFolder?.parentFolder.name,
+          sharedGDriveId: sharedGDriveLessonFolder?.parentFolder.id,
+        };
 
   return (
     <div style={accordionStyleAccordionWrapper}>
@@ -462,7 +567,7 @@ const LessonPart = ({
           </div>
         }
       >
-        <div className="p-0 lessonPartContent">
+        <div className="p-0 lessonPartContent pb-3">
           {!!restOfTags?.length && (
             <div className="d-flex mt-0 mt-md-1 justify-content-sm-start tagPillContainer flex-wrap">
               {restOfTags.map((tag: string, index) => (
@@ -528,9 +633,29 @@ const LessonPart = ({
             <div className="d-flex align-items-start">
               <i className="bi bi-ui-checks-grid me-2 fw-bolder"></i>
               <h5 className="fw-bold" id="materials-title">
-                Materials for {GradesOrYears} {ForGrades}
+                Materials for{" "}
+                {lsnNum == 100
+                  ? `Assessments`
+                  : `${selectedGrade.gradePrefix} (Lesson ${lsnNum})`}
               </h5>
             </div>
+            {lsnNum && lsnTitle && GdrivePublicID && unitMediumTitle && (
+              <CopyLessonBtn
+                setParts={setParts}
+                unitId={unitId!}
+                isRetrievingLessonFolderIds={isRetrievingLessonFolderIds}
+                GdrivePublicID={GdrivePublicID}
+                MediumTitle={unitMediumTitle}
+                lessonId={lsnNum}
+                lessonName={lsnTitle}
+                sharedGDriveLessonFolderId={sharedGDriveLessonFolder?.id}
+                allUnitLessons={allUnitLessons}
+                lessonsFolder={lessonsFolder}
+                lessonsGrades={selectedGrade.grades}
+                lessonSharedDriveFolderName={sharedGDriveLessonFolder?.name}
+                userGDriveLessonFolderId={userGDriveLessonFolderId}
+              />
+            )}
             <ol className="mt-2 materials-list">
               {!!_itemList?.length &&
                 _itemList.map((item, itemIndex: number) => {
@@ -540,6 +665,11 @@ const LessonPart = ({
                     links,
                     filePreviewImg,
                     itemCat,
+                    gdriveRoot,
+                    isExportable,
+                    mimeType,
+                    externalUrl,
+                    itemType,
                   } = item;
                   const _links = links
                     ? Array.isArray(links)
@@ -625,98 +755,136 @@ const LessonPart = ({
                                 style={{ listStyle: "none" }}
                                 className="links-list p-0"
                               >
-                                {!!_links &&
-                                  _links.map(({ url, linkText }, linkIndex) => {
-                                    return (
-                                      <li
-                                        className="mb-0 d-flex"
-                                        key={linkIndex}
+                                {itemCat === "presentation" && (
+                                  <li className="mb-0 d-flex">
+                                    <div className="d-flex justify-content-center align-items-sm-center">
+                                      <button
+                                        className={`${
+                                          isTeacherItem
+                                            ? isUserTeacher
+                                              ? ""
+                                              : "link-disabled"
+                                            : ""
+                                        } no-btn-styles no-hover-color-change`}
                                       >
-                                        <div className="d-flex justify-content-center align-items-sm-center">
-                                          {!!url && (
-                                            <Link
-                                              href={
-                                                typeof url === "string"
-                                                  ? url
-                                                  : url?.[0] ?? ""
-                                              }
-                                              target="_blank"
-                                              rel="noopener noreferrer"
-                                              className={`${
-                                                isTeacherItem
-                                                  ? isUserTeacher
-                                                    ? ""
-                                                    : "link-disabled"
-                                                  : ""
-                                              }`}
-                                            >
-                                              {linkIndex === 0 ? (
-                                                <i
-                                                  style={{ color: "#4498CC" }}
-                                                  className="bi bi-box-arrow-up-right"
-                                                />
-                                              ) : (
-                                                <i
-                                                  style={{ color: "#0273BA" }}
-                                                  className="fab fa-google-drive"
-                                                />
-                                              )}
-                                            </Link>
-                                          )}
-                                        </div>
-                                        <div className="d-flex justify-content-center align-items-center ps-2">
-                                          {!!url && (
-                                            <a
-                                              href={
-                                                typeof url === "string"
-                                                  ? url
-                                                  : url[0]
-                                              }
-                                              target="_blank"
-                                              rel="noopener noreferrer"
-                                              className={`${
-                                                isTeacherItem
-                                                  ? isUserTeacher
-                                                    ? ""
-                                                    : "link-disabled"
-                                                  : ""
-                                              }`}
-                                            >
-                                              {linkText}
-                                            </a>
-                                          )}
-                                        </div>
-                                      </li>
-                                    );
-                                  })}
+                                        <i
+                                          style={{ color: "#4498CC" }}
+                                          className="bi bi-box-arrow-up-right"
+                                        />
+                                      </button>
+                                    </div>
+                                    <div className="d-flex justify-content-center align-items-center ps-2">
+                                      <a
+                                        href={`${gdriveRoot}/present`}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        style={{
+                                          color: "#2c83c3",
+                                        }}
+                                        className={`${
+                                          isTeacherItem
+                                            ? isUserTeacher
+                                              ? ""
+                                              : "link-disabled"
+                                            : ""
+                                        }`}
+                                      >
+                                        Present
+                                      </a>
+                                    </div>
+                                  </li>
+                                )}
+                                <li className="mb-0 d-flex">
+                                  <div className="d-flex justify-content-center align-items-sm-center">
+                                    <button
+                                      className={`${
+                                        isTeacherItem
+                                          ? isUserTeacher
+                                            ? ""
+                                            : "link-disabled"
+                                          : ""
+                                      } no-btn-styles no-hover-color-change`}
+                                      onClick={() => {
+                                        handlePreviewDownloadBtnClick({
+                                          links,
+                                          gdriveRoot,
+                                          isExportable,
+                                          mimeType,
+                                          externalUrl,
+                                          itemCat,
+                                          itemType,
+                                        });
+                                      }}
+                                    >
+                                      <i
+                                        style={{ color: "#0273BA" }}
+                                        className="fab fa-google-drive"
+                                      />
+                                    </button>
+                                  </div>
+                                  <div className="d-flex justify-content-center align-items-center ps-2">
+                                    <button
+                                      style={{
+                                        color: "#2c83c3",
+                                      }}
+                                      className={`${
+                                        isTeacherItem
+                                          ? isUserTeacher
+                                            ? ""
+                                            : "link-disabled"
+                                          : ""
+                                      } fw-bolder no-btn-styles no-hover-color-change underline-on-hover`}
+                                      onClick={() => {
+                                        handlePreviewDownloadBtnClick({
+                                          links,
+                                          gdriveRoot,
+                                          mimeType,
+                                          externalUrl,
+                                          itemCat,
+                                          isExportable,
+                                          itemType,
+                                        });
+                                      }}
+                                    >
+                                      {itemType === "presentation"
+                                        ? "Preview/Download"
+                                        : "Preview"}
+                                    </button>
+                                  </div>
+                                </li>
                               </ul>
                             </section>
                             {!!filePreviewImg && (
                               <section className="pt-1 ps-sm-1 ps-md-4 d-flex col-3">
                                 <div className="border align-content-start my-auto">
-                                  <a
-                                    href={filePreviewImgLink}
-                                    target="_blank"
-                                    className={`${
-                                      isTeacherItem
+                                  <img
+                                    src={filePreviewImg}
+                                    alt="lesson_tile"
+                                    className="h-auto w-auto lesson-file-img-testing cursor-pointer"
+                                    style={{
+                                      objectFit: "contain",
+                                      maxHeight: "100px",
+                                      maxWidth: "100px",
+                                      cursor: "pointer",
+                                      border: "1px solid gray",
+                                      pointerEvents: isTeacherItem
                                         ? isUserTeacher
-                                          ? ""
-                                          : "link-disabled"
-                                        : imgLink
-                                    }`}
-                                  >
-                                    <img
-                                      src={filePreviewImg}
-                                      alt="lesson_tile"
-                                      className="h-auto w-auto lesson-file-img-testing"
-                                      style={{
-                                        objectFit: "contain",
-                                        maxHeight: "100px",
-                                        maxWidth: "100px",
-                                        border: "1px solid gray",
-                                      }}
-                                    />
-                                  </a>
+                                          ? "auto"
+                                          : "none"
+                                        : "auto",
+                                    }}
+                                    onClick={() => {
+                                      handlePreviewDownloadBtnClick({
+                                        links,
+                                        gdriveRoot,
+                                        mimeType,
+                                        externalUrl,
+                                        itemCat,
+                                        isExportable,
+                                        itemType,
+                                      });
+                                    }}
+                                  />
                                 </div>
                               </section>
                             )}

@@ -13,33 +13,116 @@ import { useRouter } from "next/router";
 import { useCustomCookies } from "../../../customHooks/useCustomCookies";
 import { TUseStateReturnVal } from "../../../types/global";
 import { useGetAboutUserForm } from "../../../customHooks/useGetAboutUserForm";
-import { TAboutUserForm } from "../../../backend/models/User/types";
+import {
+  TAboutUserForm,
+  TGpPlusSubscriptionForClient,
+} from "../../../backend/models/User/types";
 import { Spinner } from "react-bootstrap";
+import {
+  getIsWithinParentElement,
+  getLocalStorageItem,
+  removeLocalStorageItem,
+} from "../../../shared/fns";
+import {
+  deleteUserFromServerCache,
+  getIndividualGpPlusSubscription,
+} from "../../../apiServices/user/crudFns";
+import useSiteSession from "../../../customHooks/useSiteSession";
+import useHandleOpeningGpPlusAccount from "../../../customHooks/useHandleOpeningGpPlusAccount";
+import { TAccountStageLabel } from "../../../backend/services/outsetaServices";
+import Image from "next/image";
+import axios from "axios";
 
 interface IProps {
-  _modalAnimation: TUseStateReturnVal<string>;
+  _modalAnimation: TUseStateReturnVal<
+    "d-none" | "fade-out-quick" | "fade-in-quick"
+  >;
 }
+
+const USER_ACCOUNT_MODAL_ID = "user-account-modal";
+
+// GP+ membership statuses
+const HAS_MEMBERSHIP_STATUSES: Set<TAccountStageLabel> = new Set([
+  "Cancelling",
+  "Subscribing",
+  "Past due",
+] as TAccountStageLabel[]);
+
+export const revokeGoogleAuthToken = async (token: string) => {
+  try {
+    const response = await axios.post(
+      "https://oauth2.googleapis.com/revoke",
+      null,
+      {
+        params: {
+          token,
+        },
+      }
+    );
+
+    console.log("Response from revoking Google Auth token:", response);
+
+    const { data, status } = response;
+
+    if (!(status >= 200 && status < 300)) {
+      throw new Error(`Failed to revoke token: ${data?.error}`);
+    }
+
+    return {
+      wasSuccessful: true,
+    };
+  } catch (error) {
+    console.error(
+      "An error occurred while revoking the Google Auth token:",
+      error
+    );
+
+    return {
+      wasSuccessful: false,
+    };
+  }
+};
 
 const LoginContainerForNavbar = ({ _modalAnimation }: IProps) => {
   const router = useRouter();
-  const { _isLoginModalDisplayed, _isAccountModalMobileOn } = useModalContext();
+  const { _isAccountModalMobileOn } = useModalContext();
   const { _aboutUserForm, _isRetrievingUserData } = useGetAboutUserForm(
     router.asPath !== "/account"
   );
   const [aboutUserForm] = _aboutUserForm;
   const [isRetrievingUserData] = _isRetrievingUserData;
   const userAccountSaved = (
-    typeof localStorage !== "undefined" && localStorage.getItem("userAccount")
-      ? JSON.parse(localStorage.getItem("userAccount") ?? "{}")
+    typeof localStorage !== "undefined"
+      ? getLocalStorageItem("userAccount") ?? {}
       : {}
   ) as TAboutUserForm;
-  const [, setIsLoginModalDisplayed] = _isLoginModalDisplayed;
   const [modalAnimation, setModalAnimation] = _modalAnimation;
-  const { status, data } = useSession();
-  const { image, name } = data?.user ?? {};
+  const { status, user, token, gdriveAccessToken, gdriveRefreshToken } =
+    useSiteSession();
+  const { image } = user ?? {};
   const [, setIsAccountModalMobileOn] = _isAccountModalMobileOn;
-  const [isLoadingSpinnerOn, setIsLoadingSpinnerOn] = useState(false);
-  const { clearCookies } = useCustomCookies();
+  const [isSigningUserOut, setIsSigningUserOut] = useState(false);
+  const { clearCookies, removeAppCookies } = useCustomCookies();
+  const [gpPlusSubscription, setGpPlusSubscription] =
+    useState<TGpPlusSubscriptionForClient | null>(null);
+  const [wasUIDataLoaded, setWasUIDataLoaded] = useState(false);
+
+  useEffect(() => {
+    if (status === "authenticated" && !wasUIDataLoaded) {
+      (async () => {
+        const gpPlusSub =
+          (await getIndividualGpPlusSubscription(token))?.membership ?? null;
+        setGpPlusSubscription(gpPlusSub);
+        setWasUIDataLoaded(true);
+      })();
+    } else if (status === "unauthenticated") {
+      setWasUIDataLoaded(true);
+    }
+  }, [status]);
+
+  const isGpPlusMember =
+    gpPlusSubscription?.AccountStageLabel &&
+    HAS_MEMBERSHIP_STATUSES.has(gpPlusSubscription.AccountStageLabel);
   const firstName =
     userAccountSaved?.firstName ??
     aboutUserForm?.firstName ??
@@ -51,11 +134,50 @@ const LoginContainerForNavbar = ({ _modalAnimation }: IProps) => {
     aboutUserForm?.name?.last ??
     "";
 
-  const handleSignOutBtnClick = () => {
+  const handleSignOutBtnClick = async () => {
+    setIsSigningUserOut(true);
+
+    if (gdriveAccessToken) {
+      await revokeGoogleAuthToken(gdriveAccessToken);
+    }
+
+    removeAppCookies([
+      "gdriveAccessToken",
+      "gdriveAccessTokenExp",
+      "gdriveRefreshToken",
+    ]);
+
+    await deleteUserFromServerCache(token);
+    await signOut({ redirect: false });
+
     localStorage.clear();
-    setIsLoadingSpinnerOn(true);
+    sessionStorage.clear();
     clearCookies();
-    signOut();
+
+    window.Outseta?.on("logout", async () => {
+      console.log("Logging the user out.");
+      window.Outseta?.setAccessToken(null);
+      window.Outseta?.setMagicLinkIdToken("");
+      return false;
+    });
+
+    window.Outseta?.on("signup", () => {
+      removeLocalStorageItem("selectedGpPlusBillingType");
+    });
+  };
+
+  const closeModal = () => {
+    setModalAnimation((modalAnimation) => {
+      if (modalAnimation === "fade-out-quick" || modalAnimation === "d-none") {
+        return "fade-in-quick";
+      }
+
+      if (modalAnimation === "fade-in-quick") {
+        return "fade-out-quick";
+      }
+
+      return modalAnimation;
+    });
   };
 
   const handleAccountBtnClick = () => {
@@ -68,24 +190,11 @@ const LoginContainerForNavbar = ({ _modalAnimation }: IProps) => {
     }
 
     if (status === "authenticated") {
-      setModalAnimation((modalAnimation) => {
-        if (
-          modalAnimation === "fade-out-quick" ||
-          modalAnimation === "d-none"
-        ) {
-          return "fade-in-quick";
-        }
-
-        if (modalAnimation === "fade-in-quick") {
-          return "fade-out-quick";
-        }
-
-        return modalAnimation;
-      });
+      closeModal();
       return;
     }
 
-    setIsLoginModalDisplayed(true);
+    router.push("/account");
   };
 
   const [mounted, setMounted] = useState(false);
@@ -93,6 +202,33 @@ const LoginContainerForNavbar = ({ _modalAnimation }: IProps) => {
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  const handleOnClickAwayCloseModal = (event: MouseEvent) => {
+    const isWithinModal = getIsWithinParentElement(
+      event.target as HTMLElement,
+      USER_ACCOUNT_MODAL_ID,
+      "id",
+      "strictEquals"
+    );
+
+    console.log("Will close the modal: ", isWithinModal);
+
+    if (isWithinModal) {
+      closeModal();
+    }
+  };
+
+  useEffect(() => {
+    if (modalAnimation === "fade-in-quick") {
+      document.addEventListener("click", handleOnClickAwayCloseModal);
+    } else if (modalAnimation === "fade-out-quick") {
+      document.removeEventListener("click", handleOnClickAwayCloseModal);
+    }
+
+    return () => {
+      document.removeEventListener("click", handleOnClickAwayCloseModal);
+    };
+  }, [modalAnimation]);
 
   if (!mounted) {
     return null;
@@ -114,31 +250,30 @@ const LoginContainerForNavbar = ({ _modalAnimation }: IProps) => {
         {status === "unauthenticated" && (
           <span style={{ color: "white", fontWeight: 410 }}>LOGIN</span>
         )}
-        {status === "loading" && (
-          <>
-            <span
-              className="spinner-border spinner-border-sm text-white"
-              role="status"
-              aria-hidden="true"
-            />
-            <span className="sr-only text-white">Loading...</span>
-          </>
+        {!wasUIDataLoaded && <Spinner color="white" />}
+        {status === "authenticated" && wasUIDataLoaded && (
+          <div className="position-relative d-flex align-items-center">
+            {image ? (
+              <div
+                className={`avatar-ring ${
+                  isGpPlusMember ? "gp-plus-user-color" : "free-user-color"
+                }`}
+              >
+                <img
+                  src={image}
+                  alt="user_img"
+                  style={{ objectFit: "contain" }}
+                  className="rounded-circle w-100 h-100"
+                />
+              </div>
+            ) : (
+              <FaUserAlt color="#2C83C3" />
+            )}
+          </div>
         )}
-        {status === "authenticated" &&
-          (image ? (
-            <img
-              src={image}
-              alt="user_img"
-              width={35}
-              height={35}
-              style={{ objectFit: "contain" }}
-              className="rounded-circle"
-            />
-          ) : (
-            <FaUserAlt color="#2C83C3" />
-          ))}
       </Button>
       <div
+        id={USER_ACCOUNT_MODAL_ID}
         style={{
           display: modalAnimation === "fade-out-quick" ? "none" : "block",
           zIndex: modalAnimation === "fade-out-quick" ? -1000 : 100000,
@@ -151,8 +286,11 @@ const LoginContainerForNavbar = ({ _modalAnimation }: IProps) => {
           style={{ borderBottom: ".5px solid grey" }}
           className="d-flex flex-column justify-content-center align-items-center pb-2"
         >
-          {isRetrievingUserData && !firstName && !lastName ? (
-            <Spinner className="text-black" />
+          {isRetrievingUserData &&
+          !firstName &&
+          !lastName &&
+          !isSigningUserOut ? (
+            <Spinner color="white" />
           ) : (
             <h5 className="text-black my-3">
               {firstName} {lastName}
@@ -170,10 +308,10 @@ const LoginContainerForNavbar = ({ _modalAnimation }: IProps) => {
             View Account
           </Button>
           <Button
-            handleOnClick={handleSignOutBtnClick}
+            handleOnClick={async () => await handleSignOutBtnClick()}
             classNameStr="no-btn-styles  hover txt-underline-on-hover py-2"
           >
-            {isLoadingSpinnerOn ? (
+            {isSigningUserOut ? (
               <div
                 className="spinner-border spinner-border-sm text-dark"
                 role="status"

@@ -8,12 +8,13 @@ import { useContext, useState } from "react";
 import { ModalContext } from "../../../providers/ModalProvider";
 import Button from "../../General/Button";
 import GoogleSignIn from "../GoogleSignIn";
-import { useUserEntry } from "../../../customHooks/useUserEntry";
 import { CustomInput } from "../formElements";
 import { FcGoogle } from "react-icons/fc";
 import { Spinner } from "react-bootstrap";
 import Link from "next/link";
 import { TROUBLE_LOGGING_IN_LINK } from "../../../globalVars";
+import { useRouter } from "next/router";
+import { useUserEntry } from "../../../customHooks/useUserEntry";
 
 const LoginUI = ({
   className = "",
@@ -25,6 +26,8 @@ const LoginUI = ({
     _isUserEntryInProcess,
     _userEntryErrors,
   } = useUserEntry();
+  const router = useRouter();
+  const [passwordInputType, setPasswordInputType] = useState("password");
   const { _isCreateAccountModalDisplayed, _isPasswordResetModalOn } =
     useContext(ModalContext);
   const [isGoogleLoginSpinnerDisplayed, setIsGoogleLoginSpinnerDisplayed] =
@@ -56,7 +59,7 @@ const LoginUI = ({
   };
 
   const handleCreateOneBtnClick = () => {
-    setIsCreateAccountModalDisplayed(true);
+    router.push('/sign-up');
   };
 
   return (
@@ -81,6 +84,28 @@ const LoginUI = ({
       >
         Get free access to 100+ free STEM resources!
       </h5>
+      <section className="mt-4 mb-3 justify-content-center align-items-center d-flex">
+        <div style={{ width: '85%' }} className="d-flex py-3 flex-sm-row flex-column justify-content-center align-items-center border-top border-bottom">
+          <span className="text-black">Don{"'"}t have an account?</span>
+          <Button
+            color="#3C719F"
+            defaultStyleObj={{
+              background: "none",
+              color: "inherit",
+              border: "none",
+              font: "inherit",
+              cursor: "pointer",
+              outline: "inherit",
+            }}
+            className="d-block no-link-decoration"
+            handleOnClick={handleCreateOneBtnClick}
+          >
+            <span className="ms-1 text-primary underline-on-hover">
+              Sign up.
+            </span>
+          </Button>
+        </div>
+      </section>
       <section className="d-flex justify-content-center align-items-center pt-3 pb-4 mt-4">
         <GoogleSignIn
           callbackUrl={
@@ -119,7 +144,7 @@ const LoginUI = ({
       </section>
       <div className="d-flex justify-content-center mt-3 mb-2">
         <div
-          style={{ width: "48%" }}
+          style={{ width: "45%" }}
           className="d-flex justify-content-center justify-content-sm-end align-items-center"
         >
           <div
@@ -136,7 +161,7 @@ const LoginUI = ({
           </span>
         </div>
         <div
-          style={{ width: "48%" }}
+          style={{ width: "45%" }}
           className="d-flex justify-content-center justify-content-sm-start align-items-center"
         >
           <div
@@ -149,8 +174,9 @@ const LoginUI = ({
         <form>
           <div className="mt-3 d-flex justify-content-center align-items-center flex-column">
             <label
-              className={`d-flex p-0 position-relative ${inputFieldClassName} ${userEntryErrors.has("email") ? "text-danger" : ""
-                }  fw-bold pb-2`}
+              className={`d-flex p-0 position-relative ${inputFieldClassName} ${
+                userEntryErrors.has("email") ? "text-danger" : ""
+              }  fw-bold pb-2`}
               htmlFor="email-input"
             >
               Email:
@@ -160,11 +186,13 @@ const LoginUI = ({
                 handleOnInputChange(event);
               }}
               inputStyle={{ width: "100%", height: "45px", fontSize: "20px" }}
-              inputContainerCss={`${inputFieldClassName} rounded position-relative bg-light-blue ${userEntryErrors.has("email") ? "border-danger" : "border"
-                }`}
+              inputContainerCss={`${inputFieldClassName} rounded position-relative bg-light-blue ${
+                userEntryErrors.has("email") ? "border-danger" : "border"
+              }`}
               inputClassName={`px-1 py-2 position-relative no-outline border-0 rounded bg-light-blue`}
               inputId="email-input"
               inputName="email"
+              inputType=""
             />
           </div>
           <div className="my-2 py-1 d-flex justify-content-center align-items-center">
@@ -181,8 +209,9 @@ const LoginUI = ({
           </div>
           <div className="mt-4 d-flex justify-content-center align-items-center flex-column">
             <label
-              className={`d-flex p-0 position-relative ${userEntryErrors.has("password") ? "text-danger" : ""
-                } ${inputFieldClassName} fw-bold pb-2`}
+              className={`d-flex p-0 position-relative ${
+                userEntryErrors.has("password") ? "text-danger" : ""
+              } ${inputFieldClassName} fw-bold pb-2`}
               htmlFor="password-input"
             >
               Password:
@@ -207,14 +236,21 @@ const LoginUI = ({
                 borderBottomRightRadius: "6.75px",
               }}
               iconContainerClassName="h-100 end-0 position-absolute top-0 d-flex justify-content-center align-items-center bg-light-blue"
-              inputContainerCss={`${inputFieldClassName} ${userEntryErrors.has("password")
-                ? "border-danger text-danger"
-                : "border"
-                } rounded position-relative`}
+              inputContainerCss={`${inputFieldClassName} ${
+                userEntryErrors.has("password")
+                  ? "border-danger text-danger"
+                  : "border"
+              } rounded position-relative`}
               inputClassName="px-1 py-2 position-relative no-outline border-0 bg-light-blue"
               inputId="password-input"
               inputName="password"
               isPasswordInput
+              inputType={passwordInputType}
+              handleShowPasswordTxtBtnClick={() => {
+                setPasswordInputType(inputType => {
+                  return inputType === "password" ? "text" : "password";
+                });
+              }}
             />
           </div>
           <div className="my-2 py-1 d-flex justify-content-center align-items-center">
@@ -278,24 +314,6 @@ const LoginUI = ({
           </div>
         </form>
       </section>
-      <div className="d-flex flex-sm-row flex-column justify-content-center align-items-center border-top pt-3 pb-5">
-        <span className="text-black">Don{"'"}t have an account?</span>
-        <Button
-          color="#3C719F"
-          defaultStyleObj={{
-            background: "none",
-            color: "inherit",
-            border: "none",
-            font: "inherit",
-            cursor: "pointer",
-            outline: "inherit",
-          }}
-          className="d-block no-link-decoration"
-          handleOnClick={handleCreateOneBtnClick}
-        >
-          <span className="ms-1 text-primary underline-on-hover">Sign up.</span>
-        </Button>
-      </div>
     </div>
   );
 };

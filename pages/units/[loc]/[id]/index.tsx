@@ -11,19 +11,21 @@
 /* eslint-disable indent */
 
 import Layout from "../../../../components/Layout";
+import sanitizeHtml from "sanitize-html";
 import { useEffect, useMemo, useRef, useState } from "react";
 import ParentLessonSection from "../../../../components/LessonSection/ParentLessonSection";
+import { ToastContainer } from "react-toastify";
 import LessonsSecsNavDots from "../../../../components/LessonSection/LessonSecsNavDots";
 import ShareWidget from "../../../../components/AboutPgComps/ShareWidget";
 import { useRouter } from "next/router";
 import useScrollHandler from "../../../../customHooks/useScrollHandler";
-import Lessons from "../../../../backend/models/lesson";
 import { connectToMongodb } from "../../../../backend/utils/connection";
 import SendFeedback from "../../../../components/LessonSection/SendFeedback";
 import {
   getIsWithinParentElement,
   getLinkPreviewObj,
   removeHtmlTags,
+  resetUrl,
 } from "../../../../globalFns";
 import { useSession } from "next-auth/react";
 import {
@@ -45,8 +47,22 @@ import {
   IItemForUI,
   INewUnitLesson,
   IResource,
+  ISharedGDriveLessonFolder,
 } from "../../../../backend/models/Unit/types/teachingMaterials";
 import { UNITS_URL_PATH } from "../../../../shared/constants";
+import { TUserSchemaForClient } from "../../../../backend/models/User/types";
+import LessonItemModal from "../../../../components/LessonSection/Modals/LessonItemModal";
+import GpPlusModal from "../../../../components/LessonSection/Modals/GpPlusModal";
+import ThankYouModal from "../../../../components/GpPlus/ThankYouModal";
+import {
+  getLocalStorageItem,
+  removeLocalStorageItem,
+} from "../../../../shared/fns";
+import useSiteSession from "../../../../customHooks/useSiteSession";
+import {
+  getGDriveItemViaServiceAccount,
+  getUnitGDriveChildItems,
+} from "../../../../backend/services/gdriveServices";
 
 const IS_ON_PROD = process.env.NODE_ENV === "production";
 const GOOGLE_DRIVE_THUMBNAIL_URL = "https://drive.google.com/thumbnail?id=";
@@ -86,6 +102,8 @@ const getLessonSections = <T extends TSectionsForUI>(
   sectionComps.map((section: TSectionsForUI | null, index: number) => {
     const sectionClassNameForTesting = "section-testing";
 
+    console.log("section, sup there: ", section);
+
     return {
       ...section,
       sectionClassNameForTesting,
@@ -122,6 +140,7 @@ const addGradesOrYearsProperty = (
 interface IProps {
   lesson?: any;
   unit?: TUnitForUI;
+  unitGDriveChildItems: Awaited<ReturnType<typeof getUnitGDriveChildItems>>;
 }
 
 const SECTION_SORT_ORDER: Record<keyof ISections, number> = {
@@ -143,11 +162,20 @@ const UNIT_DOCUMENT_ORIGINS = new Set([
   "https://docs.google.com",
 ]);
 
-const LessonDetails = ({ lesson, unit }: IProps) => {
+const LessonDetails: React.FC<IProps> = ({ lesson, unit }) => {
+  console.log("UNIT OBJECT: ", unit);
+
   const router = useRouter();
-  const { _isUserTeacher } = useUserContext();
-  const { status, data } = useSession();
-  const { token } = (data ?? {}) as IUserSession;
+  const {
+    _isUserTeacher,
+    _isGpPlusMember,
+    _isCopyUnitBtnDisabled,
+    _didAttemptRetrieveUserData,
+    _userLatestCopyUnitFolderId,
+  } = useUserContext();
+  const session = useSiteSession();
+  const { status, token, gdriveAccessToken, gdriveRefreshToken, gdriveEmail } =
+    session;
   const statusRef = useRef(status);
 
   useMemo(() => {
@@ -158,15 +186,21 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
 
   const {
     _notifyModal,
-    _isLoginModalDisplayed,
-    _isCreateAccountModalDisplayed,
     _customModalFooter,
+    _isGpPlusModalDisplayed,
+    _lessonItemModal,
+    _isThankYouModalDisplayed,
   } = useModalContext();
+  const [, setIsThankYouModalDisplayed] = _isThankYouModalDisplayed;
   const [, setIsUserTeacher] = _isUserTeacher;
+  const [isGpPlusMember, setIsGpPlusMember] = _isGpPlusMember;
   const [, setNotifyModal] = _notifyModal;
+  const [, setIsCopyUnitBtnDisabled] = _isCopyUnitBtnDisabled;
   const [, setCustomModalFooter] = _customModalFooter;
-  const [, setIsLoginModalDisplayed] = _isLoginModalDisplayed;
-  const [, setIsCreateAccountModalDisplayed] = _isCreateAccountModalDisplayed;
+  const [, setUserLatestCopyUnitFolderId] = _userLatestCopyUnitFolderId;
+  const [, setDidAttemptRetrieveUserData] = _didAttemptRetrieveUserData;
+  const [, setIsGpPlusModalDisplayed] = _isGpPlusModalDisplayed;
+  const [, setLessonItemModal] = _lessonItemModal;
 
   useEffect(() => {
     const lessonsContainer = document.querySelector(".lessonsPartContainer");
@@ -400,10 +434,6 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
         : [],
     []
   );
-  const _dots = useMemo(
-    () => (sectionComps?.length ? getSectionDotsDefaultVal(sectionComps) : []),
-    []
-  );
 
   const [unitSectionDots, setUnitSectionDots] = useState<{
     dots: any;
@@ -411,11 +441,6 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
   }>({
     dots: unitDots,
     clickedSectionId: null,
-  });
-
-  useEffect(() => {
-    console.log("unitSectionDots, sup there, unitDots: ", unitDots);
-    console.log("unitSectionDots, sup there: ", unitSectionDots);
   });
 
   const [willGoToTargetSection, setWillGoToTargetSection] = useState(false);
@@ -461,8 +486,6 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
           }),
         };
 
-        console.log("_sectionDots: ", _sectionDots);
-
         return _sectionDots;
       });
     }
@@ -504,18 +527,20 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
       event.preventDefault();
       setCustomModalFooter(
         <CustomNotifyModalFooter
-          closeNotifyModal={handleIsUserEntryModalDisplayed(
-            setIsLoginModalDisplayed
-          )}
+          // sign in button
+          closeNotifyModal={() => {
+            router.push("/account");
+          }}
           leftBtnTxt="Sign In"
           customBtnTxt="Sign Up"
           footerClassName="d-flex justify-content-center"
           leftBtnClassName="border"
           leftBtnStyles={{ width: "150px", backgroundColor: "#898F9C" }}
           rightBtnStyles={{ backgroundColor: "#007BFF", width: "150px" }}
-          handleCustomBtnClick={handleIsUserEntryModalDisplayed(
-            setIsCreateAccountModalDisplayed
-          )}
+          // sign up button
+          handleCustomBtnClick={() => {
+            router.push("/gp-plus");
+          }}
         />
       );
       setNotifyModal({
@@ -531,6 +556,15 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
         },
         bodyTxt: "",
       });
+    } else if (
+      statusRef.current === "authenticated" &&
+      isWithinBonusContentSec &&
+      tagName === "A" &&
+      UNIT_DOCUMENT_ORIGINS.has(origin) &&
+      !isGpPlusMember
+    ) {
+      event.preventDefault();
+      setIsGpPlusModalDisplayed(true);
     }
   };
 
@@ -547,18 +581,25 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
     (async () => {
       if (status === "authenticated" && token) {
         try {
+          setDidAttemptRetrieveUserData(false);
+          setIsCopyUnitBtnDisabled(true);
           const paramsAndHeaders = {
             params: {
-              custom_projections: "isTeacher",
               willNotRetrieveMailingListStatus: true,
+              unitId: unit?._id,
+              gdriveEmail,
             },
             headers: {
               Authorization: `Bearer ${token}`,
+              "gdrive-token": gdriveAccessToken,
+              "gdrive-token-refresh": gdriveRefreshToken,
             },
           };
-          const origin = window.location.origin;
-          const { status, data } = await axios.get(
-            `${origin}/api/get-user-account-data`,
+
+          console.log("paramsAndHeaders: ", paramsAndHeaders);
+
+          const { status, data } = await axios.get<TUserSchemaForClient>(
+            `/api/get-user-account-data`,
             paramsAndHeaders
           );
 
@@ -568,10 +609,32 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
             );
           }
 
+          console.log("data, from server: ", data);
+
           setIsUserTeacher(!!data?.isTeacher);
+          setIsGpPlusMember(!!data?.isGpPlusMember);
+
+          if (data.viewingUnitFolderCopyId) {
+            setUserLatestCopyUnitFolderId(data.viewingUnitFolderCopyId);
+          }
+
+          const willShowGpPlusPurchaseThankYouModal = getLocalStorageItem(
+            "willShowGpPlusPurchaseThankYouModal"
+          );
+
+          if (data.isGpPlusMember && willShowGpPlusPurchaseThankYouModal) {
+            setIsThankYouModalDisplayed(true);
+            removeLocalStorageItem("willShowGpPlusPurchaseThankYouModal");
+          }
         } catch (error) {
           console.error("An error has occurred: ", error);
+        } finally {
+          setIsCopyUnitBtnDisabled(false);
+          setDidAttemptRetrieveUserData(true);
         }
+      } else if (status === "unauthenticated") {
+        setIsCopyUnitBtnDisabled(false);
+        setDidAttemptRetrieveUserData(true);
       }
     })();
   }, [status]);
@@ -587,6 +650,13 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
         "click",
         handleBonusContentDocumentClick
       );
+      setIsGpPlusModalDisplayed(false);
+      setLessonItemModal((state) => {
+        return {
+          ...state,
+          isDisplayed: false,
+        };
+      });
     };
   }, []);
 
@@ -634,21 +704,32 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
   const layoutProps = {
     title: `Mini-Unit: ${_unit.Title}`,
     description: _unit?.Sections?.overview?.TheGist
-      ? removeHtmlTags(_unit.Sections.overview.TheGist)
+      ? sanitizeHtml(_unit.Sections.overview.TheGist)
       : `Description for ${_unit.Title}.`,
     imgSrc: unitBanner,
     url: _unit.URL,
     imgAlt: `${_unit.Title} cover image`,
-    className: "overflow-hidden",
+    className: "overflow-hidden selected-unit-pg",
     canonicalLink: `https://www.galacticpolymath.com/${UNITS_URL_PATH}/${_unit.numID}`,
     defaultLink: `https://www.galacticpolymath.com/${UNITS_URL_PATH}/${_unit.numID}`,
     langLinks: _unit.headLinks ?? ([] as TUnitForUI["headLinks"]),
   };
 
-  console.log("_unit.headLinks: ", _unit.headLinks);
-
   return (
     <Layout {...layoutProps}>
+      <ToastContainer
+        stacked
+        autoClose={false}
+        position="bottom-right"
+        style={
+          {
+            // height: '80vh',
+            // paddingTop: '50px',
+            // width: '50vw',
+            // overflowY: 'scroll',
+          }
+        }
+      />
       {_unit.PublicationStatus === "Beta" && (
         <SendFeedback
           closeBtnDynamicStyles={{
@@ -657,10 +738,9 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
             right: "5px",
             fontSize: "28px",
           }}
+          containerClassName="mt-4"
           parentDivStyles={{
-            position: "relative",
             backgroundColor: "#EBD0FF",
-            zIndex: 100,
             width: "100vw",
           }}
         />
@@ -673,18 +753,19 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
       <ShareWidget {...shareWidgetFixedProps} />
       <div className="col-12 col-lg-10 col-xxl-12 px-3 px-xxl-0 container min-vh-100">
         <div className="p-sm-3 pt-0">
-          {(unit ? _unitSections : _sections) ? (
-            (unit ? _unitSections : _sections).map(
-              (section: any, index: number) => (
-                <ParentLessonSection
-                  key={index}
-                  section={section}
-                  ForGrades={_unit.ForGrades}
-                  index={index}
-                  _sectionDots={[unitSectionDots, setUnitSectionDots]}
-                />
-              )
-            )
+          {_unitSections ? (
+            // TODO: if the user doesn't have an account, then slice the sections starting at the third section
+            // -and render those sections around a wrapper div that will be opaque in order to push the user to
+            // -to sign up a free account
+            _unitSections.map((section: any, index: number) => (
+              <ParentLessonSection
+                key={index}
+                section={section}
+                ForGrades={_unit.ForGrades}
+                index={index}
+                _sectionDots={[unitSectionDots, setUnitSectionDots]}
+              />
+            ))
           ) : (
             <span className="mt-5">
               DEVELOPMENT ERROR: No sections to display.
@@ -692,30 +773,11 @@ const LessonDetails = ({ lesson, unit }: IProps) => {
           )}
         </div>
       </div>
+      <GpPlusModal />
+      <LessonItemModal />
+      <ThankYouModal />
     </Layout>
   );
-};
-
-export const getStaticPaths = async () => {
-  try {
-    await connectToMongodb(15_000, 0, true);
-
-    const units = [
-      await Units.find({}, { numID: 1, _id: 0, locale: 1 }).lean(),
-    ].flat();
-
-    return {
-      paths: units.map(({ numID, locale }) => ({
-        params: { id: `${numID}`, loc: `${locale ?? ""}` },
-      })),
-      fallback: false,
-    };
-  } catch (error) {
-    console.error(
-      "An error has occurred in getting the available paths for the selected lesson page. Error message: ",
-      error
-    );
-  }
 };
 
 const getGoogleDriveFileIdFromUrl = (url: string) => {
@@ -739,55 +801,26 @@ const getGoogleDriveFileIdFromUrl = (url: string) => {
   return id;
 };
 
-const updateLessonWithGoogleDriveFiledPreviewImg = (
-  lesson: any,
-  lessonToDisplayOntoUi: any
-) => {
-  let lessonObjUpdated = JSON.parse(JSON.stringify(lesson));
+export const getStaticPaths = async () => {
+  try {
+    await connectToMongodb(15_000, 0, true);
 
-  // getting the thumbnails for the google drive file handouts for each lesson
-  if (lesson?.itemList?.length) {
-    const itemListUpdated = lesson.itemList.map((itemObj: any) => {
-      const googleDriveFileId = itemObj?.links[0]?.url
-        ? getGoogleDriveFileIdFromUrl(itemObj.links[0].url)
-        : null;
+    const units = [
+      await Units.find({}, { numID: 1, _id: 0, locale: 1 }).lean(),
+    ].flat();
 
-      if (googleDriveFileId) {
-        return {
-          ...itemObj,
-          filePreviewImg: `${GOOGLE_DRIVE_THUMBNAIL_URL}${googleDriveFileId}`,
-        };
-      }
-
-      return itemObj;
-    });
-
-    lessonObjUpdated = {
-      ...lesson,
-      itemList: itemListUpdated,
+    return {
+      paths: units.map(({ numID, locale }) => ({
+        params: { id: `${numID}`, loc: `${locale ?? ""}` },
+      })),
+      fallback: false,
     };
+  } catch (error) {
+    console.error(
+      "An error has occurred in getting the available paths for the selected lesson page. Error message: ",
+      error
+    );
   }
-
-  // getting the status for each lesson
-  let lsnStatus =
-    Array.isArray(lessonToDisplayOntoUi?.LsnStatuses) &&
-    lessonToDisplayOntoUi?.LsnStatuses?.length
-      ? lessonToDisplayOntoUi.LsnStatuses.find(
-          (lsnStatus: any) => lsnStatus?.lsn == lesson.lsn
-        )
-      : null;
-
-  if (!lesson.tile && lsnStatus?.status === "Upcoming") {
-    lessonObjUpdated = {
-      ...lessonObjUpdated,
-      tile: "https://storage.googleapis.com/gp-cloud/icons/coming-soon_tile.png",
-    };
-  }
-
-  return {
-    ...lessonObjUpdated,
-    status: lsnStatus?.status ?? "Proto",
-  };
 };
 
 export const getStaticProps = async (arg: {
@@ -823,6 +856,18 @@ export const getStaticProps = async (arg: {
       if (!targetUnit) {
         throw new Error("Unit is not found.");
       }
+
+      console.log(
+        "Will get the child items of the target unit in google drive"
+      );
+
+      console.log("targetUnit.GdrivePublicID: ", targetUnit.GdrivePublicID);
+
+      const unitGDriveChildItems = (
+        await getUnitGDriveChildItems(targetUnit.GdrivePublicID!)
+      )?.filter((item) => item.mimeType?.includes("folder"));
+
+      console.log("unitGDriveChildItems first: ", unitGDriveChildItems);
 
       const headLinks = targetUnits
         .filter(({ locale, numID }) => locale && numID)
@@ -911,10 +956,163 @@ export const getStaticProps = async (arg: {
           ?.length &&
         resources?.length
       ) {
+        console.log("unitGDriveChildItems, second: ", unitGDriveChildItems);
+
         const resourcesForUIPromises = resources.map(async (resource) => {
+          if (resource?.lessons?.length) {
+            resource.lessons = resource.lessons.filter((lesson) => {
+              if (!lesson.title || lesson?.status?.toLowerCase() === "proto") {
+                return false;
+              }
+
+              return true;
+            });
+          }
+          const allUnitLessons: Pick<
+            INewUnitLesson,
+            "allUnitLessons"
+          >["allUnitLessons"] = [];
+
+          if (resource.lessons && unitGDriveChildItems?.length) {
+            for (const lesson of resource.lessons) {
+              const targetUnitGDriveItem = unitGDriveChildItems.find((item) => {
+                const itemName = item?.name?.split("_").at(-1);
+
+                return (
+                  itemName &&
+                  lesson.title &&
+                  itemName.toLowerCase() === lesson.title.toLowerCase()
+                );
+              });
+
+              if (targetUnitGDriveItem?.id && lesson.lsn) {
+                allUnitLessons.push({
+                  id: lesson.lsn.toString(),
+                  sharedGDriveId: targetUnitGDriveItem.id,
+                });
+              }
+            }
+          }
+
+          let lessonsFolder:
+            | Pick<INewUnitLesson, "lessonsFolder">["lessonsFolder"]
+            | undefined = undefined;
           const lessonsWithFilePreviewImgsPromises = resource.lessons?.map(
             async (lesson) => {
+              console.log("lesson, sup there: ", lesson.title);
+
+              if (!lessonsFolder && unitGDriveChildItems) {
+                for (const unitGDriveChildItem of unitGDriveChildItems) {
+                  let lessonTitle = lesson.title?.toLowerCase();
+
+                  if (
+                    lessonTitle === "assessments" &&
+                    lessonTitle !== unitGDriveChildItem.name?.toLowerCase()
+                  ) {
+                    continue;
+                  }
+
+                  let lessonName = unitGDriveChildItem.name;
+
+                  if (unitGDriveChildItem.name?.includes("_")) {
+                    lessonName = unitGDriveChildItem.name
+                      ?.split("_")
+                      .at(-1)
+                      ?.toLowerCase();
+                  }
+
+                  if (
+                    lessonName &&
+                    lesson.title &&
+                    lessonName.toLowerCase() === lessonTitle
+                  ) {
+                    console.log("lesson, hi there: ", lesson.title);
+                    console.log(
+                      "lessonsFolder found, sup there: ",
+                      unitGDriveChildItem.name
+                    );
+
+                    const targetUnitGDriveChildItem =
+                      unitGDriveChildItems.find((item) => {
+                        if (lessonTitle === "assessments") {
+                          return item.name === "assessments";
+                        }
+
+                        return (
+                          item.id &&
+                          item.id === unitGDriveChildItem.parentFolderId
+                        );
+                      }) ?? {};
+
+                    console.log(
+                      "targetUnitGDriveChildItem, sup there: ",
+                      targetUnitGDriveChildItem
+                    );
+
+                    const { name, id } = targetUnitGDriveChildItem;
+                    lessonsFolder =
+                      name && id
+                        ? {
+                            name: name,
+                            sharedGDriveId: id,
+                          }
+                        : undefined;
+                  }
+                }
+              }
+
+              const targetGDriveSharedLessonFolders:
+                | ISharedGDriveLessonFolder[]
+                | undefined = unitGDriveChildItems
+                ?.filter((item) => {
+                  const lessonName = item?.name?.split("_").at(-1);
+
+                  return (
+                    lessonName &&
+                    lesson.title &&
+                    lessonName.toLowerCase() === lesson.title.toLowerCase()
+                  );
+                })
+                ?.map((itemA) => {
+                  console.log("item, sup there: ", itemA);
+
+                  const lessonsFolder = unitGDriveChildItems.find((itemB) => {
+                    return itemB.id === itemA.parentFolderId;
+                  });
+
+                  console.log("lessonsFolder, python: ", lessonsFolder);
+
+                  // if lessonsFolder.pathFile === '', then the item is located at the root of the google drive folder
+                  const parentFolder = lessonsFolder
+                    ? { id: lessonsFolder.id!, name: lessonsFolder.name! }
+                    : {
+                        id: targetUnit.GdrivePublicID!,
+                        name: targetUnit.MediumTitle!,
+                      };
+
+                  return {
+                    id: itemA.id!,
+                    name: itemA.name!,
+                    parentFolder,
+                  };
+                });
+
+              console.log(
+                "targetGDriveLessonFolder: ",
+                targetGDriveSharedLessonFolders
+              );
+
+              if (targetGDriveSharedLessonFolders?.length) {
+                lesson = {
+                  ...lesson,
+                  sharedGDriveLessonFolders: targetGDriveSharedLessonFolders,
+                  allUnitLessons,
+                  lessonsFolder,
+                };
+              }
+
               console.log("lesson status: ", lesson.status);
+
               if (!lesson.tile && lesson.status === "Upcoming") {
                 lesson = {
                   ...lesson,
@@ -998,114 +1196,108 @@ export const getStaticProps = async (arg: {
 
         targetUnitForUI.Sections.teachingMaterials.classroom.resources =
           resourcesForUI;
+      }
 
-        const sectionsEntries = Object.entries(targetUnitForUI.Sections) as [
-          keyof ISections,
-          any
-        ][];
-        // get the root fields for specific sections that required them
-        let sectionsUpdated = sectionsEntries.reduce(
-          (sectionsAccum, [sectionKey, section]) => {
-            // if the section.Content is null, then return the sectionsAccum
-            if (
-              !section ||
-              (typeof section === "object" &&
-                section &&
-                (("Content" in section && !section.Content) ||
-                  ("Data" in section && !section.Data))) ||
-              (sectionKey === "preview" && !targetUnitForUI?.FeaturedMultimedia)
-            ) {
-              return sectionsAccum;
-            }
-
-            if (
-              targetUnitForUI &&
-              typeof section === "object" &&
+      const sectionsEntries = Object.entries(
+        targetUnitForUI.Sections ?? {}
+      ) as [keyof ISections, any][];
+      // get the root fields for specific sections that required them
+      let sectionsUpdated = sectionsEntries.reduce(
+        (sectionsAccum, [sectionKey, section]) => {
+          // if the section.Content is null, then return the sectionsAccum
+          if (
+            !section ||
+            (typeof section === "object" &&
               section &&
-              section?.rootFieldsToRetrieveForUI &&
-              Array.isArray(section.rootFieldsToRetrieveForUI)
-            ) {
-              for (const rootFieldToRetrieveForUI of section.rootFieldsToRetrieveForUI) {
-                if (
-                  rootFieldToRetrieveForUI?.name &&
-                  typeof rootFieldToRetrieveForUI.name === "string" &&
-                  rootFieldToRetrieveForUI?.as &&
-                  typeof rootFieldToRetrieveForUI.as === "string" &&
+              (("Content" in section && !section.Content) ||
+                ("Data" in section && !section.Data))) ||
+            (sectionKey === "preview" && !targetUnitForUI?.FeaturedMultimedia)
+          ) {
+            return sectionsAccum;
+          }
+
+          if (
+            targetUnitForUI &&
+            typeof section === "object" &&
+            section &&
+            section?.rootFieldsToRetrieveForUI &&
+            Array.isArray(section.rootFieldsToRetrieveForUI)
+          ) {
+            for (const rootFieldToRetrieveForUI of section.rootFieldsToRetrieveForUI) {
+              if (
+                rootFieldToRetrieveForUI?.name &&
+                typeof rootFieldToRetrieveForUI.name === "string" &&
+                rootFieldToRetrieveForUI?.as &&
+                typeof rootFieldToRetrieveForUI.as === "string" &&
+                targetUnitForUI[
+                  rootFieldToRetrieveForUI?.name as keyof TUnitForUI
+                ]
+              ) {
+                const val =
                   targetUnitForUI[
-                    rootFieldToRetrieveForUI?.name as keyof TUnitForUI
-                  ]
-                ) {
-                  const val =
-                    targetUnitForUI[
-                      rootFieldToRetrieveForUI.name as keyof TUnitForUI
-                    ];
+                    rootFieldToRetrieveForUI.name as keyof TUnitForUI
+                  ];
 
-                  if (!val) {
-                    continue;
-                  }
-
-                  section = {
-                    ...section,
-                    [rootFieldToRetrieveForUI.as as string]: val,
-                  };
+                if (!val) {
+                  continue;
                 }
-              }
 
-              return {
-                ...sectionsAccum,
-                [sectionKey]: section,
-              };
+                section = {
+                  ...section,
+                  [rootFieldToRetrieveForUI.as as string]: val,
+                };
+              }
             }
+
+            console.log(`section ${sectionKey} after updates: `, section);
+
+            delete section.rootFieldsToRetrieveForUI;
 
             return {
               ...sectionsAccum,
               [sectionKey]: section,
             };
-          },
-          {} as Record<keyof ISections, any>
-        ) as TSectionsForUI;
+          }
+
+          return {
+            ...sectionsAccum,
+            [sectionKey]: section,
+          };
+        },
+        {} as Record<keyof ISections, any>
+      ) as TSectionsForUI;
+      sectionsUpdated = {
+        ...sectionsUpdated,
+        overview: {
+          ...sectionsUpdated.overview,
+          availLocs,
+        },
+      };
+      const versionsSection = sectionsUpdated.overview?.versions
+        ? {
+            __component: "lesson-plan.versions",
+            SectionTitle: "Version notes",
+            InitiallyExpanded: true,
+            Data: sectionsUpdated.overview?.versions,
+          }
+        : null;
+
+      if (versionsSection) {
         sectionsUpdated = {
           ...sectionsUpdated,
-          overview: {
-            ...sectionsUpdated.overview,
-            availLocs,
-          },
+          versions: versionsSection,
         };
-        const versionsSection = sectionsUpdated.overview?.versions
-          ? {
-              __component: "lesson-plan.versions",
-              SectionTitle: "Version notes",
-              InitiallyExpanded: true,
-              Data: sectionsUpdated.overview?.versions,
-            }
-          : null;
-
-        if (versionsSection) {
-          sectionsUpdated = {
-            ...sectionsUpdated,
-            versions: versionsSection,
-          };
-        }
-
-        targetUnitForUI.Sections = sectionsUpdated;
       }
+
+      targetUnitForUI.Sections = sectionsUpdated;
     }
 
-    const targetLessons = await Lessons.find({ numID: id }, { __v: 0 }).lean();
-    let lessonToDisplayOntoUi = targetLessons.find(
-      ({ numID, locale }) => numID === parseInt(id) && locale === loc
+    console.log(
+      "Only the target unit is available. Sections: ",
+      targetUnitForUI
     );
 
-    if (
-      !targetUnitForUI &&
-      (!lessonToDisplayOntoUi || typeof lessonToDisplayOntoUi !== "object")
-    ) {
-      throw new Error("Lesson is not found.");
-    } else if (
-      !lessonToDisplayOntoUi ||
-      typeof lessonToDisplayOntoUi !== "object"
-    ) {
-      console.log("Only the target unit is available.");
+    if (targetUnitForUI) {
       return {
         props: {
           lesson: null,
@@ -1117,283 +1309,10 @@ export const getStaticProps = async (arg: {
         revalidate: 30,
       };
     }
-    const headLinks = targetLessons.map(({ locale, numID }) => [
-      `https://www.galacticpolymath.com/${UNITS_URL_PATH}/${locale}/${numID}`,
-      locale,
-    ]);
-    lessonToDisplayOntoUi = {
-      ...lessonToDisplayOntoUi,
-      headLinks,
-    };
-    let lessonParts = null;
-    const resources =
-      lessonToDisplayOntoUi?.Section?.["teaching-materials"]?.Data?.classroom
-        ?.resources;
 
-    if (resources?.every((resource: any) => resource.lessons)) {
-      lessonParts = [];
+    console.error("Target unit not found.");
 
-      // get all of preview images of google drive files
-      for (const resource of resources) {
-        const resourceLessons = [];
-
-        for (const lesson of resource.lessons) {
-          let lessonObjUpdated = JSON.parse(JSON.stringify(lesson));
-
-          if (lesson?.itemList?.length) {
-            const itemListUpdated = [];
-
-            for (const itemObj of lesson.itemList) {
-              const { links, itemCat } = itemObj;
-
-              if (!itemObj?.links?.length) {
-                itemListUpdated.push(itemObj);
-                continue;
-              }
-
-              if (itemObj?.links?.length) {
-                itemObj.links = links.filter(
-                  ({ linkText, url }: { linkText: string; url: string }) =>
-                    linkText !== "Not shareable on GDrive" || url
-                );
-              }
-
-              // get the image preview link for the lesson documents
-              const isWebResource = itemCat === "web resource";
-              const url = links.find((link: any) => link?.url)?.url;
-              const googleDriveFileId =
-                url && !isWebResource ? getGoogleDriveFileIdFromUrl(url) : null;
-
-              if (googleDriveFileId) {
-                const filePreviewImg = `${GOOGLE_DRIVE_THUMBNAIL_URL}${googleDriveFileId}`;
-                const itemObjUpdated = {
-                  ...itemObj,
-                  filePreviewImg,
-                };
-
-                itemListUpdated.push(itemObjUpdated);
-                continue;
-              }
-
-              const webAppPreview =
-                url && isWebResource ? await getLinkPreviewObj(url) : null;
-
-              if (
-                webAppPreview &&
-                "images" in webAppPreview &&
-                webAppPreview?.images &&
-                typeof webAppPreview.images[0] === "string"
-              ) {
-                itemListUpdated.push({
-                  ...itemObj,
-                  filePreviewImg: webAppPreview.images[0],
-                });
-                continue;
-              }
-
-              itemListUpdated.push(itemObj);
-            }
-
-            lessonObjUpdated = {
-              ...lesson,
-              itemList: itemListUpdated,
-            };
-          }
-
-          let lsnStatus =
-            Array.isArray(lessonToDisplayOntoUi?.LsnStatuses) &&
-            lessonToDisplayOntoUi?.LsnStatuses?.length
-              ? lessonToDisplayOntoUi.LsnStatuses.find(
-                  (lsnStatus: any) => lsnStatus?.lsn == lesson.lsn
-                )
-              : null;
-
-          if (!lesson.tile && lsnStatus?.status === "Upcoming") {
-            lessonObjUpdated = {
-              ...lessonObjUpdated,
-              tile: "https://storage.googleapis.com/gp-cloud/icons/coming-soon_tile.png",
-            };
-          }
-
-          resourceLessons.push({
-            ...lessonObjUpdated,
-            status: lsnStatus?.status ?? "Proto",
-          });
-        }
-
-        lessonParts.push(resourceLessons);
-      }
-
-      lessonParts = lessonParts.filter((lesson: any) => {
-        if (lesson.title === "Assessments") {
-          return true;
-        }
-
-        return lesson?.status !== "Proto";
-      });
-
-      lessonParts.forEach((lessonPartsArr, index) => {
-        if (lessonToDisplayOntoUi) {
-          lessonToDisplayOntoUi.Section[
-            "teaching-materials"
-          ].Data.classroom.resources[index].lessons = lessonPartsArr;
-        }
-      });
-    } else if (
-      resources?.length > 1 &&
-      resources?.every((resource: any) => resource?.lessons)
-    ) {
-      lessonToDisplayOntoUi.Section[
-        "teaching-materials"
-      ].Data.classroom.resources = resources.map((resource: any) => {
-        const lessonsUpdated = resource.lessons.map((lesson: any) =>
-          updateLessonWithGoogleDriveFiledPreviewImg(
-            lesson,
-            lessonToDisplayOntoUi
-          )
-        );
-
-        return {
-          ...resource,
-          lessons: lessonsUpdated,
-        };
-      });
-    }
-
-    const targetLessonLocales = targetLessons.map(({ locale }) => locale);
-    const multiMediaArr = lessonToDisplayOntoUi?.Section?.preview?.Multimedia;
-    let sponsorLogoImgUrl = lessonToDisplayOntoUi.SponsorImage?.url?.length
-      ? lessonToDisplayOntoUi.SponsorImage?.url
-      : lessonToDisplayOntoUi.SponsorLogo;
-    sponsorLogoImgUrl = Array.isArray(sponsorLogoImgUrl)
-      ? sponsorLogoImgUrl[0]
-      : sponsorLogoImgUrl;
-    const titleProperties = {
-      SponsoredBy: lessonToDisplayOntoUi.SponsoredBy,
-      Subtitle: lessonToDisplayOntoUi.Subtitle,
-      numID: lessonToDisplayOntoUi.numID,
-      locale: lessonToDisplayOntoUi.locale,
-      sponsorLogoImgUrl: sponsorLogoImgUrl,
-      lessonBannerUrl:
-        lessonToDisplayOntoUi.CoverImage ?? lessonToDisplayOntoUi.LessonBanner,
-      availLocs: targetLessonLocales,
-      lessonTitle: lessonToDisplayOntoUi.Title,
-      versions: lessonToDisplayOntoUi.Section.versions.Data,
-    };
-    lessonToDisplayOntoUi = {
-      ...lessonToDisplayOntoUi,
-      Section: {
-        ...lessonToDisplayOntoUi.Section,
-        overview: {
-          ...lessonToDisplayOntoUi.Section.overview,
-          ...titleProperties,
-        },
-      },
-    };
-
-    const multiMediaFalsyValsFilteredOut = multiMediaArr?.length
-      ? multiMediaArr.filter((multiMedia: any) => multiMedia?.mainLink)
-      : [];
-    const isVidOrWebAppPresent = multiMediaFalsyValsFilteredOut?.length
-      ? multiMediaFalsyValsFilteredOut.some(
-          ({ type }: { type: string }) => type === "web-app" || type === "video"
-        )
-      : false;
-
-    // preview image for all of the web apps and external videos
-    if (isVidOrWebAppPresent) {
-      const multiMediaArrUpdated = [];
-
-      for (let multiMediaItem of multiMediaFalsyValsFilteredOut) {
-        if (
-          multiMediaItem.type === "video" &&
-          multiMediaItem?.mainLink?.includes("drive.google")
-        ) {
-          const videoId = multiMediaItem.mainLink.split("/").at(-2);
-          multiMediaItem = {
-            ...multiMediaItem,
-            webAppPreviewImg: `https://drive.google.com/thumbnail?id=${videoId}`,
-            webAppImgAlt: `'${multiMediaItem.title}' video`,
-          };
-          multiMediaArrUpdated.push(multiMediaItem);
-          continue;
-        }
-
-        if (multiMediaItem.type === "web-app" && multiMediaItem?.mainLink) {
-          const { errMsg, images, title } = (await getLinkPreviewObj(
-            multiMediaItem?.mainLink
-          )) as { errMsg: string; images: string[]; title: string };
-
-          if (errMsg && !images?.length) {
-            console.error(
-              "Failed to get the image preview of web app. Error message: ",
-              errMsg
-            );
-          }
-
-          multiMediaItem = {
-            ...multiMediaItem,
-            webAppPreviewImg: errMsg || !images?.length ? null : images[0],
-            webAppImgAlt:
-              errMsg || !images?.length ? null : `${title}'s preview image`,
-          };
-        }
-
-        multiMediaArrUpdated.push(multiMediaItem);
-      }
-
-      lessonToDisplayOntoUi = {
-        ...lessonToDisplayOntoUi,
-        Section: {
-          ...lessonToDisplayOntoUi.Section,
-          preview: {
-            ...lessonToDisplayOntoUi?.Section?.preview,
-            Multimedia: multiMediaArrUpdated,
-          },
-        },
-      };
-    }
-
-    // get the preview image for the shorts
-    if (lessonToDisplayOntoUi?.Section?.preview?.Multimedia?.length) {
-      for (const multiMedia of lessonToDisplayOntoUi.Section.preview
-        .Multimedia) {
-        if (multiMedia?.mainLink?.includes("www.youtube.com/shorts")) {
-          multiMedia.mainLink = multiMedia.mainLink.replace("shorts", "embed");
-        }
-      }
-    }
-
-    if (
-      lessonToDisplayOntoUi.Section &&
-      typeof lessonToDisplayOntoUi.Section === "object"
-    ) {
-      const sectionEntries = Object.entries(lessonToDisplayOntoUi.Section);
-      lessonToDisplayOntoUi.Section = sectionEntries.reduce(
-        (sectionAccum, [sectionKey, sectionVal]) => {
-          if (!sectionVal) {
-            return sectionAccum;
-          }
-
-          return {
-            ...sectionAccum,
-            [sectionKey]: sectionVal,
-          };
-        },
-        {}
-      );
-    }
-
-    return {
-      props: {
-        lesson: JSON.parse(JSON.stringify(lessonToDisplayOntoUi)),
-        unit: targetUnitForUI
-          ? JSON.parse(JSON.stringify(targetUnitForUI))
-          : null,
-        availLocs: targetLessonLocales,
-      },
-      revalidate: 30,
-    };
+    throw new Error("Target unit not found.");
   } catch (error) {
     console.error("Failed to get lesson. Error message: ", error);
 

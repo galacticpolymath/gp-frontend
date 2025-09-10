@@ -1,12 +1,27 @@
 import { ILessonForUI } from "../../../../types/global";
 import { IUnitSectionObj } from "../Section";
+import { IOverview, IUnitOverview, TUnitOverviewPropsForUI } from "./overview";
 
-export interface ILink {
+export interface ILink{
   linkText: string | null;
   url: string[] | null;
 }
-
 export interface IItem {
+  itemTitle: string | null;
+  itemDescription: string | null;
+  itemCat: string | null;
+  links: ILink[] | null;
+}
+
+export interface IItemV2Props{
+  mimeType: string;
+  gdriveRoot: string;
+  isExportable: boolean;
+  externalUrl: string;
+  itemType: string;
+}
+
+export interface IItemV2 extends IItemV2Props {
   itemTitle: string | null;
   itemDescription: string | null;
   itemCat: string | null;
@@ -62,6 +77,7 @@ export interface IGradeVariantNote {
 export interface IResource<TLesson extends object = ILesson> {
   grades: string | null;
   gradePrefix: string | null;
+  sharedGDriveLessonsFolderId: string | null;
   links: ILink | null;
   lessons: TLesson[] | null;
 }
@@ -166,7 +182,28 @@ interface IChunkStep {
   
 }
 
-interface INewUnitLesson<TItem extends IItem = IItem> {
+export interface IGDriveItem{
+  id: string;
+  name: string
+}
+
+export interface ISharedGDriveLessonFolder{
+  id: string,
+  name: string,
+  parentFolder: {
+    id: string;
+    name: string
+  }
+}
+
+interface INewUnitLesson<TItem extends IItem = IItemV2> {
+  userGDriveLessonFolderId?: string;
+  sharedGDriveLessonFolders?: ISharedGDriveLessonFolder[] 
+  allUnitLessons?: { id: string, sharedGDriveId: string }[]
+  lessonsFolder?: Partial<{
+    name: string;
+    sharedGDriveId: string;
+  }>;
   title: string | null;
   lsn: number | null;
   status: string | null;
@@ -213,7 +250,7 @@ export interface IUnitTeachingMaterials extends IUnitSectionObj, ITeachingMateri
   remote?: IResourceObj;
 }
 
-export interface IUnitTeachingMaterialsForUI extends IUnitSectionObj, ITeachingMaterialsPreviewInfo {
+export interface IUnitTeachingMaterialsForUI extends IUnitSectionObj, ITeachingMaterialsPreviewInfo, Partial<Pick<TUnitOverviewPropsForUI, "unitTitle">> {
   classroom: {
     resources: IResource<INewUnitLesson<IItemForUI>>[];
   };

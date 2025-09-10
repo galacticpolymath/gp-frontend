@@ -30,7 +30,8 @@ export const getChunks = (arr: unknown[], chunkSize: number) => {
 
 interface JWTPayloadCustom extends JWTPayload {
     roles: string[],
-    email: string
+    email: string,
+    userId: string
 }
 
 export const verifyJwt = async (token: string) => {

@@ -4,6 +4,8 @@ import { createDocument } from "../db/utils.js";
 import { v4 as uuidv4 } from "uuid";
 import {
   IAboutUserFormNewFieldsV1,
+  ILessonGDriveId,
+  IUnitGDriveLesson,
   IUserSchema,
   IUserSchemaBaseProps,
   TDefaultSubject,
@@ -11,11 +13,11 @@ import {
   TUserSchemaV2,
 } from "../models/User/types.js";
 import User from "../models/User/index";
-import { AnyBulkWriteOperation } from "mongoose";
+import { AnyBulkWriteOperation, UpdateWriteOpResult } from "mongoose";
 import { waitWithExponentialBackOff } from "../../globalFns.js";
 
 export const getUsers = async <
-  TUsers extends IUserSchemaBaseProps = IUserSchema
+  TUsers extends IUserSchemaBaseProps = TUserSchemaV2
 >(
   queryObj: Partial<TUserSchemaV2> = {},
   projectionObj: Partial<Record<keyof TUserSchemaV2, number>> = {},
@@ -36,13 +38,17 @@ export const getUsers = async <
   }
 };
 
-export const getUser = async (queryObj = {}, projectionObj = {}) => {
+export const getUser = async <
+  TUser extends TUserSchemaV2 = TUserSchemaV2,
+  TUserKey extends keyof TUser = keyof TUser
+>(
+  queryObj: Omit<Partial<TUser>, "password">,
+  projectionObj: Partial<Record<TUserKey, number>> = {}
+) => {
   try {
-    const user = await User.findOne(queryObj, projectionObj)
-      .maxTimeMS(7_000)
-      .lean();
+    const user = await User.findOne(queryObj, projectionObj).lean();
 
-    return { user };
+    return { user: user as Pick<TUser, TUserKey> };
   } catch (error: any) {
     console.error("An error has occurred in getting the target user: ", error);
     console.log(error);
@@ -78,7 +84,10 @@ export const getUserWithRetries = async (
     return { user: user as Partial<IUserSchema> };
   } catch (error: any) {
     console.log("Failed to get the target user.");
-    if (tries <= 3) {
+
+    const didTimeoutOccur = error?.error?.codeName === "MaxTimeMSExpired";
+
+    if (tries <= 3 && didTimeoutOccur) {
       console.log("Will try again.");
       tries += 1;
       const randomNumMs = Math.floor(Math.random() * (5_500 - 1000 + 1)) + 1000;
@@ -89,8 +98,6 @@ export const getUserWithRetries = async (
       return getUserWithRetries(queryObj, projectionObj, tries);
     }
 
-    const didTimeoutOccur = error?.error?.codeName === "MaxTimeMSExpired";
-
     console.error("An error has occurred in getting the target user: ", error);
     console.log(error);
 
@@ -100,7 +107,9 @@ export const getUserWithRetries = async (
   }
 };
 
-export const handleUserDeprecatedV1Fields = (user: TUserSchemaForClient) => {
+export const handleUserDeprecatedV1Fields = (
+  user: Partial<TUserSchemaForClient<IUserSchema>>
+) => {
   if (user.classroomSize && typeof user.classSize === "undefined") {
     user = {
       ...user,
@@ -231,23 +240,32 @@ export const handleUserDeprecatedV1Fields = (user: TUserSchemaForClient) => {
   return user;
 };
 
-export const migrateUserToV2 = (user: TUserSchemaForClient) => {
+export const migrateUserToV2 = (user: TUserSchemaForClient<IUserSchema>) => {
   let migratedVals: Partial<IAboutUserFormNewFieldsV1> = {};
 
-  if (typeof user.classroomSize?.num === 'number' && typeof user.classSize === "undefined") {
+  if (
+    typeof user.classroomSize?.num === "number" &&
+    typeof user.classSize === "undefined"
+  ) {
     migratedVals = {
       classSize: user.classroomSize.num ?? 0,
     };
   }
 
-  if (typeof user.classroomSize?.isNotTeaching === 'boolean' && typeof user.isNotTeaching === "undefined") {
+  if (
+    typeof user.classroomSize?.isNotTeaching === "boolean" &&
+    typeof user.isNotTeaching === "undefined"
+  ) {
     migratedVals = {
       ...migratedVals,
       isNotTeaching: user.classroomSize.isNotTeaching,
     };
   }
 
-  if (user.gradesOrYears?.selection && (typeof user.gradesType === "undefined" || !user.gradesType)) {
+  if (
+    user.gradesOrYears?.selection &&
+    (typeof user.gradesType === "undefined" || !user.gradesType)
+  ) {
     migratedVals = {
       ...migratedVals,
       gradesType: user.gradesOrYears.selection ?? null,
@@ -255,7 +273,11 @@ export const migrateUserToV2 = (user: TUserSchemaForClient) => {
     console.log("migratedVals, gradesType: ", migratedVals);
   }
 
-  if (user.gradesOrYears?.ageGroupsTaught && ((typeof user.gradesTaught === "undefined") || (user.gradesTaught?.length === 0))) {
+  if (
+    user.gradesOrYears?.ageGroupsTaught &&
+    (typeof user.gradesTaught === "undefined" ||
+      user.gradesTaught?.length === 0)
+  ) {
     migratedVals = {
       ...migratedVals,
       gradesTaught: user.gradesOrYears.ageGroupsTaught ?? null,
@@ -278,10 +300,12 @@ export const migrateUserToV2 = (user: TUserSchemaForClient) => {
 
   if (
     user.reasonsForSiteVisit &&
-    ((typeof user.siteVisitReasonsDefault === "undefined") || (user.siteVisitReasonsDefault?.length === 0))
+    (typeof user.siteVisitReasonsDefault === "undefined" ||
+      user.siteVisitReasonsDefault?.length === 0)
   ) {
-    
-    const defaultSelectionsEntries = Object.entries(user.reasonsForSiteVisit).filter(([key, _]) => {
+    const defaultSelectionsEntries = Object.entries(
+      user.reasonsForSiteVisit
+    ).filter(([key, _]) => {
       const keySplitted = key.split("-");
       const lastChar = keySplitted.at(-1);
 
@@ -307,7 +331,8 @@ export const migrateUserToV2 = (user: TUserSchemaForClient) => {
   if (
     user.reasonsForSiteVisit &&
     user.reasonsForSiteVisit["reason-for-visit-custom"] &&
-    (typeof user.siteVisitReasonsCustom === "undefined" || (user.siteVisitReasonsCustom === ""))
+    (typeof user.siteVisitReasonsCustom === "undefined" ||
+      user.siteVisitReasonsCustom === "")
   ) {
     migratedVals = {
       ...migratedVals,
@@ -317,7 +342,11 @@ export const migrateUserToV2 = (user: TUserSchemaForClient) => {
     };
   }
 
-  if (user.subjects && ((typeof user.subjectsTaughtDefault === "undefined") || (user.subjectsTaughtDefault?.length === 0))) {
+  if (
+    user.subjects &&
+    (typeof user.subjectsTaughtDefault === "undefined" ||
+      user.subjectsTaughtDefault?.length === 0)
+  ) {
     const subjectEntries = Object.entries(
       user.subjects as Record<string, string>
     );
@@ -381,9 +410,12 @@ export const executeUserCrudOperations = async (
 export const executeUserCrudOperationsWithRetries = async (
   crudOperations: AnyBulkWriteOperation<TUserSchemaV2>[],
   tries: number
-): Promise<ReturnType<(typeof User.bulkWrite)> | {
-    isOk: () => boolean;
-}> => {
+): Promise<
+  | ReturnType<typeof User.bulkWrite>
+  | {
+      isOk: () => boolean;
+    }
+> => {
   console.log("current try: ", tries);
   if (tries <= 0) {
     return { isOk: () => false };
@@ -393,12 +425,19 @@ export const executeUserCrudOperationsWithRetries = async (
     const result = await User.bulkWrite(crudOperations);
 
     if (result.hasWriteErrors()) {
-      const writeErrorsIndices = new Set(result.getWriteErrors().map(error => error.index));
-      const _crudOperations = crudOperations.filter((_, index) => writeErrorsIndices.has(index));
+      const writeErrorsIndices = new Set(
+        result.getWriteErrors().map((error) => error.index)
+      );
+      const _crudOperations = crudOperations.filter((_, index) =>
+        writeErrorsIndices.has(index)
+      );
 
       await waitWithExponentialBackOff(tries);
-      
-      return await executeUserCrudOperationsWithRetries(_crudOperations, tries - 1);
+
+      return await executeUserCrudOperationsWithRetries(
+        _crudOperations,
+        tries - 1
+      );
     }
 
     console.log("Bulk write operation has succeeded. Will return.");
@@ -411,17 +450,20 @@ export const executeUserCrudOperationsWithRetries = async (
   }
 };
 
-export const getUserByEmail = async <TUser extends IUserSchema>(
+export const getUserByEmail = async <
+  TUser extends TUserSchemaV2 = TUserSchemaV2,
+  TKeys extends keyof TUser = keyof TUser
+>(
   email = "",
-  projectionsObj = {}
+  projectionsObj: Partial<Record<TKeys, 0 | 1>> = {}
 ) => {
   try {
     const targetUser = await User.findOne(
-      { email: email },
+      { email: { $eq: email } },
       projectionsObj
     ).lean();
 
-    return targetUser as TUser;
+    return targetUser as Partial<Pick<TUser, TKeys>>;
   } catch (error) {
     console.error(
       "Failed to receive the target user via email. Reason: ",
@@ -432,21 +474,214 @@ export const getUserByEmail = async <TUser extends IUserSchema>(
   }
 };
 
+export const getUserById = async <
+  TUser extends TUserSchemaV2,
+  TProjectionKeys extends keyof TUserSchemaV2 = keyof TUserSchemaV2
+>(
+  userId: string,
+  projectionsObj?: Record<TProjectionKeys, 0 | 1>,
+  tries = 3
+): Promise<Pick<TUser, TProjectionKeys> | null> => {
+  try {
+    const targetUser = await User.findOne(
+      { _id: { $eq: userId } },
+      projectionsObj
+    ).lean();
+
+    return targetUser as Pick<TUser, TProjectionKeys>;
+  } catch (error: any) {
+    console.error(
+      "Failed to receive the target user via email. Reason: ",
+      error
+    );
+    console.log("Error object: ");
+    console.dir(error, { depth: null });
+
+    const didTimeoutOccur = error?.error?.codeName === "MaxTimeMSExpired";
+
+    if (didTimeoutOccur && tries > 0) {
+      await waitWithExponentialBackOff(tries);
+
+      return await getUserById(userId, projectionsObj, tries - 1);
+    }
+
+    return null;
+  }
+};
+
+const getCanRetry = (error: any) => {
+  if (error?.error?.codeName === "MaxTimeMSExpired") {
+    return true;
+  }
+
+  return false;
+};
+
+type TDbOperation<T> = { $push: { $each: T[] } };
+
+export const addNewGDriveUnits = (unitGDriveLessons: IUnitGDriveLesson[]) => {
+  const updates: Record<
+    Extract<keyof TUserSchemaV2, "unitGDriveLessons">,
+    TDbOperation<IUnitGDriveLesson>
+  > = {
+    // TODO: WRONG SYNTAX, FIX IT
+    unitGDriveLessons: {
+      $push: {
+        $each: unitGDriveLessons,
+      },
+    },
+  };
+
+  return updates;
+};
+
+type TUpdatableKey<
+  TKeyA extends string = Extract<keyof TUserSchemaV2, "unitGDriveLessons">,
+  TKeyB extends string = Extract<keyof IUnitGDriveLesson, "lessonDriveIds">
+> = `${TKeyA}.$[elem].${TKeyB}`;
+
+export const addNewGDriveLessons = (
+  unitGDriveLessons: ILessonGDriveId[],
+  isElemMatch: boolean = true
+) => {
+  if (!isElemMatch) {
+    const updates: Record<
+      Extract<keyof TUserSchemaV2, "unitGDriveLessons">,
+      TDbOperation<ILessonGDriveId>
+    > = {
+      unitGDriveLessons: {
+        $push: {
+          $each: unitGDriveLessons,
+        },
+      },
+    };
+
+    return updates;
+  }
+
+  const updates: Record<TUpdatableKey, TDbOperation<ILessonGDriveId>> = {
+    "unitGDriveLessons.$[elem].lessonDriveIds": {
+      $push: {
+        $each: unitGDriveLessons,
+      },
+    },
+  };
+
+  return updates;
+};
+
+type TArrFilterKey<
+  TKey extends string = Extract<keyof IUnitGDriveLesson, "unitDriveId">
+> = `elem.${TKey}`;
+
+export const createDbArrFilter = (key: TArrFilterKey, val: unknown) => {
+  return {
+    [key]: val,
+  };
+};
+
+export const updateUserCustom = async (
+  filterQuery: Omit<Partial<TUserSchemaV2>, "password"> = {},
+  updatedUserProperties: object,
+  updateOpts?: object,
+  tries = 3
+): Promise<{
+  wasSuccessful: boolean;
+  errMsg?: string;
+  result?: UpdateWriteOpResult;
+}> => {
+  try {
+    if (!getCanUpdateUser(updatedUserProperties)) {
+      throw new Error(
+        "Cannot update user: forbidden fields detected in update properties"
+      );
+    }
+
+    const updateUserResult = await User.updateOne(
+      filterQuery,
+      updatedUserProperties,
+      updateOpts
+    );
+
+    if (updateUserResult.modifiedCount === 0) {
+      throw new Error("Failed to update the target user.");
+    }
+
+    return { result: updateUserResult, wasSuccessful: true };
+  } catch (error: any) {
+    console.error("Failed to update the target user. Reason: ", error);
+    console.log("Error object: ");
+    console.dir(error, { depth: null });
+
+    if (getCanRetry(error) && tries > 0) {
+      await waitWithExponentialBackOff(tries);
+
+      return await updateUserCustom(
+        filterQuery,
+        updatedUserProperties,
+        updateOpts,
+        tries - 1
+      );
+    }
+
+    return {
+      wasSuccessful: false,
+      errMsg: `Unable to update the target user. Reason: ${error}`,
+    };
+  }
+};
+
+type TForbiddenUpdateFields =
+  | "password"
+  | "email"
+  | "provider"
+  | "providerAccountId"
+  | "roles"
+  | "totalSignIns"
+  | "_id"
+  | "lastSignIn";
+
+const getCanUpdateUser = (
+  updatedUserProps: Omit<Partial<TUserSchemaV2>, TForbiddenUpdateFields>
+) => {
+  return !(
+    "password" in updatedUserProps ||
+    "email" in updatedUserProps ||
+    "provider" in updatedUserProps ||
+    "providerAccountId" in updatedUserProps ||
+    "roles" in updatedUserProps ||
+    "totalSignIns" in updatedUserProps ||
+    "_id" in updatedUserProps ||
+    "lastSignIn" in updatedUserProps
+  );
+};
+
 export const updateUser = async (
   filterQuery: Omit<Partial<TUserSchemaV2>, "password"> = {},
-  updatedUserProperties: Omit<Partial<TUserSchemaV2>, "password">,
-  updatedUserPropsToFilterOut?: (keyof TUserSchemaV2)[]
-) => {
+  updatedUserProperties: Omit<Partial<TUserSchemaV2>, TForbiddenUpdateFields>,
+  updatedUserPropsToFilterOut?: (keyof TUserSchemaV2)[],
+  tries = 3
+): Promise<{
+  wasSuccessful: boolean;
+  updatedUser?: Partial<TUserSchemaV2>;
+  errMsg?: string;
+}> => {
   try {
+    if (!getCanUpdateUser(updatedUserProperties)) {
+      throw new Error(
+        "Cannot update _id, password, email, provider, providerAccountId, roles, totalSignIns, or lastSignIn fields through this method."
+      );
+    }
+
     if (updatedUserProperties.isTeacher === false) {
       updatedUserProperties = {
         ...updatedUserProperties,
         classSize: 0,
-        isTeacher: false
+        isTeacher: false,
       };
     }
 
-    if(updatedUserProperties.isNotTeaching === true){
+    if (updatedUserProperties.isNotTeaching === true) {
       updatedUserProperties = {
         ...updatedUserProperties,
         classSize: 0,
@@ -472,7 +707,9 @@ export const updateUser = async (
 
       const updateUserWithProjectedProps = entries.reduce(
         (updatedUserWithProjectedPropsAccum, [key, value]) => {
-          if (updatedUserPropsToFilterOut?.includes(key as keyof TUserSchemaV2)) {
+          if (
+            updatedUserPropsToFilterOut?.includes(key as keyof TUserSchemaV2)
+          ) {
             return updatedUserWithProjectedPropsAccum;
           }
 
@@ -481,7 +718,7 @@ export const updateUser = async (
             [key]: value,
           };
         },
-        {}
+        {} as Partial<TUserSchemaV2>
       );
 
       return { wasSuccessful: true, updatedUser: updateUserWithProjectedProps };
@@ -489,7 +726,7 @@ export const updateUser = async (
 
     return {
       wasSuccessful: true,
-      updatedUser: updatedUser as Partial<IUserSchema>,
+      updatedUser: updatedUser as Partial<TUserSchemaV2>,
     };
   } catch (error) {
     const { message } = error as { message?: string };
@@ -497,6 +734,21 @@ export const updateUser = async (
       message ?? `The target user failed to be updated. Reason: ${error}`;
 
     console.log(errMsg);
+
+    const canRetry = getCanRetry(error);
+
+    if (canRetry && tries > 0) {
+      console.error("Failed to update user. Reason: ", error);
+
+      await waitWithExponentialBackOff(tries);
+
+      return await updateUser(
+        filterQuery,
+        updatedUserProperties,
+        updatedUserPropsToFilterOut,
+        tries - 1
+      );
+    }
 
     return { wasSuccessful: false, errMsg };
   }
@@ -563,7 +815,10 @@ export const updateUsersDynamically = async (
   }
 };
 
-export const deleteUser = async (query = {}) => {
+export const deleteUser = async (
+  query = {},
+  tries = 3
+): Promise<{ wasSuccessful: boolean; errObj?: unknown }> => {
   try {
     if (
       !query ||
@@ -579,10 +834,23 @@ export const deleteUser = async (query = {}) => {
     await User.deleteOne(query);
 
     return { wasSuccessful: true };
-  } catch (error) {
+  } catch (error: any) {
     console.error("Failed to delete the target user. Reason: ", error);
+    const didTimeoutOccur = error?.error?.codeName === "MaxTimeMSExpired";
 
-    return { wasSuccessful: false };
+    if (didTimeoutOccur && tries > 0) {
+      console.log(
+        `Timeout occurred while deleting user. Retrying... Attempts remaining: ${
+          tries - 1
+        }`
+      );
+
+      await waitWithExponentialBackOff(tries);
+
+      return deleteUser(query, tries - 1);
+    }
+
+    return { wasSuccessful: false, errObj: error };
   }
 };
 
@@ -598,15 +866,51 @@ export const deleteUserById = async (userId: string) => {
   }
 };
 
-export const deleteUserByEmail = async (email: string) => {
+export const deleteUserByEmail = async (email: unknown) => {
   try {
-    await User.deleteOne({ email: email });
+    if (typeof email !== "string") {
+      throw new Error("Email must be a string.");
+    }
+
+    await User.deleteOne({ email: { $eq: email } });
 
     return { wasSuccessful: true };
   } catch (error) {
     console.error("The target user failed to be updated. Reason: ", error);
 
     return { wasSuccessful: false };
+  }
+};
+
+/**
+ * Deletes a user from the cache by email.
+ * @param {string} email The email of the user to delete from cache.
+ * @return {Promise<{ wasSuccessful: boolean, msg: string }>} A promise that resolves to an object with a boolean indicating whether the operation was successful and a message.
+ */
+export const deleteUserFromCache = async (email: string) => {
+  try {
+    if (!email || typeof email !== "string") {
+      throw new Error("Email must be a non-empty string.");
+    }
+
+    // Import cache here to avoid circular dependencies
+    const { cache } = await import("../authOpts/authOptions");
+
+    cache.del(email);
+
+    return {
+      wasSuccessful: true,
+      msg: "User deleted from cache successfully",
+    };
+  } catch (error) {
+    console.error("Failed to delete user from cache. Reason: ", error);
+
+    return {
+      wasSuccessful: false,
+      errType: "cacheDeletionErr",
+      errObj: error,
+      msg: "Failed to delete user from cache",
+    };
   }
 };
 

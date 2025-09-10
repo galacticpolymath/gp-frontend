@@ -30,6 +30,13 @@ h4.words {
 @import "../node_modules/react-responsive-carousel/lib/styles/carousel.min.css";
 @import "../node_modules/bootstrap-icons/font/bootstrap-icons.css";
 
+.picker-container{
+  .picker {
+    visibility: hidden;
+    z-index: -100;
+  }
+}
+
 .responseiveH1 {
   font-size: 27px;
 
@@ -97,6 +104,64 @@ body {
   }
 }
 
+.fade-backdrop-in{
+  animation: fadeBackdropIn 250ms forwards;
+  opacity: .25;
+}
+
+@keyframes fadeBackdropIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: .25;
+  }
+}
+
+.cover-parent-container{
+  margin-left: calc(-1 * ((100vw - 100%) / 2));
+  margin-right: calc(-1 * ((100vw - 100%) / 2));
+}
+
+.o--Profile--name,
+.o--Profile--password{
+  display: none;
+}
+
+.fade-modal-in-short{
+  animation: fadeModalInShort 250ms forwards;
+  opacity: 1;
+}
+
+@keyframes fadeModalInShort {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.fade-modal-out-short{
+  animation: fadeModalOutShort 250ms forwards;
+  opacity: 1;
+  visibility: hidden;
+}
+
+.no-children-border-radius *{
+  border-radius: 0%;
+}
+
+@keyframes fadeModalOutShort {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    // visibility: hidden;
+  }
+}
+
 .fade-in-quick {
   animation: fadeInQuick 0.5s forwards;
   opacity: 1;
@@ -125,7 +190,7 @@ body {
 }
 
 .fade-out-quick {
-  animation: fadeOutQuick 0.5s forwards;
+  animation: fadeOutQuick 0.250s forwards;
   opacity: 1;
 }
 
@@ -225,10 +290,6 @@ h3 {
   width: 0.01rem;
 }
 
-li {
-  margin-bottom: 0.5rem;
-}
-
 * {
   box-sizing: border-box;
 }
@@ -308,6 +369,18 @@ ol li {
 
 .error-border {
   border: solid 1px red;
+}
+
+.gp-plus-member-modal {
+  width: 90vw;
+
+  @media (min-width: 576px) {
+    width: 35vw;
+  }
+}
+
+.input-read-only {
+  pointer-events: none;
 }
 
 .login-ui-modal {
@@ -409,6 +482,12 @@ ol li {
 
 .text-shadow-violent {
   text-shadow: 0px 0px 4px #470d29;
+}
+
+.lesson-item-modal {
+  width: 100vw;
+  height: 100vh;
+  border-radius: 0px;
 }
 
 .account-settings-modal,

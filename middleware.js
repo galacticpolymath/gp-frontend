@@ -8,6 +8,18 @@ import {
   verifyJwt,
 } from "./nondependencyFns";
 import { PASSWORD_RESET_CODE_VAR_NAME } from "./globalVars";
+import axios from "axios";
+
+const escapeHtml = (str) => {
+  if (!str) return "";
+
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#x27;");
+};
 
 const DB_ADMIN_ROUTES = [
   "/api/insert-lesson",
@@ -22,6 +34,12 @@ const DB_ADMIN_ROUTES = [
   "/api/admin/delete-users",
 ];
 const DB_ADMIN_ROUTES_SET = new Set(DB_ADMIN_ROUTES);
+const GP_PLUS_ROUTES = [
+  "/api/gp-plus/auth",
+  "/api/gp-plus/copy-unit",
+  "/api/gp-plus/get-is-individual-member",
+];
+const GP_PLUS_ROUTES_SET = new Set(GP_PLUS_ROUTES);
 const USER_ACCOUNT_ROUTES = [
   "/api/save-about-user-form",
   "/api/copy-files",
@@ -30,6 +48,7 @@ const USER_ACCOUNT_ROUTES = [
   "/api/delete-user",
   "/api/user-confirms-mailing-list-sub",
   "/api/get-signed-in-user-brevo-status",
+  ...GP_PLUS_ROUTES,
 ];
 
 const getUnitNum = (pathName) =>
@@ -42,6 +61,11 @@ const getUnitNum = (pathName) =>
       )
   );
 const UNITS_PATH_NAME = "units";
+const VALID_CLIENT_DOMAINS = new Set([
+  "https://dev.galacticpolymath.com",
+  "http://localhost:3000",
+  "https://teach.galacticpolymath.com",
+]);
 
 export async function middleware(request) {
   try {
@@ -50,6 +74,14 @@ export async function middleware(request) {
      * @type {{ pathname: string, search: string }}
      */
     let { pathname, search } = nextUrl;
+
+    console.log(`Request origin: ${nextUrl.origin}`);
+
+    if (!VALID_CLIENT_DOMAINS.has(nextUrl.origin)) {
+      console.error(`Invalid client domain detected: ${nextUrl.origin}`);
+
+      return NextResponse.redirect("https://teach.galacticpolymath.com/error");
+    }
 
     if (pathname === "/password-reset") {
       search = search.replace("?", "");
@@ -72,7 +104,9 @@ export async function middleware(request) {
       });
     }
 
-    console.log(`middleware: headers are present, so we are allowing the request to continue...`);
+    console.log(
+      `middleware: headers are present, so we are allowing the request to continue...`
+    );
 
     if (
       !nextUrl.href.includes("api") &&
@@ -80,7 +114,9 @@ export async function middleware(request) {
       nextUrl?.pathname?.split("/")?.filter((val) => val)?.length == 2 &&
       Number.isInteger(getUnitNum(nextUrl.pathname))
     ) {
-      console.log(`middleware: /units route was detected, so we are redirecting to /units/[unitNum]`);
+      console.log(
+        `middleware: /units route was detected, so we are redirecting to /units/[unitNum]`
+      );
       const unitNum = getUnitNum(nextUrl.pathname);
       const url = new URL(`${nextUrl.origin}/api/get-lessons`);
       const getUnitsUrl = new URL(`${nextUrl.origin}/api/get-units`);
@@ -279,9 +315,56 @@ export async function middleware(request) {
       return NextResponse.next();
     }
 
+    console.log("nextUrl.pathname: ", nextUrl.pathname);
+    console.log("method: ", method);
+
+    if (GP_PLUS_ROUTES_SET.has(nextUrl.pathname)) {
+      console.log("This is a GP Plus route.");
+      const { isAuthorize, errResponse } = await getAuthorizeReqResult(
+        authorizationStr,
+        true
+      );
+
+      if (!isAuthorize) {
+        console.error("The user is not authorized.");
+
+        return errResponse;
+      }
+
+      const { data, status } = axios.get(
+        "/api/gp-plus/get-is-individual-member",
+        {
+          headers: {
+            authorization: authorizationStr,
+          },
+        }
+      );
+      const { errType, isGpPlusMember } = data ?? {};
+
+      console.log("Status, get is user a gp plus member: ", status);
+
+      if (errType || !isGpPlusMember) {
+        const response = NextResponse.json({
+          errType,
+          message: "The user is not a GP Plus member.",
+        }).status(401);
+
+        return response;
+      }
+
+      if (pathname === "/api/gp-plus/get-is-individual-member") {
+        console.log("isGpPlusMember: ", isGpPlusMember);
+        return NextResponse.json({ isGpPlusMember }).status(200);
+      }
+
+      console.log("User is a GP Plus member. Will allow request to proceed.");
+
+      return NextResponse.next();
+    }
+
     if (
-      nextUrl.pathname === "/api/copy-files" &&
-      method === "POST" &&
+      nextUrl.pathname === "/api/gp-plus/copy-unit" &&
+      method === "GET" &&
       headers.has("GDrive-Token")
     ) {
       console.log("will check if the auth string is valid.");
@@ -297,7 +380,10 @@ export async function middleware(request) {
       console.log("The GDrive-Token was provided.");
 
       return NextResponse.next();
-    } else if (nextUrl.pathname === "/api/copy-files" && method === "POST") {
+    } else if (
+      nextUrl.pathname === "/api/gp-plus/copy-unit" &&
+      method === "GET"
+    ) {
       return new NextResponse("No GDrive-Token was provided.", { status: 400 });
     }
 
@@ -349,6 +435,9 @@ export async function middleware(request) {
         authorizationStr) ||
       (nextUrl.pathname == "/api/get-user-account-data" &&
         method === "GET" &&
+        authorizationStr) ||
+      (nextUrl.pathname == "/api/gp-plus/copy-lesson" &&
+        method === "GET" &&
         authorizationStr)
     ) {
       const willCheckIfUserIsDbAdmin = DB_ADMIN_ROUTES_SET.has(
@@ -359,7 +448,7 @@ export async function middleware(request) {
         willCheckIfUserIsDbAdmin
       );
 
-      return isAuthorize ? NextResponse.next() : errResponse
+      return isAuthorize ? NextResponse.next() : errResponse;
     }
 
     console.error("Invalid request path. Retrieved: ", nextUrl.pathname);
@@ -368,7 +457,8 @@ export async function middleware(request) {
       status: 400,
     });
   } catch (error) {
-    const errMsg = `An error has occurred in the middleware: ${error}`;
+    const errMsgForClient = escapeHtml(JSON.stringify(error));
+    const errMsg = `An error has occurred in the middleware: ${errMsgForClient}`;
 
     console.error("Middleware errror: ", errMsg);
 
