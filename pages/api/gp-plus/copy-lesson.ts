@@ -155,21 +155,6 @@ export default async function handler(
   let _fileIds = typeof reqQueryParams.fileIds === 'string' ? [reqQueryParams.fileIds] : reqQueryParams.fileIds
   const clientOrigin = new URL(request.headers.referer ?? "").origin;
 
-  for (const fileId of _fileIds){
-    const result = await copyGDriveItem(
-        gDriveAccessToken!,
-        [],
-        fileId,
-        gDriveRefreshToken!,
-        clientOrigin
-      );
-      
-    console.log("Result: ", result);    
-  }
-
-
-  throw new Error("An error has occurred.");
-
   response.on("close", async () => {
     console.log("The user closed the stream.");
     isStreamOpen = false;
