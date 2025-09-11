@@ -10,14 +10,16 @@ export default async function handler(
   try {
     console.log('req.query: ', req.query);
     const dbType = req.query.dbType as TEnvironment;
+    const emailFilters = req.query.emailFilters as (string[] | string | undefined);
+    const _emailFilters = typeof emailFilters === 'string' ? [emailFilters] : emailFilters
 
-    console.log('Database Type:', dbType);
+    console.log('Database Type: ', dbType);
 
     await connectToMongodb(10_000, 0, true, dbType ?? 'dev');
 
-    const users = await getUsers({}, {}, true);
+    const users = await getUsers(_emailFilters ? { email: { $in: _emailFilters } } : {}, {}, true);
 
-    console.log('Retrieved Users: ', users.users?.length);
+    console.log('Retrieved users: ', users.users?.length);
 
     return res.status(200).json({ users: users.users });
   } catch (error) {

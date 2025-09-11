@@ -137,9 +137,9 @@ const LoginContainerForNavbar = ({ _modalAnimation }: IProps) => {
   const handleSignOutBtnClick = async () => {
     setIsSigningUserOut(true);
 
-    if (gdriveAccessToken) {
-      await revokeGoogleAuthToken(gdriveAccessToken);
-    }
+    // if (gdriveAccessToken) {
+    //   await revokeGoogleAuthToken(gdriveAccessToken);
+    // }
 
     removeAppCookies([
       "gdriveAccessToken",
@@ -154,15 +154,18 @@ const LoginContainerForNavbar = ({ _modalAnimation }: IProps) => {
     sessionStorage.clear();
     clearCookies();
 
+    const isUserSignedIn = !!(window.Outseta as any)?.getAccessToken();
+
+    if (!isUserSignedIn) {
+      window.location.reload();
+      return;
+    }
+
     window.Outseta?.on("logout", async () => {
       console.log("Logging the user out.");
       window.Outseta?.setAccessToken(null);
       window.Outseta?.setMagicLinkIdToken("");
       return false;
-    });
-
-    window.Outseta?.on("signup", () => {
-      removeLocalStorageItem("selectedGpPlusBillingType");
     });
   };
 

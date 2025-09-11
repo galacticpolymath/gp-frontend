@@ -191,8 +191,6 @@ export const getLocalStorageItem = <
 
       console.log("parsableVal: ", parsableVal);
 
-      console.log("process.env.NEXT_PUBLIC_ENCRYPTION_KEY: ", process.env.NEXT_PUBLIC_ENCRYPTION_KEY);
-
       const bytes = CryptoJS.AES.decrypt(
         parsableVal,
         process.env.NEXT_PUBLIC_ENCRYPTION_KEY!

@@ -403,6 +403,7 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
 
           const cancelJob = () => {
             eventSource.close();
+            setIsCopyingLesson(false);
             toast.update(toastId, {
               render: (
                 <CopyingUnitToast
