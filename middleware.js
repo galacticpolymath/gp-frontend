@@ -31,6 +31,7 @@ const DB_ADMIN_ROUTES = [
   "/api/get-users",
   "/api/admin/migrate-to-v2-users",
   "/api/admin/insert-users",
+  "/api/admin/update-user",
   "/api/admin/delete-users",
 ];
 const DB_ADMIN_ROUTES_SET = new Set(DB_ADMIN_ROUTES);
@@ -436,6 +437,9 @@ export async function middleware(request) {
       (nextUrl.pathname == "/api/get-user-account-data" &&
         method === "GET" &&
         authorizationStr) ||
+      (nextUrl.pathname == "/api/admin/update-user" &&
+        method === "POST" &&
+        authorizationStr) ||
       (nextUrl.pathname == "/api/gp-plus/copy-lesson" &&
         method === "GET" &&
         authorizationStr)
@@ -498,6 +502,7 @@ export const config = {
     "/api/update-unit",
     "/api/admin/migrate-to-v2-users",
     "/api/admin/insert-users",
+    "/api/admin/update-user",
     "/api/admin/delete-users",
   ],
 };

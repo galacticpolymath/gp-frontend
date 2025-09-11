@@ -19,7 +19,7 @@ import { waitWithExponentialBackOff } from "../../globalFns.js";
 export const getUsers = async <
   TUsers extends IUserSchemaBaseProps = TUserSchemaV2
 >(
-  queryObj: Partial<TUserSchemaV2> = {},
+  queryObj: Partial<Record<keyof TUserSchemaV2, unknown>> = {},
   projectionObj: Partial<Record<keyof TUserSchemaV2, number>> = {},
   willGetRawUsers?: boolean
 ) => {
@@ -646,13 +646,10 @@ const getCanUpdateUser = (
 ) => {
   return !(
     "password" in updatedUserProps ||
-    "email" in updatedUserProps ||
     "provider" in updatedUserProps ||
     "providerAccountId" in updatedUserProps ||
     "roles" in updatedUserProps ||
-    "totalSignIns" in updatedUserProps ||
-    "_id" in updatedUserProps ||
-    "lastSignIn" in updatedUserProps
+    "_id" in updatedUserProps 
   );
 };
 

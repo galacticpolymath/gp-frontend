@@ -473,6 +473,8 @@ export const authOptions = {
 
         return true;
       } catch (error) {
+        console.error('An error occurred while signing in: ', error);
+
         const { type, urlErrorParamKey, urlErrorParamVal } = error ?? {};
 
         if (urlErrorParamKey && urlErrorParamVal) {
