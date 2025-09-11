@@ -154,7 +154,7 @@ const LoginContainerForNavbar = ({ _modalAnimation }: IProps) => {
     sessionStorage.clear();
     clearCookies();
 
-    const isUserSignedIn = !!window.Outseta?.getAccessToken();
+    const isUserSignedIn = !!(window.Outseta as any)?.getAccessToken();
 
     if (!isUserSignedIn) {
       window.location.reload();
