@@ -39,6 +39,7 @@ const GP_PLUS_ROUTES = [
   "/api/gp-plus/auth",
   "/api/gp-plus/copy-unit",
   "/api/gp-plus/get-is-individual-member",
+  "/api/gp-plus/send-failed-files-report",
 ];
 const GP_PLUS_ROUTES_SET = new Set(GP_PLUS_ROUTES);
 const USER_ACCOUNT_ROUTES = [

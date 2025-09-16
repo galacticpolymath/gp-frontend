@@ -101,7 +101,8 @@ const getCanRetry = async (
 type TGoogleAuthScopes =
   | "https://www.googleapis.com/auth/drive"
   | "https://www.googleapis.com/auth/admin.directory.group"
-  | "https://www.googleapis.com/auth/admin.directory.user";
+  | "https://www.googleapis.com/auth/admin.directory.user"
+  | 'https://www.googleapis.com/auth/gmail.send'
 
 export const getIsValidFileId = (id: unknown) =>
   typeof id === "string" && /^[a-zA-Z0-9_-]{10,}$/.test(id);
@@ -130,7 +131,8 @@ export const createDrive = async (
 
 export const createGoogleAdminService = async (
   scopes: TGoogleAuthScopes[] = ["https://www.googleapis.com/auth/drive"],
-  clientOptions?: GoogleAuthOptions["clientOptions"]
+  clientOptions?: GoogleAuthOptions["clientOptions"],
+  willOnlyGetAuthClient: boolean = false
 ) => {
   const creds = new GoogleServiceAccountAuthCreds();
   const auth = new google.auth.GoogleAuth({
@@ -143,6 +145,11 @@ export const createGoogleAdminService = async (
     clientOptions,
   });
   const authClient = (await auth.getClient()) as OAuth2Client;
+
+  if(willOnlyGetAuthClient){
+    return authClient
+  }
+
   const adminService = google.admin({
     version: "directory_v1",
     auth: authClient,
@@ -1600,6 +1607,19 @@ export const logFailedFileCopyToExcel = async (failedCopy: IFailedFileCopy) => {
   }
 };
 
+const checkIfAllFilesCanBeCopied = async (fileIds: string[], drive: drive_v3.Drive, email: string) => {
+  // this function will run recursively
+  try {
+    const permissionsRetrievalResultPromises = fileIds.map(fileId => {
+      return getTargetUserPermission(fileId, email, drive);
+    })
+    const permission = await Promise.all(permissionsRetrievalResultPromises);
+  } catch(error){
+
+  }
+}
+
+
 export const copyFiles = async (
   filesToCopy: TFileToCopy[],
   email: string,
@@ -1619,6 +1639,8 @@ export const copyFiles = async (
 ) => {
   let wasJobSuccessful = true;
   let copiedFiles: TFilesToRename = [];
+
+    
 
   // check if the permission were propagated to all of the files to copy
   for (const fileToCopy of filesToCopy) {
@@ -1703,7 +1725,8 @@ export const copyFiles = async (
     console.log("fileCopyResult: ", fileCopyResult.errType);
     console.log("permission: ", permission);
 
-    if ("id" in fileCopyResult && fileCopyResult.id) {
+    // TESTING
+    if (!("id" in fileCopyResult && fileCopyResult.id)) {
       console.log(`Successfully copied file ${name}`);
 
       const copiedFile = {
@@ -1715,7 +1738,9 @@ export const copyFiles = async (
       sendMessageToClient({
         fileCopied: name,
       });
-    } else if (fileCopyResult?.errType) {
+    } else if (!fileCopyResult?.errType) {
+      console.log("fileCopyResult?.errType: ", fileCopyResult?.errType);
+
       wasJobSuccessful = false;
       console.error(
         "Failed to copy file for user.",
@@ -1745,19 +1770,19 @@ export const copyFiles = async (
           ? fileCopyResult.errMsg
           : JSON.stringify(fileCopyResult);
 
-      if (process.env.NEXT_PUBLIC_HOST === "localhost") {
-        await logFailedFileCopyToExcel({
-          lessonName,
-          unitName,
-          lessonFolderLink,
-          fileName: name,
-          fileLink,
-          errorType,
-          errorMessage,
-          timestamp: new Date().toISOString(),
-          userEmail: email,
-        });
-      }
+      // if (process.env.NEXT_PUBLIC_HOST === "localhost") {
+      //   await logFailedFileCopyToExcel({
+      //     lessonName,
+      //     unitName,
+      //     lessonFolderLink,
+      //     fileName: name,
+      //     fileLink,
+      //     errorType,
+      //     errorMessage,
+      //     timestamp: new Date().toISOString(),
+      //     userEmail: email,
+      //   });
+      // }
     }
   }
 

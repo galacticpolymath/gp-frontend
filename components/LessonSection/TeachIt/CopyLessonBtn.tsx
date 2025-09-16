@@ -36,6 +36,7 @@ import { INewUnitSchema } from "../../../backend/models/Unit/types/unit";
 import { EventSourcePolyfill } from "event-source-polyfill";
 import { toast } from "react-toastify";
 import { nanoid } from "nanoid";
+import { TFileToCopy } from "../../../backend/services/gdriveServices/types";
 
 export interface ICopyLessonBtnProps
   extends Pick<INewUnitLesson, "allUnitLessons" | "lessonsFolder">,
@@ -138,12 +139,19 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
     _isCopyUnitBtnDisabled,
     _willShowGpPlusCopyLessonHelperModal,
   } = useUserContext();
-  const { _lessonsCopyJobs, _lessonToCopy } = useLessonContext();
+  const { _lessonsCopyJobs, _lessonToCopy, _failedCopiedLessonFiles } =
+    useLessonContext();
   const router = useRouter();
-  const { _isGpPlusModalDisplayed, _isCopyLessonHelperModalDisplayed } =
-    useModalContext();
+  const {
+    _isGpPlusModalDisplayed,
+    _isCopyLessonHelperModalDisplayed,
+    _isFailedCopiedFilesReportModalOn,
+  } = useModalContext();
   const [lessonToCopy, setLessonToCopy] = _lessonToCopy;
+  const [, setIsFailedCopiedFilesReportModalOn] =
+    _isFailedCopiedFilesReportModalOn;
   const [, setLessonsCopyJobs] = _lessonsCopyJobs;
+  const [, setFailedCopiedLessonFiles] = _failedCopiedLessonFiles;
   const [isGpPlusMember] = _isGpPlusMember;
   const {
     gdriveAccessToken,
@@ -177,6 +185,11 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
       sharedGDriveLessonFolderId
     );
   });
+
+  const handleFileReportTxtClick = (failedCopiedFiles: TFileToCopy[]) => {
+    setFailedCopiedLessonFiles(failedCopiedFiles);
+    setIsFailedCopiedFilesReportModalOn(true);
+  };
 
   const copyLesson = async () => {
     console.log("Copy unit function called");
@@ -453,6 +466,7 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
           let filesCopied = 0;
           let showProgressBar = false;
           let targetFolderId: string | undefined = undefined;
+          let failedCopiedFiles: TFileToCopy[] = [];
 
           eventSource.onmessage = (event) => {
             try {
@@ -467,6 +481,8 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
                 isJobDone,
                 wasSuccessful,
                 targetFolderId: _targetFolderId,
+                failedCopiedFile,
+                fileId,
               } = parsedData;
               targetFolderId = _targetFolderId;
               let canDisplayToast = true;
@@ -498,6 +514,36 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
               }
 
               console.log("data, python: ", parsedData);
+
+              if (failedCopiedFile) {
+                toast.update(toastId, {
+                  render: (
+                    <CopyingUnitToast
+                      targetFolderId={targetFolderId}
+                      title={copyingLessonStartingTxt}
+                      toastId={toastId}
+                      subtitle={`❌ '${failedCopiedFile}' failed to be copied.`}
+                      jobStatus="ongoing"
+                      onCancel={cancelJob}
+                      showProgressBar
+                      progress={filesCopied}
+                      total={totalFilesToCopy}
+                    />
+                  ),
+                  style: {
+                    width: "60vw",
+                    background: "none",
+                  },
+                  className: "p-0",
+                  closeButton: false,
+                  toastId,
+                });
+                failedCopiedFiles.push({
+                  id: fileId ?? "Unknown",
+                  name: failedCopiedFile,
+                });
+                return;
+              }
 
               if (isJobDone) {
                 setParts((parts) => {
@@ -531,9 +577,22 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
                       title={title}
                       toastId={toastId}
                       subtitle={
-                        wasSuccessful
-                          ? "Copy completed successfully!"
-                          : "Copy operation failed"
+                        wasSuccessful ? (
+                          "Copy completed successfully!"
+                        ) : (
+                          <span>
+                            Copy operation failed. Click{" "}
+                            <span
+                              onClick={() => {
+                                handleFileReportTxtClick(failedCopiedFiles);
+                              }}
+                              className="text-primary underline-on-hover pointer"
+                            >
+                              here
+                            </span>{" "}
+                            to file a report.
+                          </span>
+                        )
                       }
                       jobStatus={wasSuccessful ? "success" : "failure"}
                       onCancel={() => {

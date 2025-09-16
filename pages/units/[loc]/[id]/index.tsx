@@ -59,6 +59,7 @@ import {
 import useSiteSession from "../../../../customHooks/useSiteSession";
 import { getUnitGDriveChildItems } from "../../../../backend/services/gdriveServices";
 import CopyLessonHelperModal from "../../../../components/GpPlus/CopyLessonHelperModal";
+import FailedCopiedFilesReportModal from "../../../../components/GpPlus/FailedCopiedFilesReportModal";
 
 const IS_ON_PROD = process.env.NODE_ENV === "production";
 const GOOGLE_DRIVE_THUMBNAIL_URL = "https://drive.google.com/thumbnail?id=";
@@ -770,6 +771,7 @@ const LessonDetails: React.FC<IProps> = ({ lesson, unit }) => {
       <LessonItemModal />
       <ThankYouModal />
       <CopyLessonHelperModal />
+      <FailedCopiedFilesReportModal />
     </Layout>
   );
 };
