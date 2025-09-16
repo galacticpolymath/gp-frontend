@@ -1735,7 +1735,6 @@ export const copyFiles = async (
       // Log failed copy to Excel
       const lessonFolderLink = `https://drive.google.com/drive/folders/${sharedGDriveLessonsFolderId}`;
       const fileLink = `https://drive.google.com/file/d/${fileId}/view`;
-
       const errorType =
         "errType" in fileCopyResult &&
         typeof fileCopyResult.errType === "string"

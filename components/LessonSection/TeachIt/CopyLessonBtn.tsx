@@ -3,7 +3,11 @@ import { Button, Spinner } from "react-bootstrap";
 import { useUserContext } from "../../../providers/UserProvider";
 import useDrivePicker from "react-google-drive-picker";
 import useSiteSession from "../../../customHooks/useSiteSession";
-import { createGDriveAuthUrl, setLocalStorageItem } from "../../../shared/fns";
+import {
+  createGDriveAuthUrl,
+  getLocalStorageItem,
+  setLocalStorageItem,
+} from "../../../shared/fns";
 import { GOOGLE_DRIVE_PROJECT_CLIENT_ID } from "../../../globalVars";
 import axios from "axios";
 import { useModalContext } from "../../../providers/ModalProvider";
@@ -134,10 +138,11 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
     _isCopyUnitBtnDisabled,
     _willShowGpPlusCopyLessonHelperModal,
   } = useUserContext();
-  const { _lessonsCopyJobs } = useLessonContext();
+  const { _lessonsCopyJobs, _lessonToCopy } = useLessonContext();
   const router = useRouter();
   const { _isGpPlusModalDisplayed, _isCopyLessonHelperModalDisplayed } =
     useModalContext();
+  const [lessonToCopy, setLessonToCopy] = _lessonToCopy;
   const [, setLessonsCopyJobs] = _lessonsCopyJobs;
   const [isGpPlusMember] = _isGpPlusMember;
   const {
@@ -154,14 +159,16 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
   const [isCopyingLesson, setIsCopyingLesson] = useState(false);
   const [, setIsCopyLessonHelperModalDisplayed] =
     _isCopyLessonHelperModalDisplayed;
-  const [willShowGpPlusCopyLessonHelperModal, ] =
+  const [willShowGpPlusCopyLessonHelperModal] =
     _willShowGpPlusCopyLessonHelperModal;
   const [, setIsGpPlusModalDisplayed] = _isGpPlusModalDisplayed;
   const didInitialRenderOccur = useRef(false);
   const [copyLessonJobLatestMsg, setCopyLessonJobLatestMsg] = useState<Partial<
     TCopyFilesMsg & { toastId: string }
   > | null>(null);
-  const isJobDone = useRef<string | null>(null);
+  const copyingLessonStartingTxt = `Copying unit ${
+    lessonId == 100 ? "assessments" : `L${lessonId}`
+  } '${lessonName}'`;
 
   useEffect(() => {
     console.log("userGDriveLessonFolderId: ", userGDriveLessonFolderId);
@@ -171,7 +178,7 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
     );
   });
 
-  const copyUnit = async () => {
+  const copyLesson = async () => {
     console.log("Copy unit function called");
 
     setIsCopyingLesson(true);
@@ -222,8 +229,17 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
       sharedGDriveLessonFolderId
     );
 
-    if(willShowGpPlusCopyLessonHelperModal){
-      
+    const willShowGpPlusCopyLessonHelperModal = getLocalStorageItem(
+      "willShowGpPlusCopyLessonHelperModal"
+    );
+
+    if (willShowGpPlusCopyLessonHelperModal) {
+      setLessonToCopy({
+        id: typeof lessonId === "number" ? lessonId.toString() : lessonId,
+        willOpenGDrivePicker: false,
+      });
+      setIsCopyLessonHelperModalDisplayed(true);
+      setIsCopyingLesson(false);
       return;
     }
 
@@ -265,11 +281,6 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
 
           const toastId = nanoid();
 
-          // -can only have two toasts displayed at a time
-          // -the user wants to a copy a lesson, presses copy
-          // -implement a stack:
-          //-push the job id onto the stack
-
           setLessonsCopyJobs((state) => {
             const stateClone = structuredClone(state);
 
@@ -284,7 +295,7 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
 
           toast(
             <CopyingUnitToast
-              title={`Copying '${lessonName}.'`}
+              title={copyingLessonStartingTxt}
               toastId={toastId}
               subtitle="In progress..."
               onCancel={() => {
@@ -561,7 +572,7 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
                   render: (
                     <CopyingUnitToast
                       targetFolderId={targetFolderId}
-                      title={`Copying '${lessonName}.'`}
+                      title={copyingLessonStartingTxt}
                       toastId={toastId}
                       subtitle={`'${fileCopied}' was copied.`}
                       jobStatus="ongoing"
@@ -588,7 +599,7 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
                   render: (
                     <CopyingUnitToast
                       targetFolderId={targetFolderId}
-                      title={`Copying '${lessonName}.'`}
+                      title={copyingLessonStartingTxt}
                       subtitle={`${totalFilesToCopy} files to copy...`}
                       jobStatus="ongoing"
                       onCancel={cancelJob}
@@ -611,7 +622,7 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
                   render: (
                     <CopyingUnitToast
                       targetFolderId={targetFolderId}
-                      title={`Copying '${lessonName}.'`}
+                      title={copyingLessonStartingTxt}
                       subtitle={msg}
                       jobStatus="ongoing"
                       onCancel={cancelJob}
@@ -638,7 +649,7 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
                   render: (
                     <CopyingUnitToast
                       targetFolderId={targetFolderId}
-                      title={`Copying '${lessonName}.'`}
+                      title={copyingLessonStartingTxt}
                       subtitle="Will copy files..."
                       jobStatus="ongoing"
                       onCancel={cancelJob}
@@ -688,9 +699,7 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
 
   didInitialRenderOccur.current = true;
 
-  const [initiateCopyLessonJobCount, setInitiateCopyLessonJobCount] = useState(0);
-
-  const copyLesson = async () => {
+  const openGDrivePickerToCopyLesson = async () => {
     try {
       const validToken = await ensureValidToken(
         gdriveAccessTokenExp!,
@@ -706,8 +715,13 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
           `${window.location.protocol}//${window.location.host}${window.location.pathname}#teaching-materials`
         );
         window.location.href = createGDriveAuthUrl();
+        // TODO: after the user authenticates with google, start copy lesson job
         return;
       }
+
+      console.log("Opening Google Drive picker to copy lesson");
+
+      console.log("validToken in openGDrivePickerToCopyLesson: ", validToken);
 
       openPicker({
         appId: "1095510414161",
@@ -748,11 +762,6 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
 
             const toastId = nanoid();
 
-            // -can only have two toasts displayed at a time
-            // -the user wants to a copy a lesson, presses copy
-            // -implement a stack:
-            //-push the job id onto the stack
-
             setLessonsCopyJobs((state) => {
               const stateClone = structuredClone(state);
 
@@ -767,7 +776,7 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
 
             toast(
               <CopyingUnitToast
-                title={`Copying '${lessonName}.'`}
+                title={copyingLessonStartingTxt}
                 toastId={toastId}
                 subtitle="In progress..."
                 onCancel={() => {
@@ -828,10 +837,9 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
               return;
             }
 
-            // TODO: get all of the file ids to copy the lesson again if the user clicks on the retry button
-
             console.log("data, yo there: ", data);
             console.log("First document ID, data?.docs: ", data?.docs);
+
             const fileIds = data.docs.map((file) => file.id);
             const fileNames = data.docs.map((file) => file.name);
             const reqQueryParams: Partial<TCopyLessonReqQueryParams> = {
@@ -1044,7 +1052,7 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
                     render: (
                       <CopyingUnitToast
                         targetFolderId={targetFolderId}
-                        title={`Copying '${lessonName}.'`}
+                        title={copyingLessonStartingTxt}
                         toastId={toastId}
                         subtitle={`'${fileCopied}' was copied.`}
                         jobStatus="ongoing"
@@ -1071,7 +1079,7 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
                     render: (
                       <CopyingUnitToast
                         targetFolderId={targetFolderId}
-                        title={`Copying '${lessonName}.'`}
+                        title={copyingLessonStartingTxt}
                         subtitle={`${totalFilesToCopy} files to copy...`}
                         jobStatus="ongoing"
                         onCancel={cancelJob}
@@ -1094,7 +1102,7 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
                     render: (
                       <CopyingUnitToast
                         targetFolderId={targetFolderId}
-                        title={`Copying '${lessonName}.'`}
+                        title={copyingLessonStartingTxt}
                         subtitle={msg}
                         jobStatus="ongoing"
                         onCancel={cancelJob}
@@ -1121,7 +1129,7 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
                     render: (
                       <CopyingUnitToast
                         targetFolderId={targetFolderId}
-                        title={`Copying '${lessonName}.'`}
+                        title={copyingLessonStartingTxt}
                         subtitle="Will copy files..."
                         jobStatus="ongoing"
                         onCancel={cancelJob}
@@ -1143,6 +1151,14 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
                 }
               } catch (error) {
                 console.error("Error processing event source message: ", error);
+
+                setLessonToCopy((state) => {
+                  if (state) {
+                    return null;
+                  }
+
+                  return state;
+                });
               }
             };
           }
@@ -1150,20 +1166,30 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
       });
     } catch (error) {
       console.error("Error in copyLesson function: ", error);
+
+      setLessonToCopy((state) => {
+        if (state) {
+          return null;
+        }
+
+        return state;
+      });
     }
-  }
+  };
 
   useEffect(() => {
-    if(initiateCopyLessonJobCount){
-      
+    console.log("lessonToCopy: ", lessonToCopy);
+
+    if (lessonToCopy?.willOpenGDrivePicker && lessonToCopy.id == lessonId) {
+      openGDrivePickerToCopyLesson();
     }
-  }, [initiateCopyLessonJobCount]);
+  }, [lessonToCopy]);
 
   return (
     <div style={{ width: "fit-content" }} className="mb-3">
       <Button
         ref={btnRef}
-        onClick={isGpPlusMember ? copyUnit : takeUserToSignUpPg}
+        onClick={isGpPlusMember ? copyLesson : takeUserToSignUpPg}
         style={{
           pointerEvents:
             isRetrievingLessonFolderIds ||

@@ -4,17 +4,13 @@
 /* eslint-disable quotes */
 import { createContext, useContext, useState } from "react";
 import { TUseStateReturnVal } from "../types/global";
-import { TCopyFilesMsg } from "../pages/api/gp-plus/copy-lesson";
 
-type TLessonToCopy = { gdriveLessonFolderId: string; name: string };
-type TCopyLessonJob = Partial<
-  {
-    toastId: string;
-    isToastDisplayed: boolean;
-  } & TCopyFilesMsg
->;
+type TSelectedLessonToCopy = {
+  id: string;
+  willOpenGDrivePicker: boolean;
+};
 export type TLessonProviderVal = {
-  _lessonToCopy: TUseStateReturnVal<TLessonToCopy | null>;
+  _lessonToCopy: TUseStateReturnVal<TSelectedLessonToCopy | null>;
   _lessonsCopyJobs: TUseStateReturnVal<string[]>;
 };
 
@@ -23,7 +19,8 @@ export const LessonContext = createContext<TLessonProviderVal | null>(null);
 export const LessonProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [lessonToCopy, setLessonToCopy] = useState<TLessonToCopy | null>(null);
+  const [lessonToCopy, setLessonToCopy] =
+    useState<TSelectedLessonToCopy | null>(null);
   const [lessonsCopyJobs, setLessonsCopyJobs] = useState<string[]>([]);
   const value: TLessonProviderVal = {
     _lessonToCopy: [lessonToCopy, setLessonToCopy],

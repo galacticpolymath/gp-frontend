@@ -6,7 +6,7 @@ import {
   INewUnitSchema,
 } from "../backend/models/Unit/types/unit";
 import { Session } from "next-auth";
-import { TAboutUserForm, TUserSchemaForClient } from "../backend/models/User/types";
+import { TAboutUserForm, TUserSchemaForClient, TUserSchemaV2 } from "../backend/models/User/types";
 import { TWebAppForUI } from "../backend/models/WebApp";
 import { TUserAccount } from "../providers/UserProvider";
 
@@ -183,7 +183,7 @@ export interface IUpdatedUserReqBody{
 export interface IUpdatedAboutUserForm{
   aboutUserForm: TAboutUserForm<Map>
 }
-export interface ILocalStorage{
+export interface ILocalStorage extends Pick<TUserSchemaV2, "willShowGpPlusCopyLessonHelperModal">{
   gpPlusFeatureLocation: string;
   willShowGpPlusPurchaseThankYouModal: boolean
   didGpSignInAttemptOccur: boolean;

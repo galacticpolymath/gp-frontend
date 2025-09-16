@@ -143,7 +143,7 @@ export const UserSchema = new Schema<TUserSchemaV2>(
     country: String,
     zipCode: String,
     institution: String,
-    willShowGpPlusCopyLessonHelperModal: Boolean,
+    willShowGpPlusCopyLessonHelperModal: { type: Boolean, default: true },
     gradesType: String, 
     gradesTaught: [String], 
     schoolTypeOther: String,

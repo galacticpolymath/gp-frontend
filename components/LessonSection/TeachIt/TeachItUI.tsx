@@ -34,9 +34,7 @@ import LessonPart from "./LessonPart";
 import ClickMeArrow from "../../ClickMeArrow";
 import throttle from "lodash.throttle";
 import SendFeedback, { SIGN_UP_FOR_EMAIL_LINK } from "../SendFeedback";
-import {
-  UNVIEWABLE_LESSON_STR,
-} from "../../../globalVars";
+import { UNVIEWABLE_LESSON_STR } from "../../../globalVars";
 import Link from "next/link";
 import Sparkles from "../../SparklesAnimation";
 import { useUserContext } from "../../../providers/UserProvider";
@@ -51,9 +49,7 @@ import { useModalContext } from "../../../providers/ModalProvider";
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 import { ILessonGDriveId } from "../../../backend/models/User/types";
-import {
-  ensureValidToken as _ensureValidToken,
-} from "./CopyLessonBtn";
+import { ensureValidToken as _ensureValidToken } from "./CopyLessonBtn";
 
 export type TUnitPropsForTeachItSec = Partial<
   Pick<INewUnitSchema, "GdrivePublicID" | "Title" | "MediumTitle">
@@ -178,8 +174,7 @@ const TeachItUI = <
     lessonPreface,
     gradeVariations,
     selectedGrade,
-    setSelectedGrade,
-    setSelectedGradeResources,
+    Title,
     environments,
     selectedEnvironment,
     setSelectedEnvironment,
@@ -192,18 +187,12 @@ const TeachItUI = <
     unitId,
     handleOnChange,
   } = props;
-
-  useEffect(() => {
-    console.log("unitId, sup there: ", unitId);
-  });
-
   const didInitialRenderOccur = useRef(false);
   const copyUnitBtnRef = useRef<HTMLButtonElement | null>(null);
   const {
     _isGpPlusMember,
     _isCopyUnitBtnDisabled,
     _didAttemptRetrieveUserData,
-    _userLatestCopyUnitFolderId,
   } = useUserContext();
   const { _isGpPlusModalDisplayed } = useModalContext();
   const [, setIsGpPlusModalDisplayed] = _isGpPlusModalDisplayed;
@@ -216,8 +205,6 @@ const TeachItUI = <
   ] = useState<number[]>([]);
   const [isGpPlusMember] = _isGpPlusMember;
   const [didAttemptRetrieveUserData] = _didAttemptRetrieveUserData;
-  const [userLatestCopyUnitFolderId, setUserLatestCopyUnitFolderId] =
-    _userLatestCopyUnitFolderId;
   const session = useSiteSession();
   const { setAppCookie } = useCustomCookies();
   const {
@@ -610,6 +597,7 @@ const TeachItUI = <
                 return (
                   <LessonPart
                     {...lessonTilesObj}
+                    unitTitle={Title}
                     setParts={setParts}
                     isRetrievingLessonFolderIds={isFetching}
                     userGDriveLessonFolderId={

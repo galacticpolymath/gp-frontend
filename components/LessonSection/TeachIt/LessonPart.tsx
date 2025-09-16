@@ -98,6 +98,7 @@ export interface ILessonPartProps
   unitMediumTitle?: string | null;
   GdrivePublicID?: string | null;
   unitId: Pick<INewUnitSchema, "_id">["_id"];
+  unitTitle?: string | null;
   setParts: TSetter<(INewUnitLesson<IItemV2> | ILessonForUI)[]>;
 }
 
@@ -118,8 +119,6 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
     chunks = [],
     resources,
     userGDriveLessonFolderId,
-    ForGrades,
-    GradesOrYears,
     gradeVarNote,
     _numsOfLessonPartsThatAreExpanded,
     removeClickToSeeMoreTxt,
@@ -134,6 +133,7 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
     setParts,
     sharedGDriveLessonFolders,
     selectedGrade,
+    
   } = props;
 
   const sharedGDriveLessonFolder = useMemo(() => {

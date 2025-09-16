@@ -54,11 +54,10 @@ import ThankYouModal from "../../../../components/GpPlus/ThankYouModal";
 import {
   getLocalStorageItem,
   removeLocalStorageItem,
+  setLocalStorageItem,
 } from "../../../../shared/fns";
 import useSiteSession from "../../../../customHooks/useSiteSession";
-import {
-  getUnitGDriveChildItems,
-} from "../../../../backend/services/gdriveServices";
+import { getUnitGDriveChildItems } from "../../../../backend/services/gdriveServices";
 import CopyLessonHelperModal from "../../../../components/GpPlus/CopyLessonHelperModal";
 
 const IS_ON_PROD = process.env.NODE_ENV === "production";
@@ -189,7 +188,8 @@ const LessonDetails: React.FC<IProps> = ({ lesson, unit }) => {
     _lessonItemModal,
     _isThankYouModalDisplayed,
   } = useModalContext();
-  const [, setWillShowGpPlusCopyLessonHelperModal] = _willShowGpPlusCopyLessonHelperModal;
+  const [, setWillShowGpPlusCopyLessonHelperModal] =
+    _willShowGpPlusCopyLessonHelperModal;
   const [, setIsThankYouModalDisplayed] = _isThankYouModalDisplayed;
   const [, setIsUserTeacher] = _isUserTeacher;
   const [isGpPlusMember, setIsGpPlusMember] = _isGpPlusMember;
@@ -612,7 +612,12 @@ const LessonDetails: React.FC<IProps> = ({ lesson, unit }) => {
 
           setIsUserTeacher(!!data?.isTeacher);
           setIsGpPlusMember(!!data?.isGpPlusMember);
-          setWillShowGpPlusCopyLessonHelperModal(!!data.willShowGpPlusCopyLessonHelperModal)
+          setLocalStorageItem(
+            "willShowGpPlusCopyLessonHelperModal",
+            typeof data.willShowGpPlusCopyLessonHelperModal === "boolean"
+              ? data.willShowGpPlusCopyLessonHelperModal
+              : true
+          );
 
           if (data.viewingUnitFolderCopyId) {
             setUserLatestCopyUnitFolderId(data.viewingUnitFolderCopyId);

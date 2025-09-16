@@ -3,11 +3,12 @@
 import React, { useState, useEffect } from "react";
 import { Button, Modal } from "react-bootstrap";
 import Image from "next/image";
-import Wave from "react-wavify";
-import { FaCheckCircle, FaRocket, FaUsers } from "react-icons/fa";
 import { BiCheckbox, BiCheckboxChecked } from "react-icons/bi";
-import Link from "next/link";
 import { useModalContext } from "../../providers/ModalProvider";
+import { useLessonContext } from "../../providers/LessonProvider";
+import { updateUser } from "../../apiServices/user/crudFns";
+import useSiteSession from "../../customHooks/useSiteSession";
+import { setLocalStorageItem } from "../../shared/fns";
 
 interface ThankYouModalProps {
   onClose?: () => void;
@@ -15,29 +16,85 @@ interface ThankYouModalProps {
 
 const CopyLessonHelperModal: React.FC<ThankYouModalProps> = ({ onClose }) => {
   const { _isCopyLessonHelperModalDisplayed } = useModalContext();
+  const { _lessonToCopy } = useLessonContext();
   const [
     isCopyLessonHelperModalDisplayed,
     setIsCopyLessonHelperModalDisplayed,
   ] = _isCopyLessonHelperModalDisplayed;
+  const { token } = useSiteSession();
+  const [lessonToCopy, setLessonToCopy] = _lessonToCopy;
   const [dontShowModalAgain, setDontShowModalAgain] = useState(false);
+  const [willUpdateUser, setWillUpdateUser] = useState(false);
 
   const handleDontShowAgainToggle = () => {
-    const newValue = !dontShowModalAgain;
-    setDontShowModalAgain(newValue);
+    setDontShowModalAgain((state) => {
+      return !state;
+    });
   };
 
-  const handleOnClose = () => {
+  const handleOnHide = () => {
     if (onClose) {
       onClose();
     }
 
     setIsCopyLessonHelperModalDisplayed(false);
+    setLessonToCopy(null);
   };
+
+  const handleContinueBtnClick = async () => {
+    if (!lessonToCopy) {
+      alert(
+        "ERROR! Cannot determine what lesson you chose. Please refresh the page and try again."
+      );
+      return;
+    }
+
+    if (dontShowModalAgain) {
+      setWillUpdateUser(true);
+      setLocalStorageItem("willShowGpPlusCopyLessonHelperModal", false);
+    }
+
+    setIsCopyLessonHelperModalDisplayed(false);
+
+    setTimeout(() => {
+      setLessonToCopy({
+        id: lessonToCopy.id,
+        willOpenGDrivePicker: true,
+      });
+    }, 300);
+  };
+
+  useEffect(() => {
+    if (willUpdateUser) {
+      updateUser(
+        undefined,
+        { willShowGpPlusCopyLessonHelperModal: false },
+        {},
+        token
+      )
+        .then((result) => {
+          console.log(
+            "User update result for the 'willShowGpPlusCopyLessonHelperModal' field:",
+            result
+          );
+        })
+        .catch((result) => {
+          console.error(
+            "Failed to update user willShowGpPlusCopyLessonHelperModal setting:",
+            result
+          );
+        })
+        .finally(() => {
+          setWillUpdateUser(false);
+        });
+    }
+  }, [willUpdateUser]);
 
   return (
     <Modal
+      backdropClassName="backdrop-copy-lesson-helper-modal"
       show={isCopyLessonHelperModalDisplayed}
-      onHide={handleOnClose}
+      onHide={handleOnHide}
       size="lg"
       centered
       className="rounded"
@@ -92,12 +149,12 @@ const CopyLessonHelperModal: React.FC<ThankYouModalProps> = ({ onClose }) => {
             onClick={handleDontShowAgainToggle}
             className="text-muted underline-on-hover"
           >
-            Don't show me this modal again
+            Don't show me this modal again.
           </span>
         </div>
       </Modal.Body>
       <Modal.Footer className="d-flex justify-content-between align-items-center flex-column">
-        <Button variant="primary" onClick={handleOnClose}>
+        <Button variant="primary" onClick={handleContinueBtnClick}>
           Continue
         </Button>
       </Modal.Footer>
