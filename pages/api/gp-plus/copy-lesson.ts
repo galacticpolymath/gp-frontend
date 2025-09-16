@@ -1258,7 +1258,7 @@ export default async function handler(
       targetFolderStructureArrInUserDrive
     );
     // get the parent folder id of the files to copy
-    const parentFolderId = (
+    const parentFolderIdInSharedGDrive = (
       await drive.files.get({
         fileId: _fileIds[0],
         fields: "*",
@@ -1266,15 +1266,15 @@ export default async function handler(
       })
     ).data?.parents?.[0];
 
-    console.log("parentFolderId: ", parentFolderId);
+    console.log("parentFolderId: ", parentFolderIdInSharedGDrive);
 
-    if (!parentFolderId) {
+    if (!parentFolderIdInSharedGDrive) {
       throw new CustomError("The file does not have a parent folder.", 500);
     }
 
     console.log("Will share the parent folder with the target user.");
 
-    const result = await shareFileWithUser(parentFolderId, email);
+    const result = await shareFileWithUser(parentFolderIdInSharedGDrive, email);
 
     console.log("share result, sup: ", result);
 
@@ -1289,7 +1289,7 @@ export default async function handler(
     await sleep(1_500);
 
     const targetPermission = await getTargetUserPermission(
-      parentFolderId,
+      parentFolderIdInSharedGDrive,
       email,
       drive
     );
@@ -1303,7 +1303,7 @@ export default async function handler(
       );
     }
 
-    parentFolder = { id: parentFolderId, permissionId: targetPermission.id };
+    parentFolder = { id: parentFolderIdInSharedGDrive, permissionId: targetPermission.id };
 
     console.log("Will update the permission of the target file.");
 
@@ -1357,7 +1357,7 @@ export default async function handler(
       email,
       drive,
       gDriveAccessToken,
-      parentFolderId,
+      targetLessonFolderInUserDrive.id,
       gDriveRefreshToken,
       clientOrigin,
       (data, willEndStream, delayMsg) => {
@@ -1373,7 +1373,6 @@ export default async function handler(
       wasSuccessful: wasJobSuccessful,
       targetFolderId: targetLessonFolderInUserDrive.id,
     });
-    // TODO: if user.gpPlusDriveFolderId does not exist in the drive, then delete gpPlusDriveFolderId and the unitGDriveLessons
   } catch (error: any) {
     const { message, code } = error ?? {};
 

@@ -1600,8 +1600,6 @@ export const logFailedFileCopyToExcel = async (failedCopy: IFailedFileCopy) => {
   }
 };
 
-// TODO: create a single array that will hold the following: 
-// todo: { newId, originalId, name }[] for filesToCopy
 export const copyFiles = async (
   filesToCopy: TFileToCopy[],
   email: string,
