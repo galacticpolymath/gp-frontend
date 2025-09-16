@@ -12,14 +12,11 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { EventSourcePolyfill } from "event-source-polyfill";
-import toast, { ToastOptions, ToastPosition } from "react-hot-toast";
 import CollapsibleLessonSection from "../../CollapsibleLessonSection";
 import {
   IItemForClient,
   ILessonForUI,
   ISectionDots,
-  TSetter,
   TUseStateReturnVal,
 } from "../../../types/global";
 import RichText from "../../RichText";
@@ -38,32 +35,24 @@ import ClickMeArrow from "../../ClickMeArrow";
 import throttle from "lodash.throttle";
 import SendFeedback, { SIGN_UP_FOR_EMAIL_LINK } from "../SendFeedback";
 import {
-  CONTACT_SUPPORT_EMAIL,
-  GOOGLE_DRIVE_PROJECT_CLIENT_ID,
   UNVIEWABLE_LESSON_STR,
 } from "../../../globalVars";
 import Link from "next/link";
 import Sparkles from "../../SparklesAnimation";
 import { useUserContext } from "../../../providers/UserProvider";
 import { useRouter } from "next/router";
-import { createGDriveAuthUrl, setLocalStorageItem } from "../../../shared/fns";
+import { setLocalStorageItem } from "../../../shared/fns";
 import useSiteSession from "../../../customHooks/useSiteSession";
 import { useCustomCookies } from "../../../customHooks/useCustomCookies";
 import Image from "next/image";
-import CopyingUnitToast, {
-  GDRIVE_FOLDER_ORIGIN_AND_PATH,
-} from "../../CopyingUnitToast";
 import { INewUnitSchema } from "../../../backend/models/Unit/types/unit";
 import GpPlusBanner from "../../GpPlus/GpPlusBanner";
-import { Spinner } from "react-bootstrap";
 import { useModalContext } from "../../../providers/ModalProvider";
-import useDrivePicker from "react-google-drive-picker";
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 import { ILessonGDriveId } from "../../../backend/models/User/types";
 import {
   ensureValidToken as _ensureValidToken,
-  ensureValidToken,
 } from "./CopyLessonBtn";
 
 export type TUnitPropsForTeachItSec = Partial<

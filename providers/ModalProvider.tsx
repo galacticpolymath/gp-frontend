@@ -55,6 +55,7 @@ export interface IModalProviderValue {
   _isGpPlusModalDisplayed: TUseStateReturnVal<boolean>;
   _isThankYouModalDisplayed: TUseStateReturnVal<boolean>;
   _isGpPlusSignUpModalDisplayed: TUseStateReturnVal<boolean>;
+  _isCopyLessonHelperModalDisplayed: TUseStateReturnVal<boolean>;
   _lessonItemModal: TUseStateReturnVal<
     TLessonItemModal & Partial<IItemV2Props & Pick<IItemV2, "itemCat">>
   >;
@@ -67,6 +68,10 @@ export const ModalProvider = ({ children }: Pick<IComponent, "children">) => {
   const [isDownloadModalInfoOn, setIsDownloadModalInfoOn] = useState(false);
   const [isLoginModalDisplayed, setIsLoginModalDisplayed] = useState(false);
   const [isGpPlusModalDisplayed, setIsGpPlusModalDisplayed] = useState(false);
+  const [
+    isCopyLessonHelperModalDisplayed,
+    setIsCopyLessonHelperModalDisplayed,
+  ] = useState(false);
   const [isThankYouModalDisplayed, setIsThankYouModalDisplayed] =
     useState(false);
   const [notifyModal, setNotifyModal] = useState(defautlNotifyModalVal);
@@ -87,6 +92,10 @@ export const ModalProvider = ({ children }: Pick<IComponent, "children">) => {
     null
   );
   const value: IModalProviderValue = {
+    _isCopyLessonHelperModalDisplayed: [
+      isCopyLessonHelperModalDisplayed,
+      setIsCopyLessonHelperModalDisplayed,
+    ],
     _isGpPlusSignUpModalDisplayed: [
       isGpPlusSignUpModalDisplayed,
       setIsGpPlusSignUpModalDisplayed,

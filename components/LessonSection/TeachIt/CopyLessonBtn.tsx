@@ -32,7 +32,6 @@ import { INewUnitSchema } from "../../../backend/models/Unit/types/unit";
 import { EventSourcePolyfill } from "event-source-polyfill";
 import { toast } from "react-toastify";
 import { nanoid } from "nanoid";
-import { ILessonPartProps } from "./LessonPart";
 
 export interface ICopyLessonBtnProps
   extends Pick<INewUnitLesson, "allUnitLessons" | "lessonsFolder">,
@@ -142,7 +141,7 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
     gdriveRefreshToken,
     status,
     gdriveAccessTokenExp,
-    gdriveEmail
+    gdriveEmail,
   } = useSiteSession();
   const { setAppCookie } = useCustomCookies();
   const [openPicker, authResult] = useDrivePicker();

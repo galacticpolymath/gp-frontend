@@ -24,10 +24,7 @@ import SendFeedback from "../../../../components/LessonSection/SendFeedback";
 import {
   getIsWithinParentElement,
   getLinkPreviewObj,
-  removeHtmlTags,
-  resetUrl,
 } from "../../../../globalFns";
-import { useSession } from "next-auth/react";
 import {
   defautlNotifyModalVal,
   useModalContext,
@@ -35,7 +32,7 @@ import {
 import { CustomNotifyModalFooter } from "../../../../components/Modals/Notify";
 import axios from "axios";
 import { useUserContext } from "../../../../providers/UserProvider";
-import { IUserSession, TSetter } from "../../../../types/global";
+import { TSetter } from "../../../../types/global";
 import {
   INewUnitSchema,
   ISections,
@@ -60,9 +57,9 @@ import {
 } from "../../../../shared/fns";
 import useSiteSession from "../../../../customHooks/useSiteSession";
 import {
-  getGDriveItemViaServiceAccount,
   getUnitGDriveChildItems,
 } from "../../../../backend/services/gdriveServices";
+import CopyLessonHelperModal from "../../../../components/GpPlus/CopyLessonHelperModal";
 
 const IS_ON_PROD = process.env.NODE_ENV === "production";
 const GOOGLE_DRIVE_THUMBNAIL_URL = "https://drive.google.com/thumbnail?id=";
@@ -190,7 +187,12 @@ const LessonDetails: React.FC<IProps> = ({ lesson, unit }) => {
     _isGpPlusModalDisplayed,
     _lessonItemModal,
     _isThankYouModalDisplayed,
+    _isCopyLessonHelperModalDisplayed,
   } = useModalContext();
+  const [, setIsCopyLessonHelperModalDisplayed] = _isCopyLessonHelperModalDisplayed;
+  useEffect(() => {
+    setIsCopyLessonHelperModalDisplayed(true);
+  })
   const [, setIsThankYouModalDisplayed] = _isThankYouModalDisplayed;
   const [, setIsUserTeacher] = _isUserTeacher;
   const [isGpPlusMember, setIsGpPlusMember] = _isGpPlusMember;
@@ -717,19 +719,7 @@ const LessonDetails: React.FC<IProps> = ({ lesson, unit }) => {
 
   return (
     <Layout {...layoutProps}>
-      <ToastContainer
-        stacked
-        autoClose={false}
-        position="bottom-right"
-        style={
-          {
-            // height: '80vh',
-            // paddingTop: '50px',
-            // width: '50vw',
-            // overflowY: 'scroll',
-          }
-        }
-      />
+      <ToastContainer stacked autoClose={false} position="bottom-right" />
       {_unit.PublicationStatus === "Beta" && (
         <SendFeedback
           closeBtnDynamicStyles={{
@@ -776,6 +766,7 @@ const LessonDetails: React.FC<IProps> = ({ lesson, unit }) => {
       <GpPlusModal />
       <LessonItemModal />
       <ThankYouModal />
+      <CopyLessonHelperModal />
     </Layout>
   );
 };
