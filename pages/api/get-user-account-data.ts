@@ -20,10 +20,6 @@ import {
   getGpPlusMembership,
   TAccountStageLabel,
 } from "../../backend/services/outsetaServices";
-import {
-  getLatestValidUnitCopyFolderJob,
-  updateCopyUnitJobs,
-} from "../../backend/services/copyUnitJobResultServices";
 
 const HAS_MEMBERSHIP_STATUSES: Set<TAccountStageLabel> = new Set([
   "Cancelling",
@@ -42,6 +38,7 @@ const PROJECTIONS: Partial<
   country: 1,
   zipCode: 1,
   occupation: 1,
+  willShowGpPlusCopyLessonHelperModal: 1,
   isTeacher: 1,
   firstName: 1,
   lastName: 1,

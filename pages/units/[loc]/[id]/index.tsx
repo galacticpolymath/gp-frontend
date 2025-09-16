@@ -169,6 +169,7 @@ const LessonDetails: React.FC<IProps> = ({ lesson, unit }) => {
     _isCopyUnitBtnDisabled,
     _didAttemptRetrieveUserData,
     _userLatestCopyUnitFolderId,
+    _willShowGpPlusCopyLessonHelperModal,
   } = useUserContext();
   const session = useSiteSession();
   const { status, token, gdriveAccessToken, gdriveRefreshToken, gdriveEmail } =
@@ -187,12 +188,8 @@ const LessonDetails: React.FC<IProps> = ({ lesson, unit }) => {
     _isGpPlusModalDisplayed,
     _lessonItemModal,
     _isThankYouModalDisplayed,
-    _isCopyLessonHelperModalDisplayed,
   } = useModalContext();
-  const [, setIsCopyLessonHelperModalDisplayed] = _isCopyLessonHelperModalDisplayed;
-  useEffect(() => {
-    setIsCopyLessonHelperModalDisplayed(true);
-  })
+  const [, setWillShowGpPlusCopyLessonHelperModal] = _willShowGpPlusCopyLessonHelperModal;
   const [, setIsThankYouModalDisplayed] = _isThankYouModalDisplayed;
   const [, setIsUserTeacher] = _isUserTeacher;
   const [isGpPlusMember, setIsGpPlusMember] = _isGpPlusMember;
@@ -615,6 +612,7 @@ const LessonDetails: React.FC<IProps> = ({ lesson, unit }) => {
 
           setIsUserTeacher(!!data?.isTeacher);
           setIsGpPlusMember(!!data?.isGpPlusMember);
+          setWillShowGpPlusCopyLessonHelperModal(!!data.willShowGpPlusCopyLessonHelperModal)
 
           if (data.viewingUnitFolderCopyId) {
             setUserLatestCopyUnitFolderId(data.viewingUnitFolderCopyId);

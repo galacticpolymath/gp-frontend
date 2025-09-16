@@ -99,6 +99,7 @@ export type TUserSchemaV2 = IUserSchemaBaseProps &
     gpPlusDriveFolderId: string;
     unitGDriveLessons: IUnitGDriveLesson[];
     gdriveAuthEmails: string[];
+    willShowGpPlusCopyLessonHelperModal: boolean;
   };
 
 type TGpPlusMembershipStatus = Awaited<ReturnType<typeof getGpPlusMembership>>;

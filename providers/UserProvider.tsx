@@ -80,6 +80,7 @@ export type TUserProviderValue = {
   _didAttemptRetrieveUserData: TUseStateReturnVal<boolean>;
   _accountForm: TUseStateReturnVal<TAccountForm>;
   _isGpPlusMember: TUseStateReturnVal<boolean>;
+  _willShowGpPlusCopyLessonHelperModal: TUseStateReturnVal<boolean>;
   _isCopyUnitBtnDisabled: TUseStateReturnVal<boolean>;
   _userLatestCopyUnitFolderId: TUseStateReturnVal<string | null>;
 };
@@ -104,10 +105,18 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   >(null);
   const [didAttemptRetrieveUserData, setDidAttemptRetrieveUserData] =
     useState(false);
+  const [
+    willShowGpPlusCopyLessonHelperModal,
+    setWillShowGpPlusCopyLessonHelperModal,
+  ] = useState(false);
   const [isUserTeacher, setIsUserTeacher] = useState(false);
   const [isGpPlusMember, setIsGpPlusMember] = useState(false);
   const value: TUserProviderValue = {
     _aboutUserForm: [aboutUserForm, setAboutUserForm],
+    _willShowGpPlusCopyLessonHelperModal: [
+      willShowGpPlusCopyLessonHelperModal,
+      setWillShowGpPlusCopyLessonHelperModal,
+    ],
     _isUserTeacher: [isUserTeacher, setIsUserTeacher],
     _accountForm: [accountForm, setAccountForm],
     _isGpPlusMember: [isGpPlusMember, setIsGpPlusMember],
