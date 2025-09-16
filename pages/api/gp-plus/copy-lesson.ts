@@ -1353,20 +1353,20 @@ export default async function handler(
     }
 
     const wasJobSuccessful = await copyFiles(
-          filesToCopy,
-          email,
-          drive,
-          gDriveAccessToken,
-          parentFolderId,
-          gDriveRefreshToken,
-          clientOrigin,
-          (data, willEndStream, delayMsg) => {
-            sendMessage(response, data, willEndStream, delayMsg);
-          },
-          _lessonsFolderInSharedDrive.name!,
-          reqQueryParams.unitName!,
-          reqQueryParams.lessonSharedGDriveFolderId
-        );
+      filesToCopy,
+      email,
+      drive,
+      gDriveAccessToken,
+      parentFolderId,
+      gDriveRefreshToken,
+      clientOrigin,
+      (data, willEndStream, delayMsg) => {
+        sendMessage(response, data, willEndStream, delayMsg);
+      },
+      _lessonsFolderInSharedDrive.name!,
+      reqQueryParams.unitName!,
+      reqQueryParams.lessonSharedGDriveFolderId
+    );
 
     sendMessage(response, {
       isJobDone: true,
