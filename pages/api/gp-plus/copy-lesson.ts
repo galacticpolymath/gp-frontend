@@ -30,7 +30,6 @@ import {
   getIsValidFileId,
   updatePermissionsForSharedFileItems,
   logFailedFileCopyToExcel,
-  IFailedFileCopy,
   renameFiles
 } from "../../../backend/services/gdriveServices/index";
 import { sleep, waitWithExponentialBackOff } from "../../../globalFns";
@@ -60,6 +59,7 @@ export type TCopyFilesMsg = Partial<{
   showSupportTxt: boolean;
   foldersToCopy: number;
   failedCopiedFile: string;
+  fileId: string;
   folderCreated: string;
   fileCopied: string;
   folderCopyId: string;
