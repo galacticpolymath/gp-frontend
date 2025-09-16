@@ -40,7 +40,7 @@ import {
 } from "../../../backend/models/User/types";
 import { INewUnitLesson } from "../../../backend/models/Unit/types/teachingMaterials";
 import { connectToMongodb } from "../../../backend/utils/connection";
-import { TFilesToRename } from "../../../backend/services/gdriveServices/types";
+import { TFilesToRename, TFileToCopy } from "../../../backend/services/gdriveServices/types";
 
 export const maxDuration = 240;
 export const VALID_WRITABLE_ROLES = new Set([
@@ -232,7 +232,9 @@ export default async function handler(
       !reqQueryParams?.lessonSharedGDriveFolderId ||
       !reqQueryParams?.allUnitLessons ||
       !reqQueryParams?.lessonsFolder ||
+      !reqQueryParams?.fileNames.length ||
       !_fileIds?.length ||
+      !(_fileIds?.length === reqQueryParams?.fileNames.length) ||
       !reqQueryParams?.lessonsFolderGradesRange ||
       !reqQueryParams?.lessonName
     ) {
@@ -547,20 +549,32 @@ export default async function handler(
           didRetrieveAllItems: true,
         });
 
+        const filesToCopy: TFileToCopy[] = [];
+
+        for(const fileIdIndex in _fileIds){
+          const fileName = reqQueryParams.fileNames[fileIdIndex];
+          const fileId = _fileIds[fileIdIndex];
+
+          filesToCopy.push({
+            id: fileId,
+            name: fileName
+          })
+        }
+
         const wasSuccessful = await copyFiles(
-          _fileIds,
+          filesToCopy,
           email,
           drive,
           gDriveAccessToken,
           lessonFolderId,
           gDriveRefreshToken,
           clientOrigin,
-          reqQueryParams.fileNames,
           (data, willEndStream, delayMsg) => {
             sendMessage(response, data, willEndStream, delayMsg);
           },
           _lessonsFolderInSharedDrive.name!,
-          reqQueryParams.unitName!
+          reqQueryParams.unitName!,
+          reqQueryParams.lessonSharedGDriveFolderId
         );
 
         if (!isStreamOpen) {
@@ -807,20 +821,32 @@ export default async function handler(
           msg: "Copying lesson files...",
         });
 
+        const filesToCopy: TFileToCopy[] = [];
+
+        for(const fileIdIndex in _fileIds){
+          const fileName = reqQueryParams.fileNames[fileIdIndex];
+          const fileId = _fileIds[fileIdIndex];
+
+          filesToCopy.push({
+            id: fileId,
+            name: fileName
+          })
+        }
+
         const wasSuccessful = await copyFiles(
-          _fileIds,
+          filesToCopy,
           email,
           drive,
           gDriveAccessToken,
           parentFolderOfCopiedItems,
           gDriveRefreshToken,
           clientOrigin,
-          reqQueryParams.fileNames,
           (data, willEndStream, delayMsg) => {
             sendMessage(response, data, willEndStream, delayMsg);
           },
           _lessonsFolderInSharedDrive.name!,
-          reqQueryParams.unitName!
+          reqQueryParams.unitName!,
+          reqQueryParams.lessonSharedGDriveFolderId
         );
 
         sendMessage(response, {
@@ -875,24 +901,34 @@ export default async function handler(
           didRetrieveAllItems: true,
         });
 
-        // throw new Error("Stop");
-
         console.log("About to copy files to existing lesson folder");
 
+        const filesToCopy: TFileToCopy[] = [];
+
+        for(const fileIdIndex in _fileIds){
+          const fileName = reqQueryParams.fileNames[fileIdIndex];
+          const fileId = _fileIds[fileIdIndex];
+
+          filesToCopy.push({
+            id: fileId,
+            name: fileName
+          })
+        }
+
         const wasSuccessful = await copyFiles(
-          _fileIds,
+          filesToCopy,
           email,
           drive,
           gDriveAccessToken,
           targetLessonFolderInUserDrive!.lessonDriveId,
           gDriveRefreshToken,
           clientOrigin,
-          reqQueryParams.fileNames,
           (data, willEndStream, delayMsg) => {
             sendMessage(response, data, willEndStream, delayMsg);
           },
           _lessonsFolderInSharedDrive.name!,
-          reqQueryParams.unitName!
+          reqQueryParams.unitName!,
+          reqQueryParams.lessonSharedGDriveFolderId
         );
 
         sendMessage(response, {

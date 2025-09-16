@@ -24,7 +24,7 @@ import {
 import * as ExcelJS from "exceljs";
 import * as fs from "fs";
 import * as path from "path";
-import { IFile, TFilesToRename, TRenameFilesResult } from "./types";
+import { IFile, TFilesToRename, TFileToCopy, TRenameFilesResult } from "./types";
 
 export const TEACHERS_GOOGLE_GROUP_EMAIL = "teachers@galacticpolymath.com";
 
@@ -1600,33 +1600,35 @@ export const logFailedFileCopyToExcel = async (failedCopy: IFailedFileCopy) => {
   }
 };
 
+// TODO: create a single array that will hold the following: 
+// todo: { newId, originalId, name }[] for filesToCopy
 export const copyFiles = async (
-  fileIds: string[],
+  filesToCopy: TFileToCopy[],
   email: string,
   drive: drive_v3.Drive,
   gDriveAccessToken: string,
   lessonFolderId: string,
   refreshAuthToken: string,
   clientOrigin: string,
-  fileNames: string[],
   sendMessageToClient: (
     data: TCopyFilesMsg,
     willEndStream?: TSendMsgParams[2],
     delayMsg?: TSendMsgParams[3]
   ) => void,
   lessonName: string,
-  unitName: string
+  unitName: string,
+  sharedGDriveLessonsFolderId: string
 ) => {
   let wasJobSuccessful = true;
   let copiedFiles: TFilesToRename = [];
 
   // check if the permission were propagated to all of the files to copy
-  for (const fileIdIndex in fileIds) {
-    const fileId = fileIds[fileIdIndex];
+  for (const fileToCopy of filesToCopy) {
+    const { id: fileId, name } = fileToCopy;
 
     if (!getIsValidFileId(fileId)) {
       console.error(
-        `Invalid file ID: ${fileId}. Skipping file: ${fileNames[fileIdIndex]}`
+        `Invalid file ID: ${fileId}. Skipping file: ${name}`
       );
       wasJobSuccessful = false;
       continue;
@@ -1643,7 +1645,7 @@ export const copyFiles = async (
       continue;
     }
 
-    console.log(`Processing file: ${fileNames[fileIdIndex]}`);
+    console.log(`Processing file: ${name}`);
 
     console.log(
       "Made the target file read only and changed the target user's permission to writer."
@@ -1703,35 +1705,37 @@ export const copyFiles = async (
     console.log("fileCopyResult: ", fileCopyResult.errType);
     console.log("permission: ", permission);
 
-    if ("id" in fileCopyResult && fileCopyResult.id && fileNames[fileIdIndex]) {
-      console.log(`Successfully copied file ${fileNames[fileIdIndex]}`);
+    if ("id" in fileCopyResult && fileCopyResult.id) {
+      console.log(`Successfully copied file ${name}`);
 
       const copiedFile = {
         id: fileCopyResult.id,
-        name: fileNames[fileIdIndex]
+        name: name
       }
 
       copiedFiles.push(copiedFile)
       sendMessageToClient({
-        fileCopied: fileNames[fileIdIndex],
+        fileCopied: name,
       });
-    } else if (fileNames[fileIdIndex] && fileCopyResult?.errType) {
+    } else if (fileCopyResult?.errType) {
       wasJobSuccessful = false;
       console.error(
         "Failed to copy file for user.",
         "Filename: ",
-        fileNames[fileIdIndex],
+        name,
         "Email: ",
         email,
         "Reason: ",
         fileCopyResult
       );
+
       sendMessageToClient({
-        failedCopiedFile: fileNames[fileIdIndex],
+        failedCopiedFile: name,
+        fileId
       });
 
       // Log failed copy to Excel
-      const lessonFolderLink = `https://drive.google.com/drive/folders/${lessonFolderId}`;
+      const lessonFolderLink = `https://drive.google.com/drive/folders/${sharedGDriveLessonsFolderId}`;
       const fileLink = `https://drive.google.com/file/d/${fileId}/view`;
 
       const errorType =
@@ -1749,7 +1753,7 @@ export const copyFiles = async (
           lessonName,
           unitName,
           lessonFolderLink,
-          fileName: fileNames[fileIdIndex],
+          fileName: name,
           fileLink,
           errorType,
           errorMessage,

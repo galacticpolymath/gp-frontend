@@ -10,3 +10,7 @@ export type TRenameFilesResult = {
   errType?: "fileUpdateErr" | "renameFilesFailed" | "invalidAuthToken";
 };
 export type TFilesToRename = Parameters<typeof renameFiles>[0]
+export type TFileToCopy = {
+  id: string
+  name: string;
+}
