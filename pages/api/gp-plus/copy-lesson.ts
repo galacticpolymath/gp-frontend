@@ -415,8 +415,6 @@ export default async function handler(
         doesTargetGDriveLessonFolderExist
       );
 
-      //TODO: will check if the target unit folder was trashed. If it is, then recreate it
-
       if (unitDriveId && !doesTargetGDriveUnitFolderExist) {
         console.log(
           "The target unit folder does not exist, will delete from db"

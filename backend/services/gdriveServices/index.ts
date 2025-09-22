@@ -1725,7 +1725,7 @@ export const copyFiles = async (
     console.log("fileCopyResult: ", fileCopyResult.errType);
     console.log("permission: ", permission);
 
-    // TESTING
+    // TODO: TESTING, get rid of the not operators to make the code production ready
     if (!("id" in fileCopyResult && fileCopyResult.id)) {
       console.log(`Successfully copied file ${name}`);
 

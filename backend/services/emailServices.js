@@ -34,67 +34,47 @@ const CREDENTIALS = {
  */
 
 /**
- *
- * @param {TMailOpts} mailOpts
+ * 
+ * @param {TMailOpts} mailOpts 
  */
 export const sendEmail = async (mailOpts) => {
-  try {
-    console.log("Starting email sending process...");
-    
-    const auth = await createGoogleAdminService(
-      ["https://www.googleapis.com/auth/gmail.send"],
-      {
-        subject: "matt@galacticpolymath.com",
-      },
-      true
-    );
-    const token = await auth.getAccessToken();
+    try {
+        const privateKey = process.env.EMAIL_SENDER_SERVICE_ACCOUNT_PRIVATE_KEY.split("\\n").join("\n");
+        const emailTransport = {
+            host: 'smtp.gmail.com',
+            port: 465,
+            secure: true,
+            auth: {
+                privateKey,
+                type: 'OAuth2',
+                user: "techguy@galacticpolymath.com",
+                serviceClient: process.env.EMAIL_SENDER_SERVICE_ACCOUNT_CLIENT_ID,
+                accessUrl: "https://oauth2.googleapis.com/token",
+            },
+        };
+        const transport = nodemailer.createTransport(emailTransport);
+        const canSendEmail = await transport.verify();
 
-    console.log("Generated access token: ", token);
+        if (!canSendEmail) {
+            throw new Error("Email auth has failed.");
+        }
 
-    if (!token) {
-      throw new Error("Failed to generate access token");
+        const sentMessageInfo = await transport.sendMail(mailOpts);
+
+        console.log('sentMessageInfo: ', sentMessageInfo);
+
+        if (sentMessageInfo.rejected.length) {
+            throw new Error('Failed to send the email to the target user.');
+        }
+
+        console.log('the email was sent...');
+
+        return { wasSuccessful: true };
+    } catch (error) {
+        console.error('Error object: ', error);
+
+        return { wasSuccessful: false };
     }
-
-    const emailTransport = {
-      host: "smtp.gmail.com",
-      port: 465,
-      secure: true,
-      auth: {
-        type: "OAuth2",
-        user: "techguy@galacticpolymath.com",
-        accessToken: token,
-        client_id: process.env.EMAIL_SENDER_SERVICE_ACCOUNT_CLIENT_ID,
-        private_key:
-          process.env.EMAIL_SENDER_SERVICE_ACCOUNT_PRIVATE_KEY.replace(
-            /\\n/g,
-            "\n"
-          ),
-      },
-    };
-    const transport = nodemailer.createTransport(emailTransport);
-    const canSendEmail = await transport.verify();
-
-    if (!canSendEmail) {
-      throw new Error("Email auth has failed.");
-    }
-
-    const sentMessageInfo = await transport.sendMail(mailOpts);
-
-    console.log("sentMessageInfo: ", sentMessageInfo);
-
-    if (sentMessageInfo.rejected.length) {
-      throw new Error("Failed to send the email to the target user.");
-    }
-
-    console.log("the email was sent...");
-
-    return { wasSuccessful: true };
-  } catch (error) {
-    console.error("Error object: ", error);
-
-    return { wasSuccessful: false };
-  }
 };
 
 /**
