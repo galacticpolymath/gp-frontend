@@ -1722,11 +1722,11 @@ export const copyFiles = async (
       refreshAuthToken,
       clientOrigin
     );
+    
     console.log("fileCopyResult: ", fileCopyResult.errType);
     console.log("permission: ", permission);
 
-    // TODO: TESTING, get rid of the not operators to make the code production ready
-    if (!("id" in fileCopyResult && fileCopyResult.id)) {
+    if (("id" in fileCopyResult && fileCopyResult.id)) {
       console.log(`Successfully copied file ${name}`);
 
       const copiedFile = {
@@ -1738,7 +1738,7 @@ export const copyFiles = async (
       sendMessageToClient({
         fileCopied: name,
       });
-    } else if (!fileCopyResult?.errType) {
+    } else if (fileCopyResult?.errType) {
       console.log("fileCopyResult?.errType: ", fileCopyResult?.errType);
 
       wasJobSuccessful = false;
