@@ -105,9 +105,10 @@ const AccountSettings = () => {
       return;
     }
 
-    const isUserSignedIntoGpPlus = window?.Outseta
-      ? !!(await window.Outseta.getUser())
-      : false;
+    const isUserSignedIntoGpPlus =
+      window?.Outseta && "getAccessToken" in window?.Outseta
+        ? !!window.Outseta.getAccessToken()
+        : false;
     const { wasSuccessful: didDeleteUserSuccessfully, errType } =
       await sendDeleteUserReq(token);
     const wasUserNotFound = errType === "userNotFound";
