@@ -132,7 +132,6 @@ export const createDrive = async (
 export const createGoogleAdminService = async (
   scopes: TGoogleAuthScopes[] = ["https://www.googleapis.com/auth/drive"],
   clientOptions?: GoogleAuthOptions["clientOptions"],
-  willOnlyGetAuthClient: boolean = false
 ) => {
   const creds = new GoogleServiceAccountAuthCreds();
   const auth = new google.auth.GoogleAuth({
@@ -145,11 +144,6 @@ export const createGoogleAdminService = async (
     clientOptions,
   });
   const authClient = (await auth.getClient()) as OAuth2Client;
-
-  if(willOnlyGetAuthClient){
-    return authClient
-  }
-
   const adminService = google.admin({
     version: "directory_v1",
     auth: authClient,
