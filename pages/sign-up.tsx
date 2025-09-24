@@ -26,6 +26,7 @@ import { useRouter } from "next/router";
 import Layout from "../components/Layout";
 import { useUserEntry } from "../customHooks/useUserEntry";
 import { SELECTED_GP_PLUS_BILLING_TYPE } from "./gp-plus";
+import { useSearchParams } from "next/navigation";
 
 export const FONT_SIZE_CHECKBOX = "28px";
 const inputElementsFocusedDefault = new Map();
@@ -37,6 +38,7 @@ inputElementsFocusedDefault.set("lastName", false);
 const SignUpPage: React.FC = () => {
   const { _createAccountForm, sendFormToServer, validateForm, _isUserTeacher } =
     useUserEntry();
+  const urlSearchParams = useSearchParams();
   const [errors, setErrors] = useState(new Map());
   const [isLoadingSpinnerOn, setIsLoadingSpinnerOn] = useState(false);
   const [isGoogleLoadingSpinnerOn, setIsGoogleLoadingSpinnerOn] =
@@ -93,13 +95,12 @@ const SignUpPage: React.FC = () => {
 
     const { email, firstName, lastName, password, isOnMailingList } =
       createAccountForm;
-
-    // Check if user came from GP+ signup flow
-    const urlParams = new URLSearchParams(window.location.search);
-    const gpPlusBillingPeriod = urlParams.get(SELECTED_GP_PLUS_BILLING_TYPE);
+    const gpPlusBillingPeriod = urlSearchParams.get(
+      SELECTED_GP_PLUS_BILLING_TYPE
+    );
     const callbackUrl = gpPlusBillingPeriod
       ? `${window.location.origin}/account?show_about_user_form=true&${SELECTED_GP_PLUS_BILLING_TYPE}=${gpPlusBillingPeriod}`
-      : `${window.location.origin}/account?show_about_user_form=true`;
+      : `${window.location.origin}/`;
 
     const signUpForm = {
       createAccount: {
@@ -192,10 +193,10 @@ const SignUpPage: React.FC = () => {
       keywords="sign up, teacher portal, galactic polymath, create account"
       langLinks={[]}
     >
-      <div className="min-vh-100 d-flex justify-content-center align-items-center bg-light py-5 mt-md-0 mt-sm-5">
+      <div className="min-vh-100 d-flex justify-content-center bg-light py-5 mt-md-0 mt-sm-5">
         <div
           className="bg-white shadow-lg rounded p-4"
-          style={{ width: "90%" }}
+          style={{ width: "90%", maxHeight: "1010px", maxWidth: "1260px" }}
         >
           <div className="mb-xl-4 position-relative d-flex flex-column flex-xl-row sign-up-header-container">
             <img
