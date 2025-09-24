@@ -640,6 +640,7 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
               <CopyLessonBtn
                 setParts={setParts}
                 unitId={unitId!}
+                unitTitle={unitTitle}
                 isRetrievingLessonFolderIds={isRetrievingLessonFolderIds}
                 GdrivePublicID={GdrivePublicID}
                 MediumTitle={unitMediumTitle}
@@ -654,6 +655,7 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
               />
             )}
             <ol className="mt-2 materials-list">
+              {/* TODO: blur this out if the user is not signed in */}
               {!!_itemList?.length &&
                 _itemList.map((item, itemIndex: number) => {
                   const {

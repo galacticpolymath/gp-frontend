@@ -40,13 +40,13 @@ import { ILessonPartProps } from "./LessonPart";
 
 export interface ICopyLessonBtnProps
   extends Pick<INewUnitLesson, "allUnitLessons" | "lessonsFolder">,
-    Pick<INewUnitSchema, "GdrivePublicID">,
-    Pick<ILessonPartProps, "unitTitle"> {
+    Pick<INewUnitSchema, "GdrivePublicID"> {
   userGDriveLessonFolderId?: Pick<
     INewUnitLesson,
     "userGDriveLessonFolderId"
   >["userGDriveLessonFolderId"];
   unitId: string;
+  unitTitle?: string | null;
   MediumTitle: string;
   lessonName: string;
   lessonsGrades?: IResource<ILessonForUI>["grades"];
