@@ -95,12 +95,14 @@ const SignUpPage: React.FC = () => {
 
     const { email, firstName, lastName, password, isOnMailingList } =
       createAccountForm;
-    const gpPlusBillingPeriod = urlSearchParams.get(
-      SELECTED_GP_PLUS_BILLING_TYPE
-    );
-    const callbackUrl = gpPlusBillingPeriod
-      ? `${window.location.origin}/account?show_about_user_form=true&${SELECTED_GP_PLUS_BILLING_TYPE}=${gpPlusBillingPeriod}`
-      : `${window.location.origin}/`;
+    let callbackUrl = `${window.location.origin}/?present_welcome_modal=true`;
+
+    if (urlSearchParams.has(SELECTED_GP_PLUS_BILLING_TYPE)) {
+      const gpPlusBillingPeriod = urlSearchParams.get(
+        SELECTED_GP_PLUS_BILLING_TYPE
+      );
+      callbackUrl = `${window.location.origin}/account?show_about_user_form=true&${SELECTED_GP_PLUS_BILLING_TYPE}=${gpPlusBillingPeriod}`;
+    }
 
     const signUpForm = {
       createAccount: {

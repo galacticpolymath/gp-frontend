@@ -2,12 +2,10 @@ import Image from 'next/image';
 import svg from '../assets/img/tpt.svg';
 import Link from 'next/link';
 
-/* eslint-disable react/jsx-max-props-per-line */
 const SOCIAL_MEDIA_ITEMS = [
-
   {
-    link: 'https://www.linkedin.com/company/galactic-polymath/',
-    icon: <i className='bi bi-linkedin' />,
+    link: 'https://www.instagram.com/galacticpolymath/',
+    icon: <i className='bi bi-instagram' />,
     color: 'white',
   },
   {
@@ -16,18 +14,13 @@ const SOCIAL_MEDIA_ITEMS = [
     color: 'white',
   },
   {
-    link: 'https://www.pinterest.com/galacticpolymath/',
-    icon: <i className='bi bi-pinterest' />,
-    color: 'white',
-  },
-  {
-    link: 'https://www.instagram.com/galacticpolymath/',
-    icon: <i className='bi bi-instagram' />,
-    color: 'white',
-  },
-  {
     link: 'https://bsky.app/profile/galacticpolymath.com',
     icon: <i className='bi bi-bluesky' />,
+    color: 'white',
+  },
+  {
+    link: 'https://www.linkedin.com/company/galactic-polymath/',
+    icon: <i className='bi bi-linkedin' />,
     color: 'white',
   },
   {

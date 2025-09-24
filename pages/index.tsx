@@ -26,16 +26,12 @@ import {
 import useSiteSession from "../customHooks/useSiteSession";
 import { useModalContext } from "../providers/ModalProvider";
 import { useRouter } from "next/router";
-import {
-  DrivePickerElement,
-  DrivePickerDocsViewElement,
-} from "@googleworkspace/drive-picker-element";
 
 interface IProps {
   currentUnits: ICurrentUnits | null;
 }
 
-const LessonsPage = ({ currentUnits }: IProps) => {
+const LessonsPage: React.FC<IProps> = ({ currentUnits }) => {
   const { _notifyModal } = useModalContext();
   const [, setNotifyModal] = _notifyModal;
   const { status } = useSiteSession();
