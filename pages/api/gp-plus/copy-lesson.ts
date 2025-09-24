@@ -228,6 +228,8 @@ export default async function handler(
       );
     }
 
+    
+
     if (
       !reqQueryParams.unitId ||
       !reqQueryParams.unitName ||
