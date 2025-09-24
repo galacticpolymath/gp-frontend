@@ -21,8 +21,13 @@ const SOCIAL_MEDIA_ITEMS = [
     color: 'white',
   },
   {
-    link: 'https://twitter.com/galacticPM',
-    icon: <i className='bi bi-twitter' />,
+    link: 'https://www.instagram.com/galacticpolymath/',
+    icon: <i className='bi bi-instagram' />,
+    color: 'white',
+  },
+  {
+    link: 'https://bsky.app/profile/galacticpolymath.com',
+    icon: <i className='bi bi-bluesky' />,
     color: 'white',
   },
   {
