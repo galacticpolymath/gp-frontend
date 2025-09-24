@@ -83,6 +83,7 @@ export default async function handler(
     if (!wasSuccessful) {
       throw new CustomError("Failed to connect to the database.", 500);
     }
+
     const getUserAccountPromise = getUserByEmail<TUserSchemaForClient>(
       email,
       PROJECTIONS

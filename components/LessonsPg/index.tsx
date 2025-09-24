@@ -23,6 +23,8 @@ import { useQuery } from "@tanstack/react-query";
 import WelcomeModal from "../Modals/WelcomeModal";
 import { resetUrl } from "../../globalFns";
 import { useRouter } from "next/router";
+import { useUserContext } from "../../providers/UserProvider";
+import axios from "axios";
 
 const handleJobVizCardClick = () => {
   window.location.href = "/jobviz";
@@ -43,7 +45,8 @@ const UnitsPg: React.FC<ICurrentUnits & { didErrorOccur?: boolean }> = ({
   const [isWebAppModalShown, setIsWebAppModalShown] = useState(false);
   const [isGpVideoModalShown, setIsGpVideoModalShown] = useState(false);
   const [isWelcomeModalDisplayed, setIsWelcomeModalDisplayed] = useState(false);
-  const { status } = useSiteSession();
+  const [userFirstName, setUserFirstName] = useState("");
+  const { status, token } = useSiteSession();
   const router = useRouter();
   const origin = typeof window === "undefined" ? "" : window.location.origin;
 
@@ -55,13 +58,39 @@ const UnitsPg: React.FC<ICurrentUnits & { didErrorOccur?: boolean }> = ({
   useQuery({
     refetchOnWindowFocus: false,
     queryKey: [status],
-    queryFn: () => {
+    queryFn: async () => {
       if (
         status === "authenticated" &&
-        searchParams.get(PRESENT_WELCOME_MODAL_PARAM_NAME) === "true"
+        searchParams.get(PRESENT_WELCOME_MODAL_PARAM_NAME) === "true" &&
+        token
       ) {
-        setIsWelcomeModalDisplayed(true);
-        resetUrl(router);
+        try {
+          console.log("Fetching user name for welcome modal");
+
+          const { data } = await axios.get<
+            | {
+                firstName: string;
+                lastName: string;
+              }
+            | { msg: string }
+          >("/api/get-user-name", {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          });
+
+          console.log("User name data: ", data);
+
+          if ("firstName" in data && data.firstName) {
+            setUserFirstName(data.firstName);
+          }
+
+          setIsWelcomeModalDisplayed(true);
+          resetUrl(router);
+        } catch (error) {
+          console.error("Failed to display welcome modal. Reason: ", error);
+        }
       }
     },
   });
@@ -308,7 +337,7 @@ const UnitsPg: React.FC<ICurrentUnits & { didErrorOccur?: boolean }> = ({
         onHide={() => {
           setIsWelcomeModalDisplayed(false);
         }}
-        userFirstName="Gabe"
+        userFirstName={userFirstName}
       />
     </Layout>
   );

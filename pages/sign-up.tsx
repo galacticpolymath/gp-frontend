@@ -79,6 +79,19 @@ const SignUpPage: React.FC = () => {
     }));
   };
 
+  const createCallbackUrl = () => {
+    let callbackUrl = `${window.location.origin}/?present_welcome_modal=true`;
+
+    if (urlSearchParams.has(SELECTED_GP_PLUS_BILLING_TYPE)) {
+      const gpPlusBillingPeriod = urlSearchParams.get(
+        SELECTED_GP_PLUS_BILLING_TYPE
+      );
+      callbackUrl = `${window.location.origin}/account?show_about_user_form=true&${SELECTED_GP_PLUS_BILLING_TYPE}=${gpPlusBillingPeriod}`;
+    }
+
+    return callbackUrl;
+  };
+
   const handleSubmitCredentialsBtnClick = async () => {
     setIsLoadingSpinnerOn(true);
 
@@ -95,14 +108,7 @@ const SignUpPage: React.FC = () => {
 
     const { email, firstName, lastName, password, isOnMailingList } =
       createAccountForm;
-    let callbackUrl = `${window.location.origin}/?present_welcome_modal=true`;
-
-    if (urlSearchParams.has(SELECTED_GP_PLUS_BILLING_TYPE)) {
-      const gpPlusBillingPeriod = urlSearchParams.get(
-        SELECTED_GP_PLUS_BILLING_TYPE
-      );
-      callbackUrl = `${window.location.origin}/account?show_about_user_form=true&${SELECTED_GP_PLUS_BILLING_TYPE}=${gpPlusBillingPeriod}`;
-    }
+    const callbackUrl = createCallbackUrl();
 
     const signUpForm = {
       createAccount: {
@@ -159,16 +165,7 @@ const SignUpPage: React.FC = () => {
       return;
     }
 
-    // Check if user came from GP+ signup flow
-    const urlParams = new URLSearchParams(window.location.search);
-    const gpPlusBillingPeriod = urlParams.get(SELECTED_GP_PLUS_BILLING_TYPE);
-    const callbackUrl = gpPlusBillingPeriod
-      ? `${
-          typeof window !== "undefined" ? window.location.origin : ""
-        }/account?show_about_user_form=true&${SELECTED_GP_PLUS_BILLING_TYPE}=${gpPlusBillingPeriod}`
-      : `${
-          typeof window !== "undefined" ? window.location.origin : ""
-        }/account?show_about_user_form=true`;
+    const callbackUrl = createCallbackUrl();
 
     if (createAccountForm.isOnMailingList) {
       localStorage.setItem("isOnMailingList", JSON.stringify(true));

@@ -70,8 +70,6 @@ export const userAccountDefault: TAboutUserFormForUI = {
   zipCode: null,
   subjects: new Map(),
   reasonsForSiteVisit: new Map(),
-  firstName: "",
-  lastName: "",
 };
 
 export type TUserProviderValue = {

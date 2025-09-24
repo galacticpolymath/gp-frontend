@@ -8,7 +8,7 @@ import { FaUserAlt } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import { useModalContext } from "../../../providers/ModalProvider";
 import Button from "../../General/Button";
-import { signOut, useSession } from "next-auth/react";
+import { signOut } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useCustomCookies } from "../../../customHooks/useCustomCookies";
 import { TUseStateReturnVal } from "../../../types/global";
@@ -21,16 +21,13 @@ import { Spinner } from "react-bootstrap";
 import {
   getIsWithinParentElement,
   getLocalStorageItem,
-  removeLocalStorageItem,
 } from "../../../shared/fns";
 import {
   deleteUserFromServerCache,
   getIndividualGpPlusSubscription,
 } from "../../../apiServices/user/crudFns";
 import useSiteSession from "../../../customHooks/useSiteSession";
-import useHandleOpeningGpPlusAccount from "../../../customHooks/useHandleOpeningGpPlusAccount";
 import { TAccountStageLabel } from "../../../backend/services/outsetaServices";
-import Image from "next/image";
 import axios from "axios";
 
 interface IProps {
@@ -83,7 +80,7 @@ export const revokeGoogleAuthToken = async (token: string) => {
   }
 };
 
-const LoginContainerForNavbar = ({ _modalAnimation }: IProps) => {
+const LoginContainerForNavbar: React.FC<IProps> = ({ _modalAnimation }) => {
   const router = useRouter();
   const { _isAccountModalMobileOn } = useModalContext();
   const { _aboutUserForm, _isRetrievingUserData } = useGetAboutUserForm(
