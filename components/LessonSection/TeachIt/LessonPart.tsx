@@ -655,7 +655,17 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
               />
             )}
             <ol className="mt-2 materials-list">
-              {/* TODO: blur this out if the user is not signed in */}
+              {/* TODO: blur this out if the user is not signed in, use the component below */}
+              {/* <SignInSuggestion txt={blurTxt}>
+                <div className="d-flex justify-content-center align-items-center">
+                  <Button
+                    onClick={handleBtnClick}
+                    className="mt-2 sign-in-teacher-materials-btn d-flex justify-content-center align-items-center underline-on-hover"
+                  >
+                    {btnTxt}
+                  </Button>
+                </div>
+              </SignInSuggestion> */}
               {!!_itemList?.length &&
                 _itemList.map((item, itemIndex: number) => {
                   const {
