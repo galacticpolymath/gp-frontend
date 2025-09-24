@@ -40,12 +40,9 @@ import { INewUnitSchema } from "../../../backend/models/Unit/types/unit";
 
 const LESSON_PART_BTN_COLOR = "#2C83C3";
 
-const SignInSuggestion = ({
+const SignInSuggestion: React.FC<{ children: ReactNode; txt?: string }> = ({
   children,
   txt,
-}: {
-  children: ReactNode;
-  txt?: string;
 }) => {
   if (!txt) {
     txt = "For teachers guides, sign in with a free account!";
@@ -110,6 +107,7 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
     GdrivePublicID,
     lsnNum,
     lsnTitle,
+    unitTitle,
     lsnPreface,
     lsnExt,
     itemList,
@@ -133,7 +131,6 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
     setParts,
     sharedGDriveLessonFolders,
     selectedGrade,
-    
   } = props;
 
   const sharedGDriveLessonFolder = useMemo(() => {
@@ -160,10 +157,10 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
 
       return (
         parentFolderGradeType &&
-          ((selectedGrade.gradePrefix &&
+        ((selectedGrade.gradePrefix &&
           parentFolderGradeType === selectedGrade.gradePrefix.toLowerCase()) ||
-        (selectedGrade.grades &&
-          parentFolderGradeType === selectedGrade.grades.toLowerCase()))
+          (selectedGrade.grades &&
+            parentFolderGradeType === selectedGrade.grades.toLowerCase()))
       );
     });
 

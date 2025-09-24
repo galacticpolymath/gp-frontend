@@ -7,7 +7,6 @@ import { GoogleAuthOptions, OAuth2Client } from "google-auth-library";
 import { CustomError } from "../../utils/errors";
 import axios from "axios";
 import { sleep, waitWithExponentialBackOff } from "../../../globalFns";
-import { GOOGLE_DRIVE_PROJECT_CLIENT_ID } from "../../../globalVars";
 import { ILessonGDriveId, IUnitGDriveLesson } from "../../models/User/types";
 import {
   addNewGDriveLessons,

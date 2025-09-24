@@ -9,7 +9,6 @@ import {
   setLocalStorageItem,
 } from "../../../shared/fns";
 import { GOOGLE_DRIVE_PROJECT_CLIENT_ID } from "../../../globalVars";
-import axios from "axios";
 import { useModalContext } from "../../../providers/ModalProvider";
 import { useRouter } from "next/router";
 import Image from "next/image";
@@ -37,10 +36,12 @@ import { EventSourcePolyfill } from "event-source-polyfill";
 import { toast } from "react-toastify";
 import { nanoid } from "nanoid";
 import { TFileToCopy } from "../../../backend/services/gdriveServices/types";
+import { ILessonPartProps } from "./LessonPart";
 
 export interface ICopyLessonBtnProps
   extends Pick<INewUnitLesson, "allUnitLessons" | "lessonsFolder">,
-    Pick<INewUnitSchema, "GdrivePublicID"> {
+    Pick<INewUnitSchema, "GdrivePublicID">,
+    Pick<ILessonPartProps, "unitTitle"> {
   userGDriveLessonFolderId?: Pick<
     INewUnitLesson,
     "userGDriveLessonFolderId"
@@ -122,6 +123,7 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
   sharedGDriveLessonFolderId,
   MediumTitle,
   unitId,
+  unitTitle,
   lessonId,
   lessonName,
   lessonsGrades,
@@ -174,9 +176,10 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
   const [copyLessonJobLatestMsg, setCopyLessonJobLatestMsg] = useState<Partial<
     TCopyFilesMsg & { toastId: string }
   > | null>(null);
-  const copyingLessonStartingTxt = `Copying unit ${
-    lessonId == 100 ? "assessments" : `L${lessonId}`
-  } '${lessonName}'`;
+  const copyingLessonNameTxt =
+    lessonId == 100 ? "assessments" : `L${lessonId}: ${lessonName}`;
+
+  const copyingLessonStartingTxt = `Copying ${unitTitle} ${copyingLessonNameTxt}'`;
 
   useEffect(() => {
     console.log("userGDriveLessonFolderId: ", userGDriveLessonFolderId);
@@ -569,7 +572,7 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
                 });
 
                 const title = wasSuccessful
-                  ? `Successfully copied '${lessonName}'`
+                  ? `Successfully copied ${unitTitle} ${copyingLessonNameTxt}`
                   : `Failed to copy '${lessonName}'`;
                 toast.update(toastId, {
                   render: (
@@ -578,7 +581,7 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
                       toastId={toastId}
                       subtitle={
                         wasSuccessful ? (
-                          "Copy completed successfully!"
+                          "These files are yours to remix and share with attribution! Never sell or upload to a marketplace."
                         ) : (
                           <span>
                             Copy operation failed. Click{" "}
