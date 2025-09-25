@@ -114,7 +114,7 @@
     "@types/js-cookie": "^3.0.6",
     "@types/lodash.throttle": "^4.1.9",
     "@types/sanitize-html": "^2.16.0",
-    "cypress": "^15.2.0",
+    "cypress": "^15.3.0",
     "eslint": "9.36.0",
     "eslint-config-next": "^15.5.4",
     "eslint-plugin-react": "^7.37.5",
