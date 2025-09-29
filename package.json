@@ -88,7 +88,7 @@
     "react-player": "^3.3.3",
     "react-qr-code": "^2.0.18",
     "react-responsive-carousel": "^3.2.23",
-    "react-scroll-parallax": "^3.4.5",
+    "react-scroll-parallax": "^3.5.0",
     "react-share": "^5.2.2",
     "react-showdown": "^2.3.1",
     "react-toastify": "^11.0.5",
