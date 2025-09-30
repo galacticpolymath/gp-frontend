@@ -670,16 +670,15 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
               />
             )}
             <div
-              style={{ width: "55%" }}
-              className={`${
+              className={`col-12 col-sm-12 col-lg-7 ${
                 status === "authenticated" ? "position-static" : ""
               } ${status === "unauthenticated" ? "position-relative" : ""} ${
                 status === "loading" ? "pe-none position-relative" : ""
               }`}
             >
               <SignInSuggestion
-                className="position-absolute start-50 translate-middle"
-                style={{ zIndex: 100, top: "25%" }}
+                className="position-absolute start-50 translate-middle col-12 d-flex justify-content-center align-items-center flex-column"
+                style={{ zIndex: 100, top: "20%" }}
                 txt="Create a free account to see teaching materials"
                 txtClassName="d-inline-flex justify-center items-center text-center fw-bold"
               >
@@ -695,7 +694,11 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                 </div>
               </SignInSuggestion>
               <ol
-                className={`mt-2 materials-list w-100 restricted-content pe-none`}
+                className={`mt-2 materials-list w-100 ${
+                  status === "unauthenticated"
+                    ? "restricted-content pe-none"
+                    : ""
+                }`}
               >
                 {!!_itemList?.length &&
                   _itemList.map((item, itemIndex) => {
@@ -904,7 +907,12 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                                     <img
                                       src={filePreviewImg}
                                       alt="lesson_tile"
-                                      className={`h-auto w-auto lesson-file-img-testing cursor-pointer ${status === "unauthenticated" ? 'pe-none' : 'none'}`}
+                                      className={`h-auto w-auto lesson-file-img-testing cursor-pointer ${
+                                        status === "unauthenticated" ||
+                                        status === "loading"
+                                          ? "pe-none"
+                                          : "none"
+                                      }`}
                                       style={{
                                         objectFit: "contain",
                                         maxHeight: "100px",
