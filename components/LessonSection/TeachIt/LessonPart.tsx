@@ -8,7 +8,14 @@ import PropTypes from "prop-types";
 import Accordion from "../../Accordion";
 import LessonChunk from "./LessonChunk";
 import RichText from "../../RichText";
-import { CSSProperties, memo, ReactNode, useMemo, useState } from "react";
+import {
+  CSSProperties,
+  memo,
+  PropsWithChildren,
+  ReactNode,
+  useMemo,
+  useState,
+} from "react";
 import Link from "next/link";
 import CopyableTxt from "../../CopyableTxt";
 import { useRouter } from "next/router";
@@ -41,20 +48,27 @@ import useSiteSession from "../../../customHooks/useSiteSession";
 
 const LESSON_PART_BTN_COLOR = "#2C83C3";
 
-const SignInSuggestion: React.FC<{ children: ReactNode; txt?: string }> = ({
+interface ISignInSuggestionProps extends PropsWithChildren {
+  txt?: string;
+  className?: string;
+  txtClassName?: string;
+  style?: React.CSSProperties;
+}
+
+const SignInSuggestion: React.FC<ISignInSuggestionProps> = ({
   children,
   txt,
+  style = { zIndex: 100 },
+  className = "center-absolutely d-flex flex-column justify-content-center col-12 mt-4",
+  txtClassName = "text-center fw-bold",
 }) => {
   if (!txt) {
     txt = "For teachers guides, sign in with a free account!";
   }
 
   return (
-    <div
-      style={{ zIndex: 100 }}
-      className="center-absolutely d-flex flex-column justify-content-center col-12 mt-4"
-    >
-      <span className="text-center fw-bold">{txt}</span>
+    <div style={style} className={className}>
+      <span className={txtClassName}>{txt}</span>
       {children}
     </div>
   );
@@ -655,21 +669,36 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                 userGDriveLessonFolderId={userGDriveLessonFolderId}
               />
             )}
-            <div style={{ width: "55%" }}>
-              <ol
-                className={`mt-2 materials-list ${
-                  status === "authenticated" ? "position-static" : ""
-                } ${
-                  status === "unauthenticated"
-                    ? "position-relative restricted-content"
-                    : ""
-                } ${
-                  status === "loading" ? "pe-none position-relative" : ""
-                } w-100`}
+            <div
+              style={{ width: "55%" }}
+              className={`${
+                status === "authenticated" ? "position-static" : ""
+              } ${status === "unauthenticated" ? "position-relative" : ""} ${
+                status === "loading" ? "pe-none position-relative" : ""
+              }`}
+            >
+              <SignInSuggestion
+                className="position-absolute start-50 translate-middle"
+                style={{ zIndex: 100, top: "25%" }}
+                txt="Create a free account to see teaching materials"
+                txtClassName="d-inline-flex justify-center items-center text-center fw-bold"
               >
-                {/* TODO: blur this out if the user is not signed in, use the component below */}
+                <div className="d-flex justify-content-center align-items-center">
+                  <Button
+                    onClick={() => {
+                      router.push("/sign-up");
+                    }}
+                    className="mt-2 sign-in-teacher-materials-btn d-flex justify-content-center align-items-center underline-on-hover"
+                  >
+                    Sign Up
+                  </Button>
+                </div>
+              </SignInSuggestion>
+              <ol
+                className={`mt-2 materials-list w-100 restricted-content pe-none`}
+              >
                 {!!_itemList?.length &&
-                  _itemList.map((item, itemIndex: number) => {
+                  _itemList.map((item, itemIndex) => {
                     const {
                       itemTitle,
                       itemDescription,
@@ -723,9 +752,7 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                         key={itemIndex}
                         className={`${
                           itemIndex === 0 ? "mt-2" : "mt-4"
-                        } mb-0 w-100 ${
-                          status === "unauthenticated" ? "pe-none" : "pe-auto"
-                        }`}
+                        } mb-0 w-100`}
                       >
                         <div className="d-flex flex-column flex-md-row">
                           <section className="col-12 position-relative">
@@ -877,7 +904,7 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                                     <img
                                       src={filePreviewImg}
                                       alt="lesson_tile"
-                                      className="h-auto w-auto lesson-file-img-testing cursor-pointer"
+                                      className={`h-auto w-auto lesson-file-img-testing cursor-pointer ${status === "unauthenticated" ? 'pe-none' : 'none'}`}
                                       style={{
                                         objectFit: "contain",
                                         maxHeight: "100px",
