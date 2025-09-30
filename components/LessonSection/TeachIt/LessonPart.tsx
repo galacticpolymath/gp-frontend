@@ -4,7 +4,7 @@
 /* eslint-disable quotes */
 /* eslint-disable indent */
 import { PiArrowsSplit } from "react-icons/pi";
-import PropTypes from "prop-types";
+import { RxMagnifyingGlass } from "react-icons/rx";
 import Accordion from "../../Accordion";
 import LessonChunk from "./LessonChunk";
 import RichText from "../../RichText";
@@ -850,7 +850,7 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                                               ? ""
                                               : "link-disabled"
                                             : ""
-                                        } no-btn-styles no-hover-color-change`}
+                                        } no-btn-styles no-hover-color-change d-flex justify-content-center align-items-center`}
                                         onClick={() => {
                                           handlePreviewDownloadBtnClick({
                                             links,
@@ -863,9 +863,12 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                                           });
                                         }}
                                       >
-                                        <i
-                                          style={{ color: "#0273BA" }}
-                                          className="fab fa-google-drive"
+                                        <RxMagnifyingGlass
+                                          style={{
+                                            color: "#2c83c3",
+                                            fontSize: "22px",
+                                            transform: "translateY(-1px)",
+                                          }}
                                         />
                                       </button>
                                     </div>
