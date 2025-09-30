@@ -562,6 +562,10 @@ $toolTipColor: #f0f4ff;
   width: 100%;
 }
 
+.restricted-content {
+  filter: blur(7px);
+}
+
 .modal-content-wrapper-gp-web-app {
   display: flex;
   justify-content: center;
