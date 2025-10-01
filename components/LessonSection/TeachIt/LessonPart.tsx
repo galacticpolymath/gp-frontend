@@ -179,8 +179,6 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
       );
     });
 
-    console.log("targetLessonFolder, yo there: ", targetLessonFolder);
-
     return targetLessonFolder;
   }, [selectedGrade]);
 

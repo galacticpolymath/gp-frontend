@@ -5,9 +5,6 @@ import { useCustomCookies } from "./useCustomCookies";
 
 const useSiteSession = () => {
   const session = useSession();
-  useEffect(() => {
-    console.log("session, yo there: ", session);
-  })
   const { data, status } = session ?? {};
   const { user, token } = (data ?? {}) as IUserSession;
   const { clearCookies, getCookies } = useCustomCookies();
@@ -15,8 +12,8 @@ const useSiteSession = () => {
     "gdriveAccessToken",
     "gdriveRefreshToken",
     "gdriveEmail",
-    "gdriveAccessTokenExp"
-  ])
+    "gdriveAccessTokenExp",
+  ]);
 
   const logUserOut = () => {
     localStorage.clear();
@@ -33,7 +30,7 @@ const useSiteSession = () => {
     logUserOut,
     session: {
       ...data,
-      ...session
+      ...session,
     },
   };
 };
