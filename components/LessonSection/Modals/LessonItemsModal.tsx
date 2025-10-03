@@ -1,16 +1,37 @@
 /* eslint-disable quotes */
 /* eslint-disable indent */
-
-import React from "react";
+import { Carousel } from "react-responsive-carousel";
+import React, { useState } from "react";
 import { Button, Modal, CloseButton } from "react-bootstrap";
 import { useModalContext } from "../../../providers/ModalProvider";
 import { TbDownload } from "react-icons/tb";
 import { TbExternalLink } from "react-icons/tb";
 import { useUserContext } from "../../../providers/UserProvider";
+import { useLessonContext } from "../../../providers/LessonProvider";
 
-const LessonItemModal: React.FC = () => {
+interface ICarouselItemNavBtn {
+  onClick: React.MouseEventHandler<HTMLButtonElement>;
+  arrowType: "left" | "right";
+}
+
+const CarouselItemNavBtn: React.FC<ICarouselItemNavBtn> = ({
+  onClick,
+  arrowType,
+}) => {
+  return (
+    <button onClick={onClick} className="btn bg-transparent m-0 p-1">
+      <i
+        className={`fs-1 text-black bi-arrow-${arrowType}-circle-fill lh-1 d-block`}
+      ></i>
+    </button>
+  );
+};
+
+const LessonItemsModal: React.FC = () => {
   const { _lessonItemModal, _isGpPlusModalDisplayed } = useModalContext();
   const { _isGpPlusMember } = useUserContext();
+  const { _selectedLessonItems } = useLessonContext();
+  const [selectedLessonItems, setSelectedLessonItems] = _selectedLessonItems;
   const [lessonItemModal, setLessonItemModal] = _lessonItemModal;
   const [isGpPlusModalDisplayed, setIsGpPlusModalDisplayed] =
     _isGpPlusModalDisplayed;
@@ -19,8 +40,61 @@ const LessonItemModal: React.FC = () => {
     lessonItemModal.itemCat === "web resource"
       ? lessonItemModal.externalUrl
       : lessonItemModal.docUrl;
+  const [test, setTest] = useState(
+    Array.from({ length: 4 }).map(
+      () =>
+        "https://docs.google.com/presentation/d/1IUeirLBIrdqzX8s-UjPttbIn_GJfwxqBGbv9SVDvnTk/view"
+    )
+  );
+  const [testIndex, setTestIndex] = useState(0);
 
   console.log("isGpPlusMember: ", isGpPlusMember);
+
+  const getCarouselItemNavBtnClickHandler =
+    (indexAdjustment: 1 | -1) => (event: React.MouseEvent) => {
+      setTestIndex((state) => state + indexAdjustment);
+      // setSelectedLessonItems(state => {
+      //   if(!state){
+      //     return state
+      //   }
+      //   return {
+      //     ...state,
+      //     index: state.index + in
+      //   }
+      // })
+    };
+
+  const LessonItemCarousel: React.FC = () => {
+    return (
+      <div className="shadow rounded p-0 display-flex flex-column justify-content-center carouselContainer w-100">
+        <section className="row mt-0">
+          <section style={{ height: "fit-content" }} className="col-12 mt-0">
+            <div
+              className="autoCarouselSlider mt-0"
+              style={{ transform: `translate3d(${-testIndex * 100}%, 0, 0)` }}
+            >
+              {test?.length &&
+                test.map((lessonDocument, index) => {
+                  return (
+                    <div
+                      className="autoCarouselItem"
+                      style={{
+                        border:
+                          index === 0 ? "solid 1px pink" : "solid 1px green",
+                      }}
+                    >
+                      {/* <div className="mediaItemContainer"> */}
+                      {index} {lessonDocument}
+                      {/* </div> */}
+                    </div>
+                  );
+                })}
+            </div>
+          </section>
+        </section>
+      </div>
+    );
+  };
 
   const handleDownloadPdfBtnClick = () => {
     if (lessonItemModal.mimeType === "pdf") {
@@ -209,22 +283,37 @@ const LessonItemModal: React.FC = () => {
             </section>
           </div>
         </section>
-        <section style={{ height: "85%" }} className="w-100">
-          <iframe
-            loading="lazy"
-            src={iframeSrc}
-            width="100%"
-            height="100%"
-            style={{
-              width: "100%",
-              height: "100%",
-            }}
-            allow="autoplay"
-          />
+        <section
+          style={{
+            height: "85%",
+          }}
+          className="w-100 h-100"
+        >
+          <LessonItemCarousel />
+        </section>
+        <section className="d-flex justify-content-center align-items-center m-0">
+          <button
+            onClick={getCarouselItemNavBtnClickHandler(-1)}
+            className={`noBtnStyles me-2 p-0 ${
+              0 === testIndex ? "btn-disabled" : ""
+            }`}
+            disabled={testIndex === 0}
+          >
+            <i className="fs-1 text-black bi-arrow-left-circle-fill lh-1 d-block" />
+          </button>
+          <button
+            onClick={getCarouselItemNavBtnClickHandler(1)}
+            className={`noBtnStyles p-0 ${
+              test?.length - 1 === testIndex ? "btn-disabled" : ""
+            }`}
+            disabled={test?.length - 1 === testIndex}
+          >
+            <i className="fs-1 text-black bi-arrow-right-circle-fill lh-1 d-block" />
+          </button>
         </section>
       </Modal>
     </>
   );
 };
 
-export default LessonItemModal;
+export default LessonItemsModal;

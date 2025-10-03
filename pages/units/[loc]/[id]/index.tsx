@@ -48,7 +48,7 @@ import {
 } from "../../../../backend/models/Unit/types/teachingMaterials";
 import { UNITS_URL_PATH } from "../../../../shared/constants";
 import { TUserSchemaForClient } from "../../../../backend/models/User/types";
-import LessonItemModal from "../../../../components/LessonSection/Modals/LessonItemModal";
+import LessonItemsModal from "../../../../components/LessonSection/Modals/LessonItemsModal";
 import GpPlusModal from "../../../../components/LessonSection/Modals/GpPlusModal";
 import ThankYouModal from "../../../../components/GpPlus/ThankYouModal";
 import {
@@ -768,7 +768,7 @@ const LessonDetails: React.FC<IProps> = ({ lesson, unit }) => {
         </div>
       </div>
       <GpPlusModal />
-      <LessonItemModal />
+      <LessonItemsModal />
       <ThankYouModal />
       <CopyLessonHelperModal />
       <FailedCopiedFilesReportModal />
