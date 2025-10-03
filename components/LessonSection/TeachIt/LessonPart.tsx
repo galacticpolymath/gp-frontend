@@ -225,8 +225,6 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
   const handlePreviewDownloadBtnClick = (
     item: IItemV2Props & Pick<IItemV2, "itemCat" | "links">
   ) => {
-    console.log("handlePreviewDownloadBtnClick: item: ", item);
-
     setLessonItemModal((state) => ({
       ...state,
       ...item,
@@ -237,6 +235,17 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
           ? `${item.gdriveRoot}/view`
           : `${item.gdriveRoot}/preview`,
     }));
+  };
+
+  const createLessonUrl = () => {
+    let url = window.location.href;
+    const currentSectionInView = router.asPath.split("#").at(-1);
+
+    if (!(currentSectionInView === _accordionId)) {
+      url = `${window.location.origin}/${UNITS_URL_PATH}/${router.query.loc}/${router.query.id}#lesson_${_accordionId}`;
+    }
+
+    return url;
   };
 
   const handleClipBoardIconClick = () => {
@@ -316,9 +325,11 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
       setIsExpanded(!isExpanded);
     }
   };
+
   const handleSignInBtnClick = () => {
     setIsLoginModalDisplayed(true);
   };
+
   const handleUpdateProfileBtnClick = () => {
     router.push("/account?show_about_user_form=true");
   };
@@ -950,7 +961,6 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
               </ol>
             </div>
           </div>
-          {/* put grade var notes here */}
           {gradeVarNote && (
             <div className="mt-4">
               <h5 className="d-flex align-items-start fw-bold mb-1">

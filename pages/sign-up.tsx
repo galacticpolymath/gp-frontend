@@ -36,8 +36,7 @@ inputElementsFocusedDefault.set("firstName", false);
 inputElementsFocusedDefault.set("lastName", false);
 
 const SignUpPage: React.FC = () => {
-  const { _createAccountForm, sendFormToServer, validateForm, _isUserTeacher } =
-    useUserEntry();
+  const { _createAccountForm, sendFormToServer, validateForm } = useUserEntry();
   const urlSearchParams = useSearchParams();
   const [errors, setErrors] = useState(new Map());
   const [isLoadingSpinnerOn, setIsLoadingSpinnerOn] = useState(false);

@@ -103,10 +103,6 @@ export const DisplayLessonTile: React.FC<IDisplayLessonTileProps> = ({
 };
 
 const TeachIt: React.FC<TeachItProps> = (props) => {
-  useEffect(() => {
-    console.log("props, teachit: ", props);
-  });
-
   let {
     _sectionDots,
     SectionTitle,
