@@ -27,6 +27,8 @@ import Layout from "../components/Layout";
 import { useUserEntry } from "../customHooks/useUserEntry";
 import { SELECTED_GP_PLUS_BILLING_TYPE } from "./gp-plus";
 import { useSearchParams } from "next/navigation";
+import { PRESENT_WELCOME_MODAL_PARAM_NAME } from "../shared/constants";
+import { getLocalStorageItem, removeLocalStorageItem } from "../shared/fns";
 
 export const FONT_SIZE_CHECKBOX = "28px";
 const inputElementsFocusedDefault = new Map();
@@ -34,6 +36,11 @@ const inputElementsFocusedDefault = new Map();
 inputElementsFocusedDefault.set("email", false);
 inputElementsFocusedDefault.set("firstName", false);
 inputElementsFocusedDefault.set("lastName", false);
+
+export interface ICallbackUrl {
+  callbackUrl: string;
+  redirectPgType: "account" | "home" | "pgWithSignUpBtn";
+}
 
 const SignUpPage: React.FC = () => {
   const { _createAccountForm, sendFormToServer, validateForm } = useUserEntry();
@@ -78,17 +85,33 @@ const SignUpPage: React.FC = () => {
     }));
   };
 
-  const createCallbackUrl = () => {
-    let callbackUrl = `${window.location.origin}/?present_welcome_modal=true`;
+  const createCallbackUrl = (): ICallbackUrl => {
+    let callbackUrl = `${window.location.origin}/?${PRESENT_WELCOME_MODAL_PARAM_NAME}=true`;
 
     if (urlSearchParams.has(SELECTED_GP_PLUS_BILLING_TYPE)) {
       const gpPlusBillingPeriod = urlSearchParams.get(
         SELECTED_GP_PLUS_BILLING_TYPE
       );
       callbackUrl = `${window.location.origin}/account?show_about_user_form=true&${SELECTED_GP_PLUS_BILLING_TYPE}=${gpPlusBillingPeriod}`;
+
+      return {
+        callbackUrl,
+        redirectPgType: "account",
+      };
     }
 
-    return callbackUrl;
+    const signUpRedirectUrl = getLocalStorageItem("signUpRedirectUrl");
+
+    if (signUpRedirectUrl) {
+      console.log("signUpRedirectUrl: ", signUpRedirectUrl);
+
+      return {
+        callbackUrl: signUpRedirectUrl,
+        redirectPgType: "pgWithSignUpBtn",
+      };
+    }
+
+    return { callbackUrl, redirectPgType: "home" };
   };
 
   const handleSubmitCredentialsBtnClick = async () => {
@@ -107,8 +130,7 @@ const SignUpPage: React.FC = () => {
 
     const { email, firstName, lastName, password, isOnMailingList } =
       createAccountForm;
-    const callbackUrl = createCallbackUrl();
-
+    const { callbackUrl, redirectPgType } = createCallbackUrl();
     const signUpForm = {
       createAccount: {
         email,
@@ -174,7 +196,11 @@ const SignUpPage: React.FC = () => {
 
     localStorage.setItem("userEntryType", JSON.stringify("create-account"));
 
-    signIn("google", { callbackUrl: callbackUrl });
+    if (callbackUrl.redirectPgType === "pgWithSignUpBtn") {
+      removeLocalStorageItem("signUpRedirectUrl");
+    }
+
+    signIn("google", { callbackUrl: callbackUrl.callbackUrl });
   };
 
   const handleLoginBtnClick = () => {

@@ -20,7 +20,6 @@ import Link from "next/link";
 import CopyableTxt from "../../CopyableTxt";
 import { useRouter } from "next/router";
 import React, { useEffect } from "react";
-import { useSession } from "next-auth/react";
 import { Button } from "react-bootstrap";
 import { useModalContext } from "../../../providers/ModalProvider";
 import { useUserContext } from "../../../providers/UserProvider";
@@ -40,8 +39,15 @@ import {
   TSetter,
   TUseStateReturnVal,
 } from "../../../types/global";
-import { checkIfElementClickedWasClipboard } from "../../../shared/fns";
-import { LAST_LESSON_NUM_ID, UNITS_URL_PATH } from "../../../shared/constants";
+import {
+  checkIfElementClickedWasClipboard,
+  setLocalStorageItem,
+} from "../../../shared/fns";
+import {
+  LAST_LESSON_NUM_ID,
+  PRESENT_WELCOME_MODAL_PARAM_NAME,
+  UNITS_URL_PATH,
+} from "../../../shared/constants";
 import CopyLessonBtn, { ICopyLessonBtnProps } from "./CopyLessonBtn";
 import { INewUnitSchema } from "../../../backend/models/Unit/types/unit";
 import useSiteSession from "../../../customHooks/useSiteSession";
@@ -182,12 +188,6 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
     return targetLessonFolder;
   }, [selectedGrade]);
 
-  useEffect(() => {
-    console.log("sharedGDriveLessonFolders: ", sharedGDriveLessonFolders);
-
-    console.log("sharedGDriveLessonFolder: ", sharedGDriveLessonFolder);
-  });
-
   const { _isUserTeacher } = useUserContext();
   const { _isLoginModalDisplayed, _lessonItemModal } = useModalContext();
   const [isUserTeacher] = _isUserTeacher;
@@ -235,17 +235,6 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
           ? `${item.gdriveRoot}/view`
           : `${item.gdriveRoot}/preview`,
     }));
-  };
-
-  const createLessonUrl = () => {
-    let url = window.location.href;
-    const currentSectionInView = router.asPath.split("#").at(-1);
-
-    if (!(currentSectionInView === _accordionId)) {
-      url = `${window.location.origin}/${UNITS_URL_PATH}/${router.query.loc}/${router.query.id}#lesson_${_accordionId}`;
-    }
-
-    return url;
   };
 
   const handleClipBoardIconClick = () => {
@@ -694,6 +683,10 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                 <div className="d-flex justify-content-center align-items-center">
                   <Button
                     onClick={() => {
+                      const url = `${window.location.origin}/${UNITS_URL_PATH}/${router.query.loc}/${router.query.id}?${PRESENT_WELCOME_MODAL_PARAM_NAME}=true#lesson_${_accordionId}`;
+
+                      setLocalStorageItem("signUpRedirectUrl", url);
+
                       router.push("/sign-up");
                     }}
                     className="mt-2 sign-in-teacher-materials-btn d-flex justify-content-center align-items-center underline-on-hover"
