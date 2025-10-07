@@ -134,9 +134,9 @@ const LoginContainerForNavbar: React.FC<IProps> = ({ _modalAnimation }) => {
   const handleSignOutBtnClick = async () => {
     setIsSigningUserOut(true);
 
-    // if (gdriveAccessToken) {
-    //   await revokeGoogleAuthToken(gdriveAccessToken);
-    // }
+    if (gdriveAccessToken) {
+      await revokeGoogleAuthToken(gdriveAccessToken);
+    }
 
     removeAppCookies([
       "gdriveAccessToken",

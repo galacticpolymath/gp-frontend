@@ -70,7 +70,7 @@ const LiNavDot = ({ section, fns, index, isOnDesktop, EnticementArrow = <></>, i
                             onMouseOver={handleMouseOverIcon}
                             onMouseLeave={handleMouseLeaveIcon}
                             style={iconStyles}
-                            className='sectionNavDot'
+                            className={`sectionNavDot ${isInView ? 'nav-dot-highlighted' : ''}`}
                             id={sectionDotId}
                         />
                         {EnticementArrow}
