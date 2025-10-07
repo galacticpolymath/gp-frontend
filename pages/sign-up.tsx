@@ -100,7 +100,7 @@ const SignUpPage: React.FC = () => {
       };
     }
 
-    const signUpRedirectUrl = getLocalStorageItem("signUpRedirectUrl");
+    const signUpRedirectUrl = getLocalStorageItem("userEntryRedirectUrl");
 
     if (signUpRedirectUrl) {
       console.log("signUpRedirectUrl: ", signUpRedirectUrl);
@@ -197,7 +197,7 @@ const SignUpPage: React.FC = () => {
     localStorage.setItem("userEntryType", JSON.stringify("create-account"));
 
     if (callbackUrl.redirectPgType === "pgWithSignUpBtn") {
-      removeLocalStorageItem("signUpRedirectUrl");
+      removeLocalStorageItem("userEntryRedirectUrl");
     }
 
     signIn("google", { callbackUrl: callbackUrl.callbackUrl });

@@ -19,9 +19,11 @@ const WelcomeNewUserModal: React.FC = () => {
     refetchOnWindowFocus: false,
     queryKey: [status],
     queryFn: async () => {
+      const url = new URL(window.location.href);
+
       if (
         status === "authenticated" &&
-        searchParams.get(PRESENT_WELCOME_MODAL_PARAM_NAME) === "true" &&
+        url.searchParams.get(PRESENT_WELCOME_MODAL_PARAM_NAME) === "true" &&
         token
       ) {
         try {

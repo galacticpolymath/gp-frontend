@@ -187,7 +187,7 @@ export interface ILocalStorage extends Pick<TUserSchemaV2, "willShowGpPlusCopyLe
   gpPlusFeatureLocation: string;
   willShowGpPlusPurchaseThankYouModal: boolean
   didGpSignInAttemptOccur: boolean;
-  signUpRedirectUrl: string; 
+  userEntryRedirectUrl: string; 
   wasUserDeleted: boolean;
   wasContinueToCheckoutBtnClicked: boolean;
   userAccount: TUserSchemaForClient;

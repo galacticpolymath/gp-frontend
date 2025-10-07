@@ -202,7 +202,7 @@ export const useUserEntry = () => {
       }
 
       if (redirectPgType === "pgWithSignUpBtn") {
-        removeLocalStorageItem("signUpRedirectUrl");
+        removeLocalStorageItem("userEntryRedirectUrl");
       }
 
       signIn(providerType, formToSend);

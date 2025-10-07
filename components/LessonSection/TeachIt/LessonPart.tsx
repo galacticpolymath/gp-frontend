@@ -685,7 +685,7 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                     onClick={() => {
                       const url = `${window.location.origin}/${UNITS_URL_PATH}/${router.query.loc}/${router.query.id}?${PRESENT_WELCOME_MODAL_PARAM_NAME}=true#lesson_${_accordionId}`;
 
-                      setLocalStorageItem("signUpRedirectUrl", url);
+                      setLocalStorageItem("userEntryRedirectUrl", url);
 
                       router.push("/sign-up");
                     }}

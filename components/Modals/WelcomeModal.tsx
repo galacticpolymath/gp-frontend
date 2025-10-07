@@ -39,14 +39,19 @@ const WelcomeModal: React.FC<WelcomeModalProps> = ({
         <h2 className="mb-3 fw-bold">
           {userFirstName ? `Welcome, ${userFirstName}` : "Welcome"}!
         </h2>
-        <h4>Your account was created 🚀!</h4>
+        <h4>Your account was created 🚀</h4>
         <section className="w-100 d-flex justify-content-center align-items-center flex-column">
           <p className="mt-2 text-muted lh-lg mb-0">
-            If you love what you see, please spread the word! We're a small team
-            just trying to make science matter to students and the broader
-            public.
+            If you love what you see, please spread the word!
           </p>
-          <p className="text-muted lh-lg mb-4">
+          <p
+            style={{ textWrap: "pretty", maxWidth: "29em" }}
+            className="mt-2 text-muted mb-0 text-center lh-lg"
+          >
+            We're a small team just trying to make science matter to students
+            and the broader public.
+          </p>
+          <p className="text-muted lh-lg mt-2">
             Thanks for being part of this mission! 🙏
           </p>
         </section>
