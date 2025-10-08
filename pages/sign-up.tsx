@@ -143,9 +143,9 @@ const SignUpPage: React.FC = () => {
         lastName,
         password,
         isOnMailingList,
+        redirectTo: callbackUrl,
       },
       callbackUrl,
-      redirectTo: callbackUrl,
     };
 
     console.log("signUpForm: ", signUpForm);

@@ -684,8 +684,9 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                 <div className="d-flex justify-content-center align-items-center">
                   <Button
                     onClick={() => {
-                      const url = `${window.location.origin}/${UNITS_URL_PATH}/${router.query.loc}/${router.query.id}?${PRESENT_WELCOME_MODAL_PARAM_NAME}=true#lesson_${_accordionId}`;
-
+                      // const url = `${window.location.origin}/${UNITS_URL_PATH}/${router.query.loc}/${router.query.id}?${PRESENT_WELCOME_MODAL_PARAM_NAME}=true#lesson_${_accordionId}`;
+                      const url = `${window.location.origin}/${UNITS_URL_PATH}/${router.query.loc}/${router.query.id}?${PRESENT_WELCOME_MODAL_PARAM_NAME}=true`;
+                      
                       setSessionStorageItem("userEntryRedirectUrl", url);
 
                       router.push("/sign-up");
