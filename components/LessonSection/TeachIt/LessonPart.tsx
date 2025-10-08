@@ -809,7 +809,7 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                                   style={{ listStyle: "none" }}
                                   className="links-list p-0"
                                 >
-                                  {itemCat === "presentation" && (
+                                  {itemType === "presentation" && (
                                     <li className="mb-0 d-flex">
                                       <div className="d-flex justify-content-center align-items-sm-center">
                                         <button
