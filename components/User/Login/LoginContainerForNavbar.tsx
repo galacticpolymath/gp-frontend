@@ -299,7 +299,13 @@ const LoginContainerForNavbar: React.FC<IProps> = ({ _modalAnimation }) => {
                 />
               </div>
             ) : (
-              <FaUserAlt color="#2C83C3" />
+              <div
+                className={`avatar-ring ${
+                  isGpPlusMember ? "gp-plus-user-color" : "free-user-color"
+                }`}
+              >
+                <FaUserAlt color="#2C83C3" />
+              </div>
             )}
           </div>
         )}

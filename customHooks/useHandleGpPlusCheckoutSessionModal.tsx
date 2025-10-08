@@ -133,7 +133,6 @@ export const useHandleGpPlusCheckoutSessionModal = () => {
           const gpPlusBillingType = getLocalStorageItem(
             "selectedGpPlusBillingType"
           );
-          console.log("gpPlusBillingType, python: ", gpPlusBillingType);
           savingsElement.classList.add(
             gpPlusBillingType === "month"
               ? "text-decoration-line-through"
@@ -160,6 +159,7 @@ export const useHandleGpPlusCheckoutSessionModal = () => {
 
       return () => {
         mutationOberserverRef.current?.disconnect();
+        document.removeEventListener("click", handleOnClickPlanChangeLogic);
       };
     }
   }, [status]);

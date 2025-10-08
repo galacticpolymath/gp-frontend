@@ -211,8 +211,6 @@ const GpPlus: React.FC<IProps> = ({ liveUnitsTotal, plusPlanPercentSaved }) => {
           "gpPlusFeatureLocation"
         );
 
-        console.log("gpPlusFeatureLocation: ", gpPlusFeatureLocation);
-
         // will redirect to the selected unit so that user can copy it
         if (gpPlusFeatureLocation?.includes("#")) {
           setLocalStorageItem("willShowGpPlusPurchaseThankYouModal", true);
@@ -222,7 +220,6 @@ const GpPlus: React.FC<IProps> = ({ liveUnitsTotal, plusPlanPercentSaved }) => {
           return false;
         }
 
-        // will redirect to the account page
         if (gpPlusFeatureLocation) {
           console.log("Will redirect the user.");
           window.location.href = `${gpPlusFeatureLocation}?gp_plus_subscription_bought=true`;
@@ -230,7 +227,7 @@ const GpPlus: React.FC<IProps> = ({ liveUnitsTotal, plusPlanPercentSaved }) => {
           return false;
         }
 
-        const currentUrl = window.location.href;
+        const currentUrl = `${window.location.origin}/account?gp_plus_subscription_bought=true`;
         window.location.href = currentUrl;
 
         return false;
