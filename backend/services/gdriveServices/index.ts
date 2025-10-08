@@ -7,7 +7,6 @@ import { GoogleAuthOptions, OAuth2Client } from "google-auth-library";
 import { CustomError } from "../../utils/errors";
 import axios from "axios";
 import { sleep, waitWithExponentialBackOff } from "../../../globalFns";
-import { GOOGLE_DRIVE_PROJECT_CLIENT_ID } from "../../../globalVars";
 import { ILessonGDriveId, IUnitGDriveLesson } from "../../models/User/types";
 import {
   addNewGDriveLessons,
@@ -24,7 +23,7 @@ import {
 import * as ExcelJS from "exceljs";
 import * as fs from "fs";
 import * as path from "path";
-import { IFile, TFilesToRename, TRenameFilesResult } from "./types";
+import { IFile, TFilesToRename, TFileToCopy, TRenameFilesResult } from "./types";
 
 export const TEACHERS_GOOGLE_GROUP_EMAIL = "teachers@galacticpolymath.com";
 
@@ -101,7 +100,8 @@ const getCanRetry = async (
 type TGoogleAuthScopes =
   | "https://www.googleapis.com/auth/drive"
   | "https://www.googleapis.com/auth/admin.directory.group"
-  | "https://www.googleapis.com/auth/admin.directory.user";
+  | "https://www.googleapis.com/auth/admin.directory.user"
+  | 'https://www.googleapis.com/auth/gmail.send'
 
 export const getIsValidFileId = (id: unknown) =>
   typeof id === "string" && /^[a-zA-Z0-9_-]{10,}$/.test(id);
@@ -130,7 +130,7 @@ export const createDrive = async (
 
 export const createGoogleAdminService = async (
   scopes: TGoogleAuthScopes[] = ["https://www.googleapis.com/auth/drive"],
-  clientOptions?: GoogleAuthOptions["clientOptions"]
+  clientOptions?: GoogleAuthOptions["clientOptions"],
 ) => {
   const creds = new GoogleServiceAccountAuthCreds();
   const auth = new google.auth.GoogleAuth({
@@ -1600,33 +1600,48 @@ export const logFailedFileCopyToExcel = async (failedCopy: IFailedFileCopy) => {
   }
 };
 
+const checkIfAllFilesCanBeCopied = async (fileIds: string[], drive: drive_v3.Drive, email: string) => {
+  // this function will run recursively
+  try {
+    const permissionsRetrievalResultPromises = fileIds.map(fileId => {
+      return getTargetUserPermission(fileId, email, drive);
+    })
+    const permission = await Promise.all(permissionsRetrievalResultPromises);
+  } catch(error){
+
+  }
+}
+
+
 export const copyFiles = async (
-  fileIds: string[],
+  filesToCopy: TFileToCopy[],
   email: string,
   drive: drive_v3.Drive,
   gDriveAccessToken: string,
   lessonFolderId: string,
   refreshAuthToken: string,
   clientOrigin: string,
-  fileNames: string[],
   sendMessageToClient: (
     data: TCopyFilesMsg,
     willEndStream?: TSendMsgParams[2],
     delayMsg?: TSendMsgParams[3]
   ) => void,
   lessonName: string,
-  unitName: string
+  unitName: string,
+  sharedGDriveLessonsFolderId: string
 ) => {
   let wasJobSuccessful = true;
   let copiedFiles: TFilesToRename = [];
 
+    
+
   // check if the permission were propagated to all of the files to copy
-  for (const fileIdIndex in fileIds) {
-    const fileId = fileIds[fileIdIndex];
+  for (const fileToCopy of filesToCopy) {
+    const { id: fileId, name } = fileToCopy;
 
     if (!getIsValidFileId(fileId)) {
       console.error(
-        `Invalid file ID: ${fileId}. Skipping file: ${fileNames[fileIdIndex]}`
+        `Invalid file ID: ${fileId}. Skipping file: ${name}`
       );
       wasJobSuccessful = false;
       continue;
@@ -1643,7 +1658,7 @@ export const copyFiles = async (
       continue;
     }
 
-    console.log(`Processing file: ${fileNames[fileIdIndex]}`);
+    console.log(`Processing file: ${name}`);
 
     console.log(
       "Made the target file read only and changed the target user's permission to writer."
@@ -1700,40 +1715,44 @@ export const copyFiles = async (
       refreshAuthToken,
       clientOrigin
     );
+    
     console.log("fileCopyResult: ", fileCopyResult.errType);
     console.log("permission: ", permission);
 
-    if ("id" in fileCopyResult && fileCopyResult.id && fileNames[fileIdIndex]) {
-      console.log(`Successfully copied file ${fileNames[fileIdIndex]}`);
+    if (("id" in fileCopyResult && fileCopyResult.id)) {
+      console.log(`Successfully copied file ${name}`);
 
       const copiedFile = {
         id: fileCopyResult.id,
-        name: fileNames[fileIdIndex]
+        name: name
       }
 
       copiedFiles.push(copiedFile)
       sendMessageToClient({
-        fileCopied: fileNames[fileIdIndex],
+        fileCopied: name,
       });
-    } else if (fileNames[fileIdIndex] && fileCopyResult?.errType) {
+    } else if (fileCopyResult?.errType) {
+      console.log("fileCopyResult?.errType: ", fileCopyResult?.errType);
+
       wasJobSuccessful = false;
       console.error(
         "Failed to copy file for user.",
         "Filename: ",
-        fileNames[fileIdIndex],
+        name,
         "Email: ",
         email,
         "Reason: ",
         fileCopyResult
       );
+
       sendMessageToClient({
-        failedCopiedFile: fileNames[fileIdIndex],
+        failedCopiedFile: name,
+        fileId
       });
 
       // Log failed copy to Excel
-      const lessonFolderLink = `https://drive.google.com/drive/folders/${lessonFolderId}`;
+      const lessonFolderLink = `https://drive.google.com/drive/folders/${sharedGDriveLessonsFolderId}`;
       const fileLink = `https://drive.google.com/file/d/${fileId}/view`;
-
       const errorType =
         "errType" in fileCopyResult &&
         typeof fileCopyResult.errType === "string"
@@ -1744,19 +1763,19 @@ export const copyFiles = async (
           ? fileCopyResult.errMsg
           : JSON.stringify(fileCopyResult);
 
-      if (process.env.NEXT_PUBLIC_HOST === "localhost") {
-        await logFailedFileCopyToExcel({
-          lessonName,
-          unitName,
-          lessonFolderLink,
-          fileName: fileNames[fileIdIndex],
-          fileLink,
-          errorType,
-          errorMessage,
-          timestamp: new Date().toISOString(),
-          userEmail: email,
-        });
-      }
+      // if (process.env.NEXT_PUBLIC_HOST === "localhost") {
+      //   await logFailedFileCopyToExcel({
+      //     lessonName,
+      //     unitName,
+      //     lessonFolderLink,
+      //     fileName: name,
+      //     fileLink,
+      //     errorType,
+      //     errorMessage,
+      //     timestamp: new Date().toISOString(),
+      //     userEmail: email,
+      //   });
+      // }
     }
   }
 

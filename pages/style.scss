@@ -30,7 +30,7 @@ h4.words {
 @import "../node_modules/react-responsive-carousel/lib/styles/carousel.min.css";
 @import "../node_modules/bootstrap-icons/font/bootstrap-icons.css";
 
-.picker-container{
+.picker-container {
   .picker {
     visibility: hidden;
     z-index: -100;
@@ -104,9 +104,9 @@ body {
   }
 }
 
-.fade-backdrop-in{
+.fade-backdrop-in {
   animation: fadeBackdropIn 250ms forwards;
-  opacity: .25;
+  opacity: 0.25;
 }
 
 @keyframes fadeBackdropIn {
@@ -114,21 +114,21 @@ body {
     opacity: 0;
   }
   to {
-    opacity: .25;
+    opacity: 0.25;
   }
 }
 
-.cover-parent-container{
+.cover-parent-container {
   margin-left: calc(-1 * ((100vw - 100%) / 2));
   margin-right: calc(-1 * ((100vw - 100%) / 2));
 }
 
 .o--Profile--name,
-.o--Profile--password{
+.o--Profile--password {
   display: none;
 }
 
-.fade-modal-in-short{
+.fade-modal-in-short {
   animation: fadeModalInShort 250ms forwards;
   opacity: 1;
 }
@@ -142,13 +142,13 @@ body {
   }
 }
 
-.fade-modal-out-short{
+.fade-modal-out-short {
   animation: fadeModalOutShort 250ms forwards;
   opacity: 1;
   visibility: hidden;
 }
 
-.no-children-border-radius *{
+.no-children-border-radius * {
   border-radius: 0%;
 }
 
@@ -190,7 +190,7 @@ body {
 }
 
 .fade-out-quick {
-  animation: fadeOutQuick 0.250s forwards;
+  animation: fadeOutQuick 0.25s forwards;
   opacity: 1;
 }
 

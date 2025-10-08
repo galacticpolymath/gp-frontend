@@ -4,16 +4,22 @@
 /* eslint-disable quotes */
 /* eslint-disable indent */
 import { PiArrowsSplit } from "react-icons/pi";
-import PropTypes from "prop-types";
+import { RxMagnifyingGlass } from "react-icons/rx";
 import Accordion from "../../Accordion";
 import LessonChunk from "./LessonChunk";
 import RichText from "../../RichText";
-import { CSSProperties, memo, ReactNode, useMemo, useState } from "react";
+import {
+  CSSProperties,
+  memo,
+  PropsWithChildren,
+  ReactNode,
+  useMemo,
+  useState,
+} from "react";
 import Link from "next/link";
 import CopyableTxt from "../../CopyableTxt";
 import { useRouter } from "next/router";
 import React, { useEffect } from "react";
-import { useSession } from "next-auth/react";
 import { Button } from "react-bootstrap";
 import { useModalContext } from "../../../providers/ModalProvider";
 import { useUserContext } from "../../../providers/UserProvider";
@@ -33,30 +39,43 @@ import {
   TSetter,
   TUseStateReturnVal,
 } from "../../../types/global";
-import { checkIfElementClickedWasClipboard } from "../../../shared/fns";
-import { LAST_LESSON_NUM_ID, UNITS_URL_PATH } from "../../../shared/constants";
+import {
+  checkIfElementClickedWasClipboard,
+  setLocalStorageItem,
+  setSessionStorageItem,
+} from "../../../shared/fns";
+import {
+  LAST_LESSON_NUM_ID,
+  PRESENT_WELCOME_MODAL_PARAM_NAME,
+  UNITS_URL_PATH,
+} from "../../../shared/constants";
 import CopyLessonBtn, { ICopyLessonBtnProps } from "./CopyLessonBtn";
 import { INewUnitSchema } from "../../../backend/models/Unit/types/unit";
+import useSiteSession from "../../../customHooks/useSiteSession";
 
 const LESSON_PART_BTN_COLOR = "#2C83C3";
 
-const SignInSuggestion = ({
+interface ISignInSuggestionProps extends PropsWithChildren {
+  txt?: string;
+  className?: string;
+  txtClassName?: string;
+  style?: React.CSSProperties;
+}
+
+const SignInSuggestion: React.FC<ISignInSuggestionProps> = ({
   children,
   txt,
-}: {
-  children: ReactNode;
-  txt?: string;
+  style = { zIndex: 100 },
+  className = "center-absolutely d-flex flex-column justify-content-center col-12 mt-4",
+  txtClassName = "text-center fw-bold",
 }) => {
   if (!txt) {
     txt = "For teachers guides, sign in with a free account!";
   }
 
   return (
-    <div
-      style={{ zIndex: 100 }}
-      className="center-absolutely d-flex flex-column justify-content-center col-12 mt-4"
-    >
-      <span className="text-center fw-bold">{txt}</span>
+    <div style={style} className={className}>
+      <span className={txtClassName}>{txt}</span>
       {children}
     </div>
   );
@@ -98,6 +117,7 @@ export interface ILessonPartProps
   unitMediumTitle?: string | null;
   GdrivePublicID?: string | null;
   unitId: Pick<INewUnitSchema, "_id">["_id"];
+  unitTitle?: string | null;
   setParts: TSetter<(INewUnitLesson<IItemV2> | ILessonForUI)[]>;
 }
 
@@ -109,6 +129,7 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
     GdrivePublicID,
     lsnNum,
     lsnTitle,
+    unitTitle,
     lsnPreface,
     lsnExt,
     itemList,
@@ -118,8 +139,6 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
     chunks = [],
     resources,
     userGDriveLessonFolderId,
-    ForGrades,
-    GradesOrYears,
     gradeVarNote,
     _numsOfLessonPartsThatAreExpanded,
     removeClickToSeeMoreTxt,
@@ -160,23 +179,15 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
 
       return (
         parentFolderGradeType &&
-          ((selectedGrade.gradePrefix &&
+        ((selectedGrade.gradePrefix &&
           parentFolderGradeType === selectedGrade.gradePrefix.toLowerCase()) ||
-        (selectedGrade.grades &&
-          parentFolderGradeType === selectedGrade.grades.toLowerCase()))
+          (selectedGrade.grades &&
+            parentFolderGradeType === selectedGrade.grades.toLowerCase()))
       );
     });
 
-    console.log("targetLessonFolder, yo there: ", targetLessonFolder);
-
     return targetLessonFolder;
   }, [selectedGrade]);
-
-  useEffect(() => {
-    console.log("sharedGDriveLessonFolders: ", sharedGDriveLessonFolders);
-
-    console.log("sharedGDriveLessonFolder: ", sharedGDriveLessonFolder);
-  });
 
   const { _isUserTeacher } = useUserContext();
   const { _isLoginModalDisplayed, _lessonItemModal } = useModalContext();
@@ -184,7 +195,7 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
   const [, setIsLoginModalDisplayed] = _isLoginModalDisplayed;
   const [, setLessonItemModal] = _lessonItemModal;
   const router = useRouter();
-  const { status } = useSession();
+  const { status } = useSiteSession();
   const [isExpanded, setIsExpanded] = useState(false);
   const [
     numsOfLessonPartsThatAreExpanded,
@@ -215,8 +226,6 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
   const handlePreviewDownloadBtnClick = (
     item: IItemV2Props & Pick<IItemV2, "itemCat" | "links">
   ) => {
-    console.log("handlePreviewDownloadBtnClick: item: ", item);
-
     setLessonItemModal((state) => ({
       ...state,
       ...item,
@@ -306,9 +315,11 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
       setIsExpanded(!isExpanded);
     }
   };
+
   const handleSignInBtnClick = () => {
     setIsLoginModalDisplayed(true);
   };
+
   const handleUpdateProfileBtnClick = () => {
     router.push("/account?show_about_user_form=true");
   };
@@ -643,6 +654,7 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
               <CopyLessonBtn
                 setParts={setParts}
                 unitId={unitId!}
+                unitTitle={unitTitle}
                 isRetrievingLessonFolderIds={isRetrievingLessonFolderIds}
                 GdrivePublicID={GdrivePublicID}
                 MediumTitle={unitMediumTitle}
@@ -656,106 +668,186 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                 userGDriveLessonFolderId={userGDriveLessonFolderId}
               />
             )}
-            <ol className="mt-2 materials-list">
-              {!!_itemList?.length &&
-                _itemList.map((item, itemIndex: number) => {
-                  const {
-                    itemTitle,
-                    itemDescription,
-                    links,
-                    filePreviewImg,
-                    itemCat,
-                    gdriveRoot,
-                    isExportable,
-                    mimeType,
-                    externalUrl,
-                    itemType,
-                  } = item;
-                  const _links = links
-                    ? Array.isArray(links)
-                      ? links
-                      : [links]
-                    : null;
-                  const imgLink =
-                    itemCat === "web resource"
-                      ? _links?.[0]?.url ?? ""
-                      : _links?.[1]?.url ?? "";
-                  const isTeacherItem = itemTitle
-                    ? itemTitle.toLowerCase().includes("teacher")
-                    : false;
-                  let blurTxt = "";
-                  let btnTxt = "Sign in";
-                  let handleBtnClick = handleSignInBtnClick;
+            <div
+              className={`col-12 col-sm-12 col-lg-7 ${
+                status === "authenticated" ? "position-static" : ""
+              } ${status === "unauthenticated" ? "position-relative" : ""} ${
+                status === "loading" ? "pe-none position-relative" : ""
+              }`}
+            >
+              <SignInSuggestion
+                className="position-absolute start-50 translate-middle col-12 d-flex justify-content-center align-items-center flex-column"
+                style={{ zIndex: 100, top: "20%" }}
+                txt="Create a free account to see teaching materials"
+                txtClassName="d-inline-flex justify-center items-center text-center fw-bold"
+              >
+                <div className="d-flex justify-content-center align-items-center">
+                  <Button
+                    onClick={() => {
+                      const url = `${window.location.origin}/${UNITS_URL_PATH}/${router.query.loc}/${router.query.id}?${PRESENT_WELCOME_MODAL_PARAM_NAME}=true`;
 
-                  if (!isUserTeacher && status === "authenticated") {
-                    blurTxt = "You must be a teacher to view this item.";
-                    btnTxt = "Update Profile";
-                    handleBtnClick = handleUpdateProfileBtnClick;
-                  }
+                      setLocalStorageItem(
+                        "lessonIdToViewAfterRedirect",
+                        `lesson_${_accordionId}`
+                      );
+                      setSessionStorageItem("userEntryRedirectUrl", url);
 
-                  let filePreviewImgLink = "";
+                      router.push("/sign-up");
+                    }}
+                    className="mt-2 sign-in-teacher-materials-btn d-flex justify-content-center align-items-center underline-on-hover"
+                  >
+                    Sign Up
+                  </Button>
+                </div>
+              </SignInSuggestion>
+              <ol
+                className={`mt-2 materials-list w-100 ${
+                  status === "unauthenticated"
+                    ? "restricted-content pe-none"
+                    : ""
+                }`}
+              >
+                {!!_itemList?.length &&
+                  _itemList.map((item, itemIndex) => {
+                    const {
+                      itemTitle,
+                      itemDescription,
+                      links,
+                      filePreviewImg,
+                      itemCat,
+                      gdriveRoot,
+                      isExportable,
+                      mimeType,
+                      externalUrl,
+                      itemType,
+                    } = item;
+                    const _links = links
+                      ? Array.isArray(links)
+                        ? links
+                        : [links]
+                      : null;
+                    const imgLink =
+                      itemCat === "web resource"
+                        ? _links?.[0]?.url ?? ""
+                        : _links?.[1]?.url ?? "";
+                    const isTeacherItem = itemTitle
+                      ? itemTitle.toLowerCase().includes("teacher")
+                      : false;
+                    let blurTxt = "";
+                    let btnTxt = "Sign in";
+                    let handleBtnClick = handleSignInBtnClick;
 
-                  if (
-                    !isTeacherItem ||
-                    (isTeacherItem &&
-                      isUserTeacher &&
-                      status === "authenticated")
-                  ) {
-                    filePreviewImgLink =
-                      typeof imgLink === "string"
-                        ? imgLink
-                        : imgLink?.[0] ?? "";
-                  }
+                    if (!isUserTeacher && status === "authenticated") {
+                      blurTxt = "You must be a teacher to view this item.";
+                      btnTxt = "Update Profile";
+                      handleBtnClick = handleUpdateProfileBtnClick;
+                    }
 
-                  return (
-                    <li
-                      key={itemIndex}
-                      className={`${itemIndex === 0 ? "mt-2" : "mt-4"} mb-0`}
-                    >
-                      <div className="d-flex flex-column flex-md-row">
-                        <section className="col-12 col-md-8 col-lg-6 col-xl-6 position-relative">
-                          {isTeacherItem && !isUserTeacher && (
-                            <SignInSuggestion txt={blurTxt}>
-                              <div className="d-flex justify-content-center align-items-center">
-                                <Button
-                                  onClick={handleBtnClick}
-                                  className="mt-2 sign-in-teacher-materials-btn d-flex justify-content-center align-items-center underline-on-hover"
+                    let filePreviewImgLink = "";
+
+                    if (
+                      !isTeacherItem ||
+                      (isTeacherItem &&
+                        isUserTeacher &&
+                        status === "authenticated")
+                    ) {
+                      filePreviewImgLink =
+                        typeof imgLink === "string"
+                          ? imgLink
+                          : imgLink?.[0] ?? "";
+                    }
+
+                    return (
+                      <li
+                        key={itemIndex}
+                        className={`${
+                          itemIndex === 0 ? "mt-2" : "mt-4"
+                        } mb-0 w-100`}
+                      >
+                        <div className="d-flex flex-column flex-md-row">
+                          <section className="col-12 position-relative">
+                            {isTeacherItem &&
+                              !isUserTeacher &&
+                              status !== "unauthenticated" && (
+                                <SignInSuggestion txt={blurTxt}>
+                                  <div className="d-flex justify-content-center align-items-center">
+                                    <Button
+                                      onClick={handleBtnClick}
+                                      className="mt-2 sign-in-teacher-materials-btn d-flex justify-content-center align-items-center underline-on-hover"
+                                    >
+                                      {btnTxt}
+                                    </Button>
+                                  </div>
+                                </SignInSuggestion>
+                              )}
+                            <strong>
+                              <RichText
+                                content={itemTitle}
+                                className={`item-title-${lsnNum}-${itemIndex} lesson-item-title`}
+                              />
+                            </strong>
+                            <section
+                              style={{
+                                filter:
+                                  isTeacherItem && !isUserTeacher
+                                    ? "blur(12px)"
+                                    : "none",
+                              }}
+                              className="d-flex justify-content-between position-relative bg-white flex-sm-row flex-column"
+                            >
+                              <section>
+                                <div
+                                  className="fst-italic mb-1"
+                                  style={{ color: "#353637" }}
                                 >
-                                  {btnTxt}
-                                </Button>
-                              </div>
-                            </SignInSuggestion>
-                          )}
-                          <strong>
-                            <RichText
-                              content={itemTitle}
-                              className={`item-title-${lsnNum}-${itemIndex} lesson-item-title`}
-                            />
-                          </strong>
-                          <section
-                            style={{
-                              filter:
-                                isTeacherItem && !isUserTeacher
-                                  ? "blur(12px)"
-                                  : "none",
-                            }}
-                            className="d-flex justify-content-between position-relative bg-white flex-sm-row flex-column"
-                          >
-                            <section>
-                              <div
-                                className="fst-italic mb-1"
-                                style={{ color: "#353637" }}
-                              >
-                                <RichText
-                                  className="lesson-item-description"
-                                  content={itemDescription}
-                                />
-                              </div>
-                              <ul
-                                style={{ listStyle: "none" }}
-                                className="links-list p-0"
-                              >
-                                {itemCat === "presentation" && (
+                                  <RichText
+                                    className="lesson-item-description"
+                                    content={itemDescription}
+                                  />
+                                </div>
+                                <ul
+                                  style={{ listStyle: "none" }}
+                                  className="links-list p-0"
+                                >
+                                  {itemCat === "presentation" && (
+                                    <li className="mb-0 d-flex">
+                                      <div className="d-flex justify-content-center align-items-sm-center">
+                                        <button
+                                          className={`${
+                                            isTeacherItem
+                                              ? isUserTeacher
+                                                ? ""
+                                                : "link-disabled"
+                                              : ""
+                                          } no-btn-styles no-hover-color-change`}
+                                        >
+                                          <i
+                                            style={{ color: "#4498CC" }}
+                                            className="bi bi-box-arrow-up-right"
+                                          />
+                                        </button>
+                                      </div>
+                                      <div className="d-flex justify-content-center align-items-center ps-2">
+                                        <a
+                                          href={`${gdriveRoot}/present`}
+                                          target="_blank"
+                                          rel="noopener noreferrer"
+                                          style={{
+                                            color: "#2c83c3",
+                                          }}
+                                          className={`${
+                                            isTeacherItem
+                                              ? isUserTeacher
+                                                ? ""
+                                                : "link-disabled"
+                                              : ""
+                                          }`}
+                                        >
+                                          Present
+                                        </a>
+                                      </div>
+                                    </li>
+                                  )}
                                   <li className="mb-0 d-flex">
                                     <div className="d-flex justify-content-center align-items-sm-center">
                                       <button
@@ -765,19 +857,30 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                                               ? ""
                                               : "link-disabled"
                                             : ""
-                                        } no-btn-styles no-hover-color-change`}
+                                        } no-btn-styles no-hover-color-change d-flex justify-content-center align-items-center`}
+                                        onClick={() => {
+                                          handlePreviewDownloadBtnClick({
+                                            links,
+                                            gdriveRoot,
+                                            isExportable,
+                                            mimeType,
+                                            externalUrl,
+                                            itemCat,
+                                            itemType,
+                                          });
+                                        }}
                                       >
-                                        <i
-                                          style={{ color: "#4498CC" }}
-                                          className="bi bi-box-arrow-up-right"
+                                        <RxMagnifyingGlass
+                                          style={{
+                                            color: "#2c83c3",
+                                            fontSize: "22px",
+                                            transform: "translateY(-1px)",
+                                          }}
                                         />
                                       </button>
                                     </div>
                                     <div className="d-flex justify-content-center align-items-center ps-2">
-                                      <a
-                                        href={`${gdriveRoot}/present`}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
+                                      <button
                                         style={{
                                           color: "#2c83c3",
                                         }}
@@ -787,116 +890,75 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                                               ? ""
                                               : "link-disabled"
                                             : ""
-                                        }`}
+                                        } fw-bolder no-btn-styles no-hover-color-change underline-on-hover`}
+                                        onClick={() => {
+                                          handlePreviewDownloadBtnClick({
+                                            links,
+                                            gdriveRoot,
+                                            mimeType,
+                                            externalUrl,
+                                            itemCat,
+                                            isExportable,
+                                            itemType,
+                                          });
+                                        }}
                                       >
-                                        Present
-                                      </a>
+                                        {itemType === "presentation"
+                                          ? "Preview/Download"
+                                          : "Preview"}
+                                      </button>
                                     </div>
                                   </li>
-                                )}
-                                <li className="mb-0 d-flex">
-                                  <div className="d-flex justify-content-center align-items-sm-center">
-                                    <button
-                                      className={`${
-                                        isTeacherItem
-                                          ? isUserTeacher
-                                            ? ""
-                                            : "link-disabled"
-                                          : ""
-                                      } no-btn-styles no-hover-color-change`}
-                                      onClick={() => {
-                                        handlePreviewDownloadBtnClick({
-                                          links,
-                                          gdriveRoot,
-                                          isExportable,
-                                          mimeType,
-                                          externalUrl,
-                                          itemCat,
-                                          itemType,
-                                        });
-                                      }}
-                                    >
-                                      <i
-                                        style={{ color: "#0273BA" }}
-                                        className="fab fa-google-drive"
-                                      />
-                                    </button>
-                                  </div>
-                                  <div className="d-flex justify-content-center align-items-center ps-2">
-                                    <button
-                                      style={{
-                                        color: "#2c83c3",
-                                      }}
-                                      className={`${
-                                        isTeacherItem
-                                          ? isUserTeacher
-                                            ? ""
-                                            : "link-disabled"
-                                          : ""
-                                      } fw-bolder no-btn-styles no-hover-color-change underline-on-hover`}
-                                      onClick={() => {
-                                        handlePreviewDownloadBtnClick({
-                                          links,
-                                          gdriveRoot,
-                                          mimeType,
-                                          externalUrl,
-                                          itemCat,
-                                          isExportable,
-                                          itemType,
-                                        });
-                                      }}
-                                    >
-                                      {itemType === "presentation"
-                                        ? "Preview/Download"
-                                        : "Preview"}
-                                    </button>
-                                  </div>
-                                </li>
-                              </ul>
-                            </section>
-                            {!!filePreviewImg && (
-                              <section className="pt-1 ps-sm-1 ps-md-4 d-flex col-3">
-                                <div className="border align-content-start my-auto">
-                                  <img
-                                    src={filePreviewImg}
-                                    alt="lesson_tile"
-                                    className="h-auto w-auto lesson-file-img-testing cursor-pointer"
-                                    style={{
-                                      objectFit: "contain",
-                                      maxHeight: "100px",
-                                      maxWidth: "100px",
-                                      cursor: "pointer",
-                                      border: "1px solid gray",
-                                      pointerEvents: isTeacherItem
-                                        ? isUserTeacher
-                                          ? "auto"
-                                          : "none"
-                                        : "auto",
-                                    }}
-                                    onClick={() => {
-                                      handlePreviewDownloadBtnClick({
-                                        links,
-                                        gdriveRoot,
-                                        mimeType,
-                                        externalUrl,
-                                        itemCat,
-                                        isExportable,
-                                        itemType,
-                                      });
-                                    }}
-                                  />
-                                </div>
+                                </ul>
                               </section>
-                            )}
+                              {!!filePreviewImg && (
+                                <section className="pt-1 ps-sm-1 ps-md-4 d-flex col-3">
+                                  <div className="border align-content-start my-auto">
+                                    <img
+                                      src={filePreviewImg}
+                                      alt="lesson_tile"
+                                      className={`h-auto w-auto lesson-file-img-testing cursor-pointer ${
+                                        status === "unauthenticated" ||
+                                        status === "loading"
+                                          ? "pe-none"
+                                          : "none"
+                                      }`}
+                                      style={{
+                                        objectFit: "contain",
+                                        maxHeight: "100px",
+                                        maxWidth: "100px",
+                                        cursor: "pointer",
+                                        border: "1px solid gray",
+                                        pointerEvents: isTeacherItem
+                                          ? isUserTeacher
+                                            ? "auto"
+                                            : "none"
+                                          : "auto",
+                                      }}
+                                      onClick={() => {
+                                        handlePreviewDownloadBtnClick({
+                                          links,
+                                          gdriveRoot,
+                                          mimeType,
+                                          externalUrl,
+                                          itemCat,
+                                          isExportable,
+                                          itemType,
+                                        });
+                                      }}
+                                    />
+                                  </div>
+                                </section>
+                              )}
+                            </section>
                           </section>
-                        </section>
-                      </div>
-                    </li>
-                  );
-                })}
-            </ol>
+                        </div>
+                      </li>
+                    );
+                  })}
+              </ol>
+            </div>
           </div>
-          {/* put grade var notes here */}
           {gradeVarNote && (
             <div className="mt-4">
               <h5 className="d-flex align-items-start fw-bold mb-1">
@@ -988,15 +1050,6 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
       </Accordion>
     </div>
   );
-};
-
-LessonPart.propTypes = {
-  lsnNum: PropTypes.number,
-  lsnTitle: PropTypes.string,
-  lsnPreface: PropTypes.string,
-  lsnExt: PropTypes.arrayOf(PropTypes.string),
-  chunks: PropTypes.array,
-  resources: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
 };
 
 export default memo(LessonPart);

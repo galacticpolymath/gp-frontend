@@ -4,7 +4,7 @@
 /* eslint-disable indent */
 /* eslint-disable react/jsx-indent */
 
-import { useContext, useState } from "react";
+import { useContext, useMemo, useState } from "react";
 import { ModalContext } from "../../../providers/ModalProvider";
 import Button from "../../General/Button";
 import GoogleSignIn from "../GoogleSignIn";
@@ -15,6 +15,7 @@ import Link from "next/link";
 import { TROUBLE_LOGGING_IN_LINK } from "../../../globalVars";
 import { useRouter } from "next/router";
 import { useUserEntry } from "../../../customHooks/useUserEntry";
+import { getSessionStorageItem } from "../../../shared/fns";
 
 const LoginUI = ({
   className = "",
@@ -62,6 +63,16 @@ const LoginUI = ({
     router.push('/sign-up');
   };
 
+  const redirectUrl = useMemo(() => {
+    const redirectUrl = getSessionStorageItem("userEntryRedirectUrl")
+
+    if (redirectUrl) {
+      return redirectUrl
+    }
+
+    return typeof window === "undefined" ? '' : window.location.href
+  }, [])
+
   return (
     <div className={className}>
       <div className="d-flex justify-content-center align-items-center">
@@ -108,9 +119,7 @@ const LoginUI = ({
       </section>
       <section className="d-flex justify-content-center align-items-center pt-3 pb-4 mt-4">
         <GoogleSignIn
-          callbackUrl={
-            typeof window !== "undefined" ? window.location.href : ""
-          }
+          callbackUrl={redirectUrl}
           className="rounded px-5 py-4 d-flex justify-content-center align-items-center border shadow col-7 d-flex flex-column position-relative"
           executeExtraBtnClickLogic={() => {
             setIsGoogleLoginSpinnerDisplayed(true);
@@ -174,9 +183,8 @@ const LoginUI = ({
         <form>
           <div className="mt-3 d-flex justify-content-center align-items-center flex-column">
             <label
-              className={`d-flex p-0 position-relative ${inputFieldClassName} ${
-                userEntryErrors.has("email") ? "text-danger" : ""
-              }  fw-bold pb-2`}
+              className={`d-flex p-0 position-relative ${inputFieldClassName} ${userEntryErrors.has("email") ? "text-danger" : ""
+                }  fw-bold pb-2`}
               htmlFor="email-input"
             >
               Email:
@@ -186,9 +194,8 @@ const LoginUI = ({
                 handleOnInputChange(event);
               }}
               inputStyle={{ width: "100%", height: "45px", fontSize: "20px" }}
-              inputContainerCss={`${inputFieldClassName} rounded position-relative bg-light-blue ${
-                userEntryErrors.has("email") ? "border-danger" : "border"
-              }`}
+              inputContainerCss={`${inputFieldClassName} rounded position-relative bg-light-blue ${userEntryErrors.has("email") ? "border-danger" : "border"
+                }`}
               inputClassName={`px-1 py-2 position-relative no-outline border-0 rounded bg-light-blue`}
               inputId="email-input"
               inputName="email"
@@ -209,9 +216,8 @@ const LoginUI = ({
           </div>
           <div className="mt-4 d-flex justify-content-center align-items-center flex-column">
             <label
-              className={`d-flex p-0 position-relative ${
-                userEntryErrors.has("password") ? "text-danger" : ""
-              } ${inputFieldClassName} fw-bold pb-2`}
+              className={`d-flex p-0 position-relative ${userEntryErrors.has("password") ? "text-danger" : ""
+                } ${inputFieldClassName} fw-bold pb-2`}
               htmlFor="password-input"
             >
               Password:
@@ -236,11 +242,10 @@ const LoginUI = ({
                 borderBottomRightRadius: "6.75px",
               }}
               iconContainerClassName="h-100 end-0 position-absolute top-0 d-flex justify-content-center align-items-center bg-light-blue"
-              inputContainerCss={`${inputFieldClassName} ${
-                userEntryErrors.has("password")
+              inputContainerCss={`${inputFieldClassName} ${userEntryErrors.has("password")
                   ? "border-danger text-danger"
                   : "border"
-              } rounded position-relative`}
+                } rounded position-relative`}
               inputClassName="px-1 py-2 position-relative no-outline border-0 bg-light-blue"
               inputId="password-input"
               inputName="password"
@@ -267,7 +272,9 @@ const LoginUI = ({
           </div>
           <div className="px-2 px-sm-0 py-2 mt-3 row d-flex justify-content-center align-items-center">
             <Button
-              handleOnClick={handleLoginBtnClick}
+              handleOnClick={() => {
+                handleLoginBtnClick(redirectUrl)
+              }}
               defaultStyleObj={{ borderRadius: "5px" }}
               classNameStr={`bg-primary border-0 px-4 py-2 ${inputFieldClassName}`}
             >

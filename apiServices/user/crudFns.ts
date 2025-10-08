@@ -18,14 +18,19 @@ import {
 } from "../../pages/api/gp-plus/outseta/reset-outseta-email";
 
 export const updateUser = async (
-  query: Omit<Partial<TUserSchemaV2>, "password"> = {},
+  query?: Omit<Partial<TUserSchemaV2>, "password">,
   updatedUser: Omit<Partial<TUserSchemaV2>, "password"> = {},
   additionalReqBodyProps: Record<string, unknown> &
     Partial<IUpdatedUserReqBody> = {},
-  token: string
+  token: string = ''
 ) => {
   try {
-    if (
+    if (!token) {
+      throw new Error('The "token" parameter is required and cannot be empty.');
+    }
+
+
+    if (query &&
       Object.keys(query).length <= 0 ||
       (Object.keys(updatedUser).length <= 0 &&
         Object.keys(additionalReqBodyProps).length <= 0)
@@ -39,10 +44,10 @@ export const updateUser = async (
       throw new Error('The "token" parameter cannot be empty.');
     }
 
-    if (
-      ("id" in query && typeof query.id !== "string") ||
+    if (query &&
+      (("id" in query && typeof query.id !== "string") ||
       ("email" in query && typeof query.email !== "string") ||
-      ("emali" in query && "id" in query)
+      ("emali" in query && "id" in query))
     ) {
       throw new Error(
         'The "id" and "email" parameters must be strings. Both cannot be present.'
@@ -53,7 +58,7 @@ export const updateUser = async (
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
     };
-    const responseBody = { ...query, updatedUser, ...additionalReqBodyProps };
+    const responseBody = { ...(query ?? {}), updatedUser, ...additionalReqBodyProps };
     const response = await axios.put<{ wasSuccessful: boolean; msg: string }>(
       "/api/update-user",
       responseBody,

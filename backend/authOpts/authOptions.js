@@ -183,7 +183,10 @@ export const authOptions = {
           } = credentials;
           /** @type { import('../models/User').TUserSchema } */
           const dbUser = await getUserByEmail(email);
+          console.log('Credentials received: ', credentials);
           const callbackUrl = credentials.callbackUrl.includes('?') ? credentials.callbackUrl.split('?')[0] : credentials.callbackUrl;
+
+          console.log('callbackUrl, client: ', callbackUrl);
 
           if (!dbUser && (formType === 'login')) {
             console.log('The user was not found.');

@@ -1,6 +1,6 @@
 import moment from "moment";
 import { INewUnitSchema } from "../backend/models/Unit/types/unit";
-import { ILocalStorage, IUnitForUnitsPg, TLiveUnit } from "../types/global";
+import { ILocalStorage, ISessionStorage, IUnitForUnitsPg, TLiveUnit } from "../types/global";
 import {
   GOOGLE_DRIVE_PROJECT_CLIENT_ID,
   STATUSES_OF_SHOWABLE_LESSONS,
@@ -169,6 +169,7 @@ export const setLocalStorageItem = <
   localStorage.setItem(key, JSON.stringify(val));
 };
 
+
 export const getLocalStorageItem = <
   TKey extends keyof ILocalStorage,
   TVal extends ILocalStorage[TKey]
@@ -187,10 +188,6 @@ export const getLocalStorageItem = <
     }
 
     if (KEYS_OF_VALUES_TO_ENCRYPT.has(key) && key === "userAccount") {
-      console.log("Decrypting user account data from localStorage");
-
-      console.log("parsableVal: ", parsableVal);
-
       const bytes = CryptoJS.AES.decrypt(
         parsableVal,
         process.env.NEXT_PUBLIC_ENCRYPTION_KEY!
@@ -199,6 +196,47 @@ export const getLocalStorageItem = <
       const userAccountData: TVal = JSON.parse(str);
 
       return userAccountData;
+    }
+
+    return JSON.parse(parsableVal) as TVal;
+  } catch (error) {
+    console.error("Failed to retrieve the target item. Reason: ", error);
+
+    return null;
+  }
+};
+export const removeSessionStorageItem = (key: keyof ISessionStorage) => {
+  sessionStorage.removeItem(key);
+};
+
+export const setSessionStorageItem = <
+  TKey extends keyof ISessionStorage,
+  TVal extends ISessionStorage[TKey]
+>(
+  key: TKey,
+  val: TVal
+) => {
+  console.log("Setting localStorage item:", key, val);
+
+  sessionStorage.setItem(key, JSON.stringify(val));
+};
+
+
+export const getSessionStorageItem = <
+  TKey extends keyof ISessionStorage,
+  TVal extends ISessionStorage[TKey]
+>(
+  key: TKey
+): TVal | null => {
+  try {
+    if (typeof sessionStorage === "undefined") {
+      return null;
+    }
+
+    const parsableVal = sessionStorage.getItem(key);
+
+    if (!parsableVal) {
+      return null;
     }
 
     return JSON.parse(parsableVal) as TVal;

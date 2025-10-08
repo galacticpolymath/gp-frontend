@@ -35,6 +35,13 @@ interface CollapsibleLessonSectionProps {
   accordionStyleObj?: React.CSSProperties;
 }
 
+export const getH2Id = (sectionTitle: string) =>
+  sectionTitle
+    .toLowerCase()
+    .replace(/[0-9.]/g, "")
+    .trim()
+    .replace(/ /g, "-");
+
 const CollapsibleLessonSection: React.FC<CollapsibleLessonSectionProps> = ({
   SectionTitle = "",
   className = "",
@@ -64,10 +71,7 @@ const CollapsibleLessonSection: React.FC<CollapsibleLessonSectionProps> = ({
   const [isAccordionContentOpen, setIsAccordionContentOpen] =
     useState(initiallyExpanded);
   const { h2Id } = useLessonElementInView(_sectionDots, SectionTitle, ref);
-  const _h2Id = SectionTitle.toLowerCase()
-    .replace(/[0-9.]/g, "")
-    .trim()
-    .replace(/ /g, "-");
+  const _h2Id = getH2Id(SectionTitle);
   const _accordionId = (accordionId || SectionTitle)
     .replace(/[\s!]/gi, "_")
     .toLowerCase();
@@ -170,7 +174,7 @@ const CollapsibleLessonSection: React.FC<CollapsibleLessonSectionProps> = ({
       }
       handleOnClick={handleAccordionBtnClick}
       style={accordionStyleObj}
-      button={(
+      button={
         <div
           {...btnAttributes}
           className={`SectionHeading ${SectionTitle.replace(
@@ -226,7 +230,7 @@ const CollapsibleLessonSection: React.FC<CollapsibleLessonSectionProps> = ({
             className="position-absolute"
           />
         </div>
-      )}
+      }
     >
       <Collapse in={isAccordionContentOpen}>
         <>

@@ -52,8 +52,6 @@ const GoogleDriveAuthResult = () => {
   useEffect(() => {
     const gpPlusFeatureLocation = getLocalStorageItem("gpPlusFeatureLocation");
 
-    console.log("gpPlusFeatureLocation, yo there: ", gpPlusFeatureLocation);
-
     if (willRedirectUser && gpPlusFeatureLocation) {
       setTimeout(() => {
         removeLocalStorageItem("didGpSignInAttemptOccur");
@@ -77,17 +75,11 @@ const GoogleDriveAuthResult = () => {
       const urlParams = new URLSearchParams(window.location.search);
       const code = urlParams.get("code");
 
-      console.log("The code from the url: ", code);
-
       if (!code) {
         return false;
       }
 
-      console.log("Yo there, will authenticate the user with google drive...");
-
       const responseBody = await authenticateUserWithGDrive(code, token);
-
-      console.log("Authentication, responseBody: ", responseBody);
 
       if (
         !responseBody ||
@@ -217,7 +209,7 @@ const GoogleDriveAuthResult = () => {
   return (
     <Layout>
       <div className="min-vh-100 pt-5 ps-2 pe-2 pe-sm-0 ps-sm-5 d-flex flex-column w-sm-25">
-        <span>GP now has access to your google drive!</span>
+        <span>GP now has access to your google drive with your permission!</span>
         {gpPlusFeatureLocation && (
           <div
             style={{ width: "fit-content" }}

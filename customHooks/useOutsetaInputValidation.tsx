@@ -7,7 +7,10 @@ import { useSession } from "next-auth/react";
 import { IUserSession } from "../types/global";
 import { CONTACT_SUPPORT_EMAIL } from "../globalVars";
 import CustomLink from "../components/CustomLink";
-import { deleteUserOutsetaEmail, updateUser } from "../apiServices/user/crudFns";
+import {
+  deleteUserOutsetaEmail,
+  updateUser,
+} from "../apiServices/user/crudFns";
 import useSiteSession from "./useSiteSession";
 
 const useOutsetaInputValidation = () => {
@@ -41,16 +44,6 @@ const useOutsetaInputValidation = () => {
       const _continueToCheckoutBtn = document.querySelector(
         ".o--Register--nextButton"
       ) as HTMLButtonElement | null;
-
-      console.log("yo there continueCheckoutBtn: ");
-      console.dir(_continueToCheckoutBtn);
-
-      console.log({
-        emailInput: !!_emailInput,
-        continueToCheckoutBtn: !!_continueToCheckoutBtn,
-        token: !!token,
-        userEmail: !!user?.email,
-      });
 
       if (!_emailInput || !_continueToCheckoutBtn || !token || !user?.email) {
         setNotifyModal({
@@ -152,9 +145,7 @@ const useOutsetaInputValidation = () => {
           token
         );
 
-        
         console.log("updateUserResponse: ", updateUserResponse);
-        
 
         if (!updateUserResponse?.wasSuccessful) {
           setNotifyModal({

@@ -9,15 +9,22 @@ import { GiShipWheel } from "react-icons/gi";
 import { ICurrentUnits } from "../../types/global";
 import Sponsors from "../Sponsors";
 import JobVizIcon from "../JobViz/JobVizIcon";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import GpUnitVideos from "./sections/GpUnitVideos";
 import GpUnitLessons from "./sections/GpUnitLessons";
 import SelectedGpVideo from "./modals/SelectedGpVideo";
 import SelectedGpWebApp from "../Modals/SelectedGpWebApp";
 import CurrentGpUnits from "./sections/CurrentGpUnits";
 import { TWebAppForUI } from "../../backend/models/WebApp";
-import { useGoogleDrivePicker } from "@geniux/google-drive-picker-react";
-import useDrivePicker from "react-google-drive-picker";
+import { useSearchParams } from "next/navigation";
+import { PRESENT_WELCOME_MODAL_PARAM_NAME } from "../../shared/constants";
+import useSiteSession from "../../customHooks/useSiteSession";
+import { useQuery } from "@tanstack/react-query";
+import WelcomeModal from "../Modals/WelcomeModal";
+import { resetUrl } from "../../globalFns";
+import { useRouter } from "next/router";
+import { useUserContext } from "../../providers/UserProvider";
+import axios from "axios";
 
 const handleJobVizCardClick = () => {
   window.location.href = "/jobviz";
@@ -30,24 +37,64 @@ const UnitsPg: React.FC<ICurrentUnits & { didErrorOccur?: boolean }> = ({
   webApps,
   didErrorOccur,
 }) => {
-  useEffect(() => {
-    console.log({ webApps });
-  });
-
-  const [openPicker] = useDrivePicker();
-
+  const searchParams = useSearchParams();
   const [selectedVideo, setSelectedVideo] = useState(null);
   const [selectedGpWebApp, setSelectedGpWebApp] = useState<null | TWebAppForUI>(
     null
   );
   const [isWebAppModalShown, setIsWebAppModalShown] = useState(false);
   const [isGpVideoModalShown, setIsGpVideoModalShown] = useState(false);
+  const { status, token } = useSiteSession();
+  const router = useRouter();
   const origin = typeof window === "undefined" ? "" : window.location.origin;
 
   const handleGpWebAppCardClick = (app: TWebAppForUI) => {
     setSelectedGpWebApp(app);
     setIsWebAppModalShown(true);
   };
+
+  const [isWelcomeModalDisplayed, setIsWelcomeModalDisplayed] = useState(false);
+  const [userFirstName, setUserFirstName] = useState("");
+
+  useQuery({
+    refetchOnWindowFocus: false,
+    queryKey: [status],
+    queryFn: async () => {
+      if (
+        status === "authenticated" &&
+        searchParams.get(PRESENT_WELCOME_MODAL_PARAM_NAME) === "true" &&
+        token
+      ) {
+        try {
+          console.log("Fetching user name for welcome modal");
+
+          const { data } = await axios.get<
+            | {
+                firstName: string;
+                lastName: string;
+              }
+            | { msg: string }
+          >("/api/get-user-name", {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          });
+
+          console.log("User name data: ", data);
+
+          if ("firstName" in data && data.firstName) {
+            setUserFirstName(data.firstName);
+          }
+
+          setIsWelcomeModalDisplayed(true);
+          resetUrl(router);
+        } catch (error) {
+          console.error("Failed to display welcome modal. Reason: ", error);
+        }
+      }
+    },
+  });
 
   return (
     <Layout
@@ -285,6 +332,13 @@ const UnitsPg: React.FC<ICurrentUnits & { didErrorOccur?: boolean }> = ({
       <SelectedGpWebApp
         _selectedGpWebApp={[selectedGpWebApp, setSelectedGpWebApp]}
         _isModalShown={[isWebAppModalShown, setIsWebAppModalShown]}
+      />
+      <WelcomeModal
+        show={isWelcomeModalDisplayed}
+        onHide={() => {
+          setIsWelcomeModalDisplayed(false);
+        }}
+        userFirstName={userFirstName}
       />
     </Layout>
   );

@@ -1,5 +1,6 @@
 import { admin_directory_v1 } from "googleapis";
 import { createGoogleAdminService as _createGoogleAdminService } from "./gdriveServices";
+import { OAuth2Client } from "google-auth-library";
 
 const GP_PLUS_GROUP_ID = "01fob9te1logy92";
 
@@ -31,7 +32,7 @@ export const getGoogleGroupMember = async (
     
     console.log(`Retrieving google group member for ${email}`);
 
-    const googleGroupMember = await _googleAdminServices.members.get({
+    const googleGroupMember = await (_googleAdminServices as admin_directory_v1.Admin).members.get({
       groupKey: GP_PLUS_GROUP_ID,
       memberKey: email,
     });
@@ -59,7 +60,7 @@ export const insertGoogleGroupMember = async (
       throw new Error("googleAdminServices is required to get a google group member. Unable to initialize it.");
     }
 
-    const googleGroupMember = await _googleAdminServices.members.insert({
+    const googleGroupMember = await (_googleAdminServices as admin_directory_v1.Admin).members.insert({
       groupKey: GP_PLUS_GROUP_ID,
       requestBody: {
         email: email,
@@ -98,7 +99,7 @@ export const deleteGoogleGroupMember = async (
       throw new Error("googleAdminServices is required to get a google group member. Unable to initialize it.");
     }
 
-    const googleGroupMember = await _googleAdminServices.members.delete({
+    const googleGroupMember = await (_googleAdminServices as admin_directory_v1.Admin).members.delete({
       groupKey: GP_PLUS_GROUP_ID,
       memberKey: email
     });

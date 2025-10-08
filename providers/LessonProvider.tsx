@@ -4,18 +4,17 @@
 /* eslint-disable quotes */
 import { createContext, useContext, useState } from "react";
 import { TUseStateReturnVal } from "../types/global";
-import { TCopyFilesMsg } from "../pages/api/gp-plus/copy-lesson";
+import { TFileToCopy } from "../backend/services/gdriveServices/types";
 
-type TLessonToCopy = { gdriveLessonFolderId: string; name: string };
-type TCopyLessonJob = Partial<
-  {
-    toastId: string;
-    isToastDisplayed: boolean;
-  } & TCopyFilesMsg
->;
+type TSelectedLessonToCopy = {
+  id: string;
+  willOpenGDrivePicker: boolean;
+};
+type TFailedCopiedLessonFile = TFileToCopy[] | null;
 export type TLessonProviderVal = {
-  _lessonToCopy: TUseStateReturnVal<TLessonToCopy | null>;
+  _lessonToCopy: TUseStateReturnVal<TSelectedLessonToCopy | null>;
   _lessonsCopyJobs: TUseStateReturnVal<string[]>;
+  _failedCopiedLessonFiles: TUseStateReturnVal<TFailedCopiedLessonFile>;
 };
 
 export const LessonContext = createContext<TLessonProviderVal | null>(null);
@@ -23,11 +22,18 @@ export const LessonContext = createContext<TLessonProviderVal | null>(null);
 export const LessonProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [lessonToCopy, setLessonToCopy] = useState<TLessonToCopy | null>(null);
+  const [lessonToCopy, setLessonToCopy] =
+    useState<TSelectedLessonToCopy | null>(null);
   const [lessonsCopyJobs, setLessonsCopyJobs] = useState<string[]>([]);
+  const [failedCopiedLessonFiles, setFailedCopiedLessonFiles] =
+    useState<TFailedCopiedLessonFile>(null);
   const value: TLessonProviderVal = {
     _lessonToCopy: [lessonToCopy, setLessonToCopy],
     _lessonsCopyJobs: [lessonsCopyJobs, setLessonsCopyJobs],
+    _failedCopiedLessonFiles: [
+      failedCopiedLessonFiles,
+      setFailedCopiedLessonFiles,
+    ],
   };
 
   return (

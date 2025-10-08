@@ -44,7 +44,6 @@ const LessonsSecsNavDots = ({
   const router = useRouter();
 
   const handleMouseEnter = () => {
-    console.log("yo there meng, handleMouseEnter");
     setArrowContainer({ isInView: false, canTakeOffDom: true });
 
     setSectionDots((sectionDots) => {
@@ -118,7 +117,6 @@ const LessonsSecsNavDots = ({
 
   const handleDotClick = (sectionId: string) => {
     clearTimeout(timerForHandleDotClick);
-    console.log("handleDotClick, yo there!");
     const viewPortWidth = Math.max(
       document.documentElement.clientWidth || 0,
       window.innerWidth || 0
@@ -180,7 +178,6 @@ const LessonsSecsNavDots = ({
   let timerForGoToSectionFn: NodeJS.Timeout;
 
   const goToSection = (sectionId: string) => {
-    console.log("goToSection, yo there!");
     clearTimeout(timerForGoToSectionFn);
     timerForGoToSectionFn = setTimeout(() => {
       setSectionDots((sectionDots) => {

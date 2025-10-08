@@ -1,21 +1,12 @@
-import { NextApiHandler, NextApiRequest, NextApiResponse } from "next";
-import {
-  copyFile,
-  GDriveItem,
-  refreshAuthToken,
-} from "../../../backend/services/googleDriveServices";
+import { NextApiRequest, NextApiResponse } from "next";
 import { getJwtPayloadPromise } from "../../../nondependencyFns";
 import {
-  addNewGDriveLessons,
-  addNewGDriveUnits,
-  createDbArrFilter,
   getUserByEmail,
   updateUser,
   updateUserCustom,
 } from "../../../backend/services/userServices";
 import { CustomError } from "../../../backend/utils/errors";
 import {
-  copyGDriveItem,
   createDrive,
   createFolderStructure,
   createGDriveFolder,
@@ -27,21 +18,18 @@ import {
   createUnitFolder,
   copyFiles,
   shareFileWithUser,
-  getIsValidFileId,
   updatePermissionsForSharedFileItems,
-  logFailedFileCopyToExcel,
-  IFailedFileCopy,
-  renameFiles
 } from "../../../backend/services/gdriveServices/index";
-import { sleep, waitWithExponentialBackOff } from "../../../globalFns";
-import { drive_v3 } from "googleapis";
+import { sleep } from "../../../globalFns";
 import {
   ILessonGDriveId,
   IUnitGDriveLesson,
 } from "../../../backend/models/User/types";
 import { INewUnitLesson } from "../../../backend/models/Unit/types/teachingMaterials";
 import { connectToMongodb } from "../../../backend/utils/connection";
-import { TFilesToRename } from "../../../backend/services/gdriveServices/types";
+import {
+  TFileToCopy,
+} from "../../../backend/services/gdriveServices/types";
 
 export const maxDuration = 240;
 export const VALID_WRITABLE_ROLES = new Set([
@@ -60,6 +48,7 @@ export type TCopyFilesMsg = Partial<{
   showSupportTxt: boolean;
   foldersToCopy: number;
   failedCopiedFile: string;
+  fileId: string;
   folderCreated: string;
   fileCopied: string;
   folderCopyId: string;
@@ -78,7 +67,7 @@ export type TCopyLessonReqQueryParams = {
   unitName: string | undefined;
   unitSharedGDriveId: string | undefined;
   fileIds: string[] | string;
-  fileNames: string[];
+  fileNames: string[] | string;
   allUnitLessons: string | undefined;
   lessonsFolder: string | undefined;
 };
@@ -152,7 +141,13 @@ export default async function handler(
   const reqQueryParams = request.query as unknown as TCopyLessonReqQueryParams;
   let parentFolder: { id: string; permissionId: string } | null = null;
   let wasUserRolesAndFileMetaDataReseted = false;
-  let _fileIds = typeof reqQueryParams.fileIds === 'string' ? [reqQueryParams.fileIds] : reqQueryParams.fileIds
+  let _fileIds =
+    typeof reqQueryParams.fileIds === "string"
+      ? [reqQueryParams.fileIds]
+      : reqQueryParams.fileIds;
+  let _fileNames = typeof reqQueryParams.fileNames === "string"
+      ? [reqQueryParams.fileNames]
+      : reqQueryParams.fileNames;
   const clientOrigin = new URL(request.headers.referer ?? "").origin;
 
   response.on("close", async () => {
@@ -222,6 +217,8 @@ export default async function handler(
       );
     }
 
+    
+
     if (
       !reqQueryParams.unitId ||
       !reqQueryParams.unitName ||
@@ -232,7 +229,9 @@ export default async function handler(
       !reqQueryParams?.lessonSharedGDriveFolderId ||
       !reqQueryParams?.allUnitLessons ||
       !reqQueryParams?.lessonsFolder ||
+      !_fileNames.length ||
       !_fileIds?.length ||
+      !(_fileIds?.length === _fileNames.length) ||
       !reqQueryParams?.lessonsFolderGradesRange ||
       !reqQueryParams?.lessonName
     ) {
@@ -407,8 +406,6 @@ export default async function handler(
         doesTargetGDriveLessonFolderExist
       );
 
-      //TODO: will check if the target unit folder was trashed. If it is, then recreate it
-
       if (unitDriveId && !doesTargetGDriveUnitFolderExist) {
         console.log(
           "The target unit folder does not exist, will delete from db"
@@ -547,20 +544,32 @@ export default async function handler(
           didRetrieveAllItems: true,
         });
 
+        const filesToCopy: TFileToCopy[] = [];
+
+        for (const fileIdIndex in _fileIds) {
+          const fileName = _fileNames[fileIdIndex];
+          const fileId = _fileIds[fileIdIndex];
+
+          filesToCopy.push({
+            id: fileId,
+            name: fileName,
+          });
+        }
+
         const wasSuccessful = await copyFiles(
-          _fileIds,
+          filesToCopy,
           email,
           drive,
           gDriveAccessToken,
           lessonFolderId,
           gDriveRefreshToken,
           clientOrigin,
-          reqQueryParams.fileNames,
           (data, willEndStream, delayMsg) => {
             sendMessage(response, data, willEndStream, delayMsg);
           },
           _lessonsFolderInSharedDrive.name!,
-          reqQueryParams.unitName!
+          reqQueryParams.unitName!,
+          reqQueryParams.lessonSharedGDriveFolderId
         );
 
         if (!isStreamOpen) {
@@ -807,20 +816,32 @@ export default async function handler(
           msg: "Copying lesson files...",
         });
 
+        const filesToCopy: TFileToCopy[] = [];
+
+        for (const fileIdIndex in _fileIds) {
+          const fileName = _fileNames[fileIdIndex];
+          const fileId = _fileIds[fileIdIndex];
+
+          filesToCopy.push({
+            id: fileId,
+            name: fileName,
+          });
+        }
+
         const wasSuccessful = await copyFiles(
-          _fileIds,
+          filesToCopy,
           email,
           drive,
           gDriveAccessToken,
           parentFolderOfCopiedItems,
           gDriveRefreshToken,
           clientOrigin,
-          reqQueryParams.fileNames,
           (data, willEndStream, delayMsg) => {
             sendMessage(response, data, willEndStream, delayMsg);
           },
           _lessonsFolderInSharedDrive.name!,
-          reqQueryParams.unitName!
+          reqQueryParams.unitName!,
+          reqQueryParams.lessonSharedGDriveFolderId
         );
 
         sendMessage(response, {
@@ -875,24 +896,34 @@ export default async function handler(
           didRetrieveAllItems: true,
         });
 
-        // throw new Error("Stop");
-
         console.log("About to copy files to existing lesson folder");
 
+        const filesToCopy: TFileToCopy[] = [];
+
+        for (const fileIdIndex in _fileIds) {
+          const fileName = _fileNames[fileIdIndex];
+          const fileId = _fileIds[fileIdIndex];
+
+          filesToCopy.push({
+            id: fileId,
+            name: fileName,
+          });
+        }
+
         const wasSuccessful = await copyFiles(
-          _fileIds,
+          filesToCopy,
           email,
           drive,
           gDriveAccessToken,
           targetLessonFolderInUserDrive!.lessonDriveId,
           gDriveRefreshToken,
           clientOrigin,
-          reqQueryParams.fileNames,
           (data, willEndStream, delayMsg) => {
             sendMessage(response, data, willEndStream, delayMsg);
           },
           _lessonsFolderInSharedDrive.name!,
-          reqQueryParams.unitName!
+          reqQueryParams.unitName!,
+          reqQueryParams.lessonSharedGDriveFolderId
         );
 
         sendMessage(response, {
@@ -1216,7 +1247,7 @@ export default async function handler(
       targetFolderStructureArrInUserDrive
     );
     // get the parent folder id of the files to copy
-    const parentFolderId = (
+    const parentFolderIdInSharedGDrive = (
       await drive.files.get({
         fileId: _fileIds[0],
         fields: "*",
@@ -1224,15 +1255,15 @@ export default async function handler(
       })
     ).data?.parents?.[0];
 
-    console.log("parentFolderId: ", parentFolderId);
+    console.log("parentFolderId: ", parentFolderIdInSharedGDrive);
 
-    if (!parentFolderId) {
+    if (!parentFolderIdInSharedGDrive) {
       throw new CustomError("The file does not have a parent folder.", 500);
     }
 
     console.log("Will share the parent folder with the target user.");
 
-    const result = await shareFileWithUser(parentFolderId, email);
+    const result = await shareFileWithUser(parentFolderIdInSharedGDrive, email);
 
     console.log("share result, sup: ", result);
 
@@ -1247,7 +1278,7 @@ export default async function handler(
     await sleep(1_500);
 
     const targetPermission = await getTargetUserPermission(
-      parentFolderId,
+      parentFolderIdInSharedGDrive,
       email,
       drive
     );
@@ -1261,7 +1292,7 @@ export default async function handler(
       );
     }
 
-    parentFolder = { id: parentFolderId, permissionId: targetPermission.id };
+    parentFolder = { id: parentFolderIdInSharedGDrive, permissionId: targetPermission.id };
 
     console.log("Will update the permission of the target file.");
 
@@ -1298,174 +1329,39 @@ export default async function handler(
       msg: "Will copy all files...",
     });
 
-    let wasJobSuccessful = true;
+    const filesToCopy: TFileToCopy[] = [];
 
-    console.log(
-      "Made the target file read only and changed the target user's permission to writer. Will copy files."
-    );
-
-    let copiedFiles: TFilesToRename = [];
-
-    // check if the permission were propagated to all of the files to copy
     for (const fileIdIndex in _fileIds) {
+      const fileName = _fileNames[fileIdIndex];
       const fileId = _fileIds[fileIdIndex];
 
-      if (!getIsValidFileId(fileId)) {
-        console.error(
-          `Invalid file ID: ${fileId}. Skipping file: ${
-            reqQueryParams.fileNames?.[fileIdIndex] || "Unknown file"
-          }`
-        );
-        wasJobSuccessful = false;
-        continue;
-      }
-
-      const permission = await getTargetUserPermission(fileId, email, drive);
-
-      console.log("permission, sup there: ", permission);
-
-      if (!permission?.role) {
-        continue;
-      }
-
-      let userUpdatedRole = permission?.role;
-      let tries = 7;
-
-      console.log(`userUpdatedRole: ${userUpdatedRole}`);
-
-      console.log(
-        "Made the target file read only and changed the target user's permission to writer."
-      );
-
-      while (!VALID_WRITABLE_ROLES.has(userUpdatedRole)) {
-        console.log(`tries: ${tries}`);
-        console.log(`userUpdatedRole: ${userUpdatedRole}`);
-
-        if (tries <= 0) {
-          console.error(
-            "Reached max tries. Failed to update the target user's permission."
-          );
-
-          continue;
-        }
-
-        await waitWithExponentialBackOff(tries);
-
-        const permission = await getTargetUserPermission(fileId, email, drive);
-
-        if (permission?.role) {
-          userUpdatedRole = permission?.role;
-        }
-
-        tries -= 1;
-      }
-
-      console.log(`The role of the user is: ${userUpdatedRole}`);
-
-      console.log("The user's role was updated.");
-
-      console.log(`Will copy file: ${fileId}`);
-
-      if (!isStreamOpen) {
-        throw new CustomError("The stream has ended.", 500);
-      }
-
-      const fileCopyResult = await copyGDriveItem(
-        gDriveAccessToken,
-        [targetLessonFolderInUserDrive.id],
-        fileId,
-        gDriveRefreshToken,
-        clientOrigin
-      );
-
-      console.log("fileCopyResult: ", fileCopyResult);
-
-      if (
-        "id" in fileCopyResult &&
-        fileCopyResult.id &&
-        reqQueryParams.fileNames[fileIdIndex]
-      ) {
-        console.log(
-          `Successfully copied file ${reqQueryParams.fileNames[fileIdIndex]}`
-        );
-        
-        const fileToCopy = {
-          id: fileCopyResult.id,
-          name: reqQueryParams.fileNames[fileIdIndex]
-        }
-
-        copiedFiles.push(fileToCopy)
-        
-        sendMessage(response, {
-          fileCopied: reqQueryParams.fileNames[fileIdIndex],
-        });
-      } else if (
-        reqQueryParams.fileNames[fileIdIndex] &&
-        fileCopyResult?.errType
-      ) {
-        wasJobSuccessful = false;
-        console.error(
-          "Failed to copy file for user.",
-          "Filename:",
-          reqQueryParams.fileNames[fileIdIndex],
-          "Email:",
-          email,
-          "Reason:",
-          fileCopyResult
-        );
-        sendMessage(response, {
-          failedCopiedFile: reqQueryParams.fileNames[fileIdIndex],
-        });
-
-        // Log failed copy to Excel
-        const lessonFolderLink = `https://drive.google.com/drive/folders/${targetLessonFolderInUserDrive.id}`;
-        const fileLink = `https://drive.google.com/file/d/${fileId}/view`;
-        const errorType =
-          "errType" in fileCopyResult &&
-          typeof fileCopyResult.errType === "string"
-            ? fileCopyResult.errType
-            : "unknown";
-        const errorMessage =
-          "errMsg" in fileCopyResult &&
-          typeof fileCopyResult.errMsg === "string"
-            ? fileCopyResult.errMsg
-            : JSON.stringify(fileCopyResult);
-
-        if (process.env.NEXT_PUBLIC_HOST === "localhost") {
-          await logFailedFileCopyToExcel({
-            lessonName: reqQueryParams.lessonName || "Unknown",
-            unitName: reqQueryParams.unitName || "Unknown",
-            lessonFolderLink,
-            fileName: reqQueryParams.fileNames[fileIdIndex],
-            fileLink,
-            errorType,
-            errorMessage,
-            timestamp: new Date().toISOString(),
-            userEmail: email,
-          });
-        }
-      }
+      filesToCopy.push({
+        id: fileId,
+        name: fileName,
+      });
     }
-    console.log("targetLessonFolder.id, java: ", targetLessonFolderInUserDrive);
 
-    console.log("copiedFiles: ", copiedFiles);
-
-    if(copiedFiles.length){
-      const copyFilesResult = await renameFiles(copiedFiles, gDriveAccessToken, gDriveRefreshToken, clientOrigin)
-
-      console.log("The file names update results: ", copyFilesResult);
-      
-      if(!copyFilesResult.wasSuccessful){
-        console.error("Failed to rename copied files. Error type: ", copyFilesResult.errType);
-      }
-    }
+    const wasJobSuccessful = await copyFiles(
+      filesToCopy,
+      email,
+      drive,
+      gDriveAccessToken,
+      targetLessonFolderInUserDrive.id,
+      gDriveRefreshToken,
+      clientOrigin,
+      (data, willEndStream, delayMsg) => {
+        sendMessage(response, data, willEndStream, delayMsg);
+      },
+      _lessonsFolderInSharedDrive.name!,
+      reqQueryParams.unitName!,
+      reqQueryParams.lessonSharedGDriveFolderId
+    );
 
     sendMessage(response, {
       isJobDone: true,
       wasSuccessful: wasJobSuccessful,
       targetFolderId: targetLessonFolderInUserDrive.id,
     });
-    // TODO: if user.gpPlusDriveFolderId does not exist in the drive, then delete gpPlusDriveFolderId and the unitGDriveLessons
   } catch (error: any) {
     const { message, code } = error ?? {};
 

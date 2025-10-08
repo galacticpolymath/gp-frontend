@@ -6,8 +6,8 @@ $borderThickness: 1px;
 $borderColor: darkgray;
 $toolTipColor: #f0f4ff;
 
-.selected-unit-pg li{
-  margin-bottom: .5rem;
+.selected-unit-pg li {
+  margin-bottom: 0.5rem;
 }
 
 .lessons-pg-sec {
@@ -562,6 +562,10 @@ $toolTipColor: #f0f4ff;
   width: 100%;
 }
 
+.restricted-content {
+  filter: blur(7px);
+}
+
 .modal-content-wrapper-gp-web-app {
   display: flex;
   justify-content: center;
@@ -574,7 +578,8 @@ $toolTipColor: #f0f4ff;
   height: 99vh;
   width: 90vw;
   overflow: hidden;
-  max-height: 850px;
+  max-height: 650px;
+  max-width: 1440px;
 
   @media (max-width: 992px) {
     height: 100vh;

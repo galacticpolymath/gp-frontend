@@ -8,7 +8,7 @@ import { FaUserAlt } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import { useModalContext } from "../../../providers/ModalProvider";
 import Button from "../../General/Button";
-import { signOut, useSession } from "next-auth/react";
+import { signOut } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useCustomCookies } from "../../../customHooks/useCustomCookies";
 import { TUseStateReturnVal } from "../../../types/global";
@@ -21,17 +21,19 @@ import { Spinner } from "react-bootstrap";
 import {
   getIsWithinParentElement,
   getLocalStorageItem,
-  removeLocalStorageItem,
+  setLocalStorageItem,
+  setSessionStorageItem,
 } from "../../../shared/fns";
 import {
   deleteUserFromServerCache,
   getIndividualGpPlusSubscription,
 } from "../../../apiServices/user/crudFns";
 import useSiteSession from "../../../customHooks/useSiteSession";
-import useHandleOpeningGpPlusAccount from "../../../customHooks/useHandleOpeningGpPlusAccount";
 import { TAccountStageLabel } from "../../../backend/services/outsetaServices";
-import Image from "next/image";
 import axios from "axios";
+import { usePathname, useSearchParams } from "next/navigation";
+import { useCreateUnitSectionUrl } from "../../../customHooks/useCreateUnitSectionUrl";
+import { NAV_DOT_HIGHLIGHTED_CLASS } from "../../LessonSection/NavDots/LiNavDot";
 
 interface IProps {
   _modalAnimation: TUseStateReturnVal<
@@ -83,7 +85,7 @@ export const revokeGoogleAuthToken = async (token: string) => {
   }
 };
 
-const LoginContainerForNavbar = ({ _modalAnimation }: IProps) => {
+const LoginContainerForNavbar: React.FC<IProps> = ({ _modalAnimation }) => {
   const router = useRouter();
   const { _isAccountModalMobileOn } = useModalContext();
   const { _aboutUserForm, _isRetrievingUserData } = useGetAboutUserForm(
@@ -91,6 +93,7 @@ const LoginContainerForNavbar = ({ _modalAnimation }: IProps) => {
   );
   const [aboutUserForm] = _aboutUserForm;
   const [isRetrievingUserData] = _isRetrievingUserData;
+  const pathName = usePathname();
   const userAccountSaved = (
     typeof localStorage !== "undefined"
       ? getLocalStorageItem("userAccount") ?? {}
@@ -106,6 +109,7 @@ const LoginContainerForNavbar = ({ _modalAnimation }: IProps) => {
   const [gpPlusSubscription, setGpPlusSubscription] =
     useState<TGpPlusSubscriptionForClient | null>(null);
   const [wasUIDataLoaded, setWasUIDataLoaded] = useState(false);
+  const { createUnitSectionUrl } = useCreateUnitSectionUrl();
 
   useEffect(() => {
     if (status === "authenticated" && !wasUIDataLoaded) {
@@ -137,9 +141,9 @@ const LoginContainerForNavbar = ({ _modalAnimation }: IProps) => {
   const handleSignOutBtnClick = async () => {
     setIsSigningUserOut(true);
 
-    // if (gdriveAccessToken) {
-    //   await revokeGoogleAuthToken(gdriveAccessToken);
-    // }
+    if (gdriveAccessToken) {
+      await revokeGoogleAuthToken(gdriveAccessToken);
+    }
 
     removeAppCookies([
       "gdriveAccessToken",
@@ -197,6 +201,31 @@ const LoginContainerForNavbar = ({ _modalAnimation }: IProps) => {
       return;
     }
 
+    if (pathName.includes("units")) {
+      const sectionTitleLiNavDot = document.querySelector(
+        `.${NAV_DOT_HIGHLIGHTED_CLASS}`
+      );
+      const sectionTitle = sectionTitleLiNavDot?.getAttribute("name");
+      const userEntryRedirectUrl =
+        sectionTitle === "Overview"
+          ? createUnitSectionUrl()
+          : createUnitSectionUrl(sectionTitle!);
+
+      setSessionStorageItem("userEntryRedirectUrl", userEntryRedirectUrl);
+      router.push("/account");
+      return;
+    }
+
+    if (pathName.includes("sign-up")) {
+      setSessionStorageItem(
+        "userEntryRedirectUrl",
+        `${window.location.origin}/account`
+      );
+      router.push("/account");
+      return;
+    }
+
+    setSessionStorageItem("userEntryRedirectUrl", window.location.href);
     router.push("/account");
   };
 

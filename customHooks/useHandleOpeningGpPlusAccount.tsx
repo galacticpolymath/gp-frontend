@@ -15,16 +15,9 @@ const useHandleOpeningGpPlusAccount = (
 ) => {
   const { token, status } = useSiteSession();
 
-  console.log(
-    "gpPlusSub, yo there, setWasGpPlusSubRetrieved: ",
-    setWasGpPlusSubRetrieved
-  );
-
   const queryFn = async () => {
     if (willGetGpPlusMembership && status === "authenticated") {
       const gpPlusSub = await getIndividualGpPlusSubscription(token);
-
-      console.log("gpPlusSub, yo there: ", gpPlusSub);
 
       if (setWasGpPlusSubRetrieved) {
         setWasGpPlusSubRetrieved(true);

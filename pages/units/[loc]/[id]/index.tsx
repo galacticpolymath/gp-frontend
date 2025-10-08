@@ -24,10 +24,7 @@ import SendFeedback from "../../../../components/LessonSection/SendFeedback";
 import {
   getIsWithinParentElement,
   getLinkPreviewObj,
-  removeHtmlTags,
-  resetUrl,
 } from "../../../../globalFns";
-import { useSession } from "next-auth/react";
 import {
   defautlNotifyModalVal,
   useModalContext,
@@ -35,7 +32,7 @@ import {
 import { CustomNotifyModalFooter } from "../../../../components/Modals/Notify";
 import axios from "axios";
 import { useUserContext } from "../../../../providers/UserProvider";
-import { IUserSession, TSetter } from "../../../../types/global";
+import { TSetter } from "../../../../types/global";
 import {
   INewUnitSchema,
   ISections,
@@ -57,12 +54,13 @@ import ThankYouModal from "../../../../components/GpPlus/ThankYouModal";
 import {
   getLocalStorageItem,
   removeLocalStorageItem,
+  setLocalStorageItem,
 } from "../../../../shared/fns";
 import useSiteSession from "../../../../customHooks/useSiteSession";
-import {
-  getGDriveItemViaServiceAccount,
-  getUnitGDriveChildItems,
-} from "../../../../backend/services/gdriveServices";
+import { getUnitGDriveChildItems } from "../../../../backend/services/gdriveServices";
+import CopyLessonHelperModal from "../../../../components/GpPlus/CopyLessonHelperModal";
+import FailedCopiedFilesReportModal from "../../../../components/GpPlus/FailedCopiedFilesReportModal";
+import WelcomeNewUserModal from "../../../../components/Modals/WelcomeNewUserModal";
 
 const IS_ON_PROD = process.env.NODE_ENV === "production";
 const GOOGLE_DRIVE_THUMBNAIL_URL = "https://drive.google.com/thumbnail?id=";
@@ -172,6 +170,7 @@ const LessonDetails: React.FC<IProps> = ({ lesson, unit }) => {
     _isCopyUnitBtnDisabled,
     _didAttemptRetrieveUserData,
     _userLatestCopyUnitFolderId,
+    _willShowGpPlusCopyLessonHelperModal,
   } = useUserContext();
   const session = useSiteSession();
   const { status, token, gdriveAccessToken, gdriveRefreshToken, gdriveEmail } =
@@ -191,6 +190,8 @@ const LessonDetails: React.FC<IProps> = ({ lesson, unit }) => {
     _lessonItemModal,
     _isThankYouModalDisplayed,
   } = useModalContext();
+  const [, setWillShowGpPlusCopyLessonHelperModal] =
+    _willShowGpPlusCopyLessonHelperModal;
   const [, setIsThankYouModalDisplayed] = _isThankYouModalDisplayed;
   const [, setIsUserTeacher] = _isUserTeacher;
   const [isGpPlusMember, setIsGpPlusMember] = _isGpPlusMember;
@@ -613,6 +614,12 @@ const LessonDetails: React.FC<IProps> = ({ lesson, unit }) => {
 
           setIsUserTeacher(!!data?.isTeacher);
           setIsGpPlusMember(!!data?.isGpPlusMember);
+          setLocalStorageItem(
+            "willShowGpPlusCopyLessonHelperModal",
+            typeof data.willShowGpPlusCopyLessonHelperModal === "boolean"
+              ? data.willShowGpPlusCopyLessonHelperModal
+              : true
+          );
 
           if (data.viewingUnitFolderCopyId) {
             setUserLatestCopyUnitFolderId(data.viewingUnitFolderCopyId);
@@ -715,21 +722,19 @@ const LessonDetails: React.FC<IProps> = ({ lesson, unit }) => {
     langLinks: _unit.headLinks ?? ([] as TUnitForUI["headLinks"]),
   };
 
+  useEffect(() => {
+    const lessonId = getLocalStorageItem("lessonIdToViewAfterRedirect");
+
+    if (lessonId) {
+      const lessonElement = document.getElementById(lessonId);
+      lessonElement?.scrollIntoView({ behavior: "smooth" });
+      removeLocalStorageItem("lessonIdToViewAfterRedirect");
+    }
+  }, []);
+
   return (
     <Layout {...layoutProps}>
-      <ToastContainer
-        stacked
-        autoClose={false}
-        position="bottom-right"
-        style={
-          {
-            // height: '80vh',
-            // paddingTop: '50px',
-            // width: '50vw',
-            // overflowY: 'scroll',
-          }
-        }
-      />
+      <ToastContainer stacked autoClose={false} position="bottom-right" />
       {_unit.PublicationStatus === "Beta" && (
         <SendFeedback
           closeBtnDynamicStyles={{
@@ -776,6 +781,9 @@ const LessonDetails: React.FC<IProps> = ({ lesson, unit }) => {
       <GpPlusModal />
       <LessonItemModal />
       <ThankYouModal />
+      <CopyLessonHelperModal />
+      <FailedCopiedFilesReportModal />
+      <WelcomeNewUserModal />
     </Layout>
   );
 };
