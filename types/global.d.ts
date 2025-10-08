@@ -196,6 +196,7 @@ export interface ILocalStorage extends Pick<TUserSchemaV2, "willShowGpPlusCopyLe
   wasUserDeleted: boolean;
   wasContinueToCheckoutBtnClicked: boolean;
   userAccount: TUserSchemaForClient;
+  lessonIdToViewAfterRedirect: string,
   selectedGpPlusBillingType: "month" | "year";
 }
 

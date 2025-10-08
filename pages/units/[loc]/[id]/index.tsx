@@ -722,6 +722,16 @@ const LessonDetails: React.FC<IProps> = ({ lesson, unit }) => {
     langLinks: _unit.headLinks ?? ([] as TUnitForUI["headLinks"]),
   };
 
+  useEffect(() => {
+    const lessonId = getLocalStorageItem("lessonIdToViewAfterRedirect");
+
+    if (lessonId) {
+      const lessonElement = document.getElementById(lessonId);
+      lessonElement?.scrollIntoView({ behavior: "smooth" });
+      removeLocalStorageItem("lessonIdToViewAfterRedirect");
+    }
+  }, []);
+
   return (
     <Layout {...layoutProps}>
       <ToastContainer stacked autoClose={false} position="bottom-right" />

@@ -26,14 +26,10 @@ import { useRouter } from "next/router";
 import Layout from "../components/Layout";
 import { useUserEntry } from "../customHooks/useUserEntry";
 import { SELECTED_GP_PLUS_BILLING_TYPE } from "./gp-plus";
-import { useSearchParams } from "next/navigation";
+import { redirect, useSearchParams } from "next/navigation";
 import { PRESENT_WELCOME_MODAL_PARAM_NAME } from "../shared/constants";
-import {
-  getLocalStorageItem,
-  getSessionStorageItem,
-  removeLocalStorageItem,
-  removeSessionStorageItem,
-} from "../shared/fns";
+import { getSessionStorageItem } from "../shared/fns";
+import { GetServerSidePropsContext } from "next";
 
 export const FONT_SIZE_CHECKBOX = "28px";
 const inputElementsFocusedDefault = new Map();
@@ -582,6 +578,25 @@ const SignUpPage: React.FC = () => {
       </div>
     </Layout>
   );
+};
+
+export const getServerSideProps = async ({
+  req,
+}: GetServerSidePropsContext) => {
+  const sessionToken = req.cookies["next-auth.session-token"];
+
+  if (sessionToken) {
+    return {
+      redirect: {
+        destination: "/account",
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: {},
+  };
 };
 
 export default SignUpPage;
