@@ -117,33 +117,11 @@ export const useHandleGpPlusCheckoutSessionModal = () => {
 
     const mutationOberserver = new MutationObserver((elements) => {
       for (const _ of elements) {
-        const wasContinueToCheckoutBtnClicked = getLocalStorageItem(
-          "wasContinueToCheckoutBtnClicked"
-        );
         const billingTypeOptsContainer = document.querySelector<HTMLDivElement>(
           ".o--HorizontalToggle--horizontalToggle"
         );
         const gpPlusSavingsElement =
           document.querySelector<HTMLSpanElement>("#gp-plus-savings");
-        const monthlyOption = billingTypeOptsContainer?.firstChild?.firstChild
-          ?.firstChild as HTMLElement | undefined;
-        const yearlyOption = billingTypeOptsContainer?.firstChild?.lastChild
-          ?.firstChild as HTMLElement | undefined;
-        const selectedBillingPeriod = getBillingType();
-
-        // if (
-        //   !wasContinueToCheckoutBtnClicked &&
-        //   selectedBillingPeriod === "monthly" &&
-        //   monthlyOption
-        // ) {
-        //   monthlyOption.dispatchEvent(new Event("click", { bubbles: true }));
-        // } else if (
-        //   !wasContinueToCheckoutBtnClicked &&
-        //   selectedBillingPeriod === "yearly" &&
-        //   yearlyOption
-        // ) {
-        //   yearlyOption.dispatchEvent(new Event("click", { bubbles: true }));
-        // }
 
         console.log("gpPlusSavingsElement: ", gpPlusSavingsElement);
 
