@@ -1,21 +1,12 @@
-import { NextApiHandler, NextApiRequest, NextApiResponse } from "next";
-import {
-  copyFile,
-  GDriveItem,
-  refreshAuthToken,
-} from "../../../backend/services/googleDriveServices";
+import { NextApiRequest, NextApiResponse } from "next";
 import { getJwtPayloadPromise } from "../../../nondependencyFns";
 import {
-  addNewGDriveLessons,
-  addNewGDriveUnits,
-  createDbArrFilter,
   getUserByEmail,
   updateUser,
   updateUserCustom,
 } from "../../../backend/services/userServices";
 import { CustomError } from "../../../backend/utils/errors";
 import {
-  copyGDriveItem,
   createDrive,
   createFolderStructure,
   createGDriveFolder,
@@ -27,13 +18,9 @@ import {
   createUnitFolder,
   copyFiles,
   shareFileWithUser,
-  getIsValidFileId,
   updatePermissionsForSharedFileItems,
-  logFailedFileCopyToExcel,
-  renameFiles,
 } from "../../../backend/services/gdriveServices/index";
-import { sleep, waitWithExponentialBackOff } from "../../../globalFns";
-import { drive_v3 } from "googleapis";
+import { sleep } from "../../../globalFns";
 import {
   ILessonGDriveId,
   IUnitGDriveLesson,
@@ -41,7 +28,6 @@ import {
 import { INewUnitLesson } from "../../../backend/models/Unit/types/teachingMaterials";
 import { connectToMongodb } from "../../../backend/utils/connection";
 import {
-  TFilesToRename,
   TFileToCopy,
 } from "../../../backend/services/gdriveServices/types";
 
