@@ -39,6 +39,8 @@ const getNavDotIconStyles = (isHighlighted, sectionId, isScrollListenerOff) => {
     };
 };
 
+export const NAV_DOT_HIGHLIGHTED_CLASS = 'nav-dot-highlighted';
+
 const LiNavDot = ({ section, fns, index, isOnDesktop, EnticementArrow = <></>, isScrollListenerOn }) => {
     const { isInView, sectionId, sectionTitleForDot: title, willShowTitle, sectionDotId } = section;
     const [willChangeIconColor, setWillChangeIconColor] = useState(false)
@@ -70,7 +72,8 @@ const LiNavDot = ({ section, fns, index, isOnDesktop, EnticementArrow = <></>, i
                             onMouseOver={handleMouseOverIcon}
                             onMouseLeave={handleMouseLeaveIcon}
                             style={iconStyles}
-                            className={`sectionNavDot ${isInView ? 'nav-dot-highlighted' : ''}`}
+                            name={section.sectionTitleForDot}
+                            className={`sectionNavDot ${isInView ? NAV_DOT_HIGHLIGHTED_CLASS : ''}`}
                             id={sectionDotId}
                         />
                         {EnticementArrow}

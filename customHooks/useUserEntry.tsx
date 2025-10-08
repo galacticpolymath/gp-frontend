@@ -7,7 +7,12 @@ import { signIn } from "next-auth/react";
 import { ChangeEvent, useState } from "react";
 import { constructUrlWithSearchQuery, validateEmail } from "../globalFns";
 import { useCustomCookies } from "./useCustomCookies";
-import { getLocalStorageItem, removeLocalStorageItem } from "../shared/fns";
+import {
+  getLocalStorageItem,
+  getSessionStorageItem,
+  removeLocalStorageItem,
+  removeSessionStorageItem,
+} from "../shared/fns";
 import { ICallbackUrl } from "../pages/sign-up";
 
 type TLoginForm = {
@@ -163,8 +168,7 @@ export const useUserEntry = () => {
       { login: TLoginForm; createAccount: TCreateAccount } & {
         callbackUrl: string;
       }
-    >,
-    redirectPgType?: ICallbackUrl["redirectPgType"]
+    >
   ) => {
     try {
       if (
@@ -201,9 +205,7 @@ export const useUserEntry = () => {
         };
       }
 
-      if (redirectPgType === "pgWithSignUpBtn") {
-        removeLocalStorageItem("userEntryRedirectUrl");
-      }
+      console.log("formToSend: ", formToSend);
 
       signIn(providerType, formToSend);
     } catch (error) {
@@ -224,9 +226,7 @@ export const useUserEntry = () => {
     }));
   };
 
-  const handleLoginBtnClick = async (
-    redirectPgType?: ICallbackUrl["redirectPgType"]
-  ) => {
+  const handleLoginBtnClick = async (callbackUrl?: string) => {
     setIsUserEntryInProcess(true);
     setUserEntryErrors(new Map());
 
@@ -275,17 +275,13 @@ export const useUserEntry = () => {
       "gdriveAccessTokenExp",
       "gdriveRefreshToken",
     ]);
-    sendFormToServer(
-      "login",
-      "credentials",
-      {
-        login: {
-          email,
-          password,
-        },
+    sendFormToServer("login", "credentials", {
+      login: {
+        email,
+        password,
       },
-      redirectPgType
-    );
+      callbackUrl,
+    });
   };
 
   return {

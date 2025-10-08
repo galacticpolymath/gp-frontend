@@ -183,11 +183,16 @@ export interface IUpdatedUserReqBody{
 export interface IUpdatedAboutUserForm{
   aboutUserForm: TAboutUserForm<Map>
 }
+
+export interface ISessionStorage{
+  userEntryRedirectUrl: string; 
+  wasWelcomeNewUserModalShown: boolean
+}
+
 export interface ILocalStorage extends Pick<TUserSchemaV2, "willShowGpPlusCopyLessonHelperModal">{
   gpPlusFeatureLocation: string;
   willShowGpPlusPurchaseThankYouModal: boolean
   didGpSignInAttemptOccur: boolean;
-  userEntryRedirectUrl: string; 
   wasUserDeleted: boolean;
   wasContinueToCheckoutBtnClicked: boolean;
   userAccount: TUserSchemaForClient;

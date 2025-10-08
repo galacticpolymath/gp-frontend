@@ -42,6 +42,7 @@ import {
 import {
   checkIfElementClickedWasClipboard,
   setLocalStorageItem,
+  setSessionStorageItem,
 } from "../../../shared/fns";
 import {
   LAST_LESSON_NUM_ID,
@@ -685,7 +686,7 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                     onClick={() => {
                       const url = `${window.location.origin}/${UNITS_URL_PATH}/${router.query.loc}/${router.query.id}?${PRESENT_WELCOME_MODAL_PARAM_NAME}=true#lesson_${_accordionId}`;
 
-                      setLocalStorageItem("userEntryRedirectUrl", url);
+                      setSessionStorageItem("userEntryRedirectUrl", url);
 
                       router.push("/sign-up");
                     }}

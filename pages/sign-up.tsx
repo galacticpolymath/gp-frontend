@@ -28,7 +28,12 @@ import { useUserEntry } from "../customHooks/useUserEntry";
 import { SELECTED_GP_PLUS_BILLING_TYPE } from "./gp-plus";
 import { useSearchParams } from "next/navigation";
 import { PRESENT_WELCOME_MODAL_PARAM_NAME } from "../shared/constants";
-import { getLocalStorageItem, removeLocalStorageItem } from "../shared/fns";
+import {
+  getLocalStorageItem,
+  getSessionStorageItem,
+  removeLocalStorageItem,
+  removeSessionStorageItem,
+} from "../shared/fns";
 
 export const FONT_SIZE_CHECKBOX = "28px";
 const inputElementsFocusedDefault = new Map();
@@ -100,7 +105,7 @@ const SignUpPage: React.FC = () => {
       };
     }
 
-    const signUpRedirectUrl = getLocalStorageItem("userEntryRedirectUrl");
+    const signUpRedirectUrl = getSessionStorageItem("userEntryRedirectUrl");
 
     if (signUpRedirectUrl) {
       console.log("signUpRedirectUrl: ", signUpRedirectUrl);
@@ -130,7 +135,7 @@ const SignUpPage: React.FC = () => {
 
     const { email, firstName, lastName, password, isOnMailingList } =
       createAccountForm;
-    const { callbackUrl, redirectPgType } = createCallbackUrl();
+    const { callbackUrl } = createCallbackUrl();
     const signUpForm = {
       createAccount: {
         email,
@@ -140,7 +145,10 @@ const SignUpPage: React.FC = () => {
         isOnMailingList,
       },
       callbackUrl,
+      redirectTo: callbackUrl,
     };
+
+    console.log("signUpForm: ", signUpForm);
 
     sendFormToServer("createAccount", "credentials", signUpForm);
   };
@@ -195,10 +203,6 @@ const SignUpPage: React.FC = () => {
     }
 
     localStorage.setItem("userEntryType", JSON.stringify("create-account"));
-
-    if (callbackUrl.redirectPgType === "pgWithSignUpBtn") {
-      removeLocalStorageItem("userEntryRedirectUrl");
-    }
 
     signIn("google", { callbackUrl: callbackUrl.callbackUrl });
   };
@@ -541,6 +545,9 @@ const SignUpPage: React.FC = () => {
               <Button
                 handleOnClick={handleSubmitCredentialsBtnClick}
                 classNameStr="bg-primary rounded border-0 py-2 px-5 text-white underline-on-hover sign-up-btn"
+                defaultStyleObj={{
+                  height: "60px",
+                }}
               >
                 {isLoadingSpinnerOn ? (
                   <Spinner className="text-white" />
