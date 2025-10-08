@@ -13,6 +13,15 @@ import {
   getLocalStorageItem,
   setLocalStorageItem,
 } from "../shared/fns";
+import { AiOutlineConsoleSql } from "react-icons/ai";
+
+const getBillingType = () => {
+  const selectedGpPlusBillingType = getLocalStorageItem(
+    "selectedGpPlusBillingType"
+  );
+
+  return selectedGpPlusBillingType === "month" ? "monthly" : "yearly";
+};
 
 export const useHandleGpPlusCheckoutSessionModal = () => {
   const { _notifyModal, _isGpPlusSignUpModalDisplayed } = useModalContext();
@@ -27,12 +36,12 @@ export const useHandleGpPlusCheckoutSessionModal = () => {
 
     return selectedGpPlusBillingType === "month" ? "monthly" : "yearly";
   }, []);
+
   const { user, token, logUserOut, status } = useSiteSession();
   const mutationOberserverRef = useRef<MutationObserver | null>(null);
 
   const handleOnClickPlanChangeLogic = (event: MouseEvent) => {
-    console.log("Event, sup there: ", event.target);
-
+    console.log("plan change occurred");
     const _target = event.target as HTMLElement;
 
     if (_target.className === SELECTED_OPTION_CLASSNAME) {
@@ -110,14 +119,13 @@ export const useHandleGpPlusCheckoutSessionModal = () => {
       handleOnClickPlanChangeLogic(event);
     };
 
-    // if the user selects yearly and if they are on the yearly plan, then
+    // TODO: unobserver the modal when the user is on the payment ui is displayed
 
     const mutationOberserver = new MutationObserver((elements) => {
       for (const _ of elements) {
         const wasContinueToCheckoutBtnClicked = getLocalStorageItem(
           "wasContinueToCheckoutBtnClicked"
         );
-
 
         const billingTypeOptsContainer = document.querySelector<HTMLDivElement>(
           ".o--HorizontalToggle--horizontalToggle"
@@ -128,14 +136,17 @@ export const useHandleGpPlusCheckoutSessionModal = () => {
           ?.firstChild as HTMLElement | undefined;
         const yearlyOption = billingTypeOptsContainer?.firstChild?.lastChild
           ?.firstChild as HTMLElement | undefined;
+        const selectedBillingPeriod = getBillingType();
 
         if (
-          !wasContinueToCheckoutBtnClicked && selectedBillingPeriod === "monthly" &&
+          !wasContinueToCheckoutBtnClicked &&
+          selectedBillingPeriod === "monthly" &&
           monthlyOption
         ) {
           monthlyOption.click();
         } else if (
-          !wasContinueToCheckoutBtnClicked && selectedBillingPeriod === "yearly" &&
+          !wasContinueToCheckoutBtnClicked &&
+          selectedBillingPeriod === "yearly" &&
           yearlyOption
         ) {
           yearlyOption.click();
@@ -148,7 +159,9 @@ export const useHandleGpPlusCheckoutSessionModal = () => {
           savingsElement.className = "gp-plus-color text-center ms-2";
           savingsElement.id = "gp-plus-savings";
           savingsElement.textContent = `Save ${percentageSaved ?? 50}%`;
-          const gpPlusBillingType = getLocalStorageItem("selectedGpPlusBillingType");
+          const gpPlusBillingType = getLocalStorageItem(
+            "selectedGpPlusBillingType"
+          );
 
           console.log("gpPlusBillingType, python: ", gpPlusBillingType);
 

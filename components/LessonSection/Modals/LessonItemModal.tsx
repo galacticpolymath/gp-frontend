@@ -185,25 +185,26 @@ const LessonItemModal: React.FC = () => {
                         </section>
                       </Button>
                     )}
-                  {lessonItemModal.itemType === "presentation" && (
-                    <Button
-                      style={{ backgroundColor: "white" }}
-                      className="d-flex no-btn-styles px-2 px-sm-3 py-1 py-sm-2 me-sm-3 flex-column flex-sm-row"
-                      onClick={handleOpenInNewTabBtnClick}
-                    >
-                      <section className="d-flex justify-content-center align-items-center h-100">
-                        <TbExternalLink
-                          className="gp-plus-btn-icons-lesson-item-modal"
-                          style={{
-                            color: "#4699CC",
-                          }}
-                        />
-                      </section>
-                      <section className="justify-content-center align-items-center ms-sm-2 d-flex py-2 py-sm-0">
-                        <p className="mb-0 text-black">Open in New Tab</p>
-                      </section>
-                    </Button>
-                  )}
+                  {(lessonItemModal.itemType === "presentation" ||
+                    lessonItemModal.itemCat === "web resource") && (
+                      <Button
+                        style={{ backgroundColor: "white" }}
+                        className="d-flex no-btn-styles px-2 px-sm-3 py-1 py-sm-2 me-sm-3 flex-column flex-sm-row"
+                        onClick={handleOpenInNewTabBtnClick}
+                      >
+                        <section className="d-flex justify-content-center align-items-center h-100">
+                          <TbExternalLink
+                            className="gp-plus-btn-icons-lesson-item-modal"
+                            style={{
+                              color: "#4699CC",
+                            }}
+                          />
+                        </section>
+                        <section className="justify-content-center align-items-center ms-sm-2 d-flex py-2 py-sm-0">
+                          <p className="mb-0 text-black">Open in New Tab</p>
+                        </section>
+                      </Button>
+                    )}
                 </section>
               </section>
             </section>

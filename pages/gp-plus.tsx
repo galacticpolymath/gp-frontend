@@ -136,7 +136,12 @@ const GpPlus: React.FC<IProps> = ({ liveUnitsTotal, plusPlanPercentSaved }) => {
   }, [status]);
 
   const handleToggle = () => {
-    setBillingPeriod((prev) => (prev === "monthly" ? "yearly" : "monthly"));
+    const _billingPeriod = billingPeriod === "monthly" ? "yearly" : "monthly";
+    setBillingPeriod(_billingPeriod);
+    setLocalStorageItem(
+      "selectedGpPlusBillingType",
+      _billingPeriod === "monthly" ? "month" : "year"
+    );
   };
 
   const handleSignUpGpPlusBtnClick = async () => {
