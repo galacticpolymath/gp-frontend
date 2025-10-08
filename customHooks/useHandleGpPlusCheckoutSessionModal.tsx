@@ -115,18 +115,11 @@ export const useHandleGpPlusCheckoutSessionModal = () => {
 
     console.log("percentageSaved: ", percentageSaved);
 
-    const _handleOnClickPlanChangeLogic = (event: MouseEvent) => {
-      handleOnClickPlanChangeLogic(event);
-    };
-
-    // TODO: unobserver the modal when the user is on the payment ui is displayed
-
     const mutationOberserver = new MutationObserver((elements) => {
       for (const _ of elements) {
         const wasContinueToCheckoutBtnClicked = getLocalStorageItem(
           "wasContinueToCheckoutBtnClicked"
         );
-
         const billingTypeOptsContainer = document.querySelector<HTMLDivElement>(
           ".o--HorizontalToggle--horizontalToggle"
         );
@@ -138,19 +131,19 @@ export const useHandleGpPlusCheckoutSessionModal = () => {
           ?.firstChild as HTMLElement | undefined;
         const selectedBillingPeriod = getBillingType();
 
-        if (
-          !wasContinueToCheckoutBtnClicked &&
-          selectedBillingPeriod === "monthly" &&
-          monthlyOption
-        ) {
-          monthlyOption.click();
-        } else if (
-          !wasContinueToCheckoutBtnClicked &&
-          selectedBillingPeriod === "yearly" &&
-          yearlyOption
-        ) {
-          yearlyOption.click();
-        }
+        // if (
+        //   !wasContinueToCheckoutBtnClicked &&
+        //   selectedBillingPeriod === "monthly" &&
+        //   monthlyOption
+        // ) {
+        //   monthlyOption.dispatchEvent(new Event("click", { bubbles: true }));
+        // } else if (
+        //   !wasContinueToCheckoutBtnClicked &&
+        //   selectedBillingPeriod === "yearly" &&
+        //   yearlyOption
+        // ) {
+        //   yearlyOption.dispatchEvent(new Event("click", { bubbles: true }));
+        // }
 
         console.log("gpPlusSavingsElement: ", gpPlusSavingsElement);
 
@@ -162,25 +155,14 @@ export const useHandleGpPlusCheckoutSessionModal = () => {
           const gpPlusBillingType = getLocalStorageItem(
             "selectedGpPlusBillingType"
           );
-
           console.log("gpPlusBillingType, python: ", gpPlusBillingType);
-
-          //TODO: get the local storage item that has the final result when the user clicks on the continue button
           savingsElement.classList.add(
             gpPlusBillingType === "month"
               ? "text-decoration-line-through"
               : "fw-bolder"
           );
-
           console.log("billingTypeOptsContainer: ", billingTypeOptsContainer);
-
           billingTypeOptsContainer.appendChild(savingsElement);
-        }
-
-        if (billingTypeOptsContainer && typeof percentageSaved === "number") {
-          document.addEventListener("click", _handleOnClickPlanChangeLogic);
-        } else if (!billingTypeOptsContainer) {
-          document.removeEventListener("click", _handleOnClickPlanChangeLogic);
         }
       }
     });
@@ -195,6 +177,8 @@ export const useHandleGpPlusCheckoutSessionModal = () => {
   useEffect(() => {
     if (status === "authenticated") {
       handleUserInteractionWithGpPlusModal();
+
+      document.addEventListener("click", handleOnClickPlanChangeLogic);
 
       return () => {
         mutationOberserverRef.current?.disconnect();
