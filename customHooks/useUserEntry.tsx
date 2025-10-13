@@ -7,6 +7,13 @@ import { signIn } from "next-auth/react";
 import { ChangeEvent, useState } from "react";
 import { constructUrlWithSearchQuery, validateEmail } from "../globalFns";
 import { useCustomCookies } from "./useCustomCookies";
+import {
+  getLocalStorageItem,
+  getSessionStorageItem,
+  removeLocalStorageItem,
+  removeSessionStorageItem,
+} from "../shared/fns";
+import { ICallbackUrl } from "../pages/sign-up";
 
 type TLoginForm = {
   email: string;
@@ -146,7 +153,7 @@ export const useUserEntry = () => {
 
     return errors;
   };
-  
+
   /**
    * Sends the form to the server based on the form type and provider type.
    * @param {string} formType The type of the form. Can be "login" or "createAccount".
@@ -157,7 +164,11 @@ export const useUserEntry = () => {
   const sendFormToServer = (
     formType: "login" | "createAccount",
     providerType: "credentials" | "google",
-    form: Partial<{ login: TLoginForm; createAccount: TCreateAccount } & { callbackUrl: string }>
+    form: Partial<
+      { login: TLoginForm; createAccount: TCreateAccount } & {
+        callbackUrl: string;
+      }
+    >
   ) => {
     try {
       if (
@@ -194,6 +205,8 @@ export const useUserEntry = () => {
         };
       }
 
+      console.log("formToSend: ", formToSend);
+
       signIn(providerType, formToSend);
     } catch (error) {
       console.error(
@@ -213,7 +226,7 @@ export const useUserEntry = () => {
     }));
   };
 
-  const handleLoginBtnClick = async () => {
+  const handleLoginBtnClick = async (callbackUrl?: string) => {
     setIsUserEntryInProcess(true);
     setUserEntryErrors(new Map());
 
@@ -267,6 +280,7 @@ export const useUserEntry = () => {
         email,
         password,
       },
+      callbackUrl,
     });
   };
 

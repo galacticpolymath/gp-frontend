@@ -21,6 +21,8 @@ import { Spinner } from "react-bootstrap";
 import {
   getIsWithinParentElement,
   getLocalStorageItem,
+  setLocalStorageItem,
+  setSessionStorageItem,
 } from "../../../shared/fns";
 import {
   deleteUserFromServerCache,
@@ -29,6 +31,9 @@ import {
 import useSiteSession from "../../../customHooks/useSiteSession";
 import { TAccountStageLabel } from "../../../backend/services/outsetaServices";
 import axios from "axios";
+import { usePathname, useSearchParams } from "next/navigation";
+import { useCreateUnitSectionUrl } from "../../../customHooks/useCreateUnitSectionUrl";
+import { NAV_DOT_HIGHLIGHTED_CLASS } from "../../LessonSection/NavDots/LiNavDot";
 
 interface IProps {
   _modalAnimation: TUseStateReturnVal<
@@ -88,6 +93,7 @@ const LoginContainerForNavbar: React.FC<IProps> = ({ _modalAnimation }) => {
   );
   const [aboutUserForm] = _aboutUserForm;
   const [isRetrievingUserData] = _isRetrievingUserData;
+  const pathName = usePathname();
   const userAccountSaved = (
     typeof localStorage !== "undefined"
       ? getLocalStorageItem("userAccount") ?? {}
@@ -103,6 +109,7 @@ const LoginContainerForNavbar: React.FC<IProps> = ({ _modalAnimation }) => {
   const [gpPlusSubscription, setGpPlusSubscription] =
     useState<TGpPlusSubscriptionForClient | null>(null);
   const [wasUIDataLoaded, setWasUIDataLoaded] = useState(false);
+  const { createUnitSectionUrl } = useCreateUnitSectionUrl();
 
   useEffect(() => {
     if (status === "authenticated" && !wasUIDataLoaded) {
@@ -134,9 +141,9 @@ const LoginContainerForNavbar: React.FC<IProps> = ({ _modalAnimation }) => {
   const handleSignOutBtnClick = async () => {
     setIsSigningUserOut(true);
 
-    // if (gdriveAccessToken) {
-    //   await revokeGoogleAuthToken(gdriveAccessToken);
-    // }
+    if (gdriveAccessToken) {
+      await revokeGoogleAuthToken(gdriveAccessToken);
+    }
 
     removeAppCookies([
       "gdriveAccessToken",
@@ -194,6 +201,31 @@ const LoginContainerForNavbar: React.FC<IProps> = ({ _modalAnimation }) => {
       return;
     }
 
+    if (pathName.includes("units")) {
+      const sectionTitleLiNavDot = document.querySelector(
+        `.${NAV_DOT_HIGHLIGHTED_CLASS}`
+      );
+      const sectionTitle = sectionTitleLiNavDot?.getAttribute("name");
+      const userEntryRedirectUrl =
+        sectionTitle === "Overview"
+          ? createUnitSectionUrl()
+          : createUnitSectionUrl(sectionTitle!);
+
+      setSessionStorageItem("userEntryRedirectUrl", userEntryRedirectUrl);
+      router.push("/account");
+      return;
+    }
+
+    if (pathName.includes("sign-up")) {
+      setSessionStorageItem(
+        "userEntryRedirectUrl",
+        `${window.location.origin}/account`
+      );
+      router.push("/account");
+      return;
+    }
+
+    setSessionStorageItem("userEntryRedirectUrl", window.location.href);
     router.push("/account");
   };
 
@@ -267,7 +299,13 @@ const LoginContainerForNavbar: React.FC<IProps> = ({ _modalAnimation }) => {
                 />
               </div>
             ) : (
-              <FaUserAlt color="#2C83C3" />
+              <div
+                className={`avatar-ring ${
+                  isGpPlusMember ? "gp-plus-user-color" : "free-user-color"
+                }`}
+              >
+                <FaUserAlt color="#2C83C3" />
+              </div>
             )}
           </div>
         )}

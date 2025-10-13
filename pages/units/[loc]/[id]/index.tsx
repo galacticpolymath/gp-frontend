@@ -60,6 +60,7 @@ import useSiteSession from "../../../../customHooks/useSiteSession";
 import { getUnitGDriveChildItems } from "../../../../backend/services/gdriveServices";
 import CopyLessonHelperModal from "../../../../components/GpPlus/CopyLessonHelperModal";
 import FailedCopiedFilesReportModal from "../../../../components/GpPlus/FailedCopiedFilesReportModal";
+import WelcomeNewUserModal from "../../../../components/Modals/WelcomeNewUserModal";
 
 const IS_ON_PROD = process.env.NODE_ENV === "production";
 const GOOGLE_DRIVE_THUMBNAIL_URL = "https://drive.google.com/thumbnail?id=";
@@ -721,6 +722,16 @@ const LessonDetails: React.FC<IProps> = ({ lesson, unit }) => {
     langLinks: _unit.headLinks ?? ([] as TUnitForUI["headLinks"]),
   };
 
+  useEffect(() => {
+    const lessonId = getLocalStorageItem("lessonIdToViewAfterRedirect");
+
+    if (lessonId) {
+      const lessonElement = document.getElementById(lessonId);
+      lessonElement?.scrollIntoView({ behavior: "smooth" });
+      removeLocalStorageItem("lessonIdToViewAfterRedirect");
+    }
+  }, []);
+
   return (
     <Layout {...layoutProps}>
       <ToastContainer stacked autoClose={false} position="bottom-right" />
@@ -772,6 +783,7 @@ const LessonDetails: React.FC<IProps> = ({ lesson, unit }) => {
       <ThankYouModal />
       <CopyLessonHelperModal />
       <FailedCopiedFilesReportModal />
+      <WelcomeNewUserModal />
     </Layout>
   );
 };

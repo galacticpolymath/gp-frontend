@@ -1,21 +1,12 @@
-import { NextApiHandler, NextApiRequest, NextApiResponse } from "next";
-import {
-  copyFile,
-  GDriveItem,
-  refreshAuthToken,
-} from "../../../backend/services/googleDriveServices";
+import { NextApiRequest, NextApiResponse } from "next";
 import { getJwtPayloadPromise } from "../../../nondependencyFns";
 import {
-  addNewGDriveLessons,
-  addNewGDriveUnits,
-  createDbArrFilter,
   getUserByEmail,
   updateUser,
   updateUserCustom,
 } from "../../../backend/services/userServices";
 import { CustomError } from "../../../backend/utils/errors";
 import {
-  copyGDriveItem,
   createDrive,
   createFolderStructure,
   createGDriveFolder,
@@ -27,13 +18,9 @@ import {
   createUnitFolder,
   copyFiles,
   shareFileWithUser,
-  getIsValidFileId,
   updatePermissionsForSharedFileItems,
-  logFailedFileCopyToExcel,
-  renameFiles,
 } from "../../../backend/services/gdriveServices/index";
-import { sleep, waitWithExponentialBackOff } from "../../../globalFns";
-import { drive_v3 } from "googleapis";
+import { sleep } from "../../../globalFns";
 import {
   ILessonGDriveId,
   IUnitGDriveLesson,
@@ -41,7 +28,6 @@ import {
 import { INewUnitLesson } from "../../../backend/models/Unit/types/teachingMaterials";
 import { connectToMongodb } from "../../../backend/utils/connection";
 import {
-  TFilesToRename,
   TFileToCopy,
 } from "../../../backend/services/gdriveServices/types";
 
@@ -81,7 +67,7 @@ export type TCopyLessonReqQueryParams = {
   unitName: string | undefined;
   unitSharedGDriveId: string | undefined;
   fileIds: string[] | string;
-  fileNames: string[];
+  fileNames: string[] | string;
   allUnitLessons: string | undefined;
   lessonsFolder: string | undefined;
 };
@@ -159,6 +145,9 @@ export default async function handler(
     typeof reqQueryParams.fileIds === "string"
       ? [reqQueryParams.fileIds]
       : reqQueryParams.fileIds;
+  let _fileNames = typeof reqQueryParams.fileNames === "string"
+      ? [reqQueryParams.fileNames]
+      : reqQueryParams.fileNames;
   const clientOrigin = new URL(request.headers.referer ?? "").origin;
 
   response.on("close", async () => {
@@ -240,9 +229,9 @@ export default async function handler(
       !reqQueryParams?.lessonSharedGDriveFolderId ||
       !reqQueryParams?.allUnitLessons ||
       !reqQueryParams?.lessonsFolder ||
-      !reqQueryParams?.fileNames.length ||
+      !_fileNames.length ||
       !_fileIds?.length ||
-      !(_fileIds?.length === reqQueryParams?.fileNames.length) ||
+      !(_fileIds?.length === _fileNames.length) ||
       !reqQueryParams?.lessonsFolderGradesRange ||
       !reqQueryParams?.lessonName
     ) {
@@ -558,7 +547,7 @@ export default async function handler(
         const filesToCopy: TFileToCopy[] = [];
 
         for (const fileIdIndex in _fileIds) {
-          const fileName = reqQueryParams.fileNames[fileIdIndex];
+          const fileName = _fileNames[fileIdIndex];
           const fileId = _fileIds[fileIdIndex];
 
           filesToCopy.push({
@@ -830,7 +819,7 @@ export default async function handler(
         const filesToCopy: TFileToCopy[] = [];
 
         for (const fileIdIndex in _fileIds) {
-          const fileName = reqQueryParams.fileNames[fileIdIndex];
+          const fileName = _fileNames[fileIdIndex];
           const fileId = _fileIds[fileIdIndex];
 
           filesToCopy.push({
@@ -912,7 +901,7 @@ export default async function handler(
         const filesToCopy: TFileToCopy[] = [];
 
         for (const fileIdIndex in _fileIds) {
-          const fileName = reqQueryParams.fileNames[fileIdIndex];
+          const fileName = _fileNames[fileIdIndex];
           const fileId = _fileIds[fileIdIndex];
 
           filesToCopy.push({
@@ -1343,7 +1332,7 @@ export default async function handler(
     const filesToCopy: TFileToCopy[] = [];
 
     for (const fileIdIndex in _fileIds) {
-      const fileName = reqQueryParams.fileNames[fileIdIndex];
+      const fileName = _fileNames[fileIdIndex];
       const fileId = _fileIds[fileIdIndex];
 
       filesToCopy.push({

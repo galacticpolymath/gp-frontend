@@ -26,7 +26,10 @@ import { useRouter } from "next/router";
 import Layout from "../components/Layout";
 import { useUserEntry } from "../customHooks/useUserEntry";
 import { SELECTED_GP_PLUS_BILLING_TYPE } from "./gp-plus";
-import { useSearchParams } from "next/navigation";
+import { redirect, useSearchParams } from "next/navigation";
+import { PRESENT_WELCOME_MODAL_PARAM_NAME } from "../shared/constants";
+import { getSessionStorageItem } from "../shared/fns";
+import { GetServerSidePropsContext } from "next";
 
 export const FONT_SIZE_CHECKBOX = "28px";
 const inputElementsFocusedDefault = new Map();
@@ -35,9 +38,13 @@ inputElementsFocusedDefault.set("email", false);
 inputElementsFocusedDefault.set("firstName", false);
 inputElementsFocusedDefault.set("lastName", false);
 
+export interface ICallbackUrl {
+  callbackUrl: string;
+  redirectPgType: "account" | "home" | "pgWithSignUpBtn";
+}
+
 const SignUpPage: React.FC = () => {
-  const { _createAccountForm, sendFormToServer, validateForm, _isUserTeacher } =
-    useUserEntry();
+  const { _createAccountForm, sendFormToServer, validateForm } = useUserEntry();
   const urlSearchParams = useSearchParams();
   const [errors, setErrors] = useState(new Map());
   const [isLoadingSpinnerOn, setIsLoadingSpinnerOn] = useState(false);
@@ -79,17 +86,33 @@ const SignUpPage: React.FC = () => {
     }));
   };
 
-  const createCallbackUrl = () => {
-    let callbackUrl = `${window.location.origin}/?present_welcome_modal=true`;
+  const createCallbackUrl = (): ICallbackUrl => {
+    let callbackUrl = `${window.location.origin}/?${PRESENT_WELCOME_MODAL_PARAM_NAME}=true`;
 
     if (urlSearchParams.has(SELECTED_GP_PLUS_BILLING_TYPE)) {
       const gpPlusBillingPeriod = urlSearchParams.get(
         SELECTED_GP_PLUS_BILLING_TYPE
       );
       callbackUrl = `${window.location.origin}/account?show_about_user_form=true&${SELECTED_GP_PLUS_BILLING_TYPE}=${gpPlusBillingPeriod}`;
+
+      return {
+        callbackUrl,
+        redirectPgType: "account",
+      };
     }
 
-    return callbackUrl;
+    const signUpRedirectUrl = getSessionStorageItem("userEntryRedirectUrl");
+
+    if (signUpRedirectUrl) {
+      console.log("signUpRedirectUrl: ", signUpRedirectUrl);
+
+      return {
+        callbackUrl: signUpRedirectUrl,
+        redirectPgType: "pgWithSignUpBtn",
+      };
+    }
+
+    return { callbackUrl, redirectPgType: "home" };
   };
 
   const handleSubmitCredentialsBtnClick = async () => {
@@ -108,8 +131,7 @@ const SignUpPage: React.FC = () => {
 
     const { email, firstName, lastName, password, isOnMailingList } =
       createAccountForm;
-    const callbackUrl = createCallbackUrl();
-
+    const { callbackUrl } = createCallbackUrl();
     const signUpForm = {
       createAccount: {
         email,
@@ -117,9 +139,12 @@ const SignUpPage: React.FC = () => {
         lastName,
         password,
         isOnMailingList,
+        redirectTo: callbackUrl,
       },
       callbackUrl,
     };
+
+    console.log("signUpForm: ", signUpForm);
 
     sendFormToServer("createAccount", "credentials", signUpForm);
   };
@@ -175,7 +200,7 @@ const SignUpPage: React.FC = () => {
 
     localStorage.setItem("userEntryType", JSON.stringify("create-account"));
 
-    signIn("google", { callbackUrl: callbackUrl });
+    signIn("google", { callbackUrl: callbackUrl.callbackUrl });
   };
 
   const handleLoginBtnClick = () => {
@@ -516,6 +541,9 @@ const SignUpPage: React.FC = () => {
               <Button
                 handleOnClick={handleSubmitCredentialsBtnClick}
                 classNameStr="bg-primary rounded border-0 py-2 px-5 text-white underline-on-hover sign-up-btn"
+                defaultStyleObj={{
+                  height: "60px",
+                }}
               >
                 {isLoadingSpinnerOn ? (
                   <Spinner className="text-white" />
@@ -550,6 +578,25 @@ const SignUpPage: React.FC = () => {
       </div>
     </Layout>
   );
+};
+
+export const getServerSideProps = async ({
+  req,
+}: GetServerSidePropsContext) => {
+  const sessionToken = req.cookies["next-auth.session-token"];
+
+  if (sessionToken) {
+    return {
+      redirect: {
+        destination: "/account",
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: {},
+  };
 };
 
 export default SignUpPage;

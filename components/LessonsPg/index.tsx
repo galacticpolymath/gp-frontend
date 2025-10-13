@@ -44,8 +44,6 @@ const UnitsPg: React.FC<ICurrentUnits & { didErrorOccur?: boolean }> = ({
   );
   const [isWebAppModalShown, setIsWebAppModalShown] = useState(false);
   const [isGpVideoModalShown, setIsGpVideoModalShown] = useState(false);
-  const [isWelcomeModalDisplayed, setIsWelcomeModalDisplayed] = useState(false);
-  const [userFirstName, setUserFirstName] = useState("");
   const { status, token } = useSiteSession();
   const router = useRouter();
   const origin = typeof window === "undefined" ? "" : window.location.origin;
@@ -54,6 +52,9 @@ const UnitsPg: React.FC<ICurrentUnits & { didErrorOccur?: boolean }> = ({
     setSelectedGpWebApp(app);
     setIsWebAppModalShown(true);
   };
+
+  const [isWelcomeModalDisplayed, setIsWelcomeModalDisplayed] = useState(false);
+  const [userFirstName, setUserFirstName] = useState("");
 
   useQuery({
     refetchOnWindowFocus: false,

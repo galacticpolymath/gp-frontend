@@ -209,7 +209,7 @@ const GoogleDriveAuthResult = () => {
   return (
     <Layout>
       <div className="min-vh-100 pt-5 ps-2 pe-2 pe-sm-0 ps-sm-5 d-flex flex-column w-sm-25">
-        <span>GP now has access to your google drive!</span>
+        <span>GP now has access to your google drive with your permission!</span>
         {gpPlusFeatureLocation && (
           <div
             style={{ width: "fit-content" }}

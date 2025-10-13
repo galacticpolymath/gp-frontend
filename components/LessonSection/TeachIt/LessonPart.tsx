@@ -20,7 +20,6 @@ import Link from "next/link";
 import CopyableTxt from "../../CopyableTxt";
 import { useRouter } from "next/router";
 import React, { useEffect } from "react";
-import { useSession } from "next-auth/react";
 import { Button } from "react-bootstrap";
 import { useModalContext } from "../../../providers/ModalProvider";
 import { useUserContext } from "../../../providers/UserProvider";
@@ -40,8 +39,16 @@ import {
   TSetter,
   TUseStateReturnVal,
 } from "../../../types/global";
-import { checkIfElementClickedWasClipboard } from "../../../shared/fns";
-import { LAST_LESSON_NUM_ID, UNITS_URL_PATH } from "../../../shared/constants";
+import {
+  checkIfElementClickedWasClipboard,
+  setLocalStorageItem,
+  setSessionStorageItem,
+} from "../../../shared/fns";
+import {
+  LAST_LESSON_NUM_ID,
+  PRESENT_WELCOME_MODAL_PARAM_NAME,
+  UNITS_URL_PATH,
+} from "../../../shared/constants";
 import CopyLessonBtn, { ICopyLessonBtnProps } from "./CopyLessonBtn";
 import { INewUnitSchema } from "../../../backend/models/Unit/types/unit";
 import useSiteSession from "../../../customHooks/useSiteSession";
@@ -182,12 +189,6 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
     return targetLessonFolder;
   }, [selectedGrade]);
 
-  useEffect(() => {
-    console.log("sharedGDriveLessonFolders: ", sharedGDriveLessonFolders);
-
-    console.log("sharedGDriveLessonFolder: ", sharedGDriveLessonFolder);
-  });
-
   const { _isUserTeacher } = useUserContext();
   const { _isLoginModalDisplayed, _lessonItemModal } = useModalContext();
   const [isUserTeacher] = _isUserTeacher;
@@ -225,8 +226,6 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
   const handlePreviewDownloadBtnClick = (
     item: IItemV2Props & Pick<IItemV2, "itemCat" | "links">
   ) => {
-    console.log("handlePreviewDownloadBtnClick: item: ", item);
-
     setLessonItemModal((state) => ({
       ...state,
       ...item,
@@ -316,9 +315,11 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
       setIsExpanded(!isExpanded);
     }
   };
+
   const handleSignInBtnClick = () => {
     setIsLoginModalDisplayed(true);
   };
+
   const handleUpdateProfileBtnClick = () => {
     router.push("/account?show_about_user_form=true");
   };
@@ -683,6 +684,14 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                 <div className="d-flex justify-content-center align-items-center">
                   <Button
                     onClick={() => {
+                      const url = `${window.location.origin}/${UNITS_URL_PATH}/${router.query.loc}/${router.query.id}?${PRESENT_WELCOME_MODAL_PARAM_NAME}=true`;
+
+                      setLocalStorageItem(
+                        "lessonIdToViewAfterRedirect",
+                        `lesson_${_accordionId}`
+                      );
+                      setSessionStorageItem("userEntryRedirectUrl", url);
+
                       router.push("/sign-up");
                     }}
                     className="mt-2 sign-in-teacher-materials-btn d-flex justify-content-center align-items-center underline-on-hover"
@@ -800,7 +809,7 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                                   style={{ listStyle: "none" }}
                                   className="links-list p-0"
                                 >
-                                  {itemCat === "presentation" && (
+                                  {itemType === "presentation" && (
                                     <li className="mb-0 d-flex">
                                       <div className="d-flex justify-content-center align-items-sm-center">
                                         <button
@@ -950,7 +959,6 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
               </ol>
             </div>
           </div>
-          {/* put grade var notes here */}
           {gradeVarNote && (
             <div className="mt-4">
               <h5 className="d-flex align-items-start fw-bold mb-1">
