@@ -1,6 +1,5 @@
 /* eslint-disable quotes */
 /* eslint-disable indent */
-import { Carousel } from "react-responsive-carousel";
 import React, { useState } from "react";
 import { Button, Modal, CloseButton } from "react-bootstrap";
 import { useModalContext } from "../../../providers/ModalProvider";
@@ -8,6 +7,14 @@ import { TbDownload } from "react-icons/tb";
 import { TbExternalLink } from "react-icons/tb";
 import { useUserContext } from "../../../providers/UserProvider";
 import { useLessonContext } from "../../../providers/LessonProvider";
+import {
+  Carousel,
+  CarouselSlider,
+  CarouselCard,
+  CarouselNavContainer,
+  CarouselNav,
+  CarouselNavButton,
+} from "@fluentui/react-carousel";
 
 interface ICarouselItemNavBtn {
   onClick: React.MouseEventHandler<HTMLButtonElement>;
@@ -65,34 +72,25 @@ const LessonItemsModal: React.FC = () => {
     };
 
   const LessonItemCarousel: React.FC = () => {
+    let Cards = [1, 2, 3];
     return (
-      <div className="shadow rounded p-0 display-flex flex-column justify-content-center carouselContainer w-100">
-        <section className="row mt-0">
-          <section style={{ height: "fit-content" }} className="col-12 mt-0">
-            <div
-              className="autoCarouselSlider mt-0"
-              style={{ transform: `translate3d(${-testIndex * 100}%, 0, 0)` }}
-            >
-              {test?.length &&
-                test.map((lessonDocument, index) => {
-                  return (
-                    <div
-                      className="autoCarouselItem"
-                      style={{
-                        border:
-                          index === 0 ? "solid 1px pink" : "solid 1px green",
-                      }}
-                    >
-                      {/* <div className="mediaItemContainer"> */}
-                      {index} {lessonDocument}
-                      {/* </div> */}
-                    </div>
-                  );
-                })}
-            </div>
-          </section>
-        </section>
-      </div>
+      <Carousel groupSize={1} circular>
+        <CarouselSlider>
+          {Cards.map((card, index) => (
+            <CarouselCard key={`image-${index}`}>Card {index + 1}</CarouselCard>
+          ))}
+        </CarouselSlider>
+        <CarouselNavContainer
+          next={{ "aria-label": "go to next" }}
+          prev={{ "aria-label": "go to prev" }}
+        >
+          <CarouselNav>
+            {(index) => (
+              <CarouselNavButton aria-label={`Carousel Nav Button ${index}`} />
+            )}
+          </CarouselNav>
+        </CarouselNavContainer>
+      </Carousel>
     );
   };
 
@@ -261,24 +259,24 @@ const LessonItemsModal: React.FC = () => {
                     )}
                   {(lessonItemModal.itemType === "presentation" ||
                     lessonItemModal.itemCat === "web resource") && (
-                      <Button
-                        style={{ backgroundColor: "white" }}
-                        className="d-flex no-btn-styles px-2 px-sm-3 py-1 py-sm-2 me-sm-3 flex-column flex-sm-row"
-                        onClick={handleOpenInNewTabBtnClick}
-                      >
-                        <section className="d-flex justify-content-center align-items-center h-100">
-                          <TbExternalLink
-                            className="gp-plus-btn-icons-lesson-item-modal"
-                            style={{
-                              color: "#4699CC",
-                            }}
-                          />
-                        </section>
-                        <section className="justify-content-center align-items-center ms-sm-2 d-flex py-2 py-sm-0">
-                          <p className="mb-0 text-black">Open in New Tab</p>
-                        </section>
-                      </Button>
-                    )}
+                    <Button
+                      style={{ backgroundColor: "white" }}
+                      className="d-flex no-btn-styles px-2 px-sm-3 py-1 py-sm-2 me-sm-3 flex-column flex-sm-row"
+                      onClick={handleOpenInNewTabBtnClick}
+                    >
+                      <section className="d-flex justify-content-center align-items-center h-100">
+                        <TbExternalLink
+                          className="gp-plus-btn-icons-lesson-item-modal"
+                          style={{
+                            color: "#4699CC",
+                          }}
+                        />
+                      </section>
+                      <section className="justify-content-center align-items-center ms-sm-2 d-flex py-2 py-sm-0">
+                        <p className="mb-0 text-black">Open in New Tab</p>
+                      </section>
+                    </Button>
+                  )}
                 </section>
               </section>
             </section>
