@@ -120,15 +120,17 @@ export const ensureValidToken = async (
   return gdriveAccessToken;
 };
 
-interface ICopyLessonBtnUIProps extends ICopyLessonBtnProps {
+interface ICopyLessonBtnUIProps {
   onClick: () => void;
   isLoading: boolean;
   disabled: boolean;
-  didInitialRenderOccurred: boolean;
+  didInitialRenderOccurred?: boolean;
   isGpPlusMember: boolean;
   userGDriveLessonFolderId?: string;
   isCopyingLesson: boolean;
-  gdriveAccessToken: string;
+  gdriveAccessToken: string | undefined;
+  btnRef: ICopyLessonBtnProps["btnRef"] | null;
+  btnWrapperClassName?: string;
 }
 
 export const CopyLessonBtnUI: React.FC<ICopyLessonBtnUIProps> = ({
@@ -141,15 +143,21 @@ export const CopyLessonBtnUI: React.FC<ICopyLessonBtnUIProps> = ({
   userGDriveLessonFolderId,
   isCopyingLesson,
   gdriveAccessToken,
+  btnWrapperClassName = "mb-3",
 }) => {
+  const _didInitialRenderOccurred =
+    typeof didInitialRenderOccurred === "boolean" && didInitialRenderOccurred
+      ? didInitialRenderOccurred
+      : true;
+
   return (
-    <div style={{ width: "fit-content" }} className="mb-3">
+    <div style={{ width: "fit-content" }} className={btnWrapperClassName}>
       <Button
         ref={btnRef}
         onClick={onClick}
         style={{
           pointerEvents:
-            !didInitialRenderOccurred || disabled || isLoading
+            !_didInitialRenderOccurred || disabled || isLoading
               ? "none"
               : "auto",
           minHeight: "51px",
@@ -161,15 +169,15 @@ export const CopyLessonBtnUI: React.FC<ICopyLessonBtnUIProps> = ({
           width: "fit-content",
         }}
         className={`px-3 py-2 col-12 ${
-          !didInitialRenderOccurred || disabled || isLoading
+          !_didInitialRenderOccurred || disabled || isLoading
             ? "opacity-25"
             : "opacity-100"
         }`}
-        disabled={!didInitialRenderOccurred || disabled || isLoading}
+        disabled={!_didInitialRenderOccurred || disabled || isLoading}
       >
-        {didInitialRenderOccurred ? (
+        {_didInitialRenderOccurred ? (
           <div className="d-flex flex-row align-items-center justify-content-center gap-2">
-            {!didInitialRenderOccurred || disabled || isLoading ? (
+            {disabled || isLoading ? (
               <Spinner className="text-black" />
             ) : (
               <>

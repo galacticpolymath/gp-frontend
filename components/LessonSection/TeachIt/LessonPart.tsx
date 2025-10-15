@@ -241,10 +241,18 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
   }, []);
 
   const handlePreviewDownloadBtnClick = (lessonItemIndex: number) => {
+    if (!lsnNum) {
+      alert(
+        `Error: Unable to preview lesson. Please contact the administrator.`
+      );
+      return;
+    }
+
     setLessonItemModal({
       currentIndex: lessonItemIndex,
       lessonItems: allLessonItems,
       isDisplayed: true,
+      lessonId: typeof lsnNum === "number" ? lsnNum.toString() : lsnNum,
       copyLessonBtnRef: copyLessonBtnRef,
     });
   };

@@ -53,6 +53,8 @@ export interface ILessonItemsModal {
   lessonItems: ILessonItem[];
   currentIndex: number;
   isDisplayed: boolean;
+  lessonId: string | null;
+  userGDriveLessonFolderId?: string;
   copyLessonBtnRef: RefObject<HTMLButtonElement | null> | null;
 }
 
@@ -104,6 +106,7 @@ export const ModalProvider = ({ children }: Pick<IComponent, "children">) => {
     lessonItems: [],
     isDisplayed: false,
     copyLessonBtnRef: null,
+    lessonId: null,
   });
   const [
     isFailedCopiedFilesReportModalOn,

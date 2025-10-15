@@ -17,6 +17,8 @@ import {
   CarouselButton,
 } from "@fluentui/react-carousel";
 import Link from "next/link";
+import { CopyLessonBtnUI } from "../TeachIt/CopyLessonBtn";
+import useSiteSession from "../../../customHooks/useSiteSession";
 
 interface ICarouselItemNavBtn {
   onClick: React.MouseEventHandler<HTMLButtonElement>;
@@ -39,11 +41,14 @@ const CarouselItemNavBtn: React.FC<ICarouselItemNavBtn> = ({
 const LessonItemsModal: React.FC = () => {
   const { _lessonItemModal, _isGpPlusModalDisplayed } = useModalContext();
   const { _isGpPlusMember } = useUserContext();
+  const { _idsOfLessonsBeingCopied } = useLessonContext();
+  const { gdriveAccessToken } = useSiteSession();
+  const [idsOfLessonsBeingCopied] = _idsOfLessonsBeingCopied;
   const [lessonItemModal, setLessonItemModal] = _lessonItemModal;
   const [isGpPlusModalDisplayed, setIsGpPlusModalDisplayed] =
     _isGpPlusModalDisplayed;
   const [isGpPlusMember] = _isGpPlusMember;
-  const { currentIndex, lessonItems, isDisplayed, copyLessonBtnRef } =
+  const { currentIndex, lessonItems, isDisplayed, copyLessonBtnRef, lessonId } =
     lessonItemModal;
   const currentLessonItem = lessonItems[currentIndex] ?? {};
   const iframeSrc =
@@ -103,6 +108,12 @@ const LessonItemsModal: React.FC = () => {
     });
   };
 
+  const handleCopyLessonBtnClick = () => {
+    copyLessonBtnRef?.current?.click();
+  };
+
+  // TODO: could cause bug since using a different ref here with the button that is displayed in the lesson item material component
+
   return (
     <>
       <Modal
@@ -136,13 +147,15 @@ const LessonItemsModal: React.FC = () => {
               }`}
             >
               {isGpPlusMember ? (
-                <img
-                  src="/imgs/gp-logos/gp_submark.png"
-                  alt="gp_plus_logo"
-                  style={{
-                    objectFit: "contain",
-                  }}
-                  className="gp-plus-logo-lesson-item-modal"
+                <CopyLessonBtnUI
+                  btnRef={null}
+                  isLoading={idsOfLessonsBeingCopied.has(lessonId!)}
+                  disabled={idsOfLessonsBeingCopied.has(lessonId!)}
+                  isCopyingLesson={idsOfLessonsBeingCopied.has(lessonId!)}
+                  isGpPlusMember={isGpPlusMember}
+                  gdriveAccessToken={gdriveAccessToken}
+                  onClick={handleCopyLessonBtnClick}
+                  btnWrapperClassName="d-flex justify-content-center align-items-center"
                 />
               ) : (
                 <Button
