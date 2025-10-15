@@ -1,6 +1,6 @@
 /* eslint-disable quotes */
 /* eslint-disable indent */
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Button, Modal, CloseButton } from "react-bootstrap";
 import { useModalContext } from "../../../providers/ModalProvider";
 import { TbDownload } from "react-icons/tb";
@@ -16,6 +16,7 @@ import {
   CarouselNavButton,
   CarouselButton,
 } from "@fluentui/react-carousel";
+import Link from "next/link";
 
 interface ICarouselItemNavBtn {
   onClick: React.MouseEventHandler<HTMLButtonElement>;
@@ -38,17 +39,19 @@ const CarouselItemNavBtn: React.FC<ICarouselItemNavBtn> = ({
 const LessonItemsModal: React.FC = () => {
   const { _lessonItemModal, _isGpPlusModalDisplayed } = useModalContext();
   const { _isGpPlusMember } = useUserContext();
-  const { _selectedLessonItems } = useLessonContext();
-  const [selectedLessonItems, setSelectedLessonItems] = _selectedLessonItems;
   const [lessonItemModal, setLessonItemModal] = _lessonItemModal;
   const [isGpPlusModalDisplayed, setIsGpPlusModalDisplayed] =
     _isGpPlusModalDisplayed;
   const [isGpPlusMember] = _isGpPlusMember;
-  const { allDocUrls, currentDocUrlIndex } = lessonItemModal;
+  const { allDocUrlAndNamePairs, currentDocUrlIndex } = lessonItemModal;
   const iframeSrc =
     lessonItemModal.itemCat === "web resource"
       ? lessonItemModal.externalUrl
       : lessonItemModal.docUrl;
+  const currentLessonItem = useMemo(() => {
+    return allDocUrlAndNamePairs?.[currentDocUrlIndex] ?? [];
+  }, [lessonItemModal]);
+  const [currentLessonItemDocUrl, currentLessonItemName] = currentLessonItem;
 
   const handleDownloadPdfBtnClick = () => {
     if (lessonItemModal.mimeType === "pdf") {
@@ -86,7 +89,14 @@ const LessonItemsModal: React.FC = () => {
     });
   };
 
-  const handleCarouselNavBtnClick = (btnNavType: "prev" | "next") => () => {};
+  const handleCarouselNavBtnClick = (indexShift: 1 | -1) => () => {
+    setLessonItemModal((state) => {
+      return {
+        ...state,
+        currentDocUrlIndex: currentDocUrlIndex + indexShift,
+      };
+    });
+  };
 
   return (
     <>
@@ -240,37 +250,52 @@ const LessonItemsModal: React.FC = () => {
             </section>
           </div>
         </section>
-        <Carousel groupSize={1} circular={false} className="w-100 h-100">
-          <div className="w-100 border" style={{ height: "91%" }}>
+        <Carousel
+          groupSize={1}
+          circular={false}
+          className="w-100 h-100"
+          activeIndex={currentDocUrlIndex}
+        >
+          <div className="w-100 border" style={{ height: "88%" }}>
             <CarouselSlider className="w-100 h-100">
-              {allDocUrls.map((url, index) => (
+              {allDocUrlAndNamePairs.map(([url], index) => (
                 <CarouselCard key={`image-${index}`} className="h-100">
                   <iframe src={url} className="w-100 h-100" />
                 </CarouselCard>
               ))}
             </CarouselSlider>
           </div>
-          <div
-            className="pt-2 d-flex justify-content-center align-items-center flex-row w-100"
-            style={{
-              border: "solid 1px pink",
-            }}
-          >
+          <div className="pt-2 d-flex justify-content-center align-items-center flex-row w-100">
             <CarouselButton
-              onClick={handleCarouselNavBtnClick("prev")}
+              onClick={handleCarouselNavBtnClick(-1)}
               size="large"
               shape="circular"
               appearance="primary"
               navType="prev"
               name="prev"
             />
-            <div style={{ minWidth: "45vw" }} className="border h-100 p-0">
-              <div className="h-100 d-flex justify-content-center align-items-center">
-                hi
+            <div style={{ minWidth: "45vw" }} className="h-100 p-0">
+              <div
+                style={{ borderRadius: ".2em" }}
+                className="h-100 d-flex justify-content-center align-items-center flex-column border"
+              >
+                <div>
+                  <Link
+                    style={{ fontSize: "18px" }}
+                    href={currentLessonItemDocUrl}
+                    target="_blank"
+                    className="underline-on-hover text-black fw-normal"
+                  >
+                    {currentLessonItemName}
+                  </Link>
+                </div>
+                <div>
+                  {currentDocUrlIndex + 1}/{allDocUrlAndNamePairs.length}
+                </div>
               </div>
             </div>
             <CarouselButton
-              onClick={handleCarouselNavBtnClick("next")}
+              onClick={handleCarouselNavBtnClick(1)}
               size="large"
               shape="circular"
               appearance="primary"

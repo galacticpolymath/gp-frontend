@@ -46,7 +46,7 @@ type TLessonItemModal = {
 export interface ILessonItemModal
   extends TLessonItemModal,
     Partial<IItemV2Props & Pick<IItemV2, "itemCat">> {
-  allDocUrls: string[];
+  allDocUrlAndNamePairs: [string, string][];
   currentDocUrlIndex: number;
 }
 
@@ -95,7 +95,7 @@ export const ModalProvider = ({ children }: Pick<IComponent, "children">) => {
     useState(false);
   const [lessonItemModal, setLessonItemModal] = useState<ILessonItemModal>({
     isDisplayed: false,
-    allDocUrls: [],
+    allDocUrlAndNamePairs: [],
     currentDocUrlIndex: 0,
   });
   const [

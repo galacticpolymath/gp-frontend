@@ -225,16 +225,40 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
   }
 
   const _accordionId = `part_${lsnNum}`;
-  const allDocUrls = useMemo(() => {
-    return _itemList.map((item) => {
-      if (item.itemCat === "web resource") {
-        return item.externalUrl;
-      }
+  const allDocUrlAndNamePairs = useMemo(() => {
+    return _itemList
+      .map((item) => {
+        if (!item.itemTitle) {
+          return null;
+        }
 
-      return item.itemType === "presentation"
-        ? `${item.gdriveRoot}/view`
-        : `${item.gdriveRoot}/preview`;
-    });
+        const _externalUrl = item.externalUrl ?? item.links?.[0]?.url;
+
+        if (!_externalUrl) {
+          return null;
+        }
+
+        if (item.itemCat === "web resource") {
+          return [_externalUrl, item.itemTitle];
+        }
+
+        const itemDocUrl =
+          item.itemType === "presentation"
+            ? `${item.gdriveRoot}/view`
+            : `${item.gdriveRoot}/preview`;
+
+        return [itemDocUrl, item.itemTitle!];
+      })
+      .filter((item) => {
+        if (!item) {
+          console.error(
+            `Error: Item is null or undefined in allDocUrlAndNamePairs calculation`
+          );
+          return false;
+        }
+
+        return true;
+      }) as [string, string][];
   }, []);
 
   // TODO: get all of the docUrls for all of the items on the first render of this component
@@ -249,7 +273,7 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
       ...item,
       externalUrl: item.externalUrl ?? item.links?.[0]?.url,
       isDisplayed: true,
-      allDocUrls,
+      allDocUrlAndNamePairs,
       docUrl:
         item.itemType === "presentation"
           ? `${item.gdriveRoot}/view`
