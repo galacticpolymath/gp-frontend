@@ -20,11 +20,14 @@ export type TSelectedLessonItems = {
   items: (IItemV2Props & Pick<IItemV2, "itemCat" | "links">)[];
 } | null;
 
+export type TIdsOfLessonsBeingCopied = Set<string>;
+
 export type TLessonProviderVal = {
   _lessonToCopy: TUseStateReturnVal<TSelectedLessonToCopy | null>;
   _lessonsCopyJobs: TUseStateReturnVal<string[]>;
   _failedCopiedLessonFiles: TUseStateReturnVal<TFailedCopiedLessonFile>;
   _selectedLessonItems: TUseStateReturnVal<TSelectedLessonItems>;
+  _idsOfLessonsBeingCopied: TUseStateReturnVal<TIdsOfLessonsBeingCopied>;
 };
 
 export const LessonContext = createContext<TLessonProviderVal | null>(null);
@@ -32,6 +35,8 @@ export const LessonContext = createContext<TLessonProviderVal | null>(null);
 export const LessonProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
+  const [idsOfLessonsBeingCopied, setIdsOfLessonsBeingCopied] =
+    useState<TIdsOfLessonsBeingCopied>(new Set());
   const [lessonToCopy, setLessonToCopy] =
     useState<TSelectedLessonToCopy | null>(null);
   const [selectedLessonItems, setSelectedLessonItems] =
@@ -40,6 +45,10 @@ export const LessonProvider: React.FC<{ children: React.ReactNode }> = ({
   const [failedCopiedLessonFiles, setFailedCopiedLessonFiles] =
     useState<TFailedCopiedLessonFile>(null);
   const value: TLessonProviderVal = {
+    _idsOfLessonsBeingCopied: [
+      idsOfLessonsBeingCopied,
+      setIdsOfLessonsBeingCopied,
+    ],
     _selectedLessonItems: [selectedLessonItems, setSelectedLessonItems],
     _lessonToCopy: [lessonToCopy, setLessonToCopy],
     _lessonsCopyJobs: [lessonsCopyJobs, setLessonsCopyJobs],

@@ -251,8 +251,14 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
     _isCopyUnitBtnDisabled,
     _willShowGpPlusCopyLessonHelperModal,
   } = useUserContext();
-  const { _lessonsCopyJobs, _lessonToCopy, _failedCopiedLessonFiles } =
-    useLessonContext();
+  const {
+    _lessonsCopyJobs,
+    _lessonToCopy,
+    _failedCopiedLessonFiles,
+    _idsOfLessonsBeingCopied,
+  } = useLessonContext();
+  const [idsOfLessonsBeingCopied, setIdsOfLessonsBeingCopied] =
+    _idsOfLessonsBeingCopied;
   const router = useRouter();
   const {
     _isGpPlusModalDisplayed,
@@ -276,7 +282,6 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
   const { setAppCookie } = useCustomCookies();
   const [openPicker] = useDrivePicker();
   const [isCopyLessonBtnDisabled] = _isCopyUnitBtnDisabled;
-  const [isCopyingLesson, setIsCopyingLesson] = useState(false);
   const [, setIsCopyLessonHelperModalDisplayed] =
     _isCopyLessonHelperModalDisplayed;
   const [willShowGpPlusCopyLessonHelperModal] =
@@ -303,6 +308,29 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
     setFailedCopiedLessonFiles(failedCopiedFiles);
     setIsFailedCopiedFilesReportModalOn(true);
   };
+
+  const updateIdsOfLessonsBeingCopied = (updateType: "add" | "delete") => {
+    if (updateType === "add") {
+      setIdsOfLessonsBeingCopied((state) => {
+        state.add(
+          typeof lessonId === "number" ? lessonId.toString() : lessonId
+        );
+
+        return state;
+      });
+      return;
+    }
+
+    setIdsOfLessonsBeingCopied((state) => {
+      state.delete(
+        typeof lessonId === "number" ? lessonId.toString() : lessonId
+      );
+
+      return state;
+    });
+  };
+
+  const [isCopyingLesson, setIsCopyingLesson] = useState(false);
 
   const copyLesson = async () => {
     console.log("Copy unit function called");
@@ -387,7 +415,7 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
       multiselect: true,
       callbackFunction: async (data) => {
         if (data?.docs?.length) {
-          setIsCopyingLesson(true);
+          updateIdsOfLessonsBeingCopied("add");
 
           const validToken = await ensureValidToken(
             gdriveAccessTokenExp!,
@@ -401,6 +429,8 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
               "gpPlusFeatureLocation",
               `${window.location.protocol}//${window.location.host}${window.location.pathname}#teaching-materials`
             );
+            updateIdsOfLessonsBeingCopied("delete");
+            setIsCopyingLesson(false);
             window.location.href = createGDriveAuthUrl();
             return;
           }
@@ -425,6 +455,8 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
               toastId={toastId}
               subtitle="In progress..."
               onCancel={() => {
+                updateIdsOfLessonsBeingCopied("delete");
+                setIsCopyingLesson(false);
                 toast.update(toastId, {
                   render: (
                     <CopyingUnitToast
@@ -445,7 +477,6 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
                   toastId,
                   autoClose: 3000,
                 });
-                setIsCopyingLesson(false);
               }}
               jobStatus="ongoing"
             />,
@@ -473,7 +504,10 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
             alert(
               "Your google drive session has expired. Please log in again."
             );
+
+            updateIdsOfLessonsBeingCopied("delete");
             setIsCopyingLesson(false);
+
             setLocalStorageItem(
               "gpPlusFeatureLocation",
               `${window.location.protocol}//${window.location.host}${window.location.pathname}#teaching-materials`
@@ -734,6 +768,7 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
                   toastId,
                 });
                 eventSource.close();
+                updateIdsOfLessonsBeingCopied("delete");
                 setIsCopyingLesson(false);
                 return;
               }
@@ -845,11 +880,11 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
               console.error("Error processing event source message: ", error);
             }
           };
+          return;
         }
+        setIsCopyingLesson(false);
       },
     });
-
-    setIsCopyingLesson(false);
 
     return;
   };
@@ -914,6 +949,7 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
         multiselect: true,
         callbackFunction: async (data) => {
           if (data?.docs?.length) {
+            updateIdsOfLessonsBeingCopied("add");
             setIsCopyingLesson(true);
 
             const validToken = await ensureValidToken(
@@ -972,6 +1008,7 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
                     toastId,
                     autoClose: 3000,
                   });
+                  updateIdsOfLessonsBeingCopied("delete");
                   setIsCopyingLesson(false);
                 }}
                 jobStatus="ongoing"
@@ -1000,6 +1037,7 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
               alert(
                 "Your google drive session has expired. Please log in again."
               );
+              updateIdsOfLessonsBeingCopied("delete");
               setIsCopyingLesson(false);
               setLocalStorageItem(
                 "gpPlusFeatureLocation",
@@ -1078,6 +1116,7 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
 
             const cancelJob = () => {
               eventSource.close();
+              updateIdsOfLessonsBeingCopied("delete");
               setIsCopyingLesson(false);
               toast.update(toastId, {
                 render: (
@@ -1214,6 +1253,7 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
                     toastId,
                   });
                   eventSource.close();
+                  updateIdsOfLessonsBeingCopied("delete");
                   setIsCopyingLesson(false);
                   return;
                 }
