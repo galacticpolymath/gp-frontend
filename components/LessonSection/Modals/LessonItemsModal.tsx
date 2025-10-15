@@ -14,6 +14,7 @@ import {
   CarouselNavContainer,
   CarouselNav,
   CarouselNavButton,
+  CarouselViewport,
 } from "@fluentui/react-carousel";
 
 interface ICarouselItemNavBtn {
@@ -261,16 +262,8 @@ const LessonItemsModal: React.FC = () => {
             </section>
           </div>
         </section>
-        {/* <section
-          style={
-            {
-              // height: "85%",
-            }
-          }
-          className="w-100"
-        > */}
         <Carousel groupSize={1} circular={false} className="w-100 h-100">
-          <div className="w-100 border" style={{ height: "85%" }}>
+          <div className="w-100 border" style={{ height: "91%" }}>
             <CarouselSlider className="w-100 h-100">
               {Cards.map((card, index) => (
                 <CarouselCard key={`image-${index}`} className="h-100">
@@ -283,17 +276,22 @@ const LessonItemsModal: React.FC = () => {
             layout="inline"
             next={{ "aria-label": "go to next" }}
             prev={{ "aria-label": "go to prev" }}
+            className="pt-2 lessons-items-carousel-nav-container"
           >
-            <CarouselNav totalSlides={3}>
-              {(index) => (
-                <CarouselNavButton
-                  aria-label={`Carousel Nav Button ${index}`}
-                />
-              )}
-            </CarouselNav>
+            <div style={{ minWidth: "45vw" }} className="border h-100 p-0">
+              <div className="h-100 d-flex justify-content-center align-items-center">
+                hi
+              </div>
+              <CarouselNav>
+                {(index) => (
+                  <CarouselNavButton
+                    aria-label={`Carousel Nav Button ${index}`}
+                  />
+                )}
+              </CarouselNav>
+            </div>
           </CarouselNavContainer>
         </Carousel>
-        {/* </section> */}
       </Modal>
     </>
   );
