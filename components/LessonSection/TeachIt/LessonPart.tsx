@@ -21,10 +21,7 @@ import CopyableTxt from "../../CopyableTxt";
 import { useRouter } from "next/router";
 import React, { useEffect } from "react";
 import { Button } from "react-bootstrap";
-import {
-  ILessonItemModal,
-  useModalContext,
-} from "../../../providers/ModalProvider";
+import { ILessonItem, useModalContext } from "../../../providers/ModalProvider";
 import { useUserContext } from "../../../providers/UserProvider";
 import {
   IChunk,
@@ -225,60 +222,28 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
   }
 
   const _accordionId = `part_${lsnNum}`;
-  const allDocUrlAndNamePairs = useMemo(() => {
-    return _itemList
-      .map((item) => {
-        if (!item.itemTitle) {
-          return null;
-        }
-
-        const _externalUrl = item.externalUrl ?? item.links?.[0]?.url;
-
-        if (!_externalUrl) {
-          return null;
-        }
-
-        if (item.itemCat === "web resource") {
-          return [_externalUrl, item.itemTitle];
-        }
-
-        const itemDocUrl =
-          item.itemType === "presentation"
-            ? `${item.gdriveRoot}/view`
-            : `${item.gdriveRoot}/preview`;
-
-        return [itemDocUrl, item.itemTitle!];
-      })
-      .filter((item) => {
-        if (!item) {
-          console.error(
-            `Error: Item is null or undefined in allDocUrlAndNamePairs calculation`
-          );
-          return false;
-        }
-
-        return true;
-      }) as [string, string][];
-  }, []);
-
-  // TODO: get all of the docUrls for all of the items on the first render of this component
-
-  const handlePreviewDownloadBtnClick = (
-    item: IItemV2Props &
-      Pick<IItemV2, "itemCat" | "links"> &
-      Pick<ILessonItemModal, "currentDocUrlIndex">
-  ) => {
-    setLessonItemModal((state) => ({
-      ...state,
-      ...item,
-      externalUrl: item.externalUrl ?? item.links?.[0]?.url,
-      isDisplayed: true,
-      allDocUrlAndNamePairs,
-      docUrl:
+  const allLessonItems: ILessonItem[] = useMemo(() => {
+    return _itemList.map((item) => {
+      const externalUrl = item.externalUrl ?? item.links?.[0]?.url;
+      const itemDocUrl =
         item.itemType === "presentation"
           ? `${item.gdriveRoot}/view`
-          : `${item.gdriveRoot}/preview`,
-    }));
+          : `${item.gdriveRoot}/preview`;
+
+      return {
+        ...item,
+        externalUrl,
+        docUrl: itemDocUrl,
+      };
+    });
+  }, []);
+
+  const handlePreviewDownloadBtnClick = (lessonItemIndex: number) => {
+    setLessonItemModal({
+      currentIndex: lessonItemIndex,
+      lessonItems: allLessonItems,
+      isDisplayed: true,
+    });
   };
 
   const handleClipBoardIconClick = () => {
@@ -751,7 +716,7 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                 }`}
               >
                 {!!_itemList?.length &&
-                  _itemList.map((item, itemIndex, self) => {
+                  _itemList.map((item, itemIndex) => {
                     const {
                       itemTitle,
                       itemDescription,
@@ -888,16 +853,9 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                                             : ""
                                         } no-btn-styles no-hover-color-change d-flex justify-content-center align-items-center`}
                                         onClick={() => {
-                                          handlePreviewDownloadBtnClick({
-                                            links,
-                                            gdriveRoot,
-                                            isExportable,
-                                            mimeType,
-                                            externalUrl,
-                                            itemCat,
-                                            itemType,
-                                            currentDocUrlIndex: itemIndex,
-                                          });
+                                          handlePreviewDownloadBtnClick(
+                                            itemIndex
+                                          );
                                         }}
                                       >
                                         <RxMagnifyingGlass
@@ -922,16 +880,9 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                                             : ""
                                         } fw-bolder no-btn-styles no-hover-color-change underline-on-hover`}
                                         onClick={() => {
-                                          handlePreviewDownloadBtnClick({
-                                            links,
-                                            gdriveRoot,
-                                            mimeType,
-                                            externalUrl,
-                                            itemCat,
-                                            isExportable,
-                                            itemType,
-                                            currentDocUrlIndex: itemIndex,
-                                          });
+                                          handlePreviewDownloadBtnClick(
+                                            itemIndex
+                                          );
                                         }}
                                       >
                                         {itemType === "presentation"
@@ -967,16 +918,9 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                                           : "auto",
                                       }}
                                       onClick={() => {
-                                        handlePreviewDownloadBtnClick({
-                                          links,
-                                          gdriveRoot,
-                                          mimeType,
-                                          externalUrl,
-                                          itemCat,
-                                          isExportable,
-                                          itemType,
-                                          currentDocUrlIndex: itemIndex,
-                                        });
+                                        handlePreviewDownloadBtnClick(
+                                          itemIndex
+                                        );
                                       }}
                                     />
                                   </div>

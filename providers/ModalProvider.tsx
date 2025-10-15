@@ -39,15 +39,14 @@ export const defautlNotifyModalVal: INotifyModalVal = {
   handleOnHide: () => {},
 };
 
-type TLessonItemModal = {
+export interface ILessonItem extends IItemForClient {
+  docUrl: string;
+  externalUrl: string;
+}
+export interface ILessonItemsModal {
+  lessonItems: ILessonItem[];
+  currentIndex: number;
   isDisplayed: boolean;
-  docUrl?: string;
-};
-export interface ILessonItemModal
-  extends TLessonItemModal,
-    Partial<IItemV2Props & Pick<IItemV2, "itemCat">> {
-  allDocUrlAndNamePairs: [string, string][];
-  currentDocUrlIndex: number;
 }
 
 export interface IModalProviderValue {
@@ -68,7 +67,7 @@ export interface IModalProviderValue {
   _isThankYouModalDisplayed: TUseStateReturnVal<boolean>;
   _isGpPlusSignUpModalDisplayed: TUseStateReturnVal<boolean>;
   _isCopyLessonHelperModalDisplayed: TUseStateReturnVal<boolean>;
-  _lessonItemModal: TUseStateReturnVal<ILessonItemModal>;
+  _lessonItemModal: TUseStateReturnVal<ILessonItemsModal>;
 }
 
 export const ModalProvider = ({ children }: Pick<IComponent, "children">) => {
@@ -93,10 +92,10 @@ export const ModalProvider = ({ children }: Pick<IComponent, "children">) => {
   const [isPasswordResetModalOn, setIsPasswordResetModalOn] = useState(false);
   const [isGpPlusSignUpModalDisplayed, setIsGpPlusSignUpModalDisplayed] =
     useState(false);
-  const [lessonItemModal, setLessonItemModal] = useState<ILessonItemModal>({
+  const [lessonItemModal, setLessonItemModal] = useState<ILessonItemsModal>({
+    currentIndex: 0,
+    lessonItems: [],
     isDisplayed: false,
-    allDocUrlAndNamePairs: [],
-    currentDocUrlIndex: 0,
   });
   const [
     isFailedCopiedFilesReportModalOn,

@@ -43,19 +43,19 @@ const LessonItemsModal: React.FC = () => {
   const [isGpPlusModalDisplayed, setIsGpPlusModalDisplayed] =
     _isGpPlusModalDisplayed;
   const [isGpPlusMember] = _isGpPlusMember;
-  const { allDocUrlAndNamePairs, currentDocUrlIndex } = lessonItemModal;
+  const { currentIndex, lessonItems, isDisplayed } = lessonItemModal;
+  const currentLessonItem = lessonItems[currentIndex] ?? {};
   const iframeSrc =
-    lessonItemModal.itemCat === "web resource"
-      ? lessonItemModal.externalUrl
-      : lessonItemModal.docUrl;
-  const currentLessonItem = useMemo(() => {
-    return allDocUrlAndNamePairs?.[currentDocUrlIndex] ?? [];
-  }, [lessonItemModal]);
-  const [currentLessonItemDocUrl, currentLessonItemName] = currentLessonItem;
+    currentLessonItem?.itemCat === "web resource"
+      ? currentLessonItem?.externalUrl
+      : currentLessonItem?.docUrl;
+  // const [currentLessonItemDocUrl, currentLessonItemName] = currentLessonItem;
+  const { docUrl: currentLessonItemDocUrl, itemTitle: currentLessonItemName } =
+    currentLessonItem;
 
   const handleDownloadPdfBtnClick = () => {
-    if (lessonItemModal.mimeType === "pdf") {
-      const url = new URL(lessonItemModal.gdriveRoot as string);
+    if (currentLessonItem.mimeType === "pdf") {
+      const url = new URL(currentLessonItem.gdriveRoot as string);
       const itemId = url.pathname.split("/").at(-1);
 
       if (!itemId) {
@@ -67,19 +67,23 @@ const LessonItemsModal: React.FC = () => {
       return;
     }
 
-    window.open(`${lessonItemModal.gdriveRoot}/export?format=pdf`);
+    window.open(`${currentLessonItem.gdriveRoot}/export?format=pdf`);
   };
+
   const handleOpenInNewTabBtnClick = () => {
     window.open(iframeSrc);
   };
+
   const handleGpPlusBtnclick = () => {
     setIsGpPlusModalDisplayed(true);
   };
+
   const handleOfficeBtnClick = () => {
     window.open(
-      `${lessonItemModal.gdriveRoot}/export?format=${lessonItemModal.mimeType}`
+      `${currentLessonItem.gdriveRoot}/export?format=${currentLessonItem.mimeType}`
     );
   };
+
   const handleCloseBtnClick = () => {
     setLessonItemModal((state) => {
       return {
@@ -93,7 +97,7 @@ const LessonItemsModal: React.FC = () => {
     setLessonItemModal((state) => {
       return {
         ...state,
-        currentDocUrlIndex: currentDocUrlIndex + indexShift,
+        currentIndex: currentIndex + indexShift,
       };
     });
   };
@@ -104,7 +108,7 @@ const LessonItemsModal: React.FC = () => {
         onHide={handleCloseBtnClick}
         dialogClassName="border-0 selected-gp-web-app-dialog m-0 d-flex justify-content-center align-items-center p-0"
         contentClassName="lesson-item-modal user-modal-color rounded-0 p-0 position-relative"
-        show={lessonItemModal.isDisplayed}
+        show={isDisplayed}
         style={{
           margin: "0px",
           padding: "0px",
@@ -172,15 +176,15 @@ const LessonItemsModal: React.FC = () => {
               } col-sm-6 col-md-9 col-xxl-6 d-flex flex-column flex-md-row justify-content-md-end justify-content-xxl-center align-items-center`}
             >
               <section className="w-100 d-flex flex-column justify-content-end flex-md-row justify-content-md-end justify-content-xxl-center align-items-stretch lesson-item-modal-btns-container">
-                {lessonItemModal.itemCat !== "web resource" && (
+                {currentLessonItem.itemCat !== "web resource" && (
                   <section className="w-100 d-md-none d-flex justify-content-center align-items-center justify-content-sm-center align-items-sm-center">
                     <h6>Download as: </h6>
                   </section>
                 )}
                 <section className="w-100 d-flex justify-content-center align-items-center justify-content-md-end justify-content-sm-center align-items-sm-center">
-                  {lessonItemModal.isExportable &&
+                  {currentLessonItem.isExportable &&
                     isGpPlusMember &&
-                    lessonItemModal.itemType !== "presentation" && (
+                    currentLessonItem.itemType !== "presentation" && (
                       <Button
                         style={{ backgroundColor: "white" }}
                         className="d-flex no-btn-styles px-2 px-sm-3 py-1 py-sm-2 me-3 flex-column flex-sm-row"
@@ -202,8 +206,8 @@ const LessonItemsModal: React.FC = () => {
                         </section>
                       </Button>
                     )}
-                  {lessonItemModal.itemType !== "presentation" &&
-                    lessonItemModal.isExportable && (
+                  {currentLessonItem.itemType !== "presentation" &&
+                    currentLessonItem.isExportable && (
                       <Button
                         style={{ backgroundColor: "white" }}
                         className="d-flex no-btn-styles px-2 px-sm-3 py-1 py-sm-2 me-sm-3 flex-column flex-sm-row"
@@ -225,8 +229,8 @@ const LessonItemsModal: React.FC = () => {
                         </section>
                       </Button>
                     )}
-                  {(lessonItemModal.itemType === "presentation" ||
-                    lessonItemModal.itemCat === "web resource") && (
+                  {(currentLessonItem.itemType === "presentation" ||
+                    currentLessonItem.itemCat === "web resource") && (
                     <Button
                       style={{ backgroundColor: "white" }}
                       className="d-flex no-btn-styles px-2 px-sm-3 py-1 py-sm-2 me-sm-3 flex-column flex-sm-row"
@@ -254,15 +258,21 @@ const LessonItemsModal: React.FC = () => {
           groupSize={1}
           circular={false}
           className="w-100 h-100"
-          activeIndex={currentDocUrlIndex}
+          activeIndex={currentIndex}
         >
           <div className="w-100 border" style={{ height: "88%" }}>
             <CarouselSlider className="w-100 h-100">
-              {allDocUrlAndNamePairs.map(([url], index) => (
-                <CarouselCard key={`image-${index}`} className="h-100">
-                  <iframe src={url} className="w-100 h-100" />
-                </CarouselCard>
-              ))}
+              {lessonItems.map((lessonItem, index) => {
+                const url =
+                  lessonItem.itemCat === "web resource"
+                    ? lessonItem.externalUrl
+                    : lessonItem.docUrl;
+                return (
+                  <CarouselCard key={`image-${index}`} className="h-100">
+                    <iframe src={url} className="w-100 h-100" />
+                  </CarouselCard>
+                );
+              })}
             </CarouselSlider>
           </div>
           <div className="pt-2 d-flex justify-content-center align-items-center flex-row w-100">
@@ -290,7 +300,7 @@ const LessonItemsModal: React.FC = () => {
                   </Link>
                 </div>
                 <div>
-                  {currentDocUrlIndex + 1}/{allDocUrlAndNamePairs.length}
+                  {currentIndex + 1}/{lessonItems.length}
                 </div>
               </div>
             </div>
