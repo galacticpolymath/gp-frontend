@@ -11,7 +11,13 @@
 /* eslint-disable react/jsx-indent-props */
 /* eslint-disable indent */
 /* eslint-disable react/jsx-indent */
-import { createContext, ReactNode, useContext, useState } from "react";
+import {
+  createContext,
+  ReactNode,
+  RefObject,
+  useContext,
+  useState,
+} from "react";
 import {
   IComponent,
   IItemForClient,
@@ -47,6 +53,7 @@ export interface ILessonItemsModal {
   lessonItems: ILessonItem[];
   currentIndex: number;
   isDisplayed: boolean;
+  copyLessonBtnRef: RefObject<HTMLButtonElement | null> | null;
 }
 
 export interface IModalProviderValue {
@@ -96,6 +103,7 @@ export const ModalProvider = ({ children }: Pick<IComponent, "children">) => {
     currentIndex: 0,
     lessonItems: [],
     isDisplayed: false,
+    copyLessonBtnRef: null,
   });
   const [
     isFailedCopiedFilesReportModalOn,

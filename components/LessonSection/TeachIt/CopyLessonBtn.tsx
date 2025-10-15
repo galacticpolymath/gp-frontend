@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { RefObject, useEffect, useRef, useState } from "react";
 import { Button, Spinner } from "react-bootstrap";
 import { useUserContext } from "../../../providers/UserProvider";
 import useDrivePicker from "react-google-drive-picker";
@@ -56,6 +56,7 @@ export interface ICopyLessonBtnProps
   isRetrievingLessonFolderIds: boolean;
   sharedGDriveLessonFolderId?: string;
   setParts: TSetter<(INewUnitLesson<IItemV2> | ILessonForUI)[]>;
+  btnRef: RefObject<HTMLButtonElement | null>;
 }
 
 export const ensureValidToken = async (
@@ -134,8 +135,8 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
   lessonsFolder,
   isRetrievingLessonFolderIds,
   setParts,
+  btnRef,
 }) => {
-  const btnRef = useRef<HTMLButtonElement | null>(null);
   const {
     _isGpPlusMember,
     _isCopyUnitBtnDisabled,

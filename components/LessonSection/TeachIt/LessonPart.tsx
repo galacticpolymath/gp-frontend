@@ -14,6 +14,7 @@ import {
   PropsWithChildren,
   ReactNode,
   useMemo,
+  useRef,
   useState,
 } from "react";
 import Link from "next/link";
@@ -201,6 +202,7 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
     numsOfLessonPartsThatAreExpanded,
     setNumsOfLessonPartsThatAreExpanded,
   ] = _numsOfLessonPartsThatAreExpanded;
+  const copyLessonBtnRef = useRef<HTMLButtonElement | null>(null);
   const isOnAssessments = lsnTitle === "Assessments";
   const durList = isOnAssessments
     ? null
@@ -243,6 +245,7 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
       currentIndex: lessonItemIndex,
       lessonItems: allLessonItems,
       isDisplayed: true,
+      copyLessonBtnRef: copyLessonBtnRef,
     });
   };
 
@@ -662,6 +665,7 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
               <CopyLessonBtn
                 setParts={setParts}
                 unitId={unitId!}
+                btnRef={copyLessonBtnRef}
                 unitTitle={unitTitle}
                 isRetrievingLessonFolderIds={isRetrievingLessonFolderIds}
                 GdrivePublicID={GdrivePublicID}
