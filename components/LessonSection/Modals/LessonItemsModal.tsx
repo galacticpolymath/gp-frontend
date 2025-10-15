@@ -267,7 +267,12 @@ const LessonItemsModal: React.FC = () => {
             <CarouselSlider className="w-100 h-100">
               {Cards.map((card, index) => (
                 <CarouselCard key={`image-${index}`} className="h-100">
-                  Card {index + 1}
+                  <iframe
+                    src={
+                      "https://docs.google.com/presentation/d/1fCtcHEu4ewuQZJaXL5jMPc9mNkcKcXQH4eQhgyhE94c/preview"
+                    }
+                    className="w-100 h-100"
+                  />
                 </CarouselCard>
               ))}
             </CarouselSlider>
