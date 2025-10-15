@@ -71,28 +71,7 @@ const LessonItemsModal: React.FC = () => {
       // })
     };
 
-  const LessonItemCarousel: React.FC = () => {
-    let Cards = [1, 2, 3];
-    return (
-      <Carousel groupSize={1} circular>
-        <CarouselSlider>
-          {Cards.map((card, index) => (
-            <CarouselCard key={`image-${index}`}>Card {index + 1}</CarouselCard>
-          ))}
-        </CarouselSlider>
-        <CarouselNavContainer
-          next={{ "aria-label": "go to next" }}
-          prev={{ "aria-label": "go to prev" }}
-        >
-          <CarouselNav>
-            {(index) => (
-              <CarouselNavButton aria-label={`Carousel Nav Button ${index}`} />
-            )}
-          </CarouselNav>
-        </CarouselNavContainer>
-      </Carousel>
-    );
-  };
+  let Cards = [1, 2, 3];
 
   const handleDownloadPdfBtnClick = () => {
     if (lessonItemModal.mimeType === "pdf") {
@@ -282,34 +261,39 @@ const LessonItemsModal: React.FC = () => {
             </section>
           </div>
         </section>
-        <section
-          style={{
-            height: "85%",
-          }}
-          className="w-100 h-100"
-        >
-          <LessonItemCarousel />
-        </section>
-        <section className="d-flex justify-content-center align-items-center m-0">
-          <button
-            onClick={getCarouselItemNavBtnClickHandler(-1)}
-            className={`noBtnStyles me-2 p-0 ${
-              0 === testIndex ? "btn-disabled" : ""
-            }`}
-            disabled={testIndex === 0}
+        {/* <section
+          style={
+            {
+              // height: "85%",
+            }
+          }
+          className="w-100"
+        > */}
+        <Carousel groupSize={1} circular={false} className="w-100 h-100">
+          <div className="w-100 border" style={{ height: "85%" }}>
+            <CarouselSlider className="w-100 h-100">
+              {Cards.map((card, index) => (
+                <CarouselCard key={`image-${index}`} className="h-100">
+                  Card {index + 1}
+                </CarouselCard>
+              ))}
+            </CarouselSlider>
+          </div>
+          <CarouselNavContainer
+            layout="inline"
+            next={{ "aria-label": "go to next" }}
+            prev={{ "aria-label": "go to prev" }}
           >
-            <i className="fs-1 text-black bi-arrow-left-circle-fill lh-1 d-block" />
-          </button>
-          <button
-            onClick={getCarouselItemNavBtnClickHandler(1)}
-            className={`noBtnStyles p-0 ${
-              test?.length - 1 === testIndex ? "btn-disabled" : ""
-            }`}
-            disabled={test?.length - 1 === testIndex}
-          >
-            <i className="fs-1 text-black bi-arrow-right-circle-fill lh-1 d-block" />
-          </button>
-        </section>
+            <CarouselNav totalSlides={3}>
+              {(index) => (
+                <CarouselNavButton
+                  aria-label={`Carousel Nav Button ${index}`}
+                />
+              )}
+            </CarouselNav>
+          </CarouselNavContainer>
+        </Carousel>
+        {/* </section> */}
       </Modal>
     </>
   );
