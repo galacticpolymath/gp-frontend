@@ -911,6 +911,10 @@ $active-dot-color: rgba(44, 131, 195, 0.6) !important;
   overflow-y: auto;
 }
 
-.fui-CarouselButton__icon {
-  // border: solid 2px pink;
+.picker-dialog-content {
+  z-index: 10000000000 !important;
+  position: relative !important;
+}
+.picker-dialog-bg {
+  // z-index: 10000 !important;
 }

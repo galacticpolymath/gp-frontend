@@ -112,19 +112,18 @@ const LessonItemsModal: React.FC = () => {
     copyLessonBtnRef?.current?.click();
   };
 
-  // TODO: could cause bug since using a different ref here with the button that is displayed in the lesson item material component
-
   return (
     <>
       <Modal
         onHide={handleCloseBtnClick}
+        backdrop={false}
         dialogClassName="border-0 selected-gp-web-app-dialog m-0 d-flex justify-content-center align-items-center p-0"
         contentClassName="lesson-item-modal user-modal-color rounded-0 p-0 position-relative"
         show={isDisplayed}
         style={{
           margin: "0px",
           padding: "0px",
-          zIndex: isGpPlusModalDisplayed ? 100 : 10000,
+          zIndex: 1000,
         }}
       >
         <CloseButton

@@ -37,7 +37,9 @@ export const closeButtonStyles: React.CSSProperties = {
   cursor: "pointer",
 };
 
-export interface ModalProps {
+type TBootstrapModalProps = React.ComponentProps<typeof BootstrapModal>;
+
+export interface ModalProps extends TBootstrapModalProps {
   show: boolean;
   onHide: () => void;
   onShow: () => void;
@@ -55,6 +57,7 @@ const Modal = ({
   onShow,
   style,
   className,
+  backdrop = true,
 }: ModalProps) => {
   return (
     <BootstrapModal
@@ -63,6 +66,7 @@ const Modal = ({
       dialogClassName="vw-100"
       onHide={onHide}
       onShow={onShow}
+      backdrop={backdrop}
       onBackdropClick={onBackdropClick}
       className={className}
     >

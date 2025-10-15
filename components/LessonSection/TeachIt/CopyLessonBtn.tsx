@@ -265,8 +265,7 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
     _failedCopiedLessonFiles,
     _idsOfLessonsBeingCopied,
   } = useLessonContext();
-  const [idsOfLessonsBeingCopied, setIdsOfLessonsBeingCopied] =
-    _idsOfLessonsBeingCopied;
+  const [, setIdsOfLessonsBeingCopied] = _idsOfLessonsBeingCopied;
   const router = useRouter();
   const {
     _isGpPlusModalDisplayed,
@@ -320,21 +319,25 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
   const updateIdsOfLessonsBeingCopied = (updateType: "add" | "delete") => {
     if (updateType === "add") {
       setIdsOfLessonsBeingCopied((state) => {
-        state.add(
+        const _state = structuredClone(state);
+
+        _state.add(
           typeof lessonId === "number" ? lessonId.toString() : lessonId
         );
 
-        return state;
+        return _state;
       });
       return;
     }
 
     setIdsOfLessonsBeingCopied((state) => {
-      state.delete(
+      const _state = structuredClone(state);
+
+      _state.delete(
         typeof lessonId === "number" ? lessonId.toString() : lessonId
       );
 
-      return state;
+      return _state;
     });
   };
 
