@@ -1,6 +1,6 @@
 /* eslint-disable quotes */
 /* eslint-disable indent */
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Modal, CloseButton } from "react-bootstrap";
 import { useModalContext } from "../../../providers/ModalProvider";
 import { TbDownload } from "react-icons/tb";
@@ -14,7 +14,7 @@ import {
   CarouselNavContainer,
   CarouselNav,
   CarouselNavButton,
-  CarouselViewport,
+  CarouselButton,
 } from "@fluentui/react-carousel";
 
 interface ICarouselItemNavBtn {
@@ -49,25 +49,6 @@ const LessonItemsModal: React.FC = () => {
     lessonItemModal.itemCat === "web resource"
       ? lessonItemModal.externalUrl
       : lessonItemModal.docUrl;
-  const [testIndex, setTestIndex] = useState(0);
-
-  console.log("isGpPlusMember: ", isGpPlusMember);
-
-  const getCarouselItemNavBtnClickHandler =
-    (indexAdjustment: 1 | -1) => (event: React.MouseEvent) => {
-      setTestIndex((state) => state + indexAdjustment);
-      // setSelectedLessonItems(state => {
-      //   if(!state){
-      //     return state
-      //   }
-      //   return {
-      //     ...state,
-      //     index: state.index + in
-      //   }
-      // })
-    };
-
-  let Cards = [1, 2, 3];
 
   const handleDownloadPdfBtnClick = () => {
     if (lessonItemModal.mimeType === "pdf") {
@@ -104,6 +85,12 @@ const LessonItemsModal: React.FC = () => {
       };
     });
   };
+
+  useEffect(() => {
+    const navBtns = document.querySelectorAll(".fui-CarouselButton");
+
+    console.log("navBtns: ", navBtns);
+  }, []);
 
   return (
     <>
@@ -272,17 +259,22 @@ const LessonItemsModal: React.FC = () => {
             next={{ "aria-label": "go to next" }}
             prev={{ "aria-label": "go to prev" }}
             className="pt-2 lessons-items-carousel-nav-container"
+            style={{
+              border: "solid 1px pink",
+            }}
           >
             <div style={{ minWidth: "45vw" }} className="border h-100 p-0">
               <div className="h-100 d-flex justify-content-center align-items-center">
                 hi
               </div>
               <CarouselNav>
-                {(index) => (
-                  <CarouselNavButton
-                    aria-label={`Carousel Nav Button ${index}`}
-                  />
-                )}
+                {(index) => {
+                  return (
+                    <CarouselNavButton
+                      aria-label={`Carousel Nav Button ${index}`}
+                    />
+                  );
+                }}
               </CarouselNav>
             </div>
           </CarouselNavContainer>

@@ -240,7 +240,9 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
   // TODO: get all of the docUrls for all of the items on the first render of this component
 
   const handlePreviewDownloadBtnClick = (
-    item: IItemV2Props & Pick<IItemV2, "itemCat" | "links">
+    item: IItemV2Props &
+      Pick<IItemV2, "itemCat" | "links"> &
+      Pick<ILessonItemModal, "currentDocUrlIndex">
   ) => {
     setLessonItemModal((state) => ({
       ...state,
@@ -870,6 +872,7 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                                             externalUrl,
                                             itemCat,
                                             itemType,
+                                            currentDocUrlIndex: itemIndex,
                                           });
                                         }}
                                       >
@@ -903,6 +906,7 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                                             itemCat,
                                             isExportable,
                                             itemType,
+                                            currentDocUrlIndex: itemIndex,
                                           });
                                         }}
                                       >
@@ -947,6 +951,7 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                                           itemCat,
                                           isExportable,
                                           itemType,
+                                          currentDocUrlIndex: itemIndex,
                                         });
                                       }}
                                     />
