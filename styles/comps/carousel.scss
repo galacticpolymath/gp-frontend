@@ -37,7 +37,6 @@ $feedbackTxtFontSizeDesktop: 22px;
 .autoCarouselContainerCard {
   width: 85%;
   border-radius: 1.3em;
-  
 
   @media (min-width: 1200px) {
     max-width: 1224px;
@@ -45,9 +44,9 @@ $feedbackTxtFontSizeDesktop: 22px;
 
   @media (max-width: 576px) {
     width: 95%;
-  } 
+  }
 
-  @media(min-width: 768px) and (max-width: 992px){
+  @media (min-width: 768px) and (max-width: 992px) {
     min-width: 708px;
   }
 }
@@ -97,7 +96,7 @@ $feedbackTxtFontSizeDesktop: 22px;
   line-height: 22px;
   font-weight: 249;
   height: fit-content;
-  font-size: 1.15rem
+  font-size: 1.15rem;
   // @media (min-width: 768px) and (max-width: 991px) {
   //   line-height: 23px;  }
 
@@ -123,11 +122,11 @@ $feedbackTxtFontSizeDesktop: 22px;
   z-index: 10000000;
 }
 
-.iframeContainer{
+.iframeContainer {
   width: 100%;
   height: auto;
 
-  @media(min-width: 576px){
+  @media (min-width: 576px) {
     height: 315px;
   }
 }
@@ -150,16 +149,16 @@ $feedbackTxtFontSizeDesktop: 22px;
   }
 }
 
-.lessonTitle{
-  @media(max-width: 576px){
+.lessonTitle {
+  @media (max-width: 576px) {
     font-size: 1.0625rem;
     line-height: 18px;
   }
 }
 
-.lessonRelevanceTxt{
-  @media(max-width: 576px){
-    font-size: .9rem;
+.lessonRelevanceTxt {
+  @media (max-width: 576px) {
+    font-size: 0.9rem;
     line-height: 18px;
   }
 }
@@ -211,12 +210,18 @@ $feedbackTxtFontSizeDesktop: 22px;
   }
 }
 
+.carouselContainer {
+  margin: 0 auto;
+  overflow: hidden;
+  height: 100%;
+  position: relative;
+}
+
 .autoCarouselContainer {
   margin: 0 auto;
   overflow: hidden;
   height: 100%;
   position: relative;
-  height: 100%;
 
   @media (min-width: 768px) {
     max-width: 1000px;
@@ -414,7 +419,7 @@ $feedbackTxtFontSizeDesktop: 22px;
     height: 140px;
   }
 
-  @media(min-width: 768px) and (max-width: 992px){
+  @media (min-width: 768px) and (max-width: 992px) {
     width: 85px;
     height: 85px;
   }
@@ -425,7 +430,6 @@ $feedbackTxtFontSizeDesktop: 22px;
     margin-left: 45px;
   }
 }
-
 
 .picsCardContainer {
   @media (max-width: 576px) {
@@ -538,11 +542,11 @@ $feedbackTxtFontSizeDesktop: 22px;
     height: 100px;
   }
 
-  @media(max-width: 992px) and (min-width: 768px){
+  @media (max-width: 992px) and (min-width: 768px) {
     display: inline-flex;
     justify-content: center;
     align-items: center;
-    > section{
+    > section {
       // overriding w-100 default class
       width: 65% !important;
     }
@@ -730,7 +734,6 @@ $feedbackTxtFontSizeDesktop: 22px;
   }
 }
 
-
 .grantReviewerBulletPtsSec {
   @media (min-width: 768px) {
     margin-top: 20px;
@@ -743,7 +746,6 @@ $feedbackTxtFontSizeDesktop: 22px;
     transform: translateY(100px);
   }
 }
-
 
 .feedbackInfoSec.nonStudentInfoSec {
   @media (min-width: 1300px) {
@@ -838,8 +840,8 @@ $feedbackTxtFontSizeDesktop: 22px;
     > section {
       > span {
         left: 10px;
-        
-        @media(max-width: 992px){
+
+        @media (max-width: 992px) {
           transform: translateY(-35px);
         }
 

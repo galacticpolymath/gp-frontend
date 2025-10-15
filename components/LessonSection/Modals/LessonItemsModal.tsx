@@ -1,30 +1,67 @@
 /* eslint-disable quotes */
 /* eslint-disable indent */
-
-import React from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Button, Modal, CloseButton } from "react-bootstrap";
 import { useModalContext } from "../../../providers/ModalProvider";
 import { TbDownload } from "react-icons/tb";
 import { TbExternalLink } from "react-icons/tb";
 import { useUserContext } from "../../../providers/UserProvider";
+import { useLessonContext } from "../../../providers/LessonProvider";
+import {
+  Carousel,
+  CarouselSlider,
+  CarouselCard,
+  CarouselNavContainer,
+  CarouselNav,
+  CarouselNavButton,
+  CarouselButton,
+} from "@fluentui/react-carousel";
+import Link from "next/link";
+import { CopyLessonBtnUI } from "../TeachIt/CopyLessonBtn";
+import useSiteSession from "../../../customHooks/useSiteSession";
 
-const LessonItemModal: React.FC = () => {
+interface ICarouselItemNavBtn {
+  onClick: React.MouseEventHandler<HTMLButtonElement>;
+  arrowType: "left" | "right";
+}
+
+const CarouselItemNavBtn: React.FC<ICarouselItemNavBtn> = ({
+  onClick,
+  arrowType,
+}) => {
+  return (
+    <button onClick={onClick} className="btn bg-transparent m-0 p-1">
+      <i
+        className={`fs-1 text-black bi-arrow-${arrowType}-circle-fill lh-1 d-block`}
+      ></i>
+    </button>
+  );
+};
+
+const LessonItemsModal: React.FC = () => {
   const { _lessonItemModal, _isGpPlusModalDisplayed } = useModalContext();
   const { _isGpPlusMember } = useUserContext();
+  const { _idsOfLessonsBeingCopied } = useLessonContext();
+  const { gdriveAccessToken } = useSiteSession();
+  const [idsOfLessonsBeingCopied] = _idsOfLessonsBeingCopied;
   const [lessonItemModal, setLessonItemModal] = _lessonItemModal;
   const [isGpPlusModalDisplayed, setIsGpPlusModalDisplayed] =
     _isGpPlusModalDisplayed;
   const [isGpPlusMember] = _isGpPlusMember;
+  const { currentIndex, lessonItems, isDisplayed, copyLessonBtnRef, lessonId } =
+    lessonItemModal;
+  const currentLessonItem = lessonItems[currentIndex] ?? {};
   const iframeSrc =
-    lessonItemModal.itemCat === "web resource"
-      ? lessonItemModal.externalUrl
-      : lessonItemModal.docUrl;
-
-  console.log("isGpPlusMember: ", isGpPlusMember);
+    currentLessonItem?.itemCat === "web resource"
+      ? currentLessonItem?.externalUrl
+      : currentLessonItem?.docUrl;
+  // const [currentLessonItemDocUrl, currentLessonItemName] = currentLessonItem;
+  const { docUrl: currentLessonItemDocUrl, itemTitle: currentLessonItemName } =
+    currentLessonItem;
 
   const handleDownloadPdfBtnClick = () => {
-    if (lessonItemModal.mimeType === "pdf") {
-      const url = new URL(lessonItemModal.gdriveRoot as string);
+    if (currentLessonItem.mimeType === "pdf") {
+      const url = new URL(currentLessonItem.gdriveRoot as string);
       const itemId = url.pathname.split("/").at(-1);
 
       if (!itemId) {
@@ -36,19 +73,23 @@ const LessonItemModal: React.FC = () => {
       return;
     }
 
-    window.open(`${lessonItemModal.gdriveRoot}/export?format=pdf`);
+    window.open(`${currentLessonItem.gdriveRoot}/export?format=pdf`);
   };
+
   const handleOpenInNewTabBtnClick = () => {
     window.open(iframeSrc);
   };
+
   const handleGpPlusBtnclick = () => {
     setIsGpPlusModalDisplayed(true);
   };
+
   const handleOfficeBtnClick = () => {
     window.open(
-      `${lessonItemModal.gdriveRoot}/export?format=${lessonItemModal.mimeType}`
+      `${currentLessonItem.gdriveRoot}/export?format=${currentLessonItem.mimeType}`
     );
   };
+
   const handleCloseBtnClick = () => {
     setLessonItemModal((state) => {
       return {
@@ -58,17 +99,31 @@ const LessonItemModal: React.FC = () => {
     });
   };
 
+  const handleCarouselNavBtnClick = (indexShift: 1 | -1) => () => {
+    setLessonItemModal((state) => {
+      return {
+        ...state,
+        currentIndex: currentIndex + indexShift,
+      };
+    });
+  };
+
+  const handleCopyLessonBtnClick = () => {
+    copyLessonBtnRef?.current?.click();
+  };
+
   return (
     <>
       <Modal
         onHide={handleCloseBtnClick}
+        backdrop={false}
         dialogClassName="border-0 selected-gp-web-app-dialog m-0 d-flex justify-content-center align-items-center p-0"
         contentClassName="lesson-item-modal user-modal-color rounded-0 p-0 position-relative"
-        show={lessonItemModal.isDisplayed}
+        show={isDisplayed}
         style={{
           margin: "0px",
           padding: "0px",
-          zIndex: isGpPlusModalDisplayed ? 100 : 10000,
+          zIndex: 1000,
         }}
       >
         <CloseButton
@@ -91,13 +146,15 @@ const LessonItemModal: React.FC = () => {
               }`}
             >
               {isGpPlusMember ? (
-                <img
-                  src="/imgs/gp-logos/gp_submark.png"
-                  alt="gp_plus_logo"
-                  style={{
-                    objectFit: "contain",
-                  }}
-                  className="gp-plus-logo-lesson-item-modal"
+                <CopyLessonBtnUI
+                  btnRef={null}
+                  isLoading={idsOfLessonsBeingCopied.has(lessonId!)}
+                  disabled={idsOfLessonsBeingCopied.has(lessonId!)}
+                  isCopyingLesson={idsOfLessonsBeingCopied.has(lessonId!)}
+                  isGpPlusMember={isGpPlusMember}
+                  gdriveAccessToken={gdriveAccessToken}
+                  onClick={handleCopyLessonBtnClick}
+                  btnWrapperClassName="d-flex justify-content-center align-items-center"
                 />
               ) : (
                 <Button
@@ -132,15 +189,15 @@ const LessonItemModal: React.FC = () => {
               } col-sm-6 col-md-9 col-xxl-6 d-flex flex-column flex-md-row justify-content-md-end justify-content-xxl-center align-items-center`}
             >
               <section className="w-100 d-flex flex-column justify-content-end flex-md-row justify-content-md-end justify-content-xxl-center align-items-stretch lesson-item-modal-btns-container">
-                {lessonItemModal.itemCat !== "web resource" && (
+                {currentLessonItem.itemCat !== "web resource" && (
                   <section className="w-100 d-md-none d-flex justify-content-center align-items-center justify-content-sm-center align-items-sm-center">
                     <h6>Download as: </h6>
                   </section>
                 )}
                 <section className="w-100 d-flex justify-content-center align-items-center justify-content-md-end justify-content-sm-center align-items-sm-center">
-                  {lessonItemModal.isExportable &&
+                  {currentLessonItem.isExportable &&
                     isGpPlusMember &&
-                    lessonItemModal.itemType !== "presentation" && (
+                    currentLessonItem.itemType !== "presentation" && (
                       <Button
                         style={{ backgroundColor: "white" }}
                         className="d-flex no-btn-styles px-2 px-sm-3 py-1 py-sm-2 me-3 flex-column flex-sm-row"
@@ -162,8 +219,8 @@ const LessonItemModal: React.FC = () => {
                         </section>
                       </Button>
                     )}
-                  {lessonItemModal.itemType !== "presentation" &&
-                    lessonItemModal.isExportable && (
+                  {currentLessonItem.itemType !== "presentation" &&
+                    currentLessonItem.isExportable && (
                       <Button
                         style={{ backgroundColor: "white" }}
                         className="d-flex no-btn-styles px-2 px-sm-3 py-1 py-sm-2 me-sm-3 flex-column flex-sm-row"
@@ -185,47 +242,94 @@ const LessonItemModal: React.FC = () => {
                         </section>
                       </Button>
                     )}
-                  {(lessonItemModal.itemType === "presentation" ||
-                    lessonItemModal.itemCat === "web resource") && (
-                      <Button
-                        style={{ backgroundColor: "white" }}
-                        className="d-flex no-btn-styles px-2 px-sm-3 py-1 py-sm-2 me-sm-3 flex-column flex-sm-row"
-                        onClick={handleOpenInNewTabBtnClick}
-                      >
-                        <section className="d-flex justify-content-center align-items-center h-100">
-                          <TbExternalLink
-                            className="gp-plus-btn-icons-lesson-item-modal"
-                            style={{
-                              color: "#4699CC",
-                            }}
-                          />
-                        </section>
-                        <section className="justify-content-center align-items-center ms-sm-2 d-flex py-2 py-sm-0">
-                          <p className="mb-0 text-black">Open in New Tab</p>
-                        </section>
-                      </Button>
-                    )}
+                  {(currentLessonItem.itemType === "presentation" ||
+                    currentLessonItem.itemCat === "web resource") && (
+                    <Button
+                      style={{ backgroundColor: "white" }}
+                      className="d-flex no-btn-styles px-2 px-sm-3 py-1 py-sm-2 me-sm-3 flex-column flex-sm-row"
+                      onClick={handleOpenInNewTabBtnClick}
+                    >
+                      <section className="d-flex justify-content-center align-items-center h-100">
+                        <TbExternalLink
+                          className="gp-plus-btn-icons-lesson-item-modal"
+                          style={{
+                            color: "#4699CC",
+                          }}
+                        />
+                      </section>
+                      <section className="justify-content-center align-items-center ms-sm-2 d-flex py-2 py-sm-0">
+                        <p className="mb-0 text-black">Open in New Tab</p>
+                      </section>
+                    </Button>
+                  )}
                 </section>
               </section>
             </section>
           </div>
         </section>
-        <section style={{ height: "85%" }} className="w-100">
-          <iframe
-            loading="lazy"
-            src={iframeSrc}
-            width="100%"
-            height="100%"
-            style={{
-              width: "100%",
-              height: "100%",
-            }}
-            allow="autoplay"
-          />
-        </section>
+        <Carousel
+          groupSize={1}
+          circular={false}
+          className="w-100 h-100"
+          activeIndex={currentIndex}
+        >
+          <div className="w-100 border" style={{ height: "88%" }}>
+            <CarouselSlider className="w-100 h-100">
+              {lessonItems.map((lessonItem, index) => {
+                const url =
+                  lessonItem.itemCat === "web resource"
+                    ? lessonItem.externalUrl
+                    : lessonItem.docUrl;
+                return (
+                  <CarouselCard key={`image-${index}`} className="h-100">
+                    <iframe src={url} className="w-100 h-100" />
+                  </CarouselCard>
+                );
+              })}
+            </CarouselSlider>
+          </div>
+          <div className="pt-2 d-flex justify-content-center align-items-center flex-row w-100">
+            <CarouselButton
+              onClick={handleCarouselNavBtnClick(-1)}
+              size="large"
+              shape="circular"
+              appearance="primary"
+              navType="prev"
+              name="prev"
+            />
+            <div style={{ minWidth: "45vw" }} className="h-100 p-0">
+              <div
+                style={{ borderRadius: ".2em" }}
+                className="h-100 d-flex justify-content-center align-items-center flex-column border"
+              >
+                <div>
+                  <Link
+                    style={{ fontSize: "18px" }}
+                    href={currentLessonItemDocUrl}
+                    target="_blank"
+                    className="underline-on-hover text-black fw-normal"
+                  >
+                    {currentLessonItemName}
+                  </Link>
+                </div>
+                <div>
+                  {currentIndex + 1}/{lessonItems.length}
+                </div>
+              </div>
+            </div>
+            <CarouselButton
+              onClick={handleCarouselNavBtnClick(1)}
+              size="large"
+              shape="circular"
+              appearance="primary"
+              navType="next"
+              name="next"
+            />
+          </div>
+        </Carousel>
       </Modal>
     </>
   );
 };
 
-export default LessonItemModal;
+export default LessonItemsModal;

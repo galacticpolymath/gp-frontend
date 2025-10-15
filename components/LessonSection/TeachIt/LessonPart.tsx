@@ -14,6 +14,7 @@ import {
   PropsWithChildren,
   ReactNode,
   useMemo,
+  useRef,
   useState,
 } from "react";
 import Link from "next/link";
@@ -21,7 +22,7 @@ import CopyableTxt from "../../CopyableTxt";
 import { useRouter } from "next/router";
 import React, { useEffect } from "react";
 import { Button } from "react-bootstrap";
-import { useModalContext } from "../../../providers/ModalProvider";
+import { ILessonItem, useModalContext } from "../../../providers/ModalProvider";
 import { useUserContext } from "../../../providers/UserProvider";
 import {
   IChunk,
@@ -201,6 +202,7 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
     numsOfLessonPartsThatAreExpanded,
     setNumsOfLessonPartsThatAreExpanded,
   ] = _numsOfLessonPartsThatAreExpanded;
+  const copyLessonBtnRef = useRef<HTMLButtonElement | null>(null);
   const isOnAssessments = lsnTitle === "Assessments";
   const durList = isOnAssessments
     ? null
@@ -222,20 +224,37 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
   }
 
   const _accordionId = `part_${lsnNum}`;
-
-  const handlePreviewDownloadBtnClick = (
-    item: IItemV2Props & Pick<IItemV2, "itemCat" | "links">
-  ) => {
-    setLessonItemModal((state) => ({
-      ...state,
-      ...item,
-      externalUrl: item.externalUrl ?? item.links?.[0]?.url,
-      isDisplayed: true,
-      docUrl:
+  const allLessonItems: ILessonItem[] = useMemo(() => {
+    return _itemList.map((item) => {
+      const externalUrl = item.externalUrl ?? item.links?.[0]?.url;
+      const itemDocUrl =
         item.itemType === "presentation"
           ? `${item.gdriveRoot}/view`
-          : `${item.gdriveRoot}/preview`,
-    }));
+          : `${item.gdriveRoot}/preview`;
+
+      return {
+        ...item,
+        externalUrl,
+        docUrl: itemDocUrl,
+      };
+    });
+  }, []);
+
+  const handlePreviewDownloadBtnClick = (lessonItemIndex: number) => {
+    if (!lsnNum) {
+      alert(
+        `Error: Unable to preview lesson. Please contact the administrator.`
+      );
+      return;
+    }
+
+    setLessonItemModal({
+      currentIndex: lessonItemIndex,
+      lessonItems: allLessonItems,
+      isDisplayed: true,
+      lessonId: typeof lsnNum === "number" ? lsnNum.toString() : lsnNum,
+      copyLessonBtnRef: copyLessonBtnRef,
+    });
   };
 
   const handleClipBoardIconClick = () => {
@@ -654,6 +673,7 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
               <CopyLessonBtn
                 setParts={setParts}
                 unitId={unitId!}
+                btnRef={copyLessonBtnRef}
                 unitTitle={unitTitle}
                 isRetrievingLessonFolderIds={isRetrievingLessonFolderIds}
                 GdrivePublicID={GdrivePublicID}
@@ -741,20 +761,6 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                       blurTxt = "You must be a teacher to view this item.";
                       btnTxt = "Update Profile";
                       handleBtnClick = handleUpdateProfileBtnClick;
-                    }
-
-                    let filePreviewImgLink = "";
-
-                    if (
-                      !isTeacherItem ||
-                      (isTeacherItem &&
-                        isUserTeacher &&
-                        status === "authenticated")
-                    ) {
-                      filePreviewImgLink =
-                        typeof imgLink === "string"
-                          ? imgLink
-                          : imgLink?.[0] ?? "";
                     }
 
                     return (
@@ -859,15 +865,9 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                                             : ""
                                         } no-btn-styles no-hover-color-change d-flex justify-content-center align-items-center`}
                                         onClick={() => {
-                                          handlePreviewDownloadBtnClick({
-                                            links,
-                                            gdriveRoot,
-                                            isExportable,
-                                            mimeType,
-                                            externalUrl,
-                                            itemCat,
-                                            itemType,
-                                          });
+                                          handlePreviewDownloadBtnClick(
+                                            itemIndex
+                                          );
                                         }}
                                       >
                                         <RxMagnifyingGlass
@@ -892,15 +892,9 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                                             : ""
                                         } fw-bolder no-btn-styles no-hover-color-change underline-on-hover`}
                                         onClick={() => {
-                                          handlePreviewDownloadBtnClick({
-                                            links,
-                                            gdriveRoot,
-                                            mimeType,
-                                            externalUrl,
-                                            itemCat,
-                                            isExportable,
-                                            itemType,
-                                          });
+                                          handlePreviewDownloadBtnClick(
+                                            itemIndex
+                                          );
                                         }}
                                       >
                                         {itemType === "presentation"
@@ -936,15 +930,9 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                                           : "auto",
                                       }}
                                       onClick={() => {
-                                        handlePreviewDownloadBtnClick({
-                                          links,
-                                          gdriveRoot,
-                                          mimeType,
-                                          externalUrl,
-                                          itemCat,
-                                          isExportable,
-                                          itemType,
-                                        });
+                                        handlePreviewDownloadBtnClick(
+                                          itemIndex
+                                        );
                                       }}
                                     />
                                   </div>
