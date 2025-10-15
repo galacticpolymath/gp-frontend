@@ -44,16 +44,11 @@ const LessonItemsModal: React.FC = () => {
   const [isGpPlusModalDisplayed, setIsGpPlusModalDisplayed] =
     _isGpPlusModalDisplayed;
   const [isGpPlusMember] = _isGpPlusMember;
+  const { allDocUrls, currentDocUrlIndex } = lessonItemModal;
   const iframeSrc =
     lessonItemModal.itemCat === "web resource"
       ? lessonItemModal.externalUrl
       : lessonItemModal.docUrl;
-  const [test, setTest] = useState(
-    Array.from({ length: 4 }).map(
-      () =>
-        "https://docs.google.com/presentation/d/1IUeirLBIrdqzX8s-UjPttbIn_GJfwxqBGbv9SVDvnTk/view"
-    )
-  );
   const [testIndex, setTestIndex] = useState(0);
 
   console.log("isGpPlusMember: ", isGpPlusMember);
@@ -265,14 +260,9 @@ const LessonItemsModal: React.FC = () => {
         <Carousel groupSize={1} circular={false} className="w-100 h-100">
           <div className="w-100 border" style={{ height: "91%" }}>
             <CarouselSlider className="w-100 h-100">
-              {Cards.map((card, index) => (
+              {allDocUrls.map((url, index) => (
                 <CarouselCard key={`image-${index}`} className="h-100">
-                  <iframe
-                    src={
-                      "https://docs.google.com/presentation/d/1fCtcHEu4ewuQZJaXL5jMPc9mNkcKcXQH4eQhgyhE94c/preview"
-                    }
-                    className="w-100 h-100"
-                  />
+                  <iframe src={url} className="w-100 h-100" />
                 </CarouselCard>
               ))}
             </CarouselSlider>

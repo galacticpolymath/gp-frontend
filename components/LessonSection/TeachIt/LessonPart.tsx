@@ -21,7 +21,10 @@ import CopyableTxt from "../../CopyableTxt";
 import { useRouter } from "next/router";
 import React, { useEffect } from "react";
 import { Button } from "react-bootstrap";
-import { useModalContext } from "../../../providers/ModalProvider";
+import {
+  ILessonItemModal,
+  useModalContext,
+} from "../../../providers/ModalProvider";
 import { useUserContext } from "../../../providers/UserProvider";
 import {
   IChunk,
@@ -222,6 +225,19 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
   }
 
   const _accordionId = `part_${lsnNum}`;
+  const allDocUrls = useMemo(() => {
+    return _itemList.map((item) => {
+      if (item.itemCat === "web resource") {
+        return item.externalUrl;
+      }
+
+      return item.itemType === "presentation"
+        ? `${item.gdriveRoot}/view`
+        : `${item.gdriveRoot}/preview`;
+    });
+  }, []);
+
+  // TODO: get all of the docUrls for all of the items on the first render of this component
 
   const handlePreviewDownloadBtnClick = (
     item: IItemV2Props & Pick<IItemV2, "itemCat" | "links">
@@ -231,6 +247,7 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
       ...item,
       externalUrl: item.externalUrl ?? item.links?.[0]?.url,
       isDisplayed: true,
+      allDocUrls,
       docUrl:
         item.itemType === "presentation"
           ? `${item.gdriveRoot}/view`
@@ -708,7 +725,7 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                 }`}
               >
                 {!!_itemList?.length &&
-                  _itemList.map((item, itemIndex) => {
+                  _itemList.map((item, itemIndex, self) => {
                     const {
                       itemTitle,
                       itemDescription,
@@ -741,20 +758,6 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                       blurTxt = "You must be a teacher to view this item.";
                       btnTxt = "Update Profile";
                       handleBtnClick = handleUpdateProfileBtnClick;
-                    }
-
-                    let filePreviewImgLink = "";
-
-                    if (
-                      !isTeacherItem ||
-                      (isTeacherItem &&
-                        isUserTeacher &&
-                        status === "authenticated")
-                    ) {
-                      filePreviewImgLink =
-                        typeof imgLink === "string"
-                          ? imgLink
-                          : imgLink?.[0] ?? "";
                     }
 
                     return (

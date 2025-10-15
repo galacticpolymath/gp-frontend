@@ -12,7 +12,11 @@
 /* eslint-disable indent */
 /* eslint-disable react/jsx-indent */
 import { createContext, ReactNode, useContext, useState } from "react";
-import { IComponent, TUseStateReturnVal } from "../types/global";
+import {
+  IComponent,
+  IItemForClient,
+  TUseStateReturnVal,
+} from "../types/global";
 import {
   IItemV2,
   IItemV2Props,
@@ -39,6 +43,12 @@ type TLessonItemModal = {
   isDisplayed: boolean;
   docUrl?: string;
 };
+export interface ILessonItemModal
+  extends TLessonItemModal,
+    Partial<IItemV2Props & Pick<IItemV2, "itemCat">> {
+  allDocUrls: string[];
+  currentDocUrlIndex: number;
+}
 
 export interface IModalProviderValue {
   _customModalFooter: TUseStateReturnVal<null | ReactNode>;
@@ -58,9 +68,7 @@ export interface IModalProviderValue {
   _isThankYouModalDisplayed: TUseStateReturnVal<boolean>;
   _isGpPlusSignUpModalDisplayed: TUseStateReturnVal<boolean>;
   _isCopyLessonHelperModalDisplayed: TUseStateReturnVal<boolean>;
-  _lessonItemModal: TUseStateReturnVal<
-    TLessonItemModal & Partial<IItemV2Props & Pick<IItemV2, "itemCat">>
-  >;
+  _lessonItemModal: TUseStateReturnVal<ILessonItemModal>;
 }
 
 export const ModalProvider = ({ children }: Pick<IComponent, "children">) => {
@@ -85,8 +93,10 @@ export const ModalProvider = ({ children }: Pick<IComponent, "children">) => {
   const [isPasswordResetModalOn, setIsPasswordResetModalOn] = useState(false);
   const [isGpPlusSignUpModalDisplayed, setIsGpPlusSignUpModalDisplayed] =
     useState(false);
-  const [lessonItemModal, setLessonItemModal] = useState<TLessonItemModal>({
+  const [lessonItemModal, setLessonItemModal] = useState<ILessonItemModal>({
     isDisplayed: false,
+    allDocUrls: [],
+    currentDocUrlIndex: 0,
   });
   const [
     isFailedCopiedFilesReportModalOn,
