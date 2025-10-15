@@ -43,7 +43,8 @@ const LessonItemsModal: React.FC = () => {
   const [isGpPlusModalDisplayed, setIsGpPlusModalDisplayed] =
     _isGpPlusModalDisplayed;
   const [isGpPlusMember] = _isGpPlusMember;
-  const { currentIndex, lessonItems, isDisplayed } = lessonItemModal;
+  const { currentIndex, lessonItems, isDisplayed, copyLessonBtnRef } =
+    lessonItemModal;
   const currentLessonItem = lessonItems[currentIndex] ?? {};
   const iframeSrc =
     currentLessonItem?.itemCat === "web resource"

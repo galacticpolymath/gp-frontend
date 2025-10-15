@@ -120,6 +120,115 @@ export const ensureValidToken = async (
   return gdriveAccessToken;
 };
 
+interface ICopyLessonBtnUIProps extends ICopyLessonBtnProps {
+  onClick: () => void;
+  isLoading: boolean;
+  disabled: boolean;
+  didInitialRenderOccurred: boolean;
+  isGpPlusMember: boolean;
+  userGDriveLessonFolderId?: string;
+  isCopyingLesson: boolean;
+  gdriveAccessToken: string;
+}
+
+export const CopyLessonBtnUI: React.FC<ICopyLessonBtnUIProps> = ({
+  btnRef,
+  onClick,
+  isLoading,
+  didInitialRenderOccurred,
+  disabled,
+  isGpPlusMember,
+  userGDriveLessonFolderId,
+  isCopyingLesson,
+  gdriveAccessToken,
+}) => {
+  return (
+    <div style={{ width: "fit-content" }} className="mb-3">
+      <Button
+        ref={btnRef}
+        onClick={onClick}
+        style={{
+          pointerEvents:
+            !didInitialRenderOccurred || disabled || isLoading
+              ? "none"
+              : "auto",
+          minHeight: "51px",
+          backgroundColor: "white",
+          border: "solid 3px #2339C4",
+          borderRadius: "2em",
+          textTransform: "none",
+          minWidth: "300px",
+          width: "fit-content",
+        }}
+        className={`px-3 py-2 col-12 ${
+          !didInitialRenderOccurred || disabled || isLoading
+            ? "opacity-25"
+            : "opacity-100"
+        }`}
+        disabled={!didInitialRenderOccurred || disabled || isLoading}
+      >
+        {didInitialRenderOccurred ? (
+          <div className="d-flex flex-row align-items-center justify-content-center gap-2">
+            {!didInitialRenderOccurred || disabled || isLoading ? (
+              <Spinner className="text-black" />
+            ) : (
+              <>
+                <Image
+                  alt="gp_plus_logo"
+                  src="/plus/plus.png"
+                  width={32}
+                  height={32}
+                />
+                <div
+                  style={{ lineHeight: "23px", fontSize: "18px" }}
+                  className="d-flex flex-column text-black"
+                >
+                  {isGpPlusMember && !gdriveAccessToken && (
+                    <>Authenticate w/ Google Drive & Copy lesson</>
+                  )}
+                  {isGpPlusMember &&
+                    gdriveAccessToken &&
+                    (userGDriveLessonFolderId
+                      ? "Bulk copy to my Google Drive again"
+                      : "Bulk copy to my Google Drive")}
+                  {!isGpPlusMember && (
+                    <>Subscribe to copy this lesson to your Google Drive</>
+                  )}
+                </div>
+              </>
+            )}
+          </div>
+        ) : (
+          <div
+            className="spinner-border spinner-border-sm text-light"
+            role="status"
+          >
+            <span className="visually-hidden">Loading...</span>
+          </div>
+        )}
+      </Button>
+      <div
+        style={{ fontSize: "18px", height: "30px" }}
+        className="text-break mx-auto text-center mt-1"
+      >
+        {userGDriveLessonFolderId && !isCopyingLesson && (
+          <>
+            Your latest copy of this lesson is linked
+            <Link
+              target="_blank"
+              className="ms-1 text-start text-lg-center"
+              href={`${GDRIVE_FOLDER_ORIGIN_AND_PATH}/${userGDriveLessonFolderId}`}
+            >
+              here
+            </Link>
+            .
+          </>
+        )}
+      </div>
+    </div>
+  );
+};
+
 const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
   sharedGDriveLessonFolderId,
   MediumTitle,
