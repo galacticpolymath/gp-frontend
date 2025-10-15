@@ -86,11 +86,7 @@ const LessonItemsModal: React.FC = () => {
     });
   };
 
-  useEffect(() => {
-    const navBtns = document.querySelectorAll(".fui-CarouselButton");
-
-    console.log("navBtns: ", navBtns);
-  }, []);
+  const handleCarouselNavBtnClick = (btnNavType: "prev" | "next") => () => {};
 
   return (
     <>
@@ -254,30 +250,34 @@ const LessonItemsModal: React.FC = () => {
               ))}
             </CarouselSlider>
           </div>
-          <CarouselNavContainer
-            layout="inline"
-            next={{ "aria-label": "go to next" }}
-            prev={{ "aria-label": "go to prev" }}
-            className="pt-2 lessons-items-carousel-nav-container"
+          <div
+            className="pt-2 d-flex justify-content-center align-items-center flex-row w-100"
             style={{
               border: "solid 1px pink",
             }}
           >
+            <CarouselButton
+              onClick={handleCarouselNavBtnClick("prev")}
+              size="large"
+              shape="circular"
+              appearance="primary"
+              navType="prev"
+              name="prev"
+            />
             <div style={{ minWidth: "45vw" }} className="border h-100 p-0">
               <div className="h-100 d-flex justify-content-center align-items-center">
                 hi
               </div>
-              <CarouselNav>
-                {(index) => {
-                  return (
-                    <CarouselNavButton
-                      aria-label={`Carousel Nav Button ${index}`}
-                    />
-                  );
-                }}
-              </CarouselNav>
             </div>
-          </CarouselNavContainer>
+            <CarouselButton
+              onClick={handleCarouselNavBtnClick("next")}
+              size="large"
+              shape="circular"
+              appearance="primary"
+              navType="next"
+              name="next"
+            />
+          </div>
         </Carousel>
       </Modal>
     </>
