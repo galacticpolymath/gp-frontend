@@ -45,7 +45,7 @@
     "fs": "^0.0.1-security",
     "gapi-script": "^1.2.0",
     "google-auth-library": "^10.4.0",
-    "googleapis": "^162.0.0",
+    "googleapis": "^163.0.0",
     "graphql": "^16.9.0",
     "jose": "^6.1.0",
     "js-cookie": "^3.0.5",
