@@ -759,9 +759,6 @@ const LessonDetails: React.FC<IProps> = ({ lesson, unit }) => {
       <div className="col-12 col-lg-10 col-xxl-12 px-3 px-xxl-0 container min-vh-100">
         <div className="p-sm-3 pt-0">
           {_unitSections ? (
-            // TODO: if the user doesn't have an account, then slice the sections starting at the third section
-            // -and render those sections around a wrapper div that will be opaque in order to push the user to
-            // -to sign up a free account
             _unitSections.map((section: any, index: number) => (
               <ParentLessonSection
                 key={index}

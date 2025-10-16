@@ -212,7 +212,7 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
     return lesson?.lsn == lsnNum;
   });
   let { tags: allTags, itemList: linkResources } = targetLessonsResources ?? {};
-  _itemList = (_itemList ?? linkResources) as IItemForClient[];
+  _itemList = (_itemList ?? linkResources) as IItemForClient[] | null;
   let previewTags = null;
   let restOfTags = null;
   let lsnNumParsed = NaN;
@@ -225,6 +225,10 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
 
   const _accordionId = `part_${lsnNum}`;
   const allLessonItems: ILessonItem[] = useMemo(() => {
+    if (!_itemList || !_itemList.length) {
+      return [];
+    }
+
     return _itemList.map((item) => {
       const externalUrl = item.externalUrl ?? item.links?.[0]?.url;
       const itemDocUrl =

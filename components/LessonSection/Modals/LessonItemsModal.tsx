@@ -302,15 +302,8 @@ const LessonItemsModal: React.FC = () => {
                 style={{ borderRadius: ".2em" }}
                 className="h-100 d-flex justify-content-center align-items-center flex-column border"
               >
-                <div>
-                  <Link
-                    style={{ fontSize: "18px" }}
-                    href={currentLessonItemDocUrl}
-                    target="_blank"
-                    className="underline-on-hover text-black fw-normal"
-                  >
-                    {currentLessonItemName}
-                  </Link>
+                <div className="text-black fw-normal">
+                  {currentLessonItemName}
                 </div>
                 <div>
                   {currentIndex + 1}/{lessonItems.length}

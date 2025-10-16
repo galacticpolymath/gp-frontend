@@ -462,6 +462,8 @@ export async function middleware(request) {
       status: 400,
     });
   } catch (error) {
+    console.error("Middleware error: ", error);
+
     const errMsgForClient = escapeHtml(JSON.stringify(error));
     const errMsg = `An error has occurred in the middleware: ${errMsgForClient}`;
 
