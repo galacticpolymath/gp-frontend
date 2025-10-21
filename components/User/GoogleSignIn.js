@@ -9,6 +9,7 @@ import { FcGoogle } from "react-icons/fc";
 import Button from "../General/Button";
 import { signIn } from "next-auth/react";
 import { useCustomCookies } from "../../customHooks/useCustomCookies";
+import { removeSessionStorageItem } from "../../shared/fns";
 
 const GoogleSignIn = ({
     children,
@@ -48,6 +49,7 @@ const GoogleSignIn = ({
 
             if (isLoggingIn) {
                 localStorage.setItem("userEntryType", JSON.stringify("login"));
+                removeSessionStorageItem("wasWelcomeNewUserModalShown");
             }
 
             signIn("google", { callbackUrl: callbackUrl });
