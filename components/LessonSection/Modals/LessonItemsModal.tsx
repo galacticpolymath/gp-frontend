@@ -1,6 +1,6 @@
 /* eslint-disable quotes */
 /* eslint-disable indent */
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Button, Modal, CloseButton } from "react-bootstrap";
 import { ILessonItem, useModalContext } from "../../../providers/ModalProvider";
 import { TbDownload } from "react-icons/tb";
@@ -202,10 +202,22 @@ const LessonItemsModal: React.FC = () => {
   };
 
   const handleCarouselNavBtnClick = (indexShift: 1 | -1) => () => {
+    let _currentIndex = currentIndex + indexShift;
+
+    // going left
+    if (indexShift === -1 && _currentIndex < 0) {
+      _currentIndex = lessonItems.length - 1;
+    }
+
+    // going right
+    if (indexShift === 1 && _currentIndex > lessonItems.length - 1) {
+      _currentIndex = 0;
+    }
+
     setLessonItemModal((state) => {
       return {
         ...state,
-        currentIndex: currentIndex + indexShift,
+        currentIndex: _currentIndex,
       };
     });
   };
@@ -213,6 +225,31 @@ const LessonItemsModal: React.FC = () => {
   const handleCopyLessonBtnClick = () => {
     copyLessonBtnRef?.current?.click();
   };
+
+  const rightBtnRef = useRef<HTMLButtonElement | null>(null);
+  const leftBtnRef = useRef<HTMLButtonElement | null>(null);
+
+  const handleKeyDown = (event: KeyboardEvent) => {
+    console.log("Key pressed: ", event.key);
+
+    if (event.key === "ArrowRight") {
+      console.log("Pressed right arrow key");
+      rightBtnRef?.current?.click();
+    }
+
+    if (event.key === "ArrowLeft") {
+      console.log("Pressed left arrow key");
+      leftBtnRef?.current?.click();
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
 
   return (
     <>
@@ -236,7 +273,7 @@ const LessonItemsModal: React.FC = () => {
         <section className="w-100 container-fluid px-0 m-0">
           <div
             style={{ backgroundColor: "#E2F0FD" }}
-            className="w-100 h-100 row m-0 ps-0 pe-md-5 py-3 d-flex flex-column flex-md-row"
+            className="w-100 h-100 row m-0 ps-0 pe-md-5 py-3 d-flex flex-column flex-sm-row"
           >
             <section
               className={`${
@@ -424,7 +461,7 @@ const LessonItemsModal: React.FC = () => {
         </section>
         <Carousel
           groupSize={1}
-          circular={false}
+          circular
           className="w-100 h-100"
           activeIndex={currentIndex}
         >
@@ -445,6 +482,7 @@ const LessonItemsModal: React.FC = () => {
           </div>
           <div className="pt-2 d-flex justify-content-center align-items-center flex-row w-100">
             <CarouselButton
+              ref={leftBtnRef}
               onClick={handleCarouselNavBtnClick(-1)}
               size="large"
               shape="circular"
@@ -466,6 +504,7 @@ const LessonItemsModal: React.FC = () => {
               </div>
             </div>
             <CarouselButton
+              ref={rightBtnRef}
               onClick={handleCarouselNavBtnClick(1)}
               size="large"
               shape="circular"
