@@ -28,6 +28,20 @@ $gpGroup: #1ca9e5;
   }
 }
 
+.transparent-on-hover:hover {
+  background-color: transparent;
+}
+
+.lesson-item-modal-close-web-resource {
+  top: 5px;
+  right: 5px;
+
+  @media (min-width: 576px) {
+    right: 5px;
+    left: auto;
+  }
+}
+
 .gp-plus-btn-icons-lesson-item-modal {
   width: 30px;
   height: 30px;
@@ -44,7 +58,7 @@ $gpGroup: #1ca9e5;
   // max-width: 125px;
 
   @media (min-width: 576px) {
-    max-width: none;
+    max-width: 350px;
   }
 }
 

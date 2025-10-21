@@ -24,9 +24,10 @@ interface ICarouselItemNavBtn {
   arrowType: "left" | "right";
 }
 
-const LessonItemDownloadBtnsDropDown: React.FC<{ lessonItem: ILessonItem }> = ({
-  lessonItem,
-}) => {
+const LessonItemDownloadBtnsDropDown: React.FC<{
+  lessonItem: ILessonItem;
+  isGpPlusMember: boolean;
+}> = ({ lessonItem, isGpPlusMember }) => {
   const handleOfficeBtnClick = () => {
     window.open(
       `${lessonItem.gdriveRoot}/export?format=${lessonItem.mimeType}`
@@ -64,43 +65,45 @@ const LessonItemDownloadBtnsDropDown: React.FC<{ lessonItem: ILessonItem }> = ({
       </Dropdown.Toggle>
 
       <Dropdown.Menu className="w-100">
-        <Dropdown.Item
-          href="#"
-          className="d-flex justify-content-center align-items-center"
-        >
-          <Button
-            onClick={handleOfficeBtnClick}
-            className="d-flex no-btn-styles flex-row justify-content-center align-items-center"
+        {isGpPlusMember && (
+          <Dropdown.Item
+            href="#"
+            className="d-flex justify-content-center align-items-center"
           >
-            <div
-              style={{ width: 44, height: 44 }}
-              className="bg-white p-1 rounded position-relative"
+            <Button
+              onClick={handleOfficeBtnClick}
+              className="d-flex no-btn-styles flex-row justify-content-center align-items-center"
             >
-              <Image
-                alt="office"
-                fill
-                src="/imgs/office.png"
-                className="w-100 h-100 position-absolute"
-                style={{
-                  maxWidth: "35px",
-                  maxHeight: "35px",
-                  objectFit: "contain",
-                  top: "50%",
-                  left: "50%",
-                  transform: "translate(-50%, -50%)",
-                }}
-              />
-            </div>
-            <section className="d-flex justify-content-center align-items-center ms-2">
               <div
-                style={{ height: "fit-content" }}
-                className="mb-0 text-black text-decoration-underline lessons-item-modal-btns-text-container"
+                style={{ width: 44, height: 44 }}
+                className="bg-white p-1 rounded position-relative"
               >
-                Office
+                <Image
+                  alt="office"
+                  fill
+                  src="/imgs/office.png"
+                  className="w-100 h-100 position-absolute"
+                  style={{
+                    maxWidth: "35px",
+                    maxHeight: "35px",
+                    objectFit: "contain",
+                    top: "50%",
+                    left: "50%",
+                    transform: "translate(-50%, -50%)",
+                  }}
+                />
               </div>
-            </section>
-          </Button>
-        </Dropdown.Item>
+              <section className="d-flex justify-content-center align-items-center ms-2">
+                <div
+                  style={{ height: "fit-content" }}
+                  className="mb-0 text-black text-decoration-underline lessons-item-modal-btns-text-container"
+                >
+                  Office
+                </div>
+              </section>
+            </Button>
+          </Dropdown.Item>
+        )}
         <Dropdown.Item
           href="#"
           className="d-flex justify-content-center align-items-center"
@@ -267,7 +270,11 @@ const LessonItemsModal: React.FC = () => {
       >
         <CloseButton
           onClick={handleCloseBtnClick}
-          className="lesson-item-modal-close"
+          className={
+            isGpPlusMember
+              ? "lesson-item-modal-close"
+              : "lesson-item-modal-close-web-resource"
+          }
           style={{ position: "absolute", width: "1rem", height: "1rem" }}
         />
         <section className="w-100 container-fluid px-0 m-0">
@@ -334,8 +341,12 @@ const LessonItemsModal: React.FC = () => {
                 </CopyLessonBtnUI>
               ) : (
                 <Button
-                  style={{ backgroundColor: "#1c28bd" }}
-                  className="d-flex flex-row-reverse flex-sm-row no-btn-styles px-3 py-2 get-gp-plus-btn"
+                  style={{
+                    backgroundColor: "#1c28bd",
+                    height: "fit-content",
+                    width: "50vw",
+                  }}
+                  className="d-flex justify-content-center align-items-center flex-row-reverse flex-sm-row no-btn-styles px-3 col-9 py-sm-3 py-lg-2 get-gp-plus-btn"
                   onClick={handleGpPlusBtnclick}
                 >
                   <section className="d-flex justify-content-center align-items-center h-100">
@@ -363,22 +374,36 @@ const LessonItemsModal: React.FC = () => {
               className={` ${
                 isGpPlusMember
                   ? "col-12 col-sm-7 col-xxl-9"
-                  : "col-6 col-sm-6 col-md-9 col-xxl-6"
-              } d-flex flex-column flex-md-row justify-content-md-end align-items-center`}
+                  : "col-6 col-sm-6 col-md-9 col-xxl-6 p-0"
+              } d-flex flex-column flex-md-row justify-content-md-end align-items-center p-sm-0`}
             >
-              <section className="w-100 d-flex flex-column flex-md-row justify-content-xxl-center align-items-stretch">
-                {currentLessonItem.itemCat !== "web resource" && (
-                  <section className="w-100 d-none d-sm-flex justify-content-center justify-content-md-end pt-sm-1">
-                    <h6>Download as: </h6>
-                  </section>
-                )}
-                <section className="d-flex flex-row flex-md-column justify-content-end align-items-sm-stretch justify-content-sm-center align-items-sm-center lessons-item-modal-download mt-3 mt-sm-0">
-                  <LessonItemDownloadBtnsDropDown
-                    lessonItem={currentLessonItem}
-                  />
+              <section className="w-100 d-flex flex-column flex-md-row justify-content-end align-items-stretch">
+                {currentLessonItem.itemCat !== "web resource" &&
+                  currentLessonItem.isExportable && (
+                    <section className="w-100 d-none d-sm-flex justify-content-center justify-content-md-end pt-sm-1">
+                      <h6>Download as: </h6>
+                    </section>
+                  )}
+                <section
+                  className={`d-flex flex-row flex-md-column ${
+                    isGpPlusMember
+                      ? "justify-content-end"
+                      : " justify-content-start ms-1"
+                  } align-items-sm-stretch justify-content-sm-center align-items-sm-center lessons-item-modal-download mt-3 mt-sm-0`}
+                >
+                  {currentLessonItem.isExportable && (
+                    <LessonItemDownloadBtnsDropDown
+                      lessonItem={currentLessonItem}
+                      isGpPlusMember={isGpPlusMember}
+                    />
+                  )}
                   {currentLessonItem.isExportable && isGpPlusMember && (
                     <div className="d-none d-sm-block">
                       <Button
+                        style={{
+                          backgroundColor: "transparent",
+                          transition: "background-color inifinte",
+                        }}
                         className="d-flex no-btn-styles flex-row justify-content-center align-items-center"
                         onClick={handleOfficeBtnClick}
                       >
@@ -415,7 +440,11 @@ const LessonItemsModal: React.FC = () => {
                   {currentLessonItem.isExportable && (
                     <div className="d-none d-sm-flex mt-md-2 ms-md-0 ms-2">
                       <Button
-                        className="d-flex no-btn-styles flex-row justify-content-center align-items-center"
+                        style={{
+                          backgroundColor: "transparent",
+                          transition: "background-color inifinte",
+                        }}
+                        className="d-flex no-btn-styles flex-row justify-content-center align-items-center "
                         onClick={handleDownloadPdfBtnClick}
                       >
                         <div
@@ -437,8 +466,12 @@ const LessonItemsModal: React.FC = () => {
                   )}
                   {currentLessonItem.itemCat === "web resource" && (
                     <Button
-                      style={{ backgroundColor: "white" }}
-                      className="d-flex no-btn-styles px-2 px-sm-3 py-1 py-sm-2 me-sm-3 flex-column flex-sm-row"
+                      style={{
+                        backgroundColor: "white",
+                        width: "95%",
+                        maxWidth: "405px",
+                      }}
+                      className="d-flex no-btn-styles flex-row justify-content-center align-items-center ms-1 ms-sm-0 ps-sm-2 pe-sm-2 py-1"
                       onClick={handleOpenInNewTabBtnClick}
                     >
                       <section className="d-flex justify-content-center align-items-center h-100">
@@ -463,9 +496,19 @@ const LessonItemsModal: React.FC = () => {
           groupSize={1}
           circular
           className="w-100 h-100"
+          style={{
+            backgroundColor: "#E2F0FD",
+          }}
           activeIndex={currentIndex}
         >
-          <div className="w-100 border" style={{ height: "88%" }}>
+          <div
+            className="w-100"
+            style={{
+              height: "88%",
+              borderTop: ".1em solid rgba(0, 0, 0, 0.175)",
+              borderBottom: ".1em solid rgba(0, 0, 0, 0.175)",
+            }}
+          >
             <CarouselSlider className="w-100 h-100">
               {lessonItems.map((lessonItem, index) => {
                 const url =
@@ -480,7 +523,10 @@ const LessonItemsModal: React.FC = () => {
               })}
             </CarouselSlider>
           </div>
-          <div className="pt-2 d-flex justify-content-center align-items-center flex-row w-100">
+          <div
+            style={{ backgroundColor: "#E2F0FD" }}
+            className="pt-2 d-flex justify-content-center align-items-center flex-row w-100"
+          >
             <CarouselButton
               ref={leftBtnRef}
               onClick={handleCarouselNavBtnClick(-1)}
