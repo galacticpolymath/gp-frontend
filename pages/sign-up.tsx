@@ -219,8 +219,8 @@ const SignUpPage: React.FC = () => {
     >
       <div className="min-vh-100 d-flex justify-content-center bg-light py-5 mt-md-0 mt-sm-5">
         <div
-          className="bg-white shadow-lg rounded p-4"
-          style={{ width: "90%", maxHeight: "1010px", maxWidth: "1260px" }}
+          className="bg-white shadow-lg rounded p-4 sign-up-card"
+          style={{ width: "90%" }}
         >
           <div className="mb-xl-4 position-relative d-flex flex-column flex-xl-row sign-up-header-container">
             <img

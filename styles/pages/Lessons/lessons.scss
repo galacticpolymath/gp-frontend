@@ -923,3 +923,10 @@ $active-dot-color: rgba(44, 131, 195, 0.6) !important;
     height: 85%;
   }
 }
+
+.sign-up-card {
+  @media (min-width: 1200px) {
+    max-height: 1010px;
+    max-width: 1260px;
+  }
+}
