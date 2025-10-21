@@ -187,15 +187,15 @@ const LessonItemsModal: React.FC = () => {
             <section
               className={` ${
                 isGpPlusMember ? "col-9" : "col-6"
-              } col-sm-6 col-md-9 col-xxl-6 d-flex flex-column flex-md-row justify-content-md-end justify-content-xxl-center align-items-center`}
+              } col-sm-6 col-md-9 col-xxl-6 d-flex flex-column flex-md-row justify-content-md-end align-items-center`}
             >
               <section className="w-100 d-flex flex-column justify-content-end flex-md-row justify-content-md-end justify-content-xxl-center align-items-stretch lesson-item-modal-btns-container">
                 {currentLessonItem.itemCat !== "web resource" && (
-                  <section className="w-100 d-flex justify-content-center align-items-center justify-content-sm-center align-items-sm-center">
+                  <section className="w-100 d-flex justify-content-end">
                     <h6>Download as: </h6>
                   </section>
                 )}
-                <section className="w-100 d-flex justify-content-center align-items-center justify-content-md-end justify-content-sm-center align-items-sm-center">
+                <section className="d-flex justify-content-center align-items-center justify-content-md-end justify-content-sm-center align-items-sm-center">
                   {currentLessonItem.isExportable &&
                     isGpPlusMember &&
                     currentLessonItem.itemType !== "presentation" && (
@@ -205,13 +205,23 @@ const LessonItemsModal: React.FC = () => {
                         onClick={handleOfficeBtnClick}
                       >
                         <section className="d-flex justify-content-center align-items-center h-100">
-                          <div className="bg-white p-1 rounded">
+                          <div
+                            style={{ width: 44, height: 44 }}
+                            className="bg-white p-1 rounded position-relative"
+                          >
                             <Image
                               alt="office"
-                              width={35}
-                              height={35}
+                              fill
                               src="/imgs/office.png"
-                              className=""
+                              className="w-100 h-100 position-absolute"
+                              style={{
+                                maxWidth: "35px",
+                                maxHeight: "35px",
+                                objectFit: "contain",
+                                top: "50%",
+                                left: "50%",
+                                transform: "translate(-50%, -50%)",
+                              }}
                             />
                           </div>
                         </section>
