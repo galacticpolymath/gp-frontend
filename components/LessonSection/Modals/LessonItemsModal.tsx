@@ -34,7 +34,20 @@ const LessonItemDownloadBtnsDropDown: React.FC<{ lessonItem: ILessonItem }> = ({
   };
 
   const handleDownloadPdfBtnClick = () => {
-    window.open(`${lessonItem.gdriveRoot}/export?format=application/pdf`);
+    if (lessonItem.mimeType === "pdf") {
+      const url = new URL(lessonItem.gdriveRoot as string);
+      const itemId = url.pathname.split("/").at(-1);
+
+      if (!itemId) {
+        alert("Unable to download pdf. Please refresh the page.");
+        return;
+      }
+
+      window.open(`https://drive.google.com/uc?export=download&id=${itemId}`);
+      return;
+    }
+
+    window.open(`${lessonItem.gdriveRoot}/export?format=pdf`);
   };
 
   return (
@@ -51,10 +64,13 @@ const LessonItemDownloadBtnsDropDown: React.FC<{ lessonItem: ILessonItem }> = ({
       </Dropdown.Toggle>
 
       <Dropdown.Menu className="w-100">
-        <Dropdown.Item className="d-flex justify-content-center align-items-center">
+        <Dropdown.Item
+          href="#"
+          className="d-flex justify-content-center align-items-center"
+        >
           <Button
-            className="d-flex no-btn-styles flex-row justify-content-center align-items-center"
             onClick={handleOfficeBtnClick}
+            className="d-flex no-btn-styles flex-row justify-content-center align-items-center"
           >
             <div
               style={{ width: 44, height: 44 }}
@@ -85,10 +101,13 @@ const LessonItemDownloadBtnsDropDown: React.FC<{ lessonItem: ILessonItem }> = ({
             </section>
           </Button>
         </Dropdown.Item>
-        <Dropdown.Item className="d-flex justify-content-center align-items-center">
+        <Dropdown.Item
+          href="#"
+          className="d-flex justify-content-center align-items-center"
+        >
           <Button
-            className="d-flex no-btn-styles flex-row justify-content-center align-items-center"
             onClick={handleDownloadPdfBtnClick}
+            className="d-flex no-btn-styles flex-row justify-content-center align-items-center"
           >
             <div
               style={{ width: 44, height: 44 }}
@@ -217,16 +236,16 @@ const LessonItemsModal: React.FC = () => {
         <section className="w-100 container-fluid px-0 m-0">
           <div
             style={{ backgroundColor: "#E2F0FD" }}
-            className="w-100 h-100 row m-0 ps-0 pe-md-5 py-3"
+            className="w-100 h-100 row m-0 ps-0 pe-md-5 py-3 d-flex flex-column flex-md-row"
           >
             <section
               className={`${
                 isGpPlusMember
-                  ? "col-6 col-sm-5 col-xxl-3"
+                  ? "col-12 col-sm-5 col-xxl-3"
                   : "col-sm-6 col-md-3 col-xxl-6"
               } d-flex ${
                 isGpPlusMember
-                  ? "justify-content-start align-items-center align-items-sm-stretch"
+                  ? "justify-content-end justify-content-sm-start align-items-stretch"
                   : "justify-content-start align-items-center ps-1"
               }`}
             >
@@ -306,7 +325,7 @@ const LessonItemsModal: React.FC = () => {
             <section
               className={` ${
                 isGpPlusMember
-                  ? "col-6 col-sm-7 col-xxl-9"
+                  ? "col-12 col-sm-7 col-xxl-9"
                   : "col-6 col-sm-6 col-md-9 col-xxl-6"
               } d-flex flex-column flex-md-row justify-content-md-end align-items-center`}
             >
@@ -316,7 +335,7 @@ const LessonItemsModal: React.FC = () => {
                     <h6>Download as: </h6>
                   </section>
                 )}
-                <section className="d-flex flex-row flex-md-column justify-content-center align-items-center lessons-item-modal-download">
+                <section className="d-flex flex-row flex-md-column justify-content-end align-items-sm-stretch justify-content-sm-center align-items-sm-center lessons-item-modal-download mt-3 mt-sm-0">
                   <LessonItemDownloadBtnsDropDown
                     lessonItem={currentLessonItem}
                   />
