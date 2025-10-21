@@ -200,70 +200,67 @@ const LessonItemsModal: React.FC = () => {
                   </section>
                 )}
                 <section className="d-flex flex-column justify-content-center align-items-center">
-                  {currentLessonItem.isExportable &&
-                    isGpPlusMember &&
-                    currentLessonItem.itemType !== "presentation" && (
-                      <div>
-                        <Button
-                          style={{ width: 150 }}
-                          className="d-flex no-btn-styles flex-row justify-content-center align-items-center"
-                          onClick={handleOfficeBtnClick}
+                  {currentLessonItem.isExportable && isGpPlusMember && (
+                    <div>
+                      <Button
+                        style={{ width: 150 }}
+                        className="d-flex no-btn-styles flex-row justify-content-center align-items-center"
+                        onClick={handleOfficeBtnClick}
+                      >
+                        <div
+                          style={{ width: 44, height: 44 }}
+                          className="bg-white p-1 rounded position-relative"
                         >
+                          <Image
+                            alt="office"
+                            fill
+                            src="/imgs/office.png"
+                            className="w-100 h-100 position-absolute"
+                            style={{
+                              maxWidth: "35px",
+                              maxHeight: "35px",
+                              objectFit: "contain",
+                              top: "50%",
+                              left: "50%",
+                              transform: "translate(-50%, -50%)",
+                            }}
+                          />
+                        </div>
+                        <section className="d-flex justify-content-center align-items-center ms-2">
                           <div
-                            style={{ width: 44, height: 44 }}
-                            className="bg-white p-1 rounded position-relative"
+                            style={{ height: "fit-content", width: 65 }}
+                            className="mb-0 text-black text-decoration-underline"
                           >
-                            <Image
-                              alt="office"
-                              fill
-                              src="/imgs/office.png"
-                              className="w-100 h-100 position-absolute"
-                              style={{
-                                maxWidth: "35px",
-                                maxHeight: "35px",
-                                objectFit: "contain",
-                                top: "50%",
-                                left: "50%",
-                                transform: "translate(-50%, -50%)",
-                              }}
-                            />
+                            Office
                           </div>
-                          <section className="d-flex justify-content-center align-items-center ms-2">
-                            <div
-                              style={{ height: "fit-content", width: 65 }}
-                              className="mb-0 text-black text-decoration-underline"
-                            >
-                              Office
-                            </div>
-                          </section>
-                        </Button>
-                      </div>
-                    )}
-                  {currentLessonItem.itemType !== "presentation" &&
-                    currentLessonItem.isExportable && (
-                      <div className="d-flex mt-2">
-                        <Button
-                          style={{ width: 150 }}
-                          className="d-flex no-btn-styles flex-row justify-content-center align-items-center"
-                          onClick={handleDownloadPdfBtnClick}
+                        </section>
+                      </Button>
+                    </div>
+                  )}
+                  {currentLessonItem.isExportable && (
+                    <div className="d-flex mt-2">
+                      <Button
+                        style={{ width: 150 }}
+                        className="d-flex no-btn-styles flex-row justify-content-center align-items-center"
+                        onClick={handleDownloadPdfBtnClick}
+                      >
+                        <div
+                          style={{ width: 44, height: 44 }}
+                          className="bg-white p-1 rounded"
                         >
+                          <TbDownload color="black" size={35} />
+                        </div>
+                        <section className="d-flex justify-content-center align-items-center ms-2">
                           <div
-                            style={{ width: 44, height: 44 }}
-                            className="bg-white p-1 rounded"
+                            style={{ height: "fit-content", width: 65 }}
+                            className="mb-0 text-black text-decoration-underline"
                           >
-                            <TbDownload color="black" size={35} />
+                            PDF
                           </div>
-                          <section className="d-flex justify-content-center align-items-center ms-2">
-                            <div
-                              style={{ height: "fit-content", width: 65 }}
-                              className="mb-0 text-black text-decoration-underline"
-                            >
-                              PDF
-                            </div>
-                          </section>
-                        </Button>
-                      </div>
-                    )}
+                        </section>
+                      </Button>
+                    </div>
+                  )}
                   {currentLessonItem.itemCat === "web resource" && (
                     <Button
                       style={{ backgroundColor: "white" }}
