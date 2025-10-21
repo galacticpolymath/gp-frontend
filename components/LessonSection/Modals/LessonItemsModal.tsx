@@ -49,8 +49,14 @@ const LessonItemsModal: React.FC = () => {
   const [isGpPlusModalDisplayed, setIsGpPlusModalDisplayed] =
     _isGpPlusModalDisplayed;
   const [isGpPlusMember] = _isGpPlusMember;
-  const { currentIndex, lessonItems, isDisplayed, copyLessonBtnRef, lessonId } =
-    lessonItemModal;
+  const {
+    currentIndex,
+    lessonItems,
+    isDisplayed,
+    copyLessonBtnRef,
+    lessonId,
+    userGDriveLessonFolderId,
+  } = lessonItemModal;
   const currentLessonItem = lessonItems[currentIndex] ?? {};
   const iframeSrc =
     currentLessonItem?.itemCat === "web resource"
@@ -160,7 +166,27 @@ const LessonItemsModal: React.FC = () => {
                   gdriveAccessToken={gdriveAccessToken}
                   onClick={handleCopyLessonBtnClick}
                   btnWrapperClassName="d-flex justify-content-center align-items-center"
-                />
+                  childrenClassName="d-flex flex-row align-items-center justify-content-center gap-2"
+                >
+                  <div
+                    style={{ lineHeight: "23px", fontSize: "18px" }}
+                    className="d-flex flex-column text-black"
+                  >
+                    {isGpPlusMember && !gdriveAccessToken && (
+                      <p className="p-0 m-0">
+                        Authenticate w/ Google Drive & Copy lesson
+                      </p>
+                    )}
+                    {isGpPlusMember &&
+                      gdriveAccessToken &&
+                      (userGDriveLessonFolderId
+                        ? "Bulk copy to my Google Drive again"
+                        : "Bulk copy to my Google Drive")}
+                    {!isGpPlusMember && (
+                      <>Subscribe to copy this lesson to your Google Drive</>
+                    )}
+                  </div>
+                </CopyLessonBtnUI>
               ) : (
                 <Button
                   style={{ backgroundColor: "#1c28bd" }}

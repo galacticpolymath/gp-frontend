@@ -1,4 +1,11 @@
-import { RefObject, useEffect, useRef, useState } from "react";
+import {
+  PropsWithChildren,
+  ReactNode,
+  RefObject,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { Button, Spinner } from "react-bootstrap";
 import { useUserContext } from "../../../providers/UserProvider";
 import useDrivePicker from "react-google-drive-picker";
@@ -124,6 +131,7 @@ interface ICopyLessonBtnUIProps {
   onClick: () => void;
   isLoading: boolean;
   disabled: boolean;
+  children?: ReactNode;
   didInitialRenderOccurred?: boolean;
   isGpPlusMember: boolean;
   userGDriveLessonFolderId?: string;
@@ -131,6 +139,7 @@ interface ICopyLessonBtnUIProps {
   gdriveAccessToken: string | undefined;
   btnRef: ICopyLessonBtnProps["btnRef"] | null;
   btnWrapperClassName?: string;
+  childrenClassName?: string;
 }
 
 export const CopyLessonBtnUI: React.FC<ICopyLessonBtnUIProps> = ({
@@ -144,6 +153,8 @@ export const CopyLessonBtnUI: React.FC<ICopyLessonBtnUIProps> = ({
   isCopyingLesson,
   gdriveAccessToken,
   btnWrapperClassName = "mb-3",
+  childrenClassName,
+  children,
 }) => {
   const _didInitialRenderOccurred =
     typeof didInitialRenderOccurred === "boolean" && didInitialRenderOccurred
@@ -176,7 +187,12 @@ export const CopyLessonBtnUI: React.FC<ICopyLessonBtnUIProps> = ({
         disabled={!_didInitialRenderOccurred || disabled || isLoading}
       >
         {_didInitialRenderOccurred ? (
-          <div className="d-flex flex-row align-items-center justify-content-center gap-2">
+          <div
+            className={
+              childrenClassName ??
+              "d-flex flex-row align-items-center justify-content-center gap-2"
+            }
+          >
             {disabled || isLoading ? (
               <Spinner className="text-black" />
             ) : (
@@ -187,22 +203,24 @@ export const CopyLessonBtnUI: React.FC<ICopyLessonBtnUIProps> = ({
                   width={32}
                   height={32}
                 />
-                <div
-                  style={{ lineHeight: "23px", fontSize: "18px" }}
-                  className="d-flex flex-column text-black"
-                >
-                  {isGpPlusMember && !gdriveAccessToken && (
-                    <>Authenticate w/ Google Drive & Copy lesson</>
-                  )}
-                  {isGpPlusMember &&
-                    gdriveAccessToken &&
-                    (userGDriveLessonFolderId
-                      ? "Bulk copy to my Google Drive again"
-                      : "Bulk copy to my Google Drive")}
-                  {!isGpPlusMember && (
-                    <>Subscribe to copy this lesson to your Google Drive</>
-                  )}
-                </div>
+                {children ?? (
+                  <div
+                    style={{ lineHeight: "23px", fontSize: "18px" }}
+                    className="d-flex flex-column text-black"
+                  >
+                    {isGpPlusMember && !gdriveAccessToken && (
+                      <>Authenticate w/ Google Drive & Copy lesson</>
+                    )}
+                    {isGpPlusMember &&
+                      gdriveAccessToken &&
+                      (userGDriveLessonFolderId
+                        ? "Bulk copy to my Google Drive again"
+                        : "Bulk copy to my Google Drive")}
+                    {!isGpPlusMember && (
+                      <>Subscribe to copy this lesson to your Google Drive</>
+                    )}
+                  </div>
+                )}
               </>
             )}
           </div>
