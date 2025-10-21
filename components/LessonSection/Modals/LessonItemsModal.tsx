@@ -2,7 +2,7 @@
 /* eslint-disable indent */
 import React, { useEffect, useMemo, useState } from "react";
 import { Button, Modal, CloseButton } from "react-bootstrap";
-import { useModalContext } from "../../../providers/ModalProvider";
+import { ILessonItem, useModalContext } from "../../../providers/ModalProvider";
 import { TbDownload } from "react-icons/tb";
 import { TbExternalLink } from "react-icons/tb";
 import { useUserContext } from "../../../providers/UserProvider";
@@ -11,32 +11,103 @@ import {
   Carousel,
   CarouselSlider,
   CarouselCard,
-  CarouselNavContainer,
-  CarouselNav,
-  CarouselNavButton,
   CarouselButton,
 } from "@fluentui/react-carousel";
-import Link from "next/link";
 import { CopyLessonBtnUI } from "../TeachIt/CopyLessonBtn";
 import useSiteSession from "../../../customHooks/useSiteSession";
 import Image from "next/image";
 import { FcGoogle } from "react-icons/fc";
+import Dropdown from "react-bootstrap/Dropdown";
 
 interface ICarouselItemNavBtn {
   onClick: React.MouseEventHandler<HTMLButtonElement>;
   arrowType: "left" | "right";
 }
 
-const CarouselItemNavBtn: React.FC<ICarouselItemNavBtn> = ({
-  onClick,
-  arrowType,
+const LessonItemDownloadBtnsDropDown: React.FC<{ lessonItem: ILessonItem }> = ({
+  lessonItem,
 }) => {
+  const handleOfficeBtnClick = () => {
+    window.open(
+      `${lessonItem.gdriveRoot}/export?format=${lessonItem.mimeType}`
+    );
+  };
+
+  const handleDownloadPdfBtnClick = () => {
+    window.open(`${lessonItem.gdriveRoot}/export?format=application/pdf`);
+  };
+
   return (
-    <button onClick={onClick} className="btn bg-transparent m-0 p-1">
-      <i
-        className={`fs-1 text-black bi-arrow-${arrowType}-circle-fill lh-1 d-block`}
-      ></i>
-    </button>
+    <Dropdown className="d-block d-sm-none">
+      <Dropdown.Toggle
+        variant="success"
+        id="dropdown-basic"
+        style={{
+          fontSize: "18px",
+        }}
+        className="gp-plus-user-color"
+      >
+        Download as:
+      </Dropdown.Toggle>
+
+      <Dropdown.Menu className="w-100">
+        <Dropdown.Item className="d-flex justify-content-center align-items-center">
+          <Button
+            className="d-flex no-btn-styles flex-row justify-content-center align-items-center"
+            onClick={handleOfficeBtnClick}
+          >
+            <div
+              style={{ width: 44, height: 44 }}
+              className="bg-white p-1 rounded position-relative"
+            >
+              <Image
+                alt="office"
+                fill
+                src="/imgs/office.png"
+                className="w-100 h-100 position-absolute"
+                style={{
+                  maxWidth: "35px",
+                  maxHeight: "35px",
+                  objectFit: "contain",
+                  top: "50%",
+                  left: "50%",
+                  transform: "translate(-50%, -50%)",
+                }}
+              />
+            </div>
+            <section className="d-flex justify-content-center align-items-center ms-2">
+              <div
+                style={{ height: "fit-content" }}
+                className="mb-0 text-black text-decoration-underline lessons-item-modal-btns-text-container"
+              >
+                Office
+              </div>
+            </section>
+          </Button>
+        </Dropdown.Item>
+        <Dropdown.Item className="d-flex justify-content-center align-items-center">
+          <Button
+            className="d-flex no-btn-styles flex-row justify-content-center align-items-center"
+            onClick={handleDownloadPdfBtnClick}
+          >
+            <div
+              style={{ width: 44, height: 44 }}
+              className="bg-white p-1 rounded"
+            >
+              <TbDownload color="black" size={35} />
+            </div>
+            <section className="d-flex justify-content-center align-items-center ms-2">
+              <div
+                style={{ height: "fit-content" }}
+                className="mb-0 text-black text-decoration-underline lessons-item-modal-btns-text-container"
+              >
+                PDF
+              </div>
+            </section>
+          </Button>
+        </Dropdown.Item>
+      </Dropdown.Menu>
+    </Dropdown>
   );
 };
 
@@ -241,13 +312,16 @@ const LessonItemsModal: React.FC = () => {
             >
               <section className="w-100 d-flex flex-column flex-md-row justify-content-xxl-center align-items-stretch">
                 {currentLessonItem.itemCat !== "web resource" && (
-                  <section className="w-100 d-flex justify-content-center justify-content-md-end pt-sm-1">
+                  <section className="w-100 d-none d-sm-flex justify-content-center justify-content-md-end pt-sm-1">
                     <h6>Download as: </h6>
                   </section>
                 )}
                 <section className="d-flex flex-row flex-md-column justify-content-center align-items-center lessons-item-modal-download">
+                  <LessonItemDownloadBtnsDropDown
+                    lessonItem={currentLessonItem}
+                  />
                   {currentLessonItem.isExportable && isGpPlusMember && (
-                    <div>
+                    <div className="d-none d-sm-block">
                       <Button
                         className="d-flex no-btn-styles flex-row justify-content-center align-items-center"
                         onClick={handleOfficeBtnClick}
@@ -283,7 +357,7 @@ const LessonItemsModal: React.FC = () => {
                     </div>
                   )}
                   {currentLessonItem.isExportable && (
-                    <div className="d-flex mt-md-2 ms-md-0 ms-2">
+                    <div className="d-none d-sm-flex mt-md-2 ms-md-0 ms-2">
                       <Button
                         className="d-flex no-btn-styles flex-row justify-content-center align-items-center"
                         onClick={handleDownloadPdfBtnClick}
