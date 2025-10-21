@@ -74,7 +74,7 @@ const LoginUI = ({
 
   return (
     <div className={className}>
-      <div className="d-flex justify-content-center align-items-center">
+      <div className="d-flex justify-content-center align-items-center pt-sm-4 pt-md-0">
         <img
           src="/imgs/gp_logo_gradient_transBG.png"
           alt="gp_logo"
@@ -90,9 +90,9 @@ const LoginUI = ({
       </h1>
       <h5
         className={`${headingTitleClassName} mt-4`}
-        style={{ fontWeight: 400 }}
+        style={{ fontWeight: 300 }}
       >
-        Get free access to 100+ free STEM resources!
+        Get 100+ of the best science + STE(A)M resources available <i>anywhere</i>! (Grant-funded, FREE to you!)
       </h5>
       <section className="mt-4 mb-3 justify-content-center align-items-center d-flex">
         <div style={{ width: '85%' }} className="d-flex py-3 flex-sm-row flex-column justify-content-center align-items-center border-top border-bottom">
