@@ -52,16 +52,6 @@ $gpGroup: #1ca9e5;
   min-width: 200px;
 }
 
-.lesson-item-modal-btns-container {
-  button {
-    min-width: 80px;
-
-    @media (min-width: 576px) {
-      min-width: 120px;
-    }
-  }
-}
-
 .gp-plus-logo-lesson-item-modal {
   width: 65px;
   height: 65px;

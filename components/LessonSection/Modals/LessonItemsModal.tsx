@@ -60,6 +60,10 @@ const LessonItemsModal: React.FC = () => {
   const { docUrl: currentLessonItemDocUrl, itemTitle: currentLessonItemName } =
     currentLessonItem;
 
+  useEffect(() => {
+    console.log("currentLessonItem: ", currentLessonItem);
+  });
+
   const handleDownloadPdfBtnClick = () => {
     if (currentLessonItem.mimeType === "pdf") {
       const url = new URL(currentLessonItem.gdriveRoot as string);
@@ -189,22 +193,22 @@ const LessonItemsModal: React.FC = () => {
                 isGpPlusMember ? "col-9" : "col-6"
               } col-sm-6 col-md-9 col-xxl-6 d-flex flex-column flex-md-row justify-content-md-end align-items-center`}
             >
-              <section className="w-100 d-flex flex-column justify-content-end flex-md-row justify-content-md-end justify-content-xxl-center align-items-stretch lesson-item-modal-btns-container">
+              <section className="w-100 d-flex flex-row justify-content-xxl-center align-items-stretch">
                 {currentLessonItem.itemCat !== "web resource" && (
-                  <section className="w-100 d-flex justify-content-end">
+                  <section className="w-100 d-flex justify-content-end pt-sm-1">
                     <h6>Download as: </h6>
                   </section>
                 )}
-                <section className="d-flex justify-content-center align-items-center justify-content-md-end justify-content-sm-center align-items-sm-center">
+                <section className="d-flex flex-column justify-content-center align-items-center">
                   {currentLessonItem.isExportable &&
                     isGpPlusMember &&
                     currentLessonItem.itemType !== "presentation" && (
-                      <Button
-                        // style={{ backgroundColor: "white" }}
-                        className="d-flex no-btn-styles px-2 px-sm-3 py-1 py-sm-2 me-3 flex-column flex-sm-row"
-                        onClick={handleOfficeBtnClick}
-                      >
-                        <section className="d-flex justify-content-center align-items-center h-100">
+                      <div>
+                        <Button
+                          style={{ width: 150 }}
+                          className="d-flex no-btn-styles flex-row justify-content-center align-items-center"
+                          onClick={handleOfficeBtnClick}
+                        >
                           <div
                             style={{ width: 44, height: 44 }}
                             className="bg-white p-1 rounded position-relative"
@@ -224,39 +228,43 @@ const LessonItemsModal: React.FC = () => {
                               }}
                             />
                           </div>
-                        </section>
-                        <section className="d-flex justify-content-center align-items-center ms-2">
-                          <div
-                            style={{ height: "fit-content" }}
-                            className="mb-0 text-black text-decoration-underline"
-                          >
-                            Office
-                          </div>
-                        </section>
-                      </Button>
+                          <section className="d-flex justify-content-center align-items-center ms-2">
+                            <div
+                              style={{ height: "fit-content", width: 65 }}
+                              className="mb-0 text-black text-decoration-underline"
+                            >
+                              Office
+                            </div>
+                          </section>
+                        </Button>
+                      </div>
                     )}
                   {currentLessonItem.itemType !== "presentation" &&
                     currentLessonItem.isExportable && (
-                      <Button
-                        // style={{ backgroundColor: "white" }}
-                        className="d-flex no-btn-styles px-2 px-sm-3 py-1 py-sm-2 me-sm-3 flex-column flex-sm-row"
-                        onClick={handleDownloadPdfBtnClick}
-                      >
-                        <div className="bg-white p-1 rounded">
-                          <TbDownload color="black" size={32} />
-                        </div>
-                        <section className="d-flex justify-content-center align-items-center ms-2">
+                      <div className="d-flex mt-2">
+                        <Button
+                          style={{ width: 150 }}
+                          className="d-flex no-btn-styles flex-row justify-content-center align-items-center"
+                          onClick={handleDownloadPdfBtnClick}
+                        >
                           <div
-                            style={{ height: "fit-content" }}
-                            className="mb-0 text-black text-decoration-underline"
+                            style={{ width: 44, height: 44 }}
+                            className="bg-white p-1 rounded"
                           >
-                            PDF
+                            <TbDownload color="black" size={35} />
                           </div>
-                        </section>
-                      </Button>
+                          <section className="d-flex justify-content-center align-items-center ms-2">
+                            <div
+                              style={{ height: "fit-content", width: 65 }}
+                              className="mb-0 text-black text-decoration-underline"
+                            >
+                              PDF
+                            </div>
+                          </section>
+                        </Button>
+                      </div>
                     )}
-                  {(currentLessonItem.itemType === "presentation" ||
-                    currentLessonItem.itemCat === "web resource") && (
+                  {currentLessonItem.itemCat === "web resource" && (
                     <Button
                       style={{ backgroundColor: "white" }}
                       className="d-flex no-btn-styles px-2 px-sm-3 py-1 py-sm-2 me-sm-3 flex-column flex-sm-row"
