@@ -19,6 +19,7 @@ import {
 import Link from "next/link";
 import { CopyLessonBtnUI } from "../TeachIt/CopyLessonBtn";
 import useSiteSession from "../../../customHooks/useSiteSession";
+import Image from "next/image";
 
 interface ICarouselItemNavBtn {
   onClick: React.MouseEventHandler<HTMLButtonElement>;
@@ -190,7 +191,7 @@ const LessonItemsModal: React.FC = () => {
             >
               <section className="w-100 d-flex flex-column justify-content-end flex-md-row justify-content-md-end justify-content-xxl-center align-items-stretch lesson-item-modal-btns-container">
                 {currentLessonItem.itemCat !== "web resource" && (
-                  <section className="w-100 d-md-none d-flex justify-content-center align-items-center justify-content-sm-center align-items-sm-center">
+                  <section className="w-100 d-flex justify-content-center align-items-center justify-content-sm-center align-items-sm-center">
                     <h6>Download as: </h6>
                   </section>
                 )}
@@ -199,46 +200,48 @@ const LessonItemsModal: React.FC = () => {
                     isGpPlusMember &&
                     currentLessonItem.itemType !== "presentation" && (
                       <Button
-                        style={{ backgroundColor: "white" }}
+                        // style={{ backgroundColor: "white" }}
                         className="d-flex no-btn-styles px-2 px-sm-3 py-1 py-sm-2 me-3 flex-column flex-sm-row"
                         onClick={handleOfficeBtnClick}
                       >
                         <section className="d-flex justify-content-center align-items-center h-100">
-                          <img
-                            src="/imgs/office.png"
-                            className="gp-plus-btn-icons-lesson-item-modal"
-                          />
+                          <div className="bg-white p-1 rounded">
+                            <Image
+                              alt="office"
+                              width={35}
+                              height={35}
+                              src="/imgs/office.png"
+                              className=""
+                            />
+                          </div>
                         </section>
-                        <section className="justify-content-center align-items-center ms-sm-2 d-flex py-2 py-sm-0">
-                          <p className="mb-0 text-black d-none d-md-block">
-                            Download as Office
-                          </p>
-                          <p className="mb-0 text-black d-block d-md-none">
+                        <section className="d-flex justify-content-center align-items-center ms-2">
+                          <div
+                            style={{ height: "fit-content" }}
+                            className="mb-0 text-black text-decoration-underline"
+                          >
                             Office
-                          </p>
+                          </div>
                         </section>
                       </Button>
                     )}
                   {currentLessonItem.itemType !== "presentation" &&
                     currentLessonItem.isExportable && (
                       <Button
-                        style={{ backgroundColor: "white" }}
+                        // style={{ backgroundColor: "white" }}
                         className="d-flex no-btn-styles px-2 px-sm-3 py-1 py-sm-2 me-sm-3 flex-column flex-sm-row"
                         onClick={handleDownloadPdfBtnClick}
                       >
-                        <section className="d-flex justify-content-center align-items-center h-100">
-                          <TbDownload
-                            className="gp-plus-btn-icons-lesson-item-modal"
-                            color="black"
-                          />
-                        </section>
-                        <section className="justify-content-center align-items-center ms-sm-2 d-flex py-2 py-sm-0">
-                          <p className="mb-0 text-black d-none d-md-block">
-                            Download PDF
-                          </p>
-                          <p className="mb-0 text-black d-block d-md-none">
+                        <div className="bg-white p-1 rounded">
+                          <TbDownload color="black" size={32} />
+                        </div>
+                        <section className="d-flex justify-content-center align-items-center ms-2">
+                          <div
+                            style={{ height: "fit-content" }}
+                            className="mb-0 text-black text-decoration-underline"
+                          >
                             PDF
-                          </p>
+                          </div>
                         </section>
                       </Button>
                     )}
