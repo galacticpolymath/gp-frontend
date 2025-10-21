@@ -152,16 +152,20 @@ const LessonItemsModal: React.FC = () => {
     userGDriveLessonFolderId,
   } = lessonItemModal;
   const currentLessonItem = lessonItems[currentIndex] ?? {};
+  const {
+    docUrl: currentLessonItemDocUrl,
+    itemTitle: currentLessonItemName,
+    itemCat,
+    externalUrl,
+  } = currentLessonItem;
   const iframeSrc =
-    currentLessonItem?.itemCat === "web resource"
-      ? currentLessonItem?.externalUrl
-      : currentLessonItem?.docUrl;
-  // const [currentLessonItemDocUrl, currentLessonItemName] = currentLessonItem;
-  const { docUrl: currentLessonItemDocUrl, itemTitle: currentLessonItemName } =
-    currentLessonItem;
+    itemCat === "web resource" ? externalUrl : currentLessonItemDocUrl;
+
+  console.log("iframeSrc rendering: ", iframeSrc);
 
   useEffect(() => {
     console.log("currentLessonItem: ", currentLessonItem);
+    console.log("iframeSrc in useEffect: ", iframeSrc);
   });
 
   const handleDownloadPdfBtnClick = () => {
