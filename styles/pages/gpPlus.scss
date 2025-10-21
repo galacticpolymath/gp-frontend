@@ -586,3 +586,17 @@ $gpGroup: #1ca9e5;
   justify-content: center;
   align-items: center;
 }
+
+.lessons-item-modal-btns-text-container {
+  @media (min-width: 768px) {
+    width: 65px;
+  }
+}
+
+.lessons-item-modal-download {
+  button {
+    @media (min-width: 768px) {
+      width: 150px;
+    }
+  }
+}

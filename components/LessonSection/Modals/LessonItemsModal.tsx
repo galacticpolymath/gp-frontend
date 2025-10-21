@@ -150,8 +150,10 @@ const LessonItemsModal: React.FC = () => {
           >
             <section
               className={`${
-                isGpPlusMember ? "col-3" : "col-6"
-              } col-sm-6 col-md-3 col-xxl-6 d-flex ${
+                isGpPlusMember
+                  ? "col-6 col-sm-5 col-xxl-3"
+                  : "col-sm-6 col-md-3 col-xxl-6"
+              } d-flex ${
                 isGpPlusMember
                   ? "justify-content-start align-items-center align-items-sm-stretch"
                   : "justify-content-start align-items-center ps-1"
@@ -160,7 +162,7 @@ const LessonItemsModal: React.FC = () => {
               {isGpPlusMember ? (
                 <CopyLessonBtnUI
                   btnRef={null}
-                  btnClassName="py-2 px-md-3 col-12"
+                  btnClassName="p-2 py-sm-2 px-md-3 col-12"
                   isLoading={idsOfLessonsBeingCopied.has(lessonId!)}
                   disabled={idsOfLessonsBeingCopied.has(lessonId!)}
                   isCopyingLesson={idsOfLessonsBeingCopied.has(lessonId!)}
@@ -232,20 +234,21 @@ const LessonItemsModal: React.FC = () => {
             </section>
             <section
               className={` ${
-                isGpPlusMember ? "col-9" : "col-6"
-              } col-sm-6 col-md-9 col-xxl-6 d-flex flex-column flex-md-row justify-content-md-end align-items-center`}
+                isGpPlusMember
+                  ? "col-6 col-sm-7 col-xxl-9"
+                  : "col-6 col-sm-6 col-md-9 col-xxl-6"
+              } d-flex flex-column flex-md-row justify-content-md-end align-items-center`}
             >
-              <section className="w-100 d-flex flex-md-row justify-content-xxl-center align-items-stretch">
+              <section className="w-100 d-flex flex-column flex-md-row justify-content-xxl-center align-items-stretch">
                 {currentLessonItem.itemCat !== "web resource" && (
-                  <section className="w-100 d-flex justify-content-end pt-sm-1">
+                  <section className="w-100 d-flex justify-content-center justify-content-md-end pt-sm-1">
                     <h6>Download as: </h6>
                   </section>
                 )}
-                <section className="d-flex flex-column justify-content-center align-items-center">
+                <section className="d-flex flex-row flex-md-column justify-content-center align-items-center lessons-item-modal-download">
                   {currentLessonItem.isExportable && isGpPlusMember && (
                     <div>
                       <Button
-                        style={{ width: 150 }}
                         className="d-flex no-btn-styles flex-row justify-content-center align-items-center"
                         onClick={handleOfficeBtnClick}
                       >
@@ -270,8 +273,8 @@ const LessonItemsModal: React.FC = () => {
                         </div>
                         <section className="d-flex justify-content-center align-items-center ms-2">
                           <div
-                            style={{ height: "fit-content", width: 65 }}
-                            className="mb-0 text-black text-decoration-underline"
+                            style={{ height: "fit-content" }}
+                            className="mb-0 text-black text-decoration-underline lessons-item-modal-btns-text-container"
                           >
                             Office
                           </div>
@@ -280,9 +283,8 @@ const LessonItemsModal: React.FC = () => {
                     </div>
                   )}
                   {currentLessonItem.isExportable && (
-                    <div className="d-flex mt-2">
+                    <div className="d-flex mt-md-2 ms-md-0 ms-2">
                       <Button
-                        style={{ width: 150 }}
                         className="d-flex no-btn-styles flex-row justify-content-center align-items-center"
                         onClick={handleDownloadPdfBtnClick}
                       >
@@ -294,8 +296,8 @@ const LessonItemsModal: React.FC = () => {
                         </div>
                         <section className="d-flex justify-content-center align-items-center ms-2">
                           <div
-                            style={{ height: "fit-content", width: 65 }}
-                            className="mb-0 text-black text-decoration-underline"
+                            style={{ height: "fit-content" }}
+                            className="mb-0 text-black text-decoration-underline lessons-item-modal-btns-text-container"
                           >
                             PDF
                           </div>
