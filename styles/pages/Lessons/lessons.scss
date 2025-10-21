@@ -910,3 +910,11 @@ $active-dot-color: rgba(44, 131, 195, 0.6) !important;
   max-height: 100vh;
   overflow-y: auto;
 }
+
+.picker-dialog-content {
+  z-index: 10000000000 !important;
+  position: relative !important;
+}
+.picker-dialog-bg {
+  // z-index: 10000 !important;
+}

@@ -11,8 +11,18 @@
 /* eslint-disable react/jsx-indent-props */
 /* eslint-disable indent */
 /* eslint-disable react/jsx-indent */
-import { createContext, ReactNode, useContext, useState } from "react";
-import { IComponent, TUseStateReturnVal } from "../types/global";
+import {
+  createContext,
+  ReactNode,
+  RefObject,
+  useContext,
+  useState,
+} from "react";
+import {
+  IComponent,
+  IItemForClient,
+  TUseStateReturnVal,
+} from "../types/global";
 import {
   IItemV2,
   IItemV2Props,
@@ -35,10 +45,18 @@ export const defautlNotifyModalVal: INotifyModalVal = {
   handleOnHide: () => {},
 };
 
-type TLessonItemModal = {
+export interface ILessonItem extends IItemForClient {
+  docUrl: string;
+  externalUrl: string;
+}
+export interface ILessonItemsModal {
+  lessonItems: ILessonItem[];
+  currentIndex: number;
   isDisplayed: boolean;
-  docUrl?: string;
-};
+  lessonId: string | null;
+  userGDriveLessonFolderId?: string;
+  copyLessonBtnRef: RefObject<HTMLButtonElement | null> | null;
+}
 
 export interface IModalProviderValue {
   _customModalFooter: TUseStateReturnVal<null | ReactNode>;
@@ -58,9 +76,7 @@ export interface IModalProviderValue {
   _isThankYouModalDisplayed: TUseStateReturnVal<boolean>;
   _isGpPlusSignUpModalDisplayed: TUseStateReturnVal<boolean>;
   _isCopyLessonHelperModalDisplayed: TUseStateReturnVal<boolean>;
-  _lessonItemModal: TUseStateReturnVal<
-    TLessonItemModal & Partial<IItemV2Props & Pick<IItemV2, "itemCat">>
-  >;
+  _lessonItemModal: TUseStateReturnVal<ILessonItemsModal>;
 }
 
 export const ModalProvider = ({ children }: Pick<IComponent, "children">) => {
@@ -85,8 +101,12 @@ export const ModalProvider = ({ children }: Pick<IComponent, "children">) => {
   const [isPasswordResetModalOn, setIsPasswordResetModalOn] = useState(false);
   const [isGpPlusSignUpModalDisplayed, setIsGpPlusSignUpModalDisplayed] =
     useState(false);
-  const [lessonItemModal, setLessonItemModal] = useState<TLessonItemModal>({
+  const [lessonItemModal, setLessonItemModal] = useState<ILessonItemsModal>({
+    currentIndex: 0,
+    lessonItems: [],
     isDisplayed: false,
+    copyLessonBtnRef: null,
+    lessonId: null,
   });
   const [
     isFailedCopiedFilesReportModalOn,

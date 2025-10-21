@@ -29,12 +29,11 @@ const LoginUI = ({
   } = useUserEntry();
   const router = useRouter();
   const [passwordInputType, setPasswordInputType] = useState("password");
-  const { _isCreateAccountModalDisplayed, _isPasswordResetModalOn } =
+  const { _isPasswordResetModalOn } =
     useContext(ModalContext);
   const [isGoogleLoginSpinnerDisplayed, setIsGoogleLoginSpinnerDisplayed] =
     useState(false);
   const [, setLoginForm] = _loginForm;
-  const [, setIsCreateAccountModalDisplayed] = _isCreateAccountModalDisplayed;
   const [, setIsPasswordResetModalOn] = _isPasswordResetModalOn;
   const [isUserEntryInProcess] = _isUserEntryInProcess;
   const [userEntryErrors, setUserEntryErrors] = _userEntryErrors;
@@ -243,8 +242,8 @@ const LoginUI = ({
               }}
               iconContainerClassName="h-100 end-0 position-absolute top-0 d-flex justify-content-center align-items-center bg-light-blue"
               inputContainerCss={`${inputFieldClassName} ${userEntryErrors.has("password")
-                  ? "border-danger text-danger"
-                  : "border"
+                ? "border-danger text-danger"
+                : "border"
                 } rounded position-relative`}
               inputClassName="px-1 py-2 position-relative no-outline border-0 bg-light-blue"
               inputId="password-input"

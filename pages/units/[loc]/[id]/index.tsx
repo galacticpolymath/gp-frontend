@@ -48,7 +48,7 @@ import {
 } from "../../../../backend/models/Unit/types/teachingMaterials";
 import { UNITS_URL_PATH } from "../../../../shared/constants";
 import { TUserSchemaForClient } from "../../../../backend/models/User/types";
-import LessonItemModal from "../../../../components/LessonSection/Modals/LessonItemModal";
+import LessonItemsModal from "../../../../components/LessonSection/Modals/LessonItemsModal";
 import GpPlusModal from "../../../../components/LessonSection/Modals/GpPlusModal";
 import ThankYouModal from "../../../../components/GpPlus/ThankYouModal";
 import {
@@ -759,9 +759,6 @@ const LessonDetails: React.FC<IProps> = ({ lesson, unit }) => {
       <div className="col-12 col-lg-10 col-xxl-12 px-3 px-xxl-0 container min-vh-100">
         <div className="p-sm-3 pt-0">
           {_unitSections ? (
-            // TODO: if the user doesn't have an account, then slice the sections starting at the third section
-            // -and render those sections around a wrapper div that will be opaque in order to push the user to
-            // -to sign up a free account
             _unitSections.map((section: any, index: number) => (
               <ParentLessonSection
                 key={index}
@@ -779,7 +776,7 @@ const LessonDetails: React.FC<IProps> = ({ lesson, unit }) => {
         </div>
       </div>
       <GpPlusModal />
-      <LessonItemModal />
+      <LessonItemsModal />
       <ThankYouModal />
       <CopyLessonHelperModal />
       <FailedCopiedFilesReportModal />

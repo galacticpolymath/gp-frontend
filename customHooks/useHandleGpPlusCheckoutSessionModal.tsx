@@ -13,6 +13,15 @@ import {
   getLocalStorageItem,
   setLocalStorageItem,
 } from "../shared/fns";
+import { AiOutlineConsoleSql } from "react-icons/ai";
+
+const getBillingType = () => {
+  const selectedGpPlusBillingType = getLocalStorageItem(
+    "selectedGpPlusBillingType"
+  );
+
+  return selectedGpPlusBillingType === "month" ? "monthly" : "yearly";
+};
 
 export const useHandleGpPlusCheckoutSessionModal = () => {
   const { _notifyModal, _isGpPlusSignUpModalDisplayed } = useModalContext();
@@ -27,12 +36,12 @@ export const useHandleGpPlusCheckoutSessionModal = () => {
 
     return selectedGpPlusBillingType === "month" ? "monthly" : "yearly";
   }, []);
+
   const { user, token, logUserOut, status } = useSiteSession();
   const mutationOberserverRef = useRef<MutationObserver | null>(null);
 
   const handleOnClickPlanChangeLogic = (event: MouseEvent) => {
-    console.log("Event, sup there: ", event.target);
-
+    console.log("plan change occurred");
     const _target = event.target as HTMLElement;
 
     if (_target.className === SELECTED_OPTION_CLASSNAME) {
@@ -106,40 +115,13 @@ export const useHandleGpPlusCheckoutSessionModal = () => {
 
     console.log("percentageSaved: ", percentageSaved);
 
-    const _handleOnClickPlanChangeLogic = (event: MouseEvent) => {
-      handleOnClickPlanChangeLogic(event);
-    };
-
-    // if the user selects yearly and if they are on the yearly plan, then
-
     const mutationOberserver = new MutationObserver((elements) => {
       for (const _ of elements) {
-        const wasContinueToCheckoutBtnClicked = getLocalStorageItem(
-          "wasContinueToCheckoutBtnClicked"
-        );
-
-
         const billingTypeOptsContainer = document.querySelector<HTMLDivElement>(
           ".o--HorizontalToggle--horizontalToggle"
         );
         const gpPlusSavingsElement =
           document.querySelector<HTMLSpanElement>("#gp-plus-savings");
-        const monthlyOption = billingTypeOptsContainer?.firstChild?.firstChild
-          ?.firstChild as HTMLElement | undefined;
-        const yearlyOption = billingTypeOptsContainer?.firstChild?.lastChild
-          ?.firstChild as HTMLElement | undefined;
-
-        if (
-          !wasContinueToCheckoutBtnClicked && selectedBillingPeriod === "monthly" &&
-          monthlyOption
-        ) {
-          monthlyOption.click();
-        } else if (
-          !wasContinueToCheckoutBtnClicked && selectedBillingPeriod === "yearly" &&
-          yearlyOption
-        ) {
-          yearlyOption.click();
-        }
 
         console.log("gpPlusSavingsElement: ", gpPlusSavingsElement);
 
@@ -148,26 +130,16 @@ export const useHandleGpPlusCheckoutSessionModal = () => {
           savingsElement.className = "gp-plus-color text-center ms-2";
           savingsElement.id = "gp-plus-savings";
           savingsElement.textContent = `Save ${percentageSaved ?? 50}%`;
-          const gpPlusBillingType = getLocalStorageItem("selectedGpPlusBillingType");
-
-          console.log("gpPlusBillingType, python: ", gpPlusBillingType);
-
-          //TODO: get the local storage item that has the final result when the user clicks on the continue button
+          const gpPlusBillingType = getLocalStorageItem(
+            "selectedGpPlusBillingType"
+          );
           savingsElement.classList.add(
             gpPlusBillingType === "month"
               ? "text-decoration-line-through"
               : "fw-bolder"
           );
-
           console.log("billingTypeOptsContainer: ", billingTypeOptsContainer);
-
           billingTypeOptsContainer.appendChild(savingsElement);
-        }
-
-        if (billingTypeOptsContainer && typeof percentageSaved === "number") {
-          document.addEventListener("click", _handleOnClickPlanChangeLogic);
-        } else if (!billingTypeOptsContainer) {
-          document.removeEventListener("click", _handleOnClickPlanChangeLogic);
         }
       }
     });
@@ -183,8 +155,11 @@ export const useHandleGpPlusCheckoutSessionModal = () => {
     if (status === "authenticated") {
       handleUserInteractionWithGpPlusModal();
 
+      document.addEventListener("click", handleOnClickPlanChangeLogic);
+
       return () => {
         mutationOberserverRef.current?.disconnect();
+        document.removeEventListener("click", handleOnClickPlanChangeLogic);
       };
     }
   }, [status]);
