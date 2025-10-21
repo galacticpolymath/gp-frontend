@@ -140,6 +140,8 @@ interface ICopyLessonBtnUIProps {
   btnRef: ICopyLessonBtnProps["btnRef"] | null;
   btnWrapperClassName?: string;
   childrenClassName?: string;
+  btnClassName?: string;
+  btnStyles?: React.CSSProperties;
 }
 
 export const CopyLessonBtnUI: React.FC<ICopyLessonBtnUIProps> = ({
@@ -154,32 +156,36 @@ export const CopyLessonBtnUI: React.FC<ICopyLessonBtnUIProps> = ({
   gdriveAccessToken,
   btnWrapperClassName = "mb-3",
   childrenClassName,
+  btnClassName = "px-3 py-2 col-12",
   children,
+  btnStyles,
 }) => {
   const _didInitialRenderOccurred =
     typeof didInitialRenderOccurred === "boolean" && didInitialRenderOccurred
       ? didInitialRenderOccurred
       : true;
 
+  if (!btnStyles) {
+    btnStyles = {
+      minHeight: "51px",
+      backgroundColor: "white",
+      border: "solid 3px #2339C4",
+      borderRadius: "2em",
+      textTransform: "none",
+      minWidth: "300px",
+      pointerEvents:
+        !_didInitialRenderOccurred || disabled || isLoading ? "none" : "auto",
+      width: "fit-content",
+    };
+  }
+
   return (
     <div style={{ width: "fit-content" }} className={btnWrapperClassName}>
       <Button
         ref={btnRef}
         onClick={onClick}
-        style={{
-          pointerEvents:
-            !_didInitialRenderOccurred || disabled || isLoading
-              ? "none"
-              : "auto",
-          minHeight: "51px",
-          backgroundColor: "white",
-          border: "solid 3px #2339C4",
-          borderRadius: "2em",
-          textTransform: "none",
-          minWidth: "300px",
-          width: "fit-content",
-        }}
-        className={`px-3 py-2 col-12 ${
+        style={btnStyles}
+        className={`${btnClassName} ${
           !_didInitialRenderOccurred || disabled || isLoading
             ? "opacity-25"
             : "opacity-100"

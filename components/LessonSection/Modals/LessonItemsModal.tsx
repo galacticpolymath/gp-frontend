@@ -20,6 +20,7 @@ import Link from "next/link";
 import { CopyLessonBtnUI } from "../TeachIt/CopyLessonBtn";
 import useSiteSession from "../../../customHooks/useSiteSession";
 import Image from "next/image";
+import { FcGoogle } from "react-icons/fc";
 
 interface ICarouselItemNavBtn {
   onClick: React.MouseEventHandler<HTMLButtonElement>;
@@ -159,6 +160,7 @@ const LessonItemsModal: React.FC = () => {
               {isGpPlusMember ? (
                 <CopyLessonBtnUI
                   btnRef={null}
+                  btnClassName="py-2 px-md-3 col-12"
                   isLoading={idsOfLessonsBeingCopied.has(lessonId!)}
                   disabled={idsOfLessonsBeingCopied.has(lessonId!)}
                   isCopyingLesson={idsOfLessonsBeingCopied.has(lessonId!)}
@@ -166,16 +168,30 @@ const LessonItemsModal: React.FC = () => {
                   gdriveAccessToken={gdriveAccessToken}
                   onClick={handleCopyLessonBtnClick}
                   btnWrapperClassName="d-flex justify-content-center align-items-center"
-                  childrenClassName="d-flex flex-row align-items-center justify-content-center gap-2"
+                  childrenClassName="d-flex flex-row flex-md-row align-items-center justify-content-center gap-2"
+                  btnStyles={{
+                    minHeight: "51px",
+                    // minWidth: "300px",
+                    // width: "fit-content",
+                    backgroundColor: "white",
+                    border: "solid 3px #2339C4",
+                    borderRadius: "2em",
+                    textTransform: "none",
+                  }}
                 >
                   <div
                     style={{ lineHeight: "23px", fontSize: "18px" }}
                     className="d-flex flex-column text-black"
                   >
                     {isGpPlusMember && !gdriveAccessToken && (
-                      <p className="p-0 m-0">
-                        Authenticate w/ Google Drive & Copy lesson
-                      </p>
+                      <>
+                        <p className="p-0 m-0 d-none d-md-block">
+                          Authenticate w/ Google Drive & Copy lesson
+                        </p>
+                        <div className="p-0 m-0 d-block d-md-none">
+                          Sign in w/ <FcGoogle /> Drive & Copy lesson
+                        </div>
+                      </>
                     )}
                     {isGpPlusMember &&
                       gdriveAccessToken &&
@@ -219,7 +235,7 @@ const LessonItemsModal: React.FC = () => {
                 isGpPlusMember ? "col-9" : "col-6"
               } col-sm-6 col-md-9 col-xxl-6 d-flex flex-column flex-md-row justify-content-md-end align-items-center`}
             >
-              <section className="w-100 d-flex flex-row justify-content-xxl-center align-items-stretch">
+              <section className="w-100 d-flex flex-md-row justify-content-xxl-center align-items-stretch">
                 {currentLessonItem.itemCat !== "web resource" && (
                   <section className="w-100 d-flex justify-content-end pt-sm-1">
                     <h6>Download as: </h6>
