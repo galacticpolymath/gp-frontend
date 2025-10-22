@@ -1454,7 +1454,7 @@ const CopyLessonBtn: React.FC<
           border: "solid 3px #2339C4",
           borderRadius: "2em",
           textTransform: "none",
-          // minWidth: "280px",
+          minWidth: "210px",
           width: "fit-content",
         }}
         className={`${btnClassName} ${

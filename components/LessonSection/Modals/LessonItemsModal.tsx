@@ -161,13 +161,6 @@ const LessonItemsModal: React.FC = () => {
   const iframeSrc =
     itemCat === "web resource" ? externalUrl : currentLessonItemDocUrl;
 
-  console.log("iframeSrc rendering: ", iframeSrc);
-
-  useEffect(() => {
-    console.log("currentLessonItem: ", currentLessonItem);
-    console.log("iframeSrc in useEffect: ", iframeSrc);
-  });
-
   const handleDownloadPdfBtnClick = () => {
     if (currentLessonItem.mimeType === "pdf") {
       const url = new URL(currentLessonItem.gdriveRoot as string);
