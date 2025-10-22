@@ -187,6 +187,7 @@ export interface IUpdatedAboutUserForm{
 export interface ISessionStorage{
   userEntryRedirectUrl: string; 
   wasWelcomeNewUserModalShown: boolean
+  isGpPlusUser: boolean
 }
 
 export interface ILocalStorage extends Pick<TUserSchemaV2, "willShowGpPlusCopyLessonHelperModal">{

@@ -53,8 +53,10 @@ import GpPlusModal from "../../../../components/LessonSection/Modals/GpPlusModal
 import ThankYouModal from "../../../../components/GpPlus/ThankYouModal";
 import {
   getLocalStorageItem,
+  getSessionStorageItem,
   removeLocalStorageItem,
   setLocalStorageItem,
+  setSessionStorageItem,
 } from "../../../../shared/fns";
 import useSiteSession from "../../../../customHooks/useSiteSession";
 import { getUnitGDriveChildItems } from "../../../../backend/services/gdriveServices";
@@ -190,11 +192,9 @@ const LessonDetails: React.FC<IProps> = ({ lesson, unit }) => {
     _lessonItemModal,
     _isThankYouModalDisplayed,
   } = useModalContext();
-  const [, setWillShowGpPlusCopyLessonHelperModal] =
-    _willShowGpPlusCopyLessonHelperModal;
   const [, setIsThankYouModalDisplayed] = _isThankYouModalDisplayed;
   const [, setIsUserTeacher] = _isUserTeacher;
-  const [isGpPlusMember, setIsGpPlusMember] = _isGpPlusMember;
+  const [, setIsGpPlusMember] = _isGpPlusMember;
   const [, setNotifyModal] = _notifyModal;
   const [, setIsCopyUnitBtnDisabled] = _isCopyUnitBtnDisabled;
   const [, setCustomModalFooter] = _customModalFooter;
@@ -215,6 +215,7 @@ const LessonDetails: React.FC<IProps> = ({ lesson, unit }) => {
       });
     }
   }, []);
+
   const lessonSectionObjEntries = lesson?.Section
     ? Object.entries(lesson.Section)
     : [];
@@ -516,8 +517,7 @@ const LessonDetails: React.FC<IProps> = ({ lesson, unit }) => {
       tagName: string;
       origin: string;
     } & EventTarget;
-
-    console.log("origin: ", origin);
+    const isGpPlusUser = getSessionStorageItem("isGpPlusUser");
 
     if (
       statusRef.current !== "authenticated" &&
@@ -562,7 +562,7 @@ const LessonDetails: React.FC<IProps> = ({ lesson, unit }) => {
       isWithinBonusContentSec &&
       tagName === "A" &&
       UNIT_DOCUMENT_ORIGINS.has(origin) &&
-      !isGpPlusMember
+      !isGpPlusUser
     ) {
       event.preventDefault();
       setIsGpPlusModalDisplayed(true);
@@ -614,6 +614,7 @@ const LessonDetails: React.FC<IProps> = ({ lesson, unit }) => {
 
           setIsUserTeacher(!!data?.isTeacher);
           setIsGpPlusMember(!!data?.isGpPlusMember);
+          setSessionStorageItem("isGpPlusUser", !!data.isGpPlusMember);
           setLocalStorageItem(
             "willShowGpPlusCopyLessonHelperModal",
             typeof data.willShowGpPlusCopyLessonHelperModal === "boolean"
