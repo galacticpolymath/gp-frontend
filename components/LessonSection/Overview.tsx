@@ -179,10 +179,10 @@ const Overview = ({
       {!!Tags?.length &&
         Tags.map((tag) => (
           <span
-            key={tag}
+            key={tag.Value}
             className="fs-6 fw-light badge rounded-pill bg-white text-secondary border border-2 border-secondary me-2 mb-2 px-2"
           >
-            {tag}
+            {tag.Value}
           </span>
         ))}
 

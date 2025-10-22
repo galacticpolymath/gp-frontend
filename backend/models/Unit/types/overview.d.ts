@@ -34,7 +34,8 @@ export interface IOverview extends IUnitSectionObj {
   SteamEpaulette: string;
   SteamEpaulette_vert: string;
   Accessibility: IAccessibility[];
-  Tags: string[];
+  Tags: ITag[];
+  UnitTags: string[];
   versions: IVersion[];
   rootFieldsToRetrieveForUI: IRootFieldToRetrieve[];
 }
@@ -67,7 +68,9 @@ export interface IUnitOverview {
   SteamEpaulette: string | null;
   SteamEpaulette_vert: string | null;
   Accessibility: IUnitAccessibility[] | null;
-  Tags: string[] | null;
+  Tags: ITag[] | null;
+  UnitTags: string[] | null;
+  UnitTags: string[] | null;
   versions: IRelease[] | null;
   rootFieldsToRetrieveForUI?: IRootFieldToRetrieve | null;
 }

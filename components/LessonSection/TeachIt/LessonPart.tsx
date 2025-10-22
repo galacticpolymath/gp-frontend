@@ -211,7 +211,12 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
   const targetLessonsResources = resources?.lessons?.find((lesson) => {
     return lesson?.lsn == lsnNum;
   });
-  let { tags: allTags, itemList: linkResources } = targetLessonsResources ?? {};
+  let {
+    lsnTags,
+    tags: _allTags,
+    itemList: linkResources,
+  } = targetLessonsResources ?? {};
+  let allTags = lsnTags ?? _allTags;
   _itemList = (_itemList ?? linkResources) as IItemForClient[] | null;
   let previewTags = null;
   let restOfTags = null;

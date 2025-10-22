@@ -42,6 +42,7 @@ export interface ILesson<TItem extends IItem = IItem> {
   _id: string | null;
   lsn: string | null;
   title: string | null;
+  lsnTags: string[] | null;
   tags: string[] | null;
   preface: string | null;
   tile: string | null;
