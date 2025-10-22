@@ -1449,7 +1449,7 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
           border: "solid 3px #2339C4",
           borderRadius: "2em",
           textTransform: "none",
-          minWidth: "300px",
+          minWidth: "280px",
           width: "fit-content",
         }}
         className={`px-3 py-2 col-12 ${

@@ -466,21 +466,26 @@ const TeachItUI = <
                     border: "solid 3px #2339C4",
                     borderRadius: "2em",
                     textTransform: "none",
-                    minWidth: "300px",
+                    minWidth: "270px",
                     width: "fit-content",
                   }}
-                  className="px-3 py-2 col-12"
+                  className="px-sm-3 py-sm-2 col-10 col-sm-12"
                 >
-                  <div className="d-flex flex-row align-items-center justify-content-center gap-2">
+                  <div className="d-flex flex-column flex-sm-row align-items-center justify-content-center gap-2">
                     <Image
                       alt="gp_plus_logo"
                       src="/plus/plus.png"
                       width={32}
                       height={32}
                     />
-                    <div
-                      style={{ lineHeight: "23px", fontSize: "18px" }}
-                      className="d-flex text-black"
+                    <h6
+                      style={{
+                        lineHeight: "23px",
+                        fontSize: "18px",
+                        whiteSpace: "normal",
+                        wordBreak: "break-word",
+                      }}
+                      className="d-inline text-black text-break mb-0"
                     >
                       {!isGpPlusMember || status === "unauthenticated" ? (
                         <>
@@ -494,16 +499,36 @@ const TeachItUI = <
                         </>
                       ) : (
                         <>
-                          Browse the Entire Unit on
-                          <em
-                            style={{ paddingLeft: "2px", paddingRight: "6px" }}
-                          >
-                            Our
-                          </em>
-                          Drive (View Only)
+                          <span className="d-sm-block d-none">
+                            Browse the Entire Unit on
+                            <em
+                              style={{
+                                paddingLeft: "2px",
+                                paddingRight: "6px",
+                              }}
+                            >
+                              Our
+                            </em>
+                            Drive (View Only)
+                          </span>
+                          <span className="d-sm-none d-block">
+                            Browse the Entire Unit on
+                            <em
+                              style={{
+                                paddingLeft: "2px",
+                                paddingRight: "6px",
+                              }}
+                            >
+                              Our
+                            </em>
+                            Drive
+                          </span>
+                          <span className="d-sm-none d-block mt-1 mt-sm-0">
+                            (View Only)
+                          </span>
                         </>
                       )}
-                    </div>
+                    </h6>
                   </div>
                 </BootstrapBtn>
               </div>
