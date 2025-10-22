@@ -24,7 +24,7 @@ import {
   MdSupervisedUserCircle,
   MdAttachMoney,
 } from "react-icons/md";
-import { ModalContext } from "../../providers/ModalProvider";
+import { ModalContext, useModalContext } from "../../providers/ModalProvider";
 import jobVizDataObj from "../../data/Jobviz/jobVizDataObj.json";
 import { useRouter } from "next/router";
 import getNewPathsWhenModalCloses from "../../helperFns/getNewPathsWhenModalCloses";
@@ -32,33 +32,45 @@ import getNewPathsWhenModalCloses from "../../helperFns/getNewPathsWhenModalClos
 const { Header, Title, Body } = Modal;
 const { data_start_yr: _data_start_yr, data_end_yr: _data_end_yr } =
   jobVizDataObj;
-const data_start_yr = _data_start_yr[0];
-const data_end_yr = _data_end_yr[0];
+const DATA_START_YR = _data_start_yr[0];
+const DATA_END_YR = _data_end_yr[0];
 
-const SelectedJob = () => {
-  const { _selectedJob, _isJobModalOn } = useContext(ModalContext);
+const formatToCurrency = (num: number) =>
+  num.toLocaleString("en-US", {
+    style: "currency",
+    currency: "USD",
+    maximumFractionDigits: 0,
+  });
+
+const SelectedJob: React.FC = () => {
+  const { _selectedJob, _isJobModalOn } = useModalContext();
   const router = useRouter();
   const paths = router.query?.["search-results"] ?? [];
   const [selectedJob, setSelectedJob] = _selectedJob;
   const [isJobModal, setIsJobModal] = _isJobModalOn;
   let {
     soc_title,
-    def,
+    def: _def,
     title,
     median_annual_wage_2021,
     typical_education_needed_for_entry,
     employment_2021,
     employment_2031,
-    id,
-  } = selectedJob;
+    employment_start_yr,
+    employment_end_yr,
+    employment_change_numeric,
+  } = selectedJob ?? {};
   let jobTitle = soc_title ?? title;
   jobTitle = jobTitle === "Total, all" ? "All US Jobs" : jobTitle;
-  const projectedPercentageEmploymentChange =
-    selectedJob["percent_employment_change_2021-31"];
-  const onTheJobTraining =
-    selectedJob[
-      "typical_on-the-job_training_needed_to_attain_competency_in_the_occupation"
-    ];
+  const projectedPercentageEmploymentChange = selectedJob
+    ? selectedJob["percent_employment_change_2021-31"]
+    : null;
+  const onTheJobTraining = selectedJob
+    ? selectedJob[
+        "typical_on-the-job_training_needed_to_attain_competency_in_the_occupation"
+      ]
+    : null;
+  let def: string | null = _def ?? "";
   def =
     def.toLowerCase() === "no definition found for this summary category."
       ? null
@@ -70,42 +82,50 @@ const SelectedJob = () => {
 
   const infoCards = [
     {
-      title: `Median ${data_start_yr} Annual Wage`,
-      txt: median_annual_wage_2021,
+      id: "medianAnnualWage",
+      title: `Median ${DATA_START_YR} Annual Wage`,
+      txt: employment_change_numeric,
       icon: <MdAttachMoney />,
     },
     {
+      id: "educationNeededForEntry",
       title: "Education Needed",
       txt: typical_education_needed_for_entry,
       icon: <IoIosSchool />,
     },
     {
+      id: "onTheJobTraining",
       title: "On-the-job Training",
       txt: onTheJobTraining,
       icon: <MdSupervisedUserCircle />,
     },
     {
-      title: `${data_start_yr} Employment`,
-      txt: employment_2021,
+      id: "employmentStartYr",
+      title: `${DATA_START_YR} Employment`,
+      txt: employment_start_yr,
       icon: <MdOutlineDirectionsWalk />,
     },
     {
-      title: `Predicted ${data_end_yr} Employment`,
-      txt: employment_2031,
+      id: "employmentEndYr",
+      title: `Predicted ${DATA_END_YR} Employment`,
+      txt: employment_end_yr,
       icon: <MdOutlineTransferWithinAStation />,
     },
     {
-      title: `Predicted change in Employment ${data_start_yr} - ${data_end_yr}`,
+      id: "employmentChange",
+      title: `Predicted change in Employment ${DATA_START_YR} - ${DATA_END_YR}`,
       txt: projectedPercentageEmploymentChange,
       icon: <BiTrendingUp />,
     },
-  ];
+  ] as const;
 
   const handleOnHide = () => {
     // delete the last number in the paths of the url
     // TODO: FIX BUG: this fn can sometimes return undefined
     const newPaths = getNewPathsWhenModalCloses(router.query["search-results"]);
-    router.push({ pathname: `/jobviz${newPaths}` }, null, { scroll: false });
+    router.push({ pathname: `/jobviz${newPaths}` }, undefined, {
+      scroll: false,
+    });
     setSelectedJob(null);
   };
 
@@ -115,8 +135,7 @@ const SelectedJob = () => {
 
   return (
     <Modal
-      show={selectedJob}
-      size="md"
+      show={!!selectedJob}
       onHide={handleOnHide}
       contentClassName="selectedJobModal"
       dialogClassName="dialogJobVizModal"
@@ -136,35 +155,28 @@ const SelectedJob = () => {
         )}
         <section className="jobInfoStatSec pt-3">
           {infoCards.map((card, index) => {
-            const { icon, title, txt } = card;
+            const { icon, title, txt, id } = card;
 
             console.log(`txt value: ${txt}`);
 
             let _txt = txt;
 
-            if (title === `Median ${data_start_yr} Annual Wage`) {
-              _txt = isNaN(txt)
-                ? "Data Unavailable"
-                : `$${parseInt(txt).toLocaleString()}`;
+            if (id === "employmentStartYr" && typeof _txt === "number") {
+              _txt = formatToCurrency(_txt);
+            } else if (id === "employmentStartYr" && !_txt) {
+              _txt = "Data Unavailable";
             }
 
-            if (
-              title ===
-              `Predicted change in Employment ${data_start_yr} - ${data_end_yr}`
-            ) {
-              isNaN(txt)
-                ? (_txt = "Data Unavailable")
-                : (_txt = `${
-                    Math.sign(parseInt(txt) === 1) ? "+" : ""
-                  }${parseInt(txt).toLocaleString()}%`);
+            if (id === "employmentChange" && typeof _txt === "number") {
+              _txt = `${Math.sign(_txt) ? "+" : ""}${_txt.toLocaleString()}%`;
+            } else if (id === "employmentChange") {
+              _txt = "Data Unavailable";
             }
 
-            if (title === `Predicted ${data_end_yr} Employment`) {
-              _txt = `${parseInt(txt).toLocaleString()}`;
-            }
-
-            if (title === `${data_start_yr} Employment`) {
-              _txt = `${parseInt(txt).toLocaleString()}`;
+            if (id === "employmentEndYr" && typeof _txt === "number") {
+              _txt = formatToCurrency(_txt);
+            } else if (id === "employmentEndYr" && !_txt) {
+              _txt = "Data Unavailable";
             }
 
             return (

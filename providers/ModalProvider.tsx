@@ -99,12 +99,44 @@ export interface ISelectedJob {
   median_annual_wage: number;
   typical_education_needed_for_entry: string;
   work_experience_in_a_related_occupation: string;
-  typical_on_the_job_training_needed_to_attain_competency_in_the_occupation: string;
+  "typical_on-the-job_training_needed_to_attain_competency_in_the_occupation": string;
   BLS_link: string;
   soc_title: string;
   def: string;
   percent_employment_change_col: string;
   median_wage_col: string;
+  /**@deprecated Use `employment_start_yr` instead */
+  employment_2021: number;
+  /**@deprecated Use `employment_end_yr` instead */
+  employment_2031: number;
+  /**@deprecated Use `median_annual_wage` instead */
+  median_annual_wage_2021: number;
+  /**@deprecated Use `employment_change_numeric` instead */
+  "percent_employment_change_2021-31": number;
+}
+
+export interface ISelectedJobDeprecatedProps {
+  id: number;
+  title: string;
+  soc_code: string;
+  occupation_type: string;
+  hierarchy: number;
+  level1: string | null;
+  path: string;
+  employment_2021: number;
+  employment_2031: number;
+  employment_change_2021_31: number;
+  percent_employment_change_2021_31: number;
+  percent_self_employed_2021: number;
+  occupational_openings_2021_31_annual_average: number;
+  median_annual_wage_2021: string;
+  typical_education_needed_for_entry: string;
+  work_experience_in_a_related_occupation: string;
+  typical_on_the_job_training_needed_to_attain_competency_in_the_occupation: string;
+  soc_title: string;
+  def: string;
+  median_wage_col: string;
+  percent_employment_change_col: string;
 }
 
 export const ModalProvider = ({ children }: Pick<IComponent, "children">) => {
