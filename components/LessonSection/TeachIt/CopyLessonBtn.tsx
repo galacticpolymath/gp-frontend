@@ -261,7 +261,10 @@ export const CopyLessonBtnUI: React.FC<ICopyLessonBtnUIProps> = ({
   );
 };
 
-const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
+const CopyLessonBtn: React.FC<
+  ICopyLessonBtnProps &
+    Pick<ICopyLessonBtnUIProps, "childrenClassName" | "btnClassName">
+> = ({
   sharedGDriveLessonFolderId,
   MediumTitle,
   unitId,
@@ -273,9 +276,11 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
   userGDriveLessonFolderId,
   allUnitLessons,
   GdrivePublicID,
+  btnClassName = "px-3 py-2 col-12",
   lessonsFolder,
   isRetrievingLessonFolderIds,
   setParts,
+  childrenClassName = "d-flex flex-row align-items-center justify-content-center gap-2",
   btnRef,
 }) => {
   const {
@@ -1452,7 +1457,7 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
           minWidth: "280px",
           width: "fit-content",
         }}
-        className={`px-3 py-2 col-12 ${
+        className={`${btnClassName} ${
           isRetrievingLessonFolderIds ||
           isCopyLessonBtnDisabled ||
           isCopyingLesson
@@ -1467,7 +1472,7 @@ const CopyLessonBtn: React.FC<ICopyLessonBtnProps> = ({
         }
       >
         {didInitialRenderOccur.current ? (
-          <div className="d-flex flex-row align-items-center justify-content-center gap-2">
+          <div className={childrenClassName}>
             {isRetrievingLessonFolderIds ||
             isCopyLessonBtnDisabled ||
             isCopyingLesson ? (
