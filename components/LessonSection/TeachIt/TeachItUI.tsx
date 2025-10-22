@@ -499,7 +499,7 @@ const TeachItUI = <
                         </>
                       ) : (
                         <>
-                          <span className="d-sm-block d-none">
+                          <span>
                             Browse the Entire Unit on
                             <em
                               style={{
@@ -510,21 +510,6 @@ const TeachItUI = <
                               Our
                             </em>
                             Drive (View Only)
-                          </span>
-                          <span className="d-sm-none d-block">
-                            Browse the Entire Unit on
-                            <em
-                              style={{
-                                paddingLeft: "2px",
-                                paddingRight: "6px",
-                              }}
-                            >
-                              Our
-                            </em>
-                            Drive
-                          </span>
-                          <span className="d-sm-none d-block mt-1 mt-sm-0">
-                            (View Only)
                           </span>
                         </>
                       )}

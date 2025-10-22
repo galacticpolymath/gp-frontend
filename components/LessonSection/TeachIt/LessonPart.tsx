@@ -677,7 +677,7 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
               <CopyLessonBtn
                 childrenClassName="d-flex flex-column flex-sm-row align-items-center justify-content-center gap-2"
                 setParts={setParts}
-                btnClassName="px-2 px-sm-3 py-sm-2 col-12"
+                btnClassName="px-2 px-sm-3 py-sm-2 col-12 mt-2 mt-sm-0"
                 unitId={unitId!}
                 btnRef={copyLessonBtnRef}
                 unitTitle={unitTitle}
