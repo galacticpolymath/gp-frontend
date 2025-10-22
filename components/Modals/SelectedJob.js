@@ -81,6 +81,7 @@ const SelectedJob = () => {
 
     const handleOnHide = () => {
         // delete the last number in the paths of the url
+        // TODO: FIX BUG: this fn can sometimes return undefined
         const newPaths = getNewPathsWhenModalCloses(router.query['search-results'])
         router.push({ pathname: `/jobviz${newPaths}` }, null, { scroll: false })
         setSelectedJob(null);
