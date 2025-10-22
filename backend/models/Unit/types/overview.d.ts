@@ -68,8 +68,8 @@ export interface IUnitOverview {
   SteamEpaulette: string | null;
   SteamEpaulette_vert: string | null;
   Accessibility: IUnitAccessibility[] | null;
+  /** @deprecated use `UnitTags` */
   Tags: ITag[] | null;
-  UnitTags: string[] | null;
   UnitTags: string[] | null;
   versions: IRelease[] | null;
   rootFieldsToRetrieveForUI?: IRootFieldToRetrieve | null;

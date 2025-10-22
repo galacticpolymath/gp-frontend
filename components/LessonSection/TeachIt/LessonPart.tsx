@@ -216,6 +216,10 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
     tags: _allTags,
     itemList: linkResources,
   } = targetLessonsResources ?? {};
+
+  console.log("lsnTags: ", lsnTags);
+  console.log("_allTags: ", _allTags);
+
   let allTags = lsnTags ?? _allTags;
   _itemList = (_itemList ?? linkResources) as IItemForClient[] | null;
   let previewTags = null;
