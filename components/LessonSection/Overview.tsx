@@ -107,24 +107,21 @@ const Overview = ({
   };
 
   if (areTargetStandardsValid && TargetStandardsCodes) {
-    standards = TargetStandardsCodes.reduce(
-      (accum, stardardCodesProp) => {
-        const { set, code, dim, subject } = stardardCodesProp;
+    standards = TargetStandardsCodes.reduce((accum, stardardCodesProp) => {
+      const { set, code, dim, subject } = stardardCodesProp;
 
-        if (set in accum) {
-          return {
-            ...accum,
-            [set]: [...accum[set], { code, dim, subject }],
-          };
-        }
-
+      if (set in accum) {
         return {
           ...accum,
-          [set]: [{ code, dim, subject }],
+          [set]: [...accum[set], { code, dim, subject }],
         };
-      },
-      standards
-    );
+      }
+
+      return {
+        ...accum,
+        [set]: [{ code, dim, subject }],
+      };
+    }, standards);
   }
 
   const ref = useRef(null);
@@ -182,10 +179,10 @@ const Overview = ({
       {!!Tags?.length &&
         Tags.map((tag) => (
           <span
-            key={tag.Value}
+            key={tag}
             className="fs-6 fw-light badge rounded-pill bg-white text-secondary border border-2 border-secondary me-2 mb-2 px-2"
           >
-            {tag.Value}
+            {tag}
           </span>
         ))}
 

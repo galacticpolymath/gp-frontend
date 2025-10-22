@@ -26,6 +26,7 @@ export interface IVersion {
   sub_releases: ISubRelease[];
 }
 
+// deprecate this interface
 export interface IOverview extends IUnitSectionObj {
   UnitSummary: string;
   EstUnitTime: string;
@@ -33,7 +34,7 @@ export interface IOverview extends IUnitSectionObj {
   SteamEpaulette: string;
   SteamEpaulette_vert: string;
   Accessibility: IAccessibility[];
-  Tags: ITag[];
+  Tags: string[];
   versions: IVersion[];
   rootFieldsToRetrieveForUI: IRootFieldToRetrieve[];
 }
@@ -66,11 +67,7 @@ export interface IUnitOverview {
   SteamEpaulette: string | null;
   SteamEpaulette_vert: string | null;
   Accessibility: IUnitAccessibility[] | null;
-  Tags:
-    | {
-        Value: string | null;
-      }[]
-    | null;
+  Tags: string[] | null;
   versions: IRelease[] | null;
   rootFieldsToRetrieveForUI?: IRootFieldToRetrieve | null;
 }
@@ -84,8 +81,7 @@ export type TUnitOverviewPropsForUI = Partial<{
   numID: INewUnitSchema["numID"];
   locale: INewUnitSchema["locale"];
   Subtitle: INewUnitSchema["Subtitle"];
-  availLocs: string[]; 
+  availLocs: string[];
 }>;
 
-export type TOverviewForUI = Partial<IUnitOverview &
-  TUnitOverviewPropsForUI>;
+export type TOverviewForUI = Partial<IUnitOverview & TUnitOverviewPropsForUI>;
