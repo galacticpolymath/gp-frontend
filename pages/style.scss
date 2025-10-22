@@ -187,6 +187,10 @@ body {
   @media (max-width: 541px) {
     display: none;
   }
+
+  @media (min-width: 768px) and (max-width: 992px) {
+    left: 30%;
+  }
 }
 
 .fade-out-quick {
@@ -1166,5 +1170,13 @@ img {
   100% {
     transform: translateY(-20px);
     text-shadow: 0 50px 0 rgba(0, 0, 0, 1) k, 0 0px 20px rgba(0, 0, 0, 0.8);
+  }
+}
+
+.white-only-txt-md {
+  color: white;
+
+  @media (min-width: 768px) {
+    color: black;
   }
 }

@@ -222,7 +222,7 @@ const SignUpPage: React.FC = () => {
           className="bg-white shadow-lg rounded p-4 sign-up-card"
           style={{ width: "90%" }}
         >
-          <div className="mb-xl-4 position-relative d-flex flex-column flex-xl-row sign-up-header-container">
+          <div className="position-relative d-flex flex-column flex-xl-row sign-up-header-container">
             <img
               className="position-absolute top-0 start-0 me-5 mt-1 d-xl-block d-none"
               src="/imgs/gp_logo_gradient_transBG.png"
@@ -242,13 +242,22 @@ const SignUpPage: React.FC = () => {
                 height={100}
               />
             </div>
-            <h5 className="mt-3 mt-xl-0 text-black text-center w-100 h-100 d-flex justify-content-center align-items-center">
+            {/* <h5 className="mt-3 mt-xl-0 text-black text-center w-100 h-100 d-flex justify-content-center align-items-center">
               Create your teacher portal account to access 100+ free STEM
               resources!
-            </h5>
+            </h5> */}
+            <div className="w-100 flex-column d-flex justify-content-center align-items-center">
+              <h5 className="mt-3 mt-xl-0 text-black text-center w-100 h-100">
+                Get 100+ of the best science + STE(A)M resources available{" "}
+                <i>anywhere</i>!
+              </h5>
+              <h5 className="mt-3 mt-xl-0 text-black text-center w-100 h-100">
+                (Grant-funded, FREE to you!)
+              </h5>
+            </div>
           </div>
           {/* Mailing List Toggle */}
-          <div className="border-bottom border-top py-4 my-3 mb-xl-4 mt-xl-5">
+          <div className="border-bottom border-top py-4 py-xl-3 my-3 mb-xl-4 mt-5 mt-xl-4">
             <div className="d-flex justify-content-center align-items-center">
               <div className="d-flex create-account-toggle-btn-container">
                 <div>

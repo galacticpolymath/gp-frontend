@@ -161,7 +161,7 @@ const LoginUI = ({
           />
         </div>
         <div
-          style={{ width: "4%" }}
+          style={{ width: "45px" }}
           className="d-flex justify-content-center align-items-center"
         >
           <span className={`text-black`} style={{ fontSize: "22px" }}>
