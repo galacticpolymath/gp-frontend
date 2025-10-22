@@ -109,6 +109,7 @@ const NewUnitLessonSchema = new Schema<INewUnitLesson>(
     unit_status: String,
     unit_release_date: String,
     tags: [String],
+    lsnTags: [String],
     gradeVarNote: String,
     preface: String,
     tile: String,

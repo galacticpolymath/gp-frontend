@@ -207,6 +207,7 @@ interface INewUnitLesson<TItem extends IItem = IItemV2> {
     sharedGDriveId: string;
   }>;
   title: string | null;
+  lsnTags: string[] | null;
   lsn: number | null;
   status: string | null;
   updated_date: string | null;
@@ -214,6 +215,7 @@ interface INewUnitLesson<TItem extends IItem = IItemV2> {
   sort_by_date: string | null;
   unit_status: string | null;
   unit_release_date: string | null;
+  /** @deprecated use `lsnTags` */
   tags: string[] | null;
   gradeVarNote: string | null;
   preface: string | null;
