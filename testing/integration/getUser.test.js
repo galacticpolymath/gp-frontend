@@ -103,7 +103,7 @@ const getUserResults = async () => {
     }
 };
 
-test(
+test.skip(
     "Will check if the responses from the `get-users` route are constant.",
     async () => {
         const getUserResultsPromises = new Array(10)

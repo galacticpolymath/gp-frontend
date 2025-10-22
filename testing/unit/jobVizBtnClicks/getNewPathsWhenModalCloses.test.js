@@ -7,7 +7,7 @@
 /* eslint-disable no-multiple-empty-lines */
 
 
-const getNewPathsWhenModalCloses = require("../../helperFns/getNewPathsWhenModalCloses")
+const getNewPathsWhenModalCloses = require('../../../helperFns/getNewPathsWhenModalCloses');
 const jobVizDataObj = require("../../data/Jobviz/jobVizDataObj.json")
 
 
@@ -15,7 +15,7 @@ const jobVizDataObj = require("../../data/Jobviz/jobVizDataObj.json")
 const test1 = ["3", "37-1000", "581", "582", "584"]
 const test2 = ['3', '17-3000', '120', '149', '149']
 
-test.skip("Get new paths when modal closes.", () => {
+test("Get new paths when modal closes.", () => {
     const test1Result = getNewPathsWhenModalCloses(test1)
 
     expect(test1Result).toBe("/3/37-1000/581/582/")
