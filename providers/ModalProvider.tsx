@@ -62,7 +62,7 @@ export interface IModalProviderValue {
   _customModalFooter: TUseStateReturnVal<null | ReactNode>;
   _isAccountModalMobileOn: TUseStateReturnVal<boolean>;
   _isPasswordResetModalOn: TUseStateReturnVal<boolean>;
-  _selectedJob: TUseStateReturnVal<null>;
+  _selectedJob: TUseStateReturnVal<null | ISelectedJob>;
   _isJobModalOn: TUseStateReturnVal<boolean>;
   _isDownloadModalInfoOn: TUseStateReturnVal<boolean>;
   _isLoginModalDisplayed: TUseStateReturnVal<boolean>;
@@ -79,8 +79,36 @@ export interface IModalProviderValue {
   _lessonItemModal: TUseStateReturnVal<ILessonItemsModal>;
 }
 
+export interface ISelectedJob {
+  id: number;
+  title: string;
+  soc_code: string;
+  occupation_type: string;
+  hierarchy: number;
+  level1: string | null;
+  level2: string | null;
+  level3: string | null;
+  level4: string | null;
+  path: string;
+  employment_start_yr: number;
+  employment_end_yr: number;
+  employment_perc_of_tot_start: number;
+  employment_perc_of_tot_end: number;
+  employment_change_numeric: number;
+  employment_change_percent: number;
+  median_annual_wage: number;
+  typical_education_needed_for_entry: string;
+  work_experience_in_a_related_occupation: string;
+  typical_on_the_job_training_needed_to_attain_competency_in_the_occupation: string;
+  BLS_link: string;
+  soc_title: string;
+  def: string;
+  percent_employment_change_col: string;
+  median_wage_col: string;
+}
+
 export const ModalProvider = ({ children }: Pick<IComponent, "children">) => {
-  const [selectedJob, setSelectedJob] = useState(null);
+  const [selectedJob, setSelectedJob] = useState<ISelectedJob | null>(null);
   const [isJobModalOn, setIsJobModalOn] = useState(false);
   const [isCreatingGpPlusAccount, setIsCreatingGpPlusAccount] = useState(false);
   const [isDownloadModalInfoOn, setIsDownloadModalInfoOn] = useState(false);
