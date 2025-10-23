@@ -128,27 +128,27 @@ export const useUserEntry = () => {
     const isCredentialsAccountCreation = provider === "credentials";
 
     if (isCredentialsAccountCreation && password !== confirmPassword) {
-      errors.set("password", "The passwords don't match.");
-      errors.set("confirmPassword", "The passwords don't match.");
+      errors.set("password", "*The passwords don't match.");
+      errors.set("confirmPassword", "*The passwords don't match.");
     } else if (isCredentialsAccountCreation && !password && !confirmPassword) {
-      errors.set("password", "This field is required.");
-      errors.set("confirmPassword", "This field is required.");
+      errors.set("password", "*This field is required.");
+      errors.set("confirmPassword", "*This field is required.");
     }
 
     if (isCredentialsAccountCreation && !firstName) {
-      errors.set("firstName", "This field is required.");
+      errors.set("firstName", "*This field is required.");
     }
 
     if (isCredentialsAccountCreation && !lastName) {
-      errors.set("lastName", "This field is required.");
+      errors.set("lastName", "*This field is required.");
     }
 
     const doesEmailExist = await getDoesEmailExist(email);
 
     if (isCredentialsAccountCreation && doesEmailExist) {
-      errors.set("email", "This email has been taken.");
+      errors.set("email", "*This email has been taken.");
     } else if (isCredentialsAccountCreation && !validateEmail(email)) {
-      errors.set("email", "Invalid email.");
+      errors.set("email", "*Invalid email.");
     }
 
     return errors;
@@ -234,13 +234,13 @@ export const useUserEntry = () => {
     const { email, password } = loginForm;
 
     if (!email) {
-      errors.set("email", "This field is required.");
+      errors.set("email", "*This field is required.");
     } else if (!validateEmail(email)) {
-      errors.set("email", "Invalid email.");
+      errors.set("email", "*Invalid email.");
     }
 
     if (!password) {
-      errors.set("password", "This field is required.");
+      errors.set("password", "*This field is required.");
     }
 
     if (errors.size > 0) {
@@ -254,12 +254,12 @@ export const useUserEntry = () => {
     const userLoginErrType = await getUserLoginErrType(email, password);
 
     if (userLoginErrType === "googleLogin") {
-      errors.set("email", "This email exists but uses Google to log in.");
+      errors.set("email", "*This email exists but uses Google to log in.");
     } else if (userLoginErrType === "userNotFound") {
-      errors.set("email", "Email not found.");
+      errors.set("email", "*Email not found.");
     } else if (userLoginErrType === "invalidCredentials") {
-      errors.set("email", "Email or password is incorrect.");
-      errors.set("password", "Email or password is incorrect.");
+      errors.set("email", "*Email or password is incorrect.");
+      errors.set("password", "*Email or password is incorrect.");
     }
 
     if (errors.size > 0) {

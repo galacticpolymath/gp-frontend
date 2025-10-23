@@ -101,7 +101,7 @@ const LoginUI = ({
       <div className="w-100 flex-column d-flex justify-content-center align-items-center mt-1 mt-sm-0">
         <h5
           style={{ fontWeight: 300 }}
-          className="mt-0 mt-sm-2 mt-xl-0 text-black text-center w-100 h-100 fs-6 fs-sm-5"
+          className="mt-1 mb-1 mb-sm-0 mt-sm-2 mt-xl-0 text-black text-center w-100 h-100 fs-6 fs-sm-5"
         >
           <span className="d-none d-sm-inline">
             Get 100+ of the best science + STE(A)M resources available{" "}
@@ -145,7 +145,7 @@ const LoginUI = ({
           </Button>
         </div>
       </section>
-      <section className="d-flex justify-content-center align-items-center pt-1 pt-sm-2 pb-1 pb-sm-3 mt-1 mt-sm-2">
+      <section className="d-flex justify-content-center align-items-center py-2 py-sm-0 pt-sm-2 pb-sm-3 mt-1 mt-sm-2">
         <GoogleSignIn
           callbackUrl={redirectUrl}
           className="rounded px-2 px-sm-4 py-2 py-sm-3 d-flex justify-content-center align-items-center border shadow col-9 col-sm-7 d-flex flex-column position-relative"
@@ -226,20 +226,20 @@ const LoginUI = ({
                 handleOnInputChange(event);
               }}
               inputStyle={{ width: "100%", height: "32px", fontSize: "15px" }}
-              inputContainerCss={`${mobileInputFieldClassName} rounded position-relative bg-light-blue ${userEntryErrors.has("email") ? "border-danger" : "border"
+              inputContainerCss={`${mobileInputFieldClassName} py-1 rounded position-relative bg-light-blue ${userEntryErrors.has("email") ? "border-danger" : "border"
                 }`}
-              inputClassName={`px-1 py-1 position-relative no-outline border-0 rounded bg-light-blue`}
+              inputClassName='px-1 py-1 position-relative no-outline border-0 rounded bg-light-blue'
               inputId="email-input"
               inputName="email"
               inputType=""
             />
           </div>
-          <div className="my-0 my-sm-1 py-0 d-flex justify-content-center align-items-center">
+          <div style={{ height: '28px' }} className="my-0 my-sm-1 py-0 d-flex justify-content-center">
             <div
               className={`${mobileInputFieldClassName} d-flex align-items-center position-relative`}
             >
               <span
-                style={{ fontSize: "11px" }}
+                style={{ fontSize: "12px" }}
                 className="left-0 text-danger position-absolute"
               >
                 {userEntryErrors.get("email") ?? ""}
@@ -274,10 +274,10 @@ const LoginUI = ({
                 borderBottomRightRadius: "6.75px",
               }}
               iconContainerClassName="h-100 end-0 position-absolute top-0 d-flex justify-content-center align-items-center bg-light-blue"
-              inputContainerCss={`${mobileInputFieldClassName} ${userEntryErrors.has("password")
+              inputContainerCss={`py-1 ${mobileInputFieldClassName} ${userEntryErrors.has("password")
                 ? "border-danger text-danger"
                 : "border"
-                } rounded position-relative`}
+                } rounded position-relative bg-light-blue`}
               inputClassName="px-1 py-1 position-relative no-outline border-0 bg-light-blue"
               inputId="password-input"
               inputName="password"
@@ -290,12 +290,12 @@ const LoginUI = ({
               }}
             />
           </div>
-          <div className="my-0 my-sm-1 py-0 d-flex justify-content-center align-items-center">
+          <div style={{ height: '28px' }} className="my-0 my-sm-1 py-0 d-flex justify-content-center">
             <div
               className={`d-flex align-items-center position-relative ${mobileInputFieldClassName}`}
             >
               <span
-                style={{ fontSize: "11px" }}
+                style={{ fontSize: "12px" }}
                 className="left-0 text-danger position-absolute"
               >
                 {userEntryErrors.get("password") ?? ""}

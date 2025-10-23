@@ -479,7 +479,7 @@ const AccountPg: React.FC = () => {
       >
         <div
           style={{ minHeight: "100vh", paddingTop: "10px" }}
-          className="container pt-4"
+          className="container pt-4 pb-3 pb-sm-2"
         >
           <LoginUI
             className="pt-3 pt-sm-5 pt-md-4"
