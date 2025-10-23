@@ -2,15 +2,39 @@
   min-width: 250px;
 }
 
+.sign-up-pg-container {
+  @media (min-width: 576px) {
+    margin-top: 80px;
+  }
+
+  @media (min-width: 768px) {
+    margin-top: 0px;
+  }
+}
+
 .sign-up-header-container {
   @media (min-width: 1200px) {
     height: 70px;
   }
 }
 
+.sign-up-w-google-txt {
+  @media (min-width: 577px) {
+    font-size: 18px;
+  }
+
+  @media (min-width: 768px) {
+    font-size: 24px;
+  }
+}
+
 .sign-up-header-txt {
   font-size: 20px;
   max-width: 500px;
+
+  @media (min-width: 576px) {
+    font-size: 18px;
+  }
 
   @media (min-width: 992px) {
     font-size: 22.5px;
@@ -22,6 +46,11 @@
   width: 70px;
   height: 70px;
   top: 10px;
+
+  @media (min-width: 576px) {
+    width: 55px;
+    height: 55px;
+  }
 
   @media (min-width: 992px) {
     top: 0px;
