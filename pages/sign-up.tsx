@@ -242,10 +242,6 @@ const SignUpPage: React.FC = () => {
                 height={100}
               />
             </div>
-            {/* <h5 className="mt-3 mt-xl-0 text-black text-center w-100 h-100 d-flex justify-content-center align-items-center">
-              Create your teacher portal account to access 100+ free STEM
-              resources!
-            </h5> */}
             <div className="w-100 flex-column d-flex justify-content-center align-items-center">
               <h5 className="mt-3 mt-xl-0 text-black text-center w-100 h-100">
                 Get 100+ of the best science + STE(A)M resources available{" "}

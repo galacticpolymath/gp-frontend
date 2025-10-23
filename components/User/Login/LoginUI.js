@@ -88,12 +88,15 @@ const LoginUI = ({
       >
         GP Teacher Portal Sign In
       </h1>
-      <h5
-        className={`${headingTitleClassName} mt-4`}
-        style={{ fontWeight: 300 }}
-      >
-        Get 100+ of the best science + STE(A)M resources available <i>anywhere</i>! (Grant-funded, FREE to you!)
-      </h5>
+      <div className="w-100 flex-column d-flex justify-content-center align-items-center">
+        <h5 style={{ fontWeight: 300 }} className="mt-3 mt-xl-0 text-black text-center w-100 h-100">
+          Get 100+ of the best science + STE(A)M resources available{" "}
+          <i>anywhere</i>!
+        </h5>
+        <h5 style={{ fontWeight: 300 }} className="mt-3 mt-xl-0 text-black text-center w-100 h-100">
+          (Grant-funded, FREE to you!)
+        </h5>
+      </div>
       <section className="mt-4 mb-3 justify-content-center align-items-center d-flex">
         <div style={{ width: '85%' }} className="d-flex py-3 flex-sm-row flex-column justify-content-center align-items-center border-top border-bottom">
           <span className="text-black">Don{"'"}t have an account?</span>
