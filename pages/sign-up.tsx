@@ -222,15 +222,33 @@ const SignUpPage: React.FC = () => {
           className="bg-white shadow-lg rounded p-3 p-md-2 sign-up-card"
           style={{ width: "97%" }}
         >
-          <div className="position-relative d-flex flex-column flex-xl-row sign-up-header-container">
+          <div className="position-relative d-none d-sm-flex flex-column flex-xl-row sign-up-header-container">
             <img
-              className="position-absolute start-0 me-5 mt-1 mt-xl-2 d-block gp-logo-sign-up"
+              className="position-absolute start-0 me-5 mt-1 mt-xl-2 gp-logo-sign-up"
               src="/imgs/gp_logo_gradient_transBG.png"
               alt="gp_logo"
               style={{
                 transform: "translateY(-18%)",
               }}
             />
+            <div className="w-100 flex-column d-flex justify-content-center align-items-center">
+              <h5 className="mt-1 mt-sm-0 mt-xl-0 text-black text-center w-100 h-100 sign-up-header-txt">
+                Get 100+ of the best science + STE(A)M resources available{" "}
+                <i>anywhere</i>!
+              </h5>
+              <h5 className="mt-0 mt-sm-0 mt-xl-0 text-black text-center w-100 h-100 sign-up-header-txt">
+                (Grant-funded, FREE to you!)
+              </h5>
+            </div>
+          </div>
+          <div className="position-relative d-sm-none d-flex justify-content-center sign-up-header-container">
+            <div className="h-100 d-flex justify-content-center align-items-center">
+              <img
+                className="gp-logo-sign-up"
+                src="/imgs/gp_logo_gradient_transBG.png"
+                alt="gp_logo"
+              />
+            </div>
             <div className="w-100 flex-column d-flex justify-content-center align-items-center">
               <h5 className="mt-1 mt-sm-0 mt-xl-0 text-black text-center w-100 h-100 sign-up-header-txt">
                 Get 100+ of the best science + STE(A)M resources available{" "}
@@ -260,22 +278,19 @@ const SignUpPage: React.FC = () => {
                     />
                   )}
                 </div>
-                <label
+                <div
                   onClick={handleToAddToMailingListToggleBtnClick}
-                  style={{
-                    fontSize: "18px",
-                  }}
-                  className="pointer ms-2"
+                  className="pointer ms-2 email-listing-txt"
                 >
                   Send me updates about new/free resources (You{"'"}ll get an
                   email to confirm subscription).
-                </label>
+                </div>
               </div>
             </div>
           </div>
 
           {/* Google Sign Up */}
-          <section className="mb-1 my-sm-3 my-md-2 my-xl-3 d-flex justify-content-center align-items-center">
+          <section className="mb-1 my-2 my-sm-3 my-md-2 my-xl-3 d-flex justify-content-center align-items-center">
             <CreateAccountWithGoogle
               handleGoogleBtnClickCustom={
                 handleCreateAnAccountWithGoogleBtnClick
@@ -283,12 +298,17 @@ const SignUpPage: React.FC = () => {
               callbackUrl={`${
                 typeof window !== "undefined" ? window.location.origin : ""
               }/account?show_about_user_form=true`}
-              className="rounded shadow position-relative w-100 p-1 p-sm-2 p-xl-3 d-flex flex-column flex-sm-row justify-content-center align-items-center border google-sign-in-btn"
+              className="rounded shadow position-relative w-100 p-1 py-2 p-sm-2 p-xl-3 d-flex flex-row flex-sm-column justify-content-center align-items-center border google-sign-in-btn"
               style={{ maxWidth: "600px" }}
             >
               <FcGoogle
-                className="mx-2 d-block d-sm-none d-md-block"
+                className="mx-2 d-none d-md-block"
                 size={45}
+                style={{ opacity: isGoogleLoadingSpinnerOn ? 0 : 1 }}
+              />
+              <FcGoogle
+                className="mx-2 d-block d-sm-none"
+                size={25}
                 style={{ opacity: isGoogleLoadingSpinnerOn ? 0 : 1 }}
               />
               <FcGoogle
@@ -366,7 +386,7 @@ const SignUpPage: React.FC = () => {
                     errors.has("firstName")
                       ? "border-danger"
                       : "border-0 no-outline"
-                  } p-1 w-100 py-2`}
+                  } p-1 w-100 py-1 py-sm-2`}
                   autoFocus
                   name="firstName"
                   onChange={handleOnInputChange}
@@ -400,7 +420,7 @@ const SignUpPage: React.FC = () => {
                     : "no-outline"
                 } ${
                   errors.has("lastName") ? "border-danger" : "border-0"
-                } p-1 w-100 py-2 no-outline`}
+                } p-1 w-100 py-1 py-sm-2 no-outline`}
                 onFocus={handleOnFocus}
                 onBlur={handleOnBlur}
                 handleOnInputChange={handleOnInputChange}
@@ -432,7 +452,9 @@ const SignUpPage: React.FC = () => {
                     inputElementsFocused.get("email")
                       ? INPUT_FOCUS_BLUE_CLASSNAME
                       : ""
-                  } ${errors.has("email") ? "text-danger" : ""} p-1 w-100 py-2`}
+                  } ${
+                    errors.has("email") ? "text-danger" : ""
+                  } p-1 w-100 py-1 py-sm-2`}
                   name="email"
                   onChange={handleOnInputChange}
                 />
@@ -468,7 +490,7 @@ const SignUpPage: React.FC = () => {
                     background: "#E8F0FE",
                     border: errors.has("password") ? "solid 1px red" : "",
                   }}
-                  inputClassName={`p-1 w-100 py-2 no-outline ${
+                  inputClassName={`p-1 w-100 py-1 py-sm-2 no-outline ${
                     errors.has("password") ? "text-danger" : "border-0"
                   }`}
                   inputName="password"
@@ -519,7 +541,7 @@ const SignUpPage: React.FC = () => {
                       ? "solid 1px red"
                       : "",
                   }}
-                  inputClassName={`p-1 w-100 py-2 no-outline ${
+                  inputClassName={`p-1 w-100 py-1 py-sm-2 no-outline ${
                     errors.has("confirmPassword") ? "text-danger" : "border-0"
                   }`}
                   inputName="confirmPassword"

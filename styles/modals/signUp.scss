@@ -3,6 +3,9 @@
 }
 
 .sign-up-pg-container {
+  // for mobile
+  margin-top: 23px;
+
   @media (min-width: 576px) {
     margin-top: 80px;
   }
@@ -19,6 +22,8 @@
 }
 
 .sign-up-w-google-txt {
+  font-size: 16px;
+
   @media (min-width: 577px) {
     font-size: 18px;
   }
@@ -28,8 +33,17 @@
   }
 }
 
+.email-listing-txt {
+  font-size: 16px;
+
+  @media (min-width: 576px) {
+    font-size: 18px;
+  }
+}
+
 .sign-up-header-txt {
-  font-size: 20px;
+  // for mobile devices
+  font-size: 18px;
   max-width: 500px;
 
   @media (min-width: 576px) {
@@ -43,8 +57,8 @@
 }
 
 .gp-logo-sign-up {
-  width: 70px;
-  height: 70px;
+  width: 55px;
+  height: 55px;
   top: 10px;
 
   @media (min-width: 576px) {
