@@ -478,8 +478,8 @@ const AccountPg: React.FC = () => {
         langLinks={[]}
       >
         <div
-          style={{ minHeight: "100vh", paddingTop: "10px" }}
-          className="container pt-4 pb-2 pb-sm-2"
+          style={{ minHeight: "100vh" }}
+          className="container pt-4 pt-sm-5 pb-2 pt-lg-4"
         >
           <LoginUI
             className="pt-3 pt-sm-5 pt-md-3"

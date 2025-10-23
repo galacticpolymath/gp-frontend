@@ -75,13 +75,13 @@ const LoginUI = ({
 
   return (
     <div className={className}>
-      <div className="d-flex justify-content-center flex-row flex-sm-column align-items-center pt-1 pt-sm-2 pt-md-0">
+      <div className="d-flex justify-content-center flex-row align-items-center pt-1 pt-sm-2 pt-md-0">
         <Image
           src="/imgs/gp_logo_gradient_transBG.png"
           alt="gp_logo"
           width={70}
           height={70}
-          className="d-none d-sm-block"
+          className="d-none d-sm-block me-2"
         />
         <Image
           src="/imgs/gp_logo_gradient_transBG.png"
@@ -98,7 +98,7 @@ const LoginUI = ({
           <span className="d-inline d-sm-none">GP Portal</span>
         </h1>
       </div>
-      <div className="w-100 flex-column d-flex justify-content-center align-items-center mt-1 mt-sm-0">
+      <div className="w-100 flex-column d-flex justify-content-center align-items-center mt-1 mt-sm-3">
         <h5
           style={{ fontWeight: 300 }}
           className="mt-1 mb-1 mb-sm-0 mt-sm-2 mt-xl-0 text-black text-center w-100 h-100 fs-6 fs-sm-5"
@@ -148,7 +148,7 @@ const LoginUI = ({
       <section className="d-flex justify-content-center align-items-center py-2 py-sm-0 pt-sm-2 pb-sm-3 mt-1 mt-sm-2">
         <GoogleSignIn
           callbackUrl={redirectUrl}
-          className="rounded px-2 px-sm-4 py-2 py-sm-3 d-flex flex-row flex-sm-column justify-content-center align-items-center border shadow col-12 col-sm-7 position-relative"
+          className="rounded px-2 px-sm-4 py-3 d-flex flex-row flex-sm-column justify-content-center align-items-center border shadow col-12 col-sm-7 position-relative"
           executeExtraBtnClickLogic={() => {
             setIsGoogleLoginSpinnerDisplayed(true);
           }}
