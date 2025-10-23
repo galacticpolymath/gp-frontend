@@ -479,10 +479,10 @@ const AccountPg: React.FC = () => {
       >
         <div
           style={{ minHeight: "100vh", paddingTop: "10px" }}
-          className="container pt-4 pb-3 pb-sm-2"
+          className="container pt-4 pb-2 pb-sm-2"
         >
           <LoginUI
-            className="pt-3 pt-sm-5 pt-md-4"
+            className="pt-3 pt-sm-5 pt-md-3"
             headingTitleClassName="text-center text-black my-2"
           />
         </div>

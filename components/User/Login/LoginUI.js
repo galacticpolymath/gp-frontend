@@ -113,7 +113,7 @@ const LoginUI = ({
         </h5>
         <h5
           style={{ fontWeight: 300 }}
-          className="mt-0 mt-sm-1 mt-xl-0 text-black text-center w-100 h-100 fs-6 fs-sm-5"
+          className="mt-0 mt-sm-1 text-black text-center w-100 h-100 fs-6 fs-sm-5"
         >
           (Grant-funded, FREE!)
         </h5>
@@ -148,7 +148,7 @@ const LoginUI = ({
       <section className="d-flex justify-content-center align-items-center py-2 py-sm-0 pt-sm-2 pb-sm-3 mt-1 mt-sm-2">
         <GoogleSignIn
           callbackUrl={redirectUrl}
-          className="rounded px-2 px-sm-4 py-2 py-sm-3 d-flex justify-content-center align-items-center border shadow col-9 col-sm-7 d-flex flex-column position-relative"
+          className="rounded px-2 px-sm-4 py-2 py-sm-3 d-flex flex-row flex-sm-column justify-content-center align-items-center border shadow col-12 col-sm-7 position-relative"
           executeExtraBtnClickLogic={() => {
             setIsGoogleLoginSpinnerDisplayed(true);
           }}
@@ -174,7 +174,7 @@ const LoginUI = ({
               fontSize: "14px",
               opacity: isGoogleLoginSpinnerDisplayed ? 0 : 1,
             }}
-            className="mt-1 mt-sm-1 fs-6 fs-sm-5"
+            className="ms-1 ms-sm-0 mt-1 mt-sm-1 fs-6 fs-sm-5"
           >
             Sign in with Google.
           </span>
