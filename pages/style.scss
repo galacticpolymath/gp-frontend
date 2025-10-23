@@ -1180,3 +1180,10 @@ img {
     color: black;
   }
 }
+
+.google-sign-in-btn {
+  max-width: 503px;
+  @media (min-width: 576px) {
+    max-width: none;
+  }
+}
