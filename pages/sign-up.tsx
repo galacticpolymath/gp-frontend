@@ -232,17 +232,8 @@ const SignUpPage: React.FC = () => {
               alt="gp_logo"
               style={{
                 transform: "translateY(-18%)",
-                // top: 10,
               }}
             />
-            {/* <div className="d-xl-none d-flex w-100 justify-content-center align-items-center">
-              <img
-                src="/imgs/gp_logo_gradient_transBG.png"
-                alt="gp_logo"
-                width={80}
-                height={80}
-              />
-            </div> */}
             <div className="w-100 flex-column d-flex justify-content-center align-items-center">
               <h5 className="mt-1 mt-xl-0 text-black text-center w-100 h-100 sign-up-header-txt">
                 Get 100+ of the best science + STE(A)M resources available{" "}
