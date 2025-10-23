@@ -482,7 +482,7 @@ const AccountPg: React.FC = () => {
           className="container pt-4"
         >
           <LoginUI
-            className="pt-3 pt-sm-5"
+            className="pt-3 pt-sm-5 pt-md-4"
             headingTitleClassName="text-center text-black my-2"
           />
         </div>
