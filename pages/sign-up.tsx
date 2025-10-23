@@ -289,7 +289,7 @@ const SignUpPage: React.FC = () => {
           </div>
 
           {/* Google Sign Up */}
-          <section className="mb-1 my-xl-3 d-flex justify-content-center align-items-center">
+          <section className="mb-1 my-sm-3 my-xl-3 d-flex justify-content-center align-items-center">
             <CreateAccountWithGoogle
               handleGoogleBtnClickCustom={
                 handleCreateAnAccountWithGoogleBtnClick
