@@ -30,8 +30,7 @@ const LoginUI = ({
   } = useUserEntry();
   const router = useRouter();
   const [passwordInputType, setPasswordInputType] = useState("password");
-  const { _isPasswordResetModalOn } =
-    useContext(ModalContext);
+  const { _isPasswordResetModalOn } = useContext(ModalContext);
   const [isGoogleLoginSpinnerDisplayed, setIsGoogleLoginSpinnerDisplayed] =
     useState(false);
   const [, setLoginForm] = _loginForm;
@@ -61,22 +60,22 @@ const LoginUI = ({
   };
 
   const handleCreateOneBtnClick = () => {
-    router.push('/sign-up');
+    router.push("/sign-up");
   };
 
   const redirectUrl = useMemo(() => {
-    const redirectUrl = getSessionStorageItem("userEntryRedirectUrl")
+    const redirectUrl = getSessionStorageItem("userEntryRedirectUrl");
 
     if (redirectUrl) {
-      return redirectUrl
+      return redirectUrl;
     }
 
-    return typeof window === "undefined" ? '' : window.location.href
-  }, [])
+    return typeof window === "undefined" ? "" : window.location.href;
+  }, []);
 
   return (
     <div className={className}>
-      <div className="d-flex justify-content-center align-items-center pt-1 pt-sm-4 pt-md-0">
+      <div className="d-flex justify-content-center flex-row flex-sm-column align-items-center pt-1 pt-sm-4 pt-md-0">
         <Image
           src="/imgs/gp_logo_gradient_transBG.png"
           alt="gp_logo"
@@ -89,30 +88,44 @@ const LoginUI = ({
           alt="gp_logo"
           width={60}
           height={60}
-          className="d-block d-sm-none"
+          className="d-block d-sm-none me-2"
         />
+        <h1
+          style={{ fontWeight: 600 }}
+          className={`${headingTitleClassName} fs-5 fs-4`}
+        >
+          <span className="d-none d-sm-inline">GP Teacher Portal Sign In</span>
+          <span className="d-inline d-sm-none">GP Portal</span>
+        </h1>
       </div>
-      <h1
-        style={{ fontWeight: 600 }}
-        className={`${headingTitleClassName} fs-5 fs-4`}
-      >
-        <span className="d-none d-sm-inline">GP Teacher Portal Sign In</span>
-        <span className="d-inline d-sm-none">GP Portal</span>
-      </h1>
-      <div className="w-100 flex-column d-flex justify-content-center align-items-center">
-        <h5 style={{ fontWeight: 300 }} className="mt-1 mt-sm-3 mt-xl-0 text-black text-center w-100 h-100 fs-6 fs-sm-5">
-          <span className="d-none d-sm-inline">Get 100+ of the best science + STE(A)M resources available{" "}
-            <i>anywhere</i>!</span>
-          <span className="d-inline d-sm-none">Get 100+ science resources{" "}
-            <i>anywhere</i>!</span>
+      <div className="w-100 flex-column d-flex justify-content-center align-items-center mt-2 mt-sm-0">
+        <h5
+          style={{ fontWeight: 300 }}
+          className="mt-1 mt-sm-3 mt-xl-0 text-black text-center w-100 h-100 fs-6 fs-sm-5"
+        >
+          <span className="d-none d-sm-inline">
+            Get 100+ of the best science + STE(A)M resources available{" "}
+            <i>anywhere</i>!
+          </span>
+          <span className="d-inline d-sm-none">
+            Get 100+ science resources <i>anywhere</i>!
+          </span>
         </h5>
-        <h5 style={{ fontWeight: 300 }} className="mt-0 mt-sm-3 mt-xl-0 text-black text-center w-100 h-100 fs-6 fs-sm-5">
+        <h5
+          style={{ fontWeight: 300 }}
+          className="mt-0 mt-sm-3 mt-xl-0 text-black text-center w-100 h-100 fs-6 fs-sm-5"
+        >
           (Grant-funded, FREE!)
         </h5>
       </div>
       <section className="mt-1 mt-sm-4 mb-1 mb-sm-3 justify-content-center align-items-center d-flex">
-        <div style={{ width: '85%' }} className="d-flex py-1 py-sm-3 flex-sm-row flex-column justify-content-center align-items-center border-top border-bottom">
-          <span className="text-black fs-6 fs-sm-5">Don{"'"}t have an account?</span>
+        <div
+          style={{ width: "85%" }}
+          className="d-flex py-1 py-sm-3 flex-sm-row flex-column justify-content-center align-items-center border-top border-bottom"
+        >
+          <span className="text-black fs-6 fs-sm-5">
+            Don{"'"}t have an account?
+          </span>
           <Button
             color="#3C719F"
             defaultStyleObj={{
@@ -154,7 +167,7 @@ const LoginUI = ({
             opacity={isGoogleLoginSpinnerDisplayed ? 0 : 1}
             className="mx-1 mx-sm-2"
             size={35}
-            style={{ fontSize: '35px' }}
+            style={{ fontSize: "35px" }}
           />
           <span
             style={{
@@ -181,7 +194,10 @@ const LoginUI = ({
           style={{ width: "35px" }}
           className="d-flex justify-content-center align-items-center"
         >
-          <span className={`text-black fs-6 fs-sm-5`} style={{ fontSize: "14px" }}>
+          <span
+            className={`text-black fs-6 fs-sm-5`}
+            style={{ fontSize: "14px" }}
+          >
             OR
           </span>
         </div>
@@ -268,7 +284,7 @@ const LoginUI = ({
               isPasswordInput
               inputType={passwordInputType}
               handleShowPasswordTxtBtnClick={() => {
-                setPasswordInputType(inputType => {
+                setPasswordInputType((inputType) => {
                   return inputType === "password" ? "text" : "password";
                 });
               }}
@@ -289,7 +305,7 @@ const LoginUI = ({
           <div className="px-2 px-sm-0 py-2 mt-1 mt-sm-3 row d-flex justify-content-center align-items-center">
             <Button
               handleOnClick={() => {
-                handleLoginBtnClick(redirectUrl)
+                handleLoginBtnClick(redirectUrl);
               }}
               defaultStyleObj={{ borderRadius: "5px" }}
               classNameStr={`bg-primary border-0 px-2 px-sm-4 py-1 py-sm-2 ${mobileInputFieldClassName}`}
