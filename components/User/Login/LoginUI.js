@@ -75,19 +75,19 @@ const LoginUI = ({
 
   return (
     <div className={className}>
-      <div className="d-flex justify-content-center flex-row flex-sm-column align-items-center pt-1 pt-sm-4 pt-md-0">
+      <div className="d-flex justify-content-center flex-row flex-sm-column align-items-center pt-1 pt-sm-2 pt-md-0">
         <Image
           src="/imgs/gp_logo_gradient_transBG.png"
           alt="gp_logo"
-          width={85}
-          height={85}
+          width={70}
+          height={70}
           className="d-none d-sm-block"
         />
         <Image
           src="/imgs/gp_logo_gradient_transBG.png"
           alt="gp_logo"
-          width={60}
-          height={60}
+          width={50}
+          height={50}
           className="d-block d-sm-none me-2"
         />
         <h1
@@ -98,10 +98,10 @@ const LoginUI = ({
           <span className="d-inline d-sm-none">GP Portal</span>
         </h1>
       </div>
-      <div className="w-100 flex-column d-flex justify-content-center align-items-center mt-2 mt-sm-0">
+      <div className="w-100 flex-column d-flex justify-content-center align-items-center mt-1 mt-sm-0">
         <h5
           style={{ fontWeight: 300 }}
-          className="mt-1 mt-sm-3 mt-xl-0 text-black text-center w-100 h-100 fs-6 fs-sm-5"
+          className="mt-0 mt-sm-2 mt-xl-0 text-black text-center w-100 h-100 fs-6 fs-sm-5"
         >
           <span className="d-none d-sm-inline">
             Get 100+ of the best science + STE(A)M resources available{" "}
@@ -113,15 +113,15 @@ const LoginUI = ({
         </h5>
         <h5
           style={{ fontWeight: 300 }}
-          className="mt-0 mt-sm-3 mt-xl-0 text-black text-center w-100 h-100 fs-6 fs-sm-5"
+          className="mt-0 mt-sm-1 mt-xl-0 text-black text-center w-100 h-100 fs-6 fs-sm-5"
         >
           (Grant-funded, FREE!)
         </h5>
       </div>
-      <section className="mt-1 mt-sm-4 mb-1 mb-sm-3 justify-content-center align-items-center d-flex">
+      <section className="mt-1 mt-sm-2 mb-1 mb-sm-2 justify-content-center align-items-center d-flex">
         <div
           style={{ width: "85%" }}
-          className="d-flex py-1 py-sm-3 flex-sm-row flex-column justify-content-center align-items-center border-top border-bottom"
+          className="d-flex py-1 py-sm-2 flex-sm-row flex-column justify-content-center align-items-center border-top border-bottom"
         >
           <span className="text-black fs-6 fs-sm-5">
             Don{"'"}t have an account?
@@ -145,10 +145,10 @@ const LoginUI = ({
           </Button>
         </div>
       </section>
-      <section className="d-flex justify-content-center align-items-center pt-2 pt-sm-3 pb-2 pb-sm-4 mt-2 mt-sm-4">
+      <section className="d-flex justify-content-center align-items-center pt-1 pt-sm-2 pb-1 pb-sm-3 mt-1 mt-sm-2">
         <GoogleSignIn
           callbackUrl={redirectUrl}
-          className="rounded px-2 px-sm-5 py-2 py-sm-4 d-flex justify-content-center align-items-center border shadow col-9 col-sm-7 d-flex flex-column position-relative"
+          className="rounded px-2 px-sm-4 py-2 py-sm-3 d-flex justify-content-center align-items-center border shadow col-9 col-sm-7 d-flex flex-column position-relative"
           executeExtraBtnClickLogic={() => {
             setIsGoogleLoginSpinnerDisplayed(true);
           }}
@@ -166,21 +166,21 @@ const LoginUI = ({
           <FcGoogle
             opacity={isGoogleLoginSpinnerDisplayed ? 0 : 1}
             className="mx-1 mx-sm-2"
-            size={35}
-            style={{ fontSize: "35px" }}
+            size={30}
+            style={{ fontSize: "30px" }}
           />
           <span
             style={{
-              fontSize: "16px",
+              fontSize: "14px",
               opacity: isGoogleLoginSpinnerDisplayed ? 0 : 1,
             }}
-            className="mt-1 mt-sm-2 fs-6 fs-sm-5"
+            className="mt-1 mt-sm-1 fs-6 fs-sm-5"
           >
             Sign in with Google.
           </span>
         </GoogleSignIn>
       </section>
-      <div className="d-flex justify-content-center mt-1 mt-sm-3 mb-0 mb-sm-2">
+      <div className="d-flex justify-content-center mt-0 mt-sm-2 mb-0 mb-sm-1">
         <div
           style={{ width: "45%" }}
           className="d-flex justify-content-center justify-content-sm-end align-items-center"
@@ -191,12 +191,12 @@ const LoginUI = ({
           />
         </div>
         <div
-          style={{ width: "35px" }}
+          style={{ width: "30px" }}
           className="d-flex justify-content-center align-items-center"
         >
           <span
             className={`text-black fs-6 fs-sm-5`}
-            style={{ fontSize: "14px" }}
+            style={{ fontSize: "12px" }}
           >
             OR
           </span>
@@ -211,12 +211,12 @@ const LoginUI = ({
           />
         </div>
       </div>
-      <section>
+      <section className="mb-0 mb-sm-4">
         <form>
-          <div className="mt-1 mt-sm-3 d-flex justify-content-center align-items-center flex-column">
+          <div className="mt-0 mt-sm-2 d-flex justify-content-center align-items-center flex-column">
             <label
               className={`d-flex p-0 position-relative ${mobileInputFieldClassName} ${userEntryErrors.has("email") ? "text-danger" : ""
-                }  fw-bold pb-0 pb-sm-2 fs-6 fs-sm-5`}
+                }  fw-bold pb-0 pb-sm-1 fs-6 fs-sm-5`}
               htmlFor="email-input"
             >
               Email:
@@ -225,7 +225,7 @@ const LoginUI = ({
               onChange={(event) => {
                 handleOnInputChange(event);
               }}
-              inputStyle={{ width: "100%", height: "35px", fontSize: "16px" }}
+              inputStyle={{ width: "100%", height: "32px", fontSize: "15px" }}
               inputContainerCss={`${mobileInputFieldClassName} rounded position-relative bg-light-blue ${userEntryErrors.has("email") ? "border-danger" : "border"
                 }`}
               inputClassName={`px-1 py-1 position-relative no-outline border-0 rounded bg-light-blue`}
@@ -234,22 +234,22 @@ const LoginUI = ({
               inputType=""
             />
           </div>
-          <div className="my-0 my-sm-2 py-0 d-flex justify-content-center align-items-center">
+          <div className="my-0 my-sm-1 py-0 d-flex justify-content-center align-items-center">
             <div
               className={`${mobileInputFieldClassName} d-flex align-items-center position-relative`}
             >
               <span
-                style={{ fontSize: "12px" }}
+                style={{ fontSize: "11px" }}
                 className="left-0 text-danger position-absolute"
               >
                 {userEntryErrors.get("email") ?? ""}
               </span>
             </div>
           </div>
-          <div className="mt-1 mt-sm-4 d-flex justify-content-center align-items-center flex-column">
+          <div className="mt-0 mt-sm-2 d-flex justify-content-center align-items-center flex-column">
             <label
               className={`d-flex p-0 position-relative ${userEntryErrors.has("password") ? "text-danger" : ""
-                } ${mobileInputFieldClassName} fw-bold pb-0 pb-sm-2 fs-6 fs-sm-5`}
+                } ${mobileInputFieldClassName} fw-bold pb-0 pb-sm-1 fs-6 fs-sm-5`}
               htmlFor="password-input"
             >
               Password:
@@ -260,8 +260,8 @@ const LoginUI = ({
               }}
               inputStyle={{
                 width: "90%",
-                height: "35px",
-                fontSize: "16px",
+                height: "32px",
+                fontSize: "15px",
                 borderTopRightRadius: "0px",
                 borderBottomRightRadius: "0px",
                 borderTopLeftRadius: "6.75px",
@@ -290,25 +290,25 @@ const LoginUI = ({
               }}
             />
           </div>
-          <div className="my-0 my-sm-2 py-0 d-flex justify-content-center align-items-center">
+          <div className="my-0 my-sm-1 py-0 d-flex justify-content-center align-items-center">
             <div
               className={`d-flex align-items-center position-relative ${mobileInputFieldClassName}`}
             >
               <span
-                style={{ fontSize: "12px" }}
+                style={{ fontSize: "11px" }}
                 className="left-0 text-danger position-absolute"
               >
                 {userEntryErrors.get("password") ?? ""}
               </span>
             </div>
           </div>
-          <div className="px-2 px-sm-0 py-2 mt-1 mt-sm-3 row d-flex justify-content-center align-items-center">
+          <div className="px-2 px-sm-0 py-1 mt-0 mt-sm-2 row d-flex justify-content-center align-items-center">
             <Button
               handleOnClick={() => {
                 handleLoginBtnClick(redirectUrl);
               }}
               defaultStyleObj={{ borderRadius: "5px" }}
-              classNameStr={`bg-primary border-0 px-2 px-sm-4 py-1 py-sm-2 ${mobileInputFieldClassName}`}
+              classNameStr={`bg-primary border-0 px-2 px-sm-3 py-1 py-sm-2 ${mobileInputFieldClassName}`}
             >
               {isUserEntryInProcess ? (
                 <div
@@ -322,7 +322,7 @@ const LoginUI = ({
               )}
             </Button>
           </div>
-          <div className="d-flex justify-content-center align-items-center mt-1 mt-sm-3 mb-0 mb-sm-2">
+          <div className="d-flex justify-content-center align-items-center mt-0 mt-sm-2 mb-0 mb-sm-1">
             <Button
               color="#3C719F"
               defaultStyleObj={{
@@ -343,10 +343,10 @@ const LoginUI = ({
               </span>
             </Button>
           </div>
-          <div className="d-flex justify-content-center align-items-center mt-2 mb-3 mt-sm-0 mb-sm-4">
+          <div className="d-flex justify-content-center align-items-center mt-1 mb-2 mb-sm-3 mb-md-5">
             <Link
               href={TROUBLE_LOGGING_IN_LINK}
-              className="no-link-decoration underline-on-hover ms-1 mt-0 mt-sm-2 p-0 p-sm-2 text-primary fs-6 fs-sm-5"
+              className="no-link-decoration underline-on-hover ms-1 mt-0 mt-sm-1 p-0 p-sm-1 text-primary fs-6 fs-sm-5"
             >
               Trouble logging in?
             </Link>
