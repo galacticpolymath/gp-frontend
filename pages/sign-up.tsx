@@ -246,17 +246,17 @@ const SignUpPage: React.FC = () => {
               />
             </div>
             <div className="w-100 flex-column d-flex justify-content-center align-items-center">
-              <h5 className="mt-2 mt-xl-0 text-black text-center w-100 h-100">
+              <h5 className="mt-1 mt-xl-0 text-black text-center w-100 h-100">
                 Get 100+ of the best science + STE(A)M resources available{" "}
                 <i>anywhere</i>!
               </h5>
-              <h5 className="mt-1 mt-xl-0 text-black text-center w-100 h-100">
+              <h5 className="mt-0 mt-xl-0 text-black text-center w-100 h-100">
                 (Grant-funded, FREE to you!)
               </h5>
             </div>
           </div>
           {/* Mailing List Toggle */}
-          <div className="border-bottom border-top py-2 py-xl-1 my-1 mb-xl-2 mt-2 mt-xl-2">
+          <div className="border-bottom border-top py-1 py-xl-1 my-0 mb-xl-1 mt-1 mt-xl-1">
             <div className="d-flex justify-content-center align-items-center">
               <div className="d-flex create-account-toggle-btn-container">
                 <div>
@@ -289,7 +289,7 @@ const SignUpPage: React.FC = () => {
           </div>
 
           {/* Google Sign Up */}
-          <section className="mb-2 mb-xl-3 d-flex justify-content-center align-items-center">
+          <section className="mb-1 my-xl-3 d-flex justify-content-center align-items-center">
             <CreateAccountWithGoogle
               handleGoogleBtnClickCustom={
                 handleCreateAnAccountWithGoogleBtnClick
@@ -297,7 +297,7 @@ const SignUpPage: React.FC = () => {
               callbackUrl={`${
                 typeof window !== "undefined" ? window.location.origin : ""
               }/account?show_about_user_form=true`}
-              className="rounded shadow position-relative w-100 p-2 p-xl-3 d-flex flex-column flex-sm-row justify-content-center align-items-center border google-sign-in-btn"
+              className="rounded shadow position-relative w-100 p-1 p-xl-3 d-flex flex-column flex-sm-row justify-content-center align-items-center border google-sign-in-btn"
               style={{ maxWidth: "600px" }}
             >
               <FcGoogle
@@ -322,7 +322,7 @@ const SignUpPage: React.FC = () => {
           </section>
 
           {/* OR Divider */}
-          <div className="d-flex justify-content-center mb-2 mb-xl-3">
+          <div className="d-flex justify-content-center mb-1 mb-xl-2">
             <div
               style={{ width: "48%" }}
               className="d-flex justify-content-center justify-content-sm-end align-items-center"
@@ -351,10 +351,10 @@ const SignUpPage: React.FC = () => {
 
           {/* Sign Up Form */}
           <form className="d-flex justify-content-center align-items-center flex-column">
-            <div className="row w-100 d-flex justify-content-center align-items-center mb-1 mb-xl-2">
+            <div className="row w-100 d-flex justify-content-center align-items-center mb-0 mb-xl-1">
               <div className="d-flex col-sm-6 flex-column">
                 <label
-                  className={`d-block w-75 pb-0 pb-xl-1 fw-bold ${
+                  className={`d-block w-75 pb-0 fw-bold ${
                     errors.has("firstName") ? "text-danger" : ""
                   }`}
                   htmlFor="first-name"
@@ -418,12 +418,12 @@ const SignUpPage: React.FC = () => {
                 handleOnInputChange={handleOnInputChange}
               />
             </div>
-            <div className="row w-100 d-flex justify-content-center align-items-center mb-1 mb-xl-2">
+            <div className="row w-100 d-flex justify-content-center align-items-center mb-0 mb-xl-1">
               <div className="d-flex flex-column position-relative col-sm-6">
                 <label
                   className={`${
                     errors.has("email") ? "text-danger" : ""
-                  } d-block w-75 pb-0 pb-xl-1 fw-bold`}
+                  } d-block w-75 pb-0 fw-bold`}
                   htmlFor="email-input"
                 >
                   Email:
@@ -456,10 +456,10 @@ const SignUpPage: React.FC = () => {
               </div>
               <div className="col-6 d-none d-sm-block" />
             </div>
-            <div className="row w-100 d-flex justify-content-center align-items-center mb-2 mb-xl-3">
+            <div className="row w-100 d-flex justify-content-center align-items-center mb-1 mb-xl-2">
               <div className="d-flex flex-column position-relative col-sm-6">
                 <label
-                  className={`d-block w-75 pb-0 pb-xl-1 fw-bold ${
+                  className={`d-block w-75 pb-0 fw-bold ${
                     errors.has("password") ? "text-danger" : ""
                   }`}
                   htmlFor="email-input"
@@ -500,7 +500,7 @@ const SignUpPage: React.FC = () => {
               </div>
               <div className="d-flex flex-column position-relative col-sm-6">
                 <label
-                  className={`d-block w-75 pb-0 pb-xl-1 fw-bold ${
+                  className={`d-block w-75 pb-0 fw-bold ${
                     errors.has("confirmPassword") ? "text-danger" : ""
                   }`}
                   htmlFor="email-input"
@@ -545,12 +545,12 @@ const SignUpPage: React.FC = () => {
                 </section>
               </div>
             </div>
-            <div className="d-flex justify-content-center align-items-center mb-2 mb-xl-3 w-100">
+            <div className="d-flex justify-content-center align-items-center mb-1 mb-xl-2 w-100">
               <Button
                 handleOnClick={handleSubmitCredentialsBtnClick}
-                classNameStr="bg-primary rounded border-0 py-2 px-5 text-white underline-on-hover sign-up-btn"
+                classNameStr="bg-primary rounded border-0 py-1 px-4 text-white underline-on-hover sign-up-btn"
                 defaultStyleObj={{
-                  height: "45px",
+                  height: "40px",
                 }}
               >
                 {isLoadingSpinnerOn ? (
@@ -563,7 +563,7 @@ const SignUpPage: React.FC = () => {
           </form>
 
           {/* Login Link */}
-          <div className="d-flex justify-content-center align-items-center border-top pt-2 pt-xl-3 flex-column flex-sm-row">
+          <div className="d-flex justify-content-center align-items-center border-top pt-1 pt-xl-2 flex-column flex-sm-row">
             <span className="text-black">Already have an account?</span>
             <Button
               defaultStyleObj={{
