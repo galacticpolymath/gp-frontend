@@ -10,6 +10,28 @@
   }
 }
 
+.sign-up-header-txt {
+  font-size: 20px;
+  max-width: 500px;
+
+  @media (min-width: 992px) {
+    font-size: 22.5px;
+    max-width: none;
+  }
+}
+
+.gp-logo-sign-up {
+  width: 70px;
+  height: 70px;
+  top: 10px;
+
+  @media (min-width: 992px) {
+    top: 0px;
+    width: 80px;
+    height: 80px;
+  }
+}
+
 .create-account-toggle-btn-container {
   @media (min-width: 577px) {
     min-width: 350px;

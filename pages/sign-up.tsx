@@ -227,36 +227,34 @@ const SignUpPage: React.FC = () => {
         >
           <div className="position-relative d-flex flex-column flex-xl-row sign-up-header-container">
             <img
-              className="position-absolute top-0 start-0 me-5 mt-1 mt-xl-2 d-xl-block d-none"
+              className="position-absolute start-0 me-5 mt-1 mt-xl-2 d-block gp-logo-sign-up"
               src="/imgs/gp_logo_gradient_transBG.png"
               alt="gp_logo"
-              width={80}
-              height={80}
               style={{
                 transform: "translateY(-18%)",
-                top: 10,
+                // top: 10,
               }}
             />
-            <div className="d-xl-none d-flex w-100 justify-content-center align-items-center">
+            {/* <div className="d-xl-none d-flex w-100 justify-content-center align-items-center">
               <img
                 src="/imgs/gp_logo_gradient_transBG.png"
                 alt="gp_logo"
-                width={100}
-                height={100}
+                width={80}
+                height={80}
               />
-            </div>
+            </div> */}
             <div className="w-100 flex-column d-flex justify-content-center align-items-center">
-              <h5 className="mt-1 mt-xl-0 text-black text-center w-100 h-100">
+              <h5 className="mt-1 mt-xl-0 text-black text-center w-100 h-100 sign-up-header-txt">
                 Get 100+ of the best science + STE(A)M resources available{" "}
                 <i>anywhere</i>!
               </h5>
-              <h5 className="mt-0 mt-xl-0 text-black text-center w-100 h-100">
+              <h5 className="mt-0 mt-xl-0 text-black text-center w-100 h-100 sign-up-header-txt">
                 (Grant-funded, FREE to you!)
               </h5>
             </div>
           </div>
           {/* Mailing List Toggle */}
-          <div className="border-bottom border-top py-1 py-xl-1 my-0 mb-xl-1 mt-1 mt-xl-1">
+          <div className="border-bottom border-top py-2 py-xl-1 my-0 mb-xl-1 mt-1 mt-md-3">
             <div className="d-flex justify-content-center align-items-center">
               <div className="d-flex create-account-toggle-btn-container">
                 <div>
@@ -563,7 +561,7 @@ const SignUpPage: React.FC = () => {
           </form>
 
           {/* Login Link */}
-          <div className="d-flex justify-content-center align-items-center border-top pt-1 pt-xl-2 flex-column flex-sm-row">
+          <div className="d-flex justify-content-center align-items-center border-top pt-1 pt-xl-2 flex-column flex-sm-row mt-2">
             <span className="text-black">Already have an account?</span>
             <Button
               defaultStyleObj={{
