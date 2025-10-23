@@ -95,7 +95,7 @@ const LoginUI = ({
           className={`${headingTitleClassName} fs-6`}
         >
           <span className="d-none d-sm-inline d-md-none d-lg-inline fs-4">GP Teacher Portal Sign In</span>
-          <span className="d-inline d-sm-none d-md-inline d-lg-none">GP Portal</span>
+          <span className="d-inline d-sm-none d-md-inline d-lg-none">GP Portal Sign In</span>
         </h1>
       </div>
       <div className="w-100 flex-column d-flex justify-content-center align-items-center mt-2 mb-1 mb-sm-0 mt-sm-1 mt-md-2">
@@ -191,7 +191,7 @@ const LoginUI = ({
           />
         </div>
         <div
-          style={{ width: "25px" }}
+          style={{ width: "35px" }}
           className="d-flex justify-content-center align-items-center"
         >
           <span
@@ -225,7 +225,7 @@ const LoginUI = ({
               onChange={(event) => {
                 handleOnInputChange(event);
               }}
-              inputStyle={{ width: "100%", height: "30px", fontSize: "14px" }}
+              inputStyle={{ width: "100%", height: "30px", fontSize: "18px" }}
               inputContainerCss={`${mobileInputFieldClassName} py-1 py-md-2 rounded position-relative bg-light-blue ${userEntryErrors.has("email") ? "border-danger" : "border"
                 }`}
               inputClassName='px-1 py-1 position-relative no-outline border-0 rounded bg-light-blue'
@@ -261,7 +261,7 @@ const LoginUI = ({
               inputStyle={{
                 width: "90%",
                 height: "30px",
-                fontSize: "14px",
+                fontSize: "18px",
                 borderTopRightRadius: "0px",
                 borderBottomRightRadius: "0px",
                 borderTopLeftRadius: "6.75px",

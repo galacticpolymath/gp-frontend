@@ -6,7 +6,7 @@
 /* eslint-disable react/jsx-indent */
 /* eslint-disable quotes */
 /* eslint-disable indent */
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Spinner } from "react-bootstrap";
 import Button from "../components/General/Button";
 import CreateAccountWithGoogle from "../components/User/GoogleSignIn";
@@ -32,6 +32,7 @@ import { getSessionStorageItem } from "../shared/fns";
 import { GetServerSidePropsContext } from "next";
 
 export const FONT_SIZE_CHECKBOX = "28px";
+const ERROR_TXT_HEIGHT = "23px";
 const inputElementsFocusedDefault = new Map();
 
 inputElementsFocusedDefault.set("email", false);
@@ -42,6 +43,26 @@ export interface ICallbackUrl {
   callbackUrl: string;
   redirectPgType: "account" | "home" | "pgWithSignUpBtn";
 }
+
+const useViewport = () => {
+  const [viewportWidth, setViewportWidth] = useState<number>(
+    typeof window === "undefined" ? 0 : window.innerWidth
+  );
+
+  useEffect(() => {
+    const handleResize = () => {
+      setViewportWidth(window.innerWidth);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  return {
+    viewportWidth,
+  };
+};
 
 const SignUpPage: React.FC = () => {
   const { _createAccountForm, sendFormToServer, validateForm } = useUserEntry();
@@ -56,6 +77,7 @@ const SignUpPage: React.FC = () => {
   const [createAccountForm, setCreateAccountForm] = _createAccountForm;
   const [passwordInputType, setPasswordInputType] = useState("password");
   const router = useRouter();
+  const { viewportWidth } = useViewport();
 
   const handlePasswordTxtShowBtnClick = () => {
     setPasswordInputType((state: string) =>
@@ -231,7 +253,7 @@ const SignUpPage: React.FC = () => {
           className="shadow-lg rounded sign-up-card"
           style={{ width: "97%" }}
         >
-          <div className="bg-white shadow-lg rounded p-3 p-md-2 w-100">
+          <div className="bg-white rounded p-1 p-sm-3 p-md-2 w-100">
             <div className="position-relative d-none d-sm-flex flex-column flex-xl-row sign-up-header-container justify-content-center align-items-center">
               <img
                 className="position-absolute start-0 me-5 mt-1 mt-xl-2 gp-logo-sign-up"
@@ -284,7 +306,7 @@ const SignUpPage: React.FC = () => {
                   </div>
                   <div
                     onClick={handleToAddToMailingListToggleBtnClick}
-                    className="pointer ms-2 email-listing-txt"
+                    className="pointer ms-2 ms-sm-0 email-listing-txt d-flex align-items-sm-center justify-content-sm-center"
                   >
                     Send me updates about new/free resources (You{"'"}ll get an
                     email to confirm subscription).
@@ -364,14 +386,22 @@ const SignUpPage: React.FC = () => {
             {/* Sign Up Form */}
             <form className="d-flex justify-content-center align-items-center flex-column">
               <div className="row w-100 d-flex justify-content-center align-items-center mb-0 mb-sm-1 mb-xl-1">
-                <div className="d-flex col-sm-6 flex-column">
+                <div className="d-flex col-6 flex-column">
                   <label
-                    className={`d-block w-75 pb-0 pb-sm-1 fw-bold ${
+                    className={`d-none d-sm-block w-75 pb-0 pb-sm-1 fw-bold ${
                       errors.has("firstName") ? "text-danger" : ""
                     }`}
                     htmlFor="first-name"
                   >
                     First name:
+                  </label>
+                  <label
+                    className={`d-block d-sm-none w-75 pb-0 pb-sm-1 fw-bold ${
+                      errors.has("firstName") ? "text-danger" : ""
+                    }`}
+                    htmlFor="first-name"
+                  >
+                    Name:
                   </label>
                   <input
                     id="first-name"
@@ -397,7 +427,7 @@ const SignUpPage: React.FC = () => {
                     onFocus={handleOnFocus}
                     onBlur={handleOnBlur}
                   />
-                  <section style={{ height: "24px" }}>
+                  <section style={{ height: ERROR_TXT_HEIGHT }}>
                     {errors.has("firstName") && (
                       <ErrorTxt>{errors.get("firstName")}</ErrorTxt>
                     )}
@@ -406,8 +436,12 @@ const SignUpPage: React.FC = () => {
                 <InputSection
                   errors={errors}
                   errorsFieldName="lastName"
+                  containerClassName="d-sm-flex d-none flex-column col-6 position-relative"
                   inputId="lastName"
                   inputName="lastName"
+                  errorSectionStyle={{
+                    height: ERROR_TXT_HEIGHT,
+                  }}
                   inputStyle={{
                     borderRadius: "5px",
                     fontSize: "18px",
@@ -417,7 +451,34 @@ const SignUpPage: React.FC = () => {
                     errors.has("lastName") ? "text-danger" : ""
                   }`}
                   inputPlaceholder="Last name"
-                  label="Last Name"
+                  label="Last Name: "
+                  inputClassName={`${
+                    inputElementsFocused.get("lastName")
+                      ? INPUT_FOCUS_BLUE_CLASSNAME
+                      : "no-outline"
+                  } ${
+                    errors.has("lastName") ? "border-danger" : "border-0"
+                  } p-1 w-100 py-1 py-sm-2 no-outline`}
+                  onFocus={handleOnFocus}
+                  onBlur={handleOnBlur}
+                  handleOnInputChange={handleOnInputChange}
+                />
+                <InputSection
+                  errors={errors}
+                  errorsFieldName="lastName"
+                  containerClassName="d-sm-none d-flex flex-column col-6 position-relative"
+                  inputId="lastName"
+                  inputName="lastName"
+                  inputStyle={{
+                    borderRadius: "5px",
+                    fontSize: "18px",
+                    background: USER_INPUT_BACKGROUND_COLOR,
+                  }}
+                  labelClassName={`d-block invisible w-100 pb-1 fw-bold ${
+                    errors.has("lastName") ? "text-danger" : ""
+                  }`}
+                  inputPlaceholder="Last name"
+                  label="X: "
                   inputClassName={`${
                     inputElementsFocused.get("lastName")
                       ? INPUT_FOCUS_BLUE_CLASSNAME
@@ -464,7 +525,7 @@ const SignUpPage: React.FC = () => {
                     name="email"
                     onChange={handleOnInputChange}
                   />
-                  <section style={{ height: "24px" }}>
+                  <section style={{ height: ERROR_TXT_HEIGHT }}>
                     {errors.has("email") && (
                       <ErrorTxt>{errors.get("email")}</ErrorTxt>
                     )}
@@ -473,7 +534,7 @@ const SignUpPage: React.FC = () => {
                 <div className="col-6 d-none d-sm-block" />
               </div>
               <div className="row w-100 d-flex justify-content-center align-items-center mb-1 mb-sm-2 mb-xl-2">
-                <div className="d-flex flex-column position-relative col-sm-6">
+                <div className="d-flex flex-column position-relative col-6">
                   <label
                     className={`d-block w-75 pb-0 pb-sm-1 fw-bold ${
                       errors.has("password") ? "text-danger" : ""
@@ -489,7 +550,9 @@ const SignUpPage: React.FC = () => {
                       handlePasswordTxtShowBtnClick
                     }
                     inputType={passwordInputType}
-                    placeholder="Enter your password"
+                    placeholder={
+                      viewportWidth < 576 ? "Enter" : "Enter your password"
+                    }
                     inputContainerCss="d-flex flex-column position-relative col-12 p-0"
                     inputContainerStyle={{ borderRadius: "5px" }}
                     inputStyle={{
@@ -507,23 +570,32 @@ const SignUpPage: React.FC = () => {
                       borderTopRightRadius: "5px",
                       borderBottomRightRadius: "5px",
                       zIndex: 1,
+                      marginRight: "5px",
                     }}
                     noInputBorderColorOnBlur
                   />
-                  <section style={{ height: "24px" }}>
+                  <section style={{ height: ERROR_TXT_HEIGHT }}>
                     {errors.has("password") && (
                       <ErrorTxt>{errors.get("password")}</ErrorTxt>
                     )}
                   </section>
                 </div>
-                <div className="d-flex flex-column position-relative col-sm-6">
+                <div className="d-flex flex-column position-relative col-6">
                   <label
-                    className={`d-block w-75 pb-0 pb-sm-1 fw-bold ${
+                    className={`d-sm-block d-none w-75 pb-0 pb-sm-1 fw-bold ${
                       errors.has("confirmPassword") ? "text-danger" : ""
                     }`}
                     htmlFor="email-input"
                   >
-                    Confirm password:
+                    Confirm password
+                  </label>
+                  <label
+                    className={`d-sm-none d-block invisible w-75 pb-0 pb-sm-1 fw-bold ${
+                      errors.has("confirmPassword") ? "text-danger" : ""
+                    }`}
+                    htmlFor="email-input"
+                  >
+                    X
                   </label>
                   <CustomInput
                     inputId="confirm-password-id"
@@ -532,13 +604,16 @@ const SignUpPage: React.FC = () => {
                       handlePasswordTxtShowBtnClick
                     }
                     inputType={passwordInputType}
-                    placeholder="Enter your password"
+                    placeholder={
+                      viewportWidth < 576 ? "Confirm" : "Confirm password"
+                    }
                     inputContainerCss="d-flex flex-column position-relative col-12 p-0"
                     iconContainerStyle={{
                       borderTopRightRadius: "5px",
                       borderBottomRightRadius: "5px",
                       zIndex: 1,
                       width: "10%",
+                      marginRight: "10px",
                     }}
                     inputContainerStyle={{
                       borderRadius: "5px",
@@ -558,7 +633,7 @@ const SignUpPage: React.FC = () => {
                     onChange={handleOnInputChange}
                     noInputBorderColorOnBlur
                   />
-                  <section style={{ height: "24px" }}>
+                  <section style={{ height: ERROR_TXT_HEIGHT }}>
                     {errors.has("confirmPassword") && (
                       <ErrorTxt>{errors.get("confirmPassword")}</ErrorTxt>
                     )}
