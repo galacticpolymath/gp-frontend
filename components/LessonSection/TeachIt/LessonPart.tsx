@@ -211,7 +211,16 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
   const targetLessonsResources = resources?.lessons?.find((lesson) => {
     return lesson?.lsn == lsnNum;
   });
-  let { tags: allTags, itemList: linkResources } = targetLessonsResources ?? {};
+  let {
+    lsnTags,
+    tags: _allTags,
+    itemList: linkResources,
+  } = targetLessonsResources ?? {};
+
+  console.log("lsnTags: ", lsnTags);
+  console.log("_allTags: ", _allTags);
+
+  let allTags = lsnTags ?? _allTags;
   _itemList = (_itemList ?? linkResources) as IItemForClient[] | null;
   let previewTags = null;
   let restOfTags = null;
@@ -701,31 +710,33 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                 status === "loading" ? "pe-none position-relative" : ""
               }`}
             >
-              <SignInSuggestion
-                className="position-absolute start-50 translate-middle col-12 d-flex justify-content-center align-items-center flex-column"
-                style={{ zIndex: 100, top: "20%" }}
-                txt="Create a free account to see teaching materials"
-                txtClassName="d-inline-flex justify-center items-center text-center fw-bold"
-              >
-                <div className="d-flex justify-content-center align-items-center">
-                  <Button
-                    onClick={() => {
-                      const url = `${window.location.origin}/${UNITS_URL_PATH}/${router.query.loc}/${router.query.id}?${PRESENT_WELCOME_MODAL_PARAM_NAME}=true`;
+              {status === "unauthenticated" && (
+                <SignInSuggestion
+                  className="position-absolute start-50 translate-middle col-12 d-flex justify-content-center align-items-center flex-column"
+                  style={{ zIndex: 100, top: "20%" }}
+                  txt="Create a free account to see teaching materials"
+                  txtClassName="d-inline-flex justify-center items-center text-center fw-bold"
+                >
+                  <div className="d-flex justify-content-center align-items-center">
+                    <Button
+                      onClick={() => {
+                        const url = `${window.location.origin}/${UNITS_URL_PATH}/${router.query.loc}/${router.query.id}?${PRESENT_WELCOME_MODAL_PARAM_NAME}=true`;
 
-                      setLocalStorageItem(
-                        "lessonIdToViewAfterRedirect",
-                        `lesson_${_accordionId}`
-                      );
-                      setSessionStorageItem("userEntryRedirectUrl", url);
+                        setLocalStorageItem(
+                          "lessonIdToViewAfterRedirect",
+                          `lesson_${_accordionId}`
+                        );
+                        setSessionStorageItem("userEntryRedirectUrl", url);
 
-                      router.push("/sign-up");
-                    }}
-                    className="mt-2 sign-in-teacher-materials-btn d-flex justify-content-center align-items-center underline-on-hover"
-                  >
-                    Sign Up
-                  </Button>
-                </div>
-              </SignInSuggestion>
+                        router.push("/sign-up");
+                      }}
+                      className="mt-2 sign-in-teacher-materials-btn d-flex justify-content-center align-items-center underline-on-hover"
+                    >
+                      Sign Up
+                    </Button>
+                  </div>
+                </SignInSuggestion>
+              )}
               <ol
                 className={`mt-2 materials-list w-100 ${
                   status === "unauthenticated"

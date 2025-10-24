@@ -17,7 +17,7 @@ import GistCard from "./GistCard";
 
 interface IOverviewProps
   extends ITitleProps,
-    Pick<TOverviewForUI, "TheGist" | "EstUnitTime"> {
+    Pick<TOverviewForUI, "TheGist" | "EstUnitTime" | "UnitTags" | "Tags"> {
   Accessibility: TOverviewForUI["Accessibility"];
   Description: string;
   EstLessonTime: string;
@@ -28,7 +28,6 @@ interface IOverviewProps
   TargetStandardsCodes?: TUnitForUI["TargetStandardsCodes"];
   SteamEpaulette: string;
   SteamEpaulette_vert: string;
-  Tags: TOverviewForUI["Tags"];
   TargetSubject: string;
   Text: string;
   _sectionDots: TUseStateReturnVal<ISectionDots>;
@@ -43,7 +42,8 @@ const Overview = ({
   SteamEpaulette,
   SteamEpaulette_vert,
   Text,
-  Tags,
+  Tags: _Tags,
+  UnitTags,
   GradesOrYears,
   _sectionDots,
   SectionTitle,
@@ -53,8 +53,10 @@ const Overview = ({
   Accessibility,
   ...titleProps
 }: IOverviewProps) => {
-  console.log("TargetStandardsCodes: ", TargetStandardsCodes);
+  console.log("UnitTags: ", UnitTags);
+  console.log("_Tags: ", _Tags);
 
+  let Tags = UnitTags ?? (_Tags ? _Tags.map((tag) => tag.Value) : []);
   const areTargetStandardsValid = TargetStandardsCodes?.every(
     (standard) =>
       typeof standard?.code === "string" &&
@@ -107,24 +109,21 @@ const Overview = ({
   };
 
   if (areTargetStandardsValid && TargetStandardsCodes) {
-    standards = TargetStandardsCodes.reduce(
-      (accum, stardardCodesProp) => {
-        const { set, code, dim, subject } = stardardCodesProp;
+    standards = TargetStandardsCodes.reduce((accum, stardardCodesProp) => {
+      const { set, code, dim, subject } = stardardCodesProp;
 
-        if (set in accum) {
-          return {
-            ...accum,
-            [set]: [...accum[set], { code, dim, subject }],
-          };
-        }
-
+      if (set in accum) {
         return {
           ...accum,
-          [set]: [{ code, dim, subject }],
+          [set]: [...accum[set], { code, dim, subject }],
         };
-      },
-      standards
-    );
+      }
+
+      return {
+        ...accum,
+        [set]: [{ code, dim, subject }],
+      };
+    }, standards);
   }
 
   const ref = useRef(null);
@@ -182,10 +181,10 @@ const Overview = ({
       {!!Tags?.length &&
         Tags.map((tag) => (
           <span
-            key={tag.Value}
+            key={tag}
             className="fs-6 fw-light badge rounded-pill bg-white text-secondary border border-2 border-secondary me-2 mb-2 px-2"
           >
-            {tag.Value}
+            {tag}
           </span>
         ))}
 

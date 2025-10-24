@@ -148,13 +148,14 @@ const SECTION_SORT_ORDER: Record<keyof ISections, number> = {
   preview: 1,
   teachingMaterials: 2,
   feedback: 3,
-  extensions: 4,
-  bonus: 5,
-  background: 6,
-  standards: 7,
-  credits: 8,
-  acknowledgments: 9,
-  versions: 10,
+  jobvizConnections: 4,
+  extensions: 5,
+  bonus: 6,
+  background: 7,
+  standards: 8,
+  credits: 9,
+  acknowledgments: 10,
+  versions: 11,
 };
 
 const UNIT_DOCUMENT_ORIGINS = new Set([
@@ -407,6 +408,8 @@ const LessonDetails: React.FC<IProps> = ({ lesson, unit }) => {
       keyof TSectionsForUI,
       any | null
     ][];
+
+    console.log("unitSectionAndTitlePairs: ", unitSectionAndTitlePairs);
 
     unitSectionAndTitlePairs.sort(([sectionAName], [sectionBName]) => {
       const sectionASortNum = SECTION_SORT_ORDER[sectionAName];

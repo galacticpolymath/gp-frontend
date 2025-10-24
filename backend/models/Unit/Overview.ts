@@ -73,6 +73,7 @@ export const UnitOverview = new Schema<Omit<IUnitOverview, "rootFieldsToRetrieve
     SteamEpaulette_vert: String,
     Accessibility: [AccessibilitySchema],
     Tags: [TagSchema],
+    UnitTags: [String],
     versions: [VersionSchema],
     rootFieldsToRetrieveForUI: {
         type: [RootFieldToRetrieve],
