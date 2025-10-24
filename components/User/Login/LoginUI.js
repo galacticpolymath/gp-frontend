@@ -103,13 +103,7 @@ const LoginUI = ({
           style={{ fontWeight: 300 }}
           className="mt-0 mb-0 mt-sm-1 mt-md-2 text-black text-center w-100 h-100 fs-6 fs-sm-5"
         >
-          <span className="d-none d-sm-inline d-md-none d-lg-inline">
-            Get 100+ of the best science + STE(A)M resources available{" "}
-            <i>anywhere</i>!
-          </span>
-          <span className="d-inline d-sm-none d-md-inline d-lg-none">
-            Get 100+ science resources <i>anywhere</i>!
-          </span>
+          Get access to the [best] science resources anywhere!
         </h5>
         <h5
           style={{ fontWeight: 300 }}
@@ -308,7 +302,7 @@ const LoginUI = ({
                 handleLoginBtnClick(redirectUrl);
               }}
               defaultStyleObj={{ borderRadius: "5px" }}
-              classNameStr={`bg-primary border-0 px-2 px-sm-3 px-md-4 py-1 py-sm-1 py-md-2 ${mobileInputFieldClassName}`}
+              classNameStr={`mb-3 mb-sm-0 bg-primary border-0 px-2 px-sm-3 px-md-4 py-1 py-sm-1 py-md-2 ${mobileInputFieldClassName}`}
             >
               {isUserEntryInProcess ? (
                 <div

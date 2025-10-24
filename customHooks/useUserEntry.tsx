@@ -131,16 +131,16 @@ export const useUserEntry = () => {
       errors.set("password", "*The passwords don't match.");
       errors.set("confirmPassword", "*The passwords don't match.");
     } else if (isCredentialsAccountCreation && !password && !confirmPassword) {
-      errors.set("password", "*This field is required.");
-      errors.set("confirmPassword", "*This field is required.");
+      errors.set("password", "*Required field.");
+      errors.set("confirmPassword", "*Required field.");
     }
 
     if (isCredentialsAccountCreation && !firstName) {
-      errors.set("firstName", "*This field is required.");
+      errors.set("firstName", "*Required field.");
     }
 
     if (isCredentialsAccountCreation && !lastName) {
-      errors.set("lastName", "*This field is required.");
+      errors.set("lastName", "*Required field.");
     }
 
     const doesEmailExist = await getDoesEmailExist(email);
@@ -234,13 +234,13 @@ export const useUserEntry = () => {
     const { email, password } = loginForm;
 
     if (!email) {
-      errors.set("email", "*This field is required.");
+      errors.set("email", "*Required field.");
     } else if (!validateEmail(email)) {
       errors.set("email", "*Invalid email.");
     }
 
     if (!password) {
-      errors.set("password", "*This field is required.");
+      errors.set("password", "*Required field.");
     }
 
     if (errors.size > 0) {

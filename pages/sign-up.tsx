@@ -30,6 +30,7 @@ import { redirect, useSearchParams } from "next/navigation";
 import { PRESENT_WELCOME_MODAL_PARAM_NAME } from "../shared/constants";
 import { getSessionStorageItem } from "../shared/fns";
 import { GetServerSidePropsContext } from "next";
+import Image from "next/image";
 
 export const FONT_SIZE_CHECKBOX = "28px";
 const ERROR_TXT_HEIGHT = "23px";
@@ -44,26 +45,6 @@ export interface ICallbackUrl {
   redirectPgType: "account" | "home" | "pgWithSignUpBtn";
 }
 
-const useViewport = () => {
-  const [viewportWidth, setViewportWidth] = useState<number>(
-    typeof window === "undefined" ? 0 : window.innerWidth
-  );
-
-  useEffect(() => {
-    const handleResize = () => {
-      setViewportWidth(window.innerWidth);
-    };
-    window.addEventListener("resize", handleResize);
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
-
-  return {
-    viewportWidth,
-  };
-};
-
 const SignUpPage: React.FC = () => {
   const { _createAccountForm, sendFormToServer, validateForm } = useUserEntry();
   const urlSearchParams = useSearchParams();
@@ -77,7 +58,6 @@ const SignUpPage: React.FC = () => {
   const [createAccountForm, setCreateAccountForm] = _createAccountForm;
   const [passwordInputType, setPasswordInputType] = useState("password");
   const router = useRouter();
-  const { viewportWidth } = useViewport();
 
   const handlePasswordTxtShowBtnClick = () => {
     setPasswordInputType((state: string) =>
@@ -250,8 +230,8 @@ const SignUpPage: React.FC = () => {
           }}
         />
         <div
-          className="shadow-lg rounded sign-up-card"
-          style={{ width: "97%" }}
+          className="shadow-lg rounded sign-up-card pb-4"
+          style={{ width: "97%", height: "fit-content" }}
         >
           <div className="bg-white rounded p-1 p-sm-3 p-md-2 w-100">
             <div className="position-relative d-none d-sm-flex flex-column flex-xl-row sign-up-header-container justify-content-center align-items-center">
@@ -266,30 +246,28 @@ const SignUpPage: React.FC = () => {
               />
               <div className="flex-column d-flex justify-content-center align-items-center">
                 <h5 className="mt-1 mt-sm-0 mt-xl-0 text-black text-center w-100 h-100 sign-up-header-txt">
-                  Get 100+ of the best science + STE(A)M resources available{" "}
-                  <i>anywhere</i>!
+                  Get access to the [best] science resources anywhere!
                 </h5>
                 <h5 className="mt-0 mt-sm-0 mt-xl-0 text-black text-center w-100 h-100 sign-up-header-txt">
-                  (Grant-funded, FREE to you!)
+                  (Grant-funded, FREE!)
                 </h5>
               </div>
             </div>
             <div className="position-relative d-sm-none d-flex justify-content-center sign-up-header-container">
               <div className="flex-column d-flex justify-content-center align-items-center header-gp-sign-up-container">
                 <h5 className="mt-1 mt-sm-0 mt-xl-0 text-black text-center w-100 h-100 sign-up-header-txt">
-                  Get 100+ of the best science + STE(A)M resources available{" "}
-                  <i>anywhere</i>!
+                  Get access to the [best] science resources anywhere!
                 </h5>
                 <h5 className="mt-0 mt-sm-0 mt-xl-0 text-black text-center w-100 h-100 sign-up-header-txt">
-                  (Grant-funded, FREE to you!)
+                  (Grant-funded, FREE!)
                 </h5>
               </div>
             </div>
             {/* Mailing List Toggle */}
-            <div className="border-bottom border-top py-1 py-sm-2 py-xl-1 my-0 mb-sm-1 mb-xl-1 mt-0 mt-sm-1 mt-md-3">
+            <div className="border-bottom border-top py-2 py-sm-3 py-xxl-1 my-0 mb-sm-1 mb-xl-1 mt-0 mt-sm-1 mt-md-2">
               <div className="d-flex justify-content-center align-items-center">
                 <div className="d-flex create-account-toggle-btn-container">
-                  <div>
+                  <div className="d-flex align-items-center justify-content-center">
                     {createAccountForm.isOnMailingList ? (
                       <BiCheckboxChecked
                         onClick={handleToAddToMailingListToggleBtnClick}
@@ -306,7 +284,7 @@ const SignUpPage: React.FC = () => {
                   </div>
                   <div
                     onClick={handleToAddToMailingListToggleBtnClick}
-                    className="pointer ms-2 ms-sm-0 email-listing-txt d-flex align-items-sm-center justify-content-sm-center"
+                    className="py-xxl-4 pointer ms-2 ms-sm-1 ms-lg-0 email-listing-txt d-flex align-items-sm-center justify-content-sm-center"
                   >
                     Send me updates about new/free resources (You{"'"}ll get an
                     email to confirm subscription).
@@ -316,7 +294,7 @@ const SignUpPage: React.FC = () => {
             </div>
 
             {/* Google Sign Up */}
-            <section className="mb-1 my-2 my-sm-3 my-md-2 my-xl-3 d-flex justify-content-center align-items-center">
+            <section className="my-2 my-sm-3 my-xxl-4 my-xl-3 d-flex justify-content-center align-items-center">
               <CreateAccountWithGoogle
                 handleGoogleBtnClickCustom={
                   handleCreateAnAccountWithGoogleBtnClick
@@ -347,7 +325,7 @@ const SignUpPage: React.FC = () => {
                     <Spinner className="text-center" />
                   </div>
                 )}
-                <span className="d-inline-flex justify-content-center align-items-center h-100 sign-up-w-google-txt">
+                <span className="d-inline-flex justify-content-center align-items-center h-100 sign-up-w-google-txt fs-6">
                   <span style={{ opacity: isGoogleLoadingSpinnerOn ? 0 : 1 }}>
                     Sign up with Google.
                   </span>
@@ -388,7 +366,7 @@ const SignUpPage: React.FC = () => {
               <div className="row w-100 d-flex justify-content-center align-items-center mb-0 mb-sm-1 mb-xl-1">
                 <div className="d-flex col-6 flex-column">
                   <label
-                    className={`d-none d-sm-block w-75 pb-0 pb-sm-1 fw-bold ${
+                    className={`d-none d-sm-block w-75 pb-0 pb-sm-1 sign-up-input-label fw-bold ${
                       errors.has("firstName") ? "text-danger" : ""
                     }`}
                     htmlFor="first-name"
@@ -396,7 +374,7 @@ const SignUpPage: React.FC = () => {
                     First name:
                   </label>
                   <label
-                    className={`d-block d-sm-none w-75 pb-0 pb-sm-1 fw-bold ${
+                    className={`sign-up-input-label d-block d-sm-none w-75 pb-0 pb-sm-1 fw-bold ${
                       errors.has("firstName") ? "text-danger" : ""
                     }`}
                     htmlFor="first-name"
@@ -447,7 +425,7 @@ const SignUpPage: React.FC = () => {
                     fontSize: "18px",
                     background: USER_INPUT_BACKGROUND_COLOR,
                   }}
-                  labelClassName={`d-block w-100 pb-1 fw-bold ${
+                  labelClassName={`sign-up-input-label d-block w-100 pb-1 fw-bold ${
                     errors.has("lastName") ? "text-danger" : ""
                   }`}
                   inputPlaceholder="Last name"
@@ -474,7 +452,7 @@ const SignUpPage: React.FC = () => {
                     fontSize: "18px",
                     background: USER_INPUT_BACKGROUND_COLOR,
                   }}
-                  labelClassName={`d-block invisible w-100 pb-1 fw-bold ${
+                  labelClassName={`sign-up-input-label d-block invisible w-100 pb-1 fw-bold ${
                     errors.has("lastName") ? "text-danger" : ""
                   }`}
                   inputPlaceholder="Last name"
@@ -496,7 +474,7 @@ const SignUpPage: React.FC = () => {
                   <label
                     className={`${
                       errors.has("email") ? "text-danger" : ""
-                    } d-block w-75 pb-0 pb-sm-1 fw-bold`}
+                    } d-block w-75 pb-0 sign-up-input-label pb-sm-1 fw-bold`}
                     htmlFor="email-input"
                   >
                     Email:
@@ -536,7 +514,7 @@ const SignUpPage: React.FC = () => {
               <div className="row w-100 d-flex justify-content-center align-items-center mb-1 mb-sm-2 mb-xl-2">
                 <div className="d-flex flex-column position-relative col-6">
                   <label
-                    className={`d-block w-75 pb-0 pb-sm-1 fw-bold ${
+                    className={`d-block w-75 pb-0 sign-up-input-label pb-sm-1 fw-bold ${
                       errors.has("password") ? "text-danger" : ""
                     }`}
                     htmlFor="email-input"
@@ -550,10 +528,8 @@ const SignUpPage: React.FC = () => {
                       handlePasswordTxtShowBtnClick
                     }
                     inputType={passwordInputType}
-                    placeholder={
-                      viewportWidth < 576 ? "Enter" : "Enter your password"
-                    }
-                    inputContainerCss="d-flex flex-column position-relative col-12 p-0"
+                    placeholder="Enter your password"
+                    inputContainerCss="d-none d-sm-flex flex-column position-relative col-12 p-0"
                     inputContainerStyle={{ borderRadius: "5px" }}
                     inputStyle={{
                       borderRadius: "5px",
@@ -574,7 +550,44 @@ const SignUpPage: React.FC = () => {
                     }}
                     noInputBorderColorOnBlur
                   />
-                  <section style={{ height: ERROR_TXT_HEIGHT }}>
+                  <CustomInput
+                    inputId="password"
+                    isPasswordInput
+                    handleShowPasswordTxtBtnClick={
+                      handlePasswordTxtShowBtnClick
+                    }
+                    inputType={passwordInputType}
+                    placeholder="Enter"
+                    inputContainerCss="d-sm-none d-flex flex-column position-relative col-12 p-0"
+                    inputContainerStyle={{ borderRadius: "5px" }}
+                    inputStyle={{
+                      borderRadius: "5px",
+                      fontSize: "18px",
+                      background: "#E8F0FE",
+                      border: errors.has("password") ? "solid 1px red" : "",
+                    }}
+                    inputClassName={`p-1 w-100 py-1 py-sm-2 no-outline ${
+                      errors.has("password") ? "text-danger" : "border-0"
+                    }`}
+                    inputName="password"
+                    onChange={handleOnInputChange}
+                    iconContainerStyle={{
+                      borderTopRightRadius: "5px",
+                      borderBottomRightRadius: "5px",
+                      zIndex: 1,
+                      marginRight: "5px",
+                    }}
+                    noInputBorderColorOnBlur
+                  />
+                  <section className="d-sm-none d-block">
+                    {errors.has("password") && (
+                      <ErrorTxt>{errors.get("password")}</ErrorTxt>
+                    )}
+                  </section>
+                  <section
+                    className="d-sm-block d-none"
+                    style={{ height: ERROR_TXT_HEIGHT }}
+                  >
                     {errors.has("password") && (
                       <ErrorTxt>{errors.get("password")}</ErrorTxt>
                     )}
@@ -582,15 +595,15 @@ const SignUpPage: React.FC = () => {
                 </div>
                 <div className="d-flex flex-column position-relative col-6">
                   <label
-                    className={`d-sm-block d-none w-75 pb-0 pb-sm-1 fw-bold ${
+                    className={`d-sm-block d-none sign-up-input-label w-75 pb-0 pb-sm-1 fw-bold ${
                       errors.has("confirmPassword") ? "text-danger" : ""
                     }`}
                     htmlFor="email-input"
                   >
-                    Confirm password
+                    Confirm password:
                   </label>
                   <label
-                    className={`d-sm-none d-block invisible w-75 pb-0 pb-sm-1 fw-bold ${
+                    className={`d-sm-none d-block invisible sign-up-input-label w-75 pb-0 pb-sm-1 fw-bold ${
                       errors.has("confirmPassword") ? "text-danger" : ""
                     }`}
                     htmlFor="email-input"
@@ -604,16 +617,14 @@ const SignUpPage: React.FC = () => {
                       handlePasswordTxtShowBtnClick
                     }
                     inputType={passwordInputType}
-                    placeholder={
-                      viewportWidth < 576 ? "Confirm" : "Confirm password"
-                    }
-                    inputContainerCss="d-flex flex-column position-relative col-12 p-0"
+                    placeholder="Confirm password"
+                    inputContainerCss="d-none d-sm-flex flex-column position-relative col-12 p-0"
+                    iconContainerClassName="h-100 end-0 position-absolute top-0 transparent d-flex justify-content-center align-items-center me-sm-0 me-2"
                     iconContainerStyle={{
                       borderTopRightRadius: "5px",
                       borderBottomRightRadius: "5px",
                       zIndex: 1,
                       width: "10%",
-                      marginRight: "10px",
                     }}
                     inputContainerStyle={{
                       borderRadius: "5px",
@@ -633,14 +644,56 @@ const SignUpPage: React.FC = () => {
                     onChange={handleOnInputChange}
                     noInputBorderColorOnBlur
                   />
-                  <section style={{ height: ERROR_TXT_HEIGHT }}>
+                  <CustomInput
+                    inputId="confirm-password-id"
+                    isPasswordInput
+                    handleShowPasswordTxtBtnClick={
+                      handlePasswordTxtShowBtnClick
+                    }
+                    inputType={passwordInputType}
+                    placeholder="Confirm"
+                    inputContainerCss="d-flex d-sm-none flex-column position-relative col-12 p-0"
+                    iconContainerClassName="h-100 end-0 position-absolute top-0 transparent d-flex justify-content-center align-items-center me-sm-0 me-2"
+                    iconContainerStyle={{
+                      borderTopRightRadius: "5px",
+                      borderBottomRightRadius: "5px",
+                      zIndex: 1,
+                      width: "10%",
+                    }}
+                    inputContainerStyle={{
+                      borderRadius: "5px",
+                    }}
+                    inputStyle={{
+                      borderRadius: "5px",
+                      fontSize: "18px",
+                      background: "#E8F0FE",
+                      border: errors.has("confirmPassword")
+                        ? "solid 1px red"
+                        : "",
+                    }}
+                    inputClassName={`p-1 w-100 py-1 py-sm-2 no-outline ${
+                      errors.has("confirmPassword") ? "text-danger" : "border-0"
+                    }`}
+                    inputName="confirmPassword"
+                    onChange={handleOnInputChange}
+                    noInputBorderColorOnBlur
+                  />
+                  <section className="d-sm-none d-block">
+                    {errors.has("confirmPassword") && (
+                      <ErrorTxt>{errors.get("confirmPassword")}</ErrorTxt>
+                    )}
+                  </section>
+                  <section
+                    className="d-sm-block d-none"
+                    style={{ height: ERROR_TXT_HEIGHT }}
+                  >
                     {errors.has("confirmPassword") && (
                       <ErrorTxt>{errors.get("confirmPassword")}</ErrorTxt>
                     )}
                   </section>
                 </div>
               </div>
-              <div className="d-flex justify-content-center align-items-center mb-1 mb-sm-2 mb-xl-2 w-100">
+              <div className="d-flex justify-content-center align-items-center mt-3 mt-sm-1 mb-3 mb-sm-2 mb-xl-2 w-100">
                 <Button
                   handleOnClick={handleSubmitCredentialsBtnClick}
                   classNameStr="bg-primary rounded border-0 py-1 px-4 text-white underline-on-hover sign-up-btn"
@@ -649,7 +702,7 @@ const SignUpPage: React.FC = () => {
                   }}
                 >
                   {isLoadingSpinnerOn ? (
-                    <Spinner className="text-white" />
+                    <Spinner className="text-white" size="sm" />
                   ) : (
                     <span className="text-white">SIGN UP</span>
                   )}
