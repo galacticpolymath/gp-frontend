@@ -366,3 +366,21 @@ export const calculatePercentSaved = (
       100
   );
 };
+
+export const replaceCharAt = (word: string, index: number, char: string) => {
+  if (!char) {
+    console.log('char is falsey');
+  }
+
+  const strSplitted = word.split("");
+
+  if(!strSplitted[index]){
+    console.error(`replaceCharAt error: No word at index ${index} in string "${word}"`);
+
+    return word;
+  }
+
+  strSplitted[index] = char;
+
+  return strSplitted.join("")
+}

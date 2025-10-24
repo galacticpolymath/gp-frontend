@@ -96,7 +96,7 @@ export interface ISelectedJob {
   employment_perc_of_tot_end: number;
   employment_change_numeric: number;
   employment_change_percent: number;
-  median_annual_wage: number;
+  median_annual_wage: number | null;
   typical_education_needed_for_entry: string;
   work_experience_in_a_related_occupation: string;
   "typical_on-the-job_training_needed_to_attain_competency_in_the_occupation": string;

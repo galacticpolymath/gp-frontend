@@ -43,6 +43,7 @@ declare global {
     }
   }
   }
+  
 }
 interface IComponent {
   index: number;

@@ -24,10 +24,15 @@ import {
   MdSupervisedUserCircle,
   MdAttachMoney,
 } from "react-icons/md";
-import { ModalContext, useModalContext } from "../../providers/ModalProvider";
+import {
+  ISelectedJob,
+  ModalContext,
+  useModalContext,
+} from "../../providers/ModalProvider";
 import jobVizDataObj from "../../data/Jobviz/jobVizDataObj.json";
 import { useRouter } from "next/router";
 import getNewPathsWhenModalCloses from "../../helperFns/getNewPathsWhenModalCloses";
+import { replaceCharAt } from "../../shared/fns";
 
 const { Header, Title, Body } = Modal;
 const { data_start_yr: _data_start_yr, data_end_yr: _data_end_yr } =
@@ -42,24 +47,80 @@ const formatToCurrency = (num: number) =>
     maximumFractionDigits: 0,
   });
 
+const formatDataTxtToCurrency = (dataTxt: number | null) => {
+  if (typeof dataTxt === "number") {
+    return formatToCurrency(dataTxt);
+  }
+
+  return "Data unavailable";
+};
+
+const createInfoCards = (selectedJob: ISelectedJob | null) => {
+  if (!selectedJob) {
+    return [];
+  }
+
+  // Destructure all the properties needed by infoCards from selectedJob
+  const {
+    median_annual_wage,
+    typical_education_needed_for_entry,
+    employment_start_yr,
+    employment_end_yr,
+    employment_change_percent,
+  } = selectedJob;
+  const onTheJobTraining =
+    selectedJob[
+      "typical_on-the-job_training_needed_to_attain_competency_in_the_occupation"
+    ];
+  const infoCards = [
+    {
+      id: "medianAnnualWage",
+      title: `Median ${DATA_START_YR} Annual Wage`,
+      txt: formatDataTxtToCurrency(median_annual_wage),
+      icon: <MdAttachMoney />,
+    },
+    {
+      id: "educationNeededForEntry",
+      title: "Education Needed",
+      txt: typical_education_needed_for_entry,
+      icon: <IoIosSchool />,
+    },
+    {
+      id: "onTheJobTraining",
+      title: "On-the-job Training",
+      txt: onTheJobTraining,
+      icon: <MdSupervisedUserCircle />,
+    },
+    {
+      id: "employmentStartYr",
+      title: `${DATA_START_YR} Employment`,
+      txt: formatDataTxtToCurrency(employment_start_yr),
+      icon: <MdOutlineDirectionsWalk />,
+    },
+    {
+      id: "employmentEndYr",
+      title: `Predicted ${DATA_END_YR} Employment`,
+      txt: formatDataTxtToCurrency(employment_end_yr),
+      icon: <MdOutlineTransferWithinAStation />,
+    },
+    {
+      id: "employmentChange",
+      title: `Predicted change in Employment ${DATA_START_YR} - ${DATA_END_YR}`,
+      txt: employment_change_percent,
+      icon: <BiTrendingUp />,
+    },
+  ] as const;
+
+  return infoCards;
+};
+
 const SelectedJob: React.FC = () => {
   const { _selectedJob, _isJobModalOn } = useModalContext();
   const router = useRouter();
   const paths = router.query?.["search-results"] ?? [];
   const [selectedJob, setSelectedJob] = _selectedJob;
   const [isJobModal, setIsJobModal] = _isJobModalOn;
-  let {
-    soc_title,
-    def: _def,
-    title,
-    median_annual_wage_2021,
-    typical_education_needed_for_entry,
-    employment_2021,
-    employment_2031,
-    employment_start_yr,
-    employment_end_yr,
-    employment_change_numeric,
-  } = selectedJob ?? {};
+  let { soc_title, def: _def, title } = selectedJob ?? {};
   let jobTitle = soc_title ?? title;
   jobTitle = jobTitle === "Total, all" ? "All US Jobs" : jobTitle;
   const projectedPercentageEmploymentChange = selectedJob
@@ -80,44 +141,7 @@ const SelectedJob: React.FC = () => {
   // og:title: JobViz Career Explorer
   // og:description: Coaches and Scouts: {projectedPercentageEmploymentChange} in demand by 2031
 
-  const infoCards = [
-    {
-      id: "medianAnnualWage",
-      title: `Median ${DATA_START_YR} Annual Wage`,
-      txt: employment_change_numeric,
-      icon: <MdAttachMoney />,
-    },
-    {
-      id: "educationNeededForEntry",
-      title: "Education Needed",
-      txt: typical_education_needed_for_entry,
-      icon: <IoIosSchool />,
-    },
-    {
-      id: "onTheJobTraining",
-      title: "On-the-job Training",
-      txt: onTheJobTraining,
-      icon: <MdSupervisedUserCircle />,
-    },
-    {
-      id: "employmentStartYr",
-      title: `${DATA_START_YR} Employment`,
-      txt: employment_start_yr,
-      icon: <MdOutlineDirectionsWalk />,
-    },
-    {
-      id: "employmentEndYr",
-      title: `Predicted ${DATA_END_YR} Employment`,
-      txt: employment_end_yr,
-      icon: <MdOutlineTransferWithinAStation />,
-    },
-    {
-      id: "employmentChange",
-      title: `Predicted change in Employment ${DATA_START_YR} - ${DATA_END_YR}`,
-      txt: projectedPercentageEmploymentChange,
-      icon: <BiTrendingUp />,
-    },
-  ] as const;
+  const infoCards = createInfoCards(selectedJob);
 
   const handleOnHide = () => {
     // delete the last number in the paths of the url
@@ -156,27 +180,20 @@ const SelectedJob: React.FC = () => {
         <section className="jobInfoStatSec pt-3">
           {infoCards.map((card, index) => {
             const { icon, title, txt, id } = card;
-
-            console.log(`txt value: ${txt}`);
-
             let _txt = txt;
 
-            if (id === "employmentStartYr" && typeof _txt === "number") {
-              _txt = formatToCurrency(_txt);
-            } else if (id === "employmentStartYr" && !_txt) {
-              _txt = "Data Unavailable";
+            if (typeof _txt === "string" && _txt.split(" ").length === 2) {
+              const txtSplitted = _txt.split(" ");
+              let [firstWord, secondWord] = txtSplitted;
+              const firstChar = firstWord.charAt(0);
+              firstWord = replaceCharAt(firstWord, 0, firstChar.toUpperCase());
+              _txt = `${firstWord} ${secondWord}`;
             }
 
             if (id === "employmentChange" && typeof _txt === "number") {
               _txt = `${Math.sign(_txt) ? "+" : ""}${_txt.toLocaleString()}%`;
             } else if (id === "employmentChange") {
-              _txt = "Data Unavailable";
-            }
-
-            if (id === "employmentEndYr" && typeof _txt === "number") {
-              _txt = formatToCurrency(_txt);
-            } else if (id === "employmentEndYr" && !_txt) {
-              _txt = "Data Unavailable";
+              _txt = "Data unavailable";
             }
 
             return (
@@ -188,7 +205,7 @@ const SelectedJob: React.FC = () => {
                       <h5 className="fw-bold">{title}</h5>
                     </section>
                     <section className="w-100 position-absolute">
-                      <span className="d-inline-block w-100">{_txt}</span>
+                      <span className="d-inline-block w-100 ">{_txt}</span>
                     </section>
                   </section>
                 </div>
