@@ -154,7 +154,7 @@ const LessonsSecsNavDots = ({
             }),
           };
         });
-      }, 1000);
+      }, 1300);
       return;
     }
 

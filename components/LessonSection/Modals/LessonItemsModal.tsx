@@ -152,17 +152,14 @@ const LessonItemsModal: React.FC = () => {
     userGDriveLessonFolderId,
   } = lessonItemModal;
   const currentLessonItem = lessonItems[currentIndex] ?? {};
+  const {
+    docUrl: currentLessonItemDocUrl,
+    itemTitle: currentLessonItemName,
+    itemCat,
+    externalUrl,
+  } = currentLessonItem;
   const iframeSrc =
-    currentLessonItem?.itemCat === "web resource"
-      ? currentLessonItem?.externalUrl
-      : currentLessonItem?.docUrl;
-  // const [currentLessonItemDocUrl, currentLessonItemName] = currentLessonItem;
-  const { docUrl: currentLessonItemDocUrl, itemTitle: currentLessonItemName } =
-    currentLessonItem;
-
-  useEffect(() => {
-    console.log("currentLessonItem: ", currentLessonItem);
-  });
+    itemCat === "web resource" ? externalUrl : currentLessonItemDocUrl;
 
   const handleDownloadPdfBtnClick = () => {
     if (currentLessonItem.mimeType === "pdf") {
@@ -502,9 +499,8 @@ const LessonItemsModal: React.FC = () => {
           activeIndex={currentIndex}
         >
           <div
-            className="w-100"
+            className="w-100 lesson-items-carousel"
             style={{
-              height: "88%",
               borderTop: ".1em solid rgba(0, 0, 0, 0.175)",
               borderBottom: ".1em solid rgba(0, 0, 0, 0.175)",
             }}
@@ -525,23 +521,27 @@ const LessonItemsModal: React.FC = () => {
           </div>
           <div
             style={{ backgroundColor: "#E2F0FD" }}
-            className="pt-2 d-flex justify-content-center align-items-center flex-row w-100"
+            className="px-2 px-sm-0 pt-2 d-flex justify-content-center align-items-center flex-row w-100"
           >
             <CarouselButton
               ref={leftBtnRef}
               onClick={handleCarouselNavBtnClick(-1)}
               size="large"
               shape="circular"
+              className="ms-sm-0 ms-1"
               appearance="primary"
               navType="prev"
               name="prev"
             />
-            <div style={{ minWidth: "45vw" }} className="h-100 p-0">
+            <div
+              style={{ minWidth: "45vw", maxWidth: "500px" }}
+              className="h-100 p-0 col-10"
+            >
               <div
                 style={{ borderRadius: ".2em" }}
-                className="h-100 d-flex justify-content-center align-items-center flex-column border"
+                className="h-100 d-flex justify-content-center align-items-center flex-column border border-2 px-2 py-1"
               >
-                <div className="text-black fw-normal">
+                <div className="text-black fw-normal text-center">
                   {currentLessonItemName}
                 </div>
                 <div>
@@ -555,6 +555,7 @@ const LessonItemsModal: React.FC = () => {
               size="large"
               shape="circular"
               appearance="primary"
+              className="me-sm-0 me-1"
               navType="next"
               name="next"
             />

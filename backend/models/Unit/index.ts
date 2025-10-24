@@ -14,6 +14,7 @@ import {
 } from "./types/unit";
 import { StandardsSchema } from "./Standards";
 import { ITargetStandardsCode } from "./types/standards";
+import { JobViz } from "./JobViz";
 
 type TUnitSections = {
   overview: typeof UnitOverview;
@@ -27,6 +28,7 @@ type TUnitSections = {
   extensions: typeof GeneralSection;
   bonus: typeof GeneralSection;
   versions: typeof VersionNotes;
+  jobvizConnections: typeof JobViz
 };
 
 let Units = models.units as Model<INewUnitSchema, {}, {}, {}, any, any>;
@@ -96,6 +98,7 @@ if (!Units) {
     extensions: GeneralSection,
     bonus: GeneralSection,
     versions: VersionNotes,
+    jobvizConnections: JobViz
   };
   const Unit = new Schema<INewUnitSchema>({
     _id: { type: String, required: true },

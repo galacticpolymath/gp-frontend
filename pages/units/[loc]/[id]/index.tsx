@@ -53,8 +53,10 @@ import GpPlusModal from "../../../../components/LessonSection/Modals/GpPlusModal
 import ThankYouModal from "../../../../components/GpPlus/ThankYouModal";
 import {
   getLocalStorageItem,
+  getSessionStorageItem,
   removeLocalStorageItem,
   setLocalStorageItem,
+  setSessionStorageItem,
 } from "../../../../shared/fns";
 import useSiteSession from "../../../../customHooks/useSiteSession";
 import { getUnitGDriveChildItems } from "../../../../backend/services/gdriveServices";
@@ -146,13 +148,14 @@ const SECTION_SORT_ORDER: Record<keyof ISections, number> = {
   preview: 1,
   teachingMaterials: 2,
   feedback: 3,
-  extensions: 4,
-  bonus: 5,
-  background: 6,
-  standards: 7,
-  credits: 8,
-  acknowledgments: 9,
-  versions: 10,
+  jobvizConnections: 4,
+  extensions: 5,
+  bonus: 6,
+  background: 7,
+  standards: 8,
+  credits: 9,
+  acknowledgments: 10,
+  versions: 11,
 };
 
 const UNIT_DOCUMENT_ORIGINS = new Set([
@@ -190,11 +193,9 @@ const LessonDetails: React.FC<IProps> = ({ lesson, unit }) => {
     _lessonItemModal,
     _isThankYouModalDisplayed,
   } = useModalContext();
-  const [, setWillShowGpPlusCopyLessonHelperModal] =
-    _willShowGpPlusCopyLessonHelperModal;
   const [, setIsThankYouModalDisplayed] = _isThankYouModalDisplayed;
   const [, setIsUserTeacher] = _isUserTeacher;
-  const [isGpPlusMember, setIsGpPlusMember] = _isGpPlusMember;
+  const [, setIsGpPlusMember] = _isGpPlusMember;
   const [, setNotifyModal] = _notifyModal;
   const [, setIsCopyUnitBtnDisabled] = _isCopyUnitBtnDisabled;
   const [, setCustomModalFooter] = _customModalFooter;
@@ -215,6 +216,7 @@ const LessonDetails: React.FC<IProps> = ({ lesson, unit }) => {
       });
     }
   }, []);
+
   const lessonSectionObjEntries = lesson?.Section
     ? Object.entries(lesson.Section)
     : [];
@@ -407,6 +409,8 @@ const LessonDetails: React.FC<IProps> = ({ lesson, unit }) => {
       any | null
     ][];
 
+    console.log("unitSectionAndTitlePairs: ", unitSectionAndTitlePairs);
+
     unitSectionAndTitlePairs.sort(([sectionAName], [sectionBName]) => {
       const sectionASortNum = SECTION_SORT_ORDER[sectionAName];
       const sectionBSortNum = SECTION_SORT_ORDER[sectionBName];
@@ -516,8 +520,7 @@ const LessonDetails: React.FC<IProps> = ({ lesson, unit }) => {
       tagName: string;
       origin: string;
     } & EventTarget;
-
-    console.log("origin: ", origin);
+    const isGpPlusUser = getSessionStorageItem("isGpPlusUser");
 
     if (
       statusRef.current !== "authenticated" &&
@@ -562,7 +565,7 @@ const LessonDetails: React.FC<IProps> = ({ lesson, unit }) => {
       isWithinBonusContentSec &&
       tagName === "A" &&
       UNIT_DOCUMENT_ORIGINS.has(origin) &&
-      !isGpPlusMember
+      !isGpPlusUser
     ) {
       event.preventDefault();
       setIsGpPlusModalDisplayed(true);
@@ -614,6 +617,7 @@ const LessonDetails: React.FC<IProps> = ({ lesson, unit }) => {
 
           setIsUserTeacher(!!data?.isTeacher);
           setIsGpPlusMember(!!data?.isGpPlusMember);
+          setSessionStorageItem("isGpPlusUser", !!data.isGpPlusMember);
           setLocalStorageItem(
             "willShowGpPlusCopyLessonHelperModal",
             typeof data.willShowGpPlusCopyLessonHelperModal === "boolean"

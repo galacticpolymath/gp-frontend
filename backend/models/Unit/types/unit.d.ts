@@ -203,6 +203,7 @@ interface ISections<
   credits: TGeneralSection | null;
   acknowledgments: TAcknowledgments | null;
   versions: IVersionNotes | null;
+  jobvizConnections: IJobVizSection | null;
 }
 
 export type TSectionsForUI = ISections<TOverviewForUI, TStandardsForUI, IUnitTeachingMaterialsForUI>; 

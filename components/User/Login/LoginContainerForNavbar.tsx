@@ -5,7 +5,7 @@
 /* eslint-disable react/jsx-indent-props */
 
 import { FaUserAlt } from "react-icons/fa";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useModalContext } from "../../../providers/ModalProvider";
 import Button from "../../General/Button";
 import { signOut } from "next-auth/react";
@@ -94,14 +94,20 @@ const LoginContainerForNavbar: React.FC<IProps> = ({ _modalAnimation }) => {
   const [aboutUserForm] = _aboutUserForm;
   const [isRetrievingUserData] = _isRetrievingUserData;
   const pathName = usePathname();
-  const userAccountSaved = (
-    typeof localStorage !== "undefined"
-      ? getLocalStorageItem("userAccount") ?? {}
-      : {}
-  ) as TAboutUserForm;
-  const [modalAnimation, setModalAnimation] = _modalAnimation;
   const { status, user, token, gdriveAccessToken, gdriveRefreshToken } =
     useSiteSession();
+  const userAccountSaved = useMemo(() => {
+    if (status === "authenticated") {
+      return (
+        typeof localStorage !== "undefined"
+          ? getLocalStorageItem("userAccount") ?? {}
+          : {}
+      ) as TAboutUserForm;
+    }
+
+    return null;
+  }, [status]);
+  const [modalAnimation, setModalAnimation] = _modalAnimation;
   const { image } = user ?? {};
   const [, setIsAccountModalMobileOn] = _isAccountModalMobileOn;
   const [isSigningUserOut, setIsSigningUserOut] = useState(false);

@@ -1,12 +1,87 @@
 .sign-up-btn {
-  @media (min-width: 992px) {
-    min-width: 430px;
+  min-width: 250px;
+}
+
+.sign-up-pg-container {
+  // for mobile
+  margin-top: 23px;
+
+  @media (min-width: 576px) {
+    margin-top: 80px;
+  }
+
+  @media (min-width: 768px) {
+    margin-top: 0px;
   }
 }
 
-.sign-up-header-container{
+.sign-up-header-container {
   @media (min-width: 1200px) {
     height: 70px;
+  }
+}
+
+.sign-up-w-google-txt {
+  font-size: 16px;
+
+  @media (min-width: 577px) {
+    font-size: 18px;
+  }
+
+  @media (min-width: 768px) {
+    font-size: 24px;
+  }
+}
+
+.email-listing-txt {
+  // for mobile
+  font-size: 16px;
+  line-height: 1.2rem;
+
+  @media (min-width: 576px) {
+    font-size: 18px;
+  }
+}
+
+.sign-up-header-txt {
+  // for mobile devices
+  font-size: 16px;
+  max-width: 400px;
+
+  @media (min-width: 576px) {
+    font-size: 20px;
+  }
+
+  @media (min-width: 992px) {
+    font-size: 22.5px;
+    max-width: none;
+  }
+}
+
+.header-gp-sign-up-container {
+  width: 75vw;
+
+  @media (min-width: 576px) {
+    width: 100%;
+  }
+}
+
+.gp-logo-sign-up {
+  width: 45px;
+  height: 45px;
+  left: 10px;
+  top: 30px;
+
+  @media (min-width: 576px) {
+    width: 55px;
+    height: 55px;
+    top: 10px;
+  }
+
+  @media (min-width: 992px) {
+    top: 0px;
+    width: 75px;
+    height: 75px;
   }
 }
 

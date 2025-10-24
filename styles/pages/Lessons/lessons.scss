@@ -915,6 +915,18 @@ $active-dot-color: rgba(44, 131, 195, 0.6) !important;
   z-index: 10000000000 !important;
   position: relative !important;
 }
-.picker-dialog-bg {
-  // z-index: 10000 !important;
+
+.lesson-items-carousel {
+  height: 80%;
+
+  @media (min-width: 576px) {
+    height: 85%;
+  }
+}
+
+.sign-up-card {
+  @media (min-width: 1200px) {
+    max-height: 1010px;
+    max-width: 1260px;
+  }
 }
