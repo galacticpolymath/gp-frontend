@@ -144,13 +144,16 @@ const SelectedJob: React.FC = () => {
   const infoCards = createInfoCards(selectedJob);
 
   const handleOnHide = () => {
-    // delete the last number in the paths of the url
     // TODO: FIX BUG: this fn can sometimes return undefined
     const newPaths = getNewPathsWhenModalCloses(router.query["search-results"]);
     router.push({ pathname: `/jobviz${newPaths}` }, undefined, {
       scroll: false,
     });
     setSelectedJob(null);
+  };
+
+  const handleCopyLinkBtnClick = () => {
+    navigator.clipboard.writeText(window.location.href);
   };
 
   useEffect(() => {
@@ -212,6 +215,41 @@ const SelectedJob: React.FC = () => {
               </div>
             );
           })}
+        </section>
+        <section className="d-flex align-items-center justify-content-between pt-2 mt-3 border-top">
+          <div className="d-flex align-items-center justify-content-center">
+            <span className="me-2">Learn More:</span>
+            <a
+              href="https://www.bls.gov/ooh/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-decoration-underline no-link-decoration"
+            >
+              Occupational Outlook Handbook
+            </a>
+          </div>
+          <button
+            className="d-flex align-items-center gap-2 px-2 py-1 bg-transparent small no-btn-styles underline-on-hover"
+            onClick={() => {
+              const url = window.location.href;
+              navigator.clipboard.writeText(url);
+            }}
+          >
+            Copy Link
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            </svg>
+          </button>
         </section>
       </Body>
     </Modal>
