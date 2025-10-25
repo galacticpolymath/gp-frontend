@@ -24,8 +24,6 @@ import {
 const HAS_MEMBERSHIP_STATUSES: Set<TAccountStageLabel> = new Set([
   "Cancelling",
   "Subscribing",
-  "Expired",
-  "Past due",
 ] as TAccountStageLabel[]);
 const PROJECTIONS: Partial<
   Record<keyof (TUserSchemaV2 & IUserSchema), 0 | 1 | undefined>

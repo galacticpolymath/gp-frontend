@@ -70,7 +70,7 @@ export default async function handler(
         }
 
         return response.json({});
-      }
+      };
 
       if (user.gdriveAuthEmails.length) {
         const drive = await createGoogleAdminService();

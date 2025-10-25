@@ -18,6 +18,7 @@ import useSiteSession from "../../../customHooks/useSiteSession";
 import Image from "next/image";
 import { FcGoogle } from "react-icons/fc";
 import Dropdown from "react-bootstrap/Dropdown";
+import { LuMonitorPlay } from "react-icons/lu";
 
 interface ICarouselItemNavBtn {
   onClick: React.MouseEventHandler<HTMLButtonElement>;
@@ -52,7 +53,7 @@ const LessonItemDownloadBtnsDropDown: React.FC<{
   };
 
   return (
-    <Dropdown className="d-block d-sm-none">
+    <Dropdown>
       <Dropdown.Toggle
         variant="success"
         id="dropdown-basic"
@@ -158,8 +159,6 @@ const LessonItemsModal: React.FC = () => {
     itemCat,
     externalUrl,
   } = currentLessonItem;
-  const iframeSrc =
-    itemCat === "web resource" ? externalUrl : currentLessonItemDocUrl;
 
   const handleDownloadPdfBtnClick = () => {
     if (currentLessonItem.mimeType === "pdf") {
@@ -179,7 +178,10 @@ const LessonItemsModal: React.FC = () => {
   };
 
   const handleOpenInNewTabBtnClick = () => {
-    window.open(iframeSrc);
+    const url =
+      itemCat === "web resource" ? externalUrl : currentLessonItemDocUrl;
+
+    window.open(url);
   };
 
   const handleGpPlusBtnclick = () => {
@@ -190,6 +192,10 @@ const LessonItemsModal: React.FC = () => {
     window.open(
       `${currentLessonItem.gdriveRoot}/export?format=${currentLessonItem.mimeType}`
     );
+  };
+
+  const handlePlayBtnClick = () => {
+    window.open(`${currentLessonItem.gdriveRoot}/present`);
   };
 
   const handleCloseBtnClick = () => {
@@ -250,6 +256,10 @@ const LessonItemsModal: React.FC = () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
   }, []);
+
+  useEffect(() => {
+    console.log("current lesson item: ", currentLessonItem);
+  });
 
   return (
     <>
@@ -389,10 +399,25 @@ const LessonItemsModal: React.FC = () => {
                   } align-items-sm-stretch justify-content-sm-center align-items-sm-center lessons-item-modal-download mt-3 mt-sm-0`}
                 >
                   {currentLessonItem.isExportable && (
-                    <LessonItemDownloadBtnsDropDown
-                      lessonItem={currentLessonItem}
-                      isGpPlusMember={isGpPlusMember}
-                    />
+                    <div className="d-flex d-sm-none">
+                      {currentLessonItem.itemCat === "presentation" && (
+                        <section className="d-flex justify-content-center align-items-center">
+                          <button
+                            style={{ height: "60px" }}
+                            onClick={handlePlayBtnClick}
+                            className="py-2 px-3 bg-white rounded-2 no-btn-styles me-2"
+                          >
+                            <LuMonitorPlay size={35} />
+                          </button>
+                        </section>
+                      )}
+                      <section className="d-flex justify-content-center align-items-center">
+                        <LessonItemDownloadBtnsDropDown
+                          lessonItem={currentLessonItem}
+                          isGpPlusMember={isGpPlusMember}
+                        />
+                      </section>
+                    </div>
                   )}
                   {currentLessonItem.isExportable && isGpPlusMember && (
                     <div className="d-none d-sm-block">
@@ -507,13 +532,20 @@ const LessonItemsModal: React.FC = () => {
           >
             <CarouselSlider className="w-100 h-100">
               {lessonItems.map((lessonItem, index) => {
-                const url =
+                let url =
                   lessonItem.itemCat === "web resource"
                     ? lessonItem.externalUrl
                     : lessonItem.docUrl;
+
+                if (lessonItem.itemCat === "presentation") {
+                  url = `${lessonItem.gdriveRoot}/preview`;
+                }
+
                 return (
                   <CarouselCard key={`image-${index}`} className="h-100">
-                    <iframe src={url} className="w-100 h-100" />
+                    <div className="w-100 h-100 position-relative">
+                      <iframe src={url} className="w-100 h-100" />
+                    </div>
                   </CarouselCard>
                 );
               })}
