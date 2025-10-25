@@ -33,6 +33,7 @@ import jobVizDataObj from "../../data/Jobviz/jobVizDataObj.json";
 import { useRouter } from "next/router";
 import getNewPathsWhenModalCloses from "../../helperFns/getNewPathsWhenModalCloses";
 import { replaceCharAt } from "../../shared/fns";
+import CopyableTxt from "../CopyableTxt";
 
 const { Header, Title, Body } = Modal;
 const { data_start_yr: _data_start_yr, data_end_yr: _data_end_yr } =
@@ -120,17 +121,9 @@ const SelectedJob: React.FC = () => {
   const paths = router.query?.["search-results"] ?? [];
   const [selectedJob, setSelectedJob] = _selectedJob;
   const [isJobModal, setIsJobModal] = _isJobModalOn;
-  let { soc_title, def: _def, title } = selectedJob ?? {};
+  let { soc_title, def: _def, title, BLS_link } = selectedJob ?? {};
   let jobTitle = soc_title ?? title;
   jobTitle = jobTitle === "Total, all" ? "All US Jobs" : jobTitle;
-  const projectedPercentageEmploymentChange = selectedJob
-    ? selectedJob["percent_employment_change_2021-31"]
-    : null;
-  const onTheJobTraining = selectedJob
-    ? selectedJob[
-        "typical_on-the-job_training_needed_to_attain_competency_in_the_occupation"
-      ]
-    : null;
   let def: string | null = _def ?? "";
   def =
     def.toLowerCase() === "no definition found for this summary category."
@@ -216,41 +209,59 @@ const SelectedJob: React.FC = () => {
             );
           })}
         </section>
-        <section className="d-flex align-items-center justify-content-between pt-2 mt-3 border-top">
-          <div className="d-flex align-items-center justify-content-center">
-            <span className="me-2">Learn More:</span>
-            <a
-              href="https://www.bls.gov/ooh/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-decoration-underline no-link-decoration"
+        {BLS_link && (
+          <section className="d-flex align-items-center justify-content-between pt-2 mt-3 border-top">
+            <div className="d-flex align-items-center justify-content-center">
+              <span className="me-2">Learn More:</span>
+              <a
+                href={BLS_link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-decoration-underline no-link-decoration"
+              >
+                Occupational Outlook Handbook
+              </a>
+            </div>
+            <button
+              className="d-flex align-items-center gap-2 px-2 py-1 bg-transparent small no-btn-styles underline-on-hover bg-danger"
+              onClick={() => {
+                const url = window.location.href;
+                navigator.clipboard.writeText(url);
+              }}
             >
-              Occupational Outlook Handbook
-            </a>
-          </div>
-          <button
-            className="d-flex align-items-center gap-2 px-2 py-1 bg-transparent small no-btn-styles underline-on-hover"
-            onClick={() => {
-              const url = window.location.href;
-              navigator.clipboard.writeText(url);
-            }}
-          >
-            Copy Link
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-            </svg>
-          </button>
-        </section>
+              <CopyableTxt
+                implementLogicOnClick={handleCopyLinkBtnClick}
+                copyTxtIndicator="Copy link."
+                txtCopiedIndicator="Link copied ✅!"
+              >
+                <>
+                  <span className="me-1">Copy Link</span>
+                  <svg
+                    width="16"
+                    height="16"
+                    className="mb-1"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <rect
+                      x="9"
+                      y="9"
+                      width="13"
+                      height="13"
+                      rx="2"
+                      ry="2"
+                    ></rect>
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                  </svg>
+                </>
+              </CopyableTxt>
+            </button>
+          </section>
+        )}
       </Body>
     </Modal>
   );
