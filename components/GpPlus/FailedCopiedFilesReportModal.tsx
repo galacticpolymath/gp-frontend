@@ -6,6 +6,7 @@ import { TFileToCopy } from "../../backend/services/gdriveServices/types";
 import axios from "axios";
 import { toast } from "react-toastify";
 import useSiteSession from "../../customHooks/useSiteSession";
+import { FailedFilesReportRequest } from "../../pages/api/gp-plus/send-failed-files-report";
 
 interface FailedCopiedFilesReportModalProps {
   onClose?: () => void;
@@ -16,15 +17,15 @@ const TOAST_POSITION = "bottom-right";
 const FailedCopiedFilesReportModal: React.FC<
   FailedCopiedFilesReportModalProps
 > = ({ onClose }) => {
-  const { _failedCopiedLessonFiles } = useLessonContext();
+  const { _failedLessonCopyBugReport } = useLessonContext();
   const { _isFailedCopiedFilesReportModalOn } = useModalContext();
   const [
     isFailedCopiedFilesReportModalOn,
     setIsFailedCopiedFilesReportModalOn,
   ] = _isFailedCopiedFilesReportModalOn;
   const { token } = useSiteSession();
-  const [failedCopiedLessonFiles, setFailedCopiedLessonFiles] =
-    _failedCopiedLessonFiles;
+  const [failedLessonCopyBugReport, setFailedLessonCopyBugReport] =
+    _failedLessonCopyBugReport;
   const [isSendingReport, setIsSendingReport] = useState(false);
 
   const handleOnHide = () => {
@@ -34,12 +35,15 @@ const FailedCopiedFilesReportModal: React.FC<
 
     setIsFailedCopiedFilesReportModalOn(false);
     setTimeout(() => {
-      setFailedCopiedLessonFiles(null);
+      setFailedLessonCopyBugReport(null);
     }, 400);
   };
 
   const handleSendReport = async () => {
-    if (!failedCopiedLessonFiles || failedCopiedLessonFiles.length === 0) {
+    if (
+      !failedLessonCopyBugReport ||
+      failedLessonCopyBugReport.failedCopiedLessons.length === 0
+    ) {
       toast.error("No failed files to report", { position: TOAST_POSITION });
       return;
     }
@@ -50,10 +54,12 @@ const FailedCopiedFilesReportModal: React.FC<
       const response = await axios.post(
         "/api/gp-plus/send-failed-files-report",
         {
-          failedFiles: failedCopiedLessonFiles,
+          failedFiles: failedLessonCopyBugReport.failedCopiedLessons,
           timestamp: new Date().toISOString(),
           userAgent: navigator.userAgent,
-        },
+          lessonName: failedLessonCopyBugReport.lessonName,
+          unitName: failedLessonCopyBugReport.unitName,
+        } as FailedFilesReportRequest,
         {
           headers: {
             "Content-Type": "application/json",
@@ -125,16 +131,20 @@ const FailedCopiedFilesReportModal: React.FC<
           </p>
         </div>
 
-        {failedCopiedLessonFiles && failedCopiedLessonFiles.length > 0 && (
-          <div className="mb-4">
-            <h6 className="mb-3">
-              Failed Files ({failedCopiedLessonFiles.length}):
-            </h6>
-            <ListGroup className="max-height-300 overflow-auto">
-              <FilesList files={failedCopiedLessonFiles} />
-            </ListGroup>
-          </div>
-        )}
+        {failedLessonCopyBugReport &&
+          failedLessonCopyBugReport.failedCopiedLessons && (
+            <div className="mb-4">
+              <h6 className="mb-3">
+                Failed Files (
+                {failedLessonCopyBugReport.failedCopiedLessons.length}):
+              </h6>
+              <ListGroup className="max-height-300 overflow-auto">
+                <FilesList
+                  files={failedLessonCopyBugReport.failedCopiedLessons}
+                />
+              </ListGroup>
+            </div>
+          )}
 
         <div className="alert alert-info">
           <h6 className="alert-heading">
@@ -162,8 +172,7 @@ const FailedCopiedFilesReportModal: React.FC<
           onClick={handleSendReport}
           disabled={
             isSendingReport ||
-            !failedCopiedLessonFiles ||
-            failedCopiedLessonFiles.length === 0
+            failedLessonCopyBugReport?.failedCopiedLessons.length === 0
           }
         >
           {isSendingReport ? (

@@ -1727,10 +1727,18 @@ export const copyFiles = async (
         name: name
       }
 
-      copiedFiles.push(copiedFile)
+      // copiedFiles.push(copiedFile)
+      // sendMessageToClient({
+      //   fileCopied: name,
+      // });
+
+      wasJobSuccessful = false;
+
       sendMessageToClient({
-        fileCopied: name,
+        failedCopiedFile: name,
+        fileId
       });
+
     } else if (fileCopyResult?.errType) {
       console.log("fileCopyResult?.errType: ", fileCopyResult?.errType);
 
@@ -1763,19 +1771,19 @@ export const copyFiles = async (
           ? fileCopyResult.errMsg
           : JSON.stringify(fileCopyResult);
 
-      // if (process.env.NEXT_PUBLIC_HOST === "localhost") {
-      //   await logFailedFileCopyToExcel({
-      //     lessonName,
-      //     unitName,
-      //     lessonFolderLink,
-      //     fileName: name,
-      //     fileLink,
-      //     errorType,
-      //     errorMessage,
-      //     timestamp: new Date().toISOString(),
-      //     userEmail: email,
-      //   });
-      // }
+      if (process.env.NEXT_PUBLIC_HOST === "localhost") {
+        await logFailedFileCopyToExcel({
+          lessonName,
+          unitName,
+          lessonFolderLink,
+          fileName: name,
+          fileLink,
+          errorType,
+          errorMessage,
+          timestamp: new Date().toISOString(),
+          userEmail: email,
+        });
+      }
     }
   }
 

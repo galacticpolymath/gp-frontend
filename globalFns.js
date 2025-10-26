@@ -489,7 +489,7 @@ export const getIsWithinParentElement = (
 
 export const waitWithExponentialBackOff = async (
     num = 1,
-    range = [1000, 5_500]
+    range = [1000, 5_500],
 ) => {
     const [min, max] = range;
     const randomNumMs = Math.floor(Math.random() * (max - min + 1)) + 1000;

@@ -1,4 +1,5 @@
-import { createSubscriptionCancellationEmail } from '../emailTemplates/gpPlusSubCancelation';
+import { waitWithExponentialBackOff } from "../../globalFns";
+import { createSubscriptionCancellationEmail } from "../emailTemplates/gpPlusSubCancelation";
 
 type TReqMethod =
   | "GET"
@@ -25,10 +26,16 @@ class BrevoOptions {
   }
 }
 
-type TCancelationType = Parameters<typeof createSubscriptionCancellationEmail>[0];
+type TCancelationType = Parameters<
+  typeof createSubscriptionCancellationEmail
+>[0];
 
-const createGpPlusSubCanceledEmail = (toEmail: string, cancelationType: TCancelationType, toName?: string) => {
-    const to = toName ? [{ email: toEmail, name: toName }] : [{ email: toEmail }]
+const createGpPlusSubCanceledEmail = (
+  toEmail: string,
+  cancelationType: TCancelationType,
+  toName?: string
+) => {
+  const to = toName ? [{ email: toEmail, name: toName }] : [{ email: toEmail }];
 
   return {
     sender: { name: "Support", email: "techguy@galacticpolymath.com" },
@@ -38,10 +45,69 @@ const createGpPlusSubCanceledEmail = (toEmail: string, cancelationType: TCancela
   };
 };
 
+interface IEmailPerson {
+  email: string;
+  name: string;
+}
+
+interface IBrevoEmailOpts {
+  sender: IEmailPerson;
+  to: IEmailPerson[];
+  subject: string;
+  htmlContent: string;
+}
+
+export const sendEmailViaBrevo = async (
+  emailOpts: IBrevoEmailOpts,
+  tries = 3
+): Promise<{ wasSuccessful: boolean }> => {
+  try {
+    const options = new BrevoOptions("POST");
+    const url = "https://api.brevo.com/v3/smtp/email";
+    const body = JSON.stringify(emailOpts);
+    const response = await fetch(url, { body, ...options });
+
+    if (response.status !== 201) {
+      const errData = await response.json();
+
+      console.error("Brevo API error response: ", errData);
+
+      throw new Error(
+        "Failed to send email via Brevo. Status code: " + response.status
+      );
+    }
+
+    return {
+      wasSuccessful: true,
+    };
+  } catch (error: any) {
+    console.error("Error in sendEmailViaBrevo:", error);
+
+    const isRetryable =
+      error &&
+      (error.message.includes("network") ||
+        error.message.includes("timed out") ||
+        error.message.includes("ECONNRESET") ||
+        error.message.includes("Failed to fetch") ||
+        (error.response && error.response.status >= 500));
+
+    if (isRetryable && tries > 0) {
+      await waitWithExponentialBackOff(tries);
+      tries -= 1;
+
+      return await sendEmailViaBrevo(emailOpts, tries);
+    }
+
+    return {
+      wasSuccessful: false,
+    };
+  }
+};
+
 export const sendGpPlusSubCanceledEmail = async (
   email: string,
   cancelationType: TCancelationType,
-  recipientName?: string,
+  recipientName?: string
 ) => {
   try {
     const options = new BrevoOptions("POST");

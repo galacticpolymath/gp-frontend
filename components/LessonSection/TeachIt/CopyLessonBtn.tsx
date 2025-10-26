@@ -291,7 +291,7 @@ const CopyLessonBtn: React.FC<
   const {
     _lessonsCopyJobs,
     _lessonToCopy,
-    _failedCopiedLessonFiles,
+    _failedLessonCopyBugReport,
     _idsOfLessonsBeingCopied,
   } = useLessonContext();
   const [, setIdsOfLessonsBeingCopied] = _idsOfLessonsBeingCopied;
@@ -305,7 +305,7 @@ const CopyLessonBtn: React.FC<
   const [, setIsFailedCopiedFilesReportModalOn] =
     _isFailedCopiedFilesReportModalOn;
   const [, setLessonsCopyJobs] = _lessonsCopyJobs;
-  const [, setFailedCopiedLessonFiles] = _failedCopiedLessonFiles;
+  const [, setFailedLessonCopyBugReport] = _failedLessonCopyBugReport;
   const [isGpPlusMember] = _isGpPlusMember;
   const {
     gdriveAccessToken,
@@ -341,7 +341,11 @@ const CopyLessonBtn: React.FC<
   });
 
   const handleFileReportTxtClick = (failedCopiedFiles: TFileToCopy[]) => {
-    setFailedCopiedLessonFiles(failedCopiedFiles);
+    setFailedLessonCopyBugReport({
+      failedCopiedLessons: failedCopiedFiles,
+      unitName: unitTitle!,
+      lessonName: lessonName,
+    });
     setIsFailedCopiedFilesReportModalOn(true);
   };
 
