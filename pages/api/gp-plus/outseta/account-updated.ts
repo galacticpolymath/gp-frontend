@@ -2,13 +2,17 @@
 
 import { NextApiRequest, NextApiResponse } from "next";
 import { TAccountStageLabel } from "../../../../backend/services/outsetaServices";
-import { getUser, updateUserCustom } from "../../../../backend/services/userServices";
+import {
+  getUser,
+  updateUserCustom,
+} from "../../../../backend/services/userServices";
 import { sendEmail } from "../../../../backend/services/emailServices";
 import {
   createGoogleAdminService,
   deleteGoogleGroupMember,
 } from "../../../../backend/services/googleGroupServices";
 import { TUserSchemaV2 } from "../../../../backend/models/User/types";
+import { sendGpPlusSubCanceledEmail } from "../../../../backend/services/emailServicesWithTypes";
 
 interface IPersonAccount {
   Account: {
@@ -21,8 +25,24 @@ type TOutsetaReqBody = Partial<{
   PersonAccount: IPersonAccount[];
   AccountStageLabel: TAccountStageLabel;
   Name: string;
-  Uid: string
+  Uid: string;
 }>;
+
+const sendServerFailureEmail = async (outsetaEmail: string) => {
+  await sendEmail({
+    from: "shared@galacticpolymath.com",
+    to: "shared@galacticpolymath.com",
+    subject: "User canceled gp plus sub, outseta email not found.",
+    html: `
+            <p>A user canceled their GP Plus subscription, but their Outseta email address was not found in our database.</p>
+            <p>Here is the email address that was used to sign up for the GP Plus subscription: ${outsetaEmail}</p>
+          `,
+    text: `
+            A user canceled their GP Plus subscription, but their Outseta email address was not found in our database. 
+            The email address used to sign up for the GP Plus subscription is: ${outsetaEmail}
+          `,
+  });
+};
 
 export default async function handler(
   request: NextApiRequest,
@@ -34,6 +54,32 @@ export default async function handler(
 
     const reqBody = request.body as TOutsetaReqBody;
 
+    if (reqBody.AccountStageLabel === "Cancelling" && reqBody.Name) {
+      console.log("Detected AccountStageLabel: Cancelling. Preparing to send subscription will-cancel email.");
+
+      const { user } = await getUser(
+        { outsetaAccountEmail: reqBody.Name },
+        { gdriveAuthEmails: 1, _id: 1, firstName: 1 }
+      );
+
+      if (!user) {
+        await sendServerFailureEmail(reqBody.Name);
+
+        return response.json({});
+      };
+
+      const { wasSuccessful } = await sendGpPlusSubCanceledEmail(reqBody.Name, "willCancel", user.firstName)
+
+      if (!wasSuccessful) {
+        console.error("Error sending GP Plus subscription cancellation email for outseta email: ", reqBody.Name);
+      } else {
+        console.log("Success sending GP Plus subscription cancellation email for outseta email: ", reqBody.Name);
+      }
+
+
+      return response.json({});
+    }
+
     if (reqBody.AccountStageLabel === "Expired" && reqBody.Name) {
       console.log(
         `User canceled their GP Plus subscription, with email: ${reqBody.Name}`
@@ -41,7 +87,7 @@ export default async function handler(
 
       const { user } = await getUser(
         { outsetaAccountEmail: reqBody.Name },
-        { gdriveAuthEmails: 1, _id: 1 }
+        { gdriveAuthEmails: 1, _id: 1, firstName: 1 }
       );
 
       if (!user) {
@@ -70,7 +116,15 @@ export default async function handler(
         }
 
         return response.json({});
-      };
+      }
+
+      const { wasSuccessful: wasEmailGpSubCanceledEmailSentSuccessfully } = await sendGpPlusSubCanceledEmail(reqBody.Name, "canceled", user.firstName)
+
+      if (!wasEmailGpSubCanceledEmailSentSuccessfully) {
+        console.error("Error sending GP Plus subscription cancellation email for outseta email: ", reqBody.Name);
+      } else {
+        console.log("Success sending GP Plus subscription cancellation email for outseta email: ", reqBody.Name);
+      }
 
       if (user.gdriveAuthEmails.length) {
         const drive = await createGoogleAdminService();
@@ -107,28 +161,42 @@ export default async function handler(
         }
 
         for (const gdriveAuthEmail of user.gdriveAuthEmails) {
-          const deletionResultFromGoogleGroup = await deleteGoogleGroupMember(gdriveAuthEmail, drive);
+          const deletionResultFromGoogleGroup = await deleteGoogleGroupMember(
+            gdriveAuthEmail,
+            drive
+          );
 
-          console.log("The result of removing the user from the teachers google group: ", deletionResultFromGoogleGroup);
+          console.log(
+            "The result of removing the user from the teachers google group: ",
+            deletionResultFromGoogleGroup
+          );
         }
 
         const updates: Partial<TUserSchemaV2> = {
-          gdriveAuthEmails: []
-        }
-        const userUpdatedResult = await updateUserCustom({ _id: user._id }, {
-          $set: updates
-        })
+          gdriveAuthEmails: [],
+        };
+        const userUpdatedResult = await updateUserCustom(
+          { _id: user._id },
+          {
+            $set: updates,
+          }
+        );
 
-        console.log("The user's gdrive auth emails have been successfully updated: ", userUpdatedResult);
+        console.log(
+          "The user's gdrive auth emails have been successfully updated: ",
+          userUpdatedResult
+        );
 
         if (!userUpdatedResult) {
-          console.error("Error updating user's gdrive auth emails: ", userUpdatedResult);
+          console.error(
+            "Error updating user's gdrive auth emails: ",
+            userUpdatedResult
+          );
 
           return response.status(500).json({});
         }
 
         // todo: delete the user's account and person on outseta
-
 
         return response.json({});
       }

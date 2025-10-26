@@ -1,45 +1,43 @@
-import { CONTACT_SUPPORT_EMAIL } from '../../globalVars';
+import { CONTACT_SUPPORT_EMAIL } from "../../globalVars";
 
-
-const GpPlusSubWillCancelTxt = (
-        `
+const GpPlusSubWillCancelTxt = `
         <p>Your subscription to GP+ has been successfully canceled. We're sorry to see you go.</p>
                                 
         <p>When your current billing period ends, you will be downgraded to the free plan. At that time, you lose all access to GP+ features. </p>
                                 
-        <p>If you canceled by mistake, you can resubscribe at any time from your account settings before the next billing period ends. If you have any questions, please <a href=${CONTACT_SUPPORT_EMAIL}>contact support</a>.</p>
-        `
-    );
+        <p>If you canceled by mistake, you can resubscribe at any time from your account settings before the next billing period ends. If you have any questions, please contact <a href=${CONTACT_SUPPORT_EMAIL}>support</a>.</p>
+        `;
 
-const GpPlusSubCanceledTxt = (
-        `
+const GpPlusSubCanceledTxt = `
         <p>Your GP+ subscription has been officially canceled. You will no longer have access to any GP+ features.</p>
                                 
-        <p>If you have any questions, please <a href=${CONTACT_SUPPORT_EMAIL}>contact support</a>.</p>
-        `
-    );
+        <p>If you have any questions, please contact <a href=${CONTACT_SUPPORT_EMAIL}>support</a>.</p>
+        `;
 
-export const createSubscriptionCancellationEmail = (recipientName: string, cancelType: "willCancel" | "canceled") => {
-    let txt = GpPlusSubCanceledTxt;
+export const createSubscriptionCancellationEmail = (
+  cancelType: "willCancel" | "canceled",
+  recipientName?: string
+) => {
+  let txt = GpPlusSubCanceledTxt;
 
-    if(cancelType === "willCancel"){
-        txt = GpPlusSubWillCancelTxt
-    }
+  if (cancelType === "willCancel") {
+    txt = GpPlusSubWillCancelTxt;
+  }
 
-    return `
-          <!DOCTYPE html PUBLIC -//W3C//DTD XHTML 1.0 Transitional//EN http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd>
-        <html xmlns=http://www.w3.org/1999/xhtml>
+  return `
+          <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+        <html xmlns="http://www.w3.org/1999/xhtml">
         <head>
-            <meta name=viewport content=width=device-width, initial-scale=1.0 />
-            <meta name=x-apple-disable-message-reformatting />
-            <meta http-equiv=Content-Type content=text/html; charset=UTF-8 />
-            <meta name=color-scheme content=light dark />
-            <meta name=supported-color-schemes content=light dark />
-            <title>Subscription Canceled</title>
-            <style type=text/css rel=stylesheet media=all>
+            <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+            <meta name="x-apple-disable-message-reformatting" />
+            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+            <meta name="color-scheme" content="light dark" />
+            <meta name="supported-color-schemes" content="light dark" />
+            <title>GP+ Subscription ${cancelType === "willCancel" ? 'Cancelation Requested' : 'Canceled'}</title>
+            <style type="text/css" rel="stylesheet" media="all">
             /* Base ------------------------------ */
 
-            @import url(https://fonts.googleapis.com/css?family=Nunito+Sans:400,700&display=swap);
+            @import url("https://fonts.googleapis.com/css?family=Nunito+Sans:400,700&display=swap");
             body {
             width: 100% !important;
             height: 100%;
@@ -75,7 +73,7 @@ export const createSubscriptionCancellationEmail = (recipientName: string, cance
             body,
             td,
             th {
-            font-family: Nunito Sans, Helvetica, Arial, sans-serif;
+            font-family: "Nunito Sans", Helvetica, Arial, sans-serif;
             }
 
             h1 {
@@ -405,10 +403,10 @@ export const createSubscriptionCancellationEmail = (recipientName: string, cance
             }
 
             .gp-logo{
-                width: 50vw;
-                height: 50vh;
-                max-height: 125px;
-                max-width: 125px;
+              width: 50vw;
+              height: 50vh;
+              max-height: 125px;
+              max-width: 125px;
             }
 
             .body-sub {
@@ -418,11 +416,11 @@ export const createSubscriptionCancellationEmail = (recipientName: string, cance
             }
 
             .mt-2{
-                margin-top: 0.5rem
+              margin-top: 0.5rem
             }
 
             .mt-3{
-                margin-top: 1rem;
+              margin-top: 1rem;
             }
 
             .content-cell {
@@ -438,7 +436,7 @@ export const createSubscriptionCancellationEmail = (recipientName: string, cance
             }
 
             .text-center{
-                text-align: center;
+              text-align: center;
             }
 
             @media (prefers-color-scheme: dark) {
@@ -461,7 +459,7 @@ export const createSubscriptionCancellationEmail = (recipientName: string, cance
             h3,
             span,
             .purchase_item {
-                color: #FFF !impor
+                color: #FFF !important;
             }
             .attributes_content,
             .discount {
@@ -477,37 +475,47 @@ export const createSubscriptionCancellationEmail = (recipientName: string, cance
             supported-color-schemes: light dark;
             }
             </style>
-            </head>
+            <!--[if mso]>
+            <style type="text/css">
+            .f-fallback  {
+                font-family: Arial, sans-serif;
+            }
+            </style>
+        <![endif]-->
+        </head>
         <body>
-            <span class=preheader>Your GP+ subscription has been canceled.</span>
-            <table class=email-wrapper width=100% cellpadding=0 cellspacing=0 role=presentation>
+            <table class="email-wrapper" width="100%" cellpadding="0" cellspacing="0" role="presentation">
             <tr>
-                <td align=center>
-                <table class=email-content width=100% cellpadding=0 cellspacing=0 role=presentation>
+                <td align="center">
+                <table class="email-content" width="100%" cellpadding="0" cellspacing="0" role="presentation">
                     <tr>
-                    <td class=email-masthead>
-                        <a href=https://teach.galacticpolymath.com/ class=f-fallback email-masthead_name>
-                        <img
-                            src=https://teach.galacticpolymath.com/GP_bubbleLogo300px.png
-                            alt=logo
-                            class=gp-logo
-                        />
+                    <td class="email-masthead">
+                        <a href="https://teach.galacticpolymath.com/" class="f-fallback email-masthead_name">
+                          <img
+                            src="https://teach.galacticpolymath.com/GP_bubbleLogo300px.png"
+                            alt="logo"
+                            class="gp-logo"
+                          />
                         </a>
-                    <h1 class='text-center mt-2'>GP+ Subscription Canceled</h1>
+                    <h1 class='text-center mt-2'>GP+ Subscription ${cancelType === "willCancel" ? 'Cancelation Requested' : 'Canceled'}</h1>
                     </td>
                     </tr>
+                    <!-- Email Body -->
                     <tr>
-                    <td class=email-body width=570 cellpadding=0 cellspacing=0>
-                        <table class=email-body_inner align=center width=570 cellpadding=0 cellspacing=0 role=presentation>
+                    <td class="email-body" width="570" cellpadding="0" cellspacing="0">
+                        <table class="email-body_inner" align="center" width="570" cellpadding="0" cellspacing="0" role="presentation">
+                        <!-- Body content -->
                         <tr>
-                            <td class=content-cell>
-                            <div class=f-fallback>
-                                <h1>Hi ${recipientName},</h1>
-                                
+                            <td class="content-cell">
+                            <div class="f-fallback">
+                                <h1>${
+                                  recipientName
+                                    ? `Hello ${recipientName}`
+                                    : "Hello"
+                                },</h1>
                                 ${txt}
-                                
                                 <p>Thanks,
-                                <br>The Galactic Polymath Team</p>                              
+                                <br>The Galactic Polymath Team</p>
                             </div>
                             </td>
                         </tr>
@@ -516,16 +524,16 @@ export const createSubscriptionCancellationEmail = (recipientName: string, cance
                     </tr>
                     <tr>
                     <td>
-                        <table class=email-footer align=center width=570 cellpadding=0 cellspacing=0 role=presentation>
+                        <table class="email-footer" align="center" width="570" cellpadding="0" cellspacing="0" role="presentation">
                         <tr>
-                            <td class=content-cell align=center>
-                            <p class=f-fallback sub align-center>
+                            <td class="content-cell" align="center">
+                            <p class="f-fallback sub align-center">
                                 Galactic Polymath 
                             </p>
                             <img 
-                                src=https://teach.galacticpolymath.com/GP_bubbleLogo300px.png
-                            alt=logo
-                            class=gp-logo
+                              src="https://teach.galacticpolymath.com/GP_bubbleLogo300px.png"
+                            alt="logo"
+                            class="gp-logo"
                             />
                             </td>
                         </tr>

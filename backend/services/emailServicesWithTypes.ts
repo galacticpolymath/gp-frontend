@@ -25,27 +25,29 @@ class BrevoOptions {
   }
 }
 
-type TCancelationType = Parameters<typeof createSubscriptionCancellationEmail>[1];
+type TCancelationType = Parameters<typeof createSubscriptionCancellationEmail>[0];
 
-const createGpPlusSubCanceledEmail = (toEmail: string, toName: string, cancelationType: TCancelationType) => {
+const createGpPlusSubCanceledEmail = (toEmail: string, cancelationType: TCancelationType, toName?: string) => {
+    const to = toName ? [{ email: toEmail, name: toName }] : [{ email: toEmail }]
+
   return {
     sender: { name: "Support", email: "techguy@galacticpolymath.com" },
-    to: [{ email: toEmail, name: toName }],
+    to,
     subject: "Subscription canceled confirmation",
-    htmlContent: createSubscriptionCancellationEmail(toName, cancelationType),
+    htmlContent: createSubscriptionCancellationEmail(cancelationType, toName),
   };
 };
 
 export const sendGpPlusSubCanceledEmail = async (
   email: string,
-  recipientName: string,
-  cancelationType: TCancelationType
+  cancelationType: TCancelationType,
+  recipientName?: string,
 ) => {
   try {
     const options = new BrevoOptions("POST");
     const url = "https://api.brevo.com/v3/smtp/email";
     const body = JSON.stringify(
-      createGpPlusSubCanceledEmail(email, recipientName, cancelationType)
+      createGpPlusSubCanceledEmail(email, cancelationType, recipientName)
     );
     const response = await fetch(url, { body, ...options });
 
