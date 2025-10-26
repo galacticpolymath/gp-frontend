@@ -57,6 +57,12 @@ const deleteOutsetaUserData = async (
 ) => {
   // const accountDeletionResult = await deleteAccount(gpPlusMembership.Uid);
   // const personDeletionResult = await deletePerson(gpPlusMembership.person?.Uid);
+  console.log("deleteOutsetaUserData called with accountId:", accountId, "and personId:", personId);
+
+  if (!accountId || !personId) {
+    throw new Error("Cannot delete Outseta user data: accountId or personId is missing.");
+  }
+
   const accountDeletionResult = await deleteAccount(accountId);
   const personDeletionResult = await deletePerson(personId);
 
@@ -149,6 +155,8 @@ export default async function handler(
           reqBody.Name
         );
       }
+
+      console.log("reqBody.Name: ", reqBody.Name);
 
       return response.json({});
     }
