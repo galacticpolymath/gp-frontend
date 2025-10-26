@@ -1,7 +1,13 @@
 /* eslint-disable quotes */
 
 import { NextApiRequest, NextApiResponse } from "next";
-import { TAccountStageLabel } from "../../../../backend/services/outsetaServices";
+import {
+  deleteAccount,
+  deletePerson,
+  getGpPlusMembership,
+  TAccountStageLabel,
+  TGpPlusMembership,
+} from "../../../../backend/services/outsetaServices";
 import {
   getUser,
   updateUserCustom,
@@ -44,6 +50,61 @@ const sendServerFailureEmail = async (outsetaEmail: string) => {
   });
 };
 
+const deleteOutsetaUserData = async (
+  accountId: string,
+  personId: string,
+  userEmail: string
+) => {
+  // const accountDeletionResult = await deleteAccount(gpPlusMembership.Uid);
+  // const personDeletionResult = await deletePerson(gpPlusMembership.person?.Uid);
+  const accountDeletionResult = await deleteAccount(accountId);
+  const personDeletionResult = await deletePerson(personId);
+
+  console.log("outseta account deletion result: ", accountDeletionResult);
+  console.log("outseta person deletion result: ", personDeletionResult);
+
+  if (
+    !personDeletionResult.wasSuccessful ||
+    !accountDeletionResult.wasSuccessful
+  ) {
+    let msg = "";
+
+    if (!accountDeletionResult.wasSuccessful) {
+      msg = "Failed to delete account data of user.";
+    } else if (!personDeletionResult.wasSuccessful) {
+      msg = "Failed to delete the person data of user.";
+    }
+
+    const { wasSuccessful } = await sendEmail({
+      from: "shared@galacticpolymath.com",
+      to: "shared@galacticpolymath.com",
+      subject: "Failed to delete expired GP+ Outseta account.",
+      html: `
+            <p>Failed to delete Outseta data with email: ${userEmail}</p>
+            <p>${msg}</p>
+            <p>This is an error, since the user canceled their GP+ subscription, and their account should have been deleted in Outseta.</p>
+          `,
+      text: `
+            Failed to delete Outseta data with email: ${userEmail}
+            This is an error, since the user canceled their GP+ subscription, and their account should have been deleted in Outseta.
+            ${msg}
+          `,
+    });
+
+    if (!wasSuccessful) {
+      throw new Error("Failed to send email to shared@galacticpolymath.com");
+    }
+
+    return {
+      wasSuccessful: false,
+    };
+  }
+
+  return {
+    wasSuccessful: true,
+  };
+};
+
 export default async function handler(
   request: NextApiRequest,
   response: NextApiResponse
@@ -56,7 +117,9 @@ export default async function handler(
     const reqBody = request.body as TOutsetaReqBody;
 
     if (reqBody.AccountStageLabel === "Cancelling" && reqBody.Name) {
-      console.log("Detected AccountStageLabel: Cancelling. Preparing to send subscription will-cancel email.");
+      console.log(
+        "Detected AccountStageLabel: Cancelling. Preparing to send subscription will-cancel email."
+      );
 
       const { user } = await getUser(
         { outsetaAccountEmail: reqBody.Name },
@@ -67,16 +130,25 @@ export default async function handler(
         await sendServerFailureEmail(reqBody.Name);
 
         return response.json({});
-      };
-
-      const { wasSuccessful } = await sendGpPlusSubCanceledEmail(reqBody.Name, "willCancel", user.firstName)
-
-      if (!wasSuccessful) {
-        console.error("Error sending GP Plus subscription cancellation email for outseta email: ", reqBody.Name);
-      } else {
-        console.log("Success sending GP Plus subscription cancellation email for outseta email: ", reqBody.Name);
       }
 
+      const { wasSuccessful } = await sendGpPlusSubCanceledEmail(
+        reqBody.Name,
+        "willCancel",
+        user.firstName
+      );
+
+      if (!wasSuccessful) {
+        console.error(
+          "Error sending GP Plus subscription cancellation email for outseta email: ",
+          reqBody.Name
+        );
+      } else {
+        console.log(
+          "Success sending GP Plus subscription cancellation email for outseta email: ",
+          reqBody.Name
+        );
+      }
 
       return response.json({});
     }
@@ -119,12 +191,23 @@ export default async function handler(
         return response.json({});
       }
 
-      const { wasSuccessful: wasEmailGpSubCanceledEmailSentSuccessfully } = await sendGpPlusSubCanceledEmail(reqBody.Name, "canceled", user.firstName)
+      const { wasSuccessful: wasEmailGpSubCanceledEmailSentSuccessfully } =
+        await sendGpPlusSubCanceledEmail(
+          reqBody.Name,
+          "canceled",
+          user.firstName
+        );
 
       if (!wasEmailGpSubCanceledEmailSentSuccessfully) {
-        console.error("Error sending GP Plus subscription cancellation email for outseta email: ", reqBody.Name);
+        console.error(
+          "Error sending GP Plus subscription cancellation email for outseta email: ",
+          reqBody.Name
+        );
       } else {
-        console.log("Success sending GP Plus subscription cancellation email for outseta email: ", reqBody.Name);
+        console.log(
+          "Success sending GP Plus subscription cancellation email for outseta email: ",
+          reqBody.Name
+        );
       }
 
       if (user.gdriveAuthEmails.length) {
@@ -193,17 +276,58 @@ export default async function handler(
             "Error updating user's gdrive auth emails: ",
             userUpdatedResult
           );
-
-          return response.status(500).json({});
         }
+      }
 
-        // todo: delete the user's account and person on outseta
+      const gpPlusMembership = await getGpPlusMembership(reqBody.Name);
 
-        return response.json({});
+      if (
+        gpPlusMembership.Uid &&
+        gpPlusMembership.person?.Uid &&
+        gpPlusMembership.AccountStageLabel === "Expired"
+      ) {
+        const outsetaUserAccountDeletionResult = await deleteOutsetaUserData(
+          gpPlusMembership.Uid,
+          gpPlusMembership.person?.Uid,
+          reqBody.Name
+        );
+
+        if (outsetaUserAccountDeletionResult.wasSuccessful) {
+          console.log(
+            "Successfully deleted expired Outseta account and person for:",
+            reqBody.Name
+          );
+        } else {
+          console.error(
+            "Failed to delete expired Outseta account and person for:",
+            reqBody.Name
+          );
+        };
+
+        const updates: Partial<TUserSchemaV2> = {
+            outsetaAccountEmail: "",
+          };
+          const userUpdatedResult = await updateUserCustom(
+            { _id: user._id },
+            {
+              $set: updates,
+            }
+          );
+
+          console.log("userUpdatedResult:", userUpdatedResult);
+      } else {
+        console.log(
+          "Can't delete Outseta data, the user has the following status:",
+          gpPlusMembership.AccountStageLabel
+        );
       }
 
       console.log("The user has no gdrive auth emails.");
+
+      return response.json({});
     }
+
+    console.error("Can't process this webhook");
 
     return response.json({});
   } catch (error: any) {
