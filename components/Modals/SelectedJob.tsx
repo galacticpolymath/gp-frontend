@@ -146,7 +146,12 @@ const SelectedJob: React.FC = () => {
   };
 
   const handleCopyLinkBtnClick = () => {
-    navigator.clipboard.writeText(window.location.href);
+    if (BLS_link) {
+      navigator.clipboard.writeText(BLS_link);
+      return;
+    }
+
+    console.error("BLS_link is falsy. Cannot copy link.");
   };
 
   useEffect(() => {
@@ -225,8 +230,7 @@ const SelectedJob: React.FC = () => {
             <button
               className="d-flex align-items-center gap-2 px-2 py-1 bg-transparent small no-btn-styles underline-on-hover bg-danger"
               onClick={() => {
-                const url = window.location.href;
-                navigator.clipboard.writeText(url);
+                navigator.clipboard.writeText(BLS_link);
               }}
             >
               <CopyableTxt
