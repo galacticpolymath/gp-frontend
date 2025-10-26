@@ -6,6 +6,7 @@ import {
   getAuthorizeReqResult,
   getChunks,
   verifyJwt,
+  verifyOutsetaWebhookSignature,
 } from "./nondependencyFns";
 import { PASSWORD_RESET_CODE_VAR_NAME } from "./globalVars";
 import axios from "axios";
@@ -68,7 +69,11 @@ const VALID_CLIENT_DOMAINS = new Set([
   "http://localhost:3000",
   "https://teach.galacticpolymath.com",
 ]);
+const OUTSETA_WEBHOOK_PATHS = new Set([
+  "/api/gp-plus/outseta/account-updated"
+]);
 
+/** @param {import('next/server').NextRequest} request */
 export async function middleware(request) {
   try {
     const { nextUrl, method, headers } = request;
@@ -78,6 +83,21 @@ export async function middleware(request) {
     let { pathname, search } = nextUrl;
 
     console.log(`Request origin: ${nextUrl.origin}`);
+
+    if (OUTSETA_WEBHOOK_PATHS.has(pathname)) {
+      console.log(`Middleware: Received request for ${pathname}`);
+      const signature = headers.get('x-hub-signature-256');
+      const text = await request.text();
+      const isWebhookAuthorized = await verifyOutsetaWebhookSignature(text, signature)
+
+      if (!isWebhookAuthorized) {
+        throw new Error("Unauthorized: Outseta webhook signature verification failed.");
+      }
+
+      console.log("Outseta webhook signature verified successfully.");
+
+      return NextResponse.next();
+    }
 
     if (!VALID_CLIENT_DOMAINS.has(nextUrl.origin)) {
       console.error(`Invalid client domain detected: ${nextUrl.origin}`);
@@ -507,5 +527,6 @@ export const config = {
     "/api/admin/insert-users",
     "/api/admin/update-user",
     "/api/admin/delete-users",
+    "/api/gp-plus/outseta/account-updated"
   ],
 };

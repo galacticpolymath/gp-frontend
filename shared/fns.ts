@@ -6,7 +6,6 @@ import {
   STATUSES_OF_SHOWABLE_LESSONS,
 } from "../globalVars";
 import CryptoJS from "crypto-js";
-import { TUserSchemaForClient } from "../backend/models/User/types";
 
 export const random = (min: number, max: number) =>
   Math.floor(Math.random() * (max - min)) + min;

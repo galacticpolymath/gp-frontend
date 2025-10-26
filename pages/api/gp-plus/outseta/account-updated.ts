@@ -49,8 +49,9 @@ export default async function handler(
   response: NextApiResponse
 ) {
   try {
-    console.log("Request method:", request.method);
-    console.log("Request body: ", request.body);
+    console.log("Request body: ", request.url);
+    const url = request.headers["referer"] || request.headers["origin"] || "";
+    console.log("Request URL from headers: ", url);
 
     const reqBody = request.body as TOutsetaReqBody;
 
