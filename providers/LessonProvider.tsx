@@ -1,8 +1,5 @@
-/* eslint-disable react/jsx-indent-props */
-/* eslint-disable indent */
-/* eslint-disable react/jsx-indent */
 /* eslint-disable quotes */
-import { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useState } from "react";
 import { TUseStateReturnVal } from "../types/global";
 import { TFileToCopy } from "../backend/services/gdriveServices/types";
 import {

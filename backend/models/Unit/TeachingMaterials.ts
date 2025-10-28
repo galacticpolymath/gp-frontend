@@ -1,4 +1,4 @@
-import { Schema } from "mongoose";
+import { Schema } from 'mongoose';
 import {
   IChunk,
   IChunkStep,
@@ -11,12 +11,12 @@ import {
   IResource,
   IUnitTeachingMaterials,
   IVocab,
-} from "./types/teachingMaterials";
+} from './types/teachingMaterials';
 import {
   ICustomProp,
   IRootFieldToRetrieve,
   RootFieldToRetrieve,
-} from "./RootFieldsToRetrieve";
+} from './RootFieldsToRetrieve';
 
 const GatheredVocabSchema = new Schema<IVocab>(
   {
@@ -150,23 +150,23 @@ export const TeachingMaterialsSchema = new Schema<
     rootFieldsToRetrieveForUI: {
       type: [RootFieldToRetrieve],
       default: () => [
-          {
-            name: "Title",
-            as: "Title",
-          },
-          {
-            name: "GdrivePublicID",
-            as: "GdrivePublicID",
-          },
-          {
-            name: "MediumTitle",
-            as: "MediumTitle",
-          },
-          {
-            name: "_id",
-            as: "unitId",
-          },
-        ]
+        {
+          name: 'Title',
+          as: 'Title',
+        },
+        {
+          name: 'GdrivePublicID',
+          as: 'GdrivePublicID',
+        },
+        {
+          name: 'MediumTitle',
+          as: 'MediumTitle',
+        },
+        {
+          name: '_id',
+          as: 'unitId',
+        },
+      ],
     },
   },
   { _id: false }

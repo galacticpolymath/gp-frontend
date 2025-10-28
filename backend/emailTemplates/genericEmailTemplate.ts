@@ -8,7 +8,7 @@ interface IEmailTemplate {
 
 export const createEmailTemplate = ({
   headerTitle,
-  farewellMsg = `<p>Thanks, <br>The Galactic Polymath Team</p>`,
+  farewellMsg = '<p>Thanks, <br>The Galactic Polymath Team</p>',
   body,
   title,
   greetings,

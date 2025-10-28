@@ -1,12 +1,7 @@
-/* eslint-disable no-unused-vars */
 /* eslint-disable quotes */
-/* eslint-disable no-console */
-/* eslint-disable semi */
+ 
 /* eslint-disable indent */
-/* eslint-disable react/jsx-indent-props */
-/* eslint-disable react/jsx-no-undef */
-/* eslint-disable react/jsx-indent */
-/* eslint-disable no-multiple-empty-lines */
+ 
 import Modal from "react-bootstrap/Modal";
 import { GiCancel } from "react-icons/gi";
 import Button from "../General/Button";

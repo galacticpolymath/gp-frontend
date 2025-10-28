@@ -1,7 +1,6 @@
 /* eslint-disable quotes */
 /* eslint-disable indent */
 /* eslint-disable react/jsx-wrap-multilines */
-/* eslint-disable no-unused-vars */
 
 import React, {
   Dispatch,
@@ -458,7 +457,7 @@ const TeachItUI = <
                             `https://drive.google.com/drive/folders/${GdrivePublicID}`,
                             "_"
                           );
-                        }
+                  }
                   }
                   style={{
                     minHeight: "51px",

@@ -1,5 +1,3 @@
-/* eslint-disable no-console */
-/* eslint-disable semi */
 /* eslint-disable quotes */
 import React from 'react';
 import MarkdownView from 'react-showdown';

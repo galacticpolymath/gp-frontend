@@ -1,11 +1,3 @@
-/* eslint-disable react/jsx-closing-tag-location */
-/* eslint-disable semi */
-/* eslint-disable no-debugger */
-/* eslint-disable no-console */
-/* eslint-disable quotes */
-/* eslint-disable react/jsx-indent-props */
-/* eslint-disable react/jsx-curly-brace-presence */
-
 import Layout from "../components/Layout";
 import LoginUI from "../components/User/Login/LoginUI";
 import Button from "../components/General/Button";

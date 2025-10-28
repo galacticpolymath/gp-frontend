@@ -1,5 +1,5 @@
-import { useState } from "react";
-import GpPlusModal from "../components/LessonSection/Modals/GpPlusModal";
+import { useState } from 'react';
+import GpPlusModal from '../components/LessonSection/Modals/GpPlusModal';
 
 export const useGpPlusModal = () => {
   const [isGpPlusModalDisplayed, setIsGpPlusModalDisplayed] = useState(false);

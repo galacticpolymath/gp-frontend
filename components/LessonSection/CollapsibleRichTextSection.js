@@ -1,6 +1,3 @@
-/* eslint-disable react/jsx-closing-bracket-location */
-/* eslint-disable no-unused-vars */
-/* eslint-disable no-console */
 import PropTypes from 'prop-types';
 import { useRef } from 'react';
 import useLessonElementInView from '../../customHooks/useLessonElementInView';
@@ -20,23 +17,23 @@ const CollapsibleRichTextSection = ({
   // section-testing
 
   return (
-    <CollapsibleLessonSection initiallyExpanded={!!Content ? InitiallyExpanded : false} {...props}>
+    <CollapsibleLessonSection initiallyExpanded={Content ? InitiallyExpanded : false} {...props}>
       <div
         ref={ref}
         className={`${sectionTitle}_collapsible_text_sec container mx-auto mb-4 ${sectionClassNameForTesting}`}
       >
-        {typeof Content === "string" ? (
+        {typeof Content === 'string' ? (
           <RichText
             className='mt-4'
             content={Content}
             sectionName={sectionTitle}
           />
         )
-          :
-          <p className='mt-1'>
-            The content for '{sectionTitle}' cannot be displayed.
-          </p>
-        }
+          : (
+            <p className='mt-1'>
+              The content for '{sectionTitle}' cannot be displayed.
+            </p>
+          )}
       </div>
     </CollapsibleLessonSection>
   );

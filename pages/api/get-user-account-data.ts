@@ -1,6 +1,5 @@
 /* eslint-disable quotes */
 /* eslint-disable no-console */
-/* eslint-disable indent */
 
 import { getMailingListContact } from "../../backend/services/emailServices";
 import {

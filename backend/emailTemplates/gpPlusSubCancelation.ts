@@ -1,4 +1,4 @@
-import { CONTACT_SUPPORT_EMAIL } from "../../globalVars";
+import { CONTACT_SUPPORT_EMAIL } from '../../globalVars';
 
 const GpPlusSubWillCancelTxt = `
         <p>Your subscription to GP+ has been successfully canceled. We're sorry to see you go.</p>
@@ -15,12 +15,12 @@ const GpPlusSubCanceledTxt = `
         `;
 
 export const createSubscriptionCancellationEmail = (
-  cancelType: "willCancel" | "canceled",
+  cancelType: 'willCancel' | 'canceled',
   recipientName?: string
 ) => {
   let txt = GpPlusSubCanceledTxt;
 
-  if (cancelType === "willCancel") {
+  if (cancelType === 'willCancel') {
     txt = GpPlusSubWillCancelTxt;
   }
 
@@ -33,7 +33,7 @@ export const createSubscriptionCancellationEmail = (
             <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
             <meta name="color-scheme" content="light dark" />
             <meta name="supported-color-schemes" content="light dark" />
-            <title>GP+ Subscription ${cancelType === "willCancel" ? 'Cancelation Requested' : 'Canceled'}</title>
+            <title>GP+ Subscription ${cancelType === 'willCancel' ? 'Cancelation Requested' : 'Canceled'}</title>
             <style type="text/css" rel="stylesheet" media="all">
             /* Base ------------------------------ */
 
@@ -497,7 +497,7 @@ export const createSubscriptionCancellationEmail = (
                             class="gp-logo"
                           />
                         </a>
-                    <h1 class='text-center mt-2'>GP+ Subscription ${cancelType === "willCancel" ? 'Cancelation Requested' : 'Canceled'}</h1>
+                    <h1 class='text-center mt-2'>GP+ Subscription ${cancelType === 'willCancel' ? 'Cancelation Requested' : 'Canceled'}</h1>
                     </td>
                     </tr>
                     <!-- Email Body -->
@@ -509,10 +509,10 @@ export const createSubscriptionCancellationEmail = (
                             <td class="content-cell">
                             <div class="f-fallback">
                                 <h1>${
-                                  recipientName
-                                    ? `Hello ${recipientName}`
-                                    : "Hello"
-                                },</h1>
+  recipientName
+    ? `Hello ${recipientName}`
+    : 'Hello'
+},</h1>
                                 ${txt}
                                 <p>Thanks,
                                 <br>The Galactic Polymath Team</p>

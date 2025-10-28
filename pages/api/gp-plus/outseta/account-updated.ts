@@ -228,15 +228,15 @@ export default async function handler(
             subject: "GP Plus subscription cancelation, but no drive auth.",
             html: `
             <p>There was an error canceling a user's GP Plus subscription. They had the following gdrive auth emails: ${user.gdriveAuthEmails.join(
-              ", "
-            )}</p>
+    ", "
+  )}</p>
             <p>Can you please cancel their subscription for them?</p>
           `,
             text: `
             There was an error canceling a user's GP Plus subscription. 
             They had the following gdrive auth emails: ${user.gdriveAuthEmails.join(
-              ", "
-            )}
+    ", "
+  )}
             Can you please cancel their subscription for them?
           `,
           });
@@ -313,16 +313,16 @@ export default async function handler(
         };
 
         const updates: Partial<TUserSchemaV2> = {
-            outsetaAccountEmail: "",
-          };
-          const userUpdatedResult = await updateUserCustom(
-            { _id: user._id },
-            {
-              $set: updates,
-            }
-          );
+          outsetaAccountEmail: "",
+        };
+        const userUpdatedResult = await updateUserCustom(
+          { _id: user._id },
+          {
+            $set: updates,
+          }
+        );
 
-          console.log("userUpdatedResult:", userUpdatedResult);
+        console.log("userUpdatedResult:", userUpdatedResult);
       } else {
         console.log(
           "Can't delete Outseta data, the user has the following status:",

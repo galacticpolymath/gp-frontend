@@ -1,6 +1,6 @@
-import React from "react";
-import { Modal, Button } from "react-bootstrap";
-import Image from "next/image";
+import React from 'react';
+import { Modal, Button } from 'react-bootstrap';
+import Image from 'next/image';
 
 interface WelcomeModalProps {
   show: boolean;
@@ -37,7 +37,7 @@ const WelcomeModal: React.FC<WelcomeModalProps> = ({
         </div>
 
         <h2 className="mb-3 fw-bold">
-          {userFirstName ? `Welcome, ${userFirstName}` : "Welcome"}!
+          {userFirstName ? `Welcome, ${userFirstName}` : 'Welcome'}!
         </h2>
         <h4>Your account was created 🚀</h4>
         <section className="w-100 d-flex justify-content-center align-items-center flex-column">
@@ -45,7 +45,7 @@ const WelcomeModal: React.FC<WelcomeModalProps> = ({
             If you love what you see, please spread the word!
           </p>
           <p
-            style={{ textWrap: "pretty", maxWidth: "29em" }}
+            style={{ textWrap: 'pretty', maxWidth: '29em' }}
             className="mt-2 text-muted mb-0 text-center lh-lg"
           >
             We're a small team just trying to make science matter to students
@@ -59,10 +59,10 @@ const WelcomeModal: React.FC<WelcomeModalProps> = ({
           onClick={handleLetsGoClick}
           className="btn btn-primary px-4 py-2"
           style={{
-            backgroundColor: "#007BFF",
-            borderColor: "#007BFF",
-            borderRadius: "6px",
-            fontWeight: "500",
+            backgroundColor: '#007BFF',
+            borderColor: '#007BFF',
+            borderRadius: '6px',
+            fontWeight: '500',
           }}
         >
           Let's Go

@@ -1,6 +1,5 @@
-/* eslint-disable no-debugger */
 /* eslint-disable no-console */
-/* eslint-disable no-unused-vars */
+ 
 /* eslint-disable quotes */
 /* eslint-disable react/jsx-indent */
 /* eslint-disable indent */
@@ -36,7 +35,7 @@ const GoogleSignIn = ({
         try {
             event.preventDefault();
 
-            removeAppCookies(["gdriveAccessToken", "gdriveAccessTokenExp", "gdriveRefreshToken"])
+            removeAppCookies(["gdriveAccessToken", "gdriveAccessTokenExp", "gdriveRefreshToken"]);
 
             if (typeof executeExtraBtnClickLogic === "function") {
                 executeExtraBtnClickLogic();

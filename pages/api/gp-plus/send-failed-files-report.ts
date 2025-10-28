@@ -1,10 +1,10 @@
-import { NextApiRequest, NextApiResponse } from "next";
-import { getJwtPayloadPromise } from "../../../nondependencyFns";
-import { CustomError } from "../../../backend/utils/errors";
-import { TFileToCopy } from "../../../backend/services/gdriveServices/types";
-import { sendEmailViaBrevo } from "../../../backend/services/emailServicesWithTypes";
-import { createEmailTemplate } from "../../../backend/emailTemplates/genericEmailTemplate";
-import { SUPPORT_EMAIL } from "../../../shared/constants";
+import { NextApiRequest, NextApiResponse } from 'next';
+import { getJwtPayloadPromise } from '../../../nondependencyFns';
+import { CustomError } from '../../../backend/utils/errors';
+import { TFileToCopy } from '../../../backend/services/gdriveServices/types';
+import { sendEmailViaBrevo } from '../../../backend/services/emailServicesWithTypes';
+import { createEmailTemplate } from '../../../backend/emailTemplates/genericEmailTemplate';
+import { SUPPORT_EMAIL } from '../../../shared/constants';
 
 export interface FailedFilesReportRequest {
   failedFiles: TFileToCopy[];
@@ -18,27 +18,26 @@ export default async function handler(
   request: NextApiRequest,
   response: NextApiResponse
 ) {
-  if (request.method !== "POST") {
-    return response.status(405).json({ message: "Method not allowed" });
+  if (request.method !== 'POST') {
+    return response.status(405).json({ message: 'Method not allowed' });
   }
 
   try {
-    console.log("Received request to send failed files report email");
-
+    console.log('Received request to send failed files report email');
 
     const jwtPayload = await getJwtPayloadPromise(
       request.headers.authorization
     );
 
     if (!jwtPayload) {
-      throw new CustomError("Unauthorized. Please log in again.", 401);
+      throw new CustomError('Unauthorized. Please log in again.', 401);
     }
 
     const { lessonName, unitName } = request.body;
 
     if (!lessonName || !unitName) {
       throw new CustomError(
-        "Missing lessonName or unitName in request body",
+        'Missing lessonName or unitName in request body',
         400
       );
     }
@@ -50,22 +49,22 @@ export default async function handler(
       !Array.isArray(failedFiles) ||
       failedFiles.length === 0
     ) {
-      throw new CustomError("No failed files provided", 400);
+      throw new CustomError('No failed files provided', 400);
     }
 
     const userEmail = jwtPayload.payload.email;
-    const firstName = jwtPayload.payload.name?.first || "User";
+    const firstName = jwtPayload.payload.name?.first || 'User';
     const fileListHtml = failedFiles
       .map(
         (file, index) => `
         <tr>
           <td>${index + 1}</td>
           <td>${file.name}</td>
-          <td>${file.id || "Unknown"}</td>
+          <td>${file.id || 'Unknown'}</td>
         </tr>
       `
       )
-      .join("");
+      .join('');
     const emailHtml = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
         <h2 style="color: #dc3545;">Failed File Copy Report</h2>
@@ -74,8 +73,8 @@ export default async function handler(
           <h3 style="margin-top: 0; color: #495057;">Report Details</h3>
           <p><strong>User:</strong> ${firstName} (${userEmail})</p>
           <p><strong>Report Time:</strong> ${new Date(
-            timestamp
-          ).toLocaleString()}</p>
+    timestamp
+  ).toLocaleString()}</p>
           <p><strong>User Agent:</strong> ${userAgent}</p>
           <p><strong>Number of Failed Files:</strong> ${failedFiles.length}</p>
           <p><strong>Unit: </strong> ${unitName}</p>
@@ -114,23 +113,23 @@ export default async function handler(
     const htmlContentForSupportEmail = createEmailTemplate({
       headerTitle: `'${lessonName}' of '${unitName}' failed to copy.`,
       body: emailHtml,
-      farewellMsg: "",
-      greetings: "",
+      farewellMsg: '',
+      greetings: '',
       title: `'${lessonName}' of '${unitName}' failed to copy.`,
     });
 
-    console.log("Preparing to send a failed files report email to support team...");
+    console.log('Preparing to send a failed files report email to support team...');
 
     // Send email to support team
     const emailResult = await sendEmailViaBrevo({
       sender: {
-        name: "Support",
-        email: "techguy@galacticpolymath.com",
+        name: 'Support',
+        email: 'techguy@galacticpolymath.com',
       },
       to: [
         {
-          name: "Support",
-          email: "techguy@galacticpolymath.com",
+          name: 'Support',
+          email: 'techguy@galacticpolymath.com',
         },
       ],
       htmlContent: htmlContentForSupportEmail,
@@ -138,41 +137,41 @@ export default async function handler(
     });
 
     if (!emailResult.wasSuccessful) {
-      throw new CustomError("Failed to send email report to support.", 500);
+      throw new CustomError('Failed to send email report to support.', 500);
     }
 
     const userCopyHtml = `
 <p>This is a confirmation that we have received your report about ${
-      failedFiles.length > 1 ? `${failedFiles.length} files` : `${failedFiles.length} file`
-    } that failed to copy during your GP+ lesson copying process for lesson '${lessonName}' of unit '${unitName}'.</p>
+  failedFiles.length > 1 ? `${failedFiles.length} files` : `${failedFiles.length} file`
+} that failed to copy during your GP+ lesson copying process for lesson '${lessonName}' of unit '${unitName}'.</p>
 
 <p>Failed copied files:</p>
 <div style="padding-left:5px;">
     ${failedFiles
-      .map((file, index) => `<p>${index + 1}. ${file.name}</p>`)
-      .join("\n")}
+    .map((file, index) => `<p>${index + 1}. ${file.name}</p>`)
+    .join('\n')}
 </div>
 
 <p>Our support team has been notified and will investigate the issue. We'll get back to you as soon as possible to help resolve this.</p>
       `;
 
-    console.log("Preparing to send a confirmation email to the user who reported the failed files...");
+    console.log('Preparing to send a confirmation email to the user who reported the failed files...');
 
-    console.log("firstName, sup there: ", firstName);
+    console.log('firstName, sup there: ', firstName);
 
     const emailSendResultForUser = await sendEmailViaBrevo({
       htmlContent: createEmailTemplate({
         body: userCopyHtml,
-        farewellMsg: "<p>Thanks, <br>The Galactic Polymath Team</p>",
-        greetings: firstName === "User" ? "Hello," : `Hello ${firstName},`,
-        headerTitle: "Bug report sent.",
-        title: "Bug report sent.",
+        farewellMsg: '<p>Thanks, <br>The Galactic Polymath Team</p>',
+        greetings: firstName === 'User' ? 'Hello,' : `Hello ${firstName},`,
+        headerTitle: 'Bug report sent.',
+        title: 'Bug report sent.',
       }),
       sender: {
         email: SUPPORT_EMAIL,
-        name: "Support",
+        name: 'Support',
       },
-      subject: "Bug report sent.",
+      subject: 'Bug report sent.',
       to: [
         {
           email: userEmail,
@@ -182,21 +181,21 @@ export default async function handler(
     });
 
     if (!emailSendResultForUser.wasSuccessful) {
-      throw new CustomError("Failed to send email report to target user.", 500);
+      throw new CustomError('Failed to send email report to target user.', 500);
     }
 
     return response.status(200).json({
       wasSuccessful: true,
-      message: "Report sent successfully",
+      message: 'Report sent successfully',
     });
   } catch (error: any) {
-    console.error("Error sending failed files report: ", error);
+    console.error('Error sending failed files report: ', error);
 
     const { message, code } = error ?? {};
 
-    return  response.status(code || 500).json({
+    return response.status(code || 500).json({
       wasSuccessful: false,
-      message: message || "Failed to send report",
+      message: message || 'Failed to send report',
     });
   }
 }

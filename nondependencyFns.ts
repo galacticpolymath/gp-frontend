@@ -1,8 +1,6 @@
-/* eslint-disable indent */
-
-import { JWTPayload, jwtVerify } from "jose";
-import { NextResponse } from "next/server";
-import { AuthMiddlewareError } from "./backend/utils/errors";
+import { JWTPayload, jwtVerify } from 'jose';
+import { NextResponse } from 'next/server';
+import { AuthMiddlewareError } from './backend/utils/errors';
 
 export const getChunks = (arr: unknown[], chunkSize: number) => {
   const chunks = [];
@@ -50,7 +48,7 @@ export const verifyJwt = async (token: string) => {
 
 export const getDoesUserHaveSpecifiedRole = (
   userRoles: string[],
-  targetRole = "user"
+  targetRole = 'user'
 ) => !!userRoles.find((role) => role === targetRole);
 
 export const getAuthorizeReqResult = async (
@@ -60,12 +58,12 @@ export const getAuthorizeReqResult = async (
   emailToValidate: string
 ) => {
   try {
-    const token = authorizationStr.split(" ")[1].trim();
+    const token = authorizationStr.split(' ')[1].trim();
     const verifyJwtResult = await verifyJwt(token);
     const payload = verifyJwtResult.payload as JWTPayloadCustom;
 
     if (!payload) {
-      const errMsg = "You are not authorized to access this service.";
+      const errMsg = 'You are not authorized to access this service.';
       const response = new NextResponse(errMsg, { status: 403 });
 
       throw new AuthMiddlewareError(false, response, errMsg);
@@ -75,11 +73,11 @@ export const getAuthorizeReqResult = async (
     const currentMiliseconds = Date.now();
     const expTimeMiliseconds = expTimeSeconds ? expTimeSeconds * 1_000 : null;
 
-    console.log("roles: ", roles);
+    console.log('roles: ', roles);
 
-    if (!roles.includes("user")) {
+    if (!roles.includes('user')) {
       const errMsg =
-        "You are not authorized to access this service. Invalid token.";
+        'You are not authorized to access this service. Invalid token.';
       const response = new NextResponse(errMsg, { status: 498 });
 
       console.error(errMsg);
@@ -87,12 +85,12 @@ export const getAuthorizeReqResult = async (
       throw new AuthMiddlewareError(
         false,
         response,
-        "You are not authorized to access this service. Invalid token."
+        'You are not authorized to access this service. Invalid token.'
       );
     }
 
     if (expTimeMiliseconds && currentMiliseconds > expTimeMiliseconds) {
-      const errMsg = "The json web token has expired.";
+      const errMsg = 'The json web token has expired.';
       const response = new NextResponse(errMsg, { status: 498 });
 
       throw new AuthMiddlewareError(false, response, errMsg);
@@ -100,9 +98,9 @@ export const getAuthorizeReqResult = async (
 
     if (
       willCheckIfUserIsDbAdmin &&
-      !getDoesUserHaveSpecifiedRole(roles, "dbAdmin")
+      !getDoesUserHaveSpecifiedRole(roles, 'dbAdmin')
     ) {
-      const errMsg = "You are not authorized to access this service.";
+      const errMsg = 'You are not authorized to access this service.';
       const response = new NextResponse(errMsg, { status: 403 });
 
       throw new AuthMiddlewareError(false, response, errMsg);
@@ -113,7 +111,7 @@ export const getAuthorizeReqResult = async (
       emailToValidate &&
       email !== emailToValidate
     ) {
-      const errMsg = "You are not authorized to access this service.";
+      const errMsg = 'You are not authorized to access this service.';
       const response = new NextResponse(errMsg, { status: 403 });
 
       throw new AuthMiddlewareError(false, response, errMsg);
@@ -129,7 +127,7 @@ export const getAuthorizeReqResult = async (
   } catch (error: any) {
     const { errResponse, msg } = error ?? {};
 
-    console.error("Error message: ", msg ?? "Failed to validate jwt.");
+    console.error('Error message: ', msg ?? 'Failed to validate jwt.');
 
     return { isAuthorize: false, errResponse, msg };
   }
@@ -142,16 +140,16 @@ export const getAuthorizeReqResult = async (
  * @param {string} authorization The authorization string.
  * @returns {Promise<import('jose').JWTVerifyResult | null>}
  */
-export const getJwtPayloadPromise = (authorization = "") => {
+export const getJwtPayloadPromise = (authorization = '') => {
   if (!authorization) {
     console.error("'authorization' string cannot be empty.");
     return null;
   }
 
-  const authSplit = authorization.split(" ");
+  const authSplit = authorization.split(' ');
 
   if (authSplit.length !== 2) {
-    console.error("The authorization string is in a invalid format.", 422);
+    console.error('The authorization string is in a invalid format.', 422);
     return null;
   }
 
@@ -174,33 +172,33 @@ export const verifyOutsetaWebhookSignature = async (
 
   if (!sigMatch) {
     throw new Error(
-      "DEVELOPER ERROR: Signature key in OUTSETA_WEBHOOK_SIGNATURE_KEY is not valid hex."
+      'DEVELOPER ERROR: Signature key in OUTSETA_WEBHOOK_SIGNATURE_KEY is not valid hex.'
     );
   }
 
   const keyBytes = new Uint8Array(sigMatch.map((byte) => parseInt(byte, 16)));
   const bodyBytes = ENCODER.encode(txtBody);
   const cryptoKey = await crypto.subtle.importKey(
-    "raw",
+    'raw',
     keyBytes,
-    { name: "HMAC", hash: "SHA-256" },
+    { name: 'HMAC', hash: 'SHA-256' },
     false,
-    ["sign"]
+    ['sign']
   );
   const signatureBuffer = await crypto.subtle.sign(
-    "HMAC",
+    'HMAC',
     cryptoKey,
     bodyBytes
   );
   const signatureArray = Array.from(new Uint8Array(signatureBuffer));
   const signatureHex = signatureArray
-    .map((byte) => byte.toString(16).padStart(2, "0"))
-    .join("");
+    .map((byte) => byte.toString(16).padStart(2, '0'))
+    .join('');
   const calculatedSignature = `sha256=${signatureHex}`;
 
-  console.log("Calculated signature: ", calculatedSignature);
+  console.log('Calculated signature: ', calculatedSignature);
 
-  console.log("Received reqHeaderSignature: ", reqHeaderSignature);
+  console.log('Received reqHeaderSignature: ', reqHeaderSignature);
 
-  return calculatedSignature === reqHeaderSignature
+  return calculatedSignature === reqHeaderSignature;
 };

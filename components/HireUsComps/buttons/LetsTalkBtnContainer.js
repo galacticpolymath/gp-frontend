@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import MessageBoxIcon from '../../svgs/MessageBoxIcon';
 
 const LetsTalkBtnContainer = () => {

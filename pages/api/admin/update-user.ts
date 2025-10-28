@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-/* eslint-disable indent */
+ 
 /* eslint-disable quotes */
 import { NextApiRequest, NextApiResponse } from "next";
 import { CustomError } from "../../../backend/utils/errors";
@@ -62,14 +62,13 @@ export default async function handler(request: NextApiRequest, response: NextApi
       throw new CustomError("Failed to connect to the database.", 500);
     }
 
-
     const updateUserResult = await updateUserCustom(
       query,
       updates,
     );
     const { wasSuccessful, result } = updateUserResult;
 
-    if (!wasSuccessful || result?.modifiedCount === 0)  {
+    if (!wasSuccessful || result?.modifiedCount === 0) {
       throw new CustomError("Failed to update user.", 500);
     }
 

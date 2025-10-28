@@ -1,10 +1,8 @@
-/* eslint-disable react/jsx-wrap-multilines */
-/* eslint-disable no-console */
 /* eslint-disable react/jsx-indent-props */
 /* eslint-disable quotes */
 /* eslint-disable react/jsx-indent */
 /* eslint-disable indent */
-/* eslint-disable no-undef */
+ 
 import VideoCard from "../VideoCard";
 import { useGetGpDataStates } from "../../../customHooks/useGetGpDataStates";
 import SeeMoreBtnSec from "./SeeMoreBtnSec";

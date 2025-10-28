@@ -1,18 +1,18 @@
-import React, { useState } from "react";
-import { Button, Modal, ListGroup, Spinner } from "react-bootstrap";
-import { useModalContext } from "../../providers/ModalProvider";
-import { useLessonContext } from "../../providers/LessonProvider";
-import { TFileToCopy } from "../../backend/services/gdriveServices/types";
-import axios from "axios";
-import { toast } from "react-toastify";
-import useSiteSession from "../../customHooks/useSiteSession";
-import { FailedFilesReportRequest } from "../../pages/api/gp-plus/send-failed-files-report";
+import React, { useState } from 'react';
+import { Button, Modal, ListGroup, Spinner } from 'react-bootstrap';
+import { useModalContext } from '../../providers/ModalProvider';
+import { useLessonContext } from '../../providers/LessonProvider';
+import { TFileToCopy } from '../../backend/services/gdriveServices/types';
+import axios from 'axios';
+import { toast } from 'react-toastify';
+import useSiteSession from '../../customHooks/useSiteSession';
+import { FailedFilesReportRequest } from '../../pages/api/gp-plus/send-failed-files-report';
 
 interface FailedCopiedFilesReportModalProps {
   onClose?: () => void;
 }
 
-const TOAST_POSITION = "bottom-right";
+const TOAST_POSITION = 'bottom-right';
 
 const FailedCopiedFilesReportModal: React.FC<
   FailedCopiedFilesReportModalProps
@@ -44,7 +44,7 @@ const FailedCopiedFilesReportModal: React.FC<
       !failedLessonCopyBugReport ||
       failedLessonCopyBugReport.failedCopiedLessons.length === 0
     ) {
-      toast.error("No failed files to report", { position: TOAST_POSITION });
+      toast.error('No failed files to report', { position: TOAST_POSITION });
       return;
     }
 
@@ -52,7 +52,7 @@ const FailedCopiedFilesReportModal: React.FC<
 
     try {
       const response = await axios.post(
-        "/api/gp-plus/send-failed-files-report",
+        '/api/gp-plus/send-failed-files-report',
         {
           failedFiles: failedLessonCopyBugReport.failedCopiedLessons,
           timestamp: new Date().toISOString(),
@@ -62,7 +62,7 @@ const FailedCopiedFilesReportModal: React.FC<
         } as FailedFilesReportRequest,
         {
           headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`,
           },
         }
@@ -72,13 +72,13 @@ const FailedCopiedFilesReportModal: React.FC<
         toast.success("Report sent successfully! We'll investigate the issue.");
         handleOnHide();
       } else {
-        toast.error("Failed to send report. Please try again.", {
+        toast.error('Failed to send report. Please try again.', {
           position: TOAST_POSITION,
         });
       }
     } catch (error) {
-      console.error("Error sending failed files report:", error);
-      toast.error("Failed to send report. Please try again.", {
+      console.error('Error sending failed files report:', error);
+      toast.error('Failed to send report. Please try again.', {
         position: TOAST_POSITION,
       });
     } finally {
@@ -144,7 +144,7 @@ const FailedCopiedFilesReportModal: React.FC<
                 />
               </ListGroup>
             </div>
-          )}
+        )}
 
         <div className="alert alert-info">
           <h6 className="alert-heading">
@@ -177,7 +177,11 @@ const FailedCopiedFilesReportModal: React.FC<
         >
           {isSendingReport ? (
             <>
-              <Spinner animation="border" size="sm" className="me-2" />
+              <Spinner
+                animation="border"
+                size="sm"
+                className="me-2"
+              />
               Sending Report...
             </>
           ) : (

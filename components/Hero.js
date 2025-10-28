@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-max-props-per-line */
-/* eslint-disable indent */
+ 
 import React from 'react';
 import Image from 'next/image';
 import styles from './Hero.module.css';

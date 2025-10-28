@@ -1,9 +1,6 @@
-/* eslint-disable react/jsx-wrap-multilines */
 /* eslint-disable no-console */
 /* eslint-disable quotes */
-/* eslint-disable react/jsx-indent-props */
-/* eslint-disable react/jsx-indent */
-/* eslint-disable indent */
+ 
 import UnitIconSvg from "../../../assets/img/gp-unit-icon.svg";
 import { UNVIEWABLE_LESSON_STR } from "../../../globalVars";
 import { ILiveUnit } from "../../../types/global";

@@ -1,13 +1,12 @@
 /* eslint-disable no-useless-escape */
-/* eslint-disable no-empty */
-/* eslint-disable semi */
+ 
 /* eslint-disable no-console */
 /* eslint-disable indent */
-import moment from "moment";
-import { getVideoThumb } from "./components/LessonSection/Preview/utils";
-import { SHOWABLE_LESSONS_STATUSES, STATUSES_OF_SHOWABLE_LESSONS } from "./globalVars";
-import { getLinkPreview } from "link-preview-js";
-import { UNITS_URL_PATH } from "./shared/constants";
+import moment from 'moment';
+import { getVideoThumb } from './components/LessonSection/Preview/utils';
+import { SHOWABLE_LESSONS_STATUSES, STATUSES_OF_SHOWABLE_LESSONS } from './globalVars';
+import { getLinkPreview } from 'link-preview-js';
+import { UNITS_URL_PATH } from './shared/constants';
 
 export const createPaginationArr = (arr) => {
     let pgsArr = [];
@@ -47,10 +46,10 @@ export const getGpVids = (lessons) => {
 
                 if (
                     !isTargetGpVidPresent &&
-                    media.by === "Galactic Polymath" &&
-                    media.type === "video" &&
-                    typeof media.mainLink === "string" &&
-                    media.mainLink.includes("youtube")
+                    media.by === 'Galactic Polymath' &&
+                    media.type === 'video' &&
+                    typeof media.mainLink === 'string' &&
+                    media.mainLink.includes('youtube')
                 ) {
                     lessonMultiMediaArr.push({
                         ReleaseDate: ReleaseDate,
@@ -91,9 +90,9 @@ export const getGpLessons = (lessons) => {
             continue;
         }
 
-        let lessonParts = lesson?.Section?.["teaching-materials"]?.Data?.lesson;
+        let lessonParts = lesson?.Section?.['teaching-materials']?.Data?.lesson;
         let lessonPartsFromClassRoomObj =
-            lesson?.Section?.["teaching-materials"]?.Data?.classroom?.resources?.[0]
+            lesson?.Section?.['teaching-materials']?.Data?.classroom?.resources?.[0]
                 ?.lessons;
 
         if (lessonParts?.length) {
@@ -106,8 +105,8 @@ export const getGpLessons = (lessons) => {
                     ({ lsnNum }) => lsnNum === lsnStatus.lsn
                 );
                 const wasLessonReleased =
-                    moment(todaysDate).format("YYYY-MM-DD") >
-                    moment(lsnStatus.unit_release_date).format("YYYY-MM-DD");
+                    moment(todaysDate).format('YYYY-MM-DD') >
+                    moment(lsnStatus.unit_release_date).format('YYYY-MM-DD');
 
                 if (lessonPart && wasLessonReleased) {
                     const lessonPartFromClassroomObj = lessonPartsFromClassRoomObj.find(
@@ -122,7 +121,7 @@ export const getGpLessons = (lessons) => {
                         lessonPartPath: `/${UNITS_URL_PATH}/${lesson.locale}/${lesson.numID}#lesson_part_${lessonPart.lsnNum}`,
                         tile:
                             lessonPartFromClassroomObj?.tile ??
-                            "https://storage.googleapis.com/gp-cloud/icons/Missing_Lesson_Tile_Icon.png",
+                            'https://storage.googleapis.com/gp-cloud/icons/Missing_Lesson_Tile_Icon.png',
                         lessonPartTitle: lessonPart.lsnTitle,
                         dur: lessonPart.lsnDur,
                         preface: lessonPart.lsnPreface,
@@ -175,8 +174,8 @@ export const getShowableUnits = (units) => {
         if (
             STATUSES_OF_SHOWABLE_LESSONS.includes(unit.PublicationStatus) &&
             !uniqueUnits.some((uniqueUnit) => unit.numID === uniqueUnit.numID) &&
-            moment(unit.ReleaseDate).format("YYYY-MM-DD") <=
-            moment(todaysDate).format("YYYY-MM-DD")
+            moment(unit.ReleaseDate).format('YYYY-MM-DD') <=
+            moment(todaysDate).format('YYYY-MM-DD')
         ) {
             uniqueUnits.push(unit);
             continue;
@@ -209,11 +208,11 @@ export const getIsTypeValid = (val, targetType) => {
     return typeof val === targetType;
 };
 
-export const getLinkPreviewObj = async (url = "") => {
+export const getLinkPreviewObj = async (url = '') => {
     try {
-        if (!url || typeof url !== "string") {
+        if (!url || typeof url !== 'string') {
             throw new Error(
-                "Either received an empty string or an incorrect data type."
+                'Either received an empty string or an incorrect data type.'
             );
         }
 
@@ -229,7 +228,7 @@ export const getLinkPreviewObj = async (url = "") => {
 };
 
 export const getIsValObj = (val) =>
-    typeof val === "object" && !Array.isArray(val) && val !== null;
+    typeof val === 'object' && !Array.isArray(val) && val !== null;
 
 export const getObjVals = (obj) => {
     const keys = Object.keys(obj);
@@ -262,11 +261,11 @@ export const constructUrlWithSearchQuery = (
 };
 
 const searchParamsDefault =
-    typeof window === "undefined" ? null : window.location.search;
+    typeof window === 'undefined' ? null : window.location.search;
 
 export const getUrlParamVal = (
     searchParams = searchParamsDefault,
-    paramName = ""
+    paramName = ''
 ) => {
     const urlSearchParams = new URLSearchParams(searchParams);
 
@@ -275,7 +274,7 @@ export const getUrlParamVal = (
 
 export const createObj = (keysAndValsArr = []) => {
     if (!keysAndValsArr?.length) {
-        console.error("The array to create the object is empty.");
+        console.error('The array to create the object is empty.');
         return null;
     }
 
@@ -284,7 +283,7 @@ export const createObj = (keysAndValsArr = []) => {
             return false;
         }
 
-        if (!["symbol", "string"].includes(typeof keyAndVal[0])) {
+        if (!['symbol', 'string'].includes(typeof keyAndVal[0])) {
             return false;
         }
 
@@ -293,7 +292,7 @@ export const createObj = (keysAndValsArr = []) => {
 
     if (!isKeysAndValsArrValid) {
         console.error(
-            "Each value fo the `keysAndVals` arr must have the following format: [key: string | symbol, value: any]"
+            'Each value fo the `keysAndVals` arr must have the following format: [key: string | symbol, value: any]'
         );
         return null;
     }
@@ -312,7 +311,7 @@ export const getIsParsable = (val) => {
 
         return true;
     } catch (error) {
-        console.error("Not parsable. Reason: ", error);
+        console.error('Not parsable. Reason: ', error);
 
         return false;
     }
@@ -323,26 +322,26 @@ export const getIsParsableToVal = (val, valType, isArr) => {
         const parsedVal = JSON.parse(val);
 
         if (typeof parsedVal !== valType) {
-            throw Error("Incorrect parsed value type.");
+            throw Error('Incorrect parsed value type.');
         }
 
         if (isArr) {
             return Array.isArray(parsedVal);
         }
 
-        if (valType === "object") {
+        if (valType === 'object') {
             return getIsValObj(parsedVal);
         }
 
         return true;
     } catch (error) {
-        console.error("Not parsable. Reason: ", error);
+        console.error('Not parsable. Reason: ', error);
 
         return false;
     }
 };
 
-export const removeHtmlTags = (str) => str.replace(/<[^>]*>/g, "");
+export const removeHtmlTags = (str) => str.replace(/<[^>]*>/g, '');
 
 export const sleep = (milliseconds) => {
     console.log(`Will sleep for: ${milliseconds} ms`);
@@ -352,14 +351,14 @@ export const sleep = (milliseconds) => {
     });
 };
 
-export const getIsObj = (val) => !!val && typeof val === "object";
+export const getIsObj = (val) => !!val && typeof val === 'object';
 
 /**
  * @param {import('next/router').NextRouter} router
  */
 export const resetUrl = (router) => {
     const url = router.asPath;
-    router.replace(url.split("?")[0]);
+    router.replace(url.split('?')[0]);
 };
 
 /**
@@ -374,12 +373,12 @@ export const convertMapToObj = (map) => Object.fromEntries(map.entries());
  *  @returns {string[]}
  * */
 export const getAllUrlVals = (router, willCreateSubTuples = false) => {
-    const pathsStr = router.asPath.split("?")[1];
-    let urlKeysAndVals = pathsStr?.split("&");
+    const pathsStr = router.asPath.split('?')[1];
+    let urlKeysAndVals = pathsStr?.split('&');
 
     if (urlKeysAndVals?.length && willCreateSubTuples) {
         const urlKeysAndValsTuples = urlKeysAndVals.map((keyAndValStr) => {
-            return keyAndValStr.split("=");
+            return keyAndValStr.split('=');
         });
 
         return urlKeysAndValsTuples;
@@ -443,7 +442,7 @@ export const createChunks = (arr, chunkSize) => {
  * @param {string} targetKey
  */
 export const getTargetKeyValFromUrl = (router, targetKey) => {
-    const urlVals = getAllUrlVals(router)?.flatMap((urlVal) => urlVal.split("="));
+    const urlVals = getAllUrlVals(router)?.flatMap((urlVal) => urlVal.split('='));
     const urlValsChunks = urlVals?.length ? getChunks(urlVals, 2) : [];
     const targetKeyVal = urlValsChunks.find(([key]) => key === targetKey);
 
@@ -459,7 +458,7 @@ export const validateEmail = (email) => {
 export const getIsWithinParentElement = (
     element,
     specifier,
-    classNameOrId = "className"
+    classNameOrId = 'className'
 ) => {
     if (
         !element?.parentElement ||
@@ -467,14 +466,14 @@ export const getIsWithinParentElement = (
             classNameOrId in element.parentElement &&
             element?.parentElement[classNameOrId] === undefined)
     ) {
-        console.error("Reached end of document.");
+        console.error('Reached end of document.');
         return false;
     }
 
     if (
         element?.parentElement != null &&
-        typeof element?.parentElement === "object" &&
-        typeof element.parentElement[classNameOrId] === "string" &&
+        typeof element?.parentElement === 'object' &&
+        typeof element.parentElement[classNameOrId] === 'string' &&
         element.parentElement[classNameOrId].includes(specifier)
     ) {
         return true;
@@ -496,7 +495,6 @@ export const waitWithExponentialBackOff = async (
     const waitTime = randomNumMs + num * 1_000;
 
     console.log(`Waiting for ${waitTime}ms...`);
-
 
     await sleep(waitTime);
 

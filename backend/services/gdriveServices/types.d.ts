@@ -1,4 +1,4 @@
-import { renameFiles } from ".";
+import { renameFiles } from '.';
 
 export interface IFile {
   title: string;
@@ -7,7 +7,7 @@ export interface IFile {
 export type TRenameFilesResult = {
   failedUpdatedFiles?: { id: string; name: string }[];
   wasSuccessful: boolean;
-  errType?: "fileUpdateErr" | "renameFilesFailed" | "invalidAuthToken";
+  errType?: 'fileUpdateErr' | 'renameFilesFailed' | 'invalidAuthToken';
 };
 export type TFilesToRename = Parameters<typeof renameFiles>[0]
 export type TFileToCopy = {

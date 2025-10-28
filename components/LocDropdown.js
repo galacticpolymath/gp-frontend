@@ -1,6 +1,3 @@
-/* eslint-disable no-undef */
-/* eslint-disable no-unused-vars */
-/* eslint-disable no-console */
 /* eslint-disable quotes */
 
 import React, { useState } from "react";

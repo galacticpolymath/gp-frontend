@@ -1,13 +1,13 @@
-import { NextApiRequest, NextApiResponse } from "next";
-import { getJwtPayloadPromise } from "../../../nondependencyFns";
+import { NextApiRequest, NextApiResponse } from 'next';
+import { getJwtPayloadPromise } from '../../../nondependencyFns';
 import {
   getUserByEmail,
   updateUserCustom,
-} from "../../../backend/services/userServices";
+} from '../../../backend/services/userServices';
 import {
   getGDriveItem,
   getUserChildItemsOfFolder,
-} from "../../../backend/services/gdriveServices";
+} from '../../../backend/services/gdriveServices';
 
 interface IQueryParams {
   unitId: string;
@@ -22,26 +22,26 @@ export default async function handler(
   const nonExistingLessonFolderIds: string[] = [];
   let userEmail: string | null = null;
 
-  console.log("request.query, get-gdrive-lessons-ids: ", request.query);
+  console.log('request.query, get-gdrive-lessons-ids: ', request.query);
   const { lessonNumIds, unitId, grades } =
     request.query as unknown as IQueryParams;
   try {
-    if (!grades || typeof grades !== "string") {
-      console.log("grades query parameter is required");
+    if (!grades || typeof grades !== 'string') {
+      console.log('grades query parameter is required');
       return response
         .status(400)
         .json({ error: "'grades' query parameter is required" });
     }
 
     if (!lessonNumIds) {
-      console.log("lessonNumIds query parameter is required");
+      console.log('lessonNumIds query parameter is required');
       return response
         .status(400)
         .json({ error: "'lessonNumIds' query parameter is required" });
     }
 
-    if (!unitId || typeof unitId !== "string") {
-      console.log("unitId must be a string");
+    if (!unitId || typeof unitId !== 'string') {
+      console.log('unitId must be a string');
       return response
         .status(400)
         .json({ error: "'unitId' query parameter is required" });
@@ -51,62 +51,62 @@ export default async function handler(
       ? lessonNumIds
       : [lessonNumIds];
 
-    if (!lessonIds.every((id) => typeof id === "string")) {
-      console.log("Error: All lessonNumIds must be strings");
+    if (!lessonIds.every((id) => typeof id === 'string')) {
+      console.log('Error: All lessonNumIds must be strings');
 
       return response
         .status(400)
-        .json({ error: "All lessonNumIds must be strings" });
+        .json({ error: 'All lessonNumIds must be strings' });
     }
 
     const authorization = request.headers.authorization;
-    const gdriveAccessToken = request.headers["gdrive-token"];
-    const gdriveRefreshToken = request.headers["gdrive-token-refresh"];
-    const clientOrigin = new URL(request.headers.referer ?? "").href;
+    const gdriveAccessToken = request.headers['gdrive-token'];
+    const gdriveRefreshToken = request.headers['gdrive-token-refresh'];
+    const clientOrigin = new URL(request.headers.referer ?? '').href;
 
     if (!clientOrigin) {
-      console.log("clientOrigin is required");
+      console.log('clientOrigin is required');
 
-      return response.status(400).json({ error: "clientOrigin is required" });
+      return response.status(400).json({ error: 'clientOrigin is required' });
     }
 
     if (
-      typeof gdriveAccessToken !== "string" ||
-      typeof gdriveRefreshToken !== "string"
+      typeof gdriveAccessToken !== 'string' ||
+      typeof gdriveRefreshToken !== 'string'
     ) {
-      console.log("gdriveAccessToken or gdriveRefreshToken is required");
+      console.log('gdriveAccessToken or gdriveRefreshToken is required');
 
       return response.status(401).json({
-        error: "gdriveAccessToken and gdriveRefreshToken are BOTH required",
+        error: 'gdriveAccessToken and gdriveRefreshToken are BOTH required',
       });
     }
 
     if (!authorization) {
-      console.log("Authorization header is required");
+      console.log('Authorization header is required');
 
       return response
         .status(401)
-        .json({ error: "Authorization header is required" });
+        .json({ error: 'Authorization header is required' });
     }
 
     const { email } =
       (await getJwtPayloadPromise(authorization))?.payload ?? {};
 
     if (!email) {
-      return response.status(401).json({ error: "User is not authenticated" });
+      return response.status(401).json({ error: 'User is not authenticated' });
     }
 
     userEmail = email;
     const targetUser = await getUserByEmail(email, { unitGDriveLessons: 1 });
 
-    console.log("targetUser: ", targetUser);
+    console.log('targetUser: ', targetUser);
 
     if (!targetUser) {
-      return response.status(404).json({ error: "User is not found" });
+      return response.status(404).json({ error: 'User is not found' });
     }
 
     if (!targetUser.unitGDriveLessons?.length) {
-      console.log("Target user does not have any GP+ unit lessons");
+      console.log('Target user does not have any GP+ unit lessons');
       return response.json([]);
     }
 
@@ -116,16 +116,16 @@ export default async function handler(
       }
     );
 
-    console.log("targetUnitGDriveLessonObj: ", targetUnitGDriveLessonObj);
+    console.log('targetUnitGDriveLessonObj: ', targetUnitGDriveLessonObj);
 
     if (!targetUnitGDriveLessonObj?.lessonDriveIds?.length) {
       console.log(
-        "Target user does not have any GP+ lessons under the given unit"
+        'Target user does not have any GP+ lessons under the given unit'
       );
       return response.json([]);
     }
 
-    console.log("gdriveAccessToken: ", gdriveAccessToken);
+    console.log('gdriveAccessToken: ', gdriveAccessToken);
 
     const queriedGDriveItemResults = await Promise.all(
       targetUnitGDriveLessonObj.lessonDriveIds.map(
@@ -141,10 +141,10 @@ export default async function handler(
             clientOrigin
           );
 
-          console.log("gdriveItem, sup there: ", gdriveItem);
+          console.log('gdriveItem, sup there: ', gdriveItem);
 
           if (
-            !("id" in gdriveItem && gdriveItem.id && !gdriveItem.labels.trashed)
+            !('id' in gdriveItem && gdriveItem.id && !gdriveItem.labels.trashed)
           ) {
             nonExistingLessonFolderIds.push(lessonDriveFolder.lessonDriveId);
             return null;
@@ -158,20 +158,20 @@ export default async function handler(
       queriedGDriveItemResults.filter(Boolean);
 
     console.log(
-      "existingLessonFolderGDriveIds: ",
+      'existingLessonFolderGDriveIds: ',
       existingLessonFolderGDriveIds
     );
 
     return response.json(existingLessonFolderGDriveIds);
   } catch (error: any) {
-    console.error("Error in get-gdrive-lesson-ids:", error);
+    console.error('Error in get-gdrive-lesson-ids:', error);
 
-    return response.status(500).json({ error: "Internal server error" });
+    return response.status(500).json({ error: 'Internal server error' });
   } finally {
-    console.log("nonExistingLessonFolderIds: ", nonExistingLessonFolderIds);
+    console.log('nonExistingLessonFolderIds: ', nonExistingLessonFolderIds);
 
     if (nonExistingLessonFolderIds?.length && userEmail && unitId) {
-      console.log("will delete lesson folders from the database...");
+      console.log('will delete lesson folders from the database...');
       
       const targetLessonDeletionResult = await updateUserCustom(
         {
@@ -179,7 +179,7 @@ export default async function handler(
         },
         {
           $pull: {
-            "unitGDriveLessons.$[unitGDriveLessonsObj].lessonDriveIds": {
+            'unitGDriveLessons.$[unitGDriveLessonsObj].lessonDriveIds': {
               lessonDriveId: {
                 $in: nonExistingLessonFolderIds,
               },
@@ -189,14 +189,14 @@ export default async function handler(
         {
           arrayFilters: [
             {
-              "unitGDriveLessonsObj.unitId": unitId,
+              'unitGDriveLessonsObj.unitId': unitId,
             },
           ],
         }
       );
 
       console.log(
-        "targetLessonDeletionResult, yo: ",
+        'targetLessonDeletionResult, yo: ',
         targetLessonDeletionResult
       );
     }

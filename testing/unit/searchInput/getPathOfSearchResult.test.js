@@ -1,5 +1,3 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable no-console */
 /* eslint-disable indent */
 /* eslint-disable semi */
 /* eslint-disable no-undef */

@@ -1,7 +1,6 @@
 /* eslint-disable quotes */
 /* eslint-disable no-console */
-/* eslint-disable no-multiple-empty-lines */
-/* eslint-disable indent */
+ 
 import nodemailer from "nodemailer";
 import { updateUser } from "./userServices";
 import { nanoid } from "nanoid";
@@ -398,17 +397,17 @@ const createGpPlusSubCanceledEmail = (toEmail, toName) => {
     sender: { name: "Support", email: "techguy@galacticpolymath.com" },
     to: [{ email: toEmail, name: toName }],
     subject: "Subscription canceled confirmation",
-    htmlContent: "<h3>Hello {{params.FIRSTNAME}}</h3><p>Your subscription has been canceled.</p>"
-  }
-}
+    htmlContent: "<h3>Hello {{params.FIRSTNAME}}</h3><p>Your subscription has been canceled.</p>",
+  };
+};
 
 export const sendGpPlusSubCanceledEmail = async (email) => {
   try {
     const options = new BrevoOptions('POST');
     const emailBody = createSubscriptionCancellationEmail();
-    const url = 'https://api.brevo.com/v3/smtp/email'
-    const response = await fetch(url, { ...options, body })
+    const url = 'https://api.brevo.com/v3/smtp/email';
+    const response = await fetch(url, { ...options, body });
   } catch (error) {
 
   }
-}
+};

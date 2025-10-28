@@ -1,8 +1,6 @@
 /* eslint-disable no-console */
 /* eslint-disable react/jsx-curly-brace-presence */
-/* eslint-disable react/jsx-indent-props */
-/* eslint-disable indent */
-/* eslint-disable react/jsx-indent */
+ 
 /* eslint-disable quotes */
 import { useEffect, useMemo, useState } from "react";
 import CustomLink from "../components/CustomLink";

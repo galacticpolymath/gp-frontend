@@ -1,7 +1,6 @@
 /* eslint-disable no-console */
-/* eslint-disable indent */
+ 
 /* eslint-disable quotes */
-/* eslint-disable comma-dangle */
 
 import React from "react";
 import Link from "next/link";

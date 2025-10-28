@@ -1,11 +1,11 @@
-import moment from "moment";
-import { INewUnitSchema } from "../backend/models/Unit/types/unit";
-import { ILocalStorage, ISessionStorage, IUnitForUnitsPg, TLiveUnit } from "../types/global";
+import moment from 'moment';
+import { INewUnitSchema } from '../backend/models/Unit/types/unit';
+import { ILocalStorage, ISessionStorage, IUnitForUnitsPg, TLiveUnit } from '../types/global';
 import {
   GOOGLE_DRIVE_PROJECT_CLIENT_ID,
   STATUSES_OF_SHOWABLE_LESSONS,
-} from "../globalVars";
-import CryptoJS from "crypto-js";
+} from '../globalVars';
+import CryptoJS from 'crypto-js';
 
 export const random = (min: number, max: number) =>
   Math.floor(Math.random() * (max - min)) + min;
@@ -30,10 +30,10 @@ export const checkIfElementClickedWasClipboard = (
 ): boolean => {
   if (
     parentElement &&
-    typeof parentElement === "object" &&
-    "nodeName" in parentElement &&
-    typeof parentElement.nodeName === "string" &&
-    parentElement?.nodeName?.toLowerCase() === "body"
+    typeof parentElement === 'object' &&
+    'nodeName' in parentElement &&
+    typeof parentElement.nodeName === 'string' &&
+    parentElement?.nodeName?.toLowerCase() === 'body'
   ) {
     console.log("Clip board icon wasn't clicked...");
     return false;
@@ -41,11 +41,11 @@ export const checkIfElementClickedWasClipboard = (
 
   if (
     parentElement &&
-    typeof parentElement === "object" &&
-    "id" in parentElement &&
-    parentElement.id === "clipboardIconWrapper"
+    typeof parentElement === 'object' &&
+    'id' in parentElement &&
+    parentElement.id === 'clipboardIconWrapper'
   ) {
-    console.log("clip board icon was clicked...");
+    console.log('clip board icon was clicked...');
     return true;
   }
 
@@ -69,15 +69,15 @@ export const getLiveUnits = (units: INewUnitSchema[]) => {
 
   for (const unit of units) {
     if (!unit.PublicationStatus) {
-      console.log("No status for unit: ", unit);
+      console.log('No status for unit: ', unit);
       continue;
     }
 
     if (
       STATUSES_OF_SHOWABLE_LESSONS.includes(unit.PublicationStatus) &&
       !uniqueUnits.some((uniqueUnit) => unit.numID === uniqueUnit.numID) &&
-      moment(unit.ReleaseDate).format("YYYY-MM-DD") <=
-        moment(todaysDate).format("YYYY-MM-DD")
+      moment(unit.ReleaseDate).format('YYYY-MM-DD') <=
+        moment(todaysDate).format('YYYY-MM-DD')
     ) {
       uniqueUnits.push(unit);
       continue;
@@ -95,7 +95,7 @@ export const getLiveUnits = (units: INewUnitSchema[]) => {
       if (unit.locale && targetUnit?.locals && targetUnit.locale) {
         targetUnit = {
           ...targetUnit,
-          locals: [...targetUnit?.locals, unit.locale],
+          locals: targetUnit?.locals?.length ? [...targetUnit.locals, unit.locale] : [unit.locale],
         };
       } else if (unit.locale && targetUnit.locale) {
         targetUnit = {
@@ -131,14 +131,14 @@ export const getTotalUnitLessons = (unit: INewUnitSchema) => {
   const unitObjUpdated = {
     ...unit,
     individualLessonsNum,
-    ReleaseDate: moment(unit.ReleaseDate).format("YYYY-MM-DD"),
+    ReleaseDate: moment(unit.ReleaseDate).format('YYYY-MM-DD'),
   } as TLiveUnit;
 
   return unitObjUpdated;
 };
 
 const KEYS_OF_VALUES_TO_ENCRYPT = new Set([
-  "userAccount",
+  'userAccount',
 ] as (keyof ILocalStorage)[]);
 
 export const removeLocalStorageItem = (key: keyof ILocalStorage) => {
@@ -149,13 +149,13 @@ export const setLocalStorageItem = <
   TKey extends keyof ILocalStorage,
   TVal extends ILocalStorage[TKey]
 >(
-  key: TKey,
-  val: TVal
-) => {
-  console.log("Setting localStorage item:", key, val);
+    key: TKey,
+    val: TVal
+  ) => {
+  console.log('Setting localStorage item:', key, val);
 
-  if (KEYS_OF_VALUES_TO_ENCRYPT.has(key) && key === "userAccount") {
-    console.log("Encrypting user account data for localStorage");
+  if (KEYS_OF_VALUES_TO_ENCRYPT.has(key) && key === 'userAccount') {
+    console.log('Encrypting user account data for localStorage');
 
     const encryptedVal = CryptoJS.AES.encrypt(
       JSON.stringify(val),
@@ -168,15 +168,14 @@ export const setLocalStorageItem = <
   localStorage.setItem(key, JSON.stringify(val));
 };
 
-
 export const getLocalStorageItem = <
   TKey extends keyof ILocalStorage,
   TVal extends ILocalStorage[TKey]
 >(
-  key: TKey
-): TVal | null => {
+    key: TKey
+  ): TVal | null => {
   try {
-    if (typeof localStorage === "undefined") {
+    if (typeof localStorage === 'undefined') {
       return null;
     }
 
@@ -186,13 +185,13 @@ export const getLocalStorageItem = <
       return null;
     }
 
-    if (KEYS_OF_VALUES_TO_ENCRYPT.has(key) && key === "userAccount") {
-      console.log("Encrypted value retrieved from localStorage: ", parsableVal);
+    if (KEYS_OF_VALUES_TO_ENCRYPT.has(key) && key === 'userAccount') {
+      console.log('Encrypted value retrieved from localStorage: ', parsableVal);
       const bytes = CryptoJS.AES.decrypt(
         parsableVal,
         process.env.NEXT_PUBLIC_ENCRYPTION_KEY!
       );
-      const str = bytes.toString(CryptoJS.enc.Utf8)
+      const str = bytes.toString(CryptoJS.enc.Utf8);
       const userAccountData: TVal = JSON.parse(str);
 
       return userAccountData;
@@ -200,7 +199,7 @@ export const getLocalStorageItem = <
 
     return JSON.parse(parsableVal) as TVal;
   } catch (error) {
-    console.error("Failed to retrieve the target item. Reason: ", error);
+    console.error('Failed to retrieve the target item. Reason: ', error);
 
     return null;
   }
@@ -213,23 +212,22 @@ export const setSessionStorageItem = <
   TKey extends keyof ISessionStorage,
   TVal extends ISessionStorage[TKey]
 >(
-  key: TKey,
-  val: TVal
-) => {
-  console.log("Setting localStorage item:", key, val);
+    key: TKey,
+    val: TVal
+  ) => {
+  console.log('Setting localStorage item:', key, val);
 
   sessionStorage.setItem(key, JSON.stringify(val));
 };
-
 
 export const getSessionStorageItem = <
   TKey extends keyof ISessionStorage,
   TVal extends ISessionStorage[TKey]
 >(
-  key: TKey
-): TVal | null => {
+    key: TKey
+  ): TVal | null => {
   try {
-    if (typeof sessionStorage === "undefined") {
+    if (typeof sessionStorage === 'undefined') {
       return null;
     }
 
@@ -241,32 +239,32 @@ export const getSessionStorageItem = <
 
     return JSON.parse(parsableVal) as TVal;
   } catch (error) {
-    console.error("Failed to retrieve the target item. Reason: ", error);
+    console.error('Failed to retrieve the target item. Reason: ', error);
 
     return null;
   }
 };
 
 export const createGDriveAuthUrl = () => {
-  const authUrl = new URL("https://accounts.google.com/o/oauth2/auth");
+  const authUrl = new URL('https://accounts.google.com/o/oauth2/auth');
   // protects against CSRF attacks
   const state = Math.random().toString(36).substring(7);
   const _redirectUri = new URL(
     `${window.location.origin}/google-drive-auth-result`
   );
 
-  console.log("_redirectUri: ", _redirectUri.href);
+  console.log('_redirectUri: ', _redirectUri.href);
 
   const scopes =
-    "https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/userinfo.email";
+    'https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/userinfo.email';
   const params = [
-    ["state", state],
-    ["client_id", GOOGLE_DRIVE_PROJECT_CLIENT_ID],
-    ["redirect_uri", _redirectUri.href],
-    ["scope", scopes],
-    ["response_type", "code"],
-    ["access_type", "offline"],
-    ["prompt", "consent"],
+    ['state', state],
+    ['client_id', GOOGLE_DRIVE_PROJECT_CLIENT_ID],
+    ['redirect_uri', _redirectUri.href],
+    ['scope', scopes],
+    ['response_type', 'code'],
+    ['access_type', 'offline'],
+    ['prompt', 'consent'],
   ];
 
   for (const [key, val] of params) {
@@ -297,8 +295,8 @@ const getIsWithinTargetElements = (
 export const getIsWithinParentElement = (
   element: HTMLElement,
   selectorName: string | Set<string>,
-  attributeType: "className" | "id" = "className",
-  comparisonType: "includes" | "strictEquals"
+  attributeType: 'className' | 'id' = 'className',
+  comparisonType: 'includes' | 'strictEquals'
 ): boolean => {
   if (
     !element?.parentElement ||
@@ -306,7 +304,7 @@ export const getIsWithinParentElement = (
       attributeType in element.parentElement &&
       element?.parentElement[attributeType] === undefined)
   ) {
-    console.log("Reached end of document.");
+    console.log('Reached end of document.');
     return false;
   }
 
@@ -314,32 +312,32 @@ export const getIsWithinParentElement = (
 
   // if selectorName is a Set string, then using the value for attributeType query, check if the value appears in the array
 
-  if (comparisonType === "includes" && element.parentElement[attributeType]) {
+  if (comparisonType === 'includes' && element.parentElement[attributeType]) {
     const attributeVal = element.parentElement[attributeType];
-    const isStr = typeof element.parentElement?.[attributeType] === "string";
+    const isStr = typeof element.parentElement?.[attributeType] === 'string';
     isWithinParentElement =
-      typeof selectorName === "string"
+      typeof selectorName === 'string'
         ? isStr
           ? element.parentElement?.[attributeType]?.includes(selectorName)
           : false
         : getIsWithinTargetElements(selectorName, attributeVal);
   } else if (
-    comparisonType === "strictEquals" &&
+    comparisonType === 'strictEquals' &&
     element.parentElement[attributeType]
   ) {
     const attributeVal = element.parentElement[attributeType];
     isWithinParentElement =
       element.parentElement[attributeType] === selectorName;
     isWithinParentElement =
-      typeof selectorName === "string"
+      typeof selectorName === 'string'
         ? attributeVal === selectorName
         : selectorName.has(attributeVal);
   }
 
   if (
     element?.parentElement != null &&
-    typeof element?.parentElement === "object" &&
-    typeof element.parentElement[attributeType] === "string" &&
+    typeof element?.parentElement === 'object' &&
+    typeof element.parentElement[attributeType] === 'string' &&
     isWithinParentElement
   ) {
     return true;
@@ -353,7 +351,7 @@ export const getIsWithinParentElement = (
   );
 };
 export const getBillingTerm = (billingTermNum: 1 | 2) =>
-  billingTermNum === 1 ? "Monthly" : "Yearly";
+  billingTermNum === 1 ? 'Monthly' : 'Yearly';
 
 export const calculatePercentSaved = (
   expensivePlanPerMonth: number,

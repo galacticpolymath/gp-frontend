@@ -1,7 +1,5 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable react/jsx-max-props-per-line */
 /* eslint-disable semi */
-/* eslint-disable no-console */
+ 
 /* eslint-disable quotes */
 const Pill = ({
   txt = "Beta",

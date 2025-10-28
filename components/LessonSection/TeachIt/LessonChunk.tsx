@@ -40,22 +40,22 @@ const Chunk = ({
       <div className="border-l">
         {steps && steps.length > 0
           ? steps.map((step, index) => {
-              if (!step.StepTitle || step.Step === null) {
-                return null;
-              }
-              const stepId = `${step.StepTitle.split(" ").join(
-                "-"
-              )}-${index}`.replace(/'/g, "");
+            if (!step.StepTitle || step.Step === null) {
+              return null;
+            }
+            const stepId = `${step.StepTitle.split(" ").join(
+              "-"
+            )}-${index}`.replace(/'/g, "");
 
-              return (
-                <LessonStep
-                  key={step.Step}
-                  className="mt-3 ms-sm-1 d-grid align-items-center"
-                  id={stepId}
-                  {...step}
-                />
-              );
-            })
+            return (
+              <LessonStep
+                key={step.Step}
+                className="mt-3 ms-sm-1 d-grid align-items-center"
+                id={stepId}
+                {...step}
+              />
+            );
+          })
           : null}
       </div>
     </div>

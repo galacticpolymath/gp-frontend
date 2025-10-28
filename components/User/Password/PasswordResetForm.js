@@ -1,6 +1,5 @@
-/* eslint-disable no-console */
 /* eslint-disable react/jsx-indent-props */
-/* eslint-disable react/jsx-no-undef */
+ 
 /* eslint-disable indent */
 /* eslint-disable react/jsx-indent */
 import { IoMdEyeOff, IoMdEye } from 'react-icons/io';

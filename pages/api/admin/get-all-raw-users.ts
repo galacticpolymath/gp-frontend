@@ -11,7 +11,7 @@ export default async function handler(
     console.log('req.query: ', req.query);
     const dbType = req.query.dbType as TEnvironment;
     const emailFilters = req.query.emailFilters as (string[] | string | undefined);
-    const _emailFilters = typeof emailFilters === 'string' ? [emailFilters] : emailFilters
+    const _emailFilters = typeof emailFilters === 'string' ? [emailFilters] : emailFilters;
 
     console.log('Database Type: ', dbType);
 
