@@ -27,6 +27,33 @@ type TCopyItemProgressBarProps = Pick<
 
 export const GDRIVE_FOLDER_ORIGIN_AND_PATH = 'https://drive.google.com/drive/folders';
 
+const FolderLink: React.FC<{ targetFolderId: string }> = ({ targetFolderId }) => {
+  return (
+    <div
+      style={{
+        fontSize: '18px',
+        width: '100%',
+        display: 'inline-block',
+        wordBreak: 'break-all',
+        overflowWrap: 'break-word',
+      }}
+    >
+      Link to folder: {' '}
+      <CustomLink
+        hrefStr={`${GDRIVE_FOLDER_ORIGIN_AND_PATH}/${targetFolderId}`}
+        className="under-on-hover pointer flex-wrap"
+        style={{
+          wordBreak: 'break-all',
+          overflowWrap: 'break-word',
+        }}
+        targetLinkStr="_blank"
+      >
+        {`${GDRIVE_FOLDER_ORIGIN_AND_PATH}/${targetFolderId}`}
+      </CustomLink>
+    </div>
+  );
+};
+
 const CopyingItemsProgressBar: React.FC<TCopyItemProgressBarProps> = ({
   progress,
   total,
@@ -66,6 +93,24 @@ const CopyingItemsProgressBar: React.FC<TCopyItemProgressBarProps> = ({
         {progress}/{total} items
       </div>
     </div>
+  );
+};
+
+const LessonLinkAndProgressBar: React.FC<{
+  targetFolderId?: string;
+  total: number;
+  progress: number;
+  percent: number;
+}> = ({ targetFolderId, total, progress, percent }) => {
+  return (
+    <>
+      {targetFolderId && <FolderLink targetFolderId={targetFolderId} />}
+      <CopyingItemsProgressBar
+        progress={progress}
+        total={total}
+        percent={percent}
+      />
+    </>
   );
 };
 
@@ -181,40 +226,15 @@ const CopyingUnitToast: React.FC<CopyingUnitToastProps> = ({
           </div>
           {showProgressBar &&
           typeof percent === 'number' &&
-          typeof total === 'number' ? (
-              <>
-              {targetFolderId && (
-                  <div
-                  style={{
-                      fontSize: '18px',
-                      width: '100%',
-                      display: 'inline-block',
-                      wordBreak: 'break-all',
-                      overflowWrap: 'break-word',
-                    }}
-                >
-                  Link to folder:{' '}
-                  <CustomLink
-                      hrefStr={`${GDRIVE_FOLDER_ORIGIN_AND_PATH}/${targetFolderId}`}
-                      className="under-on-hover pointer flex-wrap"
-                      style={{
-                      wordBreak: 'break-all',
-                      overflowWrap: 'break-word',
-                    }}
-                      targetLinkStr="_blank"
-                    >
-                      {`${GDRIVE_FOLDER_ORIGIN_AND_PATH}/${targetFolderId}`}
-                    </CustomLink>
-                </div>
-                )}
-
-              <CopyingItemsProgressBar
-                  progress={progress}
-                  total={total}
-                  percent={percent}
-                />
-            </>
-            ) : jobStatus === 'ongoing' ? (
+          typeof total === 'number' && progress ? (
+            <LessonLinkAndProgressBar 
+              percent={percent} 
+              progress={progress}
+              targetFolderId={targetFolderId} 
+              total={total} 
+            />
+            )
+            : jobStatus === 'ongoing' ? (
               <div className="text-center">
                 <Spinner animation="border" className="me-2" />
               </div>

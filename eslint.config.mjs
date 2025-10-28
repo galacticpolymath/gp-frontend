@@ -38,6 +38,7 @@ export default defineConfig([
       },
     },
     rules: {
+
       '@next/next/no-img-element': 'off',
       'array-bracket-newline': ['error', 'consistent'],
       'arrow-body-style': 'off',
@@ -91,7 +92,7 @@ export default defineConfig([
       'max-len': 'off',
       'newline-per-chained-call': 'off',
       'no-confusing-arrow': 'off',
-      'no-console': 'warn',
+      'no-console': 'off',
       'no-multi-spaces': 'error',
 
       'no-multiple-empty-lines': [

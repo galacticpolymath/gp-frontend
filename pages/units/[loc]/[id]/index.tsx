@@ -6,7 +6,7 @@
 
 import Layout from "../../../../components/Layout";
 import sanitizeHtml from "sanitize-html";
-import { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import ParentLessonSection from "../../../../components/LessonSection/ParentLessonSection";
 import { ToastContainer } from "react-toastify";
 import LessonsSecsNavDots from "../../../../components/LessonSection/LessonSecsNavDots";
@@ -665,6 +665,16 @@ const LessonDetails: React.FC<IProps> = ({ lesson, unit }) => {
     };
   }, []);
 
+  useEffect(() => {
+    const lessonId = getLocalStorageItem("lessonIdToViewAfterRedirect");
+
+    if (lessonId) {
+      const lessonElement = document.getElementById(lessonId);
+      lessonElement?.scrollIntoView({ behavior: "smooth" });
+      removeLocalStorageItem("lessonIdToViewAfterRedirect");
+    }
+  }, []);
+
   if (!unit && !lesson && typeof window === "undefined") {
     return null;
   }
@@ -719,16 +729,6 @@ const LessonDetails: React.FC<IProps> = ({ lesson, unit }) => {
     defaultLink: `https://www.galacticpolymath.com/${UNITS_URL_PATH}/${_unit.numID}`,
     langLinks: _unit.headLinks ?? ([] as TUnitForUI["headLinks"]),
   };
-
-  useEffect(() => {
-    const lessonId = getLocalStorageItem("lessonIdToViewAfterRedirect");
-
-    if (lessonId) {
-      const lessonElement = document.getElementById(lessonId);
-      lessonElement?.scrollIntoView({ behavior: "smooth" });
-      removeLocalStorageItem("lessonIdToViewAfterRedirect");
-    }
-  }, []);
 
   return (
     <Layout {...layoutProps}>
