@@ -91,11 +91,13 @@ export default function Footer() {
         </div>
       </div>
       <div className="bg-dark text-center text-gray py-3 fs-7">
-        made with <span
+        made with
+        <span
           role="img"
           aria-label="heart"
           className='mx-1'
-                  >❤️
+        >
+          ❤️
         </span> by Galactic Polymath &copy; {new Date().getFullYear()}
       </div>
     </footer>

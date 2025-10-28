@@ -1,33 +1,33 @@
-import Layout from "../components/Layout";
-import LoginUI from "../components/User/Login/LoginUI";
-import Button from "../components/General/Button";
-import BootstrapBtn from "react-bootstrap/Button";
-import React, { useEffect, useMemo, useRef, useState } from "react";
-import { useRouter } from "next/router";
-import { useModalContext } from "../providers/ModalProvider";
-import axios from "axios";
-import { Modal, Spinner } from "react-bootstrap";
-import { getAllUrlVals, resetUrl } from "../globalFns";
-import { FaUserAlt } from "react-icons/fa";
-import BootstrapButton from "react-bootstrap/Button";
-import { useGetAboutUserForm } from "../customHooks/useGetAboutUserForm";
-import AboutUserModal from "../components/User/AboutUser/AboutUserModal";
-import Image from "next/image";
+import Layout from '../components/Layout';
+import LoginUI from '../components/User/Login/LoginUI';
+import Button from '../components/General/Button';
+import BootstrapBtn from 'react-bootstrap/Button';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { useRouter } from 'next/router';
+import { useModalContext } from '../providers/ModalProvider';
+import axios from 'axios';
+import { Modal, Spinner } from 'react-bootstrap';
+import { getAllUrlVals, resetUrl } from '../globalFns';
+import { FaUserAlt } from 'react-icons/fa';
+import BootstrapButton from 'react-bootstrap/Button';
+import { useGetAboutUserForm } from '../customHooks/useGetAboutUserForm';
+import AboutUserModal from '../components/User/AboutUser/AboutUserModal';
+import Image from 'next/image';
 import {
   getBillingTerm,
   getLocalStorageItem,
   removeLocalStorageItem,
   setLocalStorageItem,
-} from "../shared/fns";
-import { Magic } from "magic-sdk";
-import CustomLink from "../components/CustomLink";
-import { CONTACT_SUPPORT_EMAIL } from "../globalVars";
-import { useGpPlusModalInteraction } from "../customHooks/useGpPlusModalInteraction";
-import ThankYouModal from "../components/GpPlus/ThankYouModal";
-import { SELECTED_GP_PLUS_BILLING_TYPE } from "./gp-plus";
-import { ILocalStorage } from "../types/global";
-import useOutsetaInputValidation from "../customHooks/useOutsetaInputValidation";
-import { useHandleGpPlusCheckoutSessionModal } from "../customHooks/useHandleGpPlusCheckoutSessionModal";
+} from '../shared/fns';
+import { Magic } from 'magic-sdk';
+import CustomLink from '../components/CustomLink';
+import { CONTACT_SUPPORT_EMAIL } from '../globalVars';
+import { useGpPlusModalInteraction } from '../customHooks/useGpPlusModalInteraction';
+import ThankYouModal from '../components/GpPlus/ThankYouModal';
+import { SELECTED_GP_PLUS_BILLING_TYPE } from './gp-plus';
+import { ILocalStorage } from '../types/global';
+import useOutsetaInputValidation from '../customHooks/useOutsetaInputValidation';
+import { useHandleGpPlusCheckoutSessionModal } from '../customHooks/useHandleGpPlusCheckoutSessionModal';
 
 export const getUserAccountData = async (
   token: string,
@@ -35,10 +35,10 @@ export const getUserAccountData = async (
   customProjections: string[] = []
 ) => {
   try {
-    let _customProjections = "";
+    let _customProjections = '';
 
-    if (customProjections.every((val) => typeof val === "string")) {
-      _customProjections = customProjections.join(", ");
+    if (customProjections.every((val) => typeof val === 'string')) {
+      _customProjections = customProjections.join(', ');
     }
 
     const paramsAndHeaders = {
@@ -51,15 +51,74 @@ export const getUserAccountData = async (
     const response = await axios.get(url, paramsAndHeaders);
 
     if (response.status !== 200) {
-      throw new Error("Received a non 200 response from the server.");
+      throw new Error('Received a non 200 response from the server.');
     }
 
     return response.data;
   } catch (error) {
-    console.error("Failed to get the user account data. Reason: ", error);
+    console.error('Failed to get the user account data. Reason: ', error);
 
     return null;
   }
+};
+
+interface IUserSubscriptionProps {
+  gpPlusAnchorElementRef: React.RefObject<HTMLAnchorElement | null>;
+  handleGpPlusAccountBtnClick: () => void;
+  wasGpPlusBtnClicked: boolean;
+}
+
+const UserSubscription: React.FC<IUserSubscriptionProps> = ({
+  gpPlusAnchorElementRef,
+  handleGpPlusAccountBtnClick,
+  wasGpPlusBtnClicked,
+}) => {
+  return (
+    <>
+      <BootstrapBtn
+        onClick={handleGpPlusAccountBtnClick}
+        variant="secondary"
+        className="d-flex justify-content-center align-items-center border-0 rounded px-2 py-1"
+        disabled={false}
+        style={{
+          backgroundColor: '#1C28BD',
+          minWidth: '260px',
+          height: '64px',
+        }}
+      >
+        {wasGpPlusBtnClicked ? (
+          <Spinner className="text-dark" />
+        ) : (
+          <>
+            <Image
+              src="/plus/plus.png"
+              alt="gp_plus_logo"
+              width={40}
+              height={40}
+              style={{
+                width: '40px',
+                height: '40px',
+                objectFit: 'contain',
+              }}
+              className="mx-1"
+            />
+            <span className="text-white ms-1">My subscription</span>
+          </>
+        )}
+      </BootstrapBtn>
+      <a
+        ref={gpPlusAnchorElementRef}
+        style={{
+          zIndex: -10,
+          opacity: 0,
+        }}
+        id="gpPlusBtn"
+        className="no-underline"
+        href="https://galactic-polymath.outseta.com/profile?tab=account#o-authenticated"
+      >
+      </a>
+    </>
+  );
 };
 
 const AccountPg: React.FC = () => {
@@ -78,8 +137,8 @@ const AccountPg: React.FC = () => {
   const [isGpPlusSignUpModalDisplayed, setIsGpPlusSignUpModalDisplayed] =
     _isGpPlusSignUpModalDisplayed;
   const [gpPlusBillingPeriod, setGpPlusBillingPeriod] = useState<
-    "month" | "year"
-  >("year");
+    'month' | 'year'
+  >('year');
   const [, setNotifyModal] = _notifyModal;
   const {
     _aboutUserForm,
@@ -97,12 +156,12 @@ const AccountPg: React.FC = () => {
   const lastName = aboutUserForm.lastName;
   const gpPlusAnchorElementRef = useRef<HTMLAnchorElement | null>(null);
   const selectedBillingPeriod = useMemo(() => {
-    if (typeof window === "undefined") {
-      return "year";
+    if (typeof window === 'undefined') {
+      return 'year';
     }
 
     const selectedGpPlusBillingType = getLocalStorageItem(
-      "selectedGpPlusBillingType"
+      'selectedGpPlusBillingType'
     );
 
     return selectedGpPlusBillingType;
@@ -116,13 +175,13 @@ const AccountPg: React.FC = () => {
     }
 
     if (selectedBillingPeriod) {
-      return getBillingTerm(selectedBillingPeriod === "month" ? 1 : 2);
+      return getBillingTerm(selectedBillingPeriod === 'month' ? 1 : 2);
     }
 
     return undefined;
   }, []);
 
-  console.log("gpPlusSub: ", gpPlusSub);
+  console.log('gpPlusSub: ', gpPlusSub);
 
   useGpPlusModalInteraction(gpPlusBillingTerm, !!gpPlusSub);
 
@@ -130,11 +189,11 @@ const AccountPg: React.FC = () => {
     let wasGpPlusAccountRetrievalSuccessful = false;
 
     try {
-      const userAccount = getLocalStorageItem("userAccount");
+      const userAccount = getLocalStorageItem('userAccount');
       setWasGpPlusBtnClicked(true);
 
       console.log(
-        "userAccount?.gpPlusSubscription: ",
+        'userAccount?.gpPlusSubscription: ',
         userAccount?.gpPlusSubscription
       );
 
@@ -145,11 +204,11 @@ const AccountPg: React.FC = () => {
       ) {
         setNotifyModal({
           isDisplayed: true,
-          headerTxt: "GP Plus data retrieval error",
+          headerTxt: 'GP Plus data retrieval error',
           bodyTxt: (
             <>
               Unable to retrieve your GP Plus email. If this error persists,
-              please contact{" "}
+              please contact{' '}
               <CustomLink
                 hrefStr={CONTACT_SUPPORT_EMAIL}
                 className="ms-1 mt-2 text-break"
@@ -170,14 +229,14 @@ const AccountPg: React.FC = () => {
         return;
       }
 
-      if (!("Outseta" in window)) {
+      if (!('Outseta' in window)) {
         setNotifyModal({
           isDisplayed: true,
-          headerTxt: "GP Plus data retrieval error",
+          headerTxt: 'GP Plus data retrieval error',
           bodyTxt: (
             <>
               An error in loading your GP Plus data. Please refresh the page. If
-              this error persists, please contact{" "}
+              this error persists, please contact{' '}
               <CustomLink
                 hrefStr={CONTACT_SUPPORT_EMAIL}
                 className="ms-1 mt-2 text-break"
@@ -221,7 +280,7 @@ const AccountPg: React.FC = () => {
         gpPlusAnchorElementRef.current?.click();
       }, 500);
     } catch (error) {
-      console.error("Failed to display gp plus account modal: ", error);
+      console.error('Failed to display gp plus account modal: ', error);
     } finally {
       if (!wasGpPlusAccountRetrievalSuccessful) {
         setWasGpPlusBtnClicked(false);
@@ -233,12 +292,12 @@ const AccountPg: React.FC = () => {
     const url = new URL(window.location.href);
 
     if (
-      url.searchParams.get("show_gp_plus_account_modal") === "true" &&
-      status === "authenticated" &&
-      (gpPlusSub?.AccountStageLabel === "Subscribing" ||
-        gpPlusSub?.AccountStageLabel === "Cancelling")
+      url.searchParams.get('show_gp_plus_account_modal') === 'true' &&
+      status === 'authenticated' &&
+      (gpPlusSub?.AccountStageLabel === 'Subscribing' ||
+        gpPlusSub?.AccountStageLabel === 'Cancelling')
     ) {
-      console.log("hi there will click the gp plus button...");
+      console.log('hi there will click the gp plus button...');
       setWasGpPlusBtnClicked(true);
 
       setTimeout(() => {
@@ -250,31 +309,31 @@ const AccountPg: React.FC = () => {
     }
 
     if (
-      status === "unauthenticated" &&
-      router.asPath.includes("?") &&
+      status === 'unauthenticated' &&
+      router.asPath.includes('?') &&
       getAllUrlVals(router).some((urlParam) =>
-        urlParam.includes("duplicate-email")
+        urlParam.includes('duplicate-email')
       )
     ) {
       const paths = getAllUrlVals(router, true) as unknown as string[][];
       const providerUsedForUserEntryArr = paths.find(
-        ([urlKey]) => urlKey === "provider-used"
+        ([urlKey]) => urlKey === 'provider-used'
       );
       const providerUsed =
         providerUsedForUserEntryArr?.length === 2
           ? providerUsedForUserEntryArr[1]
           : null;
       const bodyTxt =
-        providerUsed?.toLowerCase() === "google"
-          ? "Try signing using your email and password."
-          : "Try signing in with Google.";
+        providerUsed?.toLowerCase() === 'google'
+          ? 'Try signing using your email and password.'
+          : 'Try signing in with Google.';
 
       setTimeout(() => {
         setNotifyModal({
           isDisplayed: true,
           bodyTxt: bodyTxt,
           headerTxt:
-            "Sign-in ERROR. There is an email with a different provider in our records.",
+            'Sign-in ERROR. There is an email with a different provider in our records.',
           handleOnHide: () => {
             resetUrl(router);
           },
@@ -283,14 +342,14 @@ const AccountPg: React.FC = () => {
     }
 
     const params = new URLSearchParams(window.location.search);
-    const didPasswordChange = params.get("password_changed");
+    const didPasswordChange = params.get('password_changed');
 
-    if (status === "unauthenticated" && didPasswordChange === "true") {
+    if (status === 'unauthenticated' && didPasswordChange === 'true') {
       setTimeout(() => {
         setNotifyModal({
           isDisplayed: true,
-          bodyTxt: "",
-          headerTxt: "Password updated! You can now login.",
+          bodyTxt: '',
+          headerTxt: 'Password updated! You can now login.',
           handleOnHide: () => {
             resetUrl(router);
           },
@@ -299,22 +358,22 @@ const AccountPg: React.FC = () => {
     }
 
     if (
-      status === "authenticated" &&
+      status === 'authenticated' &&
       gpPlusSub &&
-      params.get("gp_plus_subscription_bought") === "true"
+      params.get('gp_plus_subscription_bought') === 'true'
     ) {
       setIsThankYouModalDisplayed(true);
       resetUrl(router);
     }
 
-    const idToken = url.searchParams.get("magic_credential");
+    const idToken = url.searchParams.get('magic_credential');
 
     if (
-      (gpPlusSub?.AccountStageLabel === "Subscribing" ||
-        gpPlusSub?.AccountStageLabel === "Cancelling") &&
+      (gpPlusSub?.AccountStageLabel === 'Subscribing' ||
+        gpPlusSub?.AccountStageLabel === 'Cancelling') &&
       idToken
     ) {
-      console.log("GP+ page loaded with idToken: ", idToken);
+      console.log('GP+ page loaded with idToken: ', idToken);
       (window as any).Outseta.setMagicLinkIdToken(idToken);
       resetUrl(router);
     }
@@ -324,28 +383,28 @@ const AccountPg: React.FC = () => {
     const params = new URLSearchParams(window.location.search);
     const gpPlusBillingType = params.get(SELECTED_GP_PLUS_BILLING_TYPE);
 
-    console.log("gpPlusBillingType: ", gpPlusBillingType);
+    console.log('gpPlusBillingType: ', gpPlusBillingType);
 
-    if (status === "authenticated" && gpPlusBillingType) {
+    if (status === 'authenticated' && gpPlusBillingType) {
       setLocalStorageItem(
-        "selectedGpPlusBillingType",
-        gpPlusBillingType as ILocalStorage["selectedGpPlusBillingType"]
+        'selectedGpPlusBillingType',
+        gpPlusBillingType as ILocalStorage['selectedGpPlusBillingType']
       );
       setGpPlusBillingPeriod(
-        gpPlusBillingType as ILocalStorage["selectedGpPlusBillingType"]
+        gpPlusBillingType as ILocalStorage['selectedGpPlusBillingType']
       );
     }
 
     if (
-      status === "authenticated" &&
-      params.get("show_about_user_form") === "true"
+      status === 'authenticated' &&
+      params.get('show_about_user_form') === 'true'
     ) {
       setTimeout(() => {
         setIsAboutMeFormModalDisplayed(true);
       }, 300);
     } else if (
-      status === "authenticated" &&
-      params.get("will-open-account-settings-modal") === "true"
+      status === 'authenticated' &&
+      params.get('will-open-account-settings-modal') === 'true'
     ) {
       setTimeout(() => {
         setIsAccountSettingsModalOn(true);
@@ -353,16 +412,16 @@ const AccountPg: React.FC = () => {
     }
 
     const isOnMailingList =
-      localStorage.getItem("isOnMailingList") !== null
-        ? JSON.parse(localStorage.getItem("isOnMailingList") as string)
+      localStorage.getItem('isOnMailingList') !== null
+        ? JSON.parse(localStorage.getItem('isOnMailingList') as string)
         : false;
 
-    if (isOnMailingList && status === "authenticated") {
+    if (isOnMailingList && status === 'authenticated') {
       (async () => {
         try {
           const response =
             (await axios.put(
-              "/api/update-user",
+              '/api/update-user',
               {
                 email,
                 clientUrl: `${window.location.origin}/mailing-list-confirmation`,
@@ -377,37 +436,37 @@ const AccountPg: React.FC = () => {
             )) ?? {};
           const { status, data } = response;
 
-          console.log("response: ", response);
+          console.log('response: ', response);
 
           if (status !== 200) {
-            throw new Error("Failed to add user to email listing.");
+            throw new Error('Failed to add user to email listing.');
           }
 
-          console.log("Added user to mail listing. From server: ", data);
+          console.log('Added user to mail listing. From server: ', data);
 
-          localStorage.removeItem("isOnMailingList");
+          localStorage.removeItem('isOnMailingList');
         } catch (error) {
-          console.error("Failed to add user to mail listing. Reason: ", error);
+          console.error('Failed to add user to mail listing. Reason: ', error);
         }
       })();
     }
 
     if (
-      status === "authenticated" &&
-      gpPlusSub?.AccountStageLabel !== "NonMember"
+      status === 'authenticated' &&
+      gpPlusSub?.AccountStageLabel !== 'NonMember'
     ) {
-      window.Outseta?.on("signup", () => {
-        console.log("The user has signed up.");
+      window.Outseta?.on('signup', () => {
+        console.log('The user has signed up.');
 
         const gpPlusFeatureLocation = getLocalStorageItem(
-          "gpPlusFeatureLocation"
+          'gpPlusFeatureLocation'
         );
 
-        console.log("gpPlusFeatureLocation: ", gpPlusFeatureLocation);
+        console.log('gpPlusFeatureLocation: ', gpPlusFeatureLocation);
 
         // will redirect to the selected unit so that user can copy it
-        if (gpPlusFeatureLocation?.includes("#")) {
-          setLocalStorageItem("willShowGpPlusPurchaseThankYouModal", true);
+        if (gpPlusFeatureLocation?.includes('#')) {
+          setLocalStorageItem('willShowGpPlusPurchaseThankYouModal', true);
 
           window.location.href = gpPlusFeatureLocation;
 
@@ -416,7 +475,7 @@ const AccountPg: React.FC = () => {
 
         // will redirect to the account page
         if (gpPlusFeatureLocation) {
-          console.log("Will redirect the user.");
+          console.log('Will redirect the user.');
           window.location.href = `${gpPlusFeatureLocation}?gp_plus_subscription_bought=true`;
 
           return false;
@@ -432,7 +491,7 @@ const AccountPg: React.FC = () => {
 
   useOutsetaInputValidation();
 
-  if (status === "loading" || isRetrievingUserData) {
+  if (status === 'loading' || isRetrievingUserData) {
     return (
       <Layout
         className=""
@@ -446,7 +505,7 @@ const AccountPg: React.FC = () => {
         langLinks={[]}
       >
         <div
-          style={{ minHeight: "100vh" }}
+          style={{ minHeight: '100vh' }}
           className="container pt-5 mt-5 d-flex flex-column align-items-center"
         >
           <h5>Loading, please wait...</h5>
@@ -456,7 +515,7 @@ const AccountPg: React.FC = () => {
     );
   }
 
-  if (status === "unauthenticated") {
+  if (status === 'unauthenticated') {
     return (
       <Layout
         className=""
@@ -470,7 +529,7 @@ const AccountPg: React.FC = () => {
         langLinks={[]}
       >
         <div
-          style={{ minHeight: "100vh" }}
+          style={{ minHeight: '100vh' }}
           className="container pt-4 pt-sm-5 pb-2 pt-md-4"
         >
           <LoginUI
@@ -502,7 +561,7 @@ const AccountPg: React.FC = () => {
       langLinks={[]}
     >
       <div
-        style={{ minHeight: "90vh", paddingTop: "10px" }}
+        style={{ minHeight: '90vh', paddingTop: '10px' }}
         className="container pt-5 pt-sm-4"
       >
         <section className="row border-bottom pb-4">
@@ -513,7 +572,7 @@ const AccountPg: React.FC = () => {
                 alt="user_img"
                 width={35}
                 height={35}
-                style={{ objectFit: "contain" }}
+                style={{ objectFit: 'contain' }}
                 className="rounded-circle"
               />
             ) : (
@@ -528,90 +587,52 @@ const AccountPg: React.FC = () => {
           </section>
           <section className="col-12 d-flex justify-content-center align-items-center flex-column mt-1 pt-2">
             {gpPlusSub?.AccountStageLabel &&
-            !["Expired", "NonMember"].includes(gpPlusSub.AccountStageLabel) ? (
-              <>
+            !['Expired', 'NonMember'].includes(gpPlusSub.AccountStageLabel) ? (
+              <UserSubscription 
+                gpPlusAnchorElementRef={gpPlusAnchorElementRef}
+                handleGpPlusAccountBtnClick={handleGpPlusAccountBtnClick}
+                wasGpPlusBtnClicked={wasGpPlusBtnClicked}
+              />
+              ) : (
                 <BootstrapBtn
-                  onClick={handleGpPlusAccountBtnClick}
+                  onClick={() => {
+                    setLocalStorageItem(
+                      'gpPlusFeatureLocation',
+                      window.location.href
+                    );
+                    router.push('/gp-plus');
+                  }}
                   variant="secondary"
                   className="d-flex justify-content-center align-items-center border-0 rounded px-2 py-1"
-                  disabled={false}
-                  style={{
-                    backgroundColor: "#1C28BD",
-                    minWidth: "260px",
-                    height: "64px",
-                  }}
                 >
-                  {wasGpPlusBtnClicked ? (
-                    <Spinner className="text-dark" />
-                  ) : (
-                    <>
-                      <Image
-                        src="/plus/plus.png"
-                        alt="gp_plus_logo"
-                        width={40}
-                        height={40}
-                        style={{
-                          width: "40px",
-                          height: "40px",
-                          objectFit: "contain",
-                        }}
-                        className="mx-1"
-                      />
-                      <span className="text-white ms-1">My subscription</span>
-                    </>
-                  )}
+                  <span className="text-white">Upgrade To </span>
+                  <Image
+                    src="/imgs/gp-logos/gp_submark.png"
+                    alt="gp_plus_logo"
+                    width={55}
+                    height={55}
+                    style={{
+                      width: '55px',
+                      height: '55px',
+                      objectFit: 'contain',
+                    }}
+                    className="ms-1"
+                  />
                 </BootstrapBtn>
-                <a
-                  ref={gpPlusAnchorElementRef}
-                  style={{
-                    zIndex: -10,
-                    opacity: 0,
-                  }}
-                  id="gpPlusBtn"
-                  className="no-underline"
-                  href="https://galactic-polymath.outseta.com/profile?tab=account#o-authenticated"
-                ></a>
-              </>
-            ) : (
-              <BootstrapBtn
-                onClick={() => {
-                  setLocalStorageItem(
-                    "gpPlusFeatureLocation",
-                    window.location.href
-                  );
-                  router.push("/gp-plus");
-                }}
-                variant="secondary"
-                className="d-flex justify-content-center align-items-center border-0 rounded px-2 py-1"
-              >
-                <span className="text-white">Upgrade To </span>
-                <Image
-                  src="/imgs/gp-logos/gp_submark.png"
-                  alt="gp_plus_logo"
-                  width={55}
-                  height={55}
-                  style={{
-                    width: "55px",
-                    height: "55px",
-                    objectFit: "contain",
-                  }}
-                  className="ms-1"
-                />
-              </BootstrapBtn>
-            )}
+              )}
           </section>
           <section className="col-12 d-flex justify-content-center align-items-center flex-column mt-1 pt-2">
             <Button
-              defaultStyleObj={{ width: "210px" }}
+              defaultStyleObj={{ width: '210px' }}
               handleOnClick={handleViewAboutMeFormBtnClick}
               classNameStr="rounded border shadow mt-2"
             >
               <span style={{ fontWeight: 410 }} className="text-black">
-                View {"'"}About Me{"'"} form
+                View 'About Me' form
               </span>
             </Button>
             <Button
-              defaultStyleObj={{ width: "210px" }}
+              defaultStyleObj={{ width: '210px' }}
               handleOnClick={handleAccontSettingsBtnClick}
               classNameStr="rounded border shadow mt-2"
             >
@@ -624,14 +645,14 @@ const AccountPg: React.FC = () => {
         <section className="row mt-4">
           <section className="col-12 d-flex flex-column align-items-center justify-center">
             <BootstrapButton
-              onClick={() => router.push("/")}
+              onClick={() => router.push('/')}
               variant="primary"
               size="sm"
               className="p-1"
-              style={{ width: "210px" }}
+              style={{ width: '210px' }}
             >
               <span
-                style={{ fontSize: "18px", textTransform: "none" }}
+                style={{ fontSize: '18px', textTransform: 'none' }}
                 className=""
               >
                 Explore Lessons
@@ -645,7 +666,7 @@ const AccountPg: React.FC = () => {
       <Modal
         show={isGpPlusSignUpModalDisplayed}
         onShow={() => {
-          removeLocalStorageItem("wasContinueToCheckoutBtnClicked");
+          removeLocalStorageItem('wasContinueToCheckoutBtnClicked');
         }}
         onHide={() => {
           setIsGpPlusSignUpModalDisplayed(false);
