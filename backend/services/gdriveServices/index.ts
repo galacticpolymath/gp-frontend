@@ -64,6 +64,100 @@ export class GDriveItem {
   }
 }
 
+/**
+ * Create a folder in the user's Google Drive account.
+ * @param {string} folderName The name of the folder to create.
+ * @param {string} accessToken The client side user's access token.
+ * @param {string[]} parentFolderIds The ids of the folders to create the folder in.
+ * @param {number} tries The number of tries to make. Default is 3.
+ * @param {string} refreshToken The client side user's refresh token. If the user is not authenticated, it will be refreshed.
+ * @param {string} reqOriginForRefreshingToken The origin of the request that triggered the refresh of the access token.
+ * @return {Promise<{ wasSuccessful: boolean, folderId?: string, [key: string]: unknown }>} An object containing the results of the operation.
+ * The object will contain the keys of `wasSuccessful`, `folderId`, and `errMsg` and `status` if the operation failed.
+ * The `wasSuccessful` key will be set to `true` if the folder was successfully created. Otherwise, it will be set to `false`.
+ * The `folderId` key will be set to the id of the created folder if the operation was successful.
+ * The `errMsg` key will be set to the error message if the operation failed.
+ * The `status` key will be set to the error status if the operation failed.
+ * */
+export const createGDriveFolder = async (
+  folderName: string,
+  accessToken: string,
+  parentFolderIds: string[] = [],
+  tries: number = 3,
+  refreshToken?: string,
+  reqOriginForRefreshingToken?: string,
+  appProperties?: ConstructorParameters<typeof GDriveItem>['3']
+): Promise<{
+  wasSuccessful: boolean;
+  folderId?: string;
+  [key: string]: unknown;
+}> => {
+  try {
+    const folderMetadata = new GDriveItem(
+      folderName,
+      parentFolderIds,
+      'application/vnd.google-apps.folder',
+      appProperties
+    );
+    const response = await axios.post(
+      'https://www.googleapis.com/drive/v3/files?fields=id',
+      folderMetadata,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+
+    if (response.status !== 200) {
+      throw new CustomError(
+        response.data ?? 'Failed to create a lesson folder.',
+        response.status
+      );
+    }
+
+    return { wasSuccessful: true, folderId: response.data.id };
+  } catch (error: any) {
+    console.error('Error object: ', error?.response?.data?.error);
+    const errMsg = `Failed to create folder for the user. Reason: ${error?.response?.data?.error?.message}`;
+    console.log('errMsg: ', errMsg);
+    console.log('refreshToken: ', refreshToken);
+
+    if (error?.response?.data?.error?.status === 'UNAUTHENTICATED') {
+      console.log('Will refresh the auth token...');
+
+      tries -= 1;
+
+      console.log('the user is not authenticated: ', refreshToken);
+
+      const refreshTokenRes =
+        (await refreshAuthToken(refreshToken, reqOriginForRefreshingToken)) ??
+        {};
+      const { accessToken } = refreshTokenRes;
+
+      if (!accessToken) {
+        throw new Error('Failed to refresh access token');
+      }
+
+      return await createGDriveFolder(
+        folderName,
+        accessToken,
+        parentFolderIds,
+        tries,
+        refreshToken,
+        reqOriginForRefreshingToken
+      );
+    }
+
+    return {
+      wasSuccessful: false,
+      errMsg: errMsg,
+      status: error?.response?.data?.error?.status,
+    };
+  }
+};
+
 const getCanRetry = async (
   error: any,
   refreshToken: string,
@@ -149,6 +243,67 @@ export const createGoogleAdminService = async (
   });
 
   return adminService;
+};
+
+const updateFile = async (
+  fileId: string,
+  reqBody: IFile,
+  accessToken: string
+) => {
+  try {
+    const { status, data } = await axios.put<{
+      id: string;
+      [key: string]: unknown;
+    }>(`https://www.googleapis.com/drive/v2/files/${fileId}`, reqBody, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (status !== 200) {
+      throw new CustomError(
+        `Failed to update the target file. Status code: ${status}`,
+        status
+      );
+    }
+
+    return data;
+  } catch (error: any) {
+    console.error(
+      'An error has occurred. Failed to update the target file. Reason: ',
+      error
+    );
+    console.log('updateFile, error?.response?.data: ', error?.response?.data);
+
+    if (error?.response?.data?.error?.code === 404) {
+      return {
+        errType: 'notFound',
+        fileId,
+        reqBody,
+      };
+    }
+
+    if (error?.code === 'ECONNABORTED') {
+      console.log(
+        'Timeout occurred while updating the target file. Returning timeout error type.'
+      );
+
+      return { errType: 'timeout', fileId, reqBody };
+    }
+
+    if (error?.response?.data?.error?.status === 'UNAUTHENTICATED') {
+      console.log(
+        'User is not authenticated. Returning unauthenticated error type.'
+      );
+
+      return {
+        errType: 'unauthenticated',
+      };
+    }
+
+    return { errType: 'generalErr', fileId, reqBody };
+  }
 };
 
 export const renameFiles = async (
@@ -812,100 +967,6 @@ export const getUnitGDriveChildItems = async (unitId: string) => {
     );
 
     return null;
-  }
-};
-
-/**
- * Create a folder in the user's Google Drive account.
- * @param {string} folderName The name of the folder to create.
- * @param {string} accessToken The client side user's access token.
- * @param {string[]} parentFolderIds The ids of the folders to create the folder in.
- * @param {number} tries The number of tries to make. Default is 3.
- * @param {string} refreshToken The client side user's refresh token. If the user is not authenticated, it will be refreshed.
- * @param {string} reqOriginForRefreshingToken The origin of the request that triggered the refresh of the access token.
- * @return {Promise<{ wasSuccessful: boolean, folderId?: string, [key: string]: unknown }>} An object containing the results of the operation.
- * The object will contain the keys of `wasSuccessful`, `folderId`, and `errMsg` and `status` if the operation failed.
- * The `wasSuccessful` key will be set to `true` if the folder was successfully created. Otherwise, it will be set to `false`.
- * The `folderId` key will be set to the id of the created folder if the operation was successful.
- * The `errMsg` key will be set to the error message if the operation failed.
- * The `status` key will be set to the error status if the operation failed.
- * */
-export const createGDriveFolder = async (
-  folderName: string,
-  accessToken: string,
-  parentFolderIds: string[] = [],
-  tries: number = 3,
-  refreshToken?: string,
-  reqOriginForRefreshingToken?: string,
-  appProperties?: ConstructorParameters<typeof GDriveItem>['3']
-): Promise<{
-  wasSuccessful: boolean;
-  folderId?: string;
-  [key: string]: unknown;
-}> => {
-  try {
-    const folderMetadata = new GDriveItem(
-      folderName,
-      parentFolderIds,
-      'application/vnd.google-apps.folder',
-      appProperties
-    );
-    const response = await axios.post(
-      'https://www.googleapis.com/drive/v3/files?fields=id',
-      folderMetadata,
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          'Content-Type': 'application/json',
-        },
-      }
-    );
-
-    if (response.status !== 200) {
-      throw new CustomError(
-        response.data ?? 'Failed to create a lesson folder.',
-        response.status
-      );
-    }
-
-    return { wasSuccessful: true, folderId: response.data.id };
-  } catch (error: any) {
-    console.error('Error object: ', error?.response?.data?.error);
-    const errMsg = `Failed to create folder for the user. Reason: ${error?.response?.data?.error?.message}`;
-    console.log('errMsg: ', errMsg);
-    console.log('refreshToken: ', refreshToken);
-
-    if (error?.response?.data?.error?.status === 'UNAUTHENTICATED') {
-      console.log('Will refresh the auth token...');
-
-      tries -= 1;
-
-      console.log('the user is not authenticated: ', refreshToken);
-
-      const refreshTokenRes =
-        (await refreshAuthToken(refreshToken, reqOriginForRefreshingToken)) ??
-        {};
-      const { accessToken } = refreshTokenRes;
-
-      if (!accessToken) {
-        throw new Error('Failed to refresh access token');
-      }
-
-      return await createGDriveFolder(
-        folderName,
-        accessToken,
-        parentFolderIds,
-        tries,
-        refreshToken,
-        reqOriginForRefreshingToken
-      );
-    }
-
-    return {
-      wasSuccessful: false,
-      errMsg: errMsg,
-      status: error?.response?.data?.error?.status,
-    };
   }
 };
 
@@ -1598,18 +1659,6 @@ export const logFailedFileCopyToExcel = async (failedCopy: IFailedFileCopy) => {
   }
 };
 
-const checkIfAllFilesCanBeCopied = async (fileIds: string[], drive: drive_v3.Drive, email: string) => {
-  // this function will run recursively
-  try {
-    const permissionsRetrievalResultPromises = fileIds.map(fileId => {
-      return getTargetUserPermission(fileId, email, drive);
-    });
-    const permission = await Promise.all(permissionsRetrievalResultPromises);
-  } catch(error){
-
-  }
-};
-
 export const copyFiles = async (
   filesToCopy: TFileToCopy[],
   email: string,
@@ -1722,7 +1771,7 @@ export const copyFiles = async (
         name: name,
       };
 
-      copiedFiles.push(copiedFile)
+      copiedFiles.push(copiedFile);
       
       sendMessageToClient({
         fileCopied: name,
@@ -1824,66 +1873,5 @@ export const addNewGDriveLessonToTargetUser = async (
     return {
       wasSuccessful: false,
     };
-  }
-};
-
-const updateFile = async (
-  fileId: string,
-  reqBody: IFile,
-  accessToken: string
-) => {
-  try {
-    const { status, data } = await axios.put<{
-      id: string;
-      [key: string]: unknown;
-    }>(`https://www.googleapis.com/drive/v2/files/${fileId}`, reqBody, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        'Content-Type': 'application/json',
-      },
-    });
-
-    if (status !== 200) {
-      throw new CustomError(
-        `Failed to update the target file. Status code: ${status}`,
-        status
-      );
-    }
-
-    return data;
-  } catch (error: any) {
-    console.error(
-      'An error has occurred. Failed to update the target file. Reason: ',
-      error
-    );
-    console.log('updateFile, error?.response?.data: ', error?.response?.data);
-
-    if (error?.response?.data?.error?.code === 404) {
-      return {
-        errType: 'notFound',
-        fileId,
-        reqBody,
-      };
-    }
-
-    if (error?.code === 'ECONNABORTED') {
-      console.log(
-        'Timeout occurred while updating the target file. Returning timeout error type.'
-      );
-
-      return { errType: 'timeout', fileId, reqBody };
-    }
-
-    if (error?.response?.data?.error?.status === 'UNAUTHENTICATED') {
-      console.log(
-        'User is not authenticated. Returning unauthenticated error type.'
-      );
-
-      return {
-        errType: 'unauthenticated',
-      };
-    }
-
-    return { errType: 'generalErr', fileId, reqBody };
   }
 };
