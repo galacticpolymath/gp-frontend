@@ -767,7 +767,7 @@ const CopyLessonBtn: React.FC<
                   </>
                 );
 
-                if(wasSuccessful){
+                if(!wasSuccessful){
                   subtitle = (
                     <span>
                       Copy operation failed. Click{' '}

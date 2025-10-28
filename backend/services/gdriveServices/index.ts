@@ -1722,18 +1722,11 @@ export const copyFiles = async (
         name: name,
       };
 
-      // copiedFiles.push(copiedFile)
-      // sendMessageToClient({
-      //   fileCopied: name,
-      // });
-
-      wasJobSuccessful = false;
-
+      copiedFiles.push(copiedFile)
+      
       sendMessageToClient({
-        failedCopiedFile: name,
-        fileId,
+        fileCopied: name,
       });
-
     } else if (fileCopyResult?.errType) {
       console.log('fileCopyResult?.errType: ', fileCopyResult?.errType);
 
