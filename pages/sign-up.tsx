@@ -1,7 +1,3 @@
-/* eslint-disable react/jsx-curly-brace-presence */
- 
-/* eslint-disable no-console */
- 
 /* eslint-disable react/jsx-indent */
 /* eslint-disable quotes */
  
@@ -289,7 +285,7 @@ const SignUpPage: React.FC = () => {
                   handleCreateAnAccountWithGoogleBtnClick
                 }
                 callbackUrl={`${typeof window !== "undefined" ? window.location.origin : ""
-                  }/account?show_about_user_form=true`}
+                }/account?show_about_user_form=true`}
                 className="rounded shadow position-relative w-100 p-1 py-2 p-sm-2 p-xl-3 d-flex flex-row flex-sm-column justify-content-center align-items-center border google-sign-in-btn"
                 style={{ maxWidth: "600px" }}
               >
@@ -355,14 +351,14 @@ const SignUpPage: React.FC = () => {
                 <div className="d-flex col-6 flex-column">
                   <label
                     className={`d-none d-sm-block w-75 pb-0 pb-sm-1 sign-up-input-label fw-bold ${errors.has("firstName") ? "text-danger" : ""
-                      }`}
+                    }`}
                     htmlFor="first-name"
                   >
                     First name:
                   </label>
                   <label
                     className={`sign-up-input-label d-block d-sm-none w-75 pb-0 pb-sm-1 fw-bold ${errors.has("firstName") ? "text-danger" : ""
-                      }`}
+                    }`}
                     htmlFor="first-name"
                   >
                     Name:
@@ -377,12 +373,12 @@ const SignUpPage: React.FC = () => {
                       background: USER_INPUT_BACKGROUND_COLOR,
                     }}
                     className={`${inputElementsFocused.get("firstName")
-                        ? INPUT_FOCUS_BLUE_CLASSNAME
-                        : ""
-                      } ${errors.has("firstName")
-                        ? "border-danger"
-                        : "border-0 no-outline"
-                      } p-1 w-100 py-1 py-sm-2`}
+                      ? INPUT_FOCUS_BLUE_CLASSNAME
+                      : ""
+                    } ${errors.has("firstName")
+                      ? "border-danger"
+                      : "border-0 no-outline"
+                    } p-1 w-100 py-1 py-sm-2`}
                     autoFocus
                     name="firstName"
                     onChange={handleOnInputChange}
@@ -410,14 +406,14 @@ const SignUpPage: React.FC = () => {
                     background: USER_INPUT_BACKGROUND_COLOR,
                   }}
                   labelClassName={`sign-up-input-label d-block w-100 pb-1 fw-bold ${errors.has("lastName") ? "text-danger" : ""
-                    }`}
+                  }`}
                   inputPlaceholder="Last name"
                   label="Last Name: "
                   inputClassName={`${inputElementsFocused.get("lastName")
-                      ? INPUT_FOCUS_BLUE_CLASSNAME
-                      : "no-outline"
-                    } ${errors.has("lastName") ? "border-danger" : "border-0"
-                    } p-1 w-100 py-1 py-sm-2 no-outline`}
+                    ? INPUT_FOCUS_BLUE_CLASSNAME
+                    : "no-outline"
+                  } ${errors.has("lastName") ? "border-danger" : "border-0"
+                  } p-1 w-100 py-1 py-sm-2 no-outline`}
                   onFocus={handleOnFocus}
                   onBlur={handleOnBlur}
                   handleOnInputChange={handleOnInputChange}
@@ -434,14 +430,14 @@ const SignUpPage: React.FC = () => {
                     background: USER_INPUT_BACKGROUND_COLOR,
                   }}
                   labelClassName={`sign-up-input-label d-block invisible w-100 pb-1 fw-bold ${errors.has("lastName") ? "text-danger" : ""
-                    }`}
+                  }`}
                   inputPlaceholder="Last name"
                   label="X: "
                   inputClassName={`${inputElementsFocused.get("lastName")
-                      ? INPUT_FOCUS_BLUE_CLASSNAME
-                      : "no-outline"
-                    } ${errors.has("lastName") ? "border-danger" : "border-0"
-                    } p-1 w-100 py-1 py-sm-2 no-outline`}
+                    ? INPUT_FOCUS_BLUE_CLASSNAME
+                    : "no-outline"
+                  } ${errors.has("lastName") ? "border-danger" : "border-0"
+                  } p-1 w-100 py-1 py-sm-2 no-outline`}
                   onFocus={handleOnFocus}
                   onBlur={handleOnBlur}
                   handleOnInputChange={handleOnInputChange}
@@ -451,7 +447,7 @@ const SignUpPage: React.FC = () => {
                 <div className="d-flex flex-column position-relative col-sm-6">
                   <label
                     className={`${errors.has("email") ? "text-danger" : ""
-                      } d-block w-75 pb-0 sign-up-input-label pb-sm-1 fw-bold`}
+                    } d-block w-75 pb-0 sign-up-input-label pb-sm-1 fw-bold`}
                     htmlFor="email-input"
                   >
                     Email:
@@ -467,13 +463,13 @@ const SignUpPage: React.FC = () => {
                     onFocus={handleOnFocus}
                     onBlur={handleOnBlur}
                     className={`${errors.has("email")
-                        ? "error-border"
-                        : "border-0 no-outline"
-                      } ${inputElementsFocused.get("email")
-                        ? INPUT_FOCUS_BLUE_CLASSNAME
-                        : ""
-                      } ${errors.has("email") ? "text-danger" : ""
-                      } p-1 w-100 py-1 py-sm-2`}
+                      ? "error-border"
+                      : "border-0 no-outline"
+                    } ${inputElementsFocused.get("email")
+                      ? INPUT_FOCUS_BLUE_CLASSNAME
+                      : ""
+                    } ${errors.has("email") ? "text-danger" : ""
+                    } p-1 w-100 py-1 py-sm-2`}
                     name="email"
                     onChange={handleOnInputChange}
                   />
@@ -489,7 +485,7 @@ const SignUpPage: React.FC = () => {
                 <div className="d-flex flex-column position-relative col-6">
                   <label
                     className={`d-block w-75 pb-0 sign-up-input-label pb-sm-1 fw-bold ${errors.has("password") ? "text-danger" : ""
-                      }`}
+                    }`}
                     htmlFor="email-input"
                   >
                     Password:
@@ -511,7 +507,7 @@ const SignUpPage: React.FC = () => {
                       border: errors.has("password") ? "solid 1px red" : "",
                     }}
                     inputClassName={`p-1 w-100 py-1 py-sm-2 no-outline ${errors.has("password") ? "text-danger" : "border-0"
-                      }`}
+                    }`}
                     inputName="password"
                     onChange={handleOnInputChange}
                     iconContainerStyle={{
@@ -539,7 +535,7 @@ const SignUpPage: React.FC = () => {
                       border: errors.has("password") ? "solid 1px red" : "",
                     }}
                     inputClassName={`p-1 w-100 py-1 py-sm-2 no-outline ${errors.has("password") ? "text-danger" : "border-0"
-                      }`}
+                    }`}
                     inputName="password"
                     onChange={handleOnInputChange}
                     iconContainerStyle={{
@@ -567,14 +563,14 @@ const SignUpPage: React.FC = () => {
                 <div className="d-flex flex-column position-relative col-6">
                   <label
                     className={`d-sm-block d-none sign-up-input-label w-75 pb-0 pb-sm-1 fw-bold ${errors.has("confirmPassword") ? "text-danger" : ""
-                      }`}
+                    }`}
                     htmlFor="email-input"
                   >
                     Confirm password:
                   </label>
                   <label
                     className={`d-sm-none d-block invisible sign-up-input-label w-75 pb-0 pb-sm-1 fw-bold ${errors.has("confirmPassword") ? "text-danger" : ""
-                      }`}
+                    }`}
                     htmlFor="email-input"
                   >
                     X
@@ -607,7 +603,7 @@ const SignUpPage: React.FC = () => {
                         : "",
                     }}
                     inputClassName={`p-1 w-100 py-1 py-sm-2 no-outline ${errors.has("confirmPassword") ? "text-danger" : "border-0"
-                      }`}
+                    }`}
                     inputName="confirmPassword"
                     onChange={handleOnInputChange}
                     noInputBorderColorOnBlur
@@ -640,7 +636,7 @@ const SignUpPage: React.FC = () => {
                         : "",
                     }}
                     inputClassName={`p-1 w-100 py-1 py-sm-2 no-outline ${errors.has("confirmPassword") ? "text-danger" : "border-0"
-                      }`}
+                    }`}
                     inputName="confirmPassword"
                     onChange={handleOnInputChange}
                     noInputBorderColorOnBlur
