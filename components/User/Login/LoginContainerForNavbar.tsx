@@ -5,7 +5,7 @@
 /* eslint-disable react/jsx-indent-props */
 
 import { FaUserAlt } from "react-icons/fa";
-import { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useModalContext } from "../../../providers/ModalProvider";
 import Button from "../../General/Button";
 import { signOut } from "next-auth/react";
