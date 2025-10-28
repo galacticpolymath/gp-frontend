@@ -1,7 +1,4 @@
-/* eslint-disable no-unused-vars */
 /* eslint-disable indent */
-/* eslint-disable react/jsx-indent */
-/* eslint-disable react/jsx-indent-props */
 
 import React from 'react';
 import { TAboutUserFormForUI } from '../../../../providers/UserProvider';

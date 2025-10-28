@@ -1,5 +1,5 @@
-import fs from "fs";
-import axios from "axios";
+import fs from 'fs';
+import axios from 'axios';
 import { styleText } from 'node:util';
 import {
   IAboutUserFormNewFieldsV1,
@@ -7,16 +7,16 @@ import {
   TDefaultSubject,
   TUserSchemaForClient,
   TUserSchemaV2,
-} from "../../backend/models/User/types";
-import readline from "node:readline";
-import { TEnvironment } from "../../types/global";
+} from '../../backend/models/User/types';
+import readline from 'node:readline';
+import { TEnvironment } from '../../types/global';
 
 const migrateUserToV2 = (user: TUserSchemaForClient) => {
   let migratedVals: Partial<IAboutUserFormNewFieldsV1> = {};
 
   if (
-    typeof user.classroomSize?.num === "number" &&
-    typeof user.classSize === "undefined"
+    typeof user.classroomSize?.num === 'number' &&
+    typeof user.classSize === 'undefined'
   ) {
     migratedVals = {
       classSize: user.classroomSize.num ?? 0,
@@ -24,8 +24,8 @@ const migrateUserToV2 = (user: TUserSchemaForClient) => {
   }
 
   if (
-    typeof user.classroomSize?.isNotTeaching === "boolean" &&
-    typeof user.isNotTeaching === "undefined"
+    typeof user.classroomSize?.isNotTeaching === 'boolean' &&
+    typeof user.isNotTeaching === 'undefined'
   ) {
     migratedVals = {
       ...migratedVals,
@@ -35,18 +35,18 @@ const migrateUserToV2 = (user: TUserSchemaForClient) => {
 
   if (
     user.gradesOrYears?.selection &&
-    (typeof user.gradesType === "undefined" || !user.gradesType)
+    (typeof user.gradesType === 'undefined' || !user.gradesType)
   ) {
     migratedVals = {
       ...migratedVals,
       gradesType: user.gradesOrYears.selection ?? null,
     };
-    console.log("migratedVals, gradesType: ", migratedVals);
+    console.log('migratedVals, gradesType: ', migratedVals);
   }
 
   if (
     user.gradesOrYears?.ageGroupsTaught &&
-    (typeof user.gradesTaught === "undefined" ||
+    (typeof user.gradesTaught === 'undefined' ||
       user.gradesTaught?.length === 0)
   ) {
     migratedVals = {
@@ -55,34 +55,34 @@ const migrateUserToV2 = (user: TUserSchemaForClient) => {
     };
   }
 
-  if (user.name && typeof user.firstName === "undefined") {
+  if (user.name && typeof user.firstName === 'undefined') {
     migratedVals = {
       ...migratedVals,
-      firstName: user.name.first ?? "",
+      firstName: user.name.first ?? '',
     };
   }
 
-  if (user.name && typeof user.lastName === "undefined") {
+  if (user.name && typeof user.lastName === 'undefined') {
     migratedVals = {
       ...migratedVals,
-      lastName: user.name.last ?? "",
+      lastName: user.name.last ?? '',
     };
   }
 
   if (
     user.reasonsForSiteVisit &&
-    (typeof user.siteVisitReasonsDefault === "undefined" ||
+    (typeof user.siteVisitReasonsDefault === 'undefined' ||
       user.siteVisitReasonsDefault?.length === 0)
   ) {
     const defaultSelectionsEntries = Object.entries(
       user.reasonsForSiteVisit
     ).filter(([key, _]) => {
-      const keySplitted = key.split("-");
+      const keySplitted = key.split('-');
       const lastChar = keySplitted.at(-1);
 
       return (
-        typeof lastChar === "string" &&
-        lastChar !== "custom" &&
+        typeof lastChar === 'string' &&
+        lastChar !== 'custom' &&
         !isNaN(parseInt(lastChar))
       );
     });
@@ -101,21 +101,21 @@ const migrateUserToV2 = (user: TUserSchemaForClient) => {
 
   if (
     user.reasonsForSiteVisit &&
-    user.reasonsForSiteVisit["reason-for-visit-custom"] &&
-    (typeof user.siteVisitReasonsCustom === "undefined" ||
-      user.siteVisitReasonsCustom === "")
+    user.reasonsForSiteVisit['reason-for-visit-custom'] &&
+    (typeof user.siteVisitReasonsCustom === 'undefined' ||
+      user.siteVisitReasonsCustom === '')
   ) {
     migratedVals = {
       ...migratedVals,
       siteVisitReasonsCustom: user.reasonsForSiteVisit[
-        "reason-for-visit-custom"
+        'reason-for-visit-custom'
       ] as string,
     };
   }
 
   if (
     user.subjects &&
-    (typeof user.subjectsTaughtDefault === "undefined" ||
+    (typeof user.subjectsTaughtDefault === 'undefined' ||
       user.subjectsTaughtDefault?.length === 0)
   ) {
     const subjectEntries = Object.entries(
@@ -125,12 +125,12 @@ const migrateUserToV2 = (user: TUserSchemaForClient) => {
     const customSubjects: [string, string][] = [];
 
     for (const [key, _] of subjectEntries) {
-      if (!key.includes("other-subject")) {
+      if (!key.includes('other-subject')) {
         defaultSubjects.push([key, _]);
         continue;
       }
 
-      if (key.includes("other-subject")) {
+      if (key.includes('other-subject')) {
         customSubjects.push([key, _]);
       }
     }
@@ -158,7 +158,7 @@ const migrateUserToV2 = (user: TUserSchemaForClient) => {
     };
   }
 
-  console.log("migratedVals, final: ", migratedVals);
+  console.log('migratedVals, final: ', migratedVals);
 
   return migratedVals;
 };
@@ -182,311 +182,311 @@ function ask(query: string): Promise<string> {
 const RED = '\\x1b[31m';
 const DEFAULT = '\\x1b[0m';
 
-test("Will perform user test migration to v2", async () => {
+test('Will perform user test migration to v2', async () => {
   try {
-      const { MIGRATION_ACCESS_TOKEN } = process.env;
-      const headers = {
-        Authorization: `Bearer ${MIGRATION_ACCESS_TOKEN}`,
-      };
-      const dbType: TEnvironment = "production";
-      const resBody = { dbType };
-      const PROD_MIGRATION = await ask(
-        `This migration will target the ${styleText('red', dbType.toUpperCase())} database. Type 'y' to continue? (y/n)\n`
-      );
+    const { MIGRATION_ACCESS_TOKEN } = process.env;
+    const headers = {
+      Authorization: `Bearer ${MIGRATION_ACCESS_TOKEN}`,
+    };
+    const dbType: TEnvironment = 'production';
+    const resBody = { dbType };
+    const PROD_MIGRATION = await ask(
+      `This migration will target the ${styleText('red', dbType.toUpperCase())} database. Type 'y' to continue? (y/n)\n`
+    );
 
-      if (PROD_MIGRATION !== "y") {
-        console.log("Migration canceled.");
-        return;
-      }
+    if (PROD_MIGRATION !== 'y') {
+      console.log('Migration canceled.');
+      return;
+    }
 
-      const latestSchemaAnswer = await ask(
-        `Confirm that users database is using the latest schema interface without any depracated fields. Type 'y' to confirm? (y/n)\n`
-      );
+    const latestSchemaAnswer = await ask(
+      'Confirm that users database is using the latest schema interface without any depracated fields. Type \'y\' to confirm? (y/n)\n'
+    );
 
-      if (latestSchemaAnswer !== "y") {
-        console.log("Migration canceled.");
-        return;
-      }
+    if (latestSchemaAnswer !== 'y') {
+      console.log('Migration canceled.');
+      return;
+    }
 
-      const answer = await ask(
-        `The targeted database is ->'${resBody.dbType.toLowerCase()}'<-. Type 'y' to confirm and continue? (y/n)\n`
-      );
+    const answer = await ask(
+      `The targeted database is ->'${resBody.dbType.toLowerCase()}'<-. Type 'y' to confirm and continue? (y/n)\n`
+    );
 
-      if (answer !== "y") {
-        console.log("Migration canceled.");
-        return;
-      }
+    if (answer !== 'y') {
+      console.log('Migration canceled.');
+      return;
+    }
 
-      const getUsersResBody = { dbType };
-      const dbTypeAfterMigrationCheck = await ask(
-        `The database ->'${getUsersResBody.dbType.toLowerCase()}'<- that will retrieve the users after the migration in order to perform the checks. Type 'y' to confirm and continue? (y/n)\n`
-      );
+    const getUsersResBody = { dbType };
+    const dbTypeAfterMigrationCheck = await ask(
+      `The database ->'${getUsersResBody.dbType.toLowerCase()}'<- that will retrieve the users after the migration in order to perform the checks. Type 'y' to confirm and continue? (y/n)\n`
+    );
 
-      if (dbTypeAfterMigrationCheck !== "y") {
-        console.log("Migration canceled.");
-        return;
-      }
+    if (dbTypeAfterMigrationCheck !== 'y') {
+      console.log('Migration canceled.');
+      return;
+    }
 
-      console.log("Will execute the migration...");
+    console.log('Will execute the migration...');
 
-      const { data: migrationResult, status: migrationStatus } =
+    const { data: migrationResult, status: migrationStatus } =
         await axios.put<{
           usersToUpdateFromDb: IUserSchema[];
-        }>("http://localhost:3000/api/admin/migrate-to-v2-users", resBody, {
+        }>('http://localhost:3000/api/admin/migrate-to-v2-users', resBody, {
           headers,
         });
 
-      console.log(`Migration status: ${migrationStatus}`);
+    console.log(`Migration status: ${migrationStatus}`);
 
-      if (migrationStatus !== 200) {
-        throw new Error(
-          `Migration failed with status code ${migrationStatus}. ${migrationResult}`
-        );
-      }
+    if (migrationStatus !== 200) {
+      throw new Error(
+        `Migration failed with status code ${migrationStatus}. ${migrationResult}`
+      );
+    }
 
-      const { usersToUpdateFromDb: usersThatNeedToBeMigrated } =
+    const { usersToUpdateFromDb: usersThatNeedToBeMigrated } =
         migrationResult;
 
-      console.log(
-        "Sleeping for 5000 ms before retrieving all users for migration check..."
-      );
+    console.log(
+      'Sleeping for 5000 ms before retrieving all users for migration check...'
+    );
 
-      await sleep(5000);
+    await sleep(5000);
 
-      const { data: allUsersResBody, status: allUsersStatus } =
+    const { data: allUsersResBody, status: allUsersStatus } =
         await axios.get<{
-          users: Pick<TUserSchemaV2, keyof IAboutUserFormNewFieldsV1 | "_id">[];
-        }>("http://localhost:3000/api/admin/get-all-raw-users", {
+          users: Pick<TUserSchemaV2, keyof IAboutUserFormNewFieldsV1 | '_id'>[];
+        }>('http://localhost:3000/api/admin/get-all-raw-users', {
           headers,
           params: {
             dbType: getUsersResBody.dbType,
           },
         });
 
-      console.log(`All users retrieval status: ${allUsersStatus}`);
+    console.log(`All users retrieval status: ${allUsersStatus}`);
 
-      if (allUsersStatus !== 200) {
-        throw new Error(
-          `Failed to retrieve all users with status code ${allUsersStatus}. ${allUsersResBody}`
-        );
-      }
+    if (allUsersStatus !== 200) {
+      throw new Error(
+        `Failed to retrieve all users with status code ${allUsersStatus}. ${allUsersResBody}`
+      );
+    }
 
-      const { users: usersAfterMigration } = allUsersResBody;
-      const failedMigratedUsers: IUserSchema[] = [];
+    const { users: usersAfterMigration } = allUsersResBody;
+    const failedMigratedUsers: IUserSchema[] = [];
 
-      console.log(
-        `Number of users that need to be migrated: ${usersThatNeedToBeMigrated.length}`
+    console.log(
+      `Number of users that need to be migrated: ${usersThatNeedToBeMigrated.length}`
+    );
+
+    console.log('Users after migration:');
+    console.log(usersAfterMigration.length);
+    console.log('Users that needed to be migrated:');
+    console.log(usersThatNeedToBeMigrated.length);
+
+    for (const userThatNeedToBeMigrated of usersThatNeedToBeMigrated) {
+      const userAfterMigration = usersAfterMigration.find(
+        (user) =>
+          user._id.toString() === userThatNeedToBeMigrated._id.toString()
       );
 
-      console.log("Users after migration:");
-      console.log(usersAfterMigration.length);
-      console.log("Users that needed to be migrated:");
-      console.log(usersThatNeedToBeMigrated.length);
+      if (!userAfterMigration) {
+        failedMigratedUsers.push(userThatNeedToBeMigrated);
+        continue;
+      }
 
-      for (const userThatNeedToBeMigrated of usersThatNeedToBeMigrated) {
-        const userAfterMigration = usersAfterMigration.find(
-          (user) =>
-            user._id.toString() === userThatNeedToBeMigrated._id.toString()
-        );
+      console.log('userAfterMigration._id: ', userAfterMigration._id);
 
-        if (!userAfterMigration) {
-          failedMigratedUsers.push(userThatNeedToBeMigrated);
+      const userMigrationFields = migrateUserToV2(userThatNeedToBeMigrated);
+
+      for (const [keyOfValToMigrate, valToMigrate] of Object.entries(
+        userMigrationFields
+      )) {
+        console.log(`keyOfValToMigrate: ${keyOfValToMigrate}`);
+        if (!(keyOfValToMigrate in userAfterMigration)) {
+          if (
+            !failedMigratedUsers.find(
+              (user) => user._id === userThatNeedToBeMigrated._id
+            )
+          ) {
+            failedMigratedUsers.push(userThatNeedToBeMigrated);
+          }
           continue;
         }
 
-        console.log("userAfterMigration._id: ", userAfterMigration._id);
-
-        const userMigrationFields = migrateUserToV2(userThatNeedToBeMigrated);
-
-        for (const [keyOfValToMigrate, valToMigrate] of Object.entries(
-          userMigrationFields
-        )) {
-          console.log(`keyOfValToMigrate: ${keyOfValToMigrate}`);
-          if (!(keyOfValToMigrate in userAfterMigration)) {
-            if (
-              !failedMigratedUsers.find(
-                (user) => user._id === userThatNeedToBeMigrated._id
-              )
-            ) {
-              failedMigratedUsers.push(userThatNeedToBeMigrated);
-            }
-            continue;
-          }
-
-          const migratedVal =
+        const migratedVal =
             userAfterMigration[
               keyOfValToMigrate as keyof Pick<
                 TUserSchemaV2,
-                keyof IAboutUserFormNewFieldsV1 | "_id"
+                keyof IAboutUserFormNewFieldsV1 | '_id'
               >
             ];
 
-          if (
-            Array.isArray(migratedVal) &&
+        if (
+          Array.isArray(migratedVal) &&
             Array.isArray(valToMigrate) &&
             !valToMigrate.every((val) =>
               migratedVal.includes(val as TDefaultSubject)
             )
+        ) {
+          if (
+            !failedMigratedUsers.find(
+              (user) => user._id === userThatNeedToBeMigrated._id
+            )
           ) {
-            if (
-              !failedMigratedUsers.find(
-                (user) => user._id === userThatNeedToBeMigrated._id
-              )
-            ) {
-              failedMigratedUsers.push(userThatNeedToBeMigrated);
-            }
-            continue;
+            failedMigratedUsers.push(userThatNeedToBeMigrated);
           }
+          continue;
+        }
 
-          if (Array.isArray(migratedVal) && Array.isArray(valToMigrate)) {
-            console.log(
-              "Values of array successfully migrated into their target array."
-            );
-            continue;
+        if (Array.isArray(migratedVal) && Array.isArray(valToMigrate)) {
+          console.log(
+            'Values of array successfully migrated into their target array.'
+          );
+          continue;
+        }
+
+        if (migratedVal !== valToMigrate) {
+          console.error(
+            `The field ${keyOfValToMigrate} has been failed to be migrated for user ${userThatNeedToBeMigrated._id}.`
+          );
+
+          console.log(`migratedVal: ${migratedVal}`);
+          console.log(`valToMigrate: ${valToMigrate}`);
+
+          if (
+            !failedMigratedUsers.find(
+              (user) => user._id === userThatNeedToBeMigrated._id
+            )
+          ) {
+            failedMigratedUsers.push(userThatNeedToBeMigrated);
           }
-
-          if (migratedVal !== valToMigrate) {
-            console.error(
-              `The field ${keyOfValToMigrate} has been failed to be migrated for user ${userThatNeedToBeMigrated._id}.`
-            );
-
-            console.log(`migratedVal: ${migratedVal}`);
-            console.log(`valToMigrate: ${valToMigrate}`);
-
-            if (
-              !failedMigratedUsers.find(
-                (user) => user._id === userThatNeedToBeMigrated._id
-              )
-            ) {
-              failedMigratedUsers.push(userThatNeedToBeMigrated);
-            }
-            continue;
-          }
+          continue;
         }
       }
-
-      console.log(
-        `Number of users that failed to migrate: ${failedMigratedUsers.length}`
-      );
-
-      if (failedMigratedUsers.length) {
-        const failedMigratedUsersCount = failedMigratedUsers.length;
-
-        console.log(
-          `Number of failed migrated users: ${failedMigratedUsersCount}`
-        );
-
-        if (failedMigratedUsersCount) {
-          fs.writeFileSync(
-            "failedMigratedUsers.json",
-            JSON.stringify(failedMigratedUsers, null, 2)
-          );
-        }
-
-        throw new Error(
-          "Some users failed to be migrated to the new schema. Please check the server logs for more information."
-        );
-      }
-
-      console.log(
-        "Successfully migrated all users. Will delete deprecated fields..."
-      );
-
-      const { status: deleteDepracetedFieldsStatus } = await axios.delete<{
-        users: Pick<TUserSchemaV2, keyof IAboutUserFormNewFieldsV1 | "_id">[];
-      }>("http://localhost:3000/api/admin/delete-deprecated-fields", {
-        headers,
-        params: {
-          dbType: getUsersResBody.dbType,
-        },
-      });
-
-      if (deleteDepracetedFieldsStatus !== 200) {
-        throw new Error(
-          `Failed to delete deprecated fields with status code ${deleteDepracetedFieldsStatus}.`
-        );
-      }
-
-      console.log(
-        "Sleeping for 5000 ms before retrieving all users delete deprecated fields check..."
-      );
-
-      await sleep(5000);
-
-      const {
-        data: allUsersResBodyAfterPropsDeletion,
-        status: allUsersStatusAfterPropsDeletion,
-      } = await axios.get<{
-        users: Pick<TUserSchemaV2, keyof IAboutUserFormNewFieldsV1 | "_id">[];
-      }>("http://localhost:3000/api/admin/get-all-raw-users", {
-        headers,
-        params: {
-          dbType: getUsersResBody.dbType,
-        },
-      });
-
-      if (allUsersStatusAfterPropsDeletion !== 200) {
-        throw new Error(
-          `Failed to retrieve all users with status code ${allUsersStatusAfterPropsDeletion}. ${allUsersResBodyAfterPropsDeletion}`
-        );
-      }
-
-      const usersWithDeprecatedFields: IUserSchema[] = [];
-
-      for (const _user of allUsersResBodyAfterPropsDeletion.users) {
-        const user = _user as IUserSchema;
-        const didDeleteFields =
-          !("gradesOrYears" in user) &&
-          !("name" in user) &&
-          !("reasonsForSiteVisit" in user) &&
-          !("subjects" in user) &&
-          !("classroomSize" in user);
-
-        if (!didDeleteFields) {
-          usersWithDeprecatedFields.push(user);
-        }
-      }
-
-      console.log(
-        "usersWithDeprecatedFields.length: ",
-        usersWithDeprecatedFields.length
-      );
-
-      if (failedMigratedUsers.length || usersWithDeprecatedFields.length) {
-        const failedMigratedUsersCount = failedMigratedUsers.length;
-
-        console.log(
-          `Number of failed migrated users: ${failedMigratedUsersCount}`
-        );
-
-        console.log(
-          `Number of failed migrated users, usersWithDeprecatedFields: ${usersWithDeprecatedFields.length}`
-        );
-
-        if (failedMigratedUsersCount) {
-          fs.writeFileSync(
-            "failedMigratedUsers.json",
-            JSON.stringify(failedMigratedUsers, null, 2)
-          );
-        }
-
-        if (usersWithDeprecatedFields.length) {
-          fs.writeFileSync(
-            "usersWithDeprecatedFields.json",
-            JSON.stringify(usersWithDeprecatedFields, null, 2)
-          );
-        }
-
-        throw new Error(
-          "Some users failed to be migrated to the new schema. Please check the server logs for more information."
-        );
-      }
-
-      console.log("Migration had successfully completed.");
-      expect(true).toBe(true);
-    } catch (error) {
-      console.error("An error occurred during the migration process:", error);
-
-      expect(true).toBe(false);
     }
+
+    console.log(
+      `Number of users that failed to migrate: ${failedMigratedUsers.length}`
+    );
+
+    if (failedMigratedUsers.length) {
+      const failedMigratedUsersCount = failedMigratedUsers.length;
+
+      console.log(
+        `Number of failed migrated users: ${failedMigratedUsersCount}`
+      );
+
+      if (failedMigratedUsersCount) {
+        fs.writeFileSync(
+          'failedMigratedUsers.json',
+          JSON.stringify(failedMigratedUsers, null, 2)
+        );
+      }
+
+      throw new Error(
+        'Some users failed to be migrated to the new schema. Please check the server logs for more information.'
+      );
+    }
+
+    console.log(
+      'Successfully migrated all users. Will delete deprecated fields...'
+    );
+
+    const { status: deleteDepracetedFieldsStatus } = await axios.delete<{
+        users: Pick<TUserSchemaV2, keyof IAboutUserFormNewFieldsV1 | '_id'>[];
+      }>('http://localhost:3000/api/admin/delete-deprecated-fields', {
+        headers,
+        params: {
+          dbType: getUsersResBody.dbType,
+        },
+      });
+
+    if (deleteDepracetedFieldsStatus !== 200) {
+      throw new Error(
+        `Failed to delete deprecated fields with status code ${deleteDepracetedFieldsStatus}.`
+      );
+    }
+
+    console.log(
+      'Sleeping for 5000 ms before retrieving all users delete deprecated fields check...'
+    );
+
+    await sleep(5000);
+
+    const {
+      data: allUsersResBodyAfterPropsDeletion,
+      status: allUsersStatusAfterPropsDeletion,
+    } = await axios.get<{
+        users: Pick<TUserSchemaV2, keyof IAboutUserFormNewFieldsV1 | '_id'>[];
+      }>('http://localhost:3000/api/admin/get-all-raw-users', {
+        headers,
+        params: {
+          dbType: getUsersResBody.dbType,
+        },
+      });
+
+    if (allUsersStatusAfterPropsDeletion !== 200) {
+      throw new Error(
+        `Failed to retrieve all users with status code ${allUsersStatusAfterPropsDeletion}. ${allUsersResBodyAfterPropsDeletion}`
+      );
+    }
+
+    const usersWithDeprecatedFields: IUserSchema[] = [];
+
+    for (const _user of allUsersResBodyAfterPropsDeletion.users) {
+      const user = _user as IUserSchema;
+      const didDeleteFields =
+          !('gradesOrYears' in user) &&
+          !('name' in user) &&
+          !('reasonsForSiteVisit' in user) &&
+          !('subjects' in user) &&
+          !('classroomSize' in user);
+
+      if (!didDeleteFields) {
+        usersWithDeprecatedFields.push(user);
+      }
+    }
+
+    console.log(
+      'usersWithDeprecatedFields.length: ',
+      usersWithDeprecatedFields.length
+    );
+
+    if (failedMigratedUsers.length || usersWithDeprecatedFields.length) {
+      const failedMigratedUsersCount = failedMigratedUsers.length;
+
+      console.log(
+        `Number of failed migrated users: ${failedMigratedUsersCount}`
+      );
+
+      console.log(
+        `Number of failed migrated users, usersWithDeprecatedFields: ${usersWithDeprecatedFields.length}`
+      );
+
+      if (failedMigratedUsersCount) {
+        fs.writeFileSync(
+          'failedMigratedUsers.json',
+          JSON.stringify(failedMigratedUsers, null, 2)
+        );
+      }
+
+      if (usersWithDeprecatedFields.length) {
+        fs.writeFileSync(
+          'usersWithDeprecatedFields.json',
+          JSON.stringify(usersWithDeprecatedFields, null, 2)
+        );
+      }
+
+      throw new Error(
+        'Some users failed to be migrated to the new schema. Please check the server logs for more information.'
+      );
+    }
+
+    console.log('Migration had successfully completed.');
+    expect(true).toBe(true);
+  } catch (error) {
+    console.error('An error occurred during the migration process:', error);
+
+    expect(true).toBe(false);
+  }
 }, 100_000_000);

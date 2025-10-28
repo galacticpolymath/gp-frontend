@@ -1,7 +1,3 @@
-/* eslint-disable no-debugger */
-/* eslint-disable no-unused-vars */
-/* eslint-disable no-console */
-/* eslint-disable quotes */
 import PropTypes from 'prop-types';
 import Overview from './Overview';
 import Heading from './Heading.js';

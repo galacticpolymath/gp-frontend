@@ -1,8 +1,7 @@
 /* eslint-disable react/jsx-indent */
 /* eslint-disable react/jsx-indent-props */
 /* eslint-disable indent */
-/* eslint-disable no-unused-vars */
-/* eslint-disable object-curly-spacing */
+ 
 /* eslint-disable curly */
 /* eslint-disable quotes */
 import React, { useEffect, useState } from "react";

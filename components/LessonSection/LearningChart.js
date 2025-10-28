@@ -1,5 +1,3 @@
-/* eslint-disable no-console */
-/* eslint-disable no-unused-vars */
 import Accordion from '../Accordion';
 import RichText from '../RichText';
 import Image from 'next/image';

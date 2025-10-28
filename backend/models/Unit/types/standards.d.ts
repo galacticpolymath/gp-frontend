@@ -1,6 +1,6 @@
-import { IRootFieldToRetrieve } from "../RootFieldsToRetrieve";
-import { IUnitSectionObj } from "../Section";
-import { INewUnitSchema } from "./unit";
+import { IRootFieldToRetrieve } from '../RootFieldsToRetrieve';
+import { IUnitSectionObj } from '../Section';
+import { INewUnitSchema } from './unit';
 
 export interface IStandard {
     lessons: string[];
@@ -59,8 +59,6 @@ export interface IStandards extends IUnitSectionObj {
     rootFieldsToRetrieveForUI?: IRootFieldToRetrieve[];
 }
 
+export type TStandardsForUI = IStandards & Partial<Pick<INewUnitSchema, 'GradesOrYears'>> 
 
-
-export type TStandardsForUI = IStandards & Partial<Pick<INewUnitSchema, "GradesOrYears">> 
-
-export { IStandardsSec, TStandardsForUI }
+export { IStandardsSec, TStandardsForUI };

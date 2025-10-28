@@ -1,10 +1,3 @@
-/* eslint-disable brace-style */
-/* eslint-disable react/jsx-wrap-multilines */
-/* eslint-disable react/jsx-closing-bracket-location */
-/* eslint-disable react/jsx-closing-tag-location */
-/* eslint-disable no-multiple-empty-lines */
-/* eslint-disable no-unused-vars */
-/* eslint-disable no-console */
 import { Carousel as RRCarousel } from 'react-responsive-carousel';
 import PropTypes from 'prop-types';
 

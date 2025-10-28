@@ -1,9 +1,8 @@
-/* eslint-disable no-console */
 /* eslint-disable indent */
 /* eslint-disable semi */
 /* eslint-disable no-undef */
 /* eslint-disable quotes */
-/* eslint-disable no-multiple-empty-lines */
+ 
 const filterResults = require('../../helperFns/filterResults');
 
 const level2IdResults = [149, 128, 121]

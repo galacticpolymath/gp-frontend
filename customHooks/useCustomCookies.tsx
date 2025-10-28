@@ -1,4 +1,4 @@
-import { useCookies } from "react-cookie";
+import { useCookies } from 'react-cookie';
 import cookies from 'js-cookie';
 
 interface IAppCookies {
@@ -14,13 +14,13 @@ export const useCustomCookies = () => {
   const clearCookies = () => {
     const siteCookieKeys = Object.keys(cookies.get());
 
-    console.log("siteCookieKeys, sup there: ", siteCookieKeys);
+    console.log('siteCookieKeys, sup there: ', siteCookieKeys);
 
     for (const cookieKey of siteCookieKeys) {
-      cookies.remove(cookieKey, { path: "/" });
+      cookies.remove(cookieKey, { path: '/' });
     }
 
-    console.log("document.cookie: ", document.cookie);
+    console.log('document.cookie: ', document.cookie);
   };
 
   const getCookies = <TKey extends keyof IAppCookies>(
@@ -42,13 +42,13 @@ export const useCustomCookies = () => {
     TKey extends keyof IAppCookies,
     TVal extends IAppCookies[TKey]
   >(
-    key: TKey,
-    val: TVal,
-    options?: Parameters<typeof cookies.set>[2]
-  ) => {
+      key: TKey,
+      val: TVal,
+      options?: Parameters<typeof cookies.set>[2]
+    ) => {
     cookies.set(
       key,
-      typeof val === "string" ? val : JSON.stringify(val),
+      typeof val === 'string' ? val : JSON.stringify(val),
       options
     );
   };

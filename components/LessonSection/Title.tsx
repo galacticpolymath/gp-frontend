@@ -1,4 +1,3 @@
-/* eslint-disable no-debugger */
 /* eslint-disable quotes */
 /* eslint-disable indent */
 

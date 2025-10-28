@@ -1,17 +1,17 @@
-import { SUBJECTS_OPTIONS } from "../../../components/User/AboutUser/AboutUserModal";
-import { TSchoolType, TUserAccount } from "../../../providers/UserProvider";
-import { TReferredByOpt } from "../../../types/global";
+import { SUBJECTS_OPTIONS } from '../../../components/User/AboutUser/AboutUserModal';
+import { TSchoolType, TUserAccount } from '../../../providers/UserProvider';
+import { TReferredByOpt } from '../../../types/global';
 import {
   getBillingType,
   getGpPlusMembership,
-} from "../../services/outsetaServices";
+} from '../../services/outsetaServices';
 import {
   TAccountStageLabel,
   TGpPlusMembershipRetrieved,
-} from "../../services/userServices";
-import { TAboutUserFormDeprecated } from "./deprecated";
+} from '../../services/userServices';
+import { TAboutUserFormDeprecated } from './deprecated';
 
-export type TAgeGroupSelection = "U.S." | "Outside U.S.";
+export type TAgeGroupSelection = 'U.S.' | 'Outside U.S.';
 
 export interface IAgeGroupsSelection {
   selection: TAgeGroupSelection | null;
@@ -20,11 +20,11 @@ export interface IAgeGroupsSelection {
 
 export type TDefaultSubject = Exclude<
   (typeof SUBJECTS_OPTIONS)[number],
-  "other:"
+  'other:'
 >;
 
 interface IAboutUserFormNewFieldsV1 {
-  gradesType?: IAgeGroupsSelection["selection"];
+  gradesType?: IAgeGroupsSelection['selection'];
   gradesTaught?: string[];
   firstName?: string;
   lastName?: string;
@@ -106,7 +106,7 @@ type TGpPlusMembershipStatus = Awaited<ReturnType<typeof getGpPlusMembership>>;
 
 export type TGpPlusSubscriptionForClient = Omit<
   Awaited<ReturnType<typeof getGpPlusMembership>>,
-  "BillingRenewalTerm" | "AccountStageLabel" | "Account" | "email"
+  'BillingRenewalTerm' | 'AccountStageLabel' | 'Account' | 'email'
 > & {
   BillingRenewalTerm?: ReturnType<typeof getBillingType>[0];
   AccountStageLabel: TAccountStageLabel;
@@ -118,4 +118,4 @@ export type TUserClientProps = {
   viewingUnitFolderCopyId?: string;
 };
 export type TUserSchemaForClient<TUserSchema extends object = TUserSchemaV2> =
-  TUserSchema & TUserClientProps & Pick<TUserAccount, "isOnMailingList">;
+  TUserSchema & TUserClientProps & Pick<TUserAccount, 'isOnMailingList'>;

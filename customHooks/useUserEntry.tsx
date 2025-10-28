@@ -1,6 +1,5 @@
-/* eslint-disable no-useless-escape */
 /* eslint-disable no-console */
-/* eslint-disable indent */
+ 
 /* eslint-disable quotes */
 import axios from "axios";
 import { signIn } from "next-auth/react";

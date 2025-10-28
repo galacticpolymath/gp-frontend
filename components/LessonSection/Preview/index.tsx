@@ -1,6 +1,3 @@
-/* eslint-disable react/jsx-max-props-per-line */
-/* eslint-disable no-unused-vars */
-/* eslint-disable no-console */
 import PropTypes from 'prop-types';
 import { useRef } from 'react';
 import useLessonElementInView from '../../../customHooks/useLessonElementInView';

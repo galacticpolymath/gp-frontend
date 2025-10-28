@@ -1,15 +1,10 @@
 /* eslint-disable react/jsx-indent */
-/* eslint-disable react/jsx-indent-props */
+ 
 /* eslint-disable indent */
-/* eslint-disable react/jsx-max-props-per-line */
-/* eslint-disable curly */
-/* eslint-disable react/jsx-wrap-multilines */
-/* eslint-disable react/jsx-closing-bracket-location */
-/* eslint-disable react/jsx-closing-tag-location */
-/* eslint-disable no-unused-vars */
+ 
 /* eslint-disable semi */
 /* eslint-disable quotes */
-/* eslint-disable no-console */
+ 
 import CompanyPartners from '../../../data/AboutPg/Partners.json';
 import Image from 'next/image'
 import Partner from '../sectionChildren/Partner';

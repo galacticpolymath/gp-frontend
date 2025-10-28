@@ -1,6 +1,6 @@
-import { IRootFieldToRetrieve } from "../RootFieldsToRetrieve";
-import { IUnitSectionObj } from "../Section";
-import { IRelease } from "../VersionNotes";
+import { IRootFieldToRetrieve } from '../RootFieldsToRetrieve';
+import { IUnitSectionObj } from '../Section';
+import { IRelease } from '../VersionNotes';
 
 export interface ITag {
   Value: string;
@@ -76,14 +76,14 @@ export interface IUnitOverview {
 }
 
 export type TUnitOverviewPropsForUI = Partial<{
-  unitBanner: INewUnitSchema["UnitBanner"];
-  unitTitle: INewUnitSchema["Title"];
-  ForGrades: INewUnitSchema["ForGrades"];
-  TargetSubject: INewUnitSchema["TargetSubject"];
-  GradesOrYears: INewUnitSchema["GradesOrYears"];
-  numID: INewUnitSchema["numID"];
-  locale: INewUnitSchema["locale"];
-  Subtitle: INewUnitSchema["Subtitle"];
+  unitBanner: INewUnitSchema['UnitBanner'];
+  unitTitle: INewUnitSchema['Title'];
+  ForGrades: INewUnitSchema['ForGrades'];
+  TargetSubject: INewUnitSchema['TargetSubject'];
+  GradesOrYears: INewUnitSchema['GradesOrYears'];
+  numID: INewUnitSchema['numID'];
+  locale: INewUnitSchema['locale'];
+  Subtitle: INewUnitSchema['Subtitle'];
   availLocs: string[];
 }>;
 

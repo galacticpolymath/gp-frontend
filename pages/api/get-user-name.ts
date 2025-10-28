@@ -1,6 +1,5 @@
 /* eslint-disable quotes */
 /* eslint-disable no-console */
-/* eslint-disable indent */
 
 import {
   getUserByEmail,
@@ -20,7 +19,7 @@ const PROJECTIONS: Partial<
 > = {
   firstName: 1,
   lastName: 1,
-  _id: 0
+  _id: 0,
 } as const;
 
 export default async function handler(
@@ -55,7 +54,6 @@ export default async function handler(
     if (!userAccount) {
       throw new CustomError("User not found.", 404);
     }
-
 
     return response.status(200).json({ firstName: userAccount.firstName, lastName: userAccount.lastName });
   } catch (error: any) {

@@ -1,7 +1,6 @@
-/* eslint-disable no-console */
 /* eslint-disable react/jsx-max-props-per-line */
 /* eslint-disable react/destructuring-assignment */
-/* eslint-disable react/jsx-indent-props */
+ 
 import Hero from '../components/Hero';
 import Layout from '../components/Layout';
 import styles from './index.module.css';

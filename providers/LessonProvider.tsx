@@ -1,8 +1,5 @@
-/* eslint-disable react/jsx-indent-props */
-/* eslint-disable indent */
-/* eslint-disable react/jsx-indent */
 /* eslint-disable quotes */
-import { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useState } from "react";
 import { TUseStateReturnVal } from "../types/global";
 import { TFileToCopy } from "../backend/services/gdriveServices/types";
 import {
@@ -14,7 +11,11 @@ type TSelectedLessonToCopy = {
   id: string;
   willOpenGDrivePicker: boolean;
 };
-type TFailedCopiedLessonFile = TFileToCopy[] | null;
+interface IFailedLessonCopyBugReport {
+  failedCopiedLessons: TFileToCopy[];
+  unitName: string;
+  lessonName: string;
+}
 export type TSelectedLessonItems = {
   index: number;
   items: (IItemV2Props & Pick<IItemV2, "itemCat" | "links">)[];
@@ -25,7 +26,7 @@ export type TIdsOfLessonsBeingCopied = Set<string>;
 export type TLessonProviderVal = {
   _lessonToCopy: TUseStateReturnVal<TSelectedLessonToCopy | null>;
   _lessonsCopyJobs: TUseStateReturnVal<string[]>;
-  _failedCopiedLessonFiles: TUseStateReturnVal<TFailedCopiedLessonFile>;
+  _failedLessonCopyBugReport: TUseStateReturnVal<IFailedLessonCopyBugReport | null>;
   _selectedLessonItems: TUseStateReturnVal<TSelectedLessonItems>;
   _idsOfLessonsBeingCopied: TUseStateReturnVal<TIdsOfLessonsBeingCopied>;
 };
@@ -42,8 +43,8 @@ export const LessonProvider: React.FC<{ children: React.ReactNode }> = ({
   const [selectedLessonItems, setSelectedLessonItems] =
     useState<TSelectedLessonItems>(null);
   const [lessonsCopyJobs, setLessonsCopyJobs] = useState<string[]>([]);
-  const [failedCopiedLessonFiles, setFailedCopiedLessonFiles] =
-    useState<TFailedCopiedLessonFile>(null);
+  const [failedLessonCopyBugReport, setFailedLessonCopyBugReport] =
+    useState<IFailedLessonCopyBugReport | null>(null);
   const value: TLessonProviderVal = {
     _idsOfLessonsBeingCopied: [
       idsOfLessonsBeingCopied,
@@ -52,9 +53,9 @@ export const LessonProvider: React.FC<{ children: React.ReactNode }> = ({
     _selectedLessonItems: [selectedLessonItems, setSelectedLessonItems],
     _lessonToCopy: [lessonToCopy, setLessonToCopy],
     _lessonsCopyJobs: [lessonsCopyJobs, setLessonsCopyJobs],
-    _failedCopiedLessonFiles: [
-      failedCopiedLessonFiles,
-      setFailedCopiedLessonFiles,
+    _failedLessonCopyBugReport: [
+      failedLessonCopyBugReport,
+      setFailedLessonCopyBugReport,
     ],
   };
 

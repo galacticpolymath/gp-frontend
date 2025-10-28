@@ -1,4 +1,4 @@
-import { IUnitSectionObj } from "../Section";
+import { IUnitSectionObj } from '../Section';
 
 interface IRecord {
     name: string;

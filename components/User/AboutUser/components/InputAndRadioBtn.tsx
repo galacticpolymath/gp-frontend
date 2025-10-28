@@ -1,5 +1,3 @@
-/* eslint-disable no-unused-vars */
-
 import React, { JSX } from 'react';
 import { TInputType } from '../../../../types/global';
 import { TAboutUserFormForUI } from '../../../../providers/UserProvider';

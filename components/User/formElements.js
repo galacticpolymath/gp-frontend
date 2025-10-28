@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 /* eslint-disable react/jsx-indent */
 /* eslint-disable quotes */
 /* eslint-disable react/jsx-indent-props */
