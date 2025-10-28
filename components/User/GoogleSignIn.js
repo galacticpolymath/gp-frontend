@@ -1,5 +1,3 @@
-/* eslint-disable no-console */
- 
 /* eslint-disable quotes */
 /* eslint-disable react/jsx-indent */
 /* eslint-disable indent */
@@ -35,7 +33,11 @@ const GoogleSignIn = ({
         try {
             event.preventDefault();
 
-            removeAppCookies(["gdriveAccessToken", "gdriveAccessTokenExp", "gdriveRefreshToken"]);
+            removeAppCookies([
+                "gdriveAccessToken",
+                "gdriveAccessTokenExp",
+                "gdriveRefreshToken",
+            ]);
 
             if (typeof executeExtraBtnClickLogic === "function") {
                 executeExtraBtnClickLogic();
@@ -53,9 +55,9 @@ const GoogleSignIn = ({
 
             signIn("google", { callbackUrl: callbackUrl });
         } catch (error) {
-            console.log('An error has occurred: ', error);
+            console.log("An error has occurred: ", error);
         } finally {
-            if (typeof executeFinallyBlockLogic === 'function') {
+            if (typeof executeFinallyBlockLogic === "function") {
                 executeFinallyBlockLogic();
             }
         }
