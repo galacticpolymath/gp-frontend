@@ -1,34 +1,30 @@
-/* eslint-disable react/jsx-wrap-multilines */
- 
-/* eslint-disable quotes */
-/* eslint-disable no-console */
-import { format } from "date-fns";
-import Image from "next/image";
-import RichText from "../../../../../components/RichText";
-import { useRouter } from "next/router";
-import Link from "next/link";
-import Lessons from "../../../../../backend/models/lesson";
-import { connectToMongodb } from "../../../../../backend/utils/connection";
-import { getLinkPreview } from "link-preview-js";
-import GistCard from "../../../../../components/LessonSection/GistCard";
-import LessonPartBtn from "../../../../../components/LessonSection/TeachIt/LessonPartBtn";
-import { FiExternalLink } from "react-icons/fi";
-import QRCode from "react-qr-code";
-import { getLatestSubRelease } from "../../../../../helperFns/getLatestSubRelease";
-import Logo from "../../../../../assets/img/galactic_polymath_white.png";
-import CustomLink from "../../../../../components/CustomLink";
-import Units from "../../../../../backend/models/Unit";
-import { retrieveUnits } from "../../../../../backend/services/unitServices";
+import { format } from 'date-fns';
+import Image from 'next/image';
+import RichText from '../../../../../components/RichText';
+import { useRouter } from 'next/router';
+import Link from 'next/link';
+import Lessons from '../../../../../backend/models/lesson';
+import { connectToMongodb } from '../../../../../backend/utils/connection';
+import { getLinkPreview } from 'link-preview-js';
+import GistCard from '../../../../../components/LessonSection/GistCard';
+import LessonPartBtn from '../../../../../components/LessonSection/TeachIt/LessonPartBtn';
+import { FiExternalLink } from 'react-icons/fi';
+import QRCode from 'react-qr-code';
+import { getLatestSubRelease } from '../../../../../helperFns/getLatestSubRelease';
+import Logo from '../../../../../assets/img/galactic_polymath_white.png';
+import CustomLink from '../../../../../components/CustomLink';
+import Units from '../../../../../backend/models/Unit';
+import { retrieveUnits } from '../../../../../backend/services/unitServices';
 import {
   INewUnitSchema,
   ISections,
   TFeaturedMultimediaForUI,
-} from "../../../../../backend/models/Unit/types/unit";
-import { IUnitOverview } from "../../../../../backend/models/Unit/types/overview";
-import { IStandards } from "../../../../../backend/models/Unit/types/standards";
-import { IUnitTeachingMaterials } from "../../../../../backend/models/Unit/types/teachingMaterials";
-import UnitPreviewUI from "../../../../../components/UnitPreview/UnitPreviewUI";
-import { UNITS_URL_PATH } from "../../../../../shared/constants";
+} from '../../../../../backend/models/Unit/types/unit';
+import { IUnitOverview } from '../../../../../backend/models/Unit/types/overview';
+import { IStandards } from '../../../../../backend/models/Unit/types/standards';
+import { IUnitTeachingMaterials } from '../../../../../backend/models/Unit/types/teachingMaterials';
+import UnitPreviewUI from '../../../../../components/UnitPreview/UnitPreviewUI';
+import { UNITS_URL_PATH } from '../../../../../shared/constants';
 
 interface IProps {
   lesson?: any;
@@ -44,28 +40,28 @@ const LessonPreview = ({ lesson, unit }: IProps) => {
     : {};
   const router = useRouter();
   const linkUrlDomain =
-    typeof window === "undefined" ? "" : window.location.origin;
-  const isLesson4 = router.query.id === "4";
+    typeof window === 'undefined' ? '' : window.location.origin;
+  const isLesson4 = router.query.id === '4';
   let sectionComps = null;
 
   if (lesson) {
     sectionComps = Object.values(lesson.Section).filter((section) => {
-      if (section && typeof section === "object" && "SectionTitle" in section) {
-        return section.SectionTitle !== "Procedure";
+      if (section && typeof section === 'object' && 'SectionTitle' in section) {
+        return section.SectionTitle !== 'Procedure';
       }
 
       return true;
     });
 
-    if (sectionComps[0] && typeof sectionComps[0] === "object") {
-      sectionComps[0] = { ...sectionComps[0], SectionTitle: "Overview" };
+    if (sectionComps[0] && typeof sectionComps[0] === 'object') {
+      sectionComps[0] = { ...sectionComps[0], SectionTitle: 'Overview' };
     }
 
     sectionComps = sectionComps.filter((sectionComp) => {
       if (
         sectionComp &&
-        typeof sectionComp === "object" &&
-        "SectionTitle" in sectionComp
+        typeof sectionComp === 'object' &&
+        'SectionTitle' in sectionComp
       ) {
         return sectionComp.SectionTitle;
       }
@@ -74,12 +70,12 @@ const LessonPreview = ({ lesson, unit }: IProps) => {
     });
   }
 
-  if (!unit && !lesson && typeof window === "undefined") {
+  if (!unit && !lesson && typeof window === 'undefined') {
     return null;
   }
 
   if (!unit && !lesson) {
-    router.replace("/error");
+    router.replace('/error');
     return null;
   }
 
@@ -124,20 +120,20 @@ const LessonPreview = ({ lesson, unit }: IProps) => {
     ? lesson?.SponsorImage?.url
     : lesson.SponsorLogo;
   let lessonParts =
-    lesson?.Section?.["teaching-materials"]?.Data?.classroom?.resources?.[0]
+    lesson?.Section?.['teaching-materials']?.Data?.classroom?.resources?.[0]
       ?.lessons;
 
-  if (typeof window === "undefined" && (!lesson || !lessonParts)) {
+  if (typeof window === 'undefined' && (!lesson || !lessonParts)) {
     return null;
   }
 
   if (!lesson || !lessonParts) {
-    router.replace("/error");
+    router.replace('/error');
     return null;
   }
 
   if (
-    typeof lessonParts === "object" &&
+    typeof lessonParts === 'object' &&
     lessonParts !== null &&
     !Array.isArray(lessonParts)
   ) {
@@ -149,8 +145,8 @@ const LessonPreview = ({ lesson, unit }: IProps) => {
 
   if (lessonParts?.length) {
     lessonParts = lessonParts.filter((lessonPart: unknown) => {
-      if (lessonPart && typeof lessonPart === "object" && "lsn" in lessonPart) {
-        return lessonPart.lsn !== "last";
+      if (lessonPart && typeof lessonPart === 'object' && 'lsn' in lessonPart) {
+        return lessonPart.lsn !== 'last';
       }
 
       return true;
@@ -160,7 +156,7 @@ const LessonPreview = ({ lesson, unit }: IProps) => {
   return (
     <div>
       <div
-        style={{ backgroundColor: "#252525" }}
+        style={{ backgroundColor: '#252525' }}
         className="w-100 d-flex justify-content-center align-items-center py-2"
       >
         <Image
@@ -170,21 +166,21 @@ const LessonPreview = ({ lesson, unit }: IProps) => {
           height={68}
           width={841}
           style={{
-            maxHeight: "30px",
-            width: "auto",
-            height: "auto",
+            maxHeight: '30px',
+            width: 'auto',
+            height: 'auto',
           }}
         />
       </div>
       <div
-        style={{ maxWidth: "none" }}
+        style={{ maxWidth: 'none' }}
         className="container w-100 d-flex py-0 m-0 px-0"
       >
         <div className="d-flex col-8 ps-2 mt-1">
           <div>
-            <p style={{ fontWeight: "lighter" }} className="mb-2">
-              Version {latestSubRelease.version} (Updated{" "}
-              {format(new Date(latestSubRelease.date), "MMM d, yyyy")})
+            <p style={{ fontWeight: 'lighter' }} className="mb-2">
+              Version {latestSubRelease.version} (Updated{' '}
+              {format(new Date(latestSubRelease.date), 'MMM d, yyyy')})
             </p>
             <h1 id="lessonTitleId" className="mt-0 mb-1">
               {lesson.Title}
@@ -199,9 +195,9 @@ const LessonPreview = ({ lesson, unit }: IProps) => {
                   height={450}
                   priority
                   style={{
-                    width: "100%",
-                    height: "auto",
-                    objectFit: "contain",
+                    width: '100%',
+                    height: 'auto',
+                    objectFit: 'contain',
                   }}
                 />
               </div>
@@ -232,9 +228,9 @@ const LessonPreview = ({ lesson, unit }: IProps) => {
             style={{
               top: 0,
               right: 0,
-              borderBottomLeftRadius: "30px",
-              backgroundColor: "#E1E2E3",
-              width: "90%",
+              borderBottomLeftRadius: '30px',
+              backgroundColor: '#E1E2E3',
+              width: '90%',
             }}
             className="position-absolute qrCodeImgAndTxtContainer"
           >
@@ -244,8 +240,8 @@ const LessonPreview = ({ lesson, unit }: IProps) => {
                   href={lesson.URL}
                   target="_blank"
                   style={{
-                    lineHeight: "20px",
-                    fontSize: "18px",
+                    lineHeight: '20px',
+                    fontSize: '18px',
                     fontWeight: 400,
                   }}
                   className="mt-1 text-black mt-lg-2 text-center px-2 px-lg-4"
@@ -254,7 +250,7 @@ const LessonPreview = ({ lesson, unit }: IProps) => {
                     <FiExternalLink
                       size={25}
                       style={{
-                        transform: "scale(1.5)",
+                        transform: 'scale(1.5)',
                       }}
                       color="black"
                       className="ms-2"
@@ -267,32 +263,32 @@ const LessonPreview = ({ lesson, unit }: IProps) => {
                 <div className="position-relative d-flex w-100 flex-column d-flex justify-content-center align-items-center qr-code-lesson-preview">
                   <QRCode
                     style={{
-                      height: "10vh",
-                      minHeight: "70px",
-                      maxHeight: "200px",
-                      width: "10vh",
-                      maxWidth: "200px",
-                      minWidth: "70px",
-                      right: ".5px",
+                      height: '10vh',
+                      minHeight: '70px',
+                      maxHeight: '200px',
+                      width: '10vh',
+                      maxWidth: '200px',
+                      minWidth: '70px',
+                      right: '.5px',
                     }}
                     value={lesson.URL}
                   />
                 </div>
               </section>
             </section>
-            {lesson.ShortURL && typeof lesson.ShortURL === "string" && (
+            {lesson.ShortURL && typeof lesson.ShortURL === 'string' && (
               <section className="d-flex justify-content-center align-items-center">
                 <CustomLink
                   hrefStr={lesson.ShortURL}
                   className="serif-text no-link-decoration mb-2 mt-0 bitly-txt-link underline-on-hover"
                 >
-                  {lesson.ShortURL.replace("https://", "")}
+                  {lesson.ShortURL.replace('https://', '')}
                 </CustomLink>
               </section>
             )}
           </div>
           {/* Spacer */}
-          <div style={{ height: "180px" }} className="w-75" />
+          <div style={{ height: '180px' }} className="w-75" />
           <div className="w-90 d-flex flex-column px-1 ">
             <div className="d-flex w-100 flex-column">
               <div className="w-100">
@@ -315,9 +311,9 @@ const LessonPreview = ({ lesson, unit }: IProps) => {
                       sizes="225px"
                       fill
                       style={{
-                        objectFit: "contain",
-                        width: "100%",
-                        height: "100%",
+                        objectFit: 'contain',
+                        width: '100%',
+                        height: '100%',
                       }}
                     />
                   </div>
@@ -327,7 +323,7 @@ const LessonPreview = ({ lesson, unit }: IProps) => {
                 <div className="d-flex justify-content-center align-items-center ">
                   <RichText
                     content={lesson.SponsoredBy}
-                    className={`${isLesson4 ? "text-center" : ""}`}
+                    className={`${isLesson4 ? 'text-center' : ''}`}
                   />
                 </div>
               </div>
@@ -338,11 +334,11 @@ const LessonPreview = ({ lesson, unit }: IProps) => {
       <div
         className="mt-4 pb-0 px-1"
         style={{
-          display: "grid",
-          gridAutoFlow: "column",
-          gap: "10px",
-          gridTemplateColumns: "repeat(2, 1fr)",
-          gridTemplateRows: "repeat(3, auto)",
+          display: 'grid',
+          gridAutoFlow: 'column',
+          gap: '10px',
+          gridTemplateColumns: 'repeat(2, 1fr)',
+          gridTemplateRows: 'repeat(3, auto)',
         }}
       >
         {lessonParts.map((lessonPart: any, index: number) => {
@@ -355,9 +351,9 @@ const LessonPreview = ({ lesson, unit }: IProps) => {
           return (
             <LessonPartBtn
               {...previewTagsProp}
-              h3={
+              h3={(
                 <h3
-                  style={{ color: "#2C83C3" }}
+                  style={{ color: '#2C83C3' }}
                   className="fs-5 fw-bold px-sm-0"
                 >
                   <Link
@@ -368,7 +364,7 @@ const LessonPreview = ({ lesson, unit }: IProps) => {
                     {`Lesson ${lsn}: ${title}`}
                   </Link>
                 </h3>
-              }
+              )}
               key={index}
               isLessonPreview
               prefaceClassName="text-start prefaceTxtLessonPreview"
@@ -379,7 +375,7 @@ const LessonPreview = ({ lesson, unit }: IProps) => {
               lessonPartTxtContainerClassName="d-flex position-relative flex-column justify-content-between w-100 align-items-stretch mt-0"
               imgContainerDimensionObj={{ width: 100, height: 100 }}
               parentDivProps={{
-                className: "pt-3 pb-2 w-100 bg-white d-flex flex-row",
+                className: 'pt-3 pb-2 w-100 bg-white d-flex flex-row',
               }}
               tileImgAndLessonInfoContainerClassName="d-flex h-100 justify-content-between w-100 position-relative flex-row-reverse"
             />
@@ -408,7 +404,7 @@ export const getStaticPaths = async () => {
     };
   } catch (error) {
     console.error(
-      "An error has occurred in getting the available paths for the selected lesson page. Error message: ",
+      'An error has occurred in getting the available paths for the selected lesson page. Error message: ',
       error
     );
   }
@@ -469,7 +465,7 @@ export const getStaticProps = async ({
 
     if (
       !lessonToDisplayOntoUi ||
-      typeof lessonToDisplayOntoUi !== "object" ||
+      typeof lessonToDisplayOntoUi !== 'object' ||
       Array.isArray(lessonToDisplayOntoUi)
     ) {
       return {
@@ -483,7 +479,7 @@ export const getStaticProps = async ({
 
     const multiMediaArr = lessonToDisplayOntoUi?.Section?.preview?.Multimedia;
     const isWebAppPresent = multiMediaArr?.some(
-      (multiMedia: any) => multiMedia?.type === "web-app"
+      (multiMedia: any) => multiMedia?.type === 'web-app'
     );
 
     if (multiMediaArr?.length && isWebAppPresent) {
@@ -496,26 +492,26 @@ export const getStaticProps = async ({
       ) {
         let multiMediaItem = multiMediaArr[numIteration];
 
-        if (multiMediaItem.type === "web-app") {
+        if (multiMediaItem.type === 'web-app') {
           const linkPreviewRetrievalResultObj = await getLinkPreviewObj(
             multiMediaItem.mainLink
           );
           const errMsg =
-            "errMsg" in linkPreviewRetrievalResultObj
+            'errMsg' in linkPreviewRetrievalResultObj
               ? linkPreviewRetrievalResultObj.errMsg
               : null;
           const images =
-            "images" in linkPreviewRetrievalResultObj
+            'images' in linkPreviewRetrievalResultObj
               ? linkPreviewRetrievalResultObj.images
               : [];
           const title =
-            "title" in linkPreviewRetrievalResultObj
+            'title' in linkPreviewRetrievalResultObj
               ? linkPreviewRetrievalResultObj.title
               : null;
 
           if (errMsg && !images?.length) {
             console.error(
-              "Failed to get the image preview of web app. Error message: ",
+              'Failed to get the image preview of web app. Error message: ',
               errMsg
             );
           }
@@ -551,7 +547,7 @@ export const getStaticProps = async ({
       revalidate: 30,
     };
   } catch (error) {
-    console.error("Faild to get lesson. Error message: ", error);
+    console.error('Faild to get lesson. Error message: ', error);
 
     return {
       props: {

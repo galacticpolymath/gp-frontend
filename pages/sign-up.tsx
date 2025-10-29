@@ -1,43 +1,39 @@
-/* eslint-disable react/jsx-indent */
-/* eslint-disable quotes */
-
-import React, { useEffect, useState } from "react";
-import { Spinner } from "react-bootstrap";
-import Button from "../components/General/Button";
-import CreateAccountWithGoogle from "../components/User/GoogleSignIn";
-import { FcGoogle } from "react-icons/fc";
+import React, { useEffect, useState } from 'react';
+import { Spinner } from 'react-bootstrap';
+import Button from '../components/General/Button';
+import CreateAccountWithGoogle from '../components/User/GoogleSignIn';
+import { FcGoogle } from 'react-icons/fc';
 import {
   CustomInput,
   ErrorTxt,
   InputSection,
-} from "../components/User/formElements";
-import { signIn } from "next-auth/react";
-import { BiCheckbox, BiCheckboxChecked } from "react-icons/bi";
+} from '../components/User/formElements';
+import { signIn } from 'next-auth/react';
+import { BiCheckbox, BiCheckboxChecked } from 'react-icons/bi';
 import {
   INPUT_FOCUS_BLUE_CLASSNAME,
   USER_INPUT_BACKGROUND_COLOR,
-} from "../globalVars";
-import { useRouter } from "next/router";
-import Layout from "../components/Layout";
-import { useUserEntry } from "../customHooks/useUserEntry";
-import { SELECTED_GP_PLUS_BILLING_TYPE } from "./gp-plus";
-import { redirect, useSearchParams } from "next/navigation";
-import { PRESENT_WELCOME_MODAL_PARAM_NAME } from "../shared/constants";
-import { getSessionStorageItem } from "../shared/fns";
-import { GetServerSidePropsContext } from "next";
-import Image from "next/image";
+} from '../globalVars';
+import { useRouter } from 'next/router';
+import Layout from '../components/Layout';
+import { useUserEntry } from '../customHooks/useUserEntry';
+import { SELECTED_GP_PLUS_BILLING_TYPE } from './gp-plus';
+import { useSearchParams } from 'next/navigation';
+import { PRESENT_WELCOME_MODAL_PARAM_NAME } from '../shared/constants';
+import { getSessionStorageItem } from '../shared/fns';
+import { GetServerSidePropsContext } from 'next';
 
-export const FONT_SIZE_CHECKBOX = "28px";
-const ERROR_TXT_HEIGHT = "23px";
+export const FONT_SIZE_CHECKBOX = '28px';
+const ERROR_TXT_HEIGHT = '23px';
 const inputElementsFocusedDefault = new Map();
 
-inputElementsFocusedDefault.set("email", false);
-inputElementsFocusedDefault.set("firstName", false);
-inputElementsFocusedDefault.set("lastName", false);
+inputElementsFocusedDefault.set('email', false);
+inputElementsFocusedDefault.set('firstName', false);
+inputElementsFocusedDefault.set('lastName', false);
 
 export interface ICallbackUrl {
   callbackUrl: string;
-  redirectPgType: "account" | "home" | "pgWithSignUpBtn";
+  redirectPgType: 'account' | 'home' | 'pgWithSignUpBtn';
 }
 
 const SignUpPage: React.FC = () => {
@@ -51,12 +47,12 @@ const SignUpPage: React.FC = () => {
     inputElementsFocusedDefault
   );
   const [createAccountForm, setCreateAccountForm] = _createAccountForm;
-  const [passwordInputType, setPasswordInputType] = useState("password");
+  const [passwordInputType, setPasswordInputType] = useState('password');
   const router = useRouter();
 
   const handlePasswordTxtShowBtnClick = () => {
     setPasswordInputType((state: string) =>
-      state === "password" ? "text" : "password"
+      state === 'password' ? 'text' : 'password'
     );
   };
 
@@ -94,31 +90,31 @@ const SignUpPage: React.FC = () => {
 
       return {
         callbackUrl,
-        redirectPgType: "account",
+        redirectPgType: 'account',
       };
     }
 
-    const signUpRedirectUrl = getSessionStorageItem("userEntryRedirectUrl");
+    const signUpRedirectUrl = getSessionStorageItem('userEntryRedirectUrl');
 
     if (signUpRedirectUrl) {
-      console.log("signUpRedirectUrl: ", signUpRedirectUrl);
+      console.log('signUpRedirectUrl: ', signUpRedirectUrl);
 
       return {
         callbackUrl: signUpRedirectUrl,
-        redirectPgType: "pgWithSignUpBtn",
+        redirectPgType: 'pgWithSignUpBtn',
       };
     }
 
-    return { callbackUrl, redirectPgType: "home" };
+    return { callbackUrl, redirectPgType: 'home' };
   };
 
   const handleSubmitCredentialsBtnClick = async () => {
     setIsLoadingSpinnerOn(true);
 
-    const errors = await validateForm("credentials");
+    const errors = await validateForm('credentials');
 
     if (errors.size > 0) {
-      alert("An error has occurred. Please check your inputs.");
+      alert('An error has occurred. Please check your inputs.');
       setTimeout(() => {
         setErrors(errors);
         setIsLoadingSpinnerOn(false);
@@ -141,9 +137,9 @@ const SignUpPage: React.FC = () => {
       callbackUrl,
     };
 
-    console.log("signUpForm: ", signUpForm);
+    console.log('signUpForm: ', signUpForm);
 
-    sendFormToServer("createAccount", "credentials", signUpForm);
+    sendFormToServer('createAccount', 'credentials', signUpForm);
   };
 
   const handleOnInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -155,11 +151,11 @@ const SignUpPage: React.FC = () => {
       setErrors(errorsClone);
     }
 
-    if (name === "confirmPassword" || name === "password") {
+    if (name === 'confirmPassword' || name === 'password') {
       setErrors((errors) => {
         const errorsClone = structuredClone(errors);
-        errorsClone.delete("confirmPassword");
-        errorsClone.delete("password");
+        errorsClone.delete('confirmPassword');
+        errorsClone.delete('password');
         return errorsClone;
       });
     }
@@ -176,11 +172,11 @@ const SignUpPage: React.FC = () => {
     event.preventDefault();
     setIsGoogleLoadingSpinnerOn(true);
 
-    const errors = await validateForm("google");
+    const errors = await validateForm('google');
 
-    if (errors.has("isUserTeacherErr")) {
+    if (errors.has('isUserTeacherErr')) {
       setTimeout(() => {
-        alert("An error has occurred. Please check your inputs.");
+        alert('An error has occurred. Please check your inputs.');
         setErrors(errors);
         setIsGoogleLoadingSpinnerOn(false);
       }, 250);
@@ -190,18 +186,18 @@ const SignUpPage: React.FC = () => {
     const callbackUrl = createCallbackUrl();
 
     if (createAccountForm.isOnMailingList) {
-      localStorage.setItem("isOnMailingList", JSON.stringify(true));
+      localStorage.setItem('isOnMailingList', JSON.stringify(true));
     } else {
-      localStorage.removeItem("isOnMailingList");
+      localStorage.removeItem('isOnMailingList');
     }
 
-    localStorage.setItem("userEntryType", JSON.stringify("create-account"));
+    localStorage.setItem('userEntryType', JSON.stringify('create-account'));
 
-    signIn("google", { callbackUrl: callbackUrl.callbackUrl });
+    signIn('google', { callbackUrl: callbackUrl.callbackUrl });
   };
 
   const handleLoginBtnClick = () => {
-    router.push("/account");
+    router.push('/account');
   };
 
   return (
@@ -217,7 +213,7 @@ const SignUpPage: React.FC = () => {
       <div className="min-vh-100 d-flex justify-content-center bg-light py-3 py-md-5 sign-up-pg-container position-relative">
         <div
           className="shadow-lg rounded sign-up-card pb-4"
-          style={{ width: "97%", height: "fit-content" }}
+          style={{ width: '97%', height: 'fit-content' }}
         >
           <div className="bg-white rounded p-1 p-sm-3 p-md-2 w-100">
             {/* Header — Desktop & tablet */}
@@ -226,7 +222,7 @@ const SignUpPage: React.FC = () => {
                 src="/imgs/gp_logo_gradient_transBG.png"
                 alt="gp_logo"
                 className="mx-auto mb-2"
-                style={{ width: "88px", height: "88px", objectFit: "contain" }}
+                style={{ width: '88px', height: '88px', objectFit: 'contain' }}
               />
               <h5 className="fw-bold mb-1">
                 Access 100+ of the best science resources <em>anywhere</em>!
@@ -241,10 +237,10 @@ const SignUpPage: React.FC = () => {
                 src="/imgs/gp_logo_gradient_transBG.png"
                 alt="gp_logo"
                 className="mx-auto mb-2"
-                style={{ width: "60px", height: "60px", objectFit: "contain" }}
+                style={{ width: '60px', height: '60px', objectFit: 'contain' }}
               />
               <p className="fw-bold mb-1">
-                Sign up to access 100+ of the best science resources{" "}
+                Sign up to access 100+ of the best science resources{' '}
                 <em>anywhere</em>!
               </p>
               <p className="text-muted mb-0">(Grant-funded, FREE!)</p>
@@ -283,13 +279,13 @@ const SignUpPage: React.FC = () => {
             <section className="my-2 my-sm-3 my-xxl-4 my-xl-3 d-flex justify-content-center align-items-center">
               <CreateAccountWithGoogle
                 handleGoogleBtnClickCustom={
-                  handleCreateAnAccountWithGoogleBtnClick
+                handleCreateAnAccountWithGoogleBtnClick
                 }
                 callbackUrl={`${
-                  typeof window !== "undefined" ? window.location.origin : ""
+                  typeof window !== 'undefined' ? window.location.origin : ''
                 }/account?show_about_user_form=true`}
                 className="rounded shadow position-relative w-100 p-1 py-2 p-sm-2 p-xl-3 d-flex flex-row flex-sm-column justify-content-center align-items-center border google-sign-in-btn"
-                style={{ maxWidth: "600px" }}
+                style={{ maxWidth: '600px' }}
               >
                 <FcGoogle
                   className="mx-2 d-none d-md-block"
@@ -322,26 +318,26 @@ const SignUpPage: React.FC = () => {
             {/* OR Divider */}
             <div className="d-flex justify-content-center mb-1 mb-sm-2 mb-xl-2">
               <div
-                style={{ width: "48%" }}
+                style={{ width: '48%' }}
                 className="d-flex justify-content-center justify-content-sm-end align-items-center"
               >
                 <div
-                  style={{ height: "3px", width: "95%" }}
+                  style={{ height: '3px', width: '95%' }}
                   className="bg-black rounded me-3 me-sm-2"
                 />
               </div>
               <div
-                style={{ width: "4%" }}
+                style={{ width: '4%' }}
                 className="d-flex justify-content-center align-items-center"
               >
                 <span className="text-black">OR</span>
               </div>
               <div
-                style={{ width: "48%" }}
+                style={{ width: '48%' }}
                 className="d-flex justify-content-center justify-content-sm-start align-items-center"
               >
                 <div
-                  style={{ height: "3px", width: "95%" }}
+                  style={{ height: '3px', width: '95%' }}
                   className="bg-black rounded ms-3 ms-sm-2"
                 />
               </div>
@@ -353,7 +349,7 @@ const SignUpPage: React.FC = () => {
                 <div className="d-flex col-6 flex-column">
                   <label
                     className={`d-none d-sm-block w-75 pb-0 pb-sm-1 sign-up-input-label fw-bold ${
-                      errors.has("firstName") ? "text-danger" : ""
+                      errors.has('firstName') ? 'text-danger' : ''
                     }`}
                     htmlFor="first-name"
                   >
@@ -361,7 +357,7 @@ const SignUpPage: React.FC = () => {
                   </label>
                   <label
                     className={`sign-up-input-label d-block d-sm-none w-75 pb-0 pb-sm-1 fw-bold ${
-                      errors.has("firstName") ? "text-danger" : ""
+                      errors.has('firstName') ? 'text-danger' : ''
                     }`}
                     htmlFor="first-name"
                   >
@@ -371,19 +367,19 @@ const SignUpPage: React.FC = () => {
                     id="first-name"
                     placeholder="First name"
                     style={{
-                      borderRadius: "5px",
-                      fontSize: "18px",
-                      border: errors.has("firstName") ? "solid 1px red" : "",
+                      borderRadius: '5px',
+                      fontSize: '18px',
+                      border: errors.has('firstName') ? 'solid 1px red' : '',
                       background: USER_INPUT_BACKGROUND_COLOR,
                     }}
                     className={`${
-                      inputElementsFocused.get("firstName")
+                      inputElementsFocused.get('firstName')
                         ? INPUT_FOCUS_BLUE_CLASSNAME
-                        : ""
+                        : ''
                     } ${
-                      errors.has("firstName")
-                        ? "border-danger"
-                        : "border-0 no-outline"
+                      errors.has('firstName')
+                        ? 'border-danger'
+                        : 'border-0 no-outline'
                     } p-1 w-100 py-1 py-sm-2`}
                     autoFocus
                     name="firstName"
@@ -392,8 +388,8 @@ const SignUpPage: React.FC = () => {
                     onBlur={handleOnBlur}
                   />
                   <section style={{ height: ERROR_TXT_HEIGHT }}>
-                    {errors.has("firstName") && (
-                      <ErrorTxt>{errors.get("firstName")}</ErrorTxt>
+                    {errors.has('firstName') && (
+                      <ErrorTxt>{errors.get('firstName')}</ErrorTxt>
                     )}
                   </section>
                 </div>
@@ -407,21 +403,21 @@ const SignUpPage: React.FC = () => {
                     height: ERROR_TXT_HEIGHT,
                   }}
                   inputStyle={{
-                    borderRadius: "5px",
-                    fontSize: "18px",
+                    borderRadius: '5px',
+                    fontSize: '18px',
                     background: USER_INPUT_BACKGROUND_COLOR,
                   }}
                   labelClassName={`sign-up-input-label d-block w-100 pb-1 fw-bold ${
-                    errors.has("lastName") ? "text-danger" : ""
+                    errors.has('lastName') ? 'text-danger' : ''
                   }`}
                   inputPlaceholder="Last name"
                   label="Last Name: "
                   inputClassName={`${
-                    inputElementsFocused.get("lastName")
+                    inputElementsFocused.get('lastName')
                       ? INPUT_FOCUS_BLUE_CLASSNAME
-                      : "no-outline"
+                      : 'no-outline'
                   } ${
-                    errors.has("lastName") ? "border-danger" : "border-0"
+                    errors.has('lastName') ? 'border-danger' : 'border-0'
                   } p-1 w-100 py-1 py-sm-2 no-outline`}
                   onFocus={handleOnFocus}
                   onBlur={handleOnBlur}
@@ -434,21 +430,21 @@ const SignUpPage: React.FC = () => {
                   inputId="lastName"
                   inputName="lastName"
                   inputStyle={{
-                    borderRadius: "5px",
-                    fontSize: "18px",
+                    borderRadius: '5px',
+                    fontSize: '18px',
                     background: USER_INPUT_BACKGROUND_COLOR,
                   }}
                   labelClassName={`sign-up-input-label d-block invisible w-100 pb-1 fw-bold ${
-                    errors.has("lastName") ? "text-danger" : ""
+                    errors.has('lastName') ? 'text-danger' : ''
                   }`}
                   inputPlaceholder="Last name"
                   label="X: "
                   inputClassName={`${
-                    inputElementsFocused.get("lastName")
+                    inputElementsFocused.get('lastName')
                       ? INPUT_FOCUS_BLUE_CLASSNAME
-                      : "no-outline"
+                      : 'no-outline'
                   } ${
-                    errors.has("lastName") ? "border-danger" : "border-0"
+                    errors.has('lastName') ? 'border-danger' : 'border-0'
                   } p-1 w-100 py-1 py-sm-2 no-outline`}
                   onFocus={handleOnFocus}
                   onBlur={handleOnBlur}
@@ -459,7 +455,7 @@ const SignUpPage: React.FC = () => {
                 <div className="d-flex flex-column position-relative col-sm-6">
                   <label
                     className={`${
-                      errors.has("email") ? "text-danger" : ""
+                      errors.has('email') ? 'text-danger' : ''
                     } d-block w-75 pb-0 sign-up-input-label pb-sm-1 fw-bold`}
                     htmlFor="email-input"
                   >
@@ -469,29 +465,29 @@ const SignUpPage: React.FC = () => {
                     id="email-input"
                     placeholder="Email"
                     style={{
-                      borderRadius: "5px",
-                      fontSize: "18px",
+                      borderRadius: '5px',
+                      fontSize: '18px',
                       background: USER_INPUT_BACKGROUND_COLOR,
                     }}
                     onFocus={handleOnFocus}
                     onBlur={handleOnBlur}
                     className={`${
-                      errors.has("email")
-                        ? "error-border"
-                        : "border-0 no-outline"
+                      errors.has('email')
+                        ? 'error-border'
+                        : 'border-0 no-outline'
                     } ${
-                      inputElementsFocused.get("email")
+                      inputElementsFocused.get('email')
                         ? INPUT_FOCUS_BLUE_CLASSNAME
-                        : ""
+                        : ''
                     } ${
-                      errors.has("email") ? "text-danger" : ""
+                      errors.has('email') ? 'text-danger' : ''
                     } p-1 w-100 py-1 py-sm-2`}
                     name="email"
                     onChange={handleOnInputChange}
                   />
                   <section style={{ height: ERROR_TXT_HEIGHT }}>
-                    {errors.has("email") && (
-                      <ErrorTxt>{errors.get("email")}</ErrorTxt>
+                    {errors.has('email') && (
+                      <ErrorTxt>{errors.get('email')}</ErrorTxt>
                     )}
                   </section>
                 </div>
@@ -501,7 +497,7 @@ const SignUpPage: React.FC = () => {
                 <div className="d-flex flex-column position-relative col-6">
                   <label
                     className={`d-block w-75 pb-0 sign-up-input-label pb-sm-1 fw-bold ${
-                      errors.has("password") ? "text-danger" : ""
+                      errors.has('password') ? 'text-danger' : ''
                     }`}
                     htmlFor="email-input"
                   >
@@ -511,28 +507,28 @@ const SignUpPage: React.FC = () => {
                     inputId="password"
                     isPasswordInput
                     handleShowPasswordTxtBtnClick={
-                      handlePasswordTxtShowBtnClick
+                    handlePasswordTxtShowBtnClick
                     }
                     inputType={passwordInputType}
                     placeholder="Enter your password"
                     inputContainerCss="d-none d-sm-flex flex-column position-relative col-12 p-0"
-                    inputContainerStyle={{ borderRadius: "5px" }}
+                    inputContainerStyle={{ borderRadius: '5px' }}
                     inputStyle={{
-                      borderRadius: "5px",
-                      fontSize: "18px",
-                      background: "#E8F0FE",
-                      border: errors.has("password") ? "solid 1px red" : "",
+                      borderRadius: '5px',
+                      fontSize: '18px',
+                      background: '#E8F0FE',
+                      border: errors.has('password') ? 'solid 1px red' : '',
                     }}
                     inputClassName={`p-1 w-100 py-1 py-sm-2 no-outline ${
-                      errors.has("password") ? "text-danger" : "border-0"
+                      errors.has('password') ? 'text-danger' : 'border-0'
                     }`}
                     inputName="password"
                     onChange={handleOnInputChange}
                     iconContainerStyle={{
-                      borderTopRightRadius: "5px",
-                      borderBottomRightRadius: "5px",
+                      borderTopRightRadius: '5px',
+                      borderBottomRightRadius: '5px',
                       zIndex: 1,
-                      marginRight: "5px",
+                      marginRight: '5px',
                     }}
                     noInputBorderColorOnBlur
                   />
@@ -540,49 +536,49 @@ const SignUpPage: React.FC = () => {
                     inputId="password"
                     isPasswordInput
                     handleShowPasswordTxtBtnClick={
-                      handlePasswordTxtShowBtnClick
+                    handlePasswordTxtShowBtnClick
                     }
                     inputType={passwordInputType}
                     placeholder="Enter"
                     inputContainerCss="d-sm-none d-flex flex-column position-relative col-12 p-0"
-                    inputContainerStyle={{ borderRadius: "5px" }}
+                    inputContainerStyle={{ borderRadius: '5px' }}
                     inputStyle={{
-                      borderRadius: "5px",
-                      fontSize: "18px",
-                      background: "#E8F0FE",
-                      border: errors.has("password") ? "solid 1px red" : "",
+                      borderRadius: '5px',
+                      fontSize: '18px',
+                      background: '#E8F0FE',
+                      border: errors.has('password') ? 'solid 1px red' : '',
                     }}
                     inputClassName={`p-1 w-100 py-1 py-sm-2 no-outline ${
-                      errors.has("password") ? "text-danger" : "border-0"
+                      errors.has('password') ? 'text-danger' : 'border-0'
                     }`}
                     inputName="password"
                     onChange={handleOnInputChange}
                     iconContainerStyle={{
-                      borderTopRightRadius: "5px",
-                      borderBottomRightRadius: "5px",
+                      borderTopRightRadius: '5px',
+                      borderBottomRightRadius: '5px',
                       zIndex: 1,
-                      marginRight: "5px",
+                      marginRight: '5px',
                     }}
                     noInputBorderColorOnBlur
                   />
                   <section className="d-sm-none d-block">
-                    {errors.has("password") && (
-                      <ErrorTxt>{errors.get("password")}</ErrorTxt>
+                    {errors.has('password') && (
+                      <ErrorTxt>{errors.get('password')}</ErrorTxt>
                     )}
                   </section>
                   <section
                     className="d-sm-block d-none"
                     style={{ height: ERROR_TXT_HEIGHT }}
                   >
-                    {errors.has("password") && (
-                      <ErrorTxt>{errors.get("password")}</ErrorTxt>
+                    {errors.has('password') && (
+                      <ErrorTxt>{errors.get('password')}</ErrorTxt>
                     )}
                   </section>
                 </div>
                 <div className="d-flex flex-column position-relative col-6">
                   <label
                     className={`d-sm-block d-none sign-up-input-label w-75 pb-0 pb-sm-1 fw-bold ${
-                      errors.has("confirmPassword") ? "text-danger" : ""
+                      errors.has('confirmPassword') ? 'text-danger' : ''
                     }`}
                     htmlFor="email-input"
                   >
@@ -590,7 +586,7 @@ const SignUpPage: React.FC = () => {
                   </label>
                   <label
                     className={`d-sm-none d-block invisible sign-up-input-label w-75 pb-0 pb-sm-1 fw-bold ${
-                      errors.has("confirmPassword") ? "text-danger" : ""
+                      errors.has('confirmPassword') ? 'text-danger' : ''
                     }`}
                     htmlFor="email-input"
                   >
@@ -600,31 +596,31 @@ const SignUpPage: React.FC = () => {
                     inputId="confirm-password-id"
                     isPasswordInput
                     handleShowPasswordTxtBtnClick={
-                      handlePasswordTxtShowBtnClick
+                    handlePasswordTxtShowBtnClick
                     }
                     inputType={passwordInputType}
                     placeholder="Confirm password"
                     inputContainerCss="d-none d-sm-flex flex-column position-relative col-12 p-0"
                     iconContainerClassName="h-100 end-0 position-absolute top-0 transparent d-flex justify-content-center align-items-center me-sm-0 me-2"
                     iconContainerStyle={{
-                      borderTopRightRadius: "5px",
-                      borderBottomRightRadius: "5px",
+                      borderTopRightRadius: '5px',
+                      borderBottomRightRadius: '5px',
                       zIndex: 1,
-                      width: "10%",
+                      width: '10%',
                     }}
                     inputContainerStyle={{
-                      borderRadius: "5px",
+                      borderRadius: '5px',
                     }}
                     inputStyle={{
-                      borderRadius: "5px",
-                      fontSize: "18px",
-                      background: "#E8F0FE",
-                      border: errors.has("confirmPassword")
-                        ? "solid 1px red"
-                        : "",
+                      borderRadius: '5px',
+                      fontSize: '18px',
+                      background: '#E8F0FE',
+                      border: errors.has('confirmPassword')
+                        ? 'solid 1px red'
+                        : '',
                     }}
                     inputClassName={`p-1 w-100 py-1 py-sm-2 no-outline ${
-                      errors.has("confirmPassword") ? "text-danger" : "border-0"
+                      errors.has('confirmPassword') ? 'text-danger' : 'border-0'
                     }`}
                     inputName="confirmPassword"
                     onChange={handleOnInputChange}
@@ -634,47 +630,47 @@ const SignUpPage: React.FC = () => {
                     inputId="confirm-password-id"
                     isPasswordInput
                     handleShowPasswordTxtBtnClick={
-                      handlePasswordTxtShowBtnClick
+                    handlePasswordTxtShowBtnClick
                     }
                     inputType={passwordInputType}
                     placeholder="Confirm"
                     inputContainerCss="d-flex d-sm-none flex-column position-relative col-12 p-0"
                     iconContainerClassName="h-100 end-0 position-absolute top-0 transparent d-flex justify-content-center align-items-center me-sm-0 me-2"
                     iconContainerStyle={{
-                      borderTopRightRadius: "5px",
-                      borderBottomRightRadius: "5px",
+                      borderTopRightRadius: '5px',
+                      borderBottomRightRadius: '5px',
                       zIndex: 1,
-                      width: "10%",
+                      width: '10%',
                     }}
                     inputContainerStyle={{
-                      borderRadius: "5px",
+                      borderRadius: '5px',
                     }}
                     inputStyle={{
-                      borderRadius: "5px",
-                      fontSize: "18px",
-                      background: "#E8F0FE",
-                      border: errors.has("confirmPassword")
-                        ? "solid 1px red"
-                        : "",
+                      borderRadius: '5px',
+                      fontSize: '18px',
+                      background: '#E8F0FE',
+                      border: errors.has('confirmPassword')
+                        ? 'solid 1px red'
+                        : '',
                     }}
                     inputClassName={`p-1 w-100 py-1 py-sm-2 no-outline ${
-                      errors.has("confirmPassword") ? "text-danger" : "border-0"
+                      errors.has('confirmPassword') ? 'text-danger' : 'border-0'
                     }`}
                     inputName="confirmPassword"
                     onChange={handleOnInputChange}
                     noInputBorderColorOnBlur
                   />
                   <section className="d-sm-none d-block">
-                    {errors.has("confirmPassword") && (
-                      <ErrorTxt>{errors.get("confirmPassword")}</ErrorTxt>
+                    {errors.has('confirmPassword') && (
+                      <ErrorTxt>{errors.get('confirmPassword')}</ErrorTxt>
                     )}
                   </section>
                   <section
                     className="d-sm-block d-none"
                     style={{ height: ERROR_TXT_HEIGHT }}
                   >
-                    {errors.has("confirmPassword") && (
-                      <ErrorTxt>{errors.get("confirmPassword")}</ErrorTxt>
+                    {errors.has('confirmPassword') && (
+                      <ErrorTxt>{errors.get('confirmPassword')}</ErrorTxt>
                     )}
                   </section>
                 </div>
@@ -684,7 +680,7 @@ const SignUpPage: React.FC = () => {
                   handleOnClick={handleSubmitCredentialsBtnClick}
                   classNameStr="bg-primary rounded border-0 py-1 px-4 text-white underline-on-hover sign-up-btn"
                   defaultStyleObj={{
-                    height: "40px",
+                    height: '40px',
                   }}
                 >
                   {isLoadingSpinnerOn ? (
@@ -701,12 +697,12 @@ const SignUpPage: React.FC = () => {
               <span className="text-black">Already have an account?</span>
               <Button
                 defaultStyleObj={{
-                  background: "none",
-                  color: "inherit",
-                  border: "none",
-                  font: "inherit",
-                  cursor: "pointer",
-                  outline: "inherit",
+                  background: 'none',
+                  color: 'inherit',
+                  border: 'none',
+                  font: 'inherit',
+                  cursor: 'pointer',
+                  outline: 'inherit',
                 }}
                 classNameStr="d-block no-link-decoration"
                 handleOnClick={handleLoginBtnClick}
@@ -726,12 +722,12 @@ const SignUpPage: React.FC = () => {
 export const getServerSideProps = async ({
   req,
 }: GetServerSidePropsContext) => {
-  const sessionToken = req.cookies["next-auth.session-token"];
+  const sessionToken = req.cookies['next-auth.session-token'];
 
   if (sessionToken) {
     return {
       redirect: {
-        destination: "/account",
+        destination: '/account',
         permanent: false,
       },
     };

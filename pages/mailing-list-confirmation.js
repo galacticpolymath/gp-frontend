@@ -1,30 +1,26 @@
-/* eslint-disable no-console */
-/* eslint-disable react/jsx-curly-brace-presence */
- 
-/* eslint-disable quotes */
-import { useEffect, useMemo, useState } from "react";
-import CustomLink from "../components/CustomLink";
-import Layout from "../components/Layout";
-import axios from "axios";
-import { useSession } from "next-auth/react";
-import { useRef } from "react";
-import { Spinner } from "react-bootstrap";
-import { useCustomCookies } from "../customHooks/useCustomCookies";
+import { useEffect, useMemo, useState } from 'react';
+import CustomLink from '../components/CustomLink';
+import Layout from '../components/Layout';
+import axios from 'axios';
+import { useSession } from 'next-auth/react';
+import { useRef } from 'react';
+import { Spinner } from 'react-bootstrap';
+import { useCustomCookies } from '../customHooks/useCustomCookies';
 
 const OnEmailListingCheckResultUI = ({
-  resultTxt = "You are on the mailing list.",
-  actionTxt = "to sign in.",
-  href = "/account?open_sign_in_modal=true",
+  resultTxt = 'You are on the mailing list.',
+  actionTxt = 'to sign in.',
+  href = '/account?open_sign_in_modal=true',
 }) => {
   return (
     <span className="mt-2">
       {resultTxt}
       <br />
       <span className="mt-4">
-        Click{" "}
+        Click{' '}
         <CustomLink hrefStr={href} className="color-primary underline-on-hover">
           here
-        </CustomLink>{" "}
+        </CustomLink>{' '}
         {actionTxt}
       </span>
     </span>
@@ -32,14 +28,14 @@ const OnEmailListingCheckResultUI = ({
 };
 
 const getConfirmationMailListingId = () => {
-  const paramsStr = window.location.search.replace(/\?/, "");
-  const urlParams = paramsStr.split("=");
+  const paramsStr = window.location.search.replace(/\?/, '');
+  const urlParams = paramsStr.split('=');
 
-  console.log("urlParams: ", urlParams);
+  console.log('urlParams: ', urlParams);
 
   if (
     urlParams.length !== 2 ||
-    (urlParams.length === 2 && urlParams[0] !== "confirmation-id")
+    (urlParams.length === 2 && urlParams[0] !== 'confirmation-id')
   ) {
     return null;
   }
@@ -52,11 +48,11 @@ const MailingListConfirmation = () => {
   const { status, data } = session;
   const { token } = data ?? {};
   const confirmationMaliingListId = useMemo(() => {
-    return typeof window === "undefined"
+    return typeof window === 'undefined'
       ? null
       : getConfirmationMailListingId();
   }, []);
-  const mailListConfirmationIdKey = confirmationMaliingListId ?? "";
+  const mailListConfirmationIdKey = confirmationMaliingListId ?? '';
   const { setAppCookie, cookies } = useCustomCookies([mailListConfirmationIdKey]);
   const [
     isRetrievingUserMailingListStatus,
@@ -69,35 +65,35 @@ const MailingListConfirmation = () => {
         expired, invalid, or was already used.
         <br />
         <span className="mt-4">
-          Please{" "}
+          Please{' '}
           <CustomLink
             hrefStr="/account"
             className="color-primary underline-on-hover"
           >
             sign in
-          </CustomLink>{" "}
+          </CustomLink>{' '}
           to check if you are on the mailing list.
         </span>
       </span>
     );
   const wasStatusRetrievalCompleted = useRef(false);
 
-  const getUserMailingListStatus = async (path = "/api/get-brevo-status") => {
+  const getUserMailingListStatus = async (path = '/api/get-brevo-status') => {
     let isOnMailingList = false;
 
     if (
-      typeof confirmationMaliingListId === "string" &&
+      typeof confirmationMaliingListId === 'string' &&
       cookies[confirmationMaliingListId]
     ) {
       const actionTxt =
-        status === "unauthenticated"
-          ? "to sign in."
-          : "to return to your account.";
+        status === 'unauthenticated'
+          ? 'to sign in.'
+          : 'to return to your account.';
       setUserMailingListStatusResultUI(
         <OnEmailListingCheckResultUI
           resultTxt="You are on the mailing list."
           actionTxt={actionTxt}
-          href={"/account"}
+          href="/account"
         />
       );
       setIsRetrievingUserMailingListStatus(false);
@@ -105,22 +101,22 @@ const MailingListConfirmation = () => {
       isOnMailingList = true;
       return;
     } else if (
-      typeof confirmationMaliingListId === "string" &&
+      typeof confirmationMaliingListId === 'string' &&
       confirmationMaliingListId in cookies
     ) {
       let actionTxt;
 
-      if (status === "unauthenticated") {
-        actionTxt = "to log in and sign up.";
+      if (status === 'unauthenticated') {
+        actionTxt = 'to log in and sign up.';
       } else {
-        actionTxt = "to return to your account and sign up.";
+        actionTxt = 'to return to your account and sign up.';
       }
 
       setUserMailingListStatusResultUI(
         <OnEmailListingCheckResultUI
-          resultTxt={"You are not on the mailing list."}
+          resultTxt="You are not on the mailing list."
           actionTxt={actionTxt}
-          href={"/account"}
+          href="/account"
         />
       );
       setIsRetrievingUserMailingListStatus(false);
@@ -133,7 +129,7 @@ const MailingListConfirmation = () => {
       let headers = {};
       let params = { mailingListConfirmationId: confirmationMaliingListId };
 
-      if (path === "/api/get-signed-in-user-brevo-status") {
+      if (path === '/api/get-signed-in-user-brevo-status') {
         headers = {
           Authorization: `Bearer ${token}`,
         };
@@ -150,58 +146,58 @@ const MailingListConfirmation = () => {
 
       if (resStatus !== 200) {
         throw new Error(
-          "Failed to retrieve the brevo status for the target user."
+          'Failed to retrieve the brevo status for the target user.'
         );
       }
 
       let actionTxt;
 
-      if (status === "unauthenticated") {
+      if (status === 'unauthenticated') {
         actionTxt = data.isOnMailingList
-          ? "to sign in."
-          : "to log in and sign up.";
+          ? 'to sign in.'
+          : 'to log in and sign up.';
       } else {
         actionTxt = data.isOnMailingList
-          ? "to return to your account."
-          : "to return to your account and sign up.";
+          ? 'to return to your account.'
+          : 'to return to your account and sign up.';
       }
 
       const resultTxt = data.isOnMailingList
-        ? "You are on the mailing list."
-        : "You are not on the mailing list. This link may have expired or been used.";
+        ? 'You are on the mailing list.'
+        : 'You are not on the mailing list. This link may have expired or been used.';
       setUserMailingListStatusResultUI(
         <OnEmailListingCheckResultUI
           resultTxt={resultTxt}
           actionTxt={actionTxt}
-          href={"/account"}
+          href="/account"
         />
       );
       isOnMailingList = data.isOnMailingList;
 
-      console.log("data: ", data);
+      console.log('data: ', data);
     } catch (error) {
       const { msg, errType } = error?.response?.data ?? {};
       console.error(
-        "Failed to get mailing list status for the target user. Reason: ",
+        'Failed to get mailing list status for the target user. Reason: ',
         msg ?? error
       );
 
-      console.error("Error type: ", errType);
+      console.error('Error type: ', errType);
 
       let actionTxt;
 
-      if (status === "unauthenticated") {
-        actionTxt = "to log in and sign up.";
+      if (status === 'unauthenticated') {
+        actionTxt = 'to log in and sign up.';
       } else {
-        actionTxt = "to return to your account and sign up.";
+        actionTxt = 'to return to your account and sign up.';
       }
 
-      const resultTxt = "You are not on the mailing list.";
+      const resultTxt = 'You are not on the mailing list.';
       setUserMailingListStatusResultUI(
         <OnEmailListingCheckResultUI
           resultTxt={resultTxt}
           actionTxt={actionTxt}
-          href={"/account"}
+          href="/account"
         />
       );
       isOnMailingList = false;
@@ -215,16 +211,16 @@ const MailingListConfirmation = () => {
   useEffect(() => {
     (async () => {
       if (
-        status === "unauthenticated" &&
+        status === 'unauthenticated' &&
         wasStatusRetrievalCompleted.current === false
       ) {
         await getUserMailingListStatus();
       } else if (
-        status === "authenticated" &&
+        status === 'authenticated' &&
         wasStatusRetrievalCompleted.current === false
       ) {
-        console.log("will get status for signed in user....");
-        await getUserMailingListStatus("/api/get-signed-in-user-brevo-status");
+        console.log('will get status for signed in user....');
+        await getUserMailingListStatus('/api/get-signed-in-user-brevo-status');
       }
     })();
   }, [status]);

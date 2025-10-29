@@ -1,20 +1,16 @@
-/* eslint-disable no-console */
-/* eslint-disable quotes */
-/* eslint-disable indent */
-
-import React, { useEffect } from "react";
-import { nanoid } from "nanoid";
-import { INewUnitSchema } from "../../backend/models/Unit/types/unit";
+import React, { useEffect } from 'react';
+import { nanoid } from 'nanoid';
+import { INewUnitSchema } from '../../backend/models/Unit/types/unit';
 import {
   filterInShowableUnits,
   getGpMultiMedia,
   getGpWebApps,
   getUnitLessons,
   retrieveUnits,
-} from "../../backend/services/unitServices";
-import { ICurrentUnits } from "../../types/global";
-import UnitsPg from "../../components/LessonsPg";
-import { createDbProjections } from "../../shared/fns";
+} from '../../backend/services/unitServices';
+import { ICurrentUnits } from '../../types/global';
+import UnitsPg from '../../components/LessonsPg';
+import { createDbProjections } from '../../shared/fns';
 
 interface IProps {
   oldUnits: any;
@@ -23,7 +19,7 @@ interface IProps {
 
 const LessonsPage = ({ currentUnits }: IProps) => {
   useEffect(() => {
-    console.log("currentUnits?.webApps: ", currentUnits?.webApps);
+    console.log('currentUnits?.webApps: ', currentUnits?.webApps);
   });
 
   return (
@@ -37,19 +33,19 @@ const LessonsPage = ({ currentUnits }: IProps) => {
 };
 
 const PROJECTED_UNITS_FIELDS: Partial<keyof INewUnitSchema>[] = [
-  "UnitBanner",
-  "Subtitle",
-  "Title",
-  "Sections",
-  "ReleaseDate",
-  "locale",
-  "_id",
-  "numID",
-  "PublicationStatus",
-  "TargetSubject",
-  "ForGrades",
-  "GradesOrYears",
-  "FeaturedMultimedia",
+  'UnitBanner',
+  'Subtitle',
+  'Title',
+  'Sections',
+  'ReleaseDate',
+  'locale',
+  '_id',
+  'numID',
+  'PublicationStatus',
+  'TargetSubject',
+  'ForGrades',
+  'GradesOrYears',
+  'FeaturedMultimedia',
 ];
 const DATA_PER_PG = 6;
 
@@ -68,13 +64,13 @@ export async function getStaticProps() {
       const gpMultiMedia = getGpMultiMedia(retrievedUnits);
       let gpVideosFirstPg = gpMultiMedia?.length
         ? gpMultiMedia
-            .filter((mediaItem) => typeof mediaItem.ReleaseDate === "string")
-            .sort(
-              (multiMediaItemA, multiMediaItemB) =>
-                JSON.parse(multiMediaItemB.ReleaseDate as string) -
+          .filter((mediaItem) => typeof mediaItem.ReleaseDate === 'string')
+          .sort(
+            (multiMediaItemA, multiMediaItemB) =>
+              JSON.parse(multiMediaItemB.ReleaseDate as string) -
                 JSON.parse(multiMediaItemA.ReleaseDate as string)
-            )
-            .slice(0, DATA_PER_PG)
+          )
+          .slice(0, DATA_PER_PG)
         : [];
       gpVideosFirstPg = gpVideosFirstPg?.length
         ? gpVideosFirstPg.map((vid) => ({ ...vid, id: nanoid() }))
@@ -84,7 +80,7 @@ export async function getStaticProps() {
 
       const unitsForUI = filterInShowableUnits(retrievedUnits, Date.now());
       const lessonsFor1stPg = lessons
-        .filter((lesson) => typeof lesson.sortByDate === "string")
+        .filter((lesson) => typeof lesson.sortByDate === 'string')
         .sort(
           (
             { sortByDate: sortByDateLessonA },
@@ -136,10 +132,10 @@ export async function getStaticProps() {
       };
     }
 
-    throw new Error("Failed to fetch for units.");
+    throw new Error('Failed to fetch for units.');
   } catch (error) {
     console.error(
-      "An error has occurred while fetching for units. Error message: ",
+      'An error has occurred while fetching for units. Error message: ',
       error
     );
 

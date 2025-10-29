@@ -14,11 +14,6 @@ const CollapsibleRichTextSection = ({
   const sectionTitle = SectionTitle.split(' ').slice(1).join('_');
 
   useLessonElementInView(_sectionDots, SectionTitle, ref);
-  // section-testing
-
-  useEffect(() => {
-    console.log(`Content of, data, ${sectionTitle}`, Content);
-  });
 
   return (
     <CollapsibleLessonSection initiallyExpanded={Content ? InitiallyExpanded : false} {...props}>
