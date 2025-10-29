@@ -137,6 +137,9 @@ interface IProps {
   unitGDriveChildItems: Awaited<ReturnType<typeof getUnitGDriveChildItems>>;
 }
 
+const SECTIONS_TO_FILTER_OUT: Set<keyof ISections> = new Set([
+  "jobvizConnections",
+] as (keyof ISections)[]);
 const SECTION_SORT_ORDER: Record<keyof ISections, number> = {
   overview: 0,
   preview: 1,
@@ -415,6 +418,10 @@ const LessonDetails: React.FC<IProps> = ({ lesson, unit }) => {
     return unitSectionAndTitlePairs
       .map(([, section]) => section)
       .filter((section) => {
+        if(SECTIONS_TO_FILTER_OUT.has(section.__component)){
+          return false;
+        }
+
         return section?.__component;
       });
   }, []);

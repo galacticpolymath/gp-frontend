@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { useRef } from 'react';
+import { useRef, useEffect } from 'react';
 import useLessonElementInView from '../../customHooks/useLessonElementInView';
 import CollapsibleLessonSection from '../CollapsibleLessonSection';
 import RichText from '../RichText';
@@ -15,6 +15,10 @@ const CollapsibleRichTextSection = ({
 
   useLessonElementInView(_sectionDots, SectionTitle, ref);
   // section-testing
+
+  useEffect(() => {
+    console.log(`Content of, data, ${sectionTitle}`, Content);
+  });
 
   return (
     <CollapsibleLessonSection initiallyExpanded={Content ? InitiallyExpanded : false} {...props}>
