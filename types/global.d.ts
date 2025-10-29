@@ -1,4 +1,4 @@
-import { ReactNode, CSSProperties } from 'react';
+import React, { ReactNode, CSSProperties } from 'react';
 import { IItem, IItemV2, ILesson } from '../backend/models/Unit/types/teachingMaterials';
 import { REFERRED_BY_OPTS } from '../shared/constants';
 import {
@@ -6,7 +6,7 @@ import {
   INewUnitSchema,
 } from '../backend/models/Unit/types/unit';
 import { Session } from 'next-auth';
-import { TAboutUserForm, TUserSchemaForClient, TUserSchemaV2 } from '../backend/models/User/types';
+import { IUserSchema, TAboutUserForm, TUserSchemaForClient, TUserSchemaV2 } from '../backend/models/User/types';
 import { TWebAppForUI } from '../backend/models/WebApp';
 import { TUserAccount } from '../providers/UserProvider';
 
