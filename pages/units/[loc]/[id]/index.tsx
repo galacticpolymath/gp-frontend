@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-max-props-per-line */
- 
+
 /* eslint-disable quotes */
 /* eslint-disable no-console */
 /* eslint-disable indent */
@@ -163,6 +163,26 @@ const UNIT_DOCUMENT_ORIGINS = new Set([
 const LessonDetails: React.FC<IProps> = ({ lesson, unit }) => {
   console.log("UNIT OBJECT: ", unit);
 
+  useMemo(() => {
+    if (unit?.Sections) {
+      const unitSections = Object.entries(unit.Sections).reduce(
+        (sections, [sectionKey, sectionVal]) => {
+          if (SECTIONS_TO_FILTER_OUT.has(sectionKey as keyof TSectionsForUI)) {
+            return sections;
+          }
+
+          return {
+            ...sections,
+            [sectionKey]: sectionVal,
+          };
+        },
+        {} as TSectionsForUI
+      );
+
+      unit.Sections = unitSections;
+    }
+  }, []);
+
   const router = useRouter();
   const {
     _isUserTeacher,
@@ -170,7 +190,6 @@ const LessonDetails: React.FC<IProps> = ({ lesson, unit }) => {
     _isCopyUnitBtnDisabled,
     _didAttemptRetrieveUserData,
     _userLatestCopyUnitFolderId,
-    _willShowGpPlusCopyLessonHelperModal,
   } = useUserContext();
   const session = useSiteSession();
   const { status, token, gdriveAccessToken, gdriveRefreshToken, gdriveEmail } =
@@ -418,10 +437,6 @@ const LessonDetails: React.FC<IProps> = ({ lesson, unit }) => {
     return unitSectionAndTitlePairs
       .map(([, section]) => section)
       .filter((section) => {
-        if(SECTIONS_TO_FILTER_OUT.has(section.__component)){
-          return false;
-        }
-
         return section?.__component;
       });
   }, []);
