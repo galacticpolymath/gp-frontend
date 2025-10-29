@@ -1,8 +1,6 @@
-/* eslint-disable react/jsx-max-props-per-line */
-/* eslint-disable no-console */
 /* eslint-disable quotes */
 /* eslint-disable indent */
-/* eslint-disable semi */
+ 
 /* eslint-disable react/jsx-indent */
 
 import PropTypes from "prop-types";

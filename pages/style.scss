@@ -45,6 +45,14 @@ h4.words {
   }
 }
 
+.sign-up-input-label {
+  font-size: 16px;
+
+  @media (min-width: 576px) {
+    font-size: 18px;
+  }
+}
+
 .text-lg {
   font-size: 18px;
 }
@@ -186,6 +194,10 @@ body {
 
   @media (max-width: 541px) {
     display: none;
+  }
+
+  @media (min-width: 768px) and (max-width: 992px) {
+    left: 30%;
   }
 }
 
@@ -1167,4 +1179,29 @@ img {
     transform: translateY(-20px);
     text-shadow: 0 50px 0 rgba(0, 0, 0, 1) k, 0 0px 20px rgba(0, 0, 0, 0.8);
   }
+}
+
+.white-only-txt-md {
+  color: white;
+
+  @media (min-width: 768px) {
+    color: black;
+  }
+}
+
+.google-sign-in-btn {
+  max-width: 503px;
+  @media (min-width: 576px) {
+    max-width: none;
+  }
+}
+
+.blur-text-bg {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px); /* Safari support */
+  background: rgba(255, 255, 255, 0.2); /* Semi-transparent layer */
+  border-radius: 0.5rem;
+  padding: 0.5rem 1rem;
+  color: white;
+  display: inline-block;
 }

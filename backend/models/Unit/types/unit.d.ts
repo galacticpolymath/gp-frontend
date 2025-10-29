@@ -1,13 +1,13 @@
-import { IAcknowledgments } from "../Acknowledgments";
-import { IUnitPreview } from "../Preview";
-import { TGeneralSection } from "../Section";
-import { IStandard } from "../Standards";
-import { ITeachingMaterials } from "../TeachingMaterials";
-import { IVersionNotes } from "../VersionNotes";
-import { IOverview, IUnitOverview, TOverviewForUI } from "./overview";
-import { IPreview } from "./preview";
-import { IStandards, IStandardsSec, ITargetStandardsCode, TStandardsForUI } from "./standards";
-import { IUnitTeachingMaterials, IUnitTeachingMaterialsForUI } from "./teachingMaterials";
+import { IAcknowledgments } from '../Acknowledgments';
+import { IUnitPreview } from '../Preview';
+import { TGeneralSection } from '../Section';
+import { IStandard } from '../Standards';
+import { ITeachingMaterials } from '../TeachingMaterials';
+import { IVersionNotes } from '../VersionNotes';
+import { IOverview, IUnitOverview, TOverviewForUI } from './overview';
+import { IPreview } from './preview';
+import { IStandards, IStandardsSec, ITargetStandardsCode, TStandardsForUI } from './standards';
+import { IUnitTeachingMaterials, IUnitTeachingMaterialsForUI } from './teachingMaterials';
 
 export interface ILsnStatus {
   lsn: number;
@@ -128,7 +128,7 @@ export type TFeaturedMultimediaForUI = Partial<{
   webAppImgAlt: string | null;
 }> & IFeaturedMultimedia;
 
-export interface IUnit extends Omit<IUnitOld, "LsnStatuses"> {}
+export interface IUnit extends Omit<IUnitOld, 'LsnStatuses'> {}
 
 export interface INewUnitSchema<TSection extends ISections = ISections, TFeaturedMultimedia extends IFeaturedMultimedia = TFeaturedMultimediaForUI> {
   _id: string | null;
@@ -203,6 +203,7 @@ interface ISections<
   credits: TGeneralSection | null;
   acknowledgments: TAcknowledgments | null;
   versions: IVersionNotes | null;
+  jobvizConnections: IJobVizSection | null;
 }
 
 export type TSectionsForUI = ISections<TOverviewForUI, TStandardsForUI, IUnitTeachingMaterialsForUI>; 

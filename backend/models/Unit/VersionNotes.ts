@@ -2,11 +2,11 @@ import { Schema } from 'mongoose';
 import { IUnitSectionObj, unitSectionObj } from './Section';
 
 const SubReleaseSchema = new Schema<ISubRelease>({
-    version: String,
-    date: String,
-    summary: String,
-    notes: String,
-    acknowledgments: String
+  version: String,
+  date: String,
+  summary: String,
+  notes: String,
+  acknowledgments: String,
 }, { _id: false });
 
 interface ISubRelease {
@@ -27,11 +27,11 @@ export interface IVersionNotes extends IUnitSectionObj {
 }
 
 const ReleaseSchema = new Schema<IRelease>({
-    major_release: String,
-    sub_releases: [SubReleaseSchema]
+  major_release: String,
+  sub_releases: [SubReleaseSchema],
 }, { _id: false });
 
 export const VersionNotes = new Schema<IVersionNotes>({
-    ...unitSectionObj,
-    Data: [ReleaseSchema]
+  ...unitSectionObj,
+  Data: [ReleaseSchema],
 }, { _id: false });

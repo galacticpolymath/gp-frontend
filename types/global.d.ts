@@ -1,18 +1,18 @@
-import { ReactNode, CSSProperties } from "react";
-import { IItem, IItemV2, ILesson } from "../backend/models/Unit/types/teachingMaterials";
+import React, { ReactNode, CSSProperties } from 'react';
+import { IItem, IItemV2, ILesson } from '../backend/models/Unit/types/teachingMaterials';
 import { REFERRED_BY_OPTS } from '../shared/constants';
 import {
   IFeaturedMultimedia,
   INewUnitSchema,
-} from "../backend/models/Unit/types/unit";
-import { Session } from "next-auth";
-import { TAboutUserForm, TUserSchemaForClient, TUserSchemaV2 } from "../backend/models/User/types";
-import { TWebAppForUI } from "../backend/models/WebApp";
-import { TUserAccount } from "../providers/UserProvider";
+} from '../backend/models/Unit/types/unit';
+import { Session } from 'next-auth';
+import { IUserSchema, TAboutUserForm, TUserSchemaForClient, TUserSchemaV2 } from '../backend/models/User/types';
+import { TWebAppForUI } from '../backend/models/WebApp';
+import { TUserAccount } from '../providers/UserProvider';
 
 interface IRequestArgs{
     path: string;
-    method?: "GET" | "POST" | "PUT" | "DELETE";
+    method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
     params?: Record<string, string>;
     headers?: Record<string, string>;
     body?: string | object;
@@ -29,7 +29,7 @@ declare global {
       auth: {
         close: () => Promise<void>;
       }
-      on: (event: "logout" | "redirect" | "signup", callback: (...args: unknown[]) => void | boolean | Promise<void | boolean>) => void;
+      on: (event: 'logout' | 'redirect' | 'signup', callback: (...args: unknown[]) => void | boolean | Promise<void | boolean>) => void;
     };
     gapi: {
     client: {
@@ -57,11 +57,10 @@ export interface ILessonForUI extends ILesson {
   status: string;
 }
 
-
-export interface ICustomUserOfSession extends NonNullable<Session["user"]>{
+export interface ICustomUserOfSession extends NonNullable<Session['user']>{
   userId: string
 }
-export interface IUserSession extends Pick<Session, "expires"> {
+export interface IUserSession extends Pick<Session, 'expires'> {
   token: string;
   user: ICustomUserOfSession
 }
@@ -86,8 +85,8 @@ interface ISectionDots {
 
 // for the units page
 interface IMultiMediaItemForUI
-  extends Pick<INewUnitSchema, "ReleaseDate">,
-    Pick<IFeaturedMultimedia, "description" | "mainLink"> {
+  extends Pick<INewUnitSchema, 'ReleaseDate'>,
+    Pick<IFeaturedMultimedia, 'description' | 'mainLink'> {
   id: string;
   lessonUnitTitle: string | null;
   videoTitle: string | null;
@@ -98,10 +97,10 @@ interface IMultiMediaItemForUI
 
 export interface IWebAppLink {
   lessonIdStr: string | null;
-  unitNumID: INewUnitSchema["numID"] | null;
+  unitNumID: INewUnitSchema['numID'] | null;
   webAppLink: string;
   title: string | null;
-  unitTitle: INewUnitSchema["Title"] | null;
+  unitTitle: INewUnitSchema['Title'] | null;
   description: string | null;
   webAppPreviewImg: string | null;
   webAppImgAlt: string | null;
@@ -116,10 +115,10 @@ export interface IUnitLesson {
   dur: number | null;
   preface: string | null;
   lessonPartNum: number | null;
-  unitTitle: INewUnitSchema["Title"];
-  subject: INewUnitSchema["TargetSubject"];
-  grades: INewUnitSchema["ForGrades"];
-  gradesOrYears: INewUnitSchema["GradesOrYears"];
+  unitTitle: INewUnitSchema['Title'];
+  subject: INewUnitSchema['TargetSubject'];
+  grades: INewUnitSchema['ForGrades'];
+  gradesOrYears: INewUnitSchema['GradesOrYears'];
   status: string | null;
   sortByDate: string | null;
 }
@@ -133,7 +132,7 @@ type TLiveUnit = INewUnitSchema & {
   isNew?: boolean;
 };
 
-interface ILiveUnit extends Pick<IUnitForUnitsPg, "locals">, TLiveUnit {}
+interface ILiveUnit extends Pick<IUnitForUnitsPg, 'locals'>, TLiveUnit {}
 
 interface ICurrentUnits {
   units: IGpUnitsItemsPg<ILiveUnit> | null;
@@ -152,29 +151,29 @@ interface IGpUnitsItemsPg<TData extends object> {
 }
 
 type TInputType = 
-  | "button"
-  | "checkbox"
-  | "color"
-  | "date"
-  | "datetime-local"
-  | "email"
-  | "file"
-  | "hidden"
-  | "image"
-  | "month"
-  | "number"
-  | "password"
-  | "radio"
-  | "range"
-  | "reset"
-  | "search"
-  | "submit"
-  | "tel"
-  | "text"
+  | 'button'
+  | 'checkbox'
+  | 'color'
+  | 'date'
+  | 'datetime-local'
+  | 'email'
+  | 'file'
+  | 'hidden'
+  | 'image'
+  | 'month'
+  | 'number'
+  | 'password'
+  | 'radio'
+  | 'range'
+  | 'reset'
+  | 'search'
+  | 'submit'
+  | 'tel'
+  | 'text'
 type TReferredByOpt = (typeof REFERRED_BY_OPTS)[number];
-export type TEnvironment = "dev" | "production"
+export type TEnvironment = 'dev' | 'production'
 export interface IUpdatedUserReqBody{
-  updatedUser: Partial<Omit<IUserSchema, "password" | "_id">>
+  updatedUser: Partial<Omit<IUserSchema, 'password' | '_id'>>
   clientUrl: string
   willUpdateMailingListStatusOnly?: boolean
   willSendEmailListingSubConfirmationEmail?: boolean
@@ -187,9 +186,10 @@ export interface IUpdatedAboutUserForm{
 export interface ISessionStorage{
   userEntryRedirectUrl: string; 
   wasWelcomeNewUserModalShown: boolean
+  isGpPlusUser: boolean
 }
 
-export interface ILocalStorage extends Pick<TUserSchemaV2, "willShowGpPlusCopyLessonHelperModal">{
+export interface ILocalStorage extends Pick<TUserSchemaV2, 'willShowGpPlusCopyLessonHelperModal'>{
   gpPlusFeatureLocation: string;
   willShowGpPlusPurchaseThankYouModal: boolean
   didGpSignInAttemptOccur: boolean;
@@ -197,7 +197,7 @@ export interface ILocalStorage extends Pick<TUserSchemaV2, "willShowGpPlusCopyLe
   wasContinueToCheckoutBtnClicked: boolean;
   userAccount: TUserSchemaForClient;
   lessonIdToViewAfterRedirect: string,
-  selectedGpPlusBillingType: "month" | "year";
+  selectedGpPlusBillingType: 'month' | 'year';
 }
 
 interface IErr<TErrType extends string = string>{

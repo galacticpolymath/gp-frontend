@@ -1,5 +1,3 @@
-/* eslint-disable no-unused-vars */
-
 import React,{ ChangeEvent } from 'react';
 import {
   SCHOOL_TYPES,

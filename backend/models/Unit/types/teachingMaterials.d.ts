@@ -1,6 +1,6 @@
-import { ILessonForUI } from "../../../../types/global";
-import { IUnitSectionObj } from "../Section";
-import { IOverview, IUnitOverview, TUnitOverviewPropsForUI } from "./overview";
+import { ILessonForUI } from '../../../../types/global';
+import { IUnitSectionObj } from '../Section';
+import { IOverview, IUnitOverview, TUnitOverviewPropsForUI } from './overview';
 
 export interface ILink{
   linkText: string | null;
@@ -28,7 +28,7 @@ export interface IItemV2 extends IItemV2Props {
   links: ILink[] | null;
 }
 
-export interface IGoingFurtherVal extends Omit<IItem, "links" | "itemCat">{
+export interface IGoingFurtherVal extends Omit<IItem, 'links' | 'itemCat'>{
   item: number
   itemLink: string
 }
@@ -42,6 +42,8 @@ export interface ILesson<TItem extends IItem = IItem> {
   _id: string | null;
   lsn: string | null;
   title: string | null;
+  lsnTags: string[] | null;
+  /** @deprecated use `lsnTags` */
   tags: string[] | null;
   preface: string | null;
   tile: string | null;
@@ -205,6 +207,7 @@ interface INewUnitLesson<TItem extends IItem = IItemV2> {
     sharedGDriveId: string;
   }>;
   title: string | null;
+  lsnTags: string[] | null;
   lsn: number | null;
   status: string | null;
   updated_date: string | null;
@@ -212,6 +215,7 @@ interface INewUnitLesson<TItem extends IItem = IItemV2> {
   sort_by_date: string | null;
   unit_status: string | null;
   unit_release_date: string | null;
+  /** @deprecated use `lsnTags` */
   tags: string[] | null;
   gradeVarNote: string | null;
   preface: string | null;
@@ -250,7 +254,7 @@ export interface IUnitTeachingMaterials extends IUnitSectionObj, ITeachingMateri
   remote?: IResourceObj;
 }
 
-export interface IUnitTeachingMaterialsForUI extends IUnitSectionObj, ITeachingMaterialsPreviewInfo, Partial<Pick<TUnitOverviewPropsForUI, "unitTitle">> {
+export interface IUnitTeachingMaterialsForUI extends IUnitSectionObj, ITeachingMaterialsPreviewInfo, Partial<Pick<TUnitOverviewPropsForUI, 'unitTitle'>> {
   classroom: {
     resources: IResource<INewUnitLesson<IItemForUI>>[];
   };

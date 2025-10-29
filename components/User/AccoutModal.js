@@ -68,7 +68,7 @@ const AccountModal = () => {
                 </Button>
                 <Button
                     handleOnClick={handleSignOutBtnClick}
-                    classNameStr="no-btn-styles hover txt-underline-on-hover py-2"
+                    classNameStr="no-btn-styles hover txt-underline-on-hover py-2 white-only-txt-md"
                 >
                     SIGN OUT
                 </Button>

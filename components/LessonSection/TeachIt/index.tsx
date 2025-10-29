@@ -1,6 +1,3 @@
-/* eslint-disable react/jsx-wrap-multilines */
-/* eslint-disable react/jsx-indent */
-/* eslint-disable react/jsx-curly-brace-presence */
 /* eslint-disable no-console */
 /* eslint-disable quotes */
 /* eslint-disable indent */

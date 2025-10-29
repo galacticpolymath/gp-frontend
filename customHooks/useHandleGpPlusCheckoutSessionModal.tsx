@@ -1,26 +1,26 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   defautlNotifyModalVal,
   useModalContext,
-} from "../providers/ModalProvider";
-import CustomLink from "../components/CustomLink";
-import { CONTACT_SUPPORT_EMAIL } from "../globalVars";
-import useSiteSession from "./useSiteSession";
-import { getUserPlanDetails, updateUser } from "../apiServices/user/crudFns";
-import { SELECTED_OPTION_CLASSNAME } from "./useGpPlusModalInteraction";
+} from '../providers/ModalProvider';
+import CustomLink from '../components/CustomLink';
+import { CONTACT_SUPPORT_EMAIL } from '../globalVars';
+import useSiteSession from './useSiteSession';
+import { getUserPlanDetails, updateUser } from '../apiServices/user/crudFns';
+import { SELECTED_OPTION_CLASSNAME } from './useGpPlusModalInteraction';
 import {
   getIsWithinParentElement,
   getLocalStorageItem,
   setLocalStorageItem,
-} from "../shared/fns";
-import { AiOutlineConsoleSql } from "react-icons/ai";
+} from '../shared/fns';
+import { AiOutlineConsoleSql } from 'react-icons/ai';
 
 const getBillingType = () => {
   const selectedGpPlusBillingType = getLocalStorageItem(
-    "selectedGpPlusBillingType"
+    'selectedGpPlusBillingType'
   );
 
-  return selectedGpPlusBillingType === "month" ? "monthly" : "yearly";
+  return selectedGpPlusBillingType === 'month' ? 'monthly' : 'yearly';
 };
 
 export const useHandleGpPlusCheckoutSessionModal = () => {
@@ -31,54 +31,54 @@ export const useHandleGpPlusCheckoutSessionModal = () => {
   const [getEmailInputRetryCount, setGetEmailInputRetryCount] = useState(1);
   const selectedBillingPeriod = useMemo(() => {
     const selectedGpPlusBillingType = getLocalStorageItem(
-      "selectedGpPlusBillingType"
+      'selectedGpPlusBillingType'
     );
 
-    return selectedGpPlusBillingType === "month" ? "monthly" : "yearly";
+    return selectedGpPlusBillingType === 'month' ? 'monthly' : 'yearly';
   }, []);
 
   const { user, token, logUserOut, status } = useSiteSession();
   const mutationOberserverRef = useRef<MutationObserver | null>(null);
 
   const handleOnClickPlanChangeLogic = (event: MouseEvent) => {
-    console.log("plan change occurred");
+    console.log('plan change occurred');
     const _target = event.target as HTMLElement;
 
     if (_target.className === SELECTED_OPTION_CLASSNAME) {
-      console.log("billing option selected");
+      console.log('billing option selected');
       return;
     }
 
     const wasABillingOptSelected = getIsWithinParentElement(
       _target,
       SELECTED_OPTION_CLASSNAME,
-      "className",
-      "includes"
+      'className',
+      'includes'
     );
 
-    console.log("Current GP Plus Billing Term: ", selectedBillingPeriod);
+    console.log('Current GP Plus Billing Term: ', selectedBillingPeriod);
 
-    console.log("wasABillingOptSelected: ", wasABillingOptSelected);
+    console.log('wasABillingOptSelected: ', wasABillingOptSelected);
 
     if (wasABillingOptSelected) {
       const isCurrentBillingPlanOfUser = _target.textContent
         ?.toLowerCase()
         ?.includes(selectedBillingPeriod);
-      console.log("isCurrentBillingPlanOfUser: ", isCurrentBillingPlanOfUser);
+      console.log('isCurrentBillingPlanOfUser: ', isCurrentBillingPlanOfUser);
       const currentPlanTxtElement = document.querySelector<HTMLElement>(
-        ".o--Badge--displayMode-light"
+        '.o--Badge--displayMode-light'
       );
 
-      console.log("IS CURRENT PLAN: ", currentPlanTxtElement);
+      console.log('IS CURRENT PLAN: ', currentPlanTxtElement);
 
       if (currentPlanTxtElement && isCurrentBillingPlanOfUser) {
-        currentPlanTxtElement.classList.add("show-gp-plus-element");
+        currentPlanTxtElement.classList.add('show-gp-plus-element');
       } else if (currentPlanTxtElement) {
-        currentPlanTxtElement.classList.remove("show-gp-plus-element");
+        currentPlanTxtElement.classList.remove('show-gp-plus-element');
       }
 
       const billingTermsOptsContainer = document.querySelector(
-        ".o--HorizontalToggle--displayMode-light"
+        '.o--HorizontalToggle--displayMode-light'
       );
       // const savingsElement =
       //   document.querySelector<HTMLSpanElement>("#gp-plus-savings");
@@ -86,17 +86,17 @@ export const useHandleGpPlusCheckoutSessionModal = () => {
         billingTermsOptsContainer?.childElementCount === 3 &&
         (billingTermsOptsContainer.lastChild as HTMLElement);
 
-      console.log("savingsElement: ", savingsElement);
-      console.log("billingTermsOptsContainer: ", billingTermsOptsContainer);
+      console.log('savingsElement: ', savingsElement);
+      console.log('billingTermsOptsContainer: ', billingTermsOptsContainer);
 
-      if (_target.textContent === "Billed yearly" && savingsElement) {
-        savingsElement.classList.add("fw-bolder");
-        savingsElement.classList.remove("text-decoration-line-through");
-        setLocalStorageItem("selectedGpPlusBillingType", "year");
+      if (_target.textContent === 'Billed yearly' && savingsElement) {
+        savingsElement.classList.add('fw-bolder');
+        savingsElement.classList.remove('text-decoration-line-through');
+        setLocalStorageItem('selectedGpPlusBillingType', 'year');
       } else if (savingsElement) {
-        setLocalStorageItem("selectedGpPlusBillingType", "month");
-        savingsElement.classList.remove("fw-bolder");
-        savingsElement.classList.add("text-decoration-line-through");
+        setLocalStorageItem('selectedGpPlusBillingType', 'month');
+        savingsElement.classList.remove('fw-bolder');
+        savingsElement.classList.add('text-decoration-line-through');
       }
     }
   };
@@ -113,32 +113,32 @@ export const useHandleGpPlusCheckoutSessionModal = () => {
   const handleUserInteractionWithGpPlusModal = async () => {
     const { percentageSaved } = (await getUserPlanDetails(token, false)) ?? {};
 
-    console.log("percentageSaved: ", percentageSaved);
+    console.log('percentageSaved: ', percentageSaved);
 
     const mutationOberserver = new MutationObserver((elements) => {
       for (const _ of elements) {
         const billingTypeOptsContainer = document.querySelector<HTMLDivElement>(
-          ".o--HorizontalToggle--horizontalToggle"
+          '.o--HorizontalToggle--horizontalToggle'
         );
         const gpPlusSavingsElement =
-          document.querySelector<HTMLSpanElement>("#gp-plus-savings");
+          document.querySelector<HTMLSpanElement>('#gp-plus-savings');
 
-        console.log("gpPlusSavingsElement: ", gpPlusSavingsElement);
+        console.log('gpPlusSavingsElement: ', gpPlusSavingsElement);
 
         if (billingTypeOptsContainer && !gpPlusSavingsElement) {
-          const savingsElement = document.createElement("span");
-          savingsElement.className = "gp-plus-color text-center ms-2";
-          savingsElement.id = "gp-plus-savings";
+          const savingsElement = document.createElement('span');
+          savingsElement.className = 'gp-plus-color text-center ms-2';
+          savingsElement.id = 'gp-plus-savings';
           savingsElement.textContent = `Save ${percentageSaved ?? 50}%`;
           const gpPlusBillingType = getLocalStorageItem(
-            "selectedGpPlusBillingType"
+            'selectedGpPlusBillingType'
           );
           savingsElement.classList.add(
-            gpPlusBillingType === "month"
-              ? "text-decoration-line-through"
-              : "fw-bolder"
+            gpPlusBillingType === 'month'
+              ? 'text-decoration-line-through'
+              : 'fw-bolder'
           );
-          console.log("billingTypeOptsContainer: ", billingTypeOptsContainer);
+          console.log('billingTypeOptsContainer: ', billingTypeOptsContainer);
           billingTypeOptsContainer.appendChild(savingsElement);
         }
       }
@@ -152,21 +152,21 @@ export const useHandleGpPlusCheckoutSessionModal = () => {
   };
 
   useEffect(() => {
-    if (status === "authenticated") {
+    if (status === 'authenticated') {
       handleUserInteractionWithGpPlusModal();
 
-      document.addEventListener("click", handleOnClickPlanChangeLogic);
+      document.addEventListener('click', handleOnClickPlanChangeLogic);
 
       return () => {
         mutationOberserverRef.current?.disconnect();
-        document.removeEventListener("click", handleOnClickPlanChangeLogic);
+        document.removeEventListener('click', handleOnClickPlanChangeLogic);
       };
     }
   }, [status]);
 
   useEffect(() => {
-    if (isSignupModalDisplayed && status === "authenticated") {
-      console.log("sign up modal displayed");
+    if (isSignupModalDisplayed && status === 'authenticated') {
+      console.log('sign up modal displayed');
 
       const emailInput = document.querySelector<HTMLInputElement>(
         '[name="Person.Email"]'
@@ -179,27 +179,27 @@ export const useHandleGpPlusCheckoutSessionModal = () => {
         return;
       }
 
-      console.log("emailInput value: ", emailInput);
+      console.log('emailInput value: ', emailInput);
 
       if (emailInput) {
-        emailInput.value = user.email ?? "";
-        emailInput.dispatchEvent(new Event("input", { bubbles: true }));
+        emailInput.value = user.email ?? '';
+        emailInput.dispatchEvent(new Event('input', { bubbles: true }));
       }
 
       // get the saving from the backend
       const continueToCheckoutBtn = document.querySelector<HTMLButtonElement>(
-        ".o--Register--nextButton"
+        '.o--Register--nextButton'
       );
 
-      console.log("continueToCheckoutBtn: ", continueToCheckoutBtn);
+      console.log('continueToCheckoutBtn: ', continueToCheckoutBtn);
 
-      setLocalStorageItem("wasContinueToCheckoutBtnClicked", true);
+      setLocalStorageItem('wasContinueToCheckoutBtnClicked', true);
 
-      continueToCheckoutBtn?.addEventListener("click", async (event) => {
-        console.log("The continue button was clicked...");
+      continueToCheckoutBtn?.addEventListener('click', async (event) => {
+        console.log('The continue button was clicked...');
 
         if ((event.target as HTMLButtonElement).disabled) {
-          console.log("The button is disabled.");
+          console.log('The button is disabled.');
           return;
         }
 
@@ -208,17 +208,17 @@ export const useHandleGpPlusCheckoutSessionModal = () => {
         ) as HTMLInputElement | null;
         const outsetaEmail = emailInput
           ? (emailInput as HTMLInputElement).value
-          : "";
+          : '';
 
-        console.log("outsetaEmail, sup there: ", outsetaEmail);
+        console.log('outsetaEmail, sup there: ', outsetaEmail);
 
         if (!outsetaEmail) {
           setNotifyModal({
-            headerTxt: "An error has occurred",
+            headerTxt: 'An error has occurred',
             bodyTxt: (
               <>
                 Unable to start your checkout session. If this error persists,
-                please contact{" "}
+                please contact{' '}
                 <CustomLink
                   hrefStr={CONTACT_SUPPORT_EMAIL}
                   className="ms-1 mt-2 text-break"
@@ -240,7 +240,7 @@ export const useHandleGpPlusCheckoutSessionModal = () => {
 
         if (!user?.email || !token) {
           setNotifyModal({
-            headerTxt: "An error has occurred",
+            headerTxt: 'An error has occurred',
             bodyTxt: (
               <>
                 Unable to start your checkout session. You are not logged in.
@@ -259,7 +259,7 @@ export const useHandleGpPlusCheckoutSessionModal = () => {
         }
 
         console.log(
-          "Will save the email the user inputted. Email: ",
+          'Will save the email the user inputted. Email: ',
           outsetaEmail
         );
 
@@ -272,11 +272,11 @@ export const useHandleGpPlusCheckoutSessionModal = () => {
 
         if (!updateUserResponse?.wasSuccessful) {
           setNotifyModal({
-            headerTxt: "An error has occurred",
+            headerTxt: 'An error has occurred',
             bodyTxt: (
               <>
                 An error has occurred while trying to update the user's email.
-                If this error persists, please contact{" "}
+                If this error persists, please contact{' '}
                 <CustomLink
                   hrefStr={CONTACT_SUPPORT_EMAIL}
                   className="ms-1 mt-2 text-break"

@@ -1,6 +1,6 @@
-import { IRootFieldToRetrieve } from "../RootFieldsToRetrieve";
-import { IUnitSectionObj } from "../Section";
-import { IRelease } from "../VersionNotes";
+import { IRootFieldToRetrieve } from '../RootFieldsToRetrieve';
+import { IUnitSectionObj } from '../Section';
+import { IRelease } from '../VersionNotes';
 
 export interface ITag {
   Value: string;
@@ -26,6 +26,7 @@ export interface IVersion {
   sub_releases: ISubRelease[];
 }
 
+// deprecate this interface
 export interface IOverview extends IUnitSectionObj {
   UnitSummary: string;
   EstUnitTime: string;
@@ -34,6 +35,7 @@ export interface IOverview extends IUnitSectionObj {
   SteamEpaulette_vert: string;
   Accessibility: IAccessibility[];
   Tags: ITag[];
+  UnitTags: string[];
   versions: IVersion[];
   rootFieldsToRetrieveForUI: IRootFieldToRetrieve[];
 }
@@ -66,26 +68,23 @@ export interface IUnitOverview {
   SteamEpaulette: string | null;
   SteamEpaulette_vert: string | null;
   Accessibility: IUnitAccessibility[] | null;
-  Tags:
-    | {
-        Value: string | null;
-      }[]
-    | null;
+  /** @deprecated use `UnitTags` */
+  Tags: ITag[] | null;
+  UnitTags: string[] | null;
   versions: IRelease[] | null;
   rootFieldsToRetrieveForUI?: IRootFieldToRetrieve | null;
 }
 
 export type TUnitOverviewPropsForUI = Partial<{
-  unitBanner: INewUnitSchema["UnitBanner"];
-  unitTitle: INewUnitSchema["Title"];
-  ForGrades: INewUnitSchema["ForGrades"];
-  TargetSubject: INewUnitSchema["TargetSubject"];
-  GradesOrYears: INewUnitSchema["GradesOrYears"];
-  numID: INewUnitSchema["numID"];
-  locale: INewUnitSchema["locale"];
-  Subtitle: INewUnitSchema["Subtitle"];
-  availLocs: string[]; 
+  unitBanner: INewUnitSchema['UnitBanner'];
+  unitTitle: INewUnitSchema['Title'];
+  ForGrades: INewUnitSchema['ForGrades'];
+  TargetSubject: INewUnitSchema['TargetSubject'];
+  GradesOrYears: INewUnitSchema['GradesOrYears'];
+  numID: INewUnitSchema['numID'];
+  locale: INewUnitSchema['locale'];
+  Subtitle: INewUnitSchema['Subtitle'];
+  availLocs: string[];
 }>;
 
-export type TOverviewForUI = Partial<IUnitOverview &
-  TUnitOverviewPropsForUI>;
+export type TOverviewForUI = Partial<IUnitOverview & TUnitOverviewPropsForUI>;

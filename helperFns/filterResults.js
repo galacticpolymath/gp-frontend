@@ -1,5 +1,5 @@
 /* eslint-disable curly */
-/* eslint-disable no-console */
+ 
 /* eslint-disable quotes */
 /* eslint-disable semi */
 /* eslint-disable comma-dangle */

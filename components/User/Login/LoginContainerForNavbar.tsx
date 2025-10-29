@@ -1,11 +1,8 @@
-/* eslint-disable react/jsx-curly-brace-presence */
-/* eslint-disable react/jsx-indent */
 /* eslint-disable indent */
 /* eslint-disable quotes */
-/* eslint-disable react/jsx-indent-props */
 
 import { FaUserAlt } from "react-icons/fa";
-import { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useModalContext } from "../../../providers/ModalProvider";
 import Button from "../../General/Button";
 import { signOut } from "next-auth/react";
@@ -94,14 +91,20 @@ const LoginContainerForNavbar: React.FC<IProps> = ({ _modalAnimation }) => {
   const [aboutUserForm] = _aboutUserForm;
   const [isRetrievingUserData] = _isRetrievingUserData;
   const pathName = usePathname();
-  const userAccountSaved = (
-    typeof localStorage !== "undefined"
-      ? getLocalStorageItem("userAccount") ?? {}
-      : {}
-  ) as TAboutUserForm;
-  const [modalAnimation, setModalAnimation] = _modalAnimation;
   const { status, user, token, gdriveAccessToken, gdriveRefreshToken } =
     useSiteSession();
+  const userAccountSaved = useMemo(() => {
+    if (status === "authenticated") {
+      return (
+        typeof localStorage !== "undefined"
+          ? getLocalStorageItem("userAccount") ?? {}
+          : {}
+      ) as TAboutUserForm;
+    }
+
+    return null;
+  }, [status]);
+  const [modalAnimation, setModalAnimation] = _modalAnimation;
   const { image } = user ?? {};
   const [, setIsAccountModalMobileOn] = _isAccountModalMobileOn;
   const [isSigningUserOut, setIsSigningUserOut] = useState(false);
@@ -154,16 +157,26 @@ const LoginContainerForNavbar: React.FC<IProps> = ({ _modalAnimation }) => {
     await deleteUserFromServerCache(token);
     await signOut({ redirect: false });
 
-    localStorage.clear();
-    sessionStorage.clear();
-    clearCookies();
+    console.log("User signed out successfully");
 
-    const isUserSignedIn = !!(window.Outseta as any)?.getAccessToken();
+    const isUserSignedIn = !!(await (window.Outseta as any).getAccessToken());
 
     if (!isUserSignedIn) {
+      console.log("No user found in outseta. Will reload.");
+      clearCookies();
+      localStorage.clear();
+      sessionStorage.clear();
       window.location.reload();
       return;
     }
+
+    await window.Outseta?.logout();
+
+    console.log("will log out of outseta");
+
+    clearCookies();
+    localStorage.clear();
+    sessionStorage.clear();
 
     window.Outseta?.on("logout", async () => {
       console.log("Logging the user out.");
@@ -235,33 +248,6 @@ const LoginContainerForNavbar: React.FC<IProps> = ({ _modalAnimation }) => {
     setMounted(true);
   }, []);
 
-  const handleOnClickAwayCloseModal = (event: MouseEvent) => {
-    const isWithinModal = getIsWithinParentElement(
-      event.target as HTMLElement,
-      USER_ACCOUNT_MODAL_ID,
-      "id",
-      "strictEquals"
-    );
-
-    console.log("Will close the modal: ", isWithinModal);
-
-    if (isWithinModal) {
-      closeModal();
-    }
-  };
-
-  useEffect(() => {
-    if (modalAnimation === "fade-in-quick") {
-      document.addEventListener("click", handleOnClickAwayCloseModal);
-    } else if (modalAnimation === "fade-out-quick") {
-      document.removeEventListener("click", handleOnClickAwayCloseModal);
-    }
-
-    return () => {
-      document.removeEventListener("click", handleOnClickAwayCloseModal);
-    };
-  }, [modalAnimation]);
-
   if (!mounted) {
     return null;
   }
@@ -318,49 +304,57 @@ const LoginContainerForNavbar: React.FC<IProps> = ({ _modalAnimation }) => {
           pointerEvents: modalAnimation === "fade-out-quick" ? "none" : "auto",
           border: ".5px solid grey",
         }}
-        className={`bg-white account-sm-modal py-2 rounded ${modalAnimation}`}
+        className={`bg-white account-sm-modal relative ounded ${modalAnimation}`}
       >
-        <section
-          style={{ borderBottom: ".5px solid grey" }}
-          className="d-flex flex-column justify-content-center align-items-center pb-2"
+        <Button
+          handleOnClick={closeModal}
+          classNameStr="position-absolute top-0 end-0 me-2 no-btn-styles"
         >
-          {isRetrievingUserData &&
-          !firstName &&
-          !lastName &&
-          !isSigningUserOut ? (
-            <Spinner color="white" />
-          ) : (
-            <h5 className="text-black my-3">
-              {firstName} {lastName}
-            </h5>
-          )}
-        </section>
-        <section className="d-flex flex-column">
-          <Button
-            handleOnClick={() => {
-              setModalAnimation("fade-out-quick");
-              router.push("/account");
-            }}
-            classNameStr="no-btn-styles text-black txt-underline-on-hover py-2"
+          <i className="fa fa-times" style={{ color: "black", fontSize: "15px" }} />
+        </Button>
+        <div className="py-2">
+          <section
+            style={{ borderBottom: ".5px solid grey" }}
+            className="d-flex flex-column justify-content-center align-items-center pb-2"
           >
-            View Account
-          </Button>
-          <Button
-            handleOnClick={async () => await handleSignOutBtnClick()}
-            classNameStr="no-btn-styles  hover txt-underline-on-hover py-2"
-          >
-            {isSigningUserOut ? (
-              <div
-                className="spinner-border spinner-border-sm text-dark"
-                role="status"
-              >
-                <span className="visually-hidden">Loading...</span>
-              </div>
+            {isRetrievingUserData &&
+            !firstName &&
+            !lastName &&
+            !isSigningUserOut ? (
+              <Spinner color="white" />
             ) : (
-              <span>SIGN OUT</span>
+              <h5 className="text-black my-3">
+                {firstName} {lastName}
+              </h5>
             )}
-          </Button>
-        </section>
+          </section>
+          <section className="d-flex flex-column">
+            <Button
+              handleOnClick={() => {
+                setModalAnimation("fade-out-quick");
+                router.push("/account");
+              }}
+              classNameStr="no-btn-styles text-black txt-underline-on-hover py-2"
+            >
+              View Account
+            </Button>
+            <Button
+              handleOnClick={async () => await handleSignOutBtnClick()}
+              classNameStr="no-btn-styles  hover txt-underline-on-hover py-2"
+            >
+              {isSigningUserOut ? (
+                <div
+                  className="spinner-border spinner-border-sm text-dark"
+                  role="status"
+                >
+                  <span className="visually-hidden">Loading...</span>
+                </div>
+              ) : (
+                <span>SIGN OUT</span>
+              )}
+            </Button>
+          </section>
+        </div>
       </div>
     </div>
   );

@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-/* eslint-disable react/jsx-curly-brace-presence */
+ 
 /* eslint-disable react/jsx-indent-props */
 /* eslint-disable react/jsx-indent */
 /* eslint-disable indent */

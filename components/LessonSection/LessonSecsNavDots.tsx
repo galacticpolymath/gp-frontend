@@ -1,15 +1,3 @@
-/* eslint-disable react/jsx-key */
-/* eslint-disable no-undef */
-/* eslint-disable react/jsx-indent */
-/* eslint-disable react/jsx-indent-props */
-/* eslint-disable indent */
-/* eslint-disable react/jsx-max-props-per-line */
-/* eslint-disable curly */
-/* eslint-disable react/jsx-wrap-multilines */
-/* eslint-disable react/jsx-closing-bracket-location */
-/* eslint-disable react/jsx-closing-tag-location */
-/* eslint-disable no-unused-vars */
-/* eslint-disable semi */
 /* eslint-disable quotes */
 /* eslint-disable no-console */
 import { useRouter } from "next/router";
@@ -154,7 +142,7 @@ const LessonsSecsNavDots = ({
             }),
           };
         });
-      }, 1000);
+      }, 1300);
       return;
     }
 

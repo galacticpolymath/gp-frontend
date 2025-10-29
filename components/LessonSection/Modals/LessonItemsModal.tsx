@@ -18,6 +18,7 @@ import useSiteSession from "../../../customHooks/useSiteSession";
 import Image from "next/image";
 import { FcGoogle } from "react-icons/fc";
 import Dropdown from "react-bootstrap/Dropdown";
+import { LuMonitorPlay } from "react-icons/lu";
 
 interface ICarouselItemNavBtn {
   onClick: React.MouseEventHandler<HTMLButtonElement>;
@@ -52,7 +53,7 @@ const LessonItemDownloadBtnsDropDown: React.FC<{
   };
 
   return (
-    <Dropdown className="d-block d-sm-none">
+    <Dropdown>
       <Dropdown.Toggle
         variant="success"
         id="dropdown-basic"
@@ -152,17 +153,12 @@ const LessonItemsModal: React.FC = () => {
     userGDriveLessonFolderId,
   } = lessonItemModal;
   const currentLessonItem = lessonItems[currentIndex] ?? {};
-  const iframeSrc =
-    currentLessonItem?.itemCat === "web resource"
-      ? currentLessonItem?.externalUrl
-      : currentLessonItem?.docUrl;
-  // const [currentLessonItemDocUrl, currentLessonItemName] = currentLessonItem;
-  const { docUrl: currentLessonItemDocUrl, itemTitle: currentLessonItemName } =
-    currentLessonItem;
-
-  useEffect(() => {
-    console.log("currentLessonItem: ", currentLessonItem);
-  });
+  const {
+    docUrl: currentLessonItemDocUrl,
+    itemTitle: currentLessonItemName,
+    itemCat,
+    externalUrl,
+  } = currentLessonItem;
 
   const handleDownloadPdfBtnClick = () => {
     if (currentLessonItem.mimeType === "pdf") {
@@ -182,7 +178,10 @@ const LessonItemsModal: React.FC = () => {
   };
 
   const handleOpenInNewTabBtnClick = () => {
-    window.open(iframeSrc);
+    const url =
+      itemCat === "web resource" ? externalUrl : currentLessonItemDocUrl;
+
+    window.open(url);
   };
 
   const handleGpPlusBtnclick = () => {
@@ -193,6 +192,10 @@ const LessonItemsModal: React.FC = () => {
     window.open(
       `${currentLessonItem.gdriveRoot}/export?format=${currentLessonItem.mimeType}`
     );
+  };
+
+  const handlePlayBtnClick = () => {
+    window.open(`${currentLessonItem.gdriveRoot}/present`);
   };
 
   const handleCloseBtnClick = () => {
@@ -253,6 +256,10 @@ const LessonItemsModal: React.FC = () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
   }, []);
+
+  useEffect(() => {
+    console.log("current lesson item: ", currentLessonItem);
+  });
 
   return (
     <>
@@ -392,10 +399,25 @@ const LessonItemsModal: React.FC = () => {
                   } align-items-sm-stretch justify-content-sm-center align-items-sm-center lessons-item-modal-download mt-3 mt-sm-0`}
                 >
                   {currentLessonItem.isExportable && (
-                    <LessonItemDownloadBtnsDropDown
-                      lessonItem={currentLessonItem}
-                      isGpPlusMember={isGpPlusMember}
-                    />
+                    <div className="d-flex d-sm-none">
+                      {currentLessonItem.itemCat === "presentation" && (
+                        <section className="d-flex justify-content-center align-items-center">
+                          <button
+                            style={{ height: "60px" }}
+                            onClick={handlePlayBtnClick}
+                            className="py-2 px-3 bg-white rounded-2 no-btn-styles me-2"
+                          >
+                            <LuMonitorPlay size={35} />
+                          </button>
+                        </section>
+                      )}
+                      <section className="d-flex justify-content-center align-items-center">
+                        <LessonItemDownloadBtnsDropDown
+                          lessonItem={currentLessonItem}
+                          isGpPlusMember={isGpPlusMember}
+                        />
+                      </section>
+                    </div>
                   )}
                   {currentLessonItem.isExportable && isGpPlusMember && (
                     <div className="d-none d-sm-block">
@@ -502,22 +524,28 @@ const LessonItemsModal: React.FC = () => {
           activeIndex={currentIndex}
         >
           <div
-            className="w-100"
+            className="w-100 lesson-items-carousel"
             style={{
-              height: "88%",
               borderTop: ".1em solid rgba(0, 0, 0, 0.175)",
               borderBottom: ".1em solid rgba(0, 0, 0, 0.175)",
             }}
           >
             <CarouselSlider className="w-100 h-100">
               {lessonItems.map((lessonItem, index) => {
-                const url =
+                let url =
                   lessonItem.itemCat === "web resource"
                     ? lessonItem.externalUrl
                     : lessonItem.docUrl;
+
+                if (lessonItem.itemCat === "presentation") {
+                  url = `${lessonItem.gdriveRoot}/preview`;
+                }
+
                 return (
                   <CarouselCard key={`image-${index}`} className="h-100">
-                    <iframe src={url} className="w-100 h-100" />
+                    <div className="w-100 h-100 position-relative">
+                      <iframe src={url} className="w-100 h-100" />
+                    </div>
                   </CarouselCard>
                 );
               })}
@@ -525,23 +553,27 @@ const LessonItemsModal: React.FC = () => {
           </div>
           <div
             style={{ backgroundColor: "#E2F0FD" }}
-            className="pt-2 d-flex justify-content-center align-items-center flex-row w-100"
+            className="px-2 px-sm-0 pt-2 d-flex justify-content-center align-items-center flex-row w-100"
           >
             <CarouselButton
               ref={leftBtnRef}
               onClick={handleCarouselNavBtnClick(-1)}
               size="large"
               shape="circular"
+              className="ms-sm-0 ms-1"
               appearance="primary"
               navType="prev"
               name="prev"
             />
-            <div style={{ minWidth: "45vw" }} className="h-100 p-0">
+            <div
+              style={{ minWidth: "45vw", maxWidth: "500px" }}
+              className="h-100 p-0 col-10"
+            >
               <div
                 style={{ borderRadius: ".2em" }}
-                className="h-100 d-flex justify-content-center align-items-center flex-column border"
+                className="h-100 d-flex justify-content-center align-items-center flex-column border border-2 px-2 py-1"
               >
-                <div className="text-black fw-normal">
+                <div className="text-black fw-normal text-center">
                   {currentLessonItemName}
                 </div>
                 <div>
@@ -555,6 +587,7 @@ const LessonItemsModal: React.FC = () => {
               size="large"
               shape="circular"
               appearance="primary"
+              className="me-sm-0 me-1"
               navType="next"
               name="next"
             />

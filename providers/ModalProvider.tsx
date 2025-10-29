@@ -1,33 +1,15 @@
-/* eslint-disable comma-dangle */
-/* eslint-disable quotes */
-/* eslint-disable no-unused-vars */
-/* eslint-disable react/jsx-wrap-multilines */
-/* eslint-disable react/jsx-closing-tag-location */
-/* eslint-disable no-unexpected-multiline */
-/* eslint-disable semi */
-/* eslint-disable no-multiple-empty-lines */
-/* eslint-disable no-console */
-/* eslint-disable react/jsx-max-props-per-line */
-/* eslint-disable react/jsx-indent-props */
-/* eslint-disable indent */
-/* eslint-disable react/jsx-indent */
-import {
+import React, {
   createContext,
+  PropsWithChildren,
   ReactNode,
   RefObject,
   useContext,
   useState,
-} from "react";
+} from 'react';
 import {
-  IComponent,
   IItemForClient,
   TUseStateReturnVal,
-} from "../types/global";
-import {
-  IItemV2,
-  IItemV2Props,
-} from "../backend/models/Unit/types/teachingMaterials";
-import { TFileToCopy } from "../backend/services/gdriveServices/types";
+} from '../types/global';
 
 export const ModalContext = createContext<IModalProviderValue | null>(null);
 export interface INotifyModalVal {
@@ -40,8 +22,8 @@ export interface INotifyModalVal {
 
 export const defautlNotifyModalVal: INotifyModalVal = {
   isDisplayed: false,
-  bodyTxt: "",
-  headerTxt: "",
+  bodyTxt: '',
+  headerTxt: '',
   handleOnHide: () => {},
 };
 
@@ -79,7 +61,7 @@ export interface IModalProviderValue {
   _lessonItemModal: TUseStateReturnVal<ILessonItemsModal>;
 }
 
-export const ModalProvider = ({ children }: Pick<IComponent, "children">) => {
+export const ModalProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const [selectedJob, setSelectedJob] = useState(null);
   const [isJobModalOn, setIsJobModalOn] = useState(false);
   const [isCreatingGpPlusAccount, setIsCreatingGpPlusAccount] = useState(false);
@@ -180,7 +162,7 @@ export const useModalContext = () => {
   const context = useContext(ModalContext);
 
   if (!context) {
-    throw new Error("Unable to use ModalContext.");
+    throw new Error('Unable to use ModalContext.');
   }
 
   return context;

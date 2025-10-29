@@ -1,7 +1,6 @@
 /* eslint-disable react/jsx-indent */
 /* eslint-disable semi */
-/* eslint-disable indent */
-/* eslint-disable react/no-unknown-property */
+ 
 /* eslint-disable react/jsx-max-props-per-line */
 
 const MessageBoxIcon = () => (

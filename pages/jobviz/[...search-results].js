@@ -1,12 +1,10 @@
-/* eslint-disable no-debugger */
-/* eslint-disable react/jsx-max-props-per-line */
 /* eslint-disable semi */
 /* eslint-disable quotes */
-/* eslint-disable no-unused-vars */
+ 
 /* eslint-disable no-multiple-empty-lines */
-/* eslint-disable no-console */
+ 
 /* eslint-disable comma-dangle */
-/* eslint-disable react/jsx-indent */
+ 
 /* eslint-disable indent */
 import JobViz from '.';
 import { useRouter } from 'next/router';

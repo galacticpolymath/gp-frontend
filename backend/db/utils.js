@@ -1,7 +1,6 @@
 /* eslint-disable no-console */
 /* eslint-disable indent */
 
-
 export const createDocument = (documentObj, Model) => {
     try {
         /** @type {import('mongoose').Document} */
@@ -13,4 +12,4 @@ export const createDocument = (documentObj, Model) => {
 
         return null;
     }
-}
+};

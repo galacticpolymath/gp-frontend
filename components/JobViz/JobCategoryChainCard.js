@@ -7,7 +7,7 @@
 /* eslint-disable indent */
 /* eslint-disable react/jsx-indent-props */
 /* eslint-disable react/jsx-indent */
-/* eslint-disable react/jsx-no-undef */
+ 
 
 import { useContext } from 'react';
 import { Card } from 'react-bootstrap';

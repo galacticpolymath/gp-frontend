@@ -1,12 +1,9 @@
-/* eslint-disable react/jsx-max-props-per-line */
-/* eslint-disable react/jsx-tag-spacing */
 /* eslint-disable quotes */
-/* eslint-disable no-multiple-empty-lines */
+ 
 /* eslint-disable semi */
 /* eslint-disable indent */
 /* eslint-disable react/jsx-indent-props */
 /* eslint-disable react/jsx-indent */
-/* eslint-disable react/jsx-no-undef */
 
 import { useRouter } from "next/router"
 import { Button } from "react-bootstrap"

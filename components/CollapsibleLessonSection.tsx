@@ -1,6 +1,6 @@
 /* eslint-disable quotes */
 /* eslint-disable no-console */
-/* eslint-disable react/jsx-max-props-per-line */
+ 
 import React, {
   DetailedHTMLProps,
   HTMLAttributes,
@@ -174,7 +174,7 @@ const CollapsibleLessonSection: React.FC<CollapsibleLessonSectionProps> = ({
       }
       handleOnClick={handleAccordionBtnClick}
       style={accordionStyleObj}
-      button={
+      button={(
         <div
           {...btnAttributes}
           className={`SectionHeading ${SectionTitle.replace(
@@ -230,7 +230,7 @@ const CollapsibleLessonSection: React.FC<CollapsibleLessonSectionProps> = ({
             className="position-absolute"
           />
         </div>
-      }
+      )}
     >
       <Collapse in={isAccordionContentOpen}>
         <>
