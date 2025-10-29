@@ -1,4 +1,4 @@
-import { Schema } from "mongoose";
+import { Schema } from 'mongoose';
 export interface IRootFieldToRetrieve {
     name: string;
     as: string;
@@ -10,6 +10,6 @@ export interface ICustomProp<T>{
 }
 
 export const RootFieldToRetrieve = new Schema<IRootFieldToRetrieve>({
-    name: String,
-    as: String
+  name: String,
+  as: String,
 }, { _id: false });

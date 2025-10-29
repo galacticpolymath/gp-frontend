@@ -1,9 +1,7 @@
 /* eslint-disable semi */
-/* eslint-disable no-unused-vars */
-/* eslint-disable react/no-unknown-property */
+ 
 /* eslint-disable react/jsx-max-props-per-line */
-/* eslint-disable object-curly-spacing */
-/* eslint-disable indent */
+ 
 /* eslint-disable react/jsx-indent */
 import whatYouWillGetTxts from '../../../data/HireUsPg/whatYouWillGetTxts.json'
 import HireUsCardFirstSecMobile from '../HireUsCardFirstSecMobile'

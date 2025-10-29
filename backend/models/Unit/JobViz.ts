@@ -1,4 +1,4 @@
-import { Schema } from "mongoose";
+import { Schema } from 'mongoose';
 
 export interface IJobVizConnection {
     job_title: string[];
@@ -13,13 +13,13 @@ export interface IJobVizSection {
 }
 
 const JobVizConnection = new Schema<IJobVizConnection>({
-    job_title: [String],
-    soc_code: [String]
-}, { _id: false })
+  job_title: [String],
+  soc_code: [String],
+}, { _id: false });
 
 export const JobViz = new Schema<IJobVizSection>({
-    __component: String,
-    SectionTitle: String,
-    Content: [JobVizConnection],
-    InitiallyExpanded: { type: Boolean, default: true },
+  __component: String,
+  SectionTitle: String,
+  Content: [JobVizConnection],
+  InitiallyExpanded: { type: Boolean, default: true },
 }, { _id: false });

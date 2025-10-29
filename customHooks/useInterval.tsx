@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useRef } from "react";
-import { random } from "../shared/fns";
+import { useCallback, useEffect, useRef } from 'react';
+import { random } from '../shared/fns';
 
 export const useRandomInterval = (
   callback: () => void,
@@ -13,7 +13,7 @@ export const useRandomInterval = (
   }, [callback]);
   useEffect(() => {
     let isEnabled =
-      typeof minDelay === "number" && typeof maxDelay === "number";
+      typeof minDelay === 'number' && typeof maxDelay === 'number';
     if (isEnabled) {
       const handleTick = () => {
         const nextTickAt = random(minDelay, maxDelay);

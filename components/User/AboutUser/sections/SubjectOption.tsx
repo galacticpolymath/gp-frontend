@@ -1,7 +1,4 @@
-/* eslint-disable indent */
 /* eslint-disable quotes */
-/* eslint-disable react/jsx-indent-props */
-/* eslint-disable react/jsx-indent */
 
 import React from "react";
 import { TAboutUserFormForUI } from "../../../../providers/UserProvider";

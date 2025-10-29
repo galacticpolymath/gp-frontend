@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-indent */
 /* eslint-disable quotes */
 
 import { useEffect } from "react";

@@ -18,16 +18,16 @@ export interface IMultimedia {
 }
 
 const MultimediaSchema = new Schema<IMultimedia>({
-    order: String,
-    type: String,
-    forLsn: String,
-    title: String,
-    description: String,
-    lessonRelevance: String,
-    by: String,
-    byLink: String,
-    mainLink: String,
-    otherLink: String,
+  order: String,
+  type: String,
+  forLsn: String,
+  title: String,
+  description: String,
+  lessonRelevance: String,
+  by: String,
+  byLink: String,
+  mainLink: String,
+  otherLink: String,
 }, { _id: false });
 
 export interface IUnitPreview extends IUnitSectionObj {
@@ -36,25 +36,24 @@ export interface IUnitPreview extends IUnitSectionObj {
     rootFieldsToRetrieveForUI?: IRootFieldToRetrieve | null;
 }
 
-
-export interface IUnitPreviewForUI extends Omit<IUnitPreview, "rootFieldsToRetrieveForUI"> {
+export interface IUnitPreviewForUI extends Omit<IUnitPreview, 'rootFieldsToRetrieveForUI'> {
     QuickPrep: string;
     InitiallyExpanded: boolean;
 }
 
 export const UnitPreview = new Schema<IUnitPreview>({
-    ...unitSectionObj,
-    QuickPrep: String,
-    InitiallyExpanded: Boolean,
-    rootFieldsToRetrieveForUI: {
-        type: [RootFieldToRetrieve],
-        default: () => {
-            return [
-                {
-                    name: 'FeaturedMultimedia',
-                    as: 'Multimedia'
-                }
-            ]
-        }
-    }
+  ...unitSectionObj,
+  QuickPrep: String,
+  InitiallyExpanded: Boolean,
+  rootFieldsToRetrieveForUI: {
+    type: [RootFieldToRetrieve],
+    default: () => {
+      return [
+        {
+          name: 'FeaturedMultimedia',
+          as: 'Multimedia',
+        },
+      ];
+    },
+  },
 }, { _id: false });

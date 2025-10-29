@@ -1,5 +1,5 @@
-import throttle from "lodash.throttle";
-import { useRef, useState } from "react";
+import throttle from 'lodash.throttle';
+import { useRef, useState } from 'react';
 
 const useHandleElementVisibility = () => {
   const [arrowContainer, setArrowContainer] = useState({

@@ -1,9 +1,9 @@
-import axios, { AxiosHeaders } from "axios";
-import { sleep, waitWithExponentialBackOff } from "../../globalFns";
-import { calculatePercentSaved } from "../../shared/fns";
+import axios, { AxiosHeaders } from 'axios';
+import { sleep, waitWithExponentialBackOff } from '../../globalFns';
+import { calculatePercentSaved } from '../../shared/fns';
 
-const OUTSETA_API_ORIGIN = "https://galactic-polymath.outseta.com";
-const OUTSETA_API_VERSION_PATH = "api/v1";
+const OUTSETA_API_ORIGIN = 'https://galactic-polymath.outseta.com';
+const OUTSETA_API_VERSION_PATH = 'api/v1';
 const OUTSETA_REST_API_ORIGIN = `${OUTSETA_API_ORIGIN}/${OUTSETA_API_VERSION_PATH}`;
 
 export interface IOutsetaAuthTokenResBody {
@@ -18,11 +18,11 @@ type TPerson = {
 };
 
 export type TAccountStageLabel =
-  | "Subscribing"
-  | "Cancelling"
-  | "Past due"
-  | "Expired"
-  | "NonMember";
+  | 'Subscribing'
+  | 'Cancelling'
+  | 'Past due'
+  | 'Expired'
+  | 'NonMember';
 
 export interface IOutsetaUser {
   Uid: string;
@@ -30,7 +30,7 @@ export interface IOutsetaUser {
   PersonAccount?: { Person: TPerson }[];
   AccountStageLabel: TAccountStageLabel;
   CurrentSubscription: {
-    _objectType: "Subscription";
+    _objectType: 'Subscription';
     StartDate: string;
     RenewalDate: string;
     Created: string;
@@ -49,7 +49,7 @@ export interface IOutsetaUser {
 }
 
 export interface IOutsetaPagination<TData extends object = IOutsetaUser> {
-  metadata: Record<"limit" | "offset" | "total", number>;
+  metadata: Record<'limit' | 'offset' | 'total', number>;
   items: TData[] | null;
 }
 
@@ -61,24 +61,24 @@ export interface IOutsetaPagination<TData extends object = IOutsetaUser> {
  * Each entry contains a tuple where the first element is the name of the billing period and the second element is charge amount per period.
  */
 export type TBillingRenewalTerm = {
-  1: ["Monthly", 10];
-  2: ["Yearly", 60];
+  1: ['Monthly', 10];
+  2: ['Yearly', 60];
 };
 
 export interface TOutsetaSubscription {
-  _objectType: "Subscription";
+  _objectType: 'Subscription';
   BillingRenewalTerm: keyof TBillingRenewalTerm;
 }
 
 const headers = {
   Authorization: `Outseta ${process.env.OUTSETA_API_KEY}:${process.env.OUTSETA_API_SECRET}`,
-  "Content-Type": "application/json",
+  'Content-Type': 'application/json',
 };
 
 export const getBillingType = (billingTypeNum: keyof TBillingRenewalTerm) => {
   const BILLING_RENEWAL_TERM: TBillingRenewalTerm = {
-    1: ["Monthly", 10],
-    2: ["Yearly", 60],
+    1: ['Monthly', 10],
+    2: ['Yearly', 60],
   };
 
   return BILLING_RENEWAL_TERM[billingTypeNum];
@@ -98,13 +98,13 @@ interface IPlansPagination {
 
 const getCanRetry = (error: any) => {
   const isNetworkError =
-    error?.code === "ECONNRESET" ||
-    error?.code === "ENOTFOUND" ||
-    error?.code === "ECONNREFUSED" ||
-    error?.code === "ETIMEDOUT";
+    error?.code === 'ECONNRESET' ||
+    error?.code === 'ENOTFOUND' ||
+    error?.code === 'ECONNREFUSED' ||
+    error?.code === 'ETIMEDOUT';
   const isTimeoutError =
-    error?.code === "ECONNABORTED" ||
-    error?.message?.includes("timeout") ||
+    error?.code === 'ECONNABORTED' ||
+    error?.message?.includes('timeout') ||
     error?.response?.status === 408;
 
   return isNetworkError || isTimeoutError;
@@ -123,13 +123,13 @@ export const getPlans = async () => {
 
     if (!data?.items) {
       throw new Error(
-        "An unexpected error occurred. Please try again later. Plans not available."
+        'An unexpected error occurred. Please try again later. Plans not available.'
       );
     }
 
     return data?.items;
   } catch (error) {
-    console.error("Error retrieving plans:", error);
+    console.error('Error retrieving plans:', error);
 
     return null;
   }
@@ -137,7 +137,7 @@ export const getPlans = async () => {
 
 export type TGpPlusMembershipRetrieved = Awaited<
   ReturnType<typeof getGpPlusMembership>
-> & { AccountStageLabel: TAccountStageLabel | "NonMember" };
+> & { AccountStageLabel: TAccountStageLabel | 'NonMember' };
 
 export type TGpPlusMembership = Partial<{
   email: string;
@@ -149,44 +149,44 @@ export type TGpPlusMembership = Partial<{
   StartDate: string;
   PlanName: string | null;
   person: TPerson;
-}> & { AccountStageLabel: TAccountStageLabel | "NonMember" };
+}> & { AccountStageLabel: TAccountStageLabel | 'NonMember' };
 
 export const getGpPlusMembership = async (
   email: string,
   tries = 3,
-  fields = "CurrentSubscription.*, CurrentSubscription.Plan.*, AccountStageLabel, Name, PersonAccount.Person.*, Uid"
+  fields = 'CurrentSubscription.*, CurrentSubscription.Plan.*, AccountStageLabel, Name, PersonAccount.Person.*, Uid'
 ): Promise<TGpPlusMembership> => {
   try {
     console.log(
       `Attempting to retrieve Outseta GP+ membership status for: ${email}`
     );
-    console.log("the email yo: ", email);
+    console.log('the email yo: ', email);
 
     const url = new URL(
       `${OUTSETA_API_ORIGIN}/${OUTSETA_API_VERSION_PATH}/crm/accounts/`
     );
 
-    url.searchParams.append("Name", email);
-    url.searchParams.append("Fields", fields);
+    url.searchParams.append('Name', email);
+    url.searchParams.append('Fields', fields);
 
     const { status, data } = await axios.get<IOutsetaPagination>(url.href, {
       headers: {
         Authorization: `Outseta ${process.env.OUTSETA_API_KEY}:${process.env.OUTSETA_API_SECRET}`,
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
     });
-    console.log("data, bacon: ", data);
+    console.log('data, bacon: ', data);
 
     const currentSubscription = data.items?.[0];
 
-    console.log("currentSubscription, sup there: ", currentSubscription);
+    console.log('currentSubscription, sup there: ', currentSubscription);
 
-    console.log("Status code: ", status);
+    console.log('Status code: ', status);
 
     if (status !== 200 || !currentSubscription) {
-      console.error("Failed to retrieve Outseta GP+ membership status.");
+      console.error('Failed to retrieve Outseta GP+ membership status.');
 
-      throw new Error("accountRetrievalErr");
+      throw new Error('accountRetrievalErr');
     }
 
     const persons = currentSubscription.PersonAccount;
@@ -205,20 +205,20 @@ export const getGpPlusMembership = async (
       PlanName: Plan?.Name ?? null,
       AccountStageLabel,
       person,
-      Uid: currentSubscription.Uid
+      Uid: currentSubscription.Uid,
     };
   } catch (error: any) {
     console.error(
-      "Failed to retrieve the outseta status for the target user. Error: ",
+      'Failed to retrieve the outseta status for the target user. Error: ',
       error?.response
     );
-    console.error("Error object: ", error);
+    console.error('Error object: ', error);
 
     const canRetry = getCanRetry(error);
 
     if (canRetry && tries > 0) {
       console.error(
-        "Retryable error occurred while retrieving GP+ membership. Will retry..."
+        'Retryable error occurred while retrieving GP+ membership. Will retry...'
       );
 
       await waitWithExponentialBackOff(tries);
@@ -227,7 +227,7 @@ export const getGpPlusMembership = async (
     }
 
     return {
-      AccountStageLabel: "NonMember",
+      AccountStageLabel: 'NonMember',
     };
   }
 };
@@ -246,28 +246,28 @@ export const deletePerson = async (
     const { status } = await axios.delete(url, { headers: headers });
 
     if (status !== 200) {
-      throw new Error("Failed to delete the target person.");
+      throw new Error('Failed to delete the target person.');
     }
 
     return { wasSuccessful: true };
   } catch (error: any) {
     console.error(
-      "An error has occurred. Failed to delete the target person, keys: ",
+      'An error has occurred. Failed to delete the target person, keys: ',
       error
     );
     console.error(
-      "An error has occurred. Failed to delete the target person, error response: ",
+      'An error has occurred. Failed to delete the target person, error response: ',
       error.response
     );
 
     const isNetworkError =
-      error?.code === "ECONNRESET" ||
-      error?.code === "ENOTFOUND" ||
-      error?.code === "ECONNREFUSED" ||
-      error?.code === "ETIMEDOUT";
+      error?.code === 'ECONNRESET' ||
+      error?.code === 'ENOTFOUND' ||
+      error?.code === 'ECONNREFUSED' ||
+      error?.code === 'ETIMEDOUT';
     const isTimeoutError =
-      error?.code === "ECONNABORTED" ||
-      error?.message?.includes("timeout") ||
+      error?.code === 'ECONNABORTED' ||
+      error?.message?.includes('timeout') ||
       error?.response?.status === 408;
 
     if ((isNetworkError || isTimeoutError) && tries > 0) {
@@ -284,7 +284,7 @@ export const getSavings = async () => {
   try {
     const plans = await getPlans();
     const plusPlan = plans
-      ? plans.find((plan) => plan.Name === "Galactic Polymath Plus")
+      ? plans.find((plan) => plan.Name === 'Galactic Polymath Plus')
       : undefined;
     let plusPlanPercentSaved: number | undefined;
 
@@ -297,14 +297,14 @@ export const getSavings = async () => {
     }
 
     return {
-      individualGpPlusPlanSavings: plusPlanPercentSaved
-    }
+      individualGpPlusPlanSavings: plusPlanPercentSaved,
+    };
   } catch(error){
-    console.error("An error has occurred. Failed to get savings: ", error);
+    console.error('An error has occurred. Failed to get savings: ', error);
 
     return null;
   }
-} 
+}; 
 
 export const deleteAccount = async (
   accountId: string,
@@ -315,32 +315,32 @@ export const deleteAccount = async (
 
     const url = `${OUTSETA_REST_API_ORIGIN}/crm/accounts/${accountId}`;
     const response = await axios.delete(url, { headers: headers });
-    console.log("deleteAccount response: ", response);
+    console.log('deleteAccount response: ', response);
     const { status } = response;
 
     if (status != 200) {
-      throw new Error("Failed to delete the target account.");
+      throw new Error('Failed to delete the target account.');
     }
 
     return { wasSuccessful: true };
   } catch (error: any) {
     console.error(
-      "An error has occurred. Failed to delete the target account, keys: ",
+      'An error has occurred. Failed to delete the target account, keys: ',
       error
     );
     console.error(
-      "An error has occurred. Failed to delete the target account, response: ",
+      'An error has occurred. Failed to delete the target account, response: ',
       error.response
     );
 
     const isNetworkError =
-      error?.code === "ECONNRESET" ||
-      error?.code === "ENOTFOUND" ||
-      error?.code === "ECONNREFUSED" ||
-      error?.code === "ETIMEDOUT";
+      error?.code === 'ECONNRESET' ||
+      error?.code === 'ENOTFOUND' ||
+      error?.code === 'ECONNREFUSED' ||
+      error?.code === 'ETIMEDOUT';
     const isTimeoutError =
-      error?.code === "ECONNABORTED" ||
-      error?.message?.includes("timeout") ||
+      error?.code === 'ECONNABORTED' ||
+      error?.message?.includes('timeout') ||
       error?.response?.status === 408;
 
     if ((isNetworkError || isTimeoutError) && tries > 0) {

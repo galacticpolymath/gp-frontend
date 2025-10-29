@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
-/* eslint-disable indent */
-import { createDocument } from "../db/utils.js";
-import { v4 as uuidv4 } from "uuid";
+ 
+import { createDocument } from '../db/utils.js';
+import { v4 as uuidv4 } from 'uuid';
 import {
   IAboutUserFormNewFieldsV1,
   ILessonGDriveId,
@@ -11,10 +11,10 @@ import {
   TDefaultSubject,
   TUserSchemaForClient,
   TUserSchemaV2,
-} from "../models/User/types.js";
-import User from "../models/User/index";
-import { AnyBulkWriteOperation, UpdateWriteOpResult } from "mongoose";
-import { waitWithExponentialBackOff } from "../../globalFns.js";
+} from '../models/User/types.js';
+import User from '../models/User/index';
+import { AnyBulkWriteOperation, UpdateWriteOpResult } from 'mongoose';
+import { waitWithExponentialBackOff } from '../../globalFns.js';
 
 export const getUsers = async <
   TUsers extends IUserSchemaBaseProps = TUserSchemaV2
@@ -42,7 +42,7 @@ export const getUser = async <
   TUser extends TUserSchemaV2 = TUserSchemaV2,
   TUserKey extends keyof TUser = keyof TUser
 >(
-  queryObj: Omit<Partial<TUser>, "password">,
+  queryObj: Omit<Partial<TUser>, 'password'>,
   projectionObj: Partial<Record<TUserKey, number>> = {}
 ) => {
   try {
@@ -50,12 +50,12 @@ export const getUser = async <
 
     return { user: user as Pick<TUser, TUserKey> };
   } catch (error: any) {
-    console.error("An error has occurred in getting the target user: ", error);
+    console.error('An error has occurred in getting the target user: ', error);
     console.log(error);
-    const didTimeoutOccur = error?.error?.codeName === "MaxTimeMSExpired";
+    const didTimeoutOccur = error?.error?.codeName === 'MaxTimeMSExpired';
 
     return {
-      errType: didTimeoutOccur ? "timeout" : "general",
+      errType: didTimeoutOccur ? 'timeout' : 'general',
     };
   }
 };
@@ -75,20 +75,20 @@ export const getUserWithRetries = async (
   tries: number
 ): Promise<{ user?: Partial<IUserSchema>; errType?: string }> => {
   try {
-    console.log("retrieving user...");
-    console.log("Current try: ", tries);
+    console.log('retrieving user...');
+    console.log('Current try: ', tries);
     const user = await User.findOne(queryObj, projectionObj)
       .maxTimeMS(5_500)
       .lean();
 
     return { user: user as Partial<IUserSchema> };
   } catch (error: any) {
-    console.log("Failed to get the target user.");
+    console.log('Failed to get the target user.');
 
-    const didTimeoutOccur = error?.error?.codeName === "MaxTimeMSExpired";
+    const didTimeoutOccur = error?.error?.codeName === 'MaxTimeMSExpired';
 
     if (tries <= 3 && didTimeoutOccur) {
-      console.log("Will try again.");
+      console.log('Will try again.');
       tries += 1;
       const randomNumMs = Math.floor(Math.random() * (5_500 - 1000 + 1)) + 1000;
       const waitTime = randomNumMs + tries * 1_000;
@@ -98,11 +98,11 @@ export const getUserWithRetries = async (
       return getUserWithRetries(queryObj, projectionObj, tries);
     }
 
-    console.error("An error has occurred in getting the target user: ", error);
+    console.error('An error has occurred in getting the target user: ', error);
     console.log(error);
 
     return {
-      errType: didTimeoutOccur ? "timeout" : "general",
+      errType: didTimeoutOccur ? 'timeout' : 'general',
     };
   }
 };
@@ -110,42 +110,42 @@ export const getUserWithRetries = async (
 export const handleUserDeprecatedV1Fields = (
   user: Partial<TUserSchemaForClient<IUserSchema>>
 ) => {
-  if (user.classroomSize && typeof user.classSize === "undefined") {
+  if (user.classroomSize && typeof user.classSize === 'undefined') {
     user = {
       ...user,
       classSize: user.classroomSize.num,
     };
   }
 
-  if (user.classroomSize && typeof user.isNotTeaching === "undefined") {
+  if (user.classroomSize && typeof user.isNotTeaching === 'undefined') {
     user = {
       ...user,
       isNotTeaching: user.classroomSize.isNotTeaching ?? false,
     };
   }
 
-  if (user.gradesOrYears && typeof user.gradesType === "undefined") {
+  if (user.gradesOrYears && typeof user.gradesType === 'undefined') {
     user = {
       ...user,
       gradesType: user.gradesOrYears.selection ?? null,
     };
   }
 
-  if (user.gradesOrYears && typeof user.gradesTaught === "undefined") {
+  if (user.gradesOrYears && typeof user.gradesTaught === 'undefined') {
     user = {
       ...user,
       gradesTaught: user.gradesOrYears.ageGroupsTaught,
     };
   }
 
-  if (user.name && typeof user.firstName === "undefined") {
+  if (user.name && typeof user.firstName === 'undefined') {
     user = {
       ...user,
       firstName: user.name.first,
     };
   }
 
-  if (user.name && typeof user.lastName === "undefined") {
+  if (user.name && typeof user.lastName === 'undefined') {
     user = {
       ...user,
       lastName: user.name.last,
@@ -154,17 +154,17 @@ export const handleUserDeprecatedV1Fields = (
 
   if (
     user.reasonsForSiteVisit &&
-    typeof user.siteVisitReasonsDefault === "undefined"
+    typeof user.siteVisitReasonsDefault === 'undefined'
   ) {
     const defaultSelectionsEntries = Object.entries(
       user.reasonsForSiteVisit as Record<string, string>
     ).filter(([key, _]) => {
-      const keySplitted = key.split("-");
+      const keySplitted = key.split('-');
       const lastChar = keySplitted.at(-1);
 
       return (
-        typeof lastChar === "string" &&
-        lastChar !== "custom" &&
+        typeof lastChar === 'string' &&
+        lastChar !== 'custom' &&
         !isNaN(parseInt(lastChar))
       );
     });
@@ -183,20 +183,20 @@ export const handleUserDeprecatedV1Fields = (
 
   if (
     user.reasonsForSiteVisit &&
-    user.reasonsForSiteVisit["reason-for-visit-custom"] &&
-    typeof user.siteVisitReasonsCustom === "undefined"
+    user.reasonsForSiteVisit['reason-for-visit-custom'] &&
+    typeof user.siteVisitReasonsCustom === 'undefined'
   ) {
     user = {
       ...user,
       siteVisitReasonsCustom: user.reasonsForSiteVisit[
-        "reason-for-visit-custom"
+        'reason-for-visit-custom'
       ] as string,
     };
   }
 
   // && typeof user.subjectsTaughtCustom === "undefined"
 
-  if (user.subjects && typeof user.subjectsTaughtDefault === "undefined") {
+  if (user.subjects && typeof user.subjectsTaughtDefault === 'undefined') {
     const subjectEntries = Object.entries(
       user.subjects as Record<string, string>
     );
@@ -204,12 +204,12 @@ export const handleUserDeprecatedV1Fields = (
     const customSubjects: [string, string][] = [];
 
     for (const [key, _] of subjectEntries) {
-      if (!key.includes("other-subject")) {
+      if (!key.includes('other-subject')) {
         defaultSubjects.push([key, _]);
         continue;
       }
 
-      if (key.includes("other-subject")) {
+      if (key.includes('other-subject')) {
         customSubjects.push([key, _]);
       }
     }
@@ -244,8 +244,8 @@ export const migrateUserToV2 = (user: TUserSchemaForClient<IUserSchema>) => {
   let migratedVals: Partial<IAboutUserFormNewFieldsV1> = {};
 
   if (
-    typeof user.classroomSize?.num === "number" &&
-    typeof user.classSize === "undefined"
+    typeof user.classroomSize?.num === 'number' &&
+    typeof user.classSize === 'undefined'
   ) {
     migratedVals = {
       classSize: user.classroomSize.num ?? 0,
@@ -253,8 +253,8 @@ export const migrateUserToV2 = (user: TUserSchemaForClient<IUserSchema>) => {
   }
 
   if (
-    typeof user.classroomSize?.isNotTeaching === "boolean" &&
-    typeof user.isNotTeaching === "undefined"
+    typeof user.classroomSize?.isNotTeaching === 'boolean' &&
+    typeof user.isNotTeaching === 'undefined'
   ) {
     migratedVals = {
       ...migratedVals,
@@ -264,18 +264,18 @@ export const migrateUserToV2 = (user: TUserSchemaForClient<IUserSchema>) => {
 
   if (
     user.gradesOrYears?.selection &&
-    (typeof user.gradesType === "undefined" || !user.gradesType)
+    (typeof user.gradesType === 'undefined' || !user.gradesType)
   ) {
     migratedVals = {
       ...migratedVals,
       gradesType: user.gradesOrYears.selection ?? null,
     };
-    console.log("migratedVals, gradesType: ", migratedVals);
+    console.log('migratedVals, gradesType: ', migratedVals);
   }
 
   if (
     user.gradesOrYears?.ageGroupsTaught &&
-    (typeof user.gradesTaught === "undefined" ||
+    (typeof user.gradesTaught === 'undefined' ||
       user.gradesTaught?.length === 0)
   ) {
     migratedVals = {
@@ -284,34 +284,34 @@ export const migrateUserToV2 = (user: TUserSchemaForClient<IUserSchema>) => {
     };
   }
 
-  if (user.name && typeof user.firstName === "undefined") {
+  if (user.name && typeof user.firstName === 'undefined') {
     migratedVals = {
       ...migratedVals,
-      firstName: user.name.first ?? "",
+      firstName: user.name.first ?? '',
     };
   }
 
-  if (user.name && typeof user.lastName === "undefined") {
+  if (user.name && typeof user.lastName === 'undefined') {
     migratedVals = {
       ...migratedVals,
-      lastName: user.name.last ?? "",
+      lastName: user.name.last ?? '',
     };
   }
 
   if (
     user.reasonsForSiteVisit &&
-    (typeof user.siteVisitReasonsDefault === "undefined" ||
+    (typeof user.siteVisitReasonsDefault === 'undefined' ||
       user.siteVisitReasonsDefault?.length === 0)
   ) {
     const defaultSelectionsEntries = Object.entries(
       user.reasonsForSiteVisit
     ).filter(([key, _]) => {
-      const keySplitted = key.split("-");
+      const keySplitted = key.split('-');
       const lastChar = keySplitted.at(-1);
 
       return (
-        typeof lastChar === "string" &&
-        lastChar !== "custom" &&
+        typeof lastChar === 'string' &&
+        lastChar !== 'custom' &&
         !isNaN(parseInt(lastChar))
       );
     });
@@ -330,21 +330,21 @@ export const migrateUserToV2 = (user: TUserSchemaForClient<IUserSchema>) => {
 
   if (
     user.reasonsForSiteVisit &&
-    user.reasonsForSiteVisit["reason-for-visit-custom"] &&
-    (typeof user.siteVisitReasonsCustom === "undefined" ||
-      user.siteVisitReasonsCustom === "")
+    user.reasonsForSiteVisit['reason-for-visit-custom'] &&
+    (typeof user.siteVisitReasonsCustom === 'undefined' ||
+      user.siteVisitReasonsCustom === '')
   ) {
     migratedVals = {
       ...migratedVals,
       siteVisitReasonsCustom: user.reasonsForSiteVisit[
-        "reason-for-visit-custom"
+        'reason-for-visit-custom'
       ] as string,
     };
   }
 
   if (
     user.subjects &&
-    (typeof user.subjectsTaughtDefault === "undefined" ||
+    (typeof user.subjectsTaughtDefault === 'undefined' ||
       user.subjectsTaughtDefault?.length === 0)
   ) {
     const subjectEntries = Object.entries(
@@ -355,12 +355,12 @@ export const migrateUserToV2 = (user: TUserSchemaForClient<IUserSchema>) => {
 
     for (const [key, _] of subjectEntries) {
       // get the default subjects
-      if (!key.includes("other-subject")) {
+      if (!key.includes('other-subject')) {
         defaultSubjects.push([key, _]);
         continue;
       }
 
-      if (key.includes("other-subject")) {
+      if (key.includes('other-subject')) {
         customSubjects.push([key, _]);
       }
     }
@@ -388,7 +388,7 @@ export const migrateUserToV2 = (user: TUserSchemaForClient<IUserSchema>) => {
     };
   }
 
-  console.log("migratedVals, final: ", migratedVals);
+  console.log('migratedVals, final: ', migratedVals);
 
   return migratedVals;
 };
@@ -401,7 +401,7 @@ export const executeUserCrudOperations = async (
 
     return result;
   } catch (error) {
-    console.error("Bulk write operation has failed. Reason: ", error);
+    console.error('Bulk write operation has failed. Reason: ', error);
 
     return { isOk: () => false };
   }
@@ -416,7 +416,7 @@ export const executeUserCrudOperationsWithRetries = async (
       isOk: () => boolean;
     }
 > => {
-  console.log("current try: ", tries);
+  console.log('current try: ', tries);
   if (tries <= 0) {
     return { isOk: () => false };
   }
@@ -440,11 +440,11 @@ export const executeUserCrudOperationsWithRetries = async (
       );
     }
 
-    console.log("Bulk write operation has succeeded. Will return.");
+    console.log('Bulk write operation has succeeded. Will return.');
 
     return result;
   } catch (error) {
-    console.error("Bulk write operation has failed. Reason: ", error);
+    console.error('Bulk write operation has failed. Reason: ', error);
 
     return { isOk: () => false };
   }
@@ -454,7 +454,7 @@ export const getUserByEmail = async <
   TUser extends TUserSchemaV2 = TUserSchemaV2,
   TKeys extends keyof TUser = keyof TUser
 >(
-  email = "",
+  email = '',
   projectionsObj: Partial<Record<TKeys, 0 | 1>> = {}
 ) => {
   try {
@@ -466,7 +466,7 @@ export const getUserByEmail = async <
     return targetUser as Partial<Pick<TUser, TKeys>>;
   } catch (error) {
     console.error(
-      "Failed to receive the target user via email. Reason: ",
+      'Failed to receive the target user via email. Reason: ',
       error
     );
 
@@ -491,13 +491,13 @@ export const getUserById = async <
     return targetUser as Pick<TUser, TProjectionKeys>;
   } catch (error: any) {
     console.error(
-      "Failed to receive the target user via email. Reason: ",
+      'Failed to receive the target user via email. Reason: ',
       error
     );
-    console.log("Error object: ");
+    console.log('Error object: ');
     console.dir(error, { depth: null });
 
-    const didTimeoutOccur = error?.error?.codeName === "MaxTimeMSExpired";
+    const didTimeoutOccur = error?.error?.codeName === 'MaxTimeMSExpired';
 
     if (didTimeoutOccur && tries > 0) {
       await waitWithExponentialBackOff(tries);
@@ -510,7 +510,7 @@ export const getUserById = async <
 };
 
 const getCanRetry = (error: any) => {
-  if (error?.error?.codeName === "MaxTimeMSExpired") {
+  if (error?.error?.codeName === 'MaxTimeMSExpired') {
     return true;
   }
 
@@ -521,7 +521,7 @@ type TDbOperation<T> = { $push: { $each: T[] } };
 
 export const addNewGDriveUnits = (unitGDriveLessons: IUnitGDriveLesson[]) => {
   const updates: Record<
-    Extract<keyof TUserSchemaV2, "unitGDriveLessons">,
+    Extract<keyof TUserSchemaV2, 'unitGDriveLessons'>,
     TDbOperation<IUnitGDriveLesson>
   > = {
     // TODO: WRONG SYNTAX, FIX IT
@@ -536,8 +536,8 @@ export const addNewGDriveUnits = (unitGDriveLessons: IUnitGDriveLesson[]) => {
 };
 
 type TUpdatableKey<
-  TKeyA extends string = Extract<keyof TUserSchemaV2, "unitGDriveLessons">,
-  TKeyB extends string = Extract<keyof IUnitGDriveLesson, "lessonDriveIds">
+  TKeyA extends string = Extract<keyof TUserSchemaV2, 'unitGDriveLessons'>,
+  TKeyB extends string = Extract<keyof IUnitGDriveLesson, 'lessonDriveIds'>
 > = `${TKeyA}.$[elem].${TKeyB}`;
 
 export const addNewGDriveLessons = (
@@ -546,7 +546,7 @@ export const addNewGDriveLessons = (
 ) => {
   if (!isElemMatch) {
     const updates: Record<
-      Extract<keyof TUserSchemaV2, "unitGDriveLessons">,
+      Extract<keyof TUserSchemaV2, 'unitGDriveLessons'>,
       TDbOperation<ILessonGDriveId>
     > = {
       unitGDriveLessons: {
@@ -560,7 +560,7 @@ export const addNewGDriveLessons = (
   }
 
   const updates: Record<TUpdatableKey, TDbOperation<ILessonGDriveId>> = {
-    "unitGDriveLessons.$[elem].lessonDriveIds": {
+    'unitGDriveLessons.$[elem].lessonDriveIds': {
       $push: {
         $each: unitGDriveLessons,
       },
@@ -571,7 +571,7 @@ export const addNewGDriveLessons = (
 };
 
 type TArrFilterKey<
-  TKey extends string = Extract<keyof IUnitGDriveLesson, "unitDriveId">
+  TKey extends string = Extract<keyof IUnitGDriveLesson, 'unitDriveId'>
 > = `elem.${TKey}`;
 
 export const createDbArrFilter = (key: TArrFilterKey, val: unknown) => {
@@ -581,7 +581,7 @@ export const createDbArrFilter = (key: TArrFilterKey, val: unknown) => {
 };
 
 export const updateUserCustom = async (
-  filterQuery: Omit<Partial<TUserSchemaV2>, "password"> = {},
+  filterQuery: Omit<Partial<TUserSchemaV2>, 'password'> = {},
   updatedUserProperties: object,
   updateOpts?: object,
   tries = 3
@@ -593,7 +593,7 @@ export const updateUserCustom = async (
   try {
     if (!getCanUpdateUser(updatedUserProperties)) {
       throw new Error(
-        "Cannot update user: forbidden fields detected in update properties"
+        'Cannot update user: forbidden fields detected in update properties'
       );
     }
 
@@ -604,13 +604,13 @@ export const updateUserCustom = async (
     );
 
     if (updateUserResult.modifiedCount === 0) {
-      throw new Error("Failed to update the target user.");
+      throw new Error('Failed to update the target user.');
     }
 
     return { result: updateUserResult, wasSuccessful: true };
   } catch (error: any) {
-    console.error("Failed to update the target user. Reason: ", error);
-    console.log("Error object: ");
+    console.error('Failed to update the target user. Reason: ', error);
+    console.log('Error object: ');
     console.dir(error, { depth: null });
 
     if (getCanRetry(error) && tries > 0) {
@@ -632,29 +632,29 @@ export const updateUserCustom = async (
 };
 
 type TForbiddenUpdateFields =
-  | "password"
-  | "email"
-  | "provider"
-  | "providerAccountId"
-  | "roles"
-  | "totalSignIns"
-  | "_id"
-  | "lastSignIn";
+  | 'password'
+  | 'email'
+  | 'provider'
+  | 'providerAccountId'
+  | 'roles'
+  | 'totalSignIns'
+  | '_id'
+  | 'lastSignIn';
 
 const getCanUpdateUser = (
   updatedUserProps: Omit<Partial<TUserSchemaV2>, TForbiddenUpdateFields>
 ) => {
   return !(
-    "password" in updatedUserProps ||
-    "provider" in updatedUserProps ||
-    "providerAccountId" in updatedUserProps ||
-    "roles" in updatedUserProps ||
-    "_id" in updatedUserProps 
+    'password' in updatedUserProps ||
+    'provider' in updatedUserProps ||
+    'providerAccountId' in updatedUserProps ||
+    'roles' in updatedUserProps ||
+    '_id' in updatedUserProps 
   );
 };
 
 export const updateUser = async (
-  filterQuery: Omit<Partial<TUserSchemaV2>, "password"> = {},
+  filterQuery: Omit<Partial<TUserSchemaV2>, 'password'> = {},
   updatedUserProperties: Omit<Partial<TUserSchemaV2>, TForbiddenUpdateFields>,
   updatedUserPropsToFilterOut?: (keyof TUserSchemaV2)[],
   tries = 3
@@ -666,7 +666,7 @@ export const updateUser = async (
   try {
     if (!getCanUpdateUser(updatedUserProperties)) {
       throw new Error(
-        "Cannot update _id, password, email, provider, providerAccountId, roles, totalSignIns, or lastSignIn fields through this method."
+        'Cannot update _id, password, email, provider, providerAccountId, roles, totalSignIns, or lastSignIn fields through this method.'
       );
     }
 
@@ -735,7 +735,7 @@ export const updateUser = async (
     const canRetry = getCanRetry(error);
 
     if (canRetry && tries > 0) {
-      console.error("Failed to update user. Reason: ", error);
+      console.error('Failed to update user. Reason: ', error);
 
       await waitWithExponentialBackOff(tries);
 
@@ -768,19 +768,19 @@ export const insertUsers = async (users: Partial<IUserSchema>[]) => {
 };
 
 export const updateUsersDynamically = async (
-  filterQuery: Partial<Pick<IUserSchema, "_id" | "email">>,
+  filterQuery: Partial<Pick<IUserSchema, '_id' | 'email'>>,
   updatedUserProperties: {
     [key: string]: Partial<
       Record<
         keyof Omit<
           IUserSchema,
-          "password" | "providerAccountId" | "email" | "provider"
+          'password' | 'providerAccountId' | 'email' | 'provider'
         >,
         unknown
       >
     >;
   },
-  options: Parameters<(typeof User)["updateMany"]>[2] | null
+  options: Parameters<(typeof User)['updateMany']>[2] | null
 ) => {
   try {
     const result = await User.updateMany(
@@ -790,12 +790,12 @@ export const updateUsersDynamically = async (
     );
 
     if (!result) {
-      console.error("Unable to perform updates.");
+      console.error('Unable to perform updates.');
 
       return { wasSuccessful: false };
     }
 
-    console.log("result, users updated: ", result);
+    console.log('result, users updated: ', result);
 
     return {
       ...result,
@@ -820,7 +820,7 @@ export const deleteUser = async (
     if (
       !query ||
       Object.keys(query).length === 0 ||
-      (query && typeof query !== "object") ||
+      (query && typeof query !== 'object') ||
       Array.isArray(query)
     ) {
       throw new Error(
@@ -832,8 +832,8 @@ export const deleteUser = async (
 
     return { wasSuccessful: true };
   } catch (error: any) {
-    console.error("Failed to delete the target user. Reason: ", error);
-    const didTimeoutOccur = error?.error?.codeName === "MaxTimeMSExpired";
+    console.error('Failed to delete the target user. Reason: ', error);
+    const didTimeoutOccur = error?.error?.codeName === 'MaxTimeMSExpired';
 
     if (didTimeoutOccur && tries > 0) {
       console.log(
@@ -857,7 +857,7 @@ export const deleteUserById = async (userId: string) => {
 
     return { wasSuccessful: true };
   } catch (error) {
-    console.error("The target user failed to be updated. Reason: ", error);
+    console.error('The target user failed to be updated. Reason: ', error);
 
     return { wasSuccessful: false };
   }
@@ -865,15 +865,15 @@ export const deleteUserById = async (userId: string) => {
 
 export const deleteUserByEmail = async (email: unknown) => {
   try {
-    if (typeof email !== "string") {
-      throw new Error("Email must be a string.");
+    if (typeof email !== 'string') {
+      throw new Error('Email must be a string.');
     }
 
     await User.deleteOne({ email: { $eq: email } });
 
     return { wasSuccessful: true };
   } catch (error) {
-    console.error("The target user failed to be updated. Reason: ", error);
+    console.error('The target user failed to be updated. Reason: ', error);
 
     return { wasSuccessful: false };
   }
@@ -886,27 +886,27 @@ export const deleteUserByEmail = async (email: unknown) => {
  */
 export const deleteUserFromCache = async (email: string) => {
   try {
-    if (!email || typeof email !== "string") {
-      throw new Error("Email must be a non-empty string.");
+    if (!email || typeof email !== 'string') {
+      throw new Error('Email must be a non-empty string.');
     }
 
     // Import cache here to avoid circular dependencies
-    const { cache } = await import("../authOpts/authOptions");
+    const { cache } = await import('../authOpts/authOptions');
 
     cache.del(email);
 
     return {
       wasSuccessful: true,
-      msg: "User deleted from cache successfully",
+      msg: 'User deleted from cache successfully',
     };
   } catch (error) {
-    console.error("Failed to delete user from cache. Reason: ", error);
+    console.error('Failed to delete user from cache. Reason: ', error);
 
     return {
       wasSuccessful: false,
-      errType: "cacheDeletionErr",
+      errType: 'cacheDeletionErr',
       errObj: error,
-      msg: "Failed to delete user from cache",
+      msg: 'Failed to delete user from cache',
     };
   }
 };
@@ -923,8 +923,8 @@ export const deleteUserFromCache = async (email: string) => {
 export const createUser = async (
   email: string,
   password: string | null,
-  provider: "google" | "credentials",
-  roles: ("dbAdmin" | "user")[],
+  provider: 'google' | 'credentials',
+  roles: ('dbAdmin' | 'user')[],
   providerAccountId: string,
   name?: { first: string; last: string }
 ) => {
@@ -943,7 +943,7 @@ export const createUser = async (
     );
 
     if (!userDocument) {
-      throw new Error("Failed to create the user document.");
+      throw new Error('Failed to create the user document.');
     }
 
     await userDocument.save();

@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 /* eslint-disable indent */
-/* eslint-disable no-unused-vars */
+ 
 /* eslint-disable quotes */
 import { getAllBrevoMailingListContacts } from "../../backend/services/emailServices";
 import { findMailingListConfirmationsByEmails } from "../../backend/services/mailingListConfirmationServices";

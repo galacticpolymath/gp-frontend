@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-max-props-per-line */
-/* eslint-disable react/jsx-wrap-multilines */
+ 
 import Image from 'next/image';
 import { BsTwitch } from 'react-icons/bs';
 

@@ -21,8 +21,8 @@ const QueryParamsSchema = z.object({
   dbType: z.string().min(1),
   userIds: z.union([
     z.string().min(1),
-    z.array(z.string().min(1)).min(1)
-  ]).transform(val => Array.isArray(val) ? val : [val])
+    z.array(z.string().min(1)).min(1),
+  ]).transform(val => Array.isArray(val) ? val : [val]),
 });
 
 export default async function handler(
@@ -68,8 +68,6 @@ export default async function handler(
     const targetUser = await getUserByEmail(email, {
       outsetaAccountEmail: 1,
     });
-
-
 
     console.log("the target user to delete: ", targetUser);
 
@@ -143,7 +141,6 @@ export default async function handler(
       }
 
       // TODO: get all of their emails that the user used to sign into google drive and remove them from the google group
-
 
       console.log("Successfully deleted the target user's Outseta information.");
 

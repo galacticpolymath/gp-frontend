@@ -3,16 +3,16 @@ import type {
   DrivePickerDocsViewElement,
   DrivePickerElementProps,
   DrivePickerDocsViewElementProps,
-} from "@googleworkspace/drive-picker-element";
+} from '@googleworkspace/drive-picker-element';
 
 declare global {
   namespace JSX {
     interface IntrinsicElements {
-      "drive-picker": React.DetailedHTMLProps<
+      'drive-picker': React.DetailedHTMLProps<
         React.HTMLAttributes<DrivePickerElement> & DrivePickerElementProps,
         DrivePickerElement
       >;
-      "drive-picker-docs-view": React.DetailedHTMLProps<
+      'drive-picker-docs-view': React.DetailedHTMLProps<
         React.HTMLAttributes<DrivePickerDocsViewElement> &
           DrivePickerDocsViewElementProps,
         DrivePickerDocsViewElement
@@ -30,7 +30,7 @@ declare global {
         close: () => Promise<void>;
       };
       on: (
-        event: "logout" | "redirect" | "signup",
+        event: 'logout' | 'redirect' | 'signup',
         callback: (...args: unknown[]) => void | boolean | Promise<void | boolean>
       ) => void;
     };

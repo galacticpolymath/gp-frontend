@@ -1,11 +1,6 @@
-/* eslint-disable react/jsx-curly-brace-presence */
-/* eslint-disable no-debugger */
-/* eslint-disable no-console */
-/* eslint-disable no-useless-escape */
-/* eslint-disable react/jsx-indent-props */
 /* eslint-disable react/jsx-indent */
 /* eslint-disable quotes */
-/* eslint-disable indent */
+ 
 import React, { useEffect, useState } from "react";
 import { Spinner } from "react-bootstrap";
 import Button from "../components/General/Button";
@@ -220,51 +215,42 @@ const SignUpPage: React.FC = () => {
       langLinks={[]}
     >
       <div className="min-vh-100 d-flex justify-content-center bg-light py-3 py-md-5 sign-up-pg-container position-relative">
-        <img
-          className="position-absolute d-block d-sm-none gp-logo-sign-up"
-          src="/imgs/gp_logo_gradient_transBG.png"
-          alt="gp_logo"
-          style={{
-            transform: "translateY(-18%)",
-            objectFit: "contain",
-          }}
-        />
         <div
           className="shadow-lg rounded sign-up-card pb-4"
           style={{ width: "97%", height: "fit-content" }}
         >
           <div className="bg-white rounded p-1 p-sm-3 p-md-2 w-100">
-            <div className="position-relative d-none d-sm-flex flex-column flex-xl-row sign-up-header-container justify-content-center align-items-center">
+            {/* Header — Desktop & tablet */}
+            <div className="d-none d-sm-block text-center mb-3">
               <img
-                className="position-absolute start-0 me-5 mt-1 mt-xl-2 gp-logo-sign-up"
                 src="/imgs/gp_logo_gradient_transBG.png"
                 alt="gp_logo"
-                style={{
-                  objectFit: "contain",
-                  transform: "translateY(-18%)",
-                }}
+                className="mx-auto mb-2"
+                style={{ width: "88px", height: "88px", objectFit: "contain" }}
               />
-              <div className="flex-column d-flex justify-content-center align-items-center">
-                <h5 className="mt-1 mt-sm-0 mt-xl-0 text-black text-center w-100 h-100 sign-up-header-txt">
-                  Get access to the [best] science resources anywhere!
-                </h5>
-                <h5 className="mt-0 mt-sm-0 mt-xl-0 text-black text-center w-100 h-100 sign-up-header-txt">
-                  (Grant-funded, FREE!)
-                </h5>
-              </div>
+              <h5 className="fw-bold mb-1">
+                Access 100+ of the best science resources <em>anywhere</em>!
+              </h5>
+              <p className="text-muted mb-0">(Grant-funded, FREE!)</p>
+              <hr className="mt-3 mb-0" />
             </div>
-            <div className="position-relative d-sm-none d-flex justify-content-center sign-up-header-container">
-              <div className="flex-column d-flex justify-content-center align-items-center header-gp-sign-up-container">
-                <h5 className="mt-1 mt-sm-0 mt-xl-0 text-black text-center w-100 h-100 sign-up-header-txt">
-                  Get access to the [best] science resources anywhere!
-                </h5>
-                <h5 className="mt-0 mt-sm-0 mt-xl-0 text-black text-center w-100 h-100 sign-up-header-txt">
-                  (Grant-funded, FREE!)
-                </h5>
-              </div>
+
+            {/* Header — Mobile */}
+            <div className="d-sm-none text-center mt-1">
+              <img
+                src="/imgs/gp_logo_gradient_transBG.png"
+                alt="gp_logo"
+                className="mx-auto mb-2"
+                style={{ width: "60px", height: "60px", objectFit: "contain" }}
+              />
+              <p className="fw-bold mb-1">
+                Sign up to access 100+ of the best science resources <em>anywhere</em>!
+              </p>
+              <p className="text-muted mb-0">(Grant-funded, FREE!)</p>
+              <hr className="mt-3 mb-0" />
             </div>
             {/* Mailing List Toggle */}
-            <div className="border-bottom border-top py-2 py-sm-3 py-xxl-1 my-0 mb-sm-1 mb-xl-1 mt-0 mt-sm-1 mt-md-2">
+            <div className="border-bottom border-top py-2 py-sm-3 py-xxl-1 my-0 mb-3 mt-0 mt-sm-1 mt-md-2">
               <div className="d-flex justify-content-center align-items-center">
                 <div className="d-flex create-account-toggle-btn-container">
                   <div className="d-flex align-items-center justify-content-center">
@@ -284,10 +270,9 @@ const SignUpPage: React.FC = () => {
                   </div>
                   <div
                     onClick={handleToAddToMailingListToggleBtnClick}
-                    className="py-xxl-4 pointer ms-2 ms-sm-1 ms-lg-0 email-listing-txt d-flex align-items-sm-center justify-content-sm-center"
+                    className="py-xxl-4 pointer ms-0 email-listing-txt d-flex align-items-center justify-content-sm-center"
                   >
-                    Send me updates about new/free resources (You{"'"}ll get an
-                    email to confirm subscription).
+                    Send me updates about the latest!
                   </div>
                 </div>
               </div>
@@ -299,8 +284,7 @@ const SignUpPage: React.FC = () => {
                 handleGoogleBtnClickCustom={
                   handleCreateAnAccountWithGoogleBtnClick
                 }
-                callbackUrl={`${
-                  typeof window !== "undefined" ? window.location.origin : ""
+                callbackUrl={`${typeof window !== "undefined" ? window.location.origin : ""
                 }/account?show_about_user_form=true`}
                 className="rounded shadow position-relative w-100 p-1 py-2 p-sm-2 p-xl-3 d-flex flex-row flex-sm-column justify-content-center align-items-center border google-sign-in-btn"
                 style={{ maxWidth: "600px" }}
@@ -366,16 +350,14 @@ const SignUpPage: React.FC = () => {
               <div className="row w-100 d-flex justify-content-center align-items-center mb-0 mb-sm-1 mb-xl-1">
                 <div className="d-flex col-6 flex-column">
                   <label
-                    className={`d-none d-sm-block w-75 pb-0 pb-sm-1 sign-up-input-label fw-bold ${
-                      errors.has("firstName") ? "text-danger" : ""
+                    className={`d-none d-sm-block w-75 pb-0 pb-sm-1 sign-up-input-label fw-bold ${errors.has("firstName") ? "text-danger" : ""
                     }`}
                     htmlFor="first-name"
                   >
                     First name:
                   </label>
                   <label
-                    className={`sign-up-input-label d-block d-sm-none w-75 pb-0 pb-sm-1 fw-bold ${
-                      errors.has("firstName") ? "text-danger" : ""
+                    className={`sign-up-input-label d-block d-sm-none w-75 pb-0 pb-sm-1 fw-bold ${errors.has("firstName") ? "text-danger" : ""
                     }`}
                     htmlFor="first-name"
                   >
@@ -390,14 +372,12 @@ const SignUpPage: React.FC = () => {
                       border: errors.has("firstName") ? "solid 1px red" : "",
                       background: USER_INPUT_BACKGROUND_COLOR,
                     }}
-                    className={`${
-                      inputElementsFocused.get("firstName")
-                        ? INPUT_FOCUS_BLUE_CLASSNAME
-                        : ""
-                    } ${
-                      errors.has("firstName")
-                        ? "border-danger"
-                        : "border-0 no-outline"
+                    className={`${inputElementsFocused.get("firstName")
+                      ? INPUT_FOCUS_BLUE_CLASSNAME
+                      : ""
+                    } ${errors.has("firstName")
+                      ? "border-danger"
+                      : "border-0 no-outline"
                     } p-1 w-100 py-1 py-sm-2`}
                     autoFocus
                     name="firstName"
@@ -425,17 +405,14 @@ const SignUpPage: React.FC = () => {
                     fontSize: "18px",
                     background: USER_INPUT_BACKGROUND_COLOR,
                   }}
-                  labelClassName={`sign-up-input-label d-block w-100 pb-1 fw-bold ${
-                    errors.has("lastName") ? "text-danger" : ""
+                  labelClassName={`sign-up-input-label d-block w-100 pb-1 fw-bold ${errors.has("lastName") ? "text-danger" : ""
                   }`}
                   inputPlaceholder="Last name"
                   label="Last Name: "
-                  inputClassName={`${
-                    inputElementsFocused.get("lastName")
-                      ? INPUT_FOCUS_BLUE_CLASSNAME
-                      : "no-outline"
-                  } ${
-                    errors.has("lastName") ? "border-danger" : "border-0"
+                  inputClassName={`${inputElementsFocused.get("lastName")
+                    ? INPUT_FOCUS_BLUE_CLASSNAME
+                    : "no-outline"
+                  } ${errors.has("lastName") ? "border-danger" : "border-0"
                   } p-1 w-100 py-1 py-sm-2 no-outline`}
                   onFocus={handleOnFocus}
                   onBlur={handleOnBlur}
@@ -452,17 +429,14 @@ const SignUpPage: React.FC = () => {
                     fontSize: "18px",
                     background: USER_INPUT_BACKGROUND_COLOR,
                   }}
-                  labelClassName={`sign-up-input-label d-block invisible w-100 pb-1 fw-bold ${
-                    errors.has("lastName") ? "text-danger" : ""
+                  labelClassName={`sign-up-input-label d-block invisible w-100 pb-1 fw-bold ${errors.has("lastName") ? "text-danger" : ""
                   }`}
                   inputPlaceholder="Last name"
                   label="X: "
-                  inputClassName={`${
-                    inputElementsFocused.get("lastName")
-                      ? INPUT_FOCUS_BLUE_CLASSNAME
-                      : "no-outline"
-                  } ${
-                    errors.has("lastName") ? "border-danger" : "border-0"
+                  inputClassName={`${inputElementsFocused.get("lastName")
+                    ? INPUT_FOCUS_BLUE_CLASSNAME
+                    : "no-outline"
+                  } ${errors.has("lastName") ? "border-danger" : "border-0"
                   } p-1 w-100 py-1 py-sm-2 no-outline`}
                   onFocus={handleOnFocus}
                   onBlur={handleOnBlur}
@@ -472,8 +446,7 @@ const SignUpPage: React.FC = () => {
               <div className="row w-100 d-flex justify-content-center align-items-center mb-0 mb-sm-1 mb-xl-1">
                 <div className="d-flex flex-column position-relative col-sm-6">
                   <label
-                    className={`${
-                      errors.has("email") ? "text-danger" : ""
+                    className={`${errors.has("email") ? "text-danger" : ""
                     } d-block w-75 pb-0 sign-up-input-label pb-sm-1 fw-bold`}
                     htmlFor="email-input"
                   >
@@ -489,16 +462,13 @@ const SignUpPage: React.FC = () => {
                     }}
                     onFocus={handleOnFocus}
                     onBlur={handleOnBlur}
-                    className={`${
-                      errors.has("email")
-                        ? "error-border"
-                        : "border-0 no-outline"
-                    } ${
-                      inputElementsFocused.get("email")
-                        ? INPUT_FOCUS_BLUE_CLASSNAME
-                        : ""
-                    } ${
-                      errors.has("email") ? "text-danger" : ""
+                    className={`${errors.has("email")
+                      ? "error-border"
+                      : "border-0 no-outline"
+                    } ${inputElementsFocused.get("email")
+                      ? INPUT_FOCUS_BLUE_CLASSNAME
+                      : ""
+                    } ${errors.has("email") ? "text-danger" : ""
                     } p-1 w-100 py-1 py-sm-2`}
                     name="email"
                     onChange={handleOnInputChange}
@@ -514,8 +484,7 @@ const SignUpPage: React.FC = () => {
               <div className="row w-100 d-flex justify-content-center align-items-center mb-1 mb-sm-2 mb-xl-2">
                 <div className="d-flex flex-column position-relative col-6">
                   <label
-                    className={`d-block w-75 pb-0 sign-up-input-label pb-sm-1 fw-bold ${
-                      errors.has("password") ? "text-danger" : ""
+                    className={`d-block w-75 pb-0 sign-up-input-label pb-sm-1 fw-bold ${errors.has("password") ? "text-danger" : ""
                     }`}
                     htmlFor="email-input"
                   >
@@ -537,8 +506,7 @@ const SignUpPage: React.FC = () => {
                       background: "#E8F0FE",
                       border: errors.has("password") ? "solid 1px red" : "",
                     }}
-                    inputClassName={`p-1 w-100 py-1 py-sm-2 no-outline ${
-                      errors.has("password") ? "text-danger" : "border-0"
+                    inputClassName={`p-1 w-100 py-1 py-sm-2 no-outline ${errors.has("password") ? "text-danger" : "border-0"
                     }`}
                     inputName="password"
                     onChange={handleOnInputChange}
@@ -566,8 +534,7 @@ const SignUpPage: React.FC = () => {
                       background: "#E8F0FE",
                       border: errors.has("password") ? "solid 1px red" : "",
                     }}
-                    inputClassName={`p-1 w-100 py-1 py-sm-2 no-outline ${
-                      errors.has("password") ? "text-danger" : "border-0"
+                    inputClassName={`p-1 w-100 py-1 py-sm-2 no-outline ${errors.has("password") ? "text-danger" : "border-0"
                     }`}
                     inputName="password"
                     onChange={handleOnInputChange}
@@ -595,16 +562,14 @@ const SignUpPage: React.FC = () => {
                 </div>
                 <div className="d-flex flex-column position-relative col-6">
                   <label
-                    className={`d-sm-block d-none sign-up-input-label w-75 pb-0 pb-sm-1 fw-bold ${
-                      errors.has("confirmPassword") ? "text-danger" : ""
+                    className={`d-sm-block d-none sign-up-input-label w-75 pb-0 pb-sm-1 fw-bold ${errors.has("confirmPassword") ? "text-danger" : ""
                     }`}
                     htmlFor="email-input"
                   >
                     Confirm password:
                   </label>
                   <label
-                    className={`d-sm-none d-block invisible sign-up-input-label w-75 pb-0 pb-sm-1 fw-bold ${
-                      errors.has("confirmPassword") ? "text-danger" : ""
+                    className={`d-sm-none d-block invisible sign-up-input-label w-75 pb-0 pb-sm-1 fw-bold ${errors.has("confirmPassword") ? "text-danger" : ""
                     }`}
                     htmlFor="email-input"
                   >
@@ -637,8 +602,7 @@ const SignUpPage: React.FC = () => {
                         ? "solid 1px red"
                         : "",
                     }}
-                    inputClassName={`p-1 w-100 py-1 py-sm-2 no-outline ${
-                      errors.has("confirmPassword") ? "text-danger" : "border-0"
+                    inputClassName={`p-1 w-100 py-1 py-sm-2 no-outline ${errors.has("confirmPassword") ? "text-danger" : "border-0"
                     }`}
                     inputName="confirmPassword"
                     onChange={handleOnInputChange}
@@ -671,8 +635,7 @@ const SignUpPage: React.FC = () => {
                         ? "solid 1px red"
                         : "",
                     }}
-                    inputClassName={`p-1 w-100 py-1 py-sm-2 no-outline ${
-                      errors.has("confirmPassword") ? "text-danger" : "border-0"
+                    inputClassName={`p-1 w-100 py-1 py-sm-2 no-outline ${errors.has("confirmPassword") ? "text-danger" : "border-0"
                     }`}
                     inputName="confirmPassword"
                     onChange={handleOnInputChange}

@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 /* eslint-disable quotes */
-/* eslint-disable no-empty */
+ 
 /* eslint-disable indent */
 
 import { NextApiRequest, NextApiResponse } from "next";

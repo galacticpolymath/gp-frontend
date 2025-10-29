@@ -1,5 +1,5 @@
 /* eslint-disable quotes */
-/* eslint-disable no-unused-vars */
+ 
 /* eslint-disable no-console */
 import GoogleProvider from 'next-auth/providers/google';
 import CredentialsProvider from 'next-auth/providers/credentials';
@@ -43,7 +43,7 @@ export default function MyAdapter() {
         if (!wasSuccessful) {
           return {
             errType: "timeout",
-            code: 504
+            code: 504,
           };
         }
 
@@ -52,10 +52,9 @@ export default function MyAdapter() {
         if (errType === "timeout") {
           return {
             errType,
-            code: 504
+            code: 504,
           };
         }
-
 
         if (!user) {
           isCreatingUser = true;
@@ -152,7 +151,7 @@ export const authOptions = {
         params: {
           prompt: "select_account",
         },
-      }
+      },
     }),
     CredentialsProvider({
       async authorize(credentials) {
@@ -333,9 +332,9 @@ export const authOptions = {
   },
   events: {
     signOut: async (param) => {
-      console.log('param.session, signout: ', param)
+      console.log('param.session, signout: ', param);
       cache.del(param.token.email);
-    }
+    },
   },
   callbacks: {
     async signIn(param) {
@@ -356,7 +355,7 @@ export const authOptions = {
         true,
       );
 
-      console.log("Error type: ", errType)
+      console.log("Error type: ", errType);
 
       try {
 
@@ -392,7 +391,6 @@ export const authOptions = {
             urlErrorParamVal ?? ''
           );
         }
-
 
         if (!isDbConnected) {
           throw new CustomError("Failed to connect to the database.", 500);

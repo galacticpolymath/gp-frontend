@@ -1,6 +1,6 @@
 /* eslint-disable quotes */
 /* eslint-disable react/jsx-curly-brace-presence */
-/* eslint-disable react/jsx-indent-props */
+ 
 /* eslint-disable indent */
 /* eslint-disable react/jsx-indent */
 
@@ -98,12 +98,12 @@ const LoginUI = ({
           <span className="d-inline d-sm-none d-md-inline d-lg-none">GP Portal Sign In</span>
         </h1>
       </div>
-      <div className="w-100 flex-column d-flex justify-content-center align-items-center mt-2 mb-1 mb-sm-0 mt-sm-1 mt-md-2">
+      <div className="w-100 flex-column d-flex justify-content-center align-items-center px-2 mt-2 mb-1 mb-sm-0 mt-sm-1 mt-md-2">
         <h5
           style={{ fontWeight: 300 }}
-          className="mt-0 mb-0 mt-sm-1 mt-md-2 text-black text-center w-100 h-100 fs-6 fs-sm-5"
+          className="mt-0 mb-2 mt-sm-1 mt-md-2 text-black text-center w-100 h-100 fs-6 fs-sm-5"
         >
-          Get access to the [best] science resources anywhere!
+          Access 100+ of the best science resources <em>anywhere</em>!
         </h5>
         <h5
           style={{ fontWeight: 300 }}

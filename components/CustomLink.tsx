@@ -1,7 +1,3 @@
-/* eslint-disable indent */
-/* eslint-disable react/jsx-indent */
-/* eslint-disable react/jsx-indent-props */
-
 import React from 'react';
 import Link from 'next/link';
 import { ReactNode } from 'react';

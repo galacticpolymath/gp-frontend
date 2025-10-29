@@ -25,7 +25,11 @@ const SOCIAL_MEDIA_ITEMS = [
   },
   {
     link: 'https://www.teacherspayteachers.com/Store/Galactic-Polymath',
-    icon: <Image src={svg} style={{ height: 'fit-content' }} alt='teachers pay teachers Galactic Polymath link' />,
+    icon: <Image
+      src={svg}
+      style={{ height: 'fit-content' }}
+      alt='teachers pay teachers Galactic Polymath link'
+          />,
   },
   {
     link: 'https://www.galacticpolymath.com/blog',
@@ -87,7 +91,14 @@ export default function Footer() {
         </div>
       </div>
       <div className="bg-dark text-center text-gray py-3 fs-7">
-        made with <span role="img" aria-label="heart" className='mx-1'>❤️</span> by Galactic Polymath &copy; {new Date().getFullYear()}
+        made with
+        <span
+          role="img"
+          aria-label="heart"
+          className='mx-1'
+        >
+          ❤️
+        </span> by Galactic Polymath &copy; {new Date().getFullYear()}
       </div>
     </footer>
   );

@@ -1,10 +1,7 @@
 // @ts-nocheck
 /* eslint-disable no-console */
 /* eslint-disable quotes */
-/* eslint-disable react/jsx-indent-props */
-/* eslint-disable react/jsx-indent */
-/* eslint-disable semi */
-/* eslint-disable indent */
+ 
 import Layout from "../components/Layout";
 import { useQuery } from "@tanstack/react-query";
 import { useCustomCookies } from "../customHooks/useCustomCookies";
@@ -169,7 +166,11 @@ const GoogleDriveAuthResult = () => {
                 ? "Authenticating with Google Drive..."
                 : "Loading, please wait..."}
               <span className="d-inline-flex align-items-center justify-content-center">
-                <Spinner animation="border" role="status" className="mt-2">
+                <Spinner
+                  animation="border"
+                  role="status"
+                  className="mt-2"
+                >
                   <span className="visually-hidden">Loading...</span>
                 </Spinner>
               </span>

@@ -1,9 +1,9 @@
-import { Model, Schema, models, model } from "mongoose";
-import { IWebAppLink } from "../../types/global";
+import { Model, Schema, models, model } from 'mongoose';
+import { IWebAppLink } from '../../types/global';
 
 export type TDbWebAppProps = {
   aboutWebAppLink?: string | null;
-  aboutWebAppLinkType: "blog" | "unit";
+  aboutWebAppLinkType: 'blog' | 'unit';
 };
 export type TWebAppForUI = {
   unitTitle?: string | null;
@@ -13,12 +13,12 @@ export type TWebAppForUI = {
 } & TDbWebApp;
 export type TDbWebApp = Pick<
   IWebAppLink,
-  | "description"
-  | "lessonIdStr"
-  | "pathToFile"
-  | "title"
-  | "unitNumID"
-  | "webAppLink"
+  | 'description'
+  | 'lessonIdStr'
+  | 'pathToFile'
+  | 'title'
+  | 'unitNumID'
+  | 'webAppLink'
 > &
   TDbWebAppProps;
 let webApp = models.webapps as Model<TDbWebApp, {}, {}, {}, any, any>;
@@ -26,7 +26,7 @@ let webApp = models.webapps as Model<TDbWebApp, {}, {}, {}, any, any>;
 if (!webApp) {
   const WebAppSchema = new Schema<TDbWebApp>({
     lessonIdStr: String,
-    unitNumID: { type: Number, ref: "Unit", default: null },
+    unitNumID: { type: Number, ref: 'Unit', default: null },
     webAppLink: String,
     title: String,
     pathToFile: String,
@@ -35,7 +35,7 @@ if (!webApp) {
     description: String,
   });
 
-  webApp = model("webapps", WebAppSchema);
+  webApp = model('webapps', WebAppSchema);
 }
 
 export default webApp;

@@ -36,24 +36,24 @@ export const UserSchemaDeprecatedV1 = new Schema<IUserSchema>(
     isTeacher: { type: Boolean, required: true, default: () => false },
     providerAccountId: String,
     name: {
-      first: {  type: String, required: false },
+      first: { type: String, required: false },
       last: { type: String, required: false },
     },
     emailVerified: { type: Date, required: false },
     firstName: {
-        type: String,
-        required: false,
-        validator: new StringValidator(
-          "First name is required and must be a string."
-        ),
-      },
+      type: String,
+      required: false,
+      validator: new StringValidator(
+        "First name is required and must be a string."
+      ),
+    },
     lastName: {
-        type: String,
-        required: false,
-        validator: new StringValidator(
-          "Last name is required and must be a string."
-        ),
-      },
+      type: String,
+      required: false,
+      validator: new StringValidator(
+        "Last name is required and must be a string."
+      ),
+    },
     picture: { type: String, required: false },
     occupation: { type: String, required: false },
     country: { type: String, required: false },
@@ -91,20 +91,20 @@ export const UserSchemaDeprecatedV1 = new Schema<IUserSchema>(
 );
 
 const LessonGDriveId = new Schema<ILessonGDriveId>({
-    lessonNum: String,
-    lessonDriveId: String,
-    lessonSharedGDriveFolderId: String,
-    gradesRange: String
-  }, {
-  _id: false
+  lessonNum: String,
+  lessonDriveId: String,
+  lessonSharedGDriveFolderId: String,
+  gradesRange: String,
+}, {
+  _id: false,
 });
 const UnitGDriveLessons = new Schema<IUnitGDriveLesson>({
   unitDriveId: String,
   unitId: String,
   lessonDriveIds: [LessonGDriveId],
-  gmail: String
+  gmail: String,
 }, {
-  _id: false
+  _id: false,
 });
 
 export const UserSchema = new Schema<TUserSchemaV2>(
@@ -125,19 +125,19 @@ export const UserSchema = new Schema<TUserSchemaV2>(
     providerAccountId: String,
     emailVerified: { type: Date, required: false },
     firstName: {
-        type: String,
-        required: false,
-        validator: new StringValidator(
-          "First name is required and must be a string."
-        ),
-      },
+      type: String,
+      required: false,
+      validator: new StringValidator(
+        "First name is required and must be a string."
+      ),
+    },
     lastName: {
-        type: String,
-        required: false,
-        validator: new StringValidator(
-          "Last name is required and must be a string."
-        ),
-      },
+      type: String,
+      required: false,
+      validator: new StringValidator(
+        "Last name is required and must be a string."
+      ),
+    },
     picture: String,
     occupation: String,
     country: String,

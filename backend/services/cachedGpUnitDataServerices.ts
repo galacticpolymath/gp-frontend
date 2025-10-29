@@ -1,7 +1,6 @@
-/* eslint-disable semi */
 /* eslint-disable quotes */
 /* eslint-disable no-console */
-/* eslint-disable indent */
+ 
 import { createPaginationArr } from "../../globalFns";
 import { getUnits } from "../helperFns/lessonsFns";
 import { CustomError } from "../utils/errors";

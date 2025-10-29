@@ -1,6 +1,5 @@
-/* eslint-disable no-console */
 /* eslint-disable semi */
-/* eslint-disable comma-dangle */
+ 
 /** @type {import('next').NextConfig} */
 
 const cspHeader = `
@@ -33,23 +32,23 @@ module.exports = {
   swcMinify: true,
   images: {
     domains: [
-      "catalog.galacticpolymath.com",
-      "gp-catalog.vercel.app",
-      "i3.ytimg.com",
-      "storage.googleapis.com",
-      "into-the-dark.vercel.app",
-      "echo-galactic-polymath.vercel.app",
-      "drive.google.com",
-      "img.youtube.com",
-      "pacific-h2o.galacticpolymath.com",
-      "energy-app.galacticpolymath.com",
+      'catalog.galacticpolymath.com',
+      'gp-catalog.vercel.app',
+      'i3.ytimg.com',
+      'storage.googleapis.com',
+      'into-the-dark.vercel.app',
+      'echo-galactic-polymath.vercel.app',
+      'drive.google.com',
+      'img.youtube.com',
+      'pacific-h2o.galacticpolymath.com',
+      'energy-app.galacticpolymath.com',
     ],
   },
   async headers() {
     const headersVal = [
       {
-        key: "Content-Security-Policy",
-        value: cspHeader.replace(/\n/g, ""),
+        key: 'Content-Security-Policy',
+        value: cspHeader.replace(/\n/g, ''),
       },
     ];
 
@@ -62,7 +61,7 @@ module.exports = {
 
     return [
       {
-        source: "/(.*)",
+        source: '/(.*)',
         headers: headersVal,
       },
     ];
