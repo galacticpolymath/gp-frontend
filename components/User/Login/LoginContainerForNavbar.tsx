@@ -142,31 +142,36 @@ const LoginContainerForNavbar: React.FC<IProps> = ({ _modalAnimation }) => {
     "";
 
   const handleSignOutBtnClick = async () => {
-    setIsSigningUserOut(true);
+    // setIsSigningUserOut(true);
 
-    if (gdriveAccessToken) {
-      await revokeGoogleAuthToken(gdriveAccessToken);
-    }
+    // if (gdriveAccessToken) {
+    //   await revokeGoogleAuthToken(gdriveAccessToken);
+    // }
 
-    removeAppCookies([
-      "gdriveAccessToken",
-      "gdriveAccessTokenExp",
-      "gdriveRefreshToken",
-    ]);
+    // removeAppCookies([
+    //   "gdriveAccessToken",
+    //   "gdriveAccessTokenExp",
+    //   "gdriveRefreshToken",
+    // ]);
 
-    await deleteUserFromServerCache(token);
-    await signOut({ redirect: false });
+    // await deleteUserFromServerCache(token);
+    // await signOut({ redirect: false });
 
-    localStorage.clear();
-    sessionStorage.clear();
-    clearCookies();
+    // localStorage.clear();
+    // sessionStorage.clear();
+    // clearCookies();
 
     const isUserSignedIn = !!(window.Outseta as any)?.getAccessToken();
 
+    console.log("isUserSignedIn: ", isUserSignedIn);
+
+    return;
     if (!isUserSignedIn) {
       window.location.reload();
       return;
     }
+
+    await window.Outseta?.logout();
 
     window.Outseta?.on("logout", async () => {
       console.log("Logging the user out.");

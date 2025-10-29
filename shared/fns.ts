@@ -186,7 +186,6 @@ export const getLocalStorageItem = <
     }
 
     if (KEYS_OF_VALUES_TO_ENCRYPT.has(key)) {
-      console.log('Encrypted value retrieved from localStorage: ', parsableVal);
       const bytes = CryptoJS.AES.decrypt(
         parsableVal,
         process.env.NEXT_PUBLIC_ENCRYPTION_KEY!
