@@ -1808,6 +1808,8 @@ export const copyFiles = async (
           ? fileCopyResult.errMsg
           : JSON.stringify(fileCopyResult);
 
+      console.log('process.env.NEXT_PUBLIC_HOST: ', process.env.NEXT_PUBLIC_HOST);
+
       if (process.env.NEXT_PUBLIC_HOST === 'localhost') {
         await logFailedFileCopyToExcel({
           lessonName,
