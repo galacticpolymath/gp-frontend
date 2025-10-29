@@ -102,6 +102,11 @@ const GpPlus: React.FC<IProps> = ({ liveUnitsTotal, plusPlanPercentSaved }) => {
   } = useHandleOpeningGpPlusAccount(true, setWasGpPlusSubRetrieved);
   const [wasGpPlusBtnClicked, setWasGpPlusBtnClicked] = _wasGpPlusBtnClicked;
   const router = useRouter();
+  const [didInitialRenderOccur, setDidInitialRenderOccur] = useState(false);
+
+  useEffect(() => {
+    setDidInitialRenderOccur(true);
+  }, []);
 
   useGpPlusModalInteraction(gpPlusSubscription?.membership?.BillingRenewalTerm);
   useOutsetaInputValidation();
@@ -402,7 +407,7 @@ const GpPlus: React.FC<IProps> = ({ liveUnitsTotal, plusPlanPercentSaved }) => {
       title="GP+ - Galactic Polymath"
       description="GP+ - Galactic Polymath. Gain access to exclusive feature for GP Plus members."
       langLinks={[]}
-      imgSrc="/assets/img/galactic_polymath_logo.png"
+      imgSrc="https://res.cloudinary.com/galactic-polymath/image/upload/v1593304395/logos/GP_full_stacked_grad_whiteBG_llfyal.png"
       imgAlt="Galactic Polymath Logo"
       url="/gp-plus"
     >
@@ -727,10 +732,11 @@ const GpPlus: React.FC<IProps> = ({ liveUnitsTotal, plusPlanPercentSaved }) => {
         {gpPlusSubscription?.membership?.AccountStageLabel &&
         HAS_MEMBERSHIP_STATUSES.has(
           gpPlusSubscription?.membership?.AccountStageLabel
-        )
+        ) &&
+        didInitialRenderOccur
           ? anchorElement
           : null}
-        {gpPlusBtnTxt === "Sign up" && (
+        {gpPlusBtnTxt === "Sign up" && didInitialRenderOccur && (
           <div
             id="signup-modal-div"
             style={{

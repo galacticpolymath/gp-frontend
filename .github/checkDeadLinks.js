@@ -5,87 +5,83 @@
   const ExcelJS = (await import('exceljs')).default;
   const EXCEL_SHEET_FILE_NAME = 'DeadLinksCheckResult.xlsx';
 
-  /**
-     * @typedef {Object} TMailOpts
-     * @property {string} from
-     * @property {string} to
-     * @property {string} subject
-     * @property {string} text
-     * @property {string} html
-     */
+  const sleep = (milliseconds) => {
+    console.log(`Will sleep for: ${milliseconds} ms`);
 
-  /**
-     *
-     * @param {TMailOpts} mailOpts
-     */
-  const sendEmail = async (mailOpts) => {
-    try {
-      const privateKey = process.env.EMAIL_SENDER_SERVICE_ACCOUNT_PRIVATE_KEY.replace(/\\n/g, '\n');
-      const emailTransport = {
-        host: 'smtp.gmail.com',
-        port: 465,
-        secure: true,
-        auth: {
-          privateKey,
-          type: 'OAuth2',
-          user: 'techguy@galacticpolymath.com',
-          serviceClient: process.env.EMAIL_SENDER_SERVICE_ACCOUNT_CLIENT_ID,
-          accessUrl: 'https://oauth2.googleapis.com/token',
-        },
-      };
-      const transport = nodemailer.createTransport(emailTransport);
-      const canSendEmail = await transport.verify();
+    return new Promise((resolve) => {
+      setTimeout(resolve, milliseconds);
+    });
+  };
+  const waitWithExponentialBackOff = async (
+    num = 1,
+    range = [1000, 5_500],
+  ) => {
+    const [min, max] = range;
+    const randomNumMs = Math.floor(Math.random() * (max - min + 1)) + 1000;
+    const waitTime = randomNumMs + num * 1_000;
 
-      if (!canSendEmail) {
-        throw new Error('Email auth has failed.');
-      }
+    console.log(`Waiting for ${waitTime}ms...`);
 
-      const sentMessageInfo = await transport.sendMail(mailOpts);
+    await sleep(waitTime);
 
-      console.log('sentMessageInfo: ', sentMessageInfo);
-
-      if (sentMessageInfo.rejected.length) {
-        throw new Error('Failed to send the email to the target user.');
-      }
-
-      console.log('the email was sent...');
-
-      return { wasSuccessful: true };
-    } catch (error) {
-      console.error('Error object: ', error);
-
-      return { wasSuccessful: false };
-    }
+    return num + 1;
   };
 
-  /**
-     * Sends an email with the given options and retries the operation if it fails.
-     * Retries are done with an exponential backoff.
-     * @param {TMailOpts} mailOpts
-     * @param {number} [retries=1]
-     * @return {Promise<{ wasSuccessful: boolean }>} A promise that resolves to an object with a boolean indicating whether the operation was successful.
-     */
-  const sendEmailWithRetries = async (mailOpts, retries = 1) => {
+  class BrevoOptions {
+    constructor(method) {
+      this.method = method;
+      this.headers = {
+        accept: 'application/json',
+        'content-type': 'application/json',
+      };
+
+      if (process.env.BREVO_API_KEY) {
+        this.headers['api-key'] = process.env.BREVO_API_KEY;
+      }
+    }
+  }
+
+  const sendEmailWithRetries = async (emailOpts, tries = 3) => {
     try {
-      const { wasSuccessful } = await sendEmail(mailOpts);
+      const options = new BrevoOptions('POST');
+      const url = 'https://api.brevo.com/v3/smtp/email';
+      const body = JSON.stringify(emailOpts);
+      const response = await fetch(url, { body, ...options });
 
-      if (!wasSuccessful) {
-        throw new Error('Failed to send email. Retrying...');
+      if (response.status !== 201) {
+        const errData = await response.json();
+
+        console.error('Brevo API error response: ', errData);
+
+        throw new Error(
+          `Failed to send email via Brevo. Status code: ${response.status}`
+        );
       }
 
-      return { wasSuccessful: true };
+      return {
+        wasSuccessful: true,
+      };
     } catch (error) {
-      if (retries <= 3) {
-        const randomNumMs =
-                    Math.floor(Math.random() * (5000 - 1000 + 1)) + 1000;
-        const waitTime = randomNumMs + retries * 1_000;
-        await new Promise((resolve) => setTimeout(resolve, waitTime));
-        return await sendEmailWithRetries(mailOpts, retries + 1);
+      console.error('Error in sendEmailViaBrevo:', error);
+
+      const isRetryable =
+        error &&
+        (error.message.includes('network') ||
+          error.message.includes('timed out') ||
+          error.message.includes('ECONNRESET') ||
+          error.message.includes('Failed to fetch') ||
+          (error.response && error.response.status >= 500));
+
+      if (isRetryable && tries > 0) {
+        await waitWithExponentialBackOff(tries);
+        tries -= 1;
+
+        return await sendEmailWithRetries(emailOpts, tries);
       }
 
-      console.error('Failed to send the email.');
-
-      return { wasSuccessful: false };
+      return {
+        wasSuccessful: false,
+      };
     }
   };
 
@@ -247,17 +243,20 @@
           };
         });
         await createDeadLinksResultsExcelSheet(deadLinks, currentDateStr);
+
+        const content = (await fs.promises.readFile(EXCEL_SHEET_FILE_NAME)).toString('base64');
+
         attachments = [
           {
-            filename: EXCEL_SHEET_FILE_NAME,
-            path: EXCEL_SHEET_FILE_NAME,
+            name: EXCEL_SHEET_FILE_NAME,
+            content,
           },
         ];
       }
 
       const { wasSuccessful } = await sendEmailWithRetries({
-        from: 'shared@galacticpolymath.com',
-        to: ['matt@galacticpolymath.com', 'gtorion97work@gmail.com'],
+        from: [{ email: 'shared@galacticpolymath.com', name: 'support' }],
+        to: [{ email: 'matt@galacticpolymath.com', name: 'Matt' }],
         subject: `Deads Links Check On ${currentDateStr}`,
         text,
         attachments,
