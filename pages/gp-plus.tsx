@@ -1,39 +1,36 @@
-/* eslint-disable quotes */
-/* eslint-disable indent */
-
-import React, { ReactNode, useEffect, useMemo, useRef, useState } from "react";
-import Layout from "../components/Layout";
-import { Spinner } from "react-bootstrap";
-import Image from "next/image";
-import Logo from "../assets/img/logo.ico";
-import useSiteSession from "../customHooks/useSiteSession";
-import { updateUser } from "../apiServices/user/crudFns";
-import useOutsetaInputValidation from "../customHooks/useOutsetaInputValidation";
+import React, { ReactNode, useEffect, useMemo, useRef, useState } from 'react';
+import Layout from '../components/Layout';
+import { Spinner } from 'react-bootstrap';
+import Image from 'next/image';
+import Logo from '../assets/img/logo.ico';
+import useSiteSession from '../customHooks/useSiteSession';
+import { updateUser } from '../apiServices/user/crudFns';
+import useOutsetaInputValidation from '../customHooks/useOutsetaInputValidation';
 import {
   defautlNotifyModalVal,
   useModalContext,
-} from "../providers/ModalProvider";
-import CustomLink from "../components/CustomLink";
-import { CONTACT_SUPPORT_EMAIL } from "../globalVars";
-import useHandleOpeningGpPlusAccount from "../customHooks/useHandleOpeningGpPlusAccount";
-import { useRouter } from "next/router";
-import { useGpPlusModalInteraction } from "../customHooks/useGpPlusModalInteraction";
+} from '../providers/ModalProvider';
+import CustomLink from '../components/CustomLink';
+import { CONTACT_SUPPORT_EMAIL } from '../globalVars';
+import useHandleOpeningGpPlusAccount from '../customHooks/useHandleOpeningGpPlusAccount';
+import { useRouter } from 'next/router';
+import { useGpPlusModalInteraction } from '../customHooks/useGpPlusModalInteraction';
 import {
   calculatePercentSaved,
   getLocalStorageItem,
   setLocalStorageItem,
-} from "../shared/fns";
-import ThankYouModal from "../components/GpPlus/ThankYouModal";
-import { connectToMongodb } from "../backend/utils/connection";
+} from '../shared/fns';
+import ThankYouModal from '../components/GpPlus/ThankYouModal';
+import { connectToMongodb } from '../backend/utils/connection';
 import {
   filterInShowableUnits,
   retrieveUnits,
-} from "../backend/services/unitServices";
+} from '../backend/services/unitServices';
 import {
   getPlans,
   TAccountStageLabel,
-} from "../backend/services/outsetaServices";
-import { useHandleGpPlusCheckoutSessionModal } from "../customHooks/useHandleGpPlusCheckoutSessionModal";
+} from '../backend/services/outsetaServices';
+import { useHandleGpPlusCheckoutSessionModal } from '../customHooks/useHandleGpPlusCheckoutSessionModal';
 
 interface IProps {
   liveUnitsTotal?: number;
@@ -43,14 +40,14 @@ interface IProps {
 }
 
 export const SELECTED_GP_PLUS_BILLING_TYPE =
-  "selected_gp_plus_billing_type" as const;
+  'selected_gp_plus_billing_type' as const;
 const DEFAULT_LIVE_UNITS_TOTAL = 17;
 const ICON_DIMENSION = 70;
-const BTN_HEIGHT = "42px";
+const BTN_HEIGHT = '42px';
 const HAS_MEMBERSHIP_STATUSES: Set<TAccountStageLabel> = new Set([
-  "Cancelling",
-  "Subscribing",
-  "Past due",
+  'Cancelling',
+  'Subscribing',
+  'Past due',
 ] as TAccountStageLabel[]);
 
 const LiContentWithImg: React.FC<{ children: ReactNode }> = ({ children }) => {
@@ -63,7 +60,7 @@ const LiContentWithImg: React.FC<{ children: ReactNode }> = ({ children }) => {
             alt="gp_plus_logo"
             width={32}
             height={32}
-            style={{ width: "32px", height: "32px", objectFit: "contain" }}
+            style={{ width: '32px', height: '32px', objectFit: 'contain' }}
           />
         </div>
         <div className="d-flex justify-content-center align-items-center ms-1">
@@ -83,8 +80,8 @@ const CardTitle: React.FC<{ children: ReactNode }> = ({ children }) => {
 };
 
 const GpPlus: React.FC<IProps> = ({ liveUnitsTotal, plusPlanPercentSaved }) => {
-  const [billingPeriod, setBillingPeriod] = useState<"monthly" | "yearly">(
-    "yearly"
+  const [billingPeriod, setBillingPeriod] = useState<'monthly' | 'yearly'>(
+    'yearly'
   );
   const { _notifyModal } = useModalContext();
   const [, setNotifyModal] = _notifyModal;
@@ -116,8 +113,8 @@ const GpPlus: React.FC<IProps> = ({ liveUnitsTotal, plusPlanPercentSaved }) => {
   const monthlyPrice = 10;
   const yearlyPrice = 60;
   const monthlyEquivalent = yearlyPrice / 12; // $5/month when paid yearly
-  const gpPlusBtnTxt: "Manage account" | "Sign up" = useMemo(() => {
-    console.log("gpPlusSubscription, sup there: ", gpPlusSubscription);
+  const gpPlusBtnTxt: 'Manage account' | 'Sign up' = useMemo(() => {
+    console.log('gpPlusSubscription, sup there: ', gpPlusSubscription);
     const hasMemeberhsip =
       gpPlusSubscription?.membership?.AccountStageLabel &&
       HAS_MEMBERSHIP_STATUSES.has(
@@ -125,27 +122,27 @@ const GpPlus: React.FC<IProps> = ({ liveUnitsTotal, plusPlanPercentSaved }) => {
       );
 
     if (hasMemeberhsip) {
-      return "Manage account";
+      return 'Manage account';
     }
 
-    return "Sign up";
+    return 'Sign up';
   }, [gpPlusSubscription, isFetching]);
   const gpLiteBtnTxt = useMemo(() => {
-    console.log("gpPlusSubscription, sup there: ", gpPlusSubscription);
+    console.log('gpPlusSubscription, sup there: ', gpPlusSubscription);
 
-    if (status === "authenticated") {
-      return "ACCOUNT CREATED";
+    if (status === 'authenticated') {
+      return 'ACCOUNT CREATED';
     }
 
-    return "Sign up for free";
+    return 'Sign up for free';
   }, [status]);
 
   const handleToggle = () => {
-    const _billingPeriod = billingPeriod === "monthly" ? "yearly" : "monthly";
+    const _billingPeriod = billingPeriod === 'monthly' ? 'yearly' : 'monthly';
     setBillingPeriod(_billingPeriod);
     setLocalStorageItem(
-      "selectedGpPlusBillingType",
-      _billingPeriod === "monthly" ? "month" : "year"
+      'selectedGpPlusBillingType',
+      _billingPeriod === 'monthly' ? 'month' : 'year'
     );
   };
 
@@ -162,12 +159,12 @@ const GpPlus: React.FC<IProps> = ({ liveUnitsTotal, plusPlanPercentSaved }) => {
 
     setWasGpPlusBtnClicked(true);
 
-    if (status === "unauthenticated") {
+    if (status === 'unauthenticated') {
       setTimeout(() => {
         setWasGpPlusBtnClicked(false);
         router.push(
           `/sign-up?${SELECTED_GP_PLUS_BILLING_TYPE}=${
-            billingPeriod === "yearly" ? "year" : "month"
+            billingPeriod === 'yearly' ? 'year' : 'month'
           }`
         );
       }, 200);
@@ -184,41 +181,41 @@ const GpPlus: React.FC<IProps> = ({ liveUnitsTotal, plusPlanPercentSaved }) => {
     setWasGpLiteBtnClicked(true);
 
     setTimeout(() => {
-      router.push("/sign-up");
+      router.push('/sign-up');
       setWasGpLiteBtnClicked(false);
     }, 300);
   };
 
   useEffect(() => {
     const emailInput =
-      status === "authenticated"
+      status === 'authenticated'
         ? (document.querySelector(
-            '[name="Person.Email"]'
-          ) as HTMLInputElement | null)
+          '[name="Person.Email"]'
+        ) as HTMLInputElement | null)
         : null;
 
-    console.log("siteSession: ", siteSession);
-    console.log("emailInput, yo there: ", emailInput);
+    console.log('siteSession: ', siteSession);
+    console.log('emailInput, yo there: ', emailInput);
 
-    if (status === "authenticated" && emailInput) {
-      emailInput.value = user?.email || "";
-      emailInput.dispatchEvent(new Event("input", { bubbles: true }));
-    } else if (status === "authenticated") {
+    if (status === 'authenticated' && emailInput) {
+      emailInput.value = user?.email || '';
+      emailInput.dispatchEvent(new Event('input', { bubbles: true }));
+    } else if (status === 'authenticated') {
       console.error(
-        "An error occurred: Email input could not be found despite user being authenticated."
+        'An error occurred: Email input could not be found despite user being authenticated.'
       );
     }
 
-    if (status === "authenticated") {
-      window.Outseta?.on("signup", () => {
-        console.log("The user has signed up.");
+    if (status === 'authenticated') {
+      window.Outseta?.on('signup', () => {
+        console.log('The user has signed up.');
         const gpPlusFeatureLocation = getLocalStorageItem(
-          "gpPlusFeatureLocation"
+          'gpPlusFeatureLocation'
         );
 
         // will redirect to the selected unit so that user can copy it
-        if (gpPlusFeatureLocation?.includes("#")) {
-          setLocalStorageItem("willShowGpPlusPurchaseThankYouModal", true);
+        if (gpPlusFeatureLocation?.includes('#')) {
+          setLocalStorageItem('willShowGpPlusPurchaseThankYouModal', true);
 
           window.location.href = gpPlusFeatureLocation;
 
@@ -226,7 +223,7 @@ const GpPlus: React.FC<IProps> = ({ liveUnitsTotal, plusPlanPercentSaved }) => {
         }
 
         if (gpPlusFeatureLocation) {
-          console.log("Will redirect the user.");
+          console.log('Will redirect the user.');
           window.location.href = `${gpPlusFeatureLocation}?gp_plus_subscription_bought=true`;
 
           return false;
@@ -243,7 +240,7 @@ const GpPlus: React.FC<IProps> = ({ liveUnitsTotal, plusPlanPercentSaved }) => {
   const outsetaEmbeddedRef = useRef<HTMLDivElement | null>(null);
   const outsetaEmbeddedCallback = () => {
     const stateRegisterConfirmation = document.querySelector(
-      ".state-registerConfirmation"
+      '.state-registerConfirmation'
     );
 
     if (stateRegisterConfirmation) {
@@ -253,7 +250,7 @@ const GpPlus: React.FC<IProps> = ({ liveUnitsTotal, plusPlanPercentSaved }) => {
 
   useEffect(() => {
     if (
-      status === "authenticated" &&
+      status === 'authenticated' &&
       gpPlusSubscription?.membership?.AccountStageLabel &&
       HAS_MEMBERSHIP_STATUSES.has(
         gpPlusSubscription?.membership?.AccountStageLabel
@@ -275,32 +272,32 @@ const GpPlus: React.FC<IProps> = ({ liveUnitsTotal, plusPlanPercentSaved }) => {
 
   useEffect(() => {
     if (isSignupModalDisplayed) {
-      console.log("sign up modal displayed");
+      console.log('sign up modal displayed');
 
       const continueToCheckoutBtn = document.querySelector(
-        ".o--Register--nextButton"
+        '.o--Register--nextButton'
       ) as HTMLButtonElement | null;
       const payPeriodToggle = document.querySelector(
-        ".o--HorizontalToggle--horizontalToggle"
+        '.o--HorizontalToggle--horizontalToggle'
       ) as HTMLButtonElement | null;
       const monthlyOption = payPeriodToggle?.firstChild?.firstChild
         ?.firstChild as HTMLElement | undefined;
       const yearlyOption = payPeriodToggle?.firstChild?.lastChild
         ?.firstChild as HTMLElement | undefined;
 
-      if (billingPeriod === "monthly" && monthlyOption) {
+      if (billingPeriod === 'monthly' && monthlyOption) {
         monthlyOption.click();
-      } else if (billingPeriod === "yearly" && yearlyOption) {
+      } else if (billingPeriod === 'yearly' && yearlyOption) {
         yearlyOption.click();
       }
 
-      console.log("continueToCheckoutBtn: ", continueToCheckoutBtn);
+      console.log('continueToCheckoutBtn: ', continueToCheckoutBtn);
 
-      continueToCheckoutBtn?.addEventListener("click", async (event) => {
-        console.log("The continue button was clicked...");
+      continueToCheckoutBtn?.addEventListener('click', async (event) => {
+        console.log('The continue button was clicked...');
 
         if ((event.target as HTMLButtonElement).disabled) {
-          console.log("The button is disabled.");
+          console.log('The button is disabled.');
           return;
         }
 
@@ -309,17 +306,17 @@ const GpPlus: React.FC<IProps> = ({ liveUnitsTotal, plusPlanPercentSaved }) => {
         ) as HTMLInputElement | null;
         const outsetaEmail = emailInput
           ? (emailInput as HTMLInputElement).value
-          : "";
+          : '';
 
-        console.log("outsetaEmail, sup there: ", outsetaEmail);
+        console.log('outsetaEmail, sup there: ', outsetaEmail);
 
         if (!outsetaEmail) {
           setNotifyModal({
-            headerTxt: "An error has occurred",
+            headerTxt: 'An error has occurred',
             bodyTxt: (
               <>
                 Unable to start your checkout session. If this error persists,
-                please contact{" "}
+                please contact{' '}
                 <CustomLink
                   hrefStr={CONTACT_SUPPORT_EMAIL}
                   className="ms-1 mt-2 text-break"
@@ -341,7 +338,7 @@ const GpPlus: React.FC<IProps> = ({ liveUnitsTotal, plusPlanPercentSaved }) => {
 
         if (!user?.email || !token) {
           setNotifyModal({
-            headerTxt: "An error has occurred",
+            headerTxt: 'An error has occurred',
             bodyTxt: (
               <>
                 Unable to start your checkout session. You are not logged in.
@@ -360,7 +357,7 @@ const GpPlus: React.FC<IProps> = ({ liveUnitsTotal, plusPlanPercentSaved }) => {
         }
 
         console.log(
-          "Will save the email the user inputted. Email: ",
+          'Will save the email the user inputted. Email: ',
           outsetaEmail
         );
 
@@ -373,11 +370,11 @@ const GpPlus: React.FC<IProps> = ({ liveUnitsTotal, plusPlanPercentSaved }) => {
 
         if (!updateUserResponse?.wasSuccessful) {
           setNotifyModal({
-            headerTxt: "An error has occurred",
+            headerTxt: 'An error has occurred',
             bodyTxt: (
               <>
                 An error has occurred while trying to update the user's email.
-                If this error persists, please contact{" "}
+                If this error persists, please contact{' '}
                 <CustomLink
                   hrefStr={CONTACT_SUPPORT_EMAIL}
                   className="ms-1 mt-2 text-break"
@@ -411,7 +408,7 @@ const GpPlus: React.FC<IProps> = ({ liveUnitsTotal, plusPlanPercentSaved }) => {
       imgAlt="Galactic Polymath Logo"
       url="/gp-plus"
     >
-      <div style={{ height: "fit-content" }}>
+      <div style={{ height: 'fit-content' }}>
         <div className="gpplus-pricing-section pt-5">
           <div className="container-fluid pt-md-0 pt-sm-4">
             <div className="row justify-content-center mt-sm-3 mt-md-0">
@@ -420,14 +417,14 @@ const GpPlus: React.FC<IProps> = ({ liveUnitsTotal, plusPlanPercentSaved }) => {
                   src="/plus/gp_plus_desktop.png"
                   alt="gp_plus_logo"
                   fill
-                  style={{ objectFit: "contain" }}
+                  style={{ objectFit: 'contain' }}
                   className="d-none d-sm-block"
                 />
                 <Image
                   src="/plus/gp_plus_mobile.png"
                   alt="gp_plus_logo"
                   fill
-                  style={{ objectFit: "contain" }}
+                  style={{ objectFit: 'contain' }}
                   className="d-block d-sm-none"
                 />
               </div>
@@ -435,7 +432,7 @@ const GpPlus: React.FC<IProps> = ({ liveUnitsTotal, plusPlanPercentSaved }) => {
           </div>
           <div className="d-flex justify-content-center align-items-center mt-3 mt-sm-2 mb-0">
             <p
-              style={{ fontSize: "1rem" }}
+              style={{ fontSize: '1rem' }}
               className="text-center text-md-start"
             >
               <i>
@@ -447,14 +444,14 @@ const GpPlus: React.FC<IProps> = ({ liveUnitsTotal, plusPlanPercentSaved }) => {
           <div className="gpplus-toggle-row w-100 d-flex justify-content-center align-items-center pb-1">
             <div className="d-flex flex-column flex-sm-row w-75 justify-content-center align-items-center">
               <div className="px-3 mb-sm-0 mb-1">
-                <span className={billingPeriod === "monthly" ? "active" : ""}>
+                <span className={billingPeriod === 'monthly' ? 'active' : ''}>
                   Monthly&nbsp;
                 </span>
               </div>
-              <label style={{ minWidth: "48px" }} className="gpplus-switch">
+              <label style={{ minWidth: '48px' }} className="gpplus-switch">
                 <input
                   type="checkbox"
-                  checked={billingPeriod === "yearly"}
+                  checked={billingPeriod === 'yearly'}
                   onChange={handleToggle}
                 />
                 <span className="gpplus-slider" />
@@ -462,14 +459,14 @@ const GpPlus: React.FC<IProps> = ({ liveUnitsTotal, plusPlanPercentSaved }) => {
               <div className="d-flex px-3 mt-sm-0 mt-1">
                 <span
                   className={`${
-                    billingPeriod === "yearly" ? "active" : ""
+                    billingPeriod === 'yearly' ? 'active' : ''
                   } text-center`}
                 >
-                  &nbsp;Yearly{" "}
+                  &nbsp;Yearly{' '}
                 </span>
                 <span
                   className={`${
-                    billingPeriod === "yearly" ? "active" : ""
+                    billingPeriod === 'yearly' ? 'active' : ''
                   } text-center`}
                 >
                   &nbsp;(Save {plusPlanPercentSaved || 50}%)
@@ -478,7 +475,7 @@ const GpPlus: React.FC<IProps> = ({ liveUnitsTotal, plusPlanPercentSaved }) => {
             </div>
           </div>
           <div
-            style={{ height: "fit-content" }}
+            style={{ height: 'fit-content' }}
             className="gpplus-cards-wrapper"
           >
             <div className="gpplus-card lite position-relative">
@@ -490,7 +487,7 @@ const GpPlus: React.FC<IProps> = ({ liveUnitsTotal, plusPlanPercentSaved }) => {
                     width={ICON_DIMENSION}
                     height={ICON_DIMENSION}
                     style={{
-                      objectFit: "contain",
+                      objectFit: 'contain',
                     }}
                   />
                 </div>
@@ -512,7 +509,7 @@ const GpPlus: React.FC<IProps> = ({ liveUnitsTotal, plusPlanPercentSaved }) => {
                   </ul>
                 </div>
                 <div
-                  style={{ height: "195px" }}
+                  style={{ height: '195px' }}
                   className="w-100 d-flex justify-content-center align-items-center"
                 >
                   <div className="position-absolute bottom-0 mb-3 w-75">
@@ -525,19 +522,19 @@ const GpPlus: React.FC<IProps> = ({ liveUnitsTotal, plusPlanPercentSaved }) => {
                       <button
                         onClick={handleSignUpLiteBtnClick}
                         disabled={
-                          isGpLiteBtnDisabled || status === "authenticated"
+                          isGpLiteBtnDisabled || status === 'authenticated'
                         }
                         className={`gpplus-signup-btn d-flex justify-content-center align-items-center lite ${
-                          isGpLiteBtnDisabled || status === "authenticated"
-                            ? "opacity-25"
-                            : ""
+                          isGpLiteBtnDisabled || status === 'authenticated'
+                            ? 'opacity-25'
+                            : ''
                         }`}
                         style={{
                           height: BTN_HEIGHT,
                           cursor:
-                            isGpLiteBtnDisabled || status === "authenticated"
-                              ? "not-allowed"
-                              : "pointer",
+                            isGpLiteBtnDisabled || status === 'authenticated'
+                              ? 'not-allowed'
+                              : 'pointer',
                         }}
                       >
                         {isGpLiteBtnDisabled ? <Spinner /> : gpLiteBtnTxt}
@@ -556,7 +553,7 @@ const GpPlus: React.FC<IProps> = ({ liveUnitsTotal, plusPlanPercentSaved }) => {
                     width={ICON_DIMENSION}
                     height={ICON_DIMENSION}
                     style={{
-                      objectFit: "contain",
+                      objectFit: 'contain',
                       width: ICON_DIMENSION,
                       height: ICON_DIMENSION,
                     }}
@@ -581,13 +578,13 @@ const GpPlus: React.FC<IProps> = ({ liveUnitsTotal, plusPlanPercentSaved }) => {
                 </div>
                 <div>
                   <div
-                    style={{ color: "#FF4EFF" }}
+                    style={{ color: '#FF4EFF' }}
                     className="bonus-content w-100 text-center"
                   >
-                    (Coming Soon){" "}
+                    (Coming Soon){' '}
                   </div>
                   <div className="bonus-content w-100 text-center text-decoration-underline">
-                    BONUS ACCESS TO:{" "}
+                    BONUS ACCESS TO:{' '}
                   </div>
                   <ul className="gpplus-features pt-2">
                     <li className="gpplus-bonus d-flex justify-content-center align-items-center">
@@ -599,42 +596,42 @@ const GpPlus: React.FC<IProps> = ({ liveUnitsTotal, plusPlanPercentSaved }) => {
                   </ul>
                 </div>
                 <div
-                  style={{ height: "180px" }}
+                  style={{ height: '180px' }}
                   className="w-100 d-flex justify-content-center align-items-center mt-2"
                 >
                   <div className="position-absolute bottom-0 mb-3 w-75">
                     <div
-                      className={`${billingPeriod === "yearly" ? "mb-2" : ""}`}
+                      className={`${billingPeriod === 'yearly' ? 'mb-2' : ''}`}
                     >
                       <div
                         className={`gpplus-price ${
-                          billingPeriod === "monthly" ? "mb-2" : ""
+                          billingPeriod === 'monthly' ? 'mb-2' : ''
                         } d-flex justify-content-center align-items-center`}
                       >
-                        {billingPeriod === "yearly" ? (
+                        {billingPeriod === 'yearly' ? (
                           <span
-                            style={{ fontSize: "1.15rem" }}
+                            style={{ fontSize: '1.15rem' }}
                             className="text-muted text-decoration-line-through"
                           >
                             ${monthlyPrice * 12}
                           </span>
                         ) : null}
                         &nbsp;
-                        {billingPeriod === "monthly"
+                        {billingPeriod === 'monthly'
                           ? `$${monthlyPrice}`
                           : `$${yearlyPrice}`}
                         <span className="mt-1 ms-1">
-                          /{billingPeriod === "monthly" ? "month" : "year"}
+                          /{billingPeriod === 'monthly' ? 'month' : 'year'}
                         </span>
                       </div>
-                      {billingPeriod === "yearly" && (
+                      {billingPeriod === 'yearly' && (
                         <>
                           <div className="d-flex justify-content-center align-items-center text-muted">
                             OR
                           </div>
                           <div className="gpplus-price d-flex justify-content-center align-items-center">
                             <span
-                              style={{ fontSize: "1.15rem" }}
+                              style={{ fontSize: '1.15rem' }}
                               className="text-muted text-decoration-line-through"
                             >
                               ${monthlyPrice}
@@ -649,8 +646,8 @@ const GpPlus: React.FC<IProps> = ({ liveUnitsTotal, plusPlanPercentSaved }) => {
                       <button
                         className={`gpplus-signup-btn plus ${
                           !wasGpPlusSubRetrieved || wasGpPlusBtnClicked
-                            ? "opacity-25"
-                            : ""
+                            ? 'opacity-25'
+                            : ''
                         }`}
                         disabled={!wasGpPlusSubRetrieved || wasGpPlusBtnClicked}
                         onClick={handleSignUpGpPlusBtnClick}
@@ -658,8 +655,8 @@ const GpPlus: React.FC<IProps> = ({ liveUnitsTotal, plusPlanPercentSaved }) => {
                           height: BTN_HEIGHT,
                           cursor:
                             !wasGpPlusSubRetrieved || wasGpPlusBtnClicked
-                              ? "not-allowed"
-                              : "pointer",
+                              ? 'not-allowed'
+                              : 'pointer',
                         }}
                       >
                         {!wasGpPlusSubRetrieved || wasGpPlusBtnClicked ? (
@@ -682,7 +679,7 @@ const GpPlus: React.FC<IProps> = ({ liveUnitsTotal, plusPlanPercentSaved }) => {
                     width={ICON_DIMENSION}
                     height={ICON_DIMENSION}
                     style={{
-                      objectFit: "contain",
+                      objectFit: 'contain',
                       width: ICON_DIMENSION,
                       height: ICON_DIMENSION,
                     }}
@@ -703,7 +700,7 @@ const GpPlus: React.FC<IProps> = ({ liveUnitsTotal, plusPlanPercentSaved }) => {
                   </ul>
                 </div>
                 <div
-                  style={{ height: "195px" }}
+                  style={{ height: '195px' }}
                   className="w-100 d-flex justify-content-center align-items-center mt-2"
                 >
                   <div className="position-absolute bottom-0 mb-3 w-75">
@@ -715,8 +712,8 @@ const GpPlus: React.FC<IProps> = ({ liveUnitsTotal, plusPlanPercentSaved }) => {
                       onClick={() => {
                         window
                           .open(
-                            "https://www.galacticpolymath.com/gp-group-pricing",
-                            "_blank"
+                            'https://www.galacticpolymath.com/gp-group-pricing',
+                            '_blank'
                           )
                           ?.focus();
                       }}
@@ -736,31 +733,31 @@ const GpPlus: React.FC<IProps> = ({ liveUnitsTotal, plusPlanPercentSaved }) => {
         didInitialRenderOccur
           ? anchorElement
           : null}
-        {gpPlusBtnTxt === "Sign up" && didInitialRenderOccur && (
+        {gpPlusBtnTxt === 'Sign up' && didInitialRenderOccur && (
           <div
             id="signup-modal-div"
             style={{
               zIndex: 1000000,
-              width: "100vw",
-              height: "100vh",
-              left: "50%",
-              top: "50%",
-              transform: "translate(-50%, -50%)",
+              width: '100vw',
+              height: '100vh',
+              left: '50%',
+              top: '50%',
+              transform: 'translate(-50%, -50%)',
             }}
             className={`position-fixed ${
-              isSignupModalDisplayed ? "visible" : "invisible"
+              isSignupModalDisplayed ? 'visible' : 'invisible'
             }`}
           >
             <div className="position-relative w-100 h-100">
               <div
                 id="success-modal-close-btn"
                 className={`position-absolute top-0 start-0 w-100 h-100 bg-dark ${
-                  isSignupModalDisplayed ? "d-block fade-backdrop-in" : "d-none"
+                  isSignupModalDisplayed ? 'd-block fade-backdrop-in' : 'd-none'
                 }`}
                 onClick={() => {
                   setIsSignupModalDisplayed(false);
 
-                  console.log("didUserSignUp: ", didUserSignUp);
+                  console.log('didUserSignUp: ', didUserSignUp);
 
                   if (didUserSignUp) {
                     setWasGpPlusBtnClicked(true);
@@ -773,17 +770,17 @@ const GpPlus: React.FC<IProps> = ({ liveUnitsTotal, plusPlanPercentSaved }) => {
               />
               <div
                 style={{
-                  left: "50%",
-                  top: "50%",
-                  transform: "translate(-50%, -50%)",
-                  borderRadius: ".5em",
+                  left: '50%',
+                  top: '50%',
+                  transform: 'translate(-50%, -50%)',
+                  borderRadius: '.5em',
                   zIndex: isSignupModalDisplayed ? 1000 : -1000,
-                  maxHeight: "95vh",
+                  maxHeight: '95vh',
                 }}
                 className={`position-absolute gp-plus-signup-modal rounded-lg shadow-lg overflow-scroll bg-white ${
                   isSignupModalDisplayed
-                    ? "visible fade-modal-in-short"
-                    : "fade-modal-out-short"
+                    ? 'visible fade-modal-in-short'
+                    : 'fade-modal-out-short'
                 }`}
               >
                 <div
@@ -815,7 +812,7 @@ export const getStaticProps = async () => {
     if (!wasSuccessful || !units) {
       return {
         props: {
-          errType: "unitsRetrievalErr",
+          errType: 'unitsRetrievalErr',
         },
       };
     }
@@ -823,7 +820,7 @@ export const getStaticProps = async () => {
     const liveUnits = filterInShowableUnits(units, new Date().getTime(), false);
     const plans = await getPlans();
     const plusPlan = plans
-      ? plans.find((plan) => plan.Name === "Galactic Polymath Plus")
+      ? plans.find((plan) => plan.Name === 'Galactic Polymath Plus')
       : undefined;
     let plusPlanPercentSaved: number | undefined;
 
@@ -844,13 +841,13 @@ export const getStaticProps = async () => {
     };
   } catch (error) {
     console.error(
-      "An error has occurred in getting the available paths for the selected lesson page. Error message: ",
+      'An error has occurred in getting the available paths for the selected lesson page. Error message: ',
       error
     );
 
     return {
       props: {
-        errType: "unitsRetrievalErr",
+        errType: 'unitsRetrievalErr',
         errObj: error,
       },
       revalidate: 30,
