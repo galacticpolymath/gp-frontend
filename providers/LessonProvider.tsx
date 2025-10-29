@@ -1,11 +1,10 @@
-/* eslint-disable quotes */
-import React, { createContext, useContext, useState } from "react";
-import { TUseStateReturnVal } from "../types/global";
-import { TFileToCopy } from "../backend/services/gdriveServices/types";
+import React, { createContext, PropsWithChildren, useContext, useState } from 'react';
+import { TUseStateReturnVal } from '../types/global';
+import { TFileToCopy } from '../backend/services/gdriveServices/types';
 import {
   IItemV2,
   IItemV2Props,
-} from "../backend/models/Unit/types/teachingMaterials";
+} from '../backend/models/Unit/types/teachingMaterials';
 
 type TSelectedLessonToCopy = {
   id: string;
@@ -18,7 +17,7 @@ interface IFailedLessonCopyBugReport {
 }
 export type TSelectedLessonItems = {
   index: number;
-  items: (IItemV2Props & Pick<IItemV2, "itemCat" | "links">)[];
+  items: (IItemV2Props & Pick<IItemV2, 'itemCat' | 'links'>)[];
 } | null;
 
 export type TIdsOfLessonsBeingCopied = Set<string>;
@@ -33,7 +32,7 @@ export type TLessonProviderVal = {
 
 export const LessonContext = createContext<TLessonProviderVal | null>(null);
 
-export const LessonProvider: React.FC<{ children: React.ReactNode }> = ({
+export const LessonProvider: React.FC<PropsWithChildren> = ({
   children,
 }) => {
   const [idsOfLessonsBeingCopied, setIdsOfLessonsBeingCopied] =
@@ -68,7 +67,7 @@ export const useLessonContext = () => {
   const context = useContext(LessonContext);
 
   if (!context) {
-    throw new Error("Unable to use ModalContext.");
+    throw new Error('Unable to use ModalContext.');
   }
 
   return context;

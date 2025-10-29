@@ -1,10 +1,6 @@
-/* eslint-disable react/jsx-curly-brace-presence */
- 
-/* eslint-disable no-console */
- 
 /* eslint-disable react/jsx-indent */
 /* eslint-disable quotes */
- 
+
 import React, { useEffect, useState } from "react";
 import { Spinner } from "react-bootstrap";
 import Button from "../components/General/Button";
@@ -219,51 +215,43 @@ const SignUpPage: React.FC = () => {
       langLinks={[]}
     >
       <div className="min-vh-100 d-flex justify-content-center bg-light py-3 py-md-5 sign-up-pg-container position-relative">
-        <img
-          className="position-absolute d-block d-sm-none gp-logo-sign-up"
-          src="/imgs/gp_logo_gradient_transBG.png"
-          alt="gp_logo"
-          style={{
-            transform: "translateY(-18%)",
-            objectFit: "contain",
-          }}
-        />
         <div
           className="shadow-lg rounded sign-up-card pb-4"
           style={{ width: "97%", height: "fit-content" }}
         >
           <div className="bg-white rounded p-1 p-sm-3 p-md-2 w-100">
-            <div className="position-relative d-none d-sm-flex flex-column flex-xl-row sign-up-header-container justify-content-center align-items-center">
+            {/* Header — Desktop & tablet */}
+            <div className="d-none d-sm-block text-center mb-3">
               <img
-                className="position-absolute start-0 me-5 mt-1 mt-xl-2 gp-logo-sign-up"
                 src="/imgs/gp_logo_gradient_transBG.png"
                 alt="gp_logo"
-                style={{
-                  objectFit: "contain",
-                  transform: "translateY(-18%)",
-                }}
+                className="mx-auto mb-2"
+                style={{ width: "88px", height: "88px", objectFit: "contain" }}
               />
-              <div className="flex-column d-flex justify-content-center align-items-center">
-                <h5 className="mt-1 mt-sm-0 mt-xl-0 text-black text-center w-100 h-100 sign-up-header-txt">
-                  Get access to the [best] science resources anywhere!
-                </h5>
-                <h5 className="mt-0 mt-sm-0 mt-xl-0 text-black text-center w-100 h-100 sign-up-header-txt">
-                  (Grant-funded, FREE!)
-                </h5>
-              </div>
+              <h5 className="fw-bold mb-1">
+                Access 100+ of the best science resources <em>anywhere</em>!
+              </h5>
+              <p className="text-muted mb-0">(Grant-funded, FREE!)</p>
+              <hr className="mt-3 mb-0" />
             </div>
-            <div className="position-relative d-sm-none d-flex justify-content-center sign-up-header-container">
-              <div className="flex-column d-flex justify-content-center align-items-center header-gp-sign-up-container">
-                <h5 className="mt-1 mt-sm-0 mt-xl-0 text-black text-center w-100 h-100 sign-up-header-txt">
-                  Get access to the [best] science resources anywhere!
-                </h5>
-                <h5 className="mt-0 mt-sm-0 mt-xl-0 text-black text-center w-100 h-100 sign-up-header-txt">
-                  (Grant-funded, FREE!)
-                </h5>
-              </div>
+
+            {/* Header — Mobile */}
+            <div className="d-sm-none text-center mt-1">
+              <img
+                src="/imgs/gp_logo_gradient_transBG.png"
+                alt="gp_logo"
+                className="mx-auto mb-2"
+                style={{ width: "60px", height: "60px", objectFit: "contain" }}
+              />
+              <p className="fw-bold mb-1">
+                Sign up to access 100+ of the best science resources{" "}
+                <em>anywhere</em>!
+              </p>
+              <p className="text-muted mb-0">(Grant-funded, FREE!)</p>
+              <hr className="mt-3 mb-0" />
             </div>
             {/* Mailing List Toggle */}
-            <div className="border-bottom border-top py-2 py-sm-3 py-xxl-1 my-0 mb-sm-1 mb-xl-1 mt-0 mt-sm-1 mt-md-2">
+            <div className="border-bottom border-top py-2 py-sm-3 py-xxl-1 my-0 mb-3 mt-0 mt-sm-1 mt-md-2">
               <div className="d-flex justify-content-center align-items-center">
                 <div className="d-flex create-account-toggle-btn-container">
                   <div className="d-flex align-items-center justify-content-center">
@@ -283,10 +271,9 @@ const SignUpPage: React.FC = () => {
                   </div>
                   <div
                     onClick={handleToAddToMailingListToggleBtnClick}
-                    className="py-xxl-4 pointer ms-2 ms-sm-1 ms-lg-0 email-listing-txt d-flex align-items-sm-center justify-content-sm-center"
+                    className="py-xxl-4 pointer ms-0 email-listing-txt d-flex align-items-center justify-content-sm-center"
                   >
-                    Send me updates about new/free resources (You{"'"}ll get an
-                    email to confirm subscription).
+                    Send me updates about the latest!
                   </div>
                 </div>
               </div>
