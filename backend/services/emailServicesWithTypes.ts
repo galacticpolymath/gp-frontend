@@ -1,3 +1,4 @@
+import { HeadersInit } from 'google-auth-library/build/src/auth/authclient';
 import { waitWithExponentialBackOff } from '../../globalFns';
 import { createSubscriptionCancellationEmail } from '../emailTemplates/gpPlusSubCancelation';
 
