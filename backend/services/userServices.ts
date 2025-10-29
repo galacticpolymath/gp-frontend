@@ -1,5 +1,3 @@
-/* eslint-disable no-console */
- 
 import { createDocument } from '../db/utils.js';
 import { v4 as uuidv4 } from 'uuid';
 import {
@@ -509,6 +507,18 @@ export const getUserById = async <
   }
 };
 
+const getCanUpdateUser = (
+  updatedUserProps: Omit<Partial<TUserSchemaV2>, TForbiddenUpdateFields>
+) => {
+  return !(
+    'password' in updatedUserProps ||
+    'provider' in updatedUserProps ||
+    'providerAccountId' in updatedUserProps ||
+    'roles' in updatedUserProps ||
+    '_id' in updatedUserProps 
+  );
+};
+
 const getCanRetry = (error: any) => {
   if (error?.error?.codeName === 'MaxTimeMSExpired') {
     return true;
@@ -641,18 +651,6 @@ type TForbiddenUpdateFields =
   | '_id'
   | 'lastSignIn';
 
-const getCanUpdateUser = (
-  updatedUserProps: Omit<Partial<TUserSchemaV2>, TForbiddenUpdateFields>
-) => {
-  return !(
-    'password' in updatedUserProps ||
-    'provider' in updatedUserProps ||
-    'providerAccountId' in updatedUserProps ||
-    'roles' in updatedUserProps ||
-    '_id' in updatedUserProps 
-  );
-};
-
 export const updateUser = async (
   filterQuery: Omit<Partial<TUserSchemaV2>, 'password'> = {},
   updatedUserProperties: Omit<Partial<TUserSchemaV2>, TForbiddenUpdateFields>,
@@ -666,7 +664,7 @@ export const updateUser = async (
   try {
     if (!getCanUpdateUser(updatedUserProperties)) {
       throw new Error(
-        'Cannot update _id, password, email, provider, providerAccountId, roles, totalSignIns, or lastSignIn fields through this method.'
+        'Cannot update _id, password, email, provider, providerAccountId, or roles fields through this method.'
       );
     }
 

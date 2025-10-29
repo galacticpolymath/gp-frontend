@@ -138,7 +138,7 @@ export const getTotalUnitLessons = (unit: INewUnitSchema) => {
 };
 
 const KEYS_OF_VALUES_TO_ENCRYPT = new Set([
-  'userAccount',
+  'userAccount', 'selectedGpPlusBillingType',
 ] as (keyof ILocalStorage)[]);
 
 export const removeLocalStorageItem = (key: keyof ILocalStorage) => {
@@ -154,7 +154,7 @@ export const setLocalStorageItem = <
   ) => {
   console.log('Setting localStorage item:', key, val);
 
-  if (KEYS_OF_VALUES_TO_ENCRYPT.has(key) && key === 'userAccount') {
+  if (KEYS_OF_VALUES_TO_ENCRYPT.has(key)) {
     console.log('Encrypting user account data for localStorage');
 
     const encryptedVal = CryptoJS.AES.encrypt(
@@ -185,7 +185,7 @@ export const getLocalStorageItem = <
       return null;
     }
 
-    if (KEYS_OF_VALUES_TO_ENCRYPT.has(key) && key === 'userAccount') {
+    if (KEYS_OF_VALUES_TO_ENCRYPT.has(key)) {
       console.log('Encrypted value retrieved from localStorage: ', parsableVal);
       const bytes = CryptoJS.AES.decrypt(
         parsableVal,
