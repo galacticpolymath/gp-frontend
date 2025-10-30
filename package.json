@@ -14,7 +14,7 @@
     "test": "jest"
   },
   "dependencies": {
-    "@as-integrations/next": "^4.0.0",
+    "@as-integrations/next": "^4.1.0",
     "@fluentui/react-carousel": "^9.8.8",
     "@fortawesome/fontawesome-free": "^7.1.0",
     "@fortawesome/react-fontawesome": "^3.1.0",
