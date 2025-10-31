@@ -1,8 +1,14 @@
 import { Schema } from 'mongoose';
 
+/** @deprecated This interface is deprecated and will be removed in future versions. Use `IConnectionJobViz` instead. */
 export interface IJobVizConnection {
     job_title: string[];
     soc_code: string[];
+}
+
+export interface IConnectionJobViz {
+    job_title: string;
+    soc_code: string;
 }
 
 export interface IJobVizSection {
