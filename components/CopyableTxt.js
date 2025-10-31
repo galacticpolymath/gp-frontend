@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 const CopyableTxt = ({
   children,
   implementLogicOnClick,
+  willDisplayModalOnHover = true,
   copyTxtIndicator = 'Copy text.',
   txtCopiedIndicator = 'Text copied ✅!',
   copyTxtModalDefaultStyleObj = {
@@ -33,11 +34,19 @@ const CopyableTxt = ({
   };
 
   const handleOnClick = event => {
+    if (!willDisplayModalOnHover) {
+      setIsModalOn(true);
+    }
+
     implementLogicOnClick(event);
     setModalTxt(txtCopiedIndicator);
   };
 
   const handleOnMouseEnter = () => {
+    if (!willDisplayModalOnHover) {
+      return;
+    }
+
     setIsModalOn(true);
   };
 

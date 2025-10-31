@@ -4,7 +4,7 @@
 /* eslint-disable semi */
 /* eslint-disable comma-dangle */
 /* eslint-disable indent */
-const jobVizData = require('../data/Jobviz/jobVizData.json');
+const jobVizDataObj = require('../data/Jobviz/jobVizDataObj.json');
 
 const getLastNumFromLevel = selectedLevel => {
     const selectedLevelSplitted = selectedLevel.split('-')
@@ -15,7 +15,11 @@ const getLastNumFromLevel = selectedLevel => {
 }
 
 const filterResults = (targetHierarchyNum, selectedLevel) => {
-    let targetJobCategories = jobVizData.filter(jobCategory => {
+    if (!jobVizDataObj.data.length) {
+        throw new Error('No job categories found in the database.');
+    }
+
+    let targetJobCategories = jobVizDataObj.data.filter(jobCategory => {
         if (targetHierarchyNum === 2) {
             const targetLevel = jobCategory[`level${targetHierarchyNum - 1}`];
             return ((jobCategory.hierarchy === parseInt(targetHierarchyNum)) && (targetLevel === selectedLevel));
@@ -31,7 +35,7 @@ const filterResults = (targetHierarchyNum, selectedLevel) => {
         let rangeStartSplitted = rangeStart.split('');
         let rangeStartStrSecond = rangeStartSplitted[1];
 
-        if(rangeStartStrSecond !== "0"){
+        if (rangeStartStrSecond !== "0") {
             rangeStartSplitted[1] = "0";
             rangeStart = parseInt(rangeStartSplitted.join(''));
         }

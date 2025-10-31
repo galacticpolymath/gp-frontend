@@ -53,9 +53,12 @@ const JobVizSearchResults = ({ metaDescription }) => {
         const jobCategoryIds = params?.slice(2);
         let hierarchyNum = params?.[0]
 
-        if(parseInt(hierarchyNum) === jobCategoryIds?.length){
+        if (parseInt(hierarchyNum) === jobCategoryIds?.length) {
             let lastJobCategoryId = params?.[params.length - 1]
             const targetJobCategory = jobVizDataObj.data.find(jobCategory => jobCategory.id === parseInt(lastJobCategoryId))
+
+            console.log("targetJobCategory, sup there: ", targetJobCategory);
+
             setSelectedJob(targetJobCategory)
             return;
         }
@@ -100,7 +103,7 @@ export const getServerSideProps = async (context) => {
 
     if ((paths.length === 5) && (paths[paths.length - 1] === paths[paths.length - 2])) {
         const targetJob = jobVizDataObj.data.find(({ id }) => id === parseInt(paths[paths.length - 1]))
-        
+
         return {
             props: { metaDescription: targetJob.soc_title }
         }
@@ -121,7 +124,7 @@ export const getServerSideProps = async (context) => {
         const targetJobCategories = filterResults(parseInt(paths[0]), paths[1])
         const jobInModal = targetJobCategories.find(({ id }) => id === parseInt(paths[paths.length - 1]))
 
-        if(!jobInModal){
+        if (!jobInModal) {
             const jobCategory = jobVizDataObj.data.find(({ id }) => id === parseInt(paths[paths.length - 2]))
 
             return {
@@ -136,7 +139,7 @@ export const getServerSideProps = async (context) => {
 
 
 
-    
+
 
 
     return {
