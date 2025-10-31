@@ -1,6 +1,3 @@
-/* eslint-disable quotes */
-/* eslint-disable no-console */
- 
 import React, {
   DetailedHTMLProps,
   HTMLAttributes,
@@ -8,14 +5,14 @@ import React, {
   useMemo,
   useRef,
   useState,
-} from "react";
-import useLessonElementInView from "../customHooks/useLessonElementInView";
-import Accordion from "./Accordion";
-import CopyableTxt from "./CopyableTxt";
-import { useRouter } from "next/router";
-import { Collapse } from "react-bootstrap";
-import { ISectionDots, TUseStateReturnVal } from "../types/global";
-import { UNITS_URL_PATH } from "../shared/constants";
+} from 'react';
+import useLessonElementInView from '../customHooks/useLessonElementInView';
+import Accordion from './Accordion';
+import CopyableTxt from './CopyableTxt';
+import { useRouter } from 'next/router';
+import { Collapse } from 'react-bootstrap';
+import { ISectionDots, TUseStateReturnVal } from '../types/global';
+import { UNITS_URL_PATH } from '../shared/constants';
 
 interface CollapsibleLessonSectionProps {
   SectionTitle?: string;
@@ -38,13 +35,13 @@ interface CollapsibleLessonSectionProps {
 export const getH2Id = (sectionTitle: string) =>
   sectionTitle
     .toLowerCase()
-    .replace(/[0-9.]/g, "")
+    .replace(/[0-9.]/g, '')
     .trim()
-    .replace(/ /g, "-");
+    .replace(/ /g, '-');
 
 const CollapsibleLessonSection: React.FC<CollapsibleLessonSectionProps> = ({
-  SectionTitle = "",
-  className = "",
+  SectionTitle = '',
+  className = '',
   children,
   initiallyExpanded = false,
   sectionBanner = null,
@@ -52,10 +49,10 @@ const CollapsibleLessonSection: React.FC<CollapsibleLessonSectionProps> = ({
   _sectionDots,
   btnId,
   SectionTitleId,
-  accordionChildrenClasses = "",
+  accordionChildrenClasses = '',
   highlighted = false,
-  scrollToTranslateVal = "translateY(-90px)",
-  SectionTitleClassName = "",
+  scrollToTranslateVal = 'translateY(-90px)',
+  SectionTitleClassName = '',
   accordionStyleObj = {},
 }) => {
   const ref = useRef<HTMLHeadingElement>(null);
@@ -73,12 +70,12 @@ const CollapsibleLessonSection: React.FC<CollapsibleLessonSectionProps> = ({
   const { h2Id } = useLessonElementInView(_sectionDots, SectionTitle, ref);
   const _h2Id = getH2Id(SectionTitle);
   const _accordionId = (accordionId || SectionTitle)
-    .replace(/[\s!]/gi, "_")
+    .replace(/[\s!]/gi, '_')
     .toLowerCase();
 
   const copyLessonUrlWithAnchorTag = () => {
     let url = window.location.href;
-    const currentSectionInView = router.asPath.split("#").at(-1);
+    const currentSectionInView = router.asPath.split('#').at(-1);
 
     if (!(currentSectionInView === _accordionId)) {
       url = `${window.location.origin}/${UNITS_URL_PATH}/${router.query.loc}/${router.query.id}#${_h2Id}`;
@@ -92,10 +89,10 @@ const CollapsibleLessonSection: React.FC<CollapsibleLessonSectionProps> = ({
   ): boolean => {
     if (
       parentElement &&
-      typeof parentElement === "object" &&
-      "nodeName" in parentElement &&
-      typeof parentElement.nodeName === "string" &&
-      parentElement?.nodeName?.toLowerCase() === "body"
+      typeof parentElement === 'object' &&
+      'nodeName' in parentElement &&
+      typeof parentElement.nodeName === 'string' &&
+      parentElement?.nodeName?.toLowerCase() === 'body'
     ) {
       console.log("Clip board icon wasn't clicked...");
       return false;
@@ -103,11 +100,11 @@ const CollapsibleLessonSection: React.FC<CollapsibleLessonSectionProps> = ({
 
     if (
       parentElement &&
-      typeof parentElement === "object" &&
-      "id" in parentElement &&
-      parentElement.id === "clipboardIconWrapper"
+      typeof parentElement === 'object' &&
+      'id' in parentElement &&
+      parentElement.id === 'clipboardIconWrapper'
     ) {
-      console.log("clip board icon was clicked...");
+      console.log('clip board icon was clicked...');
       return true;
     }
 
@@ -134,9 +131,9 @@ const CollapsibleLessonSection: React.FC<CollapsibleLessonSectionProps> = ({
 
   const cssSectionClassName = useMemo(
     () =>
-      SectionTitle.split(" ")
+      SectionTitle.split(' ')
         .filter((_, index) => index !== 0)
-        .join("_"),
+        .join('_'),
     []
   );
   const sectionTitleAttributes = {
@@ -144,8 +141,8 @@ const CollapsibleLessonSection: React.FC<CollapsibleLessonSectionProps> = ({
     id: SectionTitleId,
     className: `m-0 ${SectionTitleClassName}`,
     style: {
-      width: "100%",
-      overflowWrap: "break-word",
+      width: '100%',
+      overflowWrap: 'break-word',
     },
   } as DetailedHTMLProps<
     HTMLAttributes<HTMLHeadingElement>,
@@ -160,17 +157,17 @@ const CollapsibleLessonSection: React.FC<CollapsibleLessonSectionProps> = ({
       id={_accordionId}
       className={`SectionHeading ${cssSectionClassName} ${SectionTitle.replace(
         /[\s!]/gi,
-        "_"
+        '_'
       ).toLowerCase()} ${className} collapsibleLessonSection`}
       buttonClassName={`btn ${
-        highlighted ? "" : "btn-primary-light"
+        highlighted ? '' : 'btn-primary-light'
       } w-100 text-left`}
       highlighted={highlighted}
       dataBsToggle={{} as any}
       ariaExpanded={
-        typeof isAccordionContentOpen === "boolean"
+        typeof isAccordionContentOpen === 'boolean'
           ? isAccordionContentOpen.toString()
-          : "true"
+          : 'true'
       }
       handleOnClick={handleAccordionBtnClick}
       style={accordionStyleObj}
@@ -179,7 +176,7 @@ const CollapsibleLessonSection: React.FC<CollapsibleLessonSectionProps> = ({
           {...btnAttributes}
           className={`SectionHeading ${SectionTitle.replace(
             /[\s!]/gi,
-            "_"
+            '_'
           ).toLowerCase()} container position-relative text-black d-flex justify-content-between align-items-center py-1`}
         >
           <h2 {...sectionTitleAttributes}>{SectionTitle}</h2>
@@ -187,12 +184,12 @@ const CollapsibleLessonSection: React.FC<CollapsibleLessonSectionProps> = ({
             {isAccordionContentOpen ? (
               <i
                 className="fs-3 bi-chevron-up"
-                style={{ fontSize: "25px", display: "block" }}
+                style={{ fontSize: '25px', display: 'block' }}
               />
             ) : (
               <i
                 className="fs-3 bi-chevron-down"
-                style={{ fontSize: "25px", display: "block" }}
+                style={{ fontSize: '25px', display: 'block' }}
               />
             )}
             <div
@@ -204,10 +201,10 @@ const CollapsibleLessonSection: React.FC<CollapsibleLessonSectionProps> = ({
                 copyTxtIndicator="Copy link to section."
                 txtCopiedIndicator="Link copied ✅!"
                 copyTxtModalDefaultStyleObj={{
-                  position: "fixed",
-                  width: "140px",
-                  backgroundColor: "#212529",
-                  textAlign: "center",
+                  position: 'fixed',
+                  width: '140px',
+                  backgroundColor: '#212529',
+                  textAlign: 'center',
                   zIndex: 100000,
                 }}
                 modalClassNameStr="position-fixed rounded p-0 m-0"
@@ -215,7 +212,7 @@ const CollapsibleLessonSection: React.FC<CollapsibleLessonSectionProps> = ({
                 txtClassName="text-white w-100 h-100 d-inline-flex justify-content-center align-items-center p-0 m-0 text-transform-default"
                 additiveYCoord={-25}
               >
-                <i className="bi bi-clipboard" style={{ fontSize: "25px" }} />
+                <i className="bi bi-clipboard" style={{ fontSize: '25px' }} />
               </CopyableTxt>
             </div>
           </div>
