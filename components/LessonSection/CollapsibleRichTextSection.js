@@ -29,7 +29,6 @@ const CollapsibleRichTextSection = ({
     console.log('jobvizConnections Content: ', Content);
     console.log('jobviz props: ', props);
 
-
     return (
       <CollapsibleLessonSection initiallyExpanded={Content ? InitiallyExpanded : false} {...props}>
         <div

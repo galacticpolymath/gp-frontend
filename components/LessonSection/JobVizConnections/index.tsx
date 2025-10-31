@@ -1,8 +1,6 @@
-import React, { useMemo } from 'react';
-import { IJobVizConnection } from '../../../backend/models/Unit/JobViz';
-import {
-  IConnectionJobViz,
-} from '../../../backend/models/Unit/JobViz';
+import React, { useMemo } from "react";
+import { IJobVizConnection } from "../../../backend/models/Unit/JobViz";
+import { IConnectionJobViz } from "../../../backend/models/Unit/JobViz";
 
 interface IJobVizConnectionsProps {
   unitTitle: string;
@@ -26,7 +24,7 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
 
     if (!jobVizConnections?.length) {
       console.error(
-        'Developer Error: jobVizConnections is empty or undefined in JobVizConnections component.'
+        "Developer Error: jobVizConnections is empty or undefined in JobVizConnections component."
       );
 
       return [];
@@ -93,7 +91,7 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
         className="flex items-center gap-2 px-6 py-3 bg-white border-4 border-blue-600 rounded-full text-black font-bold text-lg hover:bg-blue-50 transition-colors"
         onClick={() => {
           // TODO: Add preview job exploration assignment functionality
-          console.log('Preview job exploration assignment clicked');
+          console.log("Preview job exploration assignment clicked");
         }}
       >
         <svg
