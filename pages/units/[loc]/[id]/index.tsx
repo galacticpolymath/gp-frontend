@@ -131,9 +131,7 @@ interface IProps {
   unitGDriveChildItems: Awaited<ReturnType<typeof getUnitGDriveChildItems>>;
 }
 
-const SECTIONS_TO_FILTER_OUT: Set<keyof ISections> = new Set([
-  'jobvizConnections',
-] as (keyof ISections)[]);
+const SECTIONS_TO_FILTER_OUT: Set<keyof ISections> = new Set([] as (keyof ISections)[]);
 const SECTION_SORT_ORDER: Record<keyof ISections, number> = {
   overview: 0,
   preview: 1,
@@ -148,6 +146,20 @@ const SECTION_SORT_ORDER: Record<keyof ISections, number> = {
   acknowledgments: 10,
   versions: 11,
 };
+export const SECTION_SORT_ORDER_REVERSE: (keyof ISections)[] = [
+  'overview',
+  'preview',
+  'teachingMaterials',
+  'feedback',
+  'jobvizConnections',
+  'extensions',
+  'bonus',
+  'background',
+  'standards',
+  'credits',
+  'acknowledgments',
+  'versions',
+];
 
 const UNIT_DOCUMENT_ORIGINS = new Set([
   'https://storage.googleapis.com',
@@ -161,7 +173,7 @@ const LessonDetails: React.FC<IProps> = ({ lesson, unit }) => {
     if (unit?.Sections) {
       const unitSections = Object.entries(unit.Sections).reduce(
         (sections, [sectionKey, sectionVal]) => {
-          if (SECTIONS_TO_FILTER_OUT.has(sectionKey as keyof TSectionsForUI)) {
+          if (SECTIONS_TO_FILTER_OUT.size && SECTIONS_TO_FILTER_OUT.has(sectionKey as keyof TSectionsForUI)) {
             return sections;
           }
 

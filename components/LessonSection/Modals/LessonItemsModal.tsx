@@ -19,10 +19,7 @@ import Image from "next/image";
 import { FcGoogle } from "react-icons/fc";
 import Dropdown from "react-bootstrap/Dropdown";
 import { LuMonitorPlay } from "react-icons/lu";
-<<<<<<< HEAD
 import { GiFilmStrip } from "react-icons/gi";
-=======
->>>>>>> feature/job-viz-updates
 
 const LESSON_ITEMS_MODAL_BG_COLOR = "#E2F0FD";
 
