@@ -1,6 +1,7 @@
-import React, { useMemo } from "react";
-import { IJobVizConnection } from "../../../backend/models/Unit/JobViz";
-import { IConnectionJobViz } from "../../../backend/models/Unit/JobViz";
+import React, { useMemo } from 'react';
+import { IJobVizConnection } from '../../../backend/models/Unit/JobViz';
+import { IConnectionJobViz } from '../../../backend/models/Unit/JobViz';
+import { GpPlusBtn } from '../../../pages/gp-plus';
 
 interface IJobVizConnectionsProps {
   unitTitle: string;
@@ -11,6 +12,8 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
   jobVizConnections,
   unitTitle,
 }) => {
+  const handleJobVizConnectionBtnClick = () => {};
+
   const jobVizConnectionsArr = useMemo(() => {
     const _jobVizConnections = jobVizConnections?.filter((jobVizConnection) => {
       return (
@@ -24,7 +27,7 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
 
     if (!jobVizConnections?.length) {
       console.error(
-        "Developer Error: jobVizConnections is empty or undefined in JobVizConnections component."
+        'Developer Error: jobVizConnections is empty or undefined in JobVizConnections component.'
       );
 
       return [];
@@ -87,29 +90,14 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
           );
         })}
       </ul>
-      <button
-        className="flex items-center gap-2 px-6 py-3 bg-white border-4 border-blue-600 rounded-full text-black font-bold text-lg hover:bg-blue-50 transition-colors"
-        onClick={() => {
-          // TODO: Add preview job exploration assignment functionality
-          console.log("Preview job exploration assignment clicked");
-        }}
-      >
-        <svg
-          className="w-6 h-6"
-          viewBox="0 0 24 24"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
+      <GpPlusBtn onClick={handleJobVizConnectionBtnClick}>
+        <div
+          style={{ lineHeight: '23px', fontSize: '18px' }}
+          className="d-flex flex-column text-black"
         >
-          <path
-            d="M12 5V19M5 12H19"
-            stroke="currentColor"
-            strokeWidth="3"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
-        Preview job exploration assignment
-      </button>
+          Preview job exploration assignment
+        </div>
+      </GpPlusBtn>
     </div>
   );
 };

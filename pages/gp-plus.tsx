@@ -39,17 +39,19 @@ interface IProps {
   errObj?: object;
 }
 
+type TFn = () => void;
+
 interface IGpPlusBtn extends PropsWithChildren{
   styles?: React.CSSProperties,
   className?: string
-  onClick: () => Promise<void> | (() => void)
+  onClick: (() => Promise<void>) | (() => void);
   isLoading?: boolean
   disabled?: boolean
 }
 
 export const GpPlusBtn: React.FC<IGpPlusBtn> = ({
   styles,
-  className = "px-sm-3 py-sm-2 col-10 col-sm-12",
+  className = 'px-sm-3 py-sm-2 col-10 col-sm-12',
   onClick,
   disabled,
   isLoading,
@@ -57,14 +59,14 @@ export const GpPlusBtn: React.FC<IGpPlusBtn> = ({
 }) => {
   if (!styles) {
     styles = {
-      minHeight: "51px",
-      backgroundColor: "white",
-      border: "solid 3px #2339C4",
-      borderRadius: "2em",
-      textTransform: "none",
-      minWidth: "300px",
-      pointerEvents: disabled || isLoading ? "none" : "auto",
-      width: "fit-content",
+      minHeight: '51px',
+      backgroundColor: 'white',
+      border: 'solid 3px #2339C4',
+      borderRadius: '2em',
+      textTransform: 'none',
+      minWidth: '300px',
+      pointerEvents: disabled || isLoading ? 'none' : 'auto',
+      width: 'fit-content',
     };
   }
 
@@ -73,7 +75,7 @@ export const GpPlusBtn: React.FC<IGpPlusBtn> = ({
       onClick={onClick}
       style={styles}
       className={`${className} ${
-        (disabled || isLoading) ? "opacity-25" : "opacity-100"
+        (disabled || isLoading) ? 'opacity-25' : 'opacity-100'
       }`}
       disabled={disabled || isLoading}
     >
