@@ -1,19 +1,22 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { IJobVizConnection } from '../../../backend/models/Unit/JobViz';
 import { IConnectionJobViz } from '../../../backend/models/Unit/JobViz';
 import { GpPlusBtn } from '../../../pages/gp-plus';
+import { useRouter } from 'next/navigation';
 
 interface IJobVizConnectionsProps {
   unitName?: string;
   jobVizConnections?: IConnectionJobViz[] | IJobVizConnection[] | null;
 }
 
+export const SOC_CODES_PARAM_NAME = 'socCodes';
+export const UNIT_NAME_PARAM_NAME = 'unitName';
+
 const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
   jobVizConnections,
   unitName,
 }) => {
-  const handleJobVizConnectionBtnClick = () => {};
-
+  const router = useRouter();
   const jobVizConnectionsArr = useMemo(() => {
     const _jobVizConnections = jobVizConnections?.filter((jobVizConnection) => {
       return (
@@ -75,6 +78,21 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
       </div>
     );
   }
+
+  const handleJobVizConnectionBtnClick = () => {
+    const url = new URL(`${window.location.origin}/jobviz`);
+    const socCodesStr = jobVizConnectionsArr.map(jobVizConnection => {
+      return jobVizConnection.soc_code;
+    }).join(',');
+
+    url.searchParams.append(SOC_CODES_PARAM_NAME, socCodesStr);
+
+    if (unitName){
+      url.searchParams.append(UNIT_NAME_PARAM_NAME, unitName);
+    };
+
+    router.push(url.href);
+  };
 
   return (
     <div className="mt-4">

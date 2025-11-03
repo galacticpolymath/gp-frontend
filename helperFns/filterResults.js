@@ -5,6 +5,19 @@
 /* eslint-disable comma-dangle */
 /* eslint-disable indent */
 const jobVizDataObj = require('../data/Jobviz/jobVizDataObj.json');
+/**
+ * 
+ * @param {Set<string>} socCodesFromUnit The soc codes of a selected unit. 
+ */
+export const getUnitRelatedJobs = (socCodesFromUnit) => {
+    if (!jobVizDataObj.data.length) {
+        throw new Error('No job categories found.');
+    }
+
+    return jobVizDataObj.data.filter(job => {
+        return socCodesFromUnit.has(job.soc_code)
+    })   
+}
 
 const getLastNumFromLevel = selectedLevel => {
     const selectedLevelSplitted = selectedLevel.split('-')

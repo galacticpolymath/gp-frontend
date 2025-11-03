@@ -13,15 +13,29 @@ import JobCategoryChainCard from '../../components/JobViz/JobCategoryChainCard';
 import PreviouslySelectedJobCategory from '../../components/JobViz/PreviouslySelectedJobCategory';
 import SearchInputSec from '../../components/JobViz/SearchInputSec';
 import Image from 'next/image';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import GoToSearchInput from '../../components/JobViz/Buttons/GoToSearchInput';
 import GoToJobVizChain from '../../components/JobViz/Buttons/GoToJobVizChain';
 import { useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
+import { SOC_CODES_PARAM_NAME, UNIT_NAME_PARAM_NAME } from '../../components/LessonSection/JobVizConnections'
 
 const DATA_SOURCE_LINK = "https://www.bls.gov/emp/tables/occupational-projections-and-characteristics.htm"
 
 const JobViz = ({ vals }) => {
+    const searchParams = useSearchParams(); 
+    const { unitName, socCodes } = useMemo(() => {
+        const socCodesStr = searchParams.get(SOC_CODES_PARAM_NAME)
+        const unitName = searchParams.get(UNIT_NAME_PARAM_NAME) ?? "Not found";
+        const socCodes = socCodesStr ? new Set(socCodesStr.split(',')) : null;
+
+        return {
+            unitName,
+            socCodes,
+        }
+    }, [])
+
     const { dynamicJobResults, currentHierarchyNum, isLoading, parentJobCategories, metaDescription } = vals ?? {};
     const [searchResults, setSearchResults] = useState([])
     const [searchInput, setSearchInput] = useState("")
@@ -49,10 +63,6 @@ const JobViz = ({ vals }) => {
         setDidFirstRenderOccur(true);
     }, [])
 
-    useEffect(() => {
-        console.log("parentJobCategories, yo there: ", parentJobCategories)
-    })
-
     return (
         <Layout {...layoutProps}>
             <Hero className="jobVizHero">
@@ -71,22 +81,22 @@ const JobViz = ({ vals }) => {
                 <div className="card shadow-sm">
                     <div className="card-body p-4">
                         <h3 className="mb-4">Jobs and careers related to the &ldquo;Fairy Wrens&rdquo; unit:</h3>
-                        <div className="row mb-4">
-                            <div className="col-md-6">
-                                <ul>
-                                    <li>Environmental scientists and geoscientists</li>
-                                    <li>Biological technicians</li>
-                                    <li>Zoologists and wildlife biologists</li>
-                                </ul>
-                            </div>
-                            <div className="col-md-6">
-                                <ul>
-                                    <li>Natural sciences managers</li>
-                                    <li>Conservation scientists and foresters</li>
-                                    <li>Biological science teachers, postsecondary</li>
-                                </ul>
-                            </div>
-                        </div>
+                        <ul className="mb-4 d-none d-sm-block" style={{ columnCount: 2, columnGap: '1.3rem' }}>
+                            <li>Environmental scientists and geoscientists</li>
+                            <li>Biological technicians</li>
+                            <li>Zoologists and wildlife biologists</li>
+                            <li>Natural sciences managers</li>
+                            <li>Conservation scientists and foresters</li>
+                            <li>Biological science teachers, postsecondary</li>
+                        </ul>
+                        <ul className="mb-4 d-block d-sm-none">
+                            <li>Environmental scientists and geoscientists</li>
+                            <li>Biological technicians</li>
+                            <li>Zoologists and wildlife biologists</li>
+                            <li>Natural sciences managers</li>
+                            <li>Conservation scientists and foresters</li>
+                            <li>Biological science teachers, postsecondary</li>
+                        </ul>
                         <div className="d-flex align-items-start">
                             <div className="me-3 mt-1" style={{ fontSize: '2rem' }}>
                                 ✏️
