@@ -79,7 +79,7 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
     );
   }
 
-  const handleJobVizConnectionBtnClick = () => {
+  const handlePreviewCareerTourAssignmentsBtnClick = () => {
     const url = new URL(`${window.location.origin}/jobviz`);
     const socCodesStr = jobVizConnectionsArr.map(jobVizConnection => {
       return jobVizConnection.soc_code;
@@ -92,6 +92,10 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
     };
 
     router.push(url.href);
+  };
+
+  const handleSubscribeToTourAssignmentBtnClick = () => {
+    
   };
 
   return (
@@ -108,7 +112,7 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
           );
         })}
       </ul>
-      <GpPlusBtn onClick={handleJobVizConnectionBtnClick}>
+      <GpPlusBtn onClick={handleSubscribeToTourAssignmentBtnClick}>
         <div
           style={{ lineHeight: '23px', fontSize: '18px' }}
           className="d-flex flex-column text-black"
