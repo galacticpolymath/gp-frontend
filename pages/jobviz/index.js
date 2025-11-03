@@ -67,6 +67,42 @@ const JobViz = ({ vals }) => {
                     </section>
                 </section>
             </Hero>
+            <section className="container py-5">
+                <div className="card shadow-sm">
+                    <div className="card-body p-4">
+                        <h3 className="mb-4">Jobs and careers related to the &ldquo;Fairy Wrens&rdquo; unit:</h3>
+                        <div className="row mb-4">
+                            <div className="col-md-6">
+                                <ul>
+                                    <li>Environmental scientists and geoscientists</li>
+                                    <li>Biological technicians</li>
+                                    <li>Zoologists and wildlife biologists</li>
+                                </ul>
+                            </div>
+                            <div className="col-md-6">
+                                <ul>
+                                    <li>Natural sciences managers</li>
+                                    <li>Conservation scientists and foresters</li>
+                                    <li>Biological science teachers, postsecondary</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div className="d-flex align-items-start">
+                            <div className="me-3 mt-1" style={{ fontSize: '2rem' }}>
+                                ✏️
+                            </div>
+                            <div>
+                                <p className="mb-2">
+                                    <strong>Assignment:</strong> Research these jobs and explain <em>with data</em> which you would be most or least interested in.
+                                </p>
+                                <p className="text-muted mb-0" style={{ fontSize: '0.9rem' }}>
+                                    Your teacher will provide instructions on how to share your response.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
             <SearchInputSec
                 _searchResults={[searchResults, setSearchResults]}
                 _searchInput={[searchInput, setSearchInput]}
