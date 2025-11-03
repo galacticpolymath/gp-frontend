@@ -1,10 +1,5 @@
-/* eslint-disable react/jsx-indent */
-/* eslint-disable react/jsx-wrap-multilines */
-/* eslint-disable react/jsx-indent-props */
-/* eslint-disable react/jsx-max-props-per-line */
 /* eslint-disable quotes */
-/* eslint-disable semi */
-/* eslint-disable indent */
+ 
 import Hero from "../../components/Hero";
 import JobVizIcon from "../../components/JobViz/JobVizIcon";
 import Layout from "../../components/Layout";
@@ -23,36 +18,16 @@ import {
   SOC_CODES_PARAM_NAME,
   UNIT_NAME_PARAM_NAME,
 } from "../../components/LessonSection/JobVizConnections";
-import { getUnitRelatedJobs } from "../../helperFns/filterResults";
+import { getUnitRelatedJobs } from "../../helperFns/filterUnitRelatedJobs";
 
 const DATA_SOURCE_LINK =
   "https://www.bls.gov/emp/tables/occupational-projections-and-characteristics.htm";
 
-const JobViz = ({ vals }) => {
+const JobViz = ({ vals, unitName, jobTitles }) => {
   const searchParams = useSearchParams();
-  const { unitName, jobTitles } = useMemo(() => {
-    const socCodesStr = searchParams.get(SOC_CODES_PARAM_NAME);
-    const unitName = searchParams.get(UNIT_NAME_PARAM_NAME) ?? "Not found";
-    const socCodes = socCodesStr ? new Set(socCodesStr.split(",")) : null;
-
-    if (socCodes) {
-      const unitRelatedJobs = getUnitRelatedJobs(socCodes).map(
-        (job) => job.title
-      );
-
-      return {
-        unitName,
-        jobTitles: unitRelatedJobs,
-      };
-    }
-
-    return {
-      unitName,
-      jobTitles: null,
-    };
-  }, []);
 
   console.log("jobTitles: ", jobTitles);
+  console.log("unitName: ", unitName);
 
   const {
     dynamicJobResults,
@@ -286,6 +261,32 @@ const JobViz = ({ vals }) => {
       )}
     </Layout>
   );
+};
+
+export const getServerSideProps = async (context) => {
+  const socCodesStr = context?.query?.[SOC_CODES_PARAM_NAME];
+  const unitName = context?.query?.[UNIT_NAME_PARAM_NAME] ?? "Not found";
+  const socCodes = socCodesStr ? new Set(socCodesStr.split(",")) : null;
+
+  if (socCodes) {
+    const unitRelatedJobs = getUnitRelatedJobs(socCodes).map(
+      (job) => job.title
+    );
+
+    return {
+      props: {
+        unitName,
+        jobTitles: unitRelatedJobs,
+      },
+    };
+  }
+
+  return {
+    props: {
+      unitName,
+      jobTitles: null,
+    },
+  };
 };
 
 export default JobViz;
