@@ -166,15 +166,48 @@ const UNIT_DOCUMENT_ORIGINS = new Set([
   'https://docs.google.com',
 ]);
 
+type TUpdateSection = (sectionVal: object, unit: TUnitForUI) => object;
+
+const SECTION_UPDATERS: Partial<Record<keyof TSectionsForUI, TUpdateSection>> = {
+  jobvizConnections: (sectionVal: object, unit: TUnitForUI) => {
+    return {
+      ...sectionVal,
+      unitName: unit.Title,
+    };
+  },
+};
+
 const LessonDetails: React.FC<IProps> = ({ lesson, unit }) => {
   console.log('UNIT OBJECT: ', unit);
 
   useMemo(() => {
     if (unit?.Sections) {
       const unitSections = Object.entries(unit.Sections).reduce(
-        (sections, [sectionKey, sectionVal]) => {
-          if (SECTIONS_TO_FILTER_OUT.size && SECTIONS_TO_FILTER_OUT.has(sectionKey as keyof TSectionsForUI)) {
+        (
+          sections: TSectionsForUI,
+          sectionKeyAndSection
+        ) => {
+          let [sectionKey, sectionVal] = sectionKeyAndSection as [
+            keyof TSectionsForUI,
+            object
+          ];
+
+          if (
+            SECTIONS_TO_FILTER_OUT.size &&
+            SECTIONS_TO_FILTER_OUT.has(sectionKey)
+          ) {
             return sections;
+          }
+
+          const updateSectionFn = SECTION_UPDATERS[sectionKey];
+
+          if(updateSectionFn){
+            sectionVal = updateSectionFn(sectionVal, unit);
+
+            return {
+              ...sections,
+              [sectionKey]: sectionVal,
+            };
           }
 
           return {

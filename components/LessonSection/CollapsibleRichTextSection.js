@@ -1,5 +1,4 @@
-import PropTypes from 'prop-types';
-import { useRef, useEffect } from 'react';
+import { useRef } from 'react';
 import useLessonElementInView from '../../customHooks/useLessonElementInView';
 import CollapsibleLessonSection from '../CollapsibleLessonSection';
 import RichText from '../RichText';
@@ -36,7 +35,7 @@ const CollapsibleRichTextSection = ({
           className={`${sectionTitle}_collapsible_text_sec container mx-auto mb-4 ${sectionClassNameForTesting}`}
         >
           {Array.isArray(Content) && Content.length > 0 ? (
-            <JobVizConnections jobVizConnections={Content} />
+            <JobVizConnections jobVizConnections={Content} unitName={props?.unitName} />
           ) : typeof Content === 'string' ? (
             <RichText
               className='mt-4'

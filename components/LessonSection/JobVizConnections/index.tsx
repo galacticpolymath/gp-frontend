@@ -4,13 +4,13 @@ import { IConnectionJobViz } from '../../../backend/models/Unit/JobViz';
 import { GpPlusBtn } from '../../../pages/gp-plus';
 
 interface IJobVizConnectionsProps {
-  unitTitle: string;
+  unitName?: string;
   jobVizConnections?: IConnectionJobViz[] | IJobVizConnection[] | null;
 }
 
 const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
   jobVizConnections,
-  unitTitle,
+  unitName,
 }) => {
   const handleJobVizConnectionBtnClick = () => {};
 
@@ -79,7 +79,7 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
   return (
     <div className="mt-4">
       <h3 className="text-lg font-semibold mb-3">
-        Jobs and careers related to the &quot;{unitTitle}&quot; unit:
+        Jobs and careers related to the &quot;{unitName ?? 'Not found'}&quot; unit:
       </h3>
       <ul className="list-disc pl-6 mb-6 space-y-2">
         {jobVizConnectionsArr.map(({ job_title }, index) => {
