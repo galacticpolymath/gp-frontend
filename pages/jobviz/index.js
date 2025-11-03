@@ -95,9 +95,12 @@ const JobViz = ({ vals }) => {
                                 <p className="mb-2">
                                     <strong>Assignment:</strong> Research these jobs and explain <em>with data</em> which you would be most or least interested in.
                                 </p>
-                                <p className="text-muted mb-0" style={{ fontSize: '0.9rem' }}>
+                                <p className="text-muted mb-3" style={{ fontSize: '0.9rem' }}>
                                     Your teacher will provide instructions on how to share your response.
                                 </p>
+                                <div className="alert alert-info py-2 px-3 mb-0" role="alert" style={{ fontSize: '0.85rem' }}>
+                                    ℹ️ <strong>Note:</strong> This feature is currently being built and will be available soon.
+                                </div>
                             </div>
                         </div>
                     </div>
