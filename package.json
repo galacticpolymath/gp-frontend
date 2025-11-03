@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@as-integrations/next": "^4.1.0",
-    "@fluentui/react-carousel": "^9.8.8",
+    "@fluentui/react-carousel": "^9.8.10",
     "@fortawesome/fontawesome-free": "^7.1.0",
     "@fortawesome/react-fontawesome": "^3.1.0",
     "@geniux/google-drive-picker-react": "^1.0.0",
