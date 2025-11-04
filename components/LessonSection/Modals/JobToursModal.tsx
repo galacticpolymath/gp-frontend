@@ -140,12 +140,11 @@ const JobToursModal: React.FC<GpPlusModalProps> = ({
             style={{
               borderRadius: "1em",
               backgroundColor: "#6C757D",
-              minHeight: "44px",
             }}
             onClick={() => {
               handleOnClose();
             }}
-            className="me-lg-2 d-flex justify-content-center align-items-center border mt-2 mt-lg-0 w-100 w-lg-auto"
+            className="job-viz-btn me-lg-2 d-flex justify-content-center align-items-center border mt-2 mt-lg-0 w-100 w-lg-auto"
           >
             <span style={{ fontSize: "clamp(0.875rem, 3vw, 1rem)" }}>
               CLOSE
@@ -161,13 +160,12 @@ const JobToursModal: React.FC<GpPlusModalProps> = ({
             }}
             disabled={false}
             isLoading={false}
-            className="ms-lg-2 px-3 py-2 w-100 w-lg-auto bg-white d-flex justify-content-center align-items-center"
+            className="job-viz-btn ms-lg-2 px-3 py-2 w-100 w-lg-auto bg-white d-flex justify-content-center align-items-center"
             styles={{
               backgroundColor: "white",
               border: "solid 3px #2339C4",
               borderRadius: "1em",
               textTransform: "none",
-              minHeight: "44px",
             }}
           >
             <span

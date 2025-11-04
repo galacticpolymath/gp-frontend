@@ -930,3 +930,9 @@ $active-dot-color: rgba(44, 131, 195, 0.6) !important;
     max-width: 1260px;
   }
 }
+
+.job-viz-btn {
+  @media (min-width: 992px) {
+    height: 80px;
+  }
+}
