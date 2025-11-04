@@ -40,9 +40,7 @@ const JobViz = ({ vals, unitName, jobTitles }) => {
     return getSessionStorageItem("isGpPlusUser") ?? isGpPlusMember;
   }, [isGpPlusMember]);
 
-  console.log(
-    `isUserAGpPlusMember: ${isUserAGpPlusMember}`
-  );
+  console.log(`isUserAGpPlusMember: ${isUserAGpPlusMember}`);
   console.log(`jobTitles: `, jobTitles);
 
   useEffect(() => {
@@ -112,7 +110,7 @@ const JobViz = ({ vals, unitName, jobTitles }) => {
           </section>
         </section>
       </Hero>
-      {jobTitles?.length && isUserAGpPlusMember && (
+      {jobTitles?.length && (
         <section
           id="job-tours-section"
           ref={jobToursRef}
