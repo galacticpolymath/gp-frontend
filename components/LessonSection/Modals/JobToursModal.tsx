@@ -1,5 +1,3 @@
-/* eslint-disable quotes */
-
 import React, { useState } from "react";
 import { Button, Modal, Spinner } from "react-bootstrap";
 import useSiteSession from "../../../customHooks/useSiteSession";

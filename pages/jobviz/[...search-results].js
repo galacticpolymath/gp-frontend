@@ -1,11 +1,3 @@
-/* eslint-disable semi */
-/* eslint-disable quotes */
- 
-/* eslint-disable no-multiple-empty-lines */
- 
-/* eslint-disable comma-dangle */
- 
-/* eslint-disable indent */
 import JobViz from '.';
 import { useRouter } from 'next/router';
 import { useContext, useMemo } from 'react';

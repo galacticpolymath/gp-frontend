@@ -175,6 +175,14 @@ const SECTION_UPDATERS: Partial<Record<keyof TSectionsForUI, TUpdateSection>> = 
       unitName: unit.Title,
     };
   },
+  overview: (sectionVal: object, unit: TUnitForUI) => {
+    // TODO: find the jobViz section and get the soc codes and the titles in order 
+    // -to display them in the overview section
+    return {
+      ...sectionVal,
+      unitName: unit.Title,
+    };
+  },
 };
 
 const LessonDetails: React.FC<IProps> = ({ lesson, unit }) => {

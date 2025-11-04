@@ -1,5 +1,3 @@
-/* eslint-disable quotes */
-
 import Hero from "../../components/Hero";
 import JobVizIcon from "../../components/JobViz/JobVizIcon";
 import Layout from "../../components/Layout";
@@ -13,14 +11,11 @@ import { useInView } from "react-intersection-observer";
 import GoToSearchInput from "../../components/JobViz/Buttons/GoToSearchInput";
 import GoToJobVizChain from "../../components/JobViz/Buttons/GoToJobVizChain";
 import { useEffect } from "react";
-import { useSearchParams } from "next/navigation";
 import {
   SOC_CODES_PARAM_NAME,
   UNIT_NAME_PARAM_NAME,
 } from "../../components/LessonSection/JobVizConnections";
 import { getUnitRelatedJobs } from "../../helperFns/filterUnitRelatedJobs";
-import { useUserContext } from "../../providers/UserProvider";
-import { getSessionStorageItem, setSessionStorageItem } from "../../shared/fns";
 
 const DATA_SOURCE_LINK =
   "https://www.bls.gov/emp/tables/occupational-projections-and-characteristics.htm";
