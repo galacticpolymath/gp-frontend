@@ -45,7 +45,7 @@
     "font-awesome": "^4.7.0",
     "fs": "^0.0.1-security",
     "gapi-script": "^1.2.0",
-    "google-auth-library": "^10.4.1",
+    "google-auth-library": "^10.5.0",
     "googleapis": "^164.1.0",
     "graphql": "^16.9.0",
     "jose": "^6.1.0",
