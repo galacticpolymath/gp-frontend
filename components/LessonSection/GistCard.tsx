@@ -6,7 +6,6 @@ import SubjectBreakDown from "./SubjectBreakdown";
 import { TOverviewForUI } from "../../backend/models/Unit/types/overview";
 import { ITargetStandardsCode } from "../../backend/models/Unit/types/standards";
 import { INewUnitSchema } from "../../backend/models/Unit/types/unit";
-import { IConnectionJobViz } from "../../backend/models/Unit/JobViz";
 import { MdOutlineRocketLaunch } from "react-icons/md";
 
 export interface IGistCard

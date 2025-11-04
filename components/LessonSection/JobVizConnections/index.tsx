@@ -1,23 +1,24 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { IJobVizConnection } from '../../../backend/models/Unit/JobViz';
-import { IConnectionJobViz } from '../../../backend/models/Unit/JobViz';
-import { GpPlusBtn } from '../../../pages/gp-plus';
-import { useRouter } from 'next/navigation';
-import JobToursModal from '../Modals/JobToursModal';
-import { DISABLE_FOOTER_PARAM_NAME } from '../../../components/Footer';
-import { DISABLE_NAVBAR_PARAM_NAME } from '../../../components/Navbar';
-import Image from 'next/image';
-import CopyableTxt from '../../CopyableTxt';
-import { getSessionStorageItem } from '../../../shared/fns';
-import { useUserContext } from '../../../providers/UserProvider';
+import React, { useEffect, useMemo, useState } from "react";
+import { IJobVizConnection } from "../../../backend/models/Unit/JobViz";
+import { IConnectionJobViz } from "../../../backend/models/Unit/JobViz";
+import { GpPlusBtn } from "../../../pages/gp-plus";
+import { useRouter } from "next/navigation";
+import JobToursModal from "../Modals/JobToursModal";
+import { DISABLE_FOOTER_PARAM_NAME } from "../../../components/Footer";
+import { DISABLE_NAVBAR_PARAM_NAME } from "../../../components/Navbar";
+import Image from "next/image";
+import CopyableTxt from "../../CopyableTxt";
+import { getSessionStorageItem } from "../../../shared/fns";
+import { useUserContext } from "../../../providers/UserProvider";
+import { MdOutlineRocketLaunch } from "react-icons/md";
 
 interface IJobVizConnectionsProps {
   unitName?: string;
   jobVizConnections?: IConnectionJobViz[] | IJobVizConnection[] | null;
 }
 
-export const SOC_CODES_PARAM_NAME = 'socCodes';
-export const UNIT_NAME_PARAM_NAME = 'unitName';
+export const SOC_CODES_PARAM_NAME = "socCodes";
+export const UNIT_NAME_PARAM_NAME = "unitName";
 
 const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
   jobVizConnections,
@@ -28,7 +29,7 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
     _isGpPlusMember: [isGpPlusMember],
   } = useUserContext();
   const isUserAGpPlusMember = useMemo(() => {
-    return !!getSessionStorageItem('isGpPlusUser');
+    return !!getSessionStorageItem("isGpPlusUser");
   }, [isGpPlusMember]);
   const [isJobsToursUpSellModalOn, setIsJobsToursUpSellModalOn] =
     useState(false);
@@ -45,7 +46,7 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
 
     if (!jobVizConnections?.length) {
       console.error(
-        'Developer Error: jobVizConnections is empty or undefined in JobVizConnections component.'
+        "Developer Error: jobVizConnections is empty or undefined in JobVizConnections component."
       );
 
       return [];
@@ -80,10 +81,12 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
 
     return jobVizConnections as IConnectionJobViz[];
   }, []);
-  const jobTitleAndSocCodePairs: [string, string][] = jobVizConnectionsArr.map((job) => [job.job_title, job.soc_code]);
+  const jobTitleAndSocCodePairs: [string, string][] = jobVizConnectionsArr.map(
+    (job) => [job.job_title, job.soc_code]
+  );
   const jobsToursUrl = useMemo(() => {
-    if (typeof window === 'undefined') {
-      return '';
+    if (typeof window === "undefined") {
+      return "";
     }
 
     const url = new URL(`${window.location.origin}/jobviz`);
@@ -91,7 +94,7 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
       .map((jobVizConnection) => {
         return jobVizConnection.soc_code;
       })
-      .join(',');
+      .join(",");
 
     url.searchParams.append(SOC_CODES_PARAM_NAME, socCodesStr);
 
@@ -125,6 +128,17 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
 
   return (
     <div className="mt-4">
+      <div className="my-2 d-flex">
+        <div className="d-flex pt-1">
+          <MdOutlineRocketLaunch size={25} />
+        </div>
+        <div className="d-flex p-0">
+          JobViz connects classroom learning to the real world—helping students
+          see how knowledge links to jobs, industries, and the wider economy.
+          With data on 1,000+ occupations, it’s a springboard for systems
+          thinking and exploring the full landscape of opportunity.
+        </div>
+      </div>
       <h3 className="text-lg font-semibold mb-3">
         Jobs and careers related to the &quot;{unitName ?? "Not found"}&quot;
         unit:
