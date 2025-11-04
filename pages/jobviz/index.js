@@ -33,21 +33,6 @@ const JobViz = ({ vals, unitName, jobTitles }) => {
     parentJobCategories,
     metaDescription,
   } = vals ?? {};
-  const {
-    _isGpPlusMember: [isGpPlusMember],
-  } = useUserContext();
-  const isUserAGpPlusMember = useMemo(() => {
-    return getSessionStorageItem("isGpPlusUser") ?? isGpPlusMember;
-  }, [isGpPlusMember]);
-
-  console.log(`isUserAGpPlusMember: ${isUserAGpPlusMember}`);
-  console.log(`jobTitles: `, jobTitles);
-
-  useEffect(() => {
-    console.log(`isUserAGpPlusMember, useEffect: ${isUserAGpPlusMember}`);
-    console.log(`jobTitles, useEffect: `, jobTitles);
-  });
-
   const jobToursRef = useRef(null);
   const [searchResults, setSearchResults] = useState([]);
   const [searchInput, setSearchInput] = useState("");
