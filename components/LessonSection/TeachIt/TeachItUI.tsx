@@ -457,7 +457,7 @@ const TeachItUI = <
                             `https://drive.google.com/drive/folders/${GdrivePublicID}`,
                             "_"
                           );
-                  }
+                        }
                   }
                   style={{
                     minHeight: "51px",
@@ -637,7 +637,7 @@ const TeachItUI = <
                     removeClickToSeeMoreTxt={removeClickToSeeMoreTxt}
                     key={`${index}_part`}
                     ClickToSeeMoreComp={
-                      index === 0 ? (
+                      index === 0 && didInitialRenderOccur ? (
                         <ClickMeArrow
                           handleElementVisibility={handleElementVisibility}
                           willShowArrow={arrowContainer.isInView}
