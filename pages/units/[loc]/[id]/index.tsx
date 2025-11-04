@@ -178,6 +178,7 @@ const SECTION_UPDATERS: Partial<Record<keyof TSectionsForUI, TUpdateSection>> = 
   overview: (sectionVal: object, unit: TUnitForUI) => {
     // TODO: find the jobViz section and get the soc codes and the titles in order 
     // -to display them in the overview section
+    // -get the first three and the rest get them as a number
     return {
       ...sectionVal,
       unitName: unit.Title,

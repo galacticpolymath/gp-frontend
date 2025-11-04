@@ -16,11 +16,12 @@ import {
   UNIT_NAME_PARAM_NAME,
 } from "../../components/LessonSection/JobVizConnections";
 import { getUnitRelatedJobs } from "../../helperFns/filterUnitRelatedJobs";
+import JobToursCard from "../../components/JobViz/JobTours/JobToursCard";
 
 const DATA_SOURCE_LINK =
   "https://www.bls.gov/emp/tables/occupational-projections-and-characteristics.htm";
 
-const JobViz = ({ vals, unitName, jobTitles }) => {
+const JobViz = ({ vals, unitName, jobTitleAndSocCodePairs }) => {
   const {
     dynamicJobResults,
     currentHierarchyNum,
@@ -58,7 +59,7 @@ const JobViz = ({ vals, unitName, jobTitles }) => {
   useEffect(() => {
     setDidFirstRenderOccur(true);
 
-    if (jobTitles?.length) {
+    if (jobTitleAndSocCodePairs?.length) {
       // Use a timeout to ensure content is rendered before scrolling
       const timeoutId = setTimeout(() => {
         if (jobToursRef?.current) {
@@ -90,57 +91,12 @@ const JobViz = ({ vals, unitName, jobTitles }) => {
           </section>
         </section>
       </Hero>
-      {jobTitles?.length && (
-        <section
-          id="job-tours-section"
+      {jobTitleAndSocCodePairs?.length && (
+        <JobToursCard
+          jobTitleAndSocCodePairs={jobTitleAndSocCodePairs}
+          unitName={unitName}
           ref={jobToursRef}
-          className="container py-5"
-        >
-          <div className="card shadow-sm">
-            <div className="card-body p-4">
-              <h3 className="mb-4">
-                Jobs and careers related to the &ldquo;{unitName}&rdquo; unit:
-              </h3>
-              <ul
-                className="mb-4 d-none d-sm-block"
-                style={{ columnCount: 2, columnGap: "1.3rem" }}
-              >
-                {jobTitles.map((jobTitle, index) => {
-                  return <li key={index}>{jobTitle}</li>;
-                })}
-              </ul>
-              <ul className="mb-4 d-block d-sm-none">
-                {jobTitles.map((jobTitle, index) => {
-                  return <li key={index}>{jobTitle}</li>;
-                })}
-              </ul>
-              <div className="d-flex align-items-start">
-                <div className="me-3 mt-1" style={{ fontSize: "2rem" }}>
-                  ✏️
-                </div>
-                <div>
-                  <p className="mb-2">
-                    <strong>Assignment:</strong> Research these jobs and explain{" "}
-                    <em>with data</em> which you would be most or least
-                    interested in.
-                  </p>
-                  <p className="text-muted mb-3" style={{ fontSize: "0.9rem" }}>
-                    Your teacher will provide instructions on how to share your
-                    response.
-                  </p>
-                  <div
-                    className="alert alert-info py-2 px-3 mb-0"
-                    role="alert"
-                    style={{ fontSize: "0.85rem" }}
-                  >
-                    ℹ️ <strong>Note:</strong> This feature is currently being
-                    built and will be available soon.
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
+        />
       )}
       <SearchInputSec
         _searchResults={[searchResults, setSearchResults]}
@@ -284,14 +240,14 @@ export const getServerSideProps = async (context) => {
 
   if (socCodes) {
     // TODO: get the soc codes as well
-    const unitRelatedJobs = getUnitRelatedJobs(socCodes).map(
-      (job) => job.title
+    const jobTitleAndSocCodePairs = getUnitRelatedJobs(socCodes).map(
+      ({ title, soc_code }) => [title, soc_code] 
     );
 
     return {
       props: {
         unitName,
-        jobTitles: unitRelatedJobs,
+        jobTitleAndSocCodePairs: jobTitleAndSocCodePairs,
       },
     };
   }
@@ -299,7 +255,7 @@ export const getServerSideProps = async (context) => {
   return {
     props: {
       unitName,
-      jobTitles: null,
+      jobTitleAndSocCodePairs: null,
     },
   };
 };
