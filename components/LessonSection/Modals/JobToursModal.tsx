@@ -11,36 +11,15 @@ interface GpPlusModalProps {
   userStatus?: ReturnType<typeof useSiteSession>["status"];
   _isModalDisplayed: TUseStateReturnVal<boolean>;
   url: string;
+  unitName: string;
+  jobTitles: string[];
 }
-
-const ICON_COLOR = "#14B1EA";
-
-interface IGpPlusAttribute {
-  children: React.ReactNode;
-  Icon: React.ReactNode;
-}
-
-const ListItem: React.FC<IGpPlusAttribute> = ({ children, Icon }) => {
-  return (
-    <li className="gp-plus-modal-benefit w-100 d-flex justify-content-center align-items-center">
-      <div className="w-100 w-sm-90 w-md-75 justify-content-center align-items-center d-flex px-2">
-        <section className="d-flex justify-content-center align-items-center flex-shrink-0">
-          {Icon}
-        </section>
-        <section
-          style={{ paddingTop: ".2em" }}
-          className="d-flex justify-content-center align-items-center ps-1"
-        >
-          <span className="text-center text-sm-start">{children}</span>
-        </section>
-      </div>
-    </li>
-  );
-};
 
 const JobToursModal: React.FC<GpPlusModalProps> = ({
   _isModalDisplayed,
   url,
+  unitName,
+  jobTitles,
 }) => {
   const [isModalDisplayed, setIsModalDisplayed] = _isModalDisplayed;
   const [isDoneLoading, setIsDoneLoading] = useState(false);
@@ -98,46 +77,58 @@ const JobToursModal: React.FC<GpPlusModalProps> = ({
     >
       <div className="gp-plus-modal-content h-100 d-flex flex-column">
         <div className="position-relative d-flex flex-column job-tours-iframe-container">
-          <div
-            className={`position-absolute bg-white w-100 h-100 rounded d-flex justify-content-center align-items-center ${
-              isDoneLoading ? "d-none" : "d-block"
-            }`}
+          <section
+            id="job-tours-section"
+            className="container py-5"
           >
-            <div className="position-relative bg-white w-100 h-100 rounded d-flex justify-content-center align-items-center">
-              <div
-                style={{ zIndex: 1000000 }}
-                className="d-flex flex-column flex-sm-row justify-content-center align-items-center px-3"
-              >
-                <Spinner
-                  animation="border"
-                  variant="primary"
-                  color="black"
-                />
-                <span
-                  className="ms-sm-2 mt-2 mt-sm-0 text-black text-center"
-                  style={{ fontSize: "clamp(0.875rem, 3vw, 1rem)" }}
+            <div className="card shadow-sm">
+              <div className="card-body p-4">
+                <h3 className="mb-4">
+                  Jobs and careers related to the &ldquo;{unitName}&rdquo; unit:
+                </h3>
+                <ul
+                  className="mb-4 d-none d-sm-block"
+                  style={{ columnCount: 2, columnGap: "1.3rem" }}
                 >
-                  Loading, please wait...
-                </span>
+                  {jobTitles.map((jobTitle, index) => {
+                    return <li key={index}>{jobTitle}</li>;
+                  })}
+                </ul>
+                <ul className="mb-4 d-block d-sm-none">
+                  {jobTitles.map((jobTitle, index) => {
+                    return <li key={index}>{jobTitle}</li>;
+                  })}
+                </ul>
+                <div className="d-flex align-items-start">
+                  <div className="me-3 mt-1" style={{ fontSize: "2rem" }}>
+                    ✏️
+                  </div>
+                  <div>
+                    <p className="mb-2">
+                      <strong>Assignment:</strong> Research these jobs and
+                      explain <em>with data</em> which you would be most or
+                      least interested in.
+                    </p>
+                    <p
+                      className="text-muted mb-3"
+                      style={{ fontSize: "0.9rem" }}
+                    >
+                      Your teacher will provide instructions on how to share
+                      your response.
+                    </p>
+                    <div
+                      className="alert alert-info py-2 px-3 mb-0"
+                      role="alert"
+                      style={{ fontSize: "0.85rem" }}
+                    >
+                      ℹ️ <strong>Note:</strong> This feature is currently being
+                      built and will be available soon.
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div
-                style={{ filter: "blur(5px)" }}
-                className="w-100 h-100 position-absolute shadow-lg"
-              />
             </div>
-          </div>
-          <iframe
-            ref={iframeRef}
-            src={url}
-            onLoad={handleIframeLoad}
-            className={`w-100 rounded ${
-              isDoneLoading ? "opacity-100" : "opacity-0"
-            }`}
-            style={{
-              height: "100%",
-              transition: "all",
-            }}
-          />
+          </section>
         </div>
         <section className="mt-2 mt-sm-3 d-flex flex-column-reverse flex-lg-row justify-content-center align-items-center align-items-lg-center w-100 px-2 px-sm-3 job-tours-buttons-container flex-shrink-0">
           <Button

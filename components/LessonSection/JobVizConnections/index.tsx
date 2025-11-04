@@ -80,7 +80,7 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
 
     return jobVizConnections as IConnectionJobViz[];
   }, []);
-
+  const jobTitles = jobVizConnectionsArr.map((job) => job.job_title);
   const jobsToursUrl = useMemo(() => {
     if (typeof window === 'undefined') {
       return '';
@@ -301,6 +301,8 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
           setIsJobsToursUpSellModalOn,
         ]}
         url={`${jobsToursUrl}&${DISABLE_FOOTER_PARAM_NAME}=true&${DISABLE_NAVBAR_PARAM_NAME}=true#job-tours-section`}
+        jobTitles={jobTitles}
+        unitName={unitName ?? 'Not found'}
       />
     </div>
   );
