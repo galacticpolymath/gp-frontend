@@ -1,5 +1,5 @@
 /* eslint-disable quotes */
- 
+
 import Hero from "../../components/Hero";
 import JobVizIcon from "../../components/JobViz/JobVizIcon";
 import Layout from "../../components/Layout";
@@ -8,7 +8,7 @@ import JobCategoryChainCard from "../../components/JobViz/JobCategoryChainCard";
 import PreviouslySelectedJobCategory from "../../components/JobViz/PreviouslySelectedJobCategory";
 import SearchInputSec from "../../components/JobViz/SearchInputSec";
 import Image from "next/image";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import GoToSearchInput from "../../components/JobViz/Buttons/GoToSearchInput";
 import GoToJobVizChain from "../../components/JobViz/Buttons/GoToJobVizChain";
@@ -24,11 +24,6 @@ const DATA_SOURCE_LINK =
   "https://www.bls.gov/emp/tables/occupational-projections-and-characteristics.htm";
 
 const JobViz = ({ vals, unitName, jobTitles }) => {
-  const searchParams = useSearchParams();
-
-  console.log("jobTitles: ", jobTitles);
-  console.log("unitName: ", unitName);
-
   const {
     dynamicJobResults,
     currentHierarchyNum,
@@ -36,6 +31,7 @@ const JobViz = ({ vals, unitName, jobTitles }) => {
     parentJobCategories,
     metaDescription,
   } = vals ?? {};
+  const jobToursRef = useRef(null);
   const [searchResults, setSearchResults] = useState([]);
   const [searchInput, setSearchInput] = useState("");
   const [isHighlighterOn, setIsHighlighterOn] = useState(true);
@@ -64,6 +60,13 @@ const JobViz = ({ vals, unitName, jobTitles }) => {
 
   useEffect(() => {
     setDidFirstRenderOccur(true);
+
+    if (jobTitles?.length) {
+      jobToursRef?.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+    }
   }, []);
 
   return (
@@ -81,7 +84,7 @@ const JobViz = ({ vals, unitName, jobTitles }) => {
         </section>
       </Hero>
       {jobTitles?.length && (
-        <section className="container py-5">
+        <section ref={jobToursRef} className="container py-5">
           <div className="card shadow-sm">
             <div className="card-body p-4">
               <h3 className="mb-4">

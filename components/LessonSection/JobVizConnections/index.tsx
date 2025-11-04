@@ -69,6 +69,23 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
     return jobVizConnections as IConnectionJobViz[];
   }, []);
 
+  const jobsToursUrl = useMemo(() => {
+    const url = new URL(`${window.location.origin}/jobviz`);
+    const socCodesStr = jobVizConnectionsArr
+      .map((jobVizConnection) => {
+        return jobVizConnection.soc_code;
+      })
+      .join(',');
+
+    url.searchParams.append(SOC_CODES_PARAM_NAME, socCodesStr);
+
+    if (unitName) {
+      url.searchParams.append(UNIT_NAME_PARAM_NAME, unitName);
+    }
+
+    return url.href;
+  }, []);
+
   if (!jobVizConnectionsArr?.length) {
     console.error(
       "Developer Error: 'jobVizConnectionsArr' is populated, but the component does not handle this case. Please check the JobVizConnections implementation."
@@ -83,18 +100,7 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
   }
 
   const handlePreviewCareerTourAssignmentsBtnClick = () => {
-    const url = new URL(`${window.location.origin}/jobviz`);
-    const socCodesStr = jobVizConnectionsArr.map(jobVizConnection => {
-      return jobVizConnection.soc_code;
-    }).join(',');
-
-    url.searchParams.append(SOC_CODES_PARAM_NAME, socCodesStr);
-
-    if (unitName){
-      url.searchParams.append(UNIT_NAME_PARAM_NAME, unitName);
-    };
-
-    router.push(url.href);
+    router.push(jobsToursUrl);
   };
 
   const handleSubscribeToTourAssignmentBtnClick = () => {
@@ -125,7 +131,11 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
         </div>
       </GpPlusBtn>
       <JobToursModal
-        _isModalDisplayed={[isJobsToursUpSellModalOn, setIsJobsToursUpSellModalOn]}
+        _isModalDisplayed={[
+          isJobsToursUpSellModalOn,
+          setIsJobsToursUpSellModalOn,
+        ]}
+        url={jobsToursUrl}
       />
     </div>
   );

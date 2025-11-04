@@ -1,7 +1,7 @@
 /* eslint-disable quotes */
 
 import React, { useState } from "react";
-import { Button, Modal } from "react-bootstrap";
+import { Button, Modal, Spinner } from "react-bootstrap";
 import Image from "next/image";
 import Wave from "react-wavify";
 import { GrDownload } from "react-icons/gr";
@@ -17,6 +17,7 @@ interface GpPlusModalProps {
   onClose?: () => void;
   userStatus?: ReturnType<typeof useSiteSession>["status"];
   _isModalDisplayed: TUseStateReturnVal<boolean>;
+  url: string;
 }
 
 const ICON_COLOR = "#14B1EA";
@@ -44,19 +45,28 @@ const ListItem: React.FC<IGpPlusAttribute> = ({ children, Icon }) => {
   );
 };
 
-const JobToursModal: React.FC<GpPlusModalProps> = ({ _isModalDisplayed }) => {
+const JobToursModal: React.FC<GpPlusModalProps> = ({
+  _isModalDisplayed,
+  url,
+}) => {
   const [isModalDisplayed, setIsModalDisplayed] = _isModalDisplayed;
-  const { _isGpPlusModalDisplayed } = useModalContext();
-  const [isGpPlusModalDisplayed, setIsGpPlusModalDisplayed] =
-    _isGpPlusModalDisplayed;
+  const [isDoneLoading, setIsDoneLoading] = useState(false);
 
   const handleOnClose = () => {
     setIsModalDisplayed(false);
+    setIsDoneLoading(false);
   };
 
   return (
     <Modal
       show={isModalDisplayed}
+      onShow={() => {
+        if (!isDoneLoading) {
+          setTimeout(() => {
+            setIsDoneLoading(true);
+          }, process.env.NEXT_PUBLIC_HOST === 'localhost' ? 3100 : 1_200);
+        }
+      }}
       onHide={handleOnClose}
       size="lg"
       centered
@@ -66,71 +76,46 @@ const JobToursModal: React.FC<GpPlusModalProps> = ({ _isModalDisplayed }) => {
       style={{
         zIndex: 10000,
         width: "100vw",
-        // borderRadius: "1rem",
       }}
       contentClassName="w-75 gp-plus-tours-modal"
     >
-      <div className="gp-plus-modal-content">
-        <p className="gp-plus-modal-description mt-4 mt-sm-0">
-          GP+ now includes bulk lesson downloads. Upgrade by August 31th to get
-          50% off.
-        </p>
-        <Link href="/gp-plus" className="gp-plus-modal-learn-more">
-          Learn More
-        </Link>
-        <ul className="d-flex flex-column jusitfy-content-center align-items-center list-unstyled">
-          <li className="gp-plus-modal-benefit w-100 d-flex justify-content-center align-items-center">
-            <div className="w-75 justify-content-center align-items-center d-flex">
-              <section className="d-flex justify-content-center align-items-center">
-                <GrDownload color={ICON_COLOR} />
-              </section>
-              <section
-                style={{ paddingTop: ".2em" }}
-                className="ps-1 d-flex justify-content-center align-items-center"
+      <div className="gp-plus-modal-content h-100">
+        <div style={{ height: "90%" }} className="position-relative">
+          <div
+            className={`position-absolute bg-white w-100 h-100 rounded d-flex justify-content-center align-items-center ${
+              isDoneLoading ? "d-none" : "d-block"
+            }`}
+          >
+            <div className="position-relative bg-white w-100 h-100 rounded d-flex justify-content-center align-items-center">
+              <div
+                style={{ zIndex: 1000000 }}
+                className="d-flex justify-content-center align-items-center"
               >
-                <span className="text-center">Bulk lesson downloads</span>
-              </section>
+                <Spinner animation="border" variant="primary" color="black" />
+                <span className="ms-2 text-black">Loading, please wait...</span>
+              </div>
+              <div
+                style={{ filter: "blur(5px)" }}
+                className="w-100 h-100 position-absolute shadow-lg"
+              />
             </div>
-          </li>
-          <li className="gp-plus-modal-benefit w-100 d-flex justify-content-center align-items-center">
-            <div className="w-75 justify-content-center align-items-center d-flex">
-              <section className="d-flex justify-content-center align-items-center">
-                <FaEdit color={ICON_COLOR} />
-              </section>
-              <section
-                style={{ paddingTop: ".2em" }}
-                className="d-flex justify-content-center align-items-center ps-1"
-              >
-                <span>Make lessons your own with full editing access.</span>
-              </section>
-            </div>
-          </li>
-          <li className="gp-plus-modal-benefit w-100 d-flex justify-content-center align-items-center">
-            <div className="w-75 justify-content-center align-items-center d-flex">
-              <section className="d-flex justify-content-center align-items-center">
-                <FaUnlockKeyhole color={ICON_COLOR} />
-              </section>
-              <section
-                style={{ paddingTop: ".2em" }}
-                className="ps-1 d-flex justify-content-center align-items-center"
-              >
-                <span>
-                  Unlock full app library with engaging classroom activities
-                </span>
-              </section>
-            </div>
-          </li>
-          <ListItem Icon={<FaUnlockKeyhole color={ICON_COLOR} />}>
-            Access to Unit Bonus Materials
-          </ListItem>
-        </ul>
-        <section className="d-block d-sm-flex justify-content-sm-center align-items-sm-center w-100">
+          </div>
+          <iframe
+            src={url}
+            className={`w-100 rounded ${
+              isDoneLoading ? "opacity-100" : "opacity-0"
+            }`}
+            style={{ height: "100%", pointerEvents: "none", transition: "all" }}
+          />
+        </div>
+        <section className="mt-2 d-block d-sm-flex justify-content-sm-center align-items-sm-center w-100">
           <GpPlusBtn
             onClick={() => {
               window.location.href = "/gp-plus";
             }}
             disabled={false}
             isLoading={false}
+            className="px-sm-3 py-sm-2 col-10 col-sm-12 bg-white"
           >
             <span className="text-black">
               Subscribe to create customizable <q>Job Tours</q>
