@@ -30,26 +30,6 @@ const JobToursModal: React.FC<GpPlusModalProps> = ({
     setIsDoneLoading(false);
   };
 
-  const handleIframeLoad = () => {
-    // Ensure the iframe scrolls to the hash location
-    if (iframeRef.current?.contentWindow && url.includes("#")) {
-      try {
-        const hash = url.split("#")[1];
-        const element =
-          iframeRef.current.contentWindow.document.getElementById(hash);
-        if (element) {
-          element.scrollIntoView({ behavior: "smooth", block: "start" });
-        }
-      } catch (error) {
-        // Cross-origin restrictions may prevent this, but the hash in URL should still work
-        console.log(
-          "Hash navigation will be handled by the iframe content, error: ",
-          error
-        );
-      }
-    }
-  };
-
   return (
     <Modal
       show={isModalDisplayed}
@@ -77,10 +57,7 @@ const JobToursModal: React.FC<GpPlusModalProps> = ({
     >
       <div className="gp-plus-modal-content h-100 d-flex flex-column">
         <div className="position-relative d-flex flex-column job-tours-iframe-container">
-          <section
-            id="job-tours-section"
-            className="container py-5"
-          >
+          <section id="job-tours-section" className="container py-5">
             <div className="card shadow-sm">
               <div className="card-body p-4">
                 <h3 className="mb-4">
