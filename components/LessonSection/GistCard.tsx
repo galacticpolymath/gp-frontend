@@ -1,5 +1,3 @@
-/* eslint-disable quotes */
-
 import React, { useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -9,6 +7,7 @@ import { TOverviewForUI } from "../../backend/models/Unit/types/overview";
 import { ITargetStandardsCode } from "../../backend/models/Unit/types/standards";
 import { INewUnitSchema } from "../../backend/models/Unit/types/unit";
 import { IConnectionJobViz } from "../../backend/models/Unit/JobViz";
+import { MdOutlineRocketLaunch } from "react-icons/md";
 
 export interface IGistCard
   extends Pick<
@@ -40,6 +39,7 @@ const GistCard: React.FC<IGistCard> = ({
   areTargetStandardsValid,
   TargetStandardsCodes,
   className,
+  jobVizCareerConnections,
 }) => {
   const handleLinkClick = (
     event: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
@@ -214,17 +214,35 @@ const GistCard: React.FC<IGistCard> = ({
           ))}
       </section>
       {/* JobViz Career Connections Section */}
-      <section className="pb-1 px-3">
+      <section className="pb-1">
         <div className="d-flex align-items-center mb-2">
-          <i className="bi bi-wrench fs-5 me-2"></i>
-          <h5 className="mb-0">JobViz Career Connections:</h5>
+          <MdOutlineRocketLaunch size={25} />
+          <h5 className="ms-1 mb-0">JobViz Career Connections:</h5>
         </div>
-        <p className="mb-0 text-start">
-          <span>Food science technicians</span>,{" "}
-          <span>Food scientists and technologists</span>,{" "}
-          <span>Microbiologists</span>,
-          <span className="text-primary fw-semibold"> and +5 more</span>
-        </p>
+        <div className="d-flex">
+          <Link
+            href="#jobviz-career-connections"
+            className="mb-0 text-start no-link-decoration underline-on-hover"
+          >
+            {jobVizCareerConnections?.jobTitleAndSocCodePairs
+              ? jobVizCareerConnections?.jobTitleAndSocCodePairs.map(
+                  ([jobTitle], index) => {
+                    return (
+                      <>
+                        <span key={index}>{jobTitle}</span>,{" "}
+                      </>
+                    );
+                  }
+                )
+              : null}
+            {jobVizCareerConnections?.additionalJobsNum && (
+              <span>
+                {" "}
+                and +{jobVizCareerConnections.additionalJobsNum} more
+              </span>
+            )}
+          </Link>
+        </div>
       </section>
     </div>
   );

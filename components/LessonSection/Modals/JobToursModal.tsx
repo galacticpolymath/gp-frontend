@@ -109,7 +109,7 @@ const JobToursModal: React.FC<GpPlusModalProps> = ({
               className="text-black text-center"
               style={{ fontSize: "0.875rem" }}
             >
-              Subscribe to create customizable <q>Job Tours</q>
+              Subscribe to GP+ to share this Career Tour
             </span>
           </GpPlusBtn>
         </section>
