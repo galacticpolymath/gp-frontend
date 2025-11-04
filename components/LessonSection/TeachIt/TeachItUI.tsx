@@ -637,7 +637,7 @@ const TeachItUI = <
                     removeClickToSeeMoreTxt={removeClickToSeeMoreTxt}
                     key={`${index}_part`}
                     ClickToSeeMoreComp={
-                      index === 0 && didInitialRenderOccur ? (
+                      index === 0 ? (
                         <ClickMeArrow
                           handleElementVisibility={handleElementVisibility}
                           willShowArrow={arrowContainer.isInView}

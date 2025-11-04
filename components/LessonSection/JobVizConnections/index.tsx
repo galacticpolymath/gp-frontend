@@ -132,14 +132,14 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
         <div className="d-flex pt-1">
           <MdOutlineRocketLaunch size={25} />
         </div>
-        <div className="d-flex p-0">
+        <div className="d-flex p-0 ms-1" style={{ fontSize: '20px' }}>
           JobViz connects classroom learning to the real world—helping students
           see how knowledge links to jobs, industries, and the wider economy.
-          With data on 1,000+ occupations, it’s a springboard for systems
+          With data on 1,000+ occupations, it's a springboard for systems
           thinking and exploring the full landscape of opportunity.
         </div>
       </div>
-      <h3 className="text-lg font-semibold mb-3">
+      <h3 className="text-lg font-semibold mb-3 mt-2">
         Jobs and careers related to the &quot;{unitName ?? "Not found"}&quot;
         unit:
       </h3>
