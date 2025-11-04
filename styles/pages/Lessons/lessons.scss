@@ -911,6 +911,26 @@ $active-dot-color: rgba(44, 131, 195, 0.6) !important;
   overflow-y: auto;
 }
 
+.tours-btn-icon-container {
+  width: 20%;
+  @media (min-width: 576px) {
+    width: auto;
+  }
+}
+
+.tours-btn-txt {
+  @media (min-width: 576px) {
+    width: auto;
+  }
+}
+
+.tours-btn {
+  width: 100%;
+  @media (min-width: 576px) {
+    width: 270px;
+  }
+}
+
 .picker-dialog-content {
   z-index: 10000000000 !important;
   position: relative !important;

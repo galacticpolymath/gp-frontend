@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import JobToursModal from "../Modals/JobToursModal";
 import { DISABLE_FOOTER_PARAM_NAME } from "../../../components/Footer";
 import { DISABLE_NAVBAR_PARAM_NAME } from "../../../components/Navbar";
+import Image from "next/image";
 
 interface IJobVizConnectionsProps {
   unitName?: string;
@@ -129,7 +130,171 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
         })}
       </ul>
       <div className="d-flex justify-content-center justify-content-sm-start">
-        <GpPlusBtn
+        <div
+          style={{
+            border: "2px solid #e5e7eb",
+            borderRadius: "12px",
+            display: "flex",
+            maxWidth: "500px",
+            width: "100%",
+            position: "relative",
+          }}
+          className="d-flex d-sm-block justify-content-center align-items-center flex-sm-row flex-column"
+        >
+          <Image
+            src="/plus/plus.png"
+            alt="GP Plus logo"
+            width={30}
+            height={30}
+            className="top-0 left-0 ms-2 mt-1 position-absolute d-sm-block d-none"
+          />
+          <div className="pt-2 w-100 d-sm-none d-flex justify-content-center align-items-center">
+            <Image
+              src="/plus/plus.png"
+              alt="GP Plus logo"
+              width={30}
+              height={30}
+              className=""
+            />
+          </div>
+          <div
+            style={{
+              gap: "12px",
+              flex: 1,
+            }}
+            className="py-4 w-100 d-flex justify-content-center align-items-center flex-column"
+          >
+            <button
+              onClick={handlePreviewCareerTourAssignmentsBtnClick}
+              style={{
+                background: "none",
+                border: "none",
+                padding: 0,
+                display: "flex",
+                alignItems: "center",
+                gap: "12px",
+                cursor: "pointer",
+                textAlign: "left",
+              }}
+              className="tours-btn d-flex justify-content-center justify-content-sm-start align-items-center align-items-sm-stretch"
+            >
+              <div
+                style={{
+                  fontSize: "15px",
+                  fontWeight: 400,
+                  color: "#000",
+                  // width: "fit-content",
+                }}
+                className="d-flex justify-content-center align-items-center"
+              >
+                <div className="tours-btn-icon-container me-1 d-sm-block d-flex justify-content-center align-items-center">
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    style={{ flexShrink: 0 }}
+                  >
+                    <path
+                      d="M10 6H6C4.89543 6 4 6.89543 4 8V18C4 19.1046 4.89543 20 6 20H16C17.1046 20 18 19.1046 18 18V14M14 4H20M20 4V10M20 4L10 14"
+                      stroke="black"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </div>
+                <div className="tours-btn-txt">
+                  Preview Career Tour Assignment
+                </div>
+              </div>
+            </button>
+            <button
+              onClick={() => navigator.clipboard.writeText(jobsToursUrl)}
+              style={{
+                background: "none",
+                border: "none",
+                padding: 0,
+                gap: "12px",
+                cursor: "pointer",
+              }}
+              className="tours-btn d-flex justify-content-center justify-content-sm-start align-items-center align-items-sm-stretch"
+            >
+              {/* <div className="tours-btn-icon-container me-1">
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  style={{ flexShrink: 0 }}
+                >
+                  <rect
+                    x="8"
+                    y="8"
+                    width="12"
+                    height="12"
+                    rx="2"
+                    stroke="black"
+                    strokeWidth="2"
+                  />
+                  <path
+                    d="M16 8V6C16 4.89543 15.1046 4 14 4H6C4.89543 4 4 4.89543 4 6V14C4 15.1046 4.89543 16 6 16H8"
+                    stroke="black"
+                    strokeWidth="2"
+                  />
+                </svg>
+              </div>
+              <div
+                style={{ fontSize: "15px", fontWeight: 400, color: "#000" }}
+                className="text-nowrap"
+              >
+                Copy assignment link
+              </div> */}
+              <div
+                style={{
+                  fontSize: "15px",
+                  fontWeight: 400,
+                  color: "#000",
+                  // width: "fit-content",
+                }}
+                className="d-flex justify-content-center align-items-center"
+              >
+                <div className="tours-btn-icon-container me-1 d-sm-block d-flex justify-content-center align-items-center">
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    style={{ flexShrink: 0 }}
+                  >
+                    <rect
+                      x="8"
+                      y="8"
+                      width="12"
+                      height="12"
+                      rx="2"
+                      stroke="black"
+                      strokeWidth="2"
+                    />
+                    <path
+                      d="M16 8V6C16 4.89543 15.1046 4 14 4H6C4.89543 4 4 4.89543 4 6V14C4 15.1046 4.89543 16 6 16H8"
+                      stroke="black"
+                      strokeWidth="2"
+                    />
+                  </svg>
+                </div>
+                <div className="tours-btn-txt">
+                  Copy assignment link
+                </div>
+              </div>
+            </button>
+          </div>
+        </div>
+
+        {/* <GpPlusBtn
           onClick={handleSubscribeToTourAssignmentBtnClick}
           className="px-3 py-2 w-100 w-sm-auto"
           styles={{
@@ -152,7 +317,7 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
           >
             Preview job exploration assignment
           </div>
-        </GpPlusBtn>
+        </GpPlusBtn> */}
       </div>
       <JobToursModal
         _isModalDisplayed={[
