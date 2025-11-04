@@ -283,6 +283,7 @@ export const getServerSideProps = async (context) => {
   const socCodes = socCodesStr ? new Set(socCodesStr.split(",")) : null;
 
   if (socCodes) {
+    // TODO: get the soc codes as well
     const unitRelatedJobs = getUnitRelatedJobs(socCodes).map(
       (job) => job.title
     );

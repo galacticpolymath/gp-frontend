@@ -3,6 +3,8 @@ import { Button, Modal, Spinner } from "react-bootstrap";
 import useSiteSession from "../../../customHooks/useSiteSession";
 import { TUseStateReturnVal } from "../../../types/global";
 import { GpPlusBtn } from "../../../pages/gp-plus";
+import JobToursCard from "../../JobViz/JobTours/JobToursCard";
+import { useModalContext } from "../../../providers/ModalProvider";
 
 interface GpPlusModalProps {
   onClose?: () => void;
@@ -10,22 +12,29 @@ interface GpPlusModalProps {
   _isModalDisplayed: TUseStateReturnVal<boolean>;
   url: string;
   unitName: string;
-  jobTitles: string[];
+  jobTitleAndSocCodePairs: [string, string][];
 }
 
 const JobToursModal: React.FC<GpPlusModalProps> = ({
   _isModalDisplayed,
-  url,
   unitName,
-  jobTitles,
+  jobTitleAndSocCodePairs,
 }) => {
+  const { _jobToursModalCssProps: [jobToursModalCssProps, setJobToursModalCssProps] } = useModalContext();
   const [isModalDisplayed, setIsModalDisplayed] = _isModalDisplayed;
   const [isDoneLoading, setIsDoneLoading] = useState(false);
-  const iframeRef = React.useRef<HTMLIFrameElement>(null);
+  const [zIndex, setZIndex] = useState(10000);
 
   const handleOnClose = () => {
     setIsModalDisplayed(false);
     setIsDoneLoading(false);
+  };
+  
+  const handleOnJobTitleClick = () => {
+    setJobToursModalCssProps({
+      zIndex: 1000,
+      // zIndex: 10000,
+    });
   };
 
   return (
@@ -48,62 +57,18 @@ const JobToursModal: React.FC<GpPlusModalProps> = ({
       className="rounded"
       keyboard={false}
       style={{
-        zIndex: 10000,
+        ...jobToursModalCssProps,
         width: "100vw",
       }}
       contentClassName="gp-plus-tours-modal"
     >
       <div className="gp-plus-modal-content h-100 d-flex flex-column">
         <div className="position-relative d-flex flex-column job-tours-iframe-container">
-          <section id="job-tours-section" className="container py-5">
-            <div className="card shadow-sm">
-              <div className="card-body p-4">
-                <h3 className="mb-4">
-                  Jobs and careers related to the &ldquo;{unitName}&rdquo; unit:
-                </h3>
-                <ul
-                  className="mb-4 d-none d-sm-block"
-                  style={{ columnCount: 2, columnGap: "1.3rem" }}
-                >
-                  {jobTitles.map((jobTitle, index) => {
-                    return <li key={index}>{jobTitle}</li>;
-                  })}
-                </ul>
-                <ul className="mb-4 d-block d-sm-none">
-                  {jobTitles.map((jobTitle, index) => {
-                    return <li key={index}>{jobTitle}</li>;
-                  })}
-                </ul>
-                <div className="d-flex align-items-start">
-                  <div className="me-3 mt-1" style={{ fontSize: "2rem" }}>
-                    ✏️
-                  </div>
-                  <div>
-                    <p className="mb-2">
-                      <strong>Assignment:</strong> Research these jobs and
-                      explain <em>with data</em> which you would be most or
-                      least interested in.
-                    </p>
-                    <p
-                      className="text-muted mb-3"
-                      style={{ fontSize: "0.9rem" }}
-                    >
-                      Your teacher will provide instructions on how to share
-                      your response.
-                    </p>
-                    <div
-                      className="alert alert-info py-2 px-3 mb-0"
-                      role="alert"
-                      style={{ fontSize: "0.85rem" }}
-                    >
-                      ℹ️ <strong>Note:</strong> This feature is currently being
-                      built and will be available soon.
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
+          <JobToursCard
+            jobTitleAndSocCodePairs={jobTitleAndSocCodePairs}
+            unitName={unitName}
+            onJobTitleTxtCick={handleOnJobTitleClick}
+          />
         </div>
         <section className="mt-2 mt-sm-3 d-flex flex-column-reverse flex-lg-row justify-content-center align-items-center align-items-lg-center w-100 px-2 px-sm-3 job-tours-buttons-container flex-shrink-0">
           <Button

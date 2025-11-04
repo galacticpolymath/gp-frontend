@@ -2,26 +2,35 @@ import React, { RefObject } from 'react';
 import jobVizDataObj from '../../../data/Jobviz/jobVizDataObj.json';
 import { toast } from 'react-toastify';
 import { SUPPORT_EMAIL } from '../../../shared/constants';
-import { ISelectedJob, useModalContext } from '../../../providers/ModalProvider';
+import {
+  ISelectedJob,
+  useModalContext,
+} from '../../../providers/ModalProvider';
 
 interface IJobToursCard {
   ref?: RefObject<HTMLElement | null>;
   jobTitleAndSocCodePairs: [string, string][];
   unitName: string;
+  onJobTitleTxtCick?: () => void,
 }
 
 const JobToursCard: React.FC<IJobToursCard> = ({
   ref,
   jobTitleAndSocCodePairs,
   unitName,
+  onJobTitleTxtCick,
 }) => {
   const {
     _selectedJob: [, setSelectedJob],
   } = useModalContext();
   const handleJobTitleTxtClick = (socCode: string) => () => {
+    if (onJobTitleTxtCick){
+      onJobTitleTxtCick();
+    }
+
     const targetJob = jobVizDataObj.data.find(
       (job) => job.soc_code === socCode
-    ) as (ISelectedJob | undefined);
+    ) as ISelectedJob | undefined;
 
     if (!targetJob) {
       toast.error(
@@ -115,12 +124,28 @@ const JobToursCard: React.FC<IJobToursCard> = ({
             style={{ columnCount: 2, columnGap: '1.3rem' }}
           >
             {jobTitleAndSocCodePairs.map(([jobTitle, socCode], index) => {
-              return <li onClick={handleJobTitleTxtClick(socCode)} key={index}>{jobTitle}</li>;
+              return (
+                <li
+                  onClick={handleJobTitleTxtClick(socCode)}
+                  key={index}
+                  className="underline-on-hover"
+                >
+                  {jobTitle}
+                </li>
+              );
             })}
           </ul>
           <ul className="mb-4 d-block d-sm-none">
             {jobTitleAndSocCodePairs.map(([jobTitle, socCode], index) => {
-              return <li onClick={handleJobTitleTxtClick(socCode)} key={index}>{jobTitle}</li>;
+              return (
+                <li
+                  onClick={handleJobTitleTxtClick(socCode)}
+                  key={index}
+                  className="underline-on-hover"
+                >
+                  {jobTitle}
+                </li>
+              );
             })}
           </ul>
           <div className="d-flex align-items-start">

@@ -1,39 +1,23 @@
-/* eslint-disable no-debugger */
-/* eslint-disable no-undef */
-/* eslint-disable no-unsafe-optional-chaining */
-/* eslint-disable comma-dangle */
-/* eslint-disable quotes */
-/* eslint-disable no-unused-vars */
-/* eslint-disable react/jsx-wrap-multilines */
-/* eslint-disable react/jsx-closing-tag-location */
-/* eslint-disable no-unexpected-multiline */
-/* eslint-disable semi */
-/* eslint-disable no-multiple-empty-lines */
-/* eslint-disable no-console */
-/* eslint-disable react/jsx-max-props-per-line */
-/* eslint-disable react/jsx-indent-props */
-/* eslint-disable indent */
-/* eslint-disable react/jsx-indent */
-import { useContext, useEffect, useRef, useState } from "react";
-import Modal from "react-bootstrap/Modal";
-import { IoIosSchool } from "react-icons/io";
-import { BiTrendingUp } from "react-icons/bi";
+import React, { useContext, useEffect, useRef, useState } from 'react';
+import Modal from 'react-bootstrap/Modal';
+import { IoIosSchool } from 'react-icons/io';
+import { BiTrendingUp } from 'react-icons/bi';
 import {
   MdOutlineTransferWithinAStation,
   MdOutlineDirectionsWalk,
   MdSupervisedUserCircle,
   MdAttachMoney,
-} from "react-icons/md";
+} from 'react-icons/md';
 import {
   ISelectedJob,
   ModalContext,
   useModalContext,
-} from "../../providers/ModalProvider";
-import jobVizDataObj from "../../data/Jobviz/jobVizDataObj.json";
-import { useRouter } from "next/router";
-import getNewPathsWhenModalCloses from "../../helperFns/getNewPathsWhenModalCloses";
-import { replaceCharAt } from "../../shared/fns";
-import CopyableTxt from "../CopyableTxt";
+} from '../../providers/ModalProvider';
+import jobVizDataObj from '../../data/Jobviz/jobVizDataObj.json';
+import { useRouter } from 'next/router';
+import getNewPathsWhenModalCloses from '../../helperFns/getNewPathsWhenModalCloses';
+import { replaceCharAt } from '../../shared/fns';
+import CopyableTxt from '../CopyableTxt';
 
 const { Header, Title, Body } = Modal;
 const { data_start_yr: _data_start_yr, data_end_yr: _data_end_yr } =
@@ -42,18 +26,18 @@ const DATA_START_YR = _data_start_yr[0];
 const DATA_END_YR = _data_end_yr[0];
 
 const formatToCurrency = (num: number) =>
-  num.toLocaleString("en-US", {
-    style: "currency",
-    currency: "USD",
+  num.toLocaleString('en-US', {
+    style: 'currency',
+    currency: 'USD',
     maximumFractionDigits: 0,
   });
 
 const formatDataTxtToCurrency = (dataTxt: number | null) => {
-  if (typeof dataTxt === "number") {
+  if (typeof dataTxt === 'number') {
     return formatToCurrency(dataTxt);
   }
 
-  return "Data unavailable";
+  return 'Data unavailable';
 };
 
 const createInfoCards = (selectedJob: ISelectedJob | null) => {
@@ -71,41 +55,41 @@ const createInfoCards = (selectedJob: ISelectedJob | null) => {
   } = selectedJob;
   const onTheJobTraining =
     selectedJob[
-      "typical_on-the-job_training_needed_to_attain_competency_in_the_occupation"
+      'typical_on-the-job_training_needed_to_attain_competency_in_the_occupation'
     ];
   const infoCards = [
     {
-      id: "medianAnnualWage",
+      id: 'medianAnnualWage',
       title: `Median ${DATA_START_YR} Annual Wage`,
       txt: formatDataTxtToCurrency(median_annual_wage),
       icon: <MdAttachMoney />,
     },
     {
-      id: "educationNeededForEntry",
-      title: "Education Needed",
+      id: 'educationNeededForEntry',
+      title: 'Education Needed',
       txt: typical_education_needed_for_entry,
       icon: <IoIosSchool />,
     },
     {
-      id: "onTheJobTraining",
-      title: "On-the-job Training",
+      id: 'onTheJobTraining',
+      title: 'On-the-job Training',
       txt: onTheJobTraining,
       icon: <MdSupervisedUserCircle />,
     },
     {
-      id: "employmentStartYr",
+      id: 'employmentStartYr',
       title: `${DATA_START_YR} Employment`,
       txt: formatDataTxtToCurrency(employment_start_yr),
       icon: <MdOutlineDirectionsWalk />,
     },
     {
-      id: "employmentEndYr",
+      id: 'employmentEndYr',
       title: `Predicted ${DATA_END_YR} Employment`,
       txt: formatDataTxtToCurrency(employment_end_yr),
       icon: <MdOutlineTransferWithinAStation />,
     },
     {
-      id: "employmentChange",
+      id: 'employmentChange',
       title: `Predicted change in Employment ${DATA_START_YR} - ${DATA_END_YR}`,
       txt: employment_change_percent,
       icon: <BiTrendingUp />,
@@ -116,17 +100,18 @@ const createInfoCards = (selectedJob: ISelectedJob | null) => {
 };
 
 const SelectedJob: React.FC = () => {
-  const { _selectedJob, _isJobModalOn } = useModalContext();
+  const { _selectedJob, _isJobModalOn, _jobToursModalCssProps } = useModalContext();
   const router = useRouter();
-  const paths = router.query?.["search-results"] ?? [];
+  const paths = router.query?.['search-results'] ?? [];
   const [selectedJob, setSelectedJob] = _selectedJob;
   const [isJobModal, setIsJobModal] = _isJobModalOn;
+  const [, setJobToursModalCssProps] = _jobToursModalCssProps;
   let { soc_title, def: _def, title, BLS_link } = selectedJob ?? {};
   let jobTitle = soc_title ?? title;
-  jobTitle = jobTitle === "Total, all" ? "All US Jobs" : jobTitle;
-  let def: string | null = _def ?? "";
+  jobTitle = jobTitle === 'Total, all' ? 'All US Jobs' : jobTitle;
+  let def: string | null = _def ?? '';
   def =
-    def.toLowerCase() === "no definition found for this summary category."
+    def.toLowerCase() === 'no definition found for this summary category.'
       ? null
       : def;
 
@@ -137,12 +122,17 @@ const SelectedJob: React.FC = () => {
   const infoCards = createInfoCards(selectedJob);
 
   const handleOnHide = () => {
-    // TODO: FIX BUG: this fn can sometimes return undefined
-    const newPaths = getNewPathsWhenModalCloses(router.query["search-results"]);
-    router.push({ pathname: `/jobviz${newPaths}` }, undefined, {
-      scroll: false,
-    });
+    if(router.asPath.includes('jobviz')){
+      const newPaths = getNewPathsWhenModalCloses(router.query['search-results']);
+      router.push({ pathname: `/jobviz${newPaths}` }, undefined, {
+        scroll: false,
+      });
+    }
+
     setSelectedJob(null);
+    setJobToursModalCssProps({
+      zIndex: 10000,
+    });
   };
 
   const handleCopyLinkBtnClick = () => {
@@ -151,7 +141,7 @@ const SelectedJob: React.FC = () => {
       return;
     }
 
-    console.error("BLS_link is falsy. Cannot copy link.");
+    console.error('BLS_link is falsy. Cannot copy link.');
   };
 
   useEffect(() => {
@@ -164,6 +154,9 @@ const SelectedJob: React.FC = () => {
       onHide={handleOnHide}
       contentClassName="selectedJobModal"
       dialogClassName="dialogJobVizModal"
+      style={{
+        zIndex: 10000000,
+      }}
     >
       <Header className="selectedJobHeader border-0 pb-0 pt-3" closeButton>
         <Title className="w-100 pt-1">
@@ -183,18 +176,18 @@ const SelectedJob: React.FC = () => {
             const { icon, title, txt, id } = card;
             let _txt = txt;
 
-            if (typeof _txt === "string" && _txt.split(" ").length === 2) {
-              const txtSplitted = _txt.split(" ");
+            if (typeof _txt === 'string' && _txt.split(' ').length === 2) {
+              const txtSplitted = _txt.split(' ');
               let [firstWord, secondWord] = txtSplitted;
               const firstChar = firstWord.charAt(0);
               firstWord = replaceCharAt(firstWord, 0, firstChar.toUpperCase());
               _txt = `${firstWord} ${secondWord}`;
             }
 
-            if (id === "employmentChange" && typeof _txt === "number") {
-              _txt = `${Math.sign(_txt) ? "+" : ""}${_txt.toLocaleString()}%`;
-            } else if (id === "employmentChange") {
-              _txt = "Data unavailable";
+            if (id === 'employmentChange' && typeof _txt === 'number') {
+              _txt = `${Math.sign(_txt) ? '+' : ''}${_txt.toLocaleString()}%`;
+            } else if (id === 'employmentChange') {
+              _txt = 'Data unavailable';
             }
 
             return (
@@ -258,7 +251,8 @@ const SelectedJob: React.FC = () => {
                       height="13"
                       rx="2"
                       ry="2"
-                    ></rect>
+                    >
+                    </rect>
                     <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
                   </svg>
                 </>

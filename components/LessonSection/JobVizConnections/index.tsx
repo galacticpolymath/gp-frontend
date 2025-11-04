@@ -80,7 +80,7 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
 
     return jobVizConnections as IConnectionJobViz[];
   }, []);
-  const jobTitles = jobVizConnectionsArr.map((job) => job.job_title);
+  const jobTitleAndSocCodePairs: [string, string][] = jobVizConnectionsArr.map((job) => [job.job_title, job.soc_code]);
   const jobsToursUrl = useMemo(() => {
     if (typeof window === 'undefined') {
       return '';
@@ -126,7 +126,7 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
   return (
     <div className="mt-4">
       <h3 className="text-lg font-semibold mb-3">
-        Jobs and careers related to the &quot;{unitName ?? 'Not found'}&quot;
+        Jobs and careers related to the &quot;{unitName ?? "Not found"}&quot;
         unit:
       </h3>
       <ul className="list-disc pl-6 mb-6 space-y-2">
@@ -142,13 +142,13 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
         {isUserAGpPlusMember ? (
           <div
             style={{
-              border: '2px solid #e5e7eb',
-              borderRadius: '12px',
-              display: 'flex',
-              maxWidth: '500px',
-              width: '100%',
-              position: 'relative',
-              minWidth: '270px',
+              border: "2px solid #e5e7eb",
+              borderRadius: "12px",
+              display: "flex",
+              maxWidth: "500px",
+              width: "100%",
+              position: "relative",
+              minWidth: "270px",
             }}
             className=""
           >
@@ -161,7 +161,7 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
             />
             <div
               style={{
-                gap: '12px',
+                gap: "12px",
                 flex: 1,
               }}
               className="tours-btn-container px-1 px-sm-4 pb-4 w-100 d-flex justify-content-center align-items-center flex-column"
@@ -169,22 +169,22 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
               <button
                 onClick={handlePreviewCareerTourAssignmentsBtnClick}
                 style={{
-                  background: 'none',
-                  border: 'none',
+                  background: "none",
+                  border: "none",
                   padding: 0,
-                  display: 'flex',
-                  alignItems: 'center',
+                  display: "flex",
+                  alignItems: "center",
                   // gap: "12px",
-                  cursor: 'pointer',
-                  textAlign: 'left',
+                  cursor: "pointer",
+                  textAlign: "left",
                 }}
                 className="tours-btn d-flex justify-content-center justify-content-sm-start align-items-center align-items-sm-stretch"
               >
                 <div
                   style={{
-                    fontSize: '15px',
+                    fontSize: "15px",
                     fontWeight: 400,
-                    color: '#000',
+                    color: "#000",
                     // width: "fit-content",
                   }}
                   className="d-flex justify-content-center align-items-center"
@@ -221,19 +221,19 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
               >
                 <button
                   style={{
-                    background: 'none',
-                    border: 'none',
+                    background: "none",
+                    border: "none",
                     padding: 0,
-                    gap: '12px',
-                    cursor: 'pointer',
+                    gap: "12px",
+                    cursor: "pointer",
                   }}
                   className="tours-btn d-flex justify-content-center justify-content-sm-start align-items-center align-items-sm-stretch"
                 >
                   <div
                     style={{
-                      fontSize: '15px',
+                      fontSize: "15px",
                       fontWeight: 400,
-                      color: '#000',
+                      color: "#000",
                     }}
                     className="d-flex justify-content-center align-items-center"
                   >
@@ -273,20 +273,20 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
             onClick={handleSubscribeToTourAssignmentBtnClick}
             className="px-3 py-2 w-100 w-sm-auto"
             styles={{
-              minHeight: '48px',
-              backgroundColor: 'white',
-              border: 'solid 3px #2339C4',
-              borderRadius: '1.5em',
-              textTransform: 'none',
-              minWidth: 'auto',
-              width: '100%',
-              maxWidth: '500px',
+              minHeight: "48px",
+              backgroundColor: "white",
+              border: "solid 3px #2339C4",
+              borderRadius: "1.5em",
+              textTransform: "none",
+              minWidth: "auto",
+              width: "100%",
+              maxWidth: "500px",
             }}
           >
             <div
               style={{
-                lineHeight: '1.4',
-                fontSize: 'clamp(14px, 4vw, 18px)',
+                lineHeight: "1.4",
+                fontSize: "clamp(14px, 4vw, 18px)",
               }}
               className="d-flex flex-column text-black text-center text-sm-start"
             >
@@ -301,8 +301,8 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
           setIsJobsToursUpSellModalOn,
         ]}
         url={`${jobsToursUrl}&${DISABLE_FOOTER_PARAM_NAME}=true&${DISABLE_NAVBAR_PARAM_NAME}=true#job-tours-section`}
-        jobTitles={jobTitles}
-        unitName={unitName ?? 'Not found'}
+        jobTitleAndSocCodePairs={jobTitleAndSocCodePairs}
+        unitName={unitName ?? "Not found"}
       />
     </div>
   );
