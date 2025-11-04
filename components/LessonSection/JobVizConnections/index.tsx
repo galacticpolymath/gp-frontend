@@ -1,8 +1,9 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { IJobVizConnection } from '../../../backend/models/Unit/JobViz';
 import { IConnectionJobViz } from '../../../backend/models/Unit/JobViz';
 import { GpPlusBtn } from '../../../pages/gp-plus';
 import { useRouter } from 'next/navigation';
+import JobToursModal from '../Modals/JobToursModal';
 
 interface IJobVizConnectionsProps {
   unitName?: string;
@@ -17,6 +18,8 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
   unitName,
 }) => {
   const router = useRouter();
+  const [isJobsToursUpSellModalOn, setIsJobsToursUpSellModalOn] =
+    useState(false);
   const jobVizConnectionsArr = useMemo(() => {
     const _jobVizConnections = jobVizConnections?.filter((jobVizConnection) => {
       return (
@@ -95,13 +98,14 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
   };
 
   const handleSubscribeToTourAssignmentBtnClick = () => {
-    
+    setIsJobsToursUpSellModalOn(true);
   };
 
   return (
     <div className="mt-4">
       <h3 className="text-lg font-semibold mb-3">
-        Jobs and careers related to the &quot;{unitName ?? 'Not found'}&quot; unit:
+        Jobs and careers related to the &quot;{unitName ?? "Not found"}&quot;
+        unit:
       </h3>
       <ul className="list-disc pl-6 mb-6 space-y-2">
         {jobVizConnectionsArr.map(({ job_title }, index) => {
@@ -114,12 +118,15 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
       </ul>
       <GpPlusBtn onClick={handleSubscribeToTourAssignmentBtnClick}>
         <div
-          style={{ lineHeight: '23px', fontSize: '18px' }}
+          style={{ lineHeight: "23px", fontSize: "18px" }}
           className="d-flex flex-column text-black"
         >
           Preview job exploration assignment
         </div>
       </GpPlusBtn>
+      <JobToursModal
+        _isModalDisplayed={[isJobsToursUpSellModalOn, setIsJobsToursUpSellModalOn]}
+      />
     </div>
   );
 };

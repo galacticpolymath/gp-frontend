@@ -58,17 +58,20 @@ const Modal = ({
   style,
   className,
   backdrop = true,
+  dialogClassName = "vw-100",
+  contentClassName = "",
 }: ModalProps) => {
   return (
     <BootstrapModal
       show={show}
       style={style}
-      dialogClassName="vw-100"
+      dialogClassName={dialogClassName}
       onHide={onHide}
       onShow={onShow}
       backdrop={backdrop}
       onBackdropClick={onBackdropClick}
       className={className}
+      contentClassName={contentClassName}
     >
       <Button
         variant="secondary"

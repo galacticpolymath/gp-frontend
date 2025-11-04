@@ -184,6 +184,17 @@ body {
   }
 }
 
+.gp-plus-tours-modal {
+  height: 90vh;
+  border-radius: 4em;
+}
+
+.modal-dialog-override {
+  max-width: none;
+  margin-right: 0px;
+  margin-left: 0px;
+}
+
 .account-sm-modal {
   width: 21vw;
   right: 30%;
