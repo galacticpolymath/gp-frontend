@@ -912,10 +912,10 @@ $active-dot-color: rgba(44, 131, 195, 0.6) !important;
 }
 
 .tours-btn-icon-container {
-  width: 20%;
+  // width: 20%;
   @media (min-width: 576px) {
-    width: auto;
   }
+  width: auto;
 }
 
 .tours-btn-txt {
@@ -924,11 +924,19 @@ $active-dot-color: rgba(44, 131, 195, 0.6) !important;
   }
 }
 
-.tours-btn {
-  width: 100%;
+.tours-btn-container{
+  padding-top: 2.2rem;
   @media (min-width: 576px) {
-    width: 270px;
+    padding-top: 1.5rem;
   }
+}
+
+.tours-btn {
+  // width: 100%;
+  // @media (min-width: 576px) {
+  //   width: 270px;
+  // }
+  width: 270px;
 }
 
 .picker-dialog-content {

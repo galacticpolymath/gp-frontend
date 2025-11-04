@@ -138,31 +138,23 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
             maxWidth: "500px",
             width: "100%",
             position: "relative",
+            minWidth: '270px',
           }}
-          className="d-flex d-sm-block justify-content-center align-items-center flex-sm-row flex-column"
+          className=""
         >
           <Image
             src="/plus/plus.png"
             alt="GP Plus logo"
             width={30}
             height={30}
-            className="top-0 left-0 ms-2 mt-1 position-absolute d-sm-block d-none"
+            className="top-0 left-0 ms-2 mt-1 position-absolute"
           />
-          <div className="pt-2 w-100 d-sm-none d-flex justify-content-center align-items-center">
-            <Image
-              src="/plus/plus.png"
-              alt="GP Plus logo"
-              width={30}
-              height={30}
-              className=""
-            />
-          </div>
           <div
             style={{
               gap: "12px",
               flex: 1,
             }}
-            className="py-4 w-100 d-flex justify-content-center align-items-center flex-column"
+            className="tours-btn-container px-1 px-sm-4 pb-4 w-100 d-flex justify-content-center align-items-center flex-column"
           >
             <button
               onClick={handlePreviewCareerTourAssignmentsBtnClick}
@@ -172,7 +164,7 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
                 padding: 0,
                 display: "flex",
                 alignItems: "center",
-                gap: "12px",
+                // gap: "12px",
                 cursor: "pointer",
                 textAlign: "left",
               }}
@@ -286,9 +278,7 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
                     />
                   </svg>
                 </div>
-                <div className="tours-btn-txt">
-                  Copy assignment link
-                </div>
+                <div className="tours-btn-txt">Copy assignment link</div>
               </div>
             </button>
           </div>
