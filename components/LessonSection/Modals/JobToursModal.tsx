@@ -108,7 +108,11 @@ const JobToursModal: React.FC<GpPlusModalProps> = ({
                 style={{ zIndex: 1000000 }}
                 className="d-flex flex-column flex-sm-row justify-content-center align-items-center px-3"
               >
-                <Spinner animation="border" variant="primary" color="black" />
+                <Spinner
+                  animation="border"
+                  variant="primary"
+                  color="black"
+                />
                 <span
                   className="ms-sm-2 mt-2 mt-sm-0 text-black text-center"
                   style={{ fontSize: "clamp(0.875rem, 3vw, 1rem)" }}
