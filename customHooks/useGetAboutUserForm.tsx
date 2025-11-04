@@ -8,7 +8,7 @@ import {
   TUserSchemaForClient,
   TUserSchemaV2,
 } from '../backend/models/User/types';
-import { setLocalStorageItem } from '../shared/fns';
+import { setLocalStorageItem, setSessionStorageItem } from '../shared/fns';
 
 export const getAboutUserFormForClient = (
   userAccount: TUserSchemaForClient<TUserSchemaV2 & IUserSchema>
@@ -342,6 +342,7 @@ export const useGetAboutUserForm = (willGetData: boolean = true) => {
           }
 
           if (typeof isGpPlusMember === 'boolean') {
+            setSessionStorageItem('isGpPlusUser', isGpPlusMember);
             userAccountForClient = {
               ...userAccountForClient,
               isGpPlusMember,
