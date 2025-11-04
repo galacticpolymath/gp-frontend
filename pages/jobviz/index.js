@@ -62,10 +62,20 @@ const JobViz = ({ vals, unitName, jobTitles }) => {
     setDidFirstRenderOccur(true);
 
     if (jobTitles?.length) {
-      jobToursRef?.current?.scrollIntoView({
-        behavior: "smooth",
-        block: "center",
-      });
+      // Use a timeout to ensure content is rendered before scrolling
+      const timeoutId = setTimeout(() => {
+        if (jobToursRef?.current) {
+          // Check if we're in an iframe
+          const isInIframe = window.self !== window.top;
+
+          jobToursRef.current.scrollIntoView({
+            behavior: "smooth",
+            block: isInIframe ? "start" : "center",
+          });
+        }
+      }, 300);
+
+      return () => clearTimeout(timeoutId);
     }
   }, []);
 
@@ -84,7 +94,11 @@ const JobViz = ({ vals, unitName, jobTitles }) => {
         </section>
       </Hero>
       {jobTitles?.length && (
-        <section ref={jobToursRef} className="container py-5">
+        <section
+          id="job-tours-section"
+          ref={jobToursRef}
+          className="container py-5"
+        >
           <div className="card shadow-sm">
             <div className="card-body p-4">
               <h3 className="mb-4">

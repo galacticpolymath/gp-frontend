@@ -1,19 +1,19 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { IJobVizConnection } from '../../../backend/models/Unit/JobViz';
-import { IConnectionJobViz } from '../../../backend/models/Unit/JobViz';
-import { GpPlusBtn } from '../../../pages/gp-plus';
-import { useRouter } from 'next/navigation';
-import JobToursModal from '../Modals/JobToursModal';
-import { DISABLE_FOOTER_PARAM_NAME } from '../../../components/Footer';
-import { DISABLE_NAVBAR_PARAM_NAME } from '../../../components/Navbar';
+import React, { useEffect, useMemo, useState } from "react";
+import { IJobVizConnection } from "../../../backend/models/Unit/JobViz";
+import { IConnectionJobViz } from "../../../backend/models/Unit/JobViz";
+import { GpPlusBtn } from "../../../pages/gp-plus";
+import { useRouter } from "next/navigation";
+import JobToursModal from "../Modals/JobToursModal";
+import { DISABLE_FOOTER_PARAM_NAME } from "../../../components/Footer";
+import { DISABLE_NAVBAR_PARAM_NAME } from "../../../components/Navbar";
 
 interface IJobVizConnectionsProps {
   unitName?: string;
   jobVizConnections?: IConnectionJobViz[] | IJobVizConnection[] | null;
 }
 
-export const SOC_CODES_PARAM_NAME = 'socCodes';
-export const UNIT_NAME_PARAM_NAME = 'unitName';
+export const SOC_CODES_PARAM_NAME = "socCodes";
+export const UNIT_NAME_PARAM_NAME = "unitName";
 
 const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
   jobVizConnections,
@@ -35,7 +35,7 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
 
     if (!jobVizConnections?.length) {
       console.error(
-        'Developer Error: jobVizConnections is empty or undefined in JobVizConnections component.'
+        "Developer Error: jobVizConnections is empty or undefined in JobVizConnections component."
       );
 
       return [];
@@ -81,7 +81,7 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
       .map((jobVizConnection) => {
         return jobVizConnection.soc_code;
       })
-      .join(',');
+      .join(",");
 
     url.searchParams.append(SOC_CODES_PARAM_NAME, socCodesStr);
 
@@ -141,7 +141,7 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
           isJobsToursUpSellModalOn,
           setIsJobsToursUpSellModalOn,
         ]}
-        url={`${jobsToursUrl}&${DISABLE_FOOTER_PARAM_NAME}=true&${DISABLE_NAVBAR_PARAM_NAME}=true`}
+        url={`${jobsToursUrl}&${DISABLE_FOOTER_PARAM_NAME}=true&${DISABLE_NAVBAR_PARAM_NAME}=true#job-tours-section`}
       />
     </div>
   );

@@ -44,10 +44,28 @@ const JobToursModal: React.FC<GpPlusModalProps> = ({
 }) => {
   const [isModalDisplayed, setIsModalDisplayed] = _isModalDisplayed;
   const [isDoneLoading, setIsDoneLoading] = useState(false);
+  const iframeRef = React.useRef<HTMLIFrameElement>(null);
 
   const handleOnClose = () => {
     setIsModalDisplayed(false);
     setIsDoneLoading(false);
+  };
+
+  const handleIframeLoad = () => {
+    // Ensure the iframe scrolls to the hash location
+    if (iframeRef.current?.contentWindow && url.includes("#")) {
+      try {
+        const hash = url.split("#")[1];
+        const element =
+          iframeRef.current.contentWindow.document.getElementById(hash);
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      } catch (e) {
+        // Cross-origin restrictions may prevent this, but the hash in URL should still work
+        console.log("Hash navigation will be handled by the iframe content");
+      }
+    }
   };
 
   return (
@@ -102,7 +120,9 @@ const JobToursModal: React.FC<GpPlusModalProps> = ({
             </div>
           </div>
           <iframe
+            ref={iframeRef}
             src={url}
+            onLoad={handleIframeLoad}
             className={`w-100 rounded ${
               isDoneLoading ? "opacity-100" : "opacity-0"
             }`}
