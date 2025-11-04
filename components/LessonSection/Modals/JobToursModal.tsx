@@ -135,20 +135,20 @@ const JobToursModal: React.FC<GpPlusModalProps> = ({
             }}
           />
         </div>
-        <section className="mt-2 mt-sm-3 d-flex flex-column-reverse flex-lg-row justify-content-center align-items-stretch align-items-lg-center w-100 px-2 px-sm-3 job-tours-buttons-container flex-shrink-0">
+        <section className="mt-2 mt-sm-3 d-flex flex-column-reverse flex-lg-row justify-content-center align-items-center align-items-lg-center w-100 px-2 px-sm-3 job-tours-buttons-container flex-shrink-0">
           <Button
             style={{
               borderRadius: "1em",
               backgroundColor: "#6C757D",
+              paddingLeft: "1rem",
+              paddingRight: "1rem",
             }}
             onClick={() => {
               handleOnClose();
             }}
-            className="job-viz-btn me-lg-2 d-flex justify-content-center align-items-center border mt-2 mt-lg-0 w-100 w-lg-auto"
+            className="job-viz-btn job-viz-btn-close me-lg-2 d-flex justify-content-center align-items-center border mt-2 mt-lg-0 w-100 w-lg-auto"
           >
-            <span style={{ fontSize: "clamp(0.875rem, 3vw, 1rem)" }}>
-              CLOSE
-            </span>
+            <span style={{ fontSize: "0.875rem" }}>CLOSE</span>
           </Button>
           <GpPlusBtn
             onClick={() => {
@@ -160,17 +160,19 @@ const JobToursModal: React.FC<GpPlusModalProps> = ({
             }}
             disabled={false}
             isLoading={false}
-            className="job-viz-btn ms-lg-2 px-3 py-2 w-100 w-lg-auto bg-white d-flex justify-content-center align-items-center"
+            className="job-viz-btn job-viz-btn-subscribe ms-lg-2 w-100 w-lg-auto bg-white d-flex justify-content-center align-items-center"
             styles={{
               backgroundColor: "white",
               border: "solid 3px #2339C4",
               borderRadius: "1em",
               textTransform: "none",
+              paddingLeft: "1rem",
+              paddingRight: "1rem",
             }}
           >
             <span
               className="text-black text-center"
-              style={{ fontSize: "clamp(0.75rem, 2.5vw, 1rem)" }}
+              style={{ fontSize: "0.875rem" }}
             >
               Subscribe to create customizable <q>Job Tours</q>
             </span>
@@ -214,6 +216,14 @@ const JobToursModal: React.FC<GpPlusModalProps> = ({
               flex: 0 0 auto !important;
               padding-bottom: 0.5rem !important;
             }
+
+            .job-viz-btn {
+              max-width: none !important;
+              height: auto !important;
+              min-height: auto !important;
+              max-height: none !important;
+              padding: 0.75rem 1rem !important;
+            }
           }
 
           @media (min-width: 576px) {
@@ -225,6 +235,20 @@ const JobToursModal: React.FC<GpPlusModalProps> = ({
             .job-tours-buttons-container {
               height: 14% !important;
               min-height: fit-content !important;
+            }
+
+            .job-viz-btn {
+              height: 49px !important;
+              min-height: 49px !important;
+              max-height: 49px !important;
+            }
+
+            .job-viz-btn-close {
+              max-width: 150px !important;
+            }
+
+            .job-viz-btn-subscribe {
+              max-width: 420px !important;
             }
           }
         `}

@@ -19,6 +19,8 @@ import {
   UNIT_NAME_PARAM_NAME,
 } from "../../components/LessonSection/JobVizConnections";
 import { getUnitRelatedJobs } from "../../helperFns/filterUnitRelatedJobs";
+import { useUserContext } from "../../providers/UserProvider";
+import { getSessionStorageItem } from "../../shared/fns";
 
 const DATA_SOURCE_LINK =
   "https://www.bls.gov/emp/tables/occupational-projections-and-characteristics.htm";
@@ -31,6 +33,12 @@ const JobViz = ({ vals, unitName, jobTitles }) => {
     parentJobCategories,
     metaDescription,
   } = vals ?? {};
+  const {
+    _isGpPlusMember: [isGpPlusMember],
+  } = useUserContext();
+  const isUserAGpPlusMember = useMemo(() => {
+    return !!getSessionStorageItem("isGpPlusUser");
+  }, [isGpPlusMember]);
   const jobToursRef = useRef(null);
   const [searchResults, setSearchResults] = useState([]);
   const [searchInput, setSearchInput] = useState("");
@@ -93,7 +101,7 @@ const JobViz = ({ vals, unitName, jobTitles }) => {
           </section>
         </section>
       </Hero>
-      {jobTitles?.length && (
+      {jobTitles?.length && isUserAGpPlusMember && (
         <section
           id="job-tours-section"
           ref={jobToursRef}
