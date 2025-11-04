@@ -128,14 +128,32 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
           );
         })}
       </ul>
-      <GpPlusBtn onClick={handleSubscribeToTourAssignmentBtnClick}>
-        <div
-          style={{ lineHeight: "23px", fontSize: "18px" }}
-          className="d-flex flex-column text-black"
+      <div className="d-flex justify-content-center justify-content-sm-start">
+        <GpPlusBtn
+          onClick={handleSubscribeToTourAssignmentBtnClick}
+          className="px-3 py-2 w-100 w-sm-auto"
+          styles={{
+            minHeight: "48px",
+            backgroundColor: "white",
+            border: "solid 3px #2339C4",
+            borderRadius: "1.5em",
+            textTransform: "none",
+            minWidth: "auto",
+            width: "100%",
+            maxWidth: "500px",
+          }}
         >
-          Preview job exploration assignment
-        </div>
-      </GpPlusBtn>
+          <div
+            style={{
+              lineHeight: "1.4",
+              fontSize: "clamp(14px, 4vw, 18px)",
+            }}
+            className="d-flex flex-column text-black text-center text-sm-start"
+          >
+            Preview job exploration assignment
+          </div>
+        </GpPlusBtn>
+      </div>
       <JobToursModal
         _isModalDisplayed={[
           isJobsToursUpSellModalOn,

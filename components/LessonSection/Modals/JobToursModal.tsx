@@ -61,9 +61,12 @@ const JobToursModal: React.FC<GpPlusModalProps> = ({
         if (element) {
           element.scrollIntoView({ behavior: "smooth", block: "start" });
         }
-      } catch (e) {
+      } catch (error) {
         // Cross-origin restrictions may prevent this, but the hash in URL should still work
-        console.log("Hash navigation will be handled by the iframe content");
+        console.log(
+          "Hash navigation will be handled by the iframe content, error: ",
+          error
+        );
       }
     }
   };
