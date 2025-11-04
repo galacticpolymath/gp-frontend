@@ -1,6 +1,9 @@
 import Image from 'next/image';
 import svg from '../assets/img/tpt.svg';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
+
+export const DISABLE_FOOTER_PARAM_NAME = 'disableFooter';
 
 const SOCIAL_MEDIA_ITEMS = [
   {
@@ -42,9 +45,11 @@ const SOCIAL_MEDIA_ITEMS = [
 ];
 
 export default function Footer() {
+  const searchParams = useSearchParams();
+  const disableFooter = searchParams.get(DISABLE_FOOTER_PARAM_NAME) === 'true';
 
   return (
-    <footer className="pt-4 bg-dark-gray text-white">
+    <footer className={`pt-4 bg-dark-gray text-white ${disableFooter ? 'pe-none' : ''}`}>
       <div className="container py-4 row mx-auto gap-2 gap-lg-0">
         <div className="col-12 col-lg-5">
           <h4 className="fs-5">Galactic Polymath</h4>

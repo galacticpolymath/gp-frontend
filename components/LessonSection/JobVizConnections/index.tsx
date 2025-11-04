@@ -4,6 +4,8 @@ import { IConnectionJobViz } from '../../../backend/models/Unit/JobViz';
 import { GpPlusBtn } from '../../../pages/gp-plus';
 import { useRouter } from 'next/navigation';
 import JobToursModal from '../Modals/JobToursModal';
+import { DISABLE_FOOTER_PARAM_NAME } from '../../../components/Footer';
+import { DISABLE_NAVBAR_PARAM_NAME } from '../../../components/Navbar';
 
 interface IJobVizConnectionsProps {
   unitName?: string;
@@ -70,6 +72,10 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
   }, []);
 
   const jobsToursUrl = useMemo(() => {
+    if (typeof window === "undefined") {
+      return "";
+    }
+
     const url = new URL(`${window.location.origin}/jobviz`);
     const socCodesStr = jobVizConnectionsArr
       .map((jobVizConnection) => {
@@ -135,7 +141,7 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
           isJobsToursUpSellModalOn,
           setIsJobsToursUpSellModalOn,
         ]}
-        url={jobsToursUrl}
+        url={`${jobsToursUrl}&${DISABLE_FOOTER_PARAM_NAME}=true&${DISABLE_NAVBAR_PARAM_NAME}=true`}
       />
     </div>
   );
