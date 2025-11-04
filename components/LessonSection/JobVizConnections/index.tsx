@@ -7,6 +7,9 @@ import JobToursModal from "../Modals/JobToursModal";
 import { DISABLE_FOOTER_PARAM_NAME } from "../../../components/Footer";
 import { DISABLE_NAVBAR_PARAM_NAME } from "../../../components/Navbar";
 import Image from "next/image";
+import CopyableTxt from "../../CopyableTxt";
+import { getSessionStorageItem } from "../../../shared/fns";
+import { useUserContext } from "../../../providers/UserProvider";
 
 interface IJobVizConnectionsProps {
   unitName?: string;
@@ -21,6 +24,12 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
   unitName,
 }) => {
   const router = useRouter();
+  const {
+    _isGpPlusMember: [isGpPlusMember],
+  } = useUserContext();
+  const isUserAGpPlusMember = useMemo(() => {
+    return !!getSessionStorageItem("isGpPlusUser");
+  }, [isGpPlusMember]);
   const [isJobsToursUpSellModalOn, setIsJobsToursUpSellModalOn] =
     useState(false);
   const jobVizConnectionsArr = useMemo(() => {
@@ -130,184 +139,161 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
         })}
       </ul>
       <div className="d-flex justify-content-center justify-content-sm-start">
-        <div
-          style={{
-            border: "2px solid #e5e7eb",
-            borderRadius: "12px",
-            display: "flex",
-            maxWidth: "500px",
-            width: "100%",
-            position: "relative",
-            minWidth: '270px',
-          }}
-          className=""
-        >
-          <Image
-            src="/plus/plus.png"
-            alt="GP Plus logo"
-            width={30}
-            height={30}
-            className="top-0 left-0 ms-2 mt-1 position-absolute"
-          />
+        {isUserAGpPlusMember ? (
           <div
             style={{
-              gap: "12px",
-              flex: 1,
+              border: "2px solid #e5e7eb",
+              borderRadius: "12px",
+              display: "flex",
+              maxWidth: "500px",
+              width: "100%",
+              position: "relative",
+              minWidth: "270px",
             }}
-            className="tours-btn-container px-1 px-sm-4 pb-4 w-100 d-flex justify-content-center align-items-center flex-column"
+            className=""
           >
-            <button
-              onClick={handlePreviewCareerTourAssignmentsBtnClick}
+            <Image
+              src="/plus/plus.png"
+              alt="GP Plus logo"
+              width={30}
+              height={30}
+              className="top-0 left-0 ms-2 mt-1 position-absolute"
+            />
+            <div
               style={{
-                background: "none",
-                border: "none",
-                padding: 0,
-                display: "flex",
-                alignItems: "center",
-                // gap: "12px",
-                cursor: "pointer",
-                textAlign: "left",
-              }}
-              className="tours-btn d-flex justify-content-center justify-content-sm-start align-items-center align-items-sm-stretch"
-            >
-              <div
-                style={{
-                  fontSize: "15px",
-                  fontWeight: 400,
-                  color: "#000",
-                  // width: "fit-content",
-                }}
-                className="d-flex justify-content-center align-items-center"
-              >
-                <div className="tours-btn-icon-container me-1 d-sm-block d-flex justify-content-center align-items-center">
-                  <svg
-                    width="20"
-                    height="20"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                    style={{ flexShrink: 0 }}
-                  >
-                    <path
-                      d="M10 6H6C4.89543 6 4 6.89543 4 8V18C4 19.1046 4.89543 20 6 20H16C17.1046 20 18 19.1046 18 18V14M14 4H20M20 4V10M20 4L10 14"
-                      stroke="black"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </div>
-                <div className="tours-btn-txt">
-                  Preview Career Tour Assignment
-                </div>
-              </div>
-            </button>
-            <button
-              onClick={() => navigator.clipboard.writeText(jobsToursUrl)}
-              style={{
-                background: "none",
-                border: "none",
-                padding: 0,
                 gap: "12px",
-                cursor: "pointer",
+                flex: 1,
               }}
-              className="tours-btn d-flex justify-content-center justify-content-sm-start align-items-center align-items-sm-stretch"
+              className="tours-btn-container px-1 px-sm-4 pb-4 w-100 d-flex justify-content-center align-items-center flex-column"
             >
-              {/* <div className="tours-btn-icon-container me-1">
-                <svg
-                  width="20"
-                  height="20"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                  style={{ flexShrink: 0 }}
-                >
-                  <rect
-                    x="8"
-                    y="8"
-                    width="12"
-                    height="12"
-                    rx="2"
-                    stroke="black"
-                    strokeWidth="2"
-                  />
-                  <path
-                    d="M16 8V6C16 4.89543 15.1046 4 14 4H6C4.89543 4 4 4.89543 4 6V14C4 15.1046 4.89543 16 6 16H8"
-                    stroke="black"
-                    strokeWidth="2"
-                  />
-                </svg>
-              </div>
-              <div
-                style={{ fontSize: "15px", fontWeight: 400, color: "#000" }}
-                className="text-nowrap"
-              >
-                Copy assignment link
-              </div> */}
-              <div
+              <button
+                onClick={handlePreviewCareerTourAssignmentsBtnClick}
                 style={{
-                  fontSize: "15px",
-                  fontWeight: 400,
-                  color: "#000",
-                  // width: "fit-content",
+                  background: "none",
+                  border: "none",
+                  padding: 0,
+                  display: "flex",
+                  alignItems: "center",
+                  // gap: "12px",
+                  cursor: "pointer",
+                  textAlign: "left",
                 }}
-                className="d-flex justify-content-center align-items-center"
+                className="tours-btn d-flex justify-content-center justify-content-sm-start align-items-center align-items-sm-stretch"
               >
-                <div className="tours-btn-icon-container me-1 d-sm-block d-flex justify-content-center align-items-center">
-                  <svg
-                    width="20"
-                    height="20"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                    style={{ flexShrink: 0 }}
-                  >
-                    <rect
-                      x="8"
-                      y="8"
-                      width="12"
-                      height="12"
-                      rx="2"
-                      stroke="black"
-                      strokeWidth="2"
-                    />
-                    <path
-                      d="M16 8V6C16 4.89543 15.1046 4 14 4H6C4.89543 4 4 4.89543 4 6V14C4 15.1046 4.89543 16 6 16H8"
-                      stroke="black"
-                      strokeWidth="2"
-                    />
-                  </svg>
+                <div
+                  style={{
+                    fontSize: "15px",
+                    fontWeight: 400,
+                    color: "#000",
+                    // width: "fit-content",
+                  }}
+                  className="d-flex justify-content-center align-items-center"
+                >
+                  <div className="tours-btn-icon-container me-1 d-sm-block d-flex justify-content-center align-items-center">
+                    <svg
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                      style={{ flexShrink: 0 }}
+                    >
+                      <path
+                        d="M10 6H6C4.89543 6 4 6.89543 4 8V18C4 19.1046 4.89543 20 6 20H16C17.1046 20 18 19.1046 18 18V14M14 4H20M20 4V10M20 4L10 14"
+                        stroke="black"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </div>
+                  <div className="tours-btn-txt">
+                    Preview Career Tour Assignment
+                  </div>
                 </div>
-                <div className="tours-btn-txt">Copy assignment link</div>
-              </div>
-            </button>
+              </button>
+              <CopyableTxt
+                implementLogicOnClick={() => {
+                  navigator.clipboard.writeText(jobsToursUrl);
+                }}
+                copyTxtIndicator="Copy link"
+                txtCopiedIndicator="Link copied ✅!"
+              >
+                <button
+                  style={{
+                    background: "none",
+                    border: "none",
+                    padding: 0,
+                    gap: "12px",
+                    cursor: "pointer",
+                  }}
+                  className="tours-btn d-flex justify-content-center justify-content-sm-start align-items-center align-items-sm-stretch"
+                >
+                  <div
+                    style={{
+                      fontSize: "15px",
+                      fontWeight: 400,
+                      color: "#000",
+                    }}
+                    className="d-flex justify-content-center align-items-center"
+                  >
+                    <div className="tours-btn-icon-container me-1 d-sm-block d-flex justify-content-center align-items-center">
+                      <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                        style={{ flexShrink: 0 }}
+                      >
+                        <rect
+                          x="8"
+                          y="8"
+                          width="12"
+                          height="12"
+                          rx="2"
+                          stroke="black"
+                          strokeWidth="2"
+                        />
+                        <path
+                          d="M16 8V6C16 4.89543 15.1046 4 14 4H6C4.89543 4 4 4.89543 4 6V14C4 15.1046 4.89543 16 6 16H8"
+                          stroke="black"
+                          strokeWidth="2"
+                        />
+                      </svg>
+                    </div>
+                    <div className="tours-btn-txt">Copy assignment link</div>
+                  </div>
+                </button>
+              </CopyableTxt>
+            </div>
           </div>
-        </div>
-
-        {/* <GpPlusBtn
-          onClick={handleSubscribeToTourAssignmentBtnClick}
-          className="px-3 py-2 w-100 w-sm-auto"
-          styles={{
-            minHeight: "48px",
-            backgroundColor: "white",
-            border: "solid 3px #2339C4",
-            borderRadius: "1.5em",
-            textTransform: "none",
-            minWidth: "auto",
-            width: "100%",
-            maxWidth: "500px",
-          }}
-        >
-          <div
-            style={{
-              lineHeight: "1.4",
-              fontSize: "clamp(14px, 4vw, 18px)",
+        ) : (
+          <GpPlusBtn
+            onClick={handleSubscribeToTourAssignmentBtnClick}
+            className="px-3 py-2 w-100 w-sm-auto"
+            styles={{
+              minHeight: "48px",
+              backgroundColor: "white",
+              border: "solid 3px #2339C4",
+              borderRadius: "1.5em",
+              textTransform: "none",
+              minWidth: "auto",
+              width: "100%",
+              maxWidth: "500px",
             }}
-            className="d-flex flex-column text-black text-center text-sm-start"
           >
-            Preview job exploration assignment
-          </div>
-        </GpPlusBtn> */}
+            <div
+              style={{
+                lineHeight: "1.4",
+                fontSize: "clamp(14px, 4vw, 18px)",
+              }}
+              className="d-flex flex-column text-black text-center text-sm-start"
+            >
+              Preview job exploration assignment
+            </div>
+          </GpPlusBtn>
+        )}
       </div>
       <JobToursModal
         _isModalDisplayed={[
