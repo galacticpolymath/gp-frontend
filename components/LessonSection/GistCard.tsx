@@ -8,20 +8,25 @@ import SubjectBreakDown from "./SubjectBreakdown";
 import { TOverviewForUI } from "../../backend/models/Unit/types/overview";
 import { ITargetStandardsCode } from "../../backend/models/Unit/types/standards";
 import { INewUnitSchema } from "../../backend/models/Unit/types/unit";
+import { IConnectionJobViz } from "../../backend/models/Unit/JobViz";
 
-type IGistCard = {
+export interface IGistCard
+  extends Pick<
+      TOverviewForUI,
+      "TargetSubject" | "ForGrades" | "SteamEpaulette" | "SteamEpaulette_vert"
+    >,
+    Pick<INewUnitSchema, "TargetStandardsCodes"> {
   LearningSummary: TOverviewForUI["TheGist"];
-  TargetSubject: TOverviewForUI["TargetSubject"];
-  ForGrades: TOverviewForUI["ForGrades"];
   EstLessonTime: TOverviewForUI["EstUnitTime"];
-  SteamEpaulette: TOverviewForUI["SteamEpaulette"];
-  SteamEpaulette_vert: TOverviewForUI["SteamEpaulette_vert"];
-  TargetStandardsCodes?: INewUnitSchema["TargetStandardsCodes"];
   isOnPreview: boolean;
   areTargetStandardsValid: boolean;
   standards: Record<string, Omit<ITargetStandardsCode, "set">[]>;
   className?: string;
-};
+  jobVizCareerConnections?: {
+    jobTitleAndSocCodePairs: [string, string][];
+    additionalJobsNum: number;
+  };
+}
 
 const GistCard: React.FC<IGistCard> = ({
   LearningSummary,

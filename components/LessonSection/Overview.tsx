@@ -8,11 +8,12 @@ import { ISectionDots, TUseStateReturnVal } from "../../types/global";
 import { TOverviewForUI } from "../../backend/models/Unit/types/overview";
 import { TUnitForUI } from "../../backend/models/Unit/types/unit";
 import { ITargetStandardsCode } from "../../backend/models/Unit/types/standards";
-import GistCard from "./GistCard";
+import GistCard, { IGistCard } from "./GistCard";
 
-interface IOverviewProps
+export interface IOverviewProps
   extends ITitleProps,
-    Pick<TOverviewForUI, "TheGist" | "EstUnitTime" | "UnitTags" | "Tags"> {
+    Pick<TOverviewForUI, "TheGist" | "EstUnitTime" | "UnitTags" | "Tags">,
+    Pick<IGistCard, "jobVizCareerConnections"> {
   Accessibility: TOverviewForUI["Accessibility"];
   Description: string;
   EstLessonTime: string;
@@ -28,8 +29,9 @@ interface IOverviewProps
   _sectionDots: TUseStateReturnVal<ISectionDots>;
 }
 
-const Overview = ({
+const Overview: React.FC<IOverviewProps> = ({
   LearningSummary,
+  jobVizCareerConnections,
   Description,
   EstLessonTime,
   ForGrades,
@@ -47,7 +49,7 @@ const Overview = ({
   TargetStandardsCodes,
   Accessibility,
   ...titleProps
-}: IOverviewProps) => {
+}) => {
   console.log("UnitTags: ", UnitTags);
   console.log("_Tags: ", _Tags);
 
@@ -167,8 +169,9 @@ const Overview = ({
           isOnPreview={false}
           standards={standards}
           areTargetStandardsValid={!!areTargetStandardsValid}
-          TargetStandardsCodes={TargetStandardsCodes}
+          TargetStandardsCodes={TargetStandardsCodes ?? null}
           className="col-xxl-12 bg-light-gray px-4 py-2 rounded-3 text-center"
+          jobVizCareerConnections={jobVizCareerConnections}
         />
       </div>
       <RichText className="mt-4" content={Text} />

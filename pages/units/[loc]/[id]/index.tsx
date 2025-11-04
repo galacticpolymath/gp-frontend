@@ -51,6 +51,9 @@ import { getUnitGDriveChildItems } from '../../../../backend/services/gdriveServ
 import CopyLessonHelperModal from '../../../../components/GpPlus/CopyLessonHelperModal';
 import FailedCopiedFilesReportModal from '../../../../components/GpPlus/FailedCopiedFilesReportModal';
 import WelcomeNewUserModal from '../../../../components/Modals/WelcomeNewUserModal';
+import { unauthorized } from 'next/navigation';
+import { IOverviewProps } from '../../../../components/LessonSection/Overview';
+import { IConnectionJobViz, IJobVizConnectionsWithDeprecatedVals } from '../../../../backend/models/Unit/JobViz';
 
 const IS_ON_PROD = process.env.NODE_ENV === 'production';
 const GOOGLE_DRIVE_THUMBNAIL_URL = 'https://drive.google.com/thumbnail?id=';
@@ -176,13 +179,38 @@ const SECTION_UPDATERS: Partial<Record<keyof TSectionsForUI, TUpdateSection>> = 
     };
   },
   overview: (sectionVal: object, unit: TUnitForUI) => {
-    // TODO: find the jobViz section and get the soc codes and the titles in order 
-    // -to display them in the overview section
-    // -get the first three and the rest get them as a number
-    return {
-      ...sectionVal,
-      unitName: unit.Title,
+    const jobVizConnectionsSec = unit.Sections?.jobvizConnections;
+
+    if (!jobVizConnectionsSec){
+      return sectionVal;
+    }
+
+    const previewJobsSliced = jobVizConnectionsSec.Content.slice(0, 3);
+    const jobTitleAndSocCodePairs: [string, string][] = [];
+
+    for (const previewJob of previewJobsSliced){
+      let jobTitle = Array.isArray(previewJob.job_title) ? previewJob.job_title.at(0) : previewJob.job_title;
+      let socCode = Array.isArray(previewJob.job_title) ? previewJob.job_title.at(0) : previewJob.job_title;
+
+      if(!socCode || !jobTitle){
+        console.error('Developer Error: Missing job title or SOC code in JobViz preview jobs.', { previewJob });
+        continue;
+      }
+
+      jobTitleAndSocCodePairs.push([jobTitle, socCode]);
+    }
+
+    const additionalJobsNum =
+      jobVizConnectionsSec.Content.length - jobTitleAndSocCodePairs.length;
+    const overviewSecProps: IOverviewProps = {
+      ...(sectionVal as IOverviewProps),
+      jobVizCareerConnections: {
+        additionalJobsNum,
+        jobTitleAndSocCodePairs,
+      },
     };
+
+    return overviewSecProps;
   },
 };
 
