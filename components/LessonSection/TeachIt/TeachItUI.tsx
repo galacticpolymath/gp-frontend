@@ -457,7 +457,7 @@ const TeachItUI = <
                             `https://drive.google.com/drive/folders/${GdrivePublicID}`,
                             "_"
                           );
-                        }
+                  }
                   }
                   style={{
                     minHeight: "51px",

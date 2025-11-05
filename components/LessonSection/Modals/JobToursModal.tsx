@@ -1,14 +1,14 @@
-import React, { useState } from "react";
-import { Button, Modal, Spinner } from "react-bootstrap";
-import useSiteSession from "../../../customHooks/useSiteSession";
-import { TUseStateReturnVal } from "../../../types/global";
-import { GpPlusBtn } from "../../../pages/gp-plus";
-import JobToursCard from "../../JobViz/JobTours/JobToursCard";
-import { useModalContext } from "../../../providers/ModalProvider";
+import React, { useState } from 'react';
+import { Button, Modal, Spinner } from 'react-bootstrap';
+import useSiteSession from '../../../customHooks/useSiteSession';
+import { TUseStateReturnVal } from '../../../types/global';
+import { GpPlusBtn } from '../../../pages/gp-plus';
+import JobToursCard from '../../JobViz/JobTours/JobToursCard';
+import { useModalContext } from '../../../providers/ModalProvider';
 
 interface GpPlusModalProps {
   onClose?: () => void;
-  userStatus?: ReturnType<typeof useSiteSession>["status"];
+  userStatus?: ReturnType<typeof useSiteSession>['status'];
   _isModalDisplayed: TUseStateReturnVal<boolean>;
   url: string;
   unitName: string;
@@ -46,7 +46,7 @@ const JobToursModal: React.FC<GpPlusModalProps> = ({
             () => {
               setIsDoneLoading(true);
             },
-            process.env.NEXT_PUBLIC_HOST === "localhost" ? 3100 : 1_200
+            process.env.NEXT_PUBLIC_HOST === 'localhost' ? 3100 : 1_200
           );
         }
       }}
@@ -58,7 +58,7 @@ const JobToursModal: React.FC<GpPlusModalProps> = ({
       keyboard={false}
       style={{
         ...jobToursModalCssProps,
-        width: "100vw",
+        width: '100vw',
       }}
       contentClassName="gp-plus-tours-modal"
     >
@@ -73,41 +73,41 @@ const JobToursModal: React.FC<GpPlusModalProps> = ({
         <section className="mt-2 mt-sm-3 d-flex flex-column-reverse flex-lg-row justify-content-center align-items-center align-items-lg-center w-100 px-2 px-sm-3 job-tours-buttons-container flex-shrink-0">
           <Button
             style={{
-              borderRadius: "1em",
-              backgroundColor: "#6C757D",
-              paddingLeft: "1rem",
-              paddingRight: "1rem",
+              borderRadius: '1em',
+              backgroundColor: '#6C757D',
+              paddingLeft: '1rem',
+              paddingRight: '1rem',
             }}
             onClick={() => {
               handleOnClose();
             }}
             className="job-viz-btn job-viz-btn-close me-lg-2 d-flex justify-content-center align-items-center border mt-2 mt-lg-0 w-100 w-lg-auto"
           >
-            <span style={{ fontSize: "0.875rem" }}>CLOSE</span>
+            <span style={{ fontSize: '0.875rem' }}>CLOSE</span>
           </Button>
           <GpPlusBtn
             onClick={() => {
-              if (typeof window === "undefined") {
+              if (typeof window === 'undefined') {
                 return;
               }
 
-              window.location.href = "/gp-plus";
+              window.location.href = '/gp-plus';
             }}
             disabled={false}
             isLoading={false}
             className="job-viz-btn job-viz-btn-subscribe ms-lg-2 w-100 w-lg-auto bg-white d-flex justify-content-center align-items-center"
             styles={{
-              backgroundColor: "white",
-              border: "solid 3px #2339C4",
-              borderRadius: "1em",
-              textTransform: "none",
-              paddingLeft: "1rem",
-              paddingRight: "1rem",
+              backgroundColor: 'white',
+              border: 'solid 3px #2339C4',
+              borderRadius: '1em',
+              textTransform: 'none',
+              paddingLeft: '1rem',
+              paddingRight: '1rem',
             }}
           >
             <span
               className="text-black text-center"
-              style={{ fontSize: "0.875rem" }}
+              style={{ fontSize: '0.875rem' }}
             >
               Subscribe to GP+ to share this Career Tour
             </span>
