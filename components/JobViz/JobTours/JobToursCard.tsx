@@ -6,13 +6,186 @@ import {
   ISelectedJob,
   useModalContext,
 } from '../../../providers/ModalProvider';
+import { sleep } from '../../../globalFns';
 
 interface IJobToursCard {
   ref?: RefObject<HTMLElement | null>;
   jobTitleAndSocCodePairs: [string, string][];
   unitName: string;
-  onJobTitleTxtCick?: () => void,
+  onJobTitleTxtCick?: () => void;
 }
+
+export const showJobNotFoundToast = () => {
+  toast.error(
+    <>
+      <div
+        style={{
+          fontSize: '15px',
+          lineHeight: '1.6',
+          fontWeight: '500',
+        }}
+      >
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            marginBottom: '8px',
+          }}
+        >
+          <span style={{ fontSize: '20px' }}>🔍</span>
+          <strong>Oops! Job Data Not Found</strong>
+        </div>
+        <p
+          style={{
+            margin: '0 0 10px 28px',
+            color: '#555',
+            fontWeight: '400',
+          }}
+        >
+          We couldn&apos;t locate the information for this job selection.
+        </p>
+        <div
+          style={{
+            marginLeft: '28px',
+            padding: '10px 12px',
+            backgroundColor: '#f8f9fa',
+            borderRadius: '6px',
+            borderLeft: '3px solid #1976d2',
+          }}
+        >
+          <span style={{ color: '#666', fontSize: '14px' }}>
+            Think this is an error?{' '}
+            <a
+              href={SUPPORT_EMAIL}
+              style={{
+                color: '#1976d2',
+                textDecoration: 'none',
+                fontWeight: '600',
+                borderBottom: '2px solid #1976d2',
+              }}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Contact our support team
+            </a>{' '}
+            and we&apos;ll help you out!
+          </span>
+        </div>
+      </div>
+    </>,
+    {
+      position: 'top-center',
+      autoClose: 8000,
+      closeOnClick: true,
+      pauseOnHover: true,
+      style: {
+        borderRadius: '12px',
+        boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+      },
+    }
+  );
+};
+
+export const useCreateHandleJobTitleTxtClick = (
+  onJobTitleTxtCick?: () => void,
+  onJobModalShow?: () => void
+) => {
+  const {
+    _selectedJob: [, setSelectedJob],
+  } = useModalContext();
+
+  const handleJobTitleTxtClick = (socCode: string) => async () => {
+    if (onJobTitleTxtCick) {
+      onJobTitleTxtCick();
+    }
+
+    const targetJob = jobVizDataObj.data.find(
+      (job) => job.soc_code === socCode
+    ) as ISelectedJob | undefined;
+
+    if (!targetJob) {
+      toast.error(
+        <>
+          <div
+            style={{
+              fontSize: '15px',
+              lineHeight: '1.6',
+              fontWeight: '500',
+            }}
+          >
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                marginBottom: '8px',
+              }}
+            >
+              <span style={{ fontSize: '20px' }}>🔍</span>
+              <strong>Oops! Job Data Not Found</strong>
+            </div>
+            <p
+              style={{
+                margin: '0 0 10px 28px',
+                color: '#555',
+                fontWeight: '400',
+              }}
+            >
+              We couldn&apos;t locate the information for this job selection.
+            </p>
+            <div
+              style={{
+                marginLeft: '28px',
+                padding: '10px 12px',
+                backgroundColor: '#f8f9fa',
+                borderRadius: '6px',
+                borderLeft: '3px solid #1976d2',
+              }}
+            >
+              <span style={{ color: '#666', fontSize: '14px' }}>
+                Think this is an error?{' '}
+                <a
+                  href={SUPPORT_EMAIL}
+                  style={{
+                    color: '#1976d2',
+                    textDecoration: 'none',
+                    fontWeight: '600',
+                    borderBottom: '2px solid #1976d2',
+                  }}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Contact our support team
+                </a>{' '}
+                and we&apos;ll help you out!
+              </span>
+            </div>
+          </div>
+        </>,
+        {
+          position: 'top-center',
+          autoClose: 8000,
+          closeOnClick: true,
+          pauseOnHover: true,
+          style: {
+            borderRadius: '12px',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+          },
+        }
+      );
+      return;
+    }
+
+    setSelectedJob(targetJob);
+
+    if (onJobModalShow) {
+      onJobModalShow();
+    }
+  };
+
+  return handleJobTitleTxtClick;
+};
 
 const JobToursCard: React.FC<IJobToursCard> = ({
   ref,
@@ -24,7 +197,7 @@ const JobToursCard: React.FC<IJobToursCard> = ({
     _selectedJob: [, setSelectedJob],
   } = useModalContext();
   const handleJobTitleTxtClick = (socCode: string) => () => {
-    if (onJobTitleTxtCick){
+    if (onJobTitleTxtCick) {
       onJobTitleTxtCick();
     }
 

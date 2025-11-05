@@ -11,6 +11,10 @@ import CopyableTxt from '../../CopyableTxt';
 import { getSessionStorageItem } from '../../../shared/fns';
 import { useUserContext } from '../../../providers/UserProvider';
 import { MdOutlineRocketLaunch } from 'react-icons/md';
+import { showJobNotFoundToast, useCreateHandleJobTitleTxtClick } from '../../JobViz/JobTours/JobToursCard';
+import { toast } from 'react-toastify';
+import jobVizDataObj from '../../../data/Jobviz/jobVizDataObj.json';
+import { ISelectedJob, useModalContext } from '../../../providers/ModalProvider';
 
 interface IJobVizConnectionsProps {
   unitName?: string;
@@ -25,6 +29,7 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
   unitName,
 }) => {
   const router = useRouter();
+  const { _selectedJob: [, setSelectedJob] } = useModalContext();
   const {
     _isGpPlusMember: [isGpPlusMember],
   } = useUserContext();
@@ -149,9 +154,24 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
         unit:
       </h3>
       <ul className="list-disc pl-6 mb-6 space-y-2">
-        {jobVizConnectionsArr.map(({ job_title }, index) => {
+        {jobVizConnectionsArr.map(({ job_title, soc_code }, index) => {
+          const targetJob = jobVizDataObj.data.find(
+            (job) => job.soc_code === soc_code
+          ) as ISelectedJob | undefined;
+          
           return (
-            <li key={index} className="text-base">
+            <li
+              key={index}
+              onClick={() => {
+                if(!targetJob){
+                  showJobNotFoundToast();
+                  return;
+                }
+
+                setSelectedJob(targetJob);
+              }}
+              className="text-base underline-on-hover cursor-pointer"
+            >
               {job_title}
             </li>
           );
