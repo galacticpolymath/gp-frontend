@@ -1,26 +1,26 @@
-import Hero from "../../components/Hero";
-import JobVizIcon from "../../components/JobViz/JobVizIcon";
-import Layout from "../../components/Layout";
-import JobCategoriesSec from "../../components/JobViz/JobCategoriesSec";
-import JobCategoryChainCard from "../../components/JobViz/JobCategoryChainCard";
-import PreviouslySelectedJobCategory from "../../components/JobViz/PreviouslySelectedJobCategory";
-import SearchInputSec from "../../components/JobViz/SearchInputSec";
-import Image from "next/image";
-import { useMemo, useRef, useState } from "react";
-import { useInView } from "react-intersection-observer";
-import GoToSearchInput from "../../components/JobViz/Buttons/GoToSearchInput";
-import GoToJobVizChain from "../../components/JobViz/Buttons/GoToJobVizChain";
-import { ToastContainer } from "react-toastify";
-import { useEffect } from "react";
+import Hero from '../../components/Hero';
+import JobVizIcon from '../../components/JobViz/JobVizIcon';
+import Layout from '../../components/Layout';
+import JobCategoriesSec from '../../components/JobViz/JobCategoriesSec';
+import JobCategoryChainCard from '../../components/JobViz/JobCategoryChainCard';
+import PreviouslySelectedJobCategory from '../../components/JobViz/PreviouslySelectedJobCategory';
+import SearchInputSec from '../../components/JobViz/SearchInputSec';
+import Image from 'next/image';
+import { useMemo, useRef, useState } from 'react';
+import { useInView } from 'react-intersection-observer';
+import GoToSearchInput from '../../components/JobViz/Buttons/GoToSearchInput';
+import GoToJobVizChain from '../../components/JobViz/Buttons/GoToJobVizChain';
+import { ToastContainer } from 'react-toastify';
+import { useEffect } from 'react';
 import {
   SOC_CODES_PARAM_NAME,
   UNIT_NAME_PARAM_NAME,
-} from "../../components/LessonSection/JobVizConnections";
-import { getUnitRelatedJobs } from "../../helperFns/filterUnitRelatedJobs";
-import JobToursCard from "../../components/JobViz/JobTours/JobToursCard";
+} from '../../components/LessonSection/JobVizConnections';
+import { getUnitRelatedJobs } from '../../helperFns/filterUnitRelatedJobs';
+import JobToursCard from '../../components/JobViz/JobTours/JobToursCard';
 
 const DATA_SOURCE_LINK =
-  "https://www.bls.gov/emp/tables/occupational-projections-and-characteristics.htm";
+  'https://www.bls.gov/emp/tables/occupational-projections-and-characteristics.htm';
 
 const JobViz = ({ vals, unitName, jobTitleAndSocCodePairs }) => {
   const {
@@ -32,29 +32,29 @@ const JobViz = ({ vals, unitName, jobTitleAndSocCodePairs }) => {
   } = vals ?? {};
   const jobToursRef = useRef(null);
   const [searchResults, setSearchResults] = useState([]);
-  const [searchInput, setSearchInput] = useState("");
+  const [searchInput, setSearchInput] = useState('');
   const [isHighlighterOn, setIsHighlighterOn] = useState(true);
   const [isSearchResultsModalOn, setIsSearchResultsModalOn] = useState(false);
   const { ref, inView } = useInView({ threshold: 0 });
   const jobVizPgDescriptor =
-    "A tool for middle and high school students to explore career possibilities. Browse, search, and share descriptions and stats for over a thousands jobs.";
+    'A tool for middle and high school students to explore career possibilities. Browse, search, and share descriptions and stats for over a thousands jobs.';
 
   const resetSearchResults = () => {
-    setSearchInput("");
+    setSearchInput('');
     setSearchResults([]);
   };
 
   const [didFirstRenderOccur, setDidFirstRenderOccur] = useState(false);
 
   const layoutProps = {
-    title: "JobViz Career Explorer",
+    title: 'JobViz Career Explorer',
     description: metaDescription || jobVizPgDescriptor,
     imgSrc:
       didFirstRenderOccur &&
       `${window.location.origin}/imgs/jobViz/jobviz_icon.png`,
-    url: "https://galacticpolymath.com/jobviz",
+    url: 'https://galacticpolymath.com/jobviz',
     keywords:
-      "jobviz, job viz, career explorer, career, career exploration, career exploration tool, career exploration for students, career exploration for high school students, career exploration for middle school students, career exploration for teens, career exploration for teenagers, career exploration for kids, career exploration for children, career exploration for young adults, career exploration for young people, career exploration for youth, career exploration for adolescents, career exploration for parents, career exploration for teachers, career exploration for counselors, career exploration",
+      'jobviz, job viz, career explorer, career, career exploration, career exploration tool, career exploration for students, career exploration for high school students, career exploration for middle school students, career exploration for teens, career exploration for teenagers, career exploration for kids, career exploration for children, career exploration for young adults, career exploration for young people, career exploration for youth, career exploration for adolescents, career exploration for parents, career exploration for teachers, career exploration for counselors, career exploration',
   };
 
   useEffect(() => {
@@ -68,8 +68,8 @@ const JobViz = ({ vals, unitName, jobTitleAndSocCodePairs }) => {
           const isInIframe = window.self !== window.top;
 
           jobToursRef.current.scrollIntoView({
-            behavior: "smooth",
-            block: isInIframe ? "start" : "center",
+            behavior: 'smooth',
+            block: isInIframe ? 'start' : 'center',
           });
         }
       }, 300);
@@ -137,7 +137,7 @@ const JobViz = ({ vals, unitName, jobTitleAndSocCodePairs }) => {
                         fill
                         sizes="3px"
                         style={{
-                          object: "fit",
+                          object: 'fit',
                         }}
                       />
                     </div>
@@ -164,7 +164,7 @@ const JobViz = ({ vals, unitName, jobTitleAndSocCodePairs }) => {
                         fill
                         sizes="3px"
                         style={{
-                          object: "fit",
+                          object: 'fit',
                         }}
                       />
                     </div>
@@ -200,7 +200,7 @@ const JobViz = ({ vals, unitName, jobTitleAndSocCodePairs }) => {
               alt="Galactic_Polymath_JobViz_Icon_Search"
               fill
               style={{
-                objectFit: "fill",
+                objectFit: 'fill',
               }}
               size="(max-width: 575px) 488.75px, (max-width: 767px) 651.945px, (max-width: 991px) 842.344px, (max-width: 1199px) 1019.15px, 1025px"
               priority
@@ -240,8 +240,8 @@ const JobViz = ({ vals, unitName, jobTitleAndSocCodePairs }) => {
 
 export const getServerSideProps = async (context) => {
   const socCodesStr = context?.query?.[SOC_CODES_PARAM_NAME];
-  const unitName = context?.query?.[UNIT_NAME_PARAM_NAME] ?? "Not found";
-  const socCodes = socCodesStr ? new Set(socCodesStr.split(",")) : null;
+  const unitName = context?.query?.[UNIT_NAME_PARAM_NAME] ?? 'Not found';
+  const socCodes = socCodesStr ? new Set(socCodesStr.split(',')) : null;
 
   if (socCodes) {
     // TODO: get the soc codes as well
