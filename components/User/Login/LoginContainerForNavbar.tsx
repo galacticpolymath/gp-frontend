@@ -2,7 +2,7 @@
 /* eslint-disable quotes */
 
 import { FaUserAlt } from "react-icons/fa";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useModalContext } from "../../../providers/ModalProvider";
 import Button from "../../General/Button";
 import { signOut } from "next-auth/react";
@@ -89,6 +89,7 @@ const LoginContainerForNavbar: React.FC<IProps> = ({ _modalAnimation }) => {
     router.asPath !== "/account"
   );
   const [aboutUserForm] = _aboutUserForm;
+  const didInitialRenderOccur = useRef(false);
   const [isRetrievingUserData] = _isRetrievingUserData;
   const pathName = usePathname();
   const { status, user, token, gdriveAccessToken, gdriveRefreshToken } =
@@ -246,6 +247,7 @@ const LoginContainerForNavbar: React.FC<IProps> = ({ _modalAnimation }) => {
 
   useEffect(() => {
     setMounted(true);
+    didInitialRenderOccur.current = true;
   }, []);
 
   if (!mounted) {
@@ -269,7 +271,7 @@ const LoginContainerForNavbar: React.FC<IProps> = ({ _modalAnimation }) => {
           <span style={{ color: "white", fontWeight: 410 }}>LOGIN</span>
         )}
         {!wasUIDataLoaded && <Spinner color="white" />}
-        {status === "authenticated" && wasUIDataLoaded && (
+        {didInitialRenderOccur && status === "authenticated" && wasUIDataLoaded && (
           <div className="position-relative d-flex align-items-center">
             {image ? (
               <div

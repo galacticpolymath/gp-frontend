@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { IJobVizConnection } from "../../../backend/models/Unit/JobViz";
 import { IConnectionJobViz } from "../../../backend/models/Unit/JobViz";
 import { GpPlusBtn } from "../../../pages/gp-plus";
@@ -28,6 +28,7 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
   const {
     _isGpPlusMember: [isGpPlusMember],
   } = useUserContext();
+  const didInitialRenderOccur = useRef(false);
   const isUserAGpPlusMember = useMemo(() => {
     return !!getSessionStorageItem("isGpPlusUser");
   }, [isGpPlusMember]);
@@ -105,6 +106,10 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
     return url.href;
   }, []);
 
+  useEffect(() => {
+    didInitialRenderOccur.current = true;
+  }, []);
+
   if (!jobVizConnectionsArr?.length) {
     console.error(
       "Developer Error: 'jobVizConnectionsArr' is populated, but the component does not handle this case. Please check the JobVizConnections implementation."
@@ -139,7 +144,7 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
           thinking and exploring the full landscape of opportunity.
         </div>
       </div>
-      <h3 className="text-lg font-semibold mb-3 mt-2">
+      <h3 className="text-lg font-semibold mb-3 mt-3">
         Jobs and careers related to the &quot;{unitName ?? "Not found"}&quot;
         unit:
       </h3>
@@ -153,7 +158,7 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
         })}
       </ul>
       <div className="d-flex justify-content-center justify-content-sm-start">
-        {isUserAGpPlusMember ? (
+        {isUserAGpPlusMember && didInitialRenderOccur.current ? (
           <div
             style={{
               border: "2px solid #e5e7eb",
