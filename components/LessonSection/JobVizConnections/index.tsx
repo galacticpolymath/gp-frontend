@@ -170,7 +170,7 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
 
                 setSelectedJob(targetJob);
               }}
-              className="text-base underline-on-hover cursor-pointer"
+              className="text-base underline-on-hover cursor-pointer text-blue"
             >
               {job_title}
             </li>

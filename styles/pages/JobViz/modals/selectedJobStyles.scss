@@ -16,6 +16,12 @@ $jobInfoStatCard: #eff8fe;
   overflow-y: auto;
   max-height: 695px;
 
+  @media (max-width: 767px) {
+    .modal-body {
+      padding: 0.75rem !important;
+    }
+  }
+
   @media (min-width: 576px) and (max-width: 767px) {
     // min-width: 550px;
     width: 95%;
@@ -50,6 +56,34 @@ $jobInfoStatCard: #eff8fe;
   height: 175px;
   width: 195px;
 
+  // Mobile responsive styles
+  @media (max-width: 767px) {
+    height: 140px;
+    width: 100%;
+
+    h5 {
+      font-size: 16px !important;
+    }
+
+    span {
+      font-size: 14px !important;
+    }
+
+    svg {
+      font-size: 32px !important;
+    }
+
+    > div {
+      > section {
+        height: 140px !important;
+        > section:last-child {
+          bottom: 10px !important;
+          max-height: 40px !important;
+        }
+      }
+    }
+  }
+
   h5 {
     line-height: 1em;
     font-size: 17px;
@@ -75,16 +109,14 @@ $jobInfoStatCard: #eff8fe;
   }
 }
 
-@media (min-width: 992px) {
-  .jobInfoStatCard:nth-child(even) {
-    // margin-top: 3px;
-  }
-}
-
 .jobInfoStatSec {
   //   column-count: 3;
   //   column-gap: 0px;
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
+
+  @media (max-width: 767px) {
+    padding-top: 0.5rem !important;
+  }
 }

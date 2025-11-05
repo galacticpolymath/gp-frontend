@@ -215,19 +215,19 @@ const SelectedJob: React.FC = () => {
       <Body className="selectedJobBody">
         {def && (
           <section>
-            <h5>{def}</h5>
+            <h5 className="text-center text-sm-start">{def}</h5>
           </section>
         )}
         <section className="jobInfoStatSec pt-3 d-none d-sm-flex">
           <InfoCards infoCards={infoCards} />
         </section>
-        <section className="jobInfoStatSec pt-3 row g-3 d-flex d-sm-none">
+        <section className="jobInfoStatSec pt-3 row g-2 d-flex d-sm-none">
           <InfoCards infoCards={infoCards} />
         </section>
         {BLS_link && (
-          <section className="d-flex align-items-center justify-content-between pt-2 mt-3 border-top">
+          <section className="flex-column flex-sm-row d-flex align-items-center justify-content-between pt-2 mt-3 border-top">
             <div className="d-flex align-items-center justify-content-center">
-              <span className="me-2">Learn More:</span>
+              <span className="me-sm-2">Learn More:</span>
               <a
                 href={BLS_link}
                 target="_blank"
@@ -237,11 +237,8 @@ const SelectedJob: React.FC = () => {
                 Occupational Outlook Handbook
               </a>
             </div>
-            <button
-              className="d-flex align-items-center gap-2 px-2 py-1 bg-transparent small no-btn-styles underline-on-hover bg-danger"
-              onClick={() => {
-                navigator.clipboard.writeText(BLS_link);
-              }}
+            <div
+              className="d-flex align-items-center gap-2 px-2 py-1 bg-transparent small no-btn-styles underline-on-hover"
             >
               <CopyableTxt
                 implementLogicOnClick={handleCopyLinkBtnClick}
@@ -273,7 +270,7 @@ const SelectedJob: React.FC = () => {
                   </svg>
                 </>
               </CopyableTxt>
-            </button>
+            </div>
           </section>
         )}
       </Body>
