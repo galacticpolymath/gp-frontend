@@ -8,16 +8,13 @@ import {
   MdSupervisedUserCircle,
   MdAttachMoney,
 } from "react-icons/md";
-import {
-  ISelectedJob,
-  ModalContext,
-  useModalContext,
-} from "../../providers/ModalProvider";
+import { ISelectedJob, useModalContext } from "../../providers/ModalProvider";
 import jobVizDataObj from "../../data/Jobviz/jobVizDataObj.json";
 import { useRouter } from "next/router";
 import getNewPathsWhenModalCloses from "../../helperFns/getNewPathsWhenModalCloses";
 import { replaceCharAt } from "../../shared/fns";
 import CopyableTxt from "../CopyableTxt";
+import { toast } from "react-toastify";
 
 const { Header, Title, Body } = Modal;
 const { data_start_yr: _data_start_yr, data_end_yr: _data_end_yr } =
@@ -140,6 +137,28 @@ const InfoCards: React.FC<{
   });
 };
 
+const CopyLinkTxtAndIcon: React.FC = () => {
+  return (
+    <>
+      <span className="me-1">Copy Link</span>
+      <svg
+        width="16"
+        height="16"
+        className="mb-1"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+      </svg>
+    </>
+  );
+};
+
 const SelectedJob: React.FC = () => {
   const { _selectedJob, _isJobModalOn, _jobToursModalCssProps } =
     useModalContext();
@@ -190,6 +209,25 @@ const SelectedJob: React.FC = () => {
     console.error("BLS_link is falsy. Cannot copy link.");
   };
 
+  const toastLinkCopied = useRef('');
+
+  const handleCopyLinkBtnPressOnMobile = () => {
+    if(toastLinkCopied.current){
+      toast.dismiss(toastLinkCopied.current);
+    }
+
+    if (BLS_link) {
+      const toastId = toast.info("Link copied ✅!", {
+        position: "top-center",
+      });
+      toastLinkCopied.current = toastId.toString();
+      navigator.clipboard.writeText(BLS_link);
+      return;
+    }
+
+    console.error("BLS_link is falsy. Cannot copy link.");
+  };
+
   useEffect(() => {
     setIsJobModal(true);
   }, []);
@@ -226,49 +264,37 @@ const SelectedJob: React.FC = () => {
         </section>
         {BLS_link && (
           <section className="flex-column flex-sm-row d-flex align-items-center justify-content-between pt-2 mt-3 border-top">
-            <div className="d-flex align-items-center justify-content-center">
-              <span className="me-sm-2">Learn More:</span>
-              <a
-                href={BLS_link}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-decoration-underline no-link-decoration"
-              >
-                Occupational Outlook Handbook
-              </a>
+            <div className="d-flex align-items-center justify-content-center text-sm-start text-center">
+              <span className="me-sm-2 ">
+                Learn More:{" "}
+                <span
+                  onClick={() => {
+                    window.location.href = BLS_link;
+                  }}
+                  className="text-decoration-underline no-link-decoration"
+                >
+                  Occupational Outlook Handbook
+                </span>
+              </span>
             </div>
-            <div
-              className="d-flex align-items-center gap-2 px-2 py-1 bg-transparent small no-btn-styles underline-on-hover"
-            >
+            <div className="mt-2 mt-sm-0 d-flex align-items-center gap-2 px-2 py-1 bg-transparent small no-btn-styles underline-on-hover">
               <CopyableTxt
                 implementLogicOnClick={handleCopyLinkBtnClick}
                 copyTxtIndicator="Copy link."
                 txtCopiedIndicator="Link copied ✅!"
+                parentClassName="pointer d-sm-block d-none"
               >
-                <>
-                  <span className="me-1">Copy Link</span>
-                  <svg
-                    width="16"
-                    height="16"
-                    className="mb-1"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <rect
-                      x="9"
-                      y="9"
-                      width="13"
-                      height="13"
-                      rx="2"
-                      ry="2"
-                    ></rect>
-                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                  </svg>
-                </>
+                <CopyLinkTxtAndIcon />
+              </CopyableTxt>
+              <CopyableTxt
+                implementLogicOnClick={handleCopyLinkBtnPressOnMobile}
+                copyTxtIndicator="Copy link."
+                txtCopiedIndicator="Link copied ✅!"
+                parentClassName="pointer d-sm-none d-block"
+                disableTxtCopiedShow
+                willDisplayModalOnHover={false}
+              >
+                <CopyLinkTxtAndIcon />
               </CopyableTxt>
             </div>
           </section>

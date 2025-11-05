@@ -6,6 +6,7 @@ const CopyableTxt = ({
   willDisplayModalOnHover = true,
   copyTxtIndicator = 'Copy text.',
   txtCopiedIndicator = 'Text copied ✅!',
+  disableTxtCopiedShow = false,
   copyTxtModalDefaultStyleObj = {
     position: 'fixed',
     width: '110px',
@@ -34,12 +35,15 @@ const CopyableTxt = ({
   };
 
   const handleOnClick = event => {
-    if (!willDisplayModalOnHover) {
+    if (!willDisplayModalOnHover && !disableTxtCopiedShow) {
       setIsModalOn(true);
     }
 
     implementLogicOnClick(event);
-    setModalTxt(txtCopiedIndicator);
+
+    if (!disableTxtCopiedShow) {
+      setModalTxt(txtCopiedIndicator);
+    }
   };
 
   const handleOnMouseEnter = () => {
@@ -51,6 +55,10 @@ const CopyableTxt = ({
   };
 
   const handleOnMouseLeave = () => {
+    if (!willDisplayModalOnHover) {
+      return;
+    }
+
     setIsModalOn(false);
     setModalTxt(copyTxtIndicator);
   };
