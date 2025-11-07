@@ -96,7 +96,7 @@
     "react-wavify": "^1.11.1",
     "sanitize-html": "^2.17.0",
     "scheduler": "^0.27.0",
-    "sharp": "^0.34.4",
+    "sharp": "^0.34.5",
     "start-server-and-test": "^2.1.2",
     "styled-components": "^6.1.19",
     "swr": "^2.3.6",
