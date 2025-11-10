@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-indent-props */
- 
+
 /* eslint-disable react/jsx-max-props-per-line */
- 
+
 /* eslint-disable quotes */
 /* eslint-disable react/jsx-wrap-multilines */
 /* eslint-disable react/jsx-indent */
@@ -18,6 +18,7 @@ import { useContext } from 'react';
 import { ModalContext } from "../../providers/ModalProvider";
 import { getJobCategoryIds } from '../../helperFns/getJobCategoryIds';
 import DetailsBtn from "./Buttons/Details";
+import { useSearchParams } from "next/navigation";
 
 
 const startingJobResults = jobVizDataObj.data.filter(jobCategory => jobCategory.hierarchy === 1).map(jobCategory => ({ ...jobCategory, currentLevel: jobCategory.level1 }))
@@ -35,6 +36,7 @@ const sortJobResults = jobResults => {
 
 const JobCategoriesSec = ({ dynamicJobResults, currentHierarchyNum, resetSearch }) => {
     const router = useRouter();
+    const searchParamsStr = useSearchParams().toString();
     const { _selectedJob } = useContext(ModalContext);
     const [, setSelectedJob] = _selectedJob;
     let jobResults = dynamicJobResults ?? startingJobResults;
@@ -83,10 +85,11 @@ const JobCategoriesSec = ({ dynamicJobResults, currentHierarchyNum, resetSearch 
                                     </section>
                                     <section className="w-100 h-50 d-flex justify-content-center align-items-center">
                                         {(occupation_type === "Line item") ?
-                                            <DetailsBtn 
+                                            <DetailsBtn
                                                 jobToShowInModal={job}
                                                 setSelectedJob={setSelectedJob}
                                                 id={`${id}_btn_more_jobs`}
+                                                searchParams={searchParamsStr}
                                             />
                                             :
                                             <Button id={`${id}_btn_more_jobs`} className="d-flex job-categories-btn moreJobsBtn shadow" onClick={() => handleMoreJobsBtnClick(currentLevel, id)}>

@@ -18,6 +18,7 @@ import {
 } from '../../components/LessonSection/JobVizConnections';
 import { getUnitRelatedJobs } from '../../helperFns/filterUnitRelatedJobs';
 import JobToursCard from '../../components/JobViz/JobTours/JobToursCard';
+import { useSearchParams } from 'next/navigation';
 
 const DATA_SOURCE_LINK =
   'https://www.bls.gov/emp/tables/occupational-projections-and-characteristics.htm';
@@ -33,6 +34,7 @@ const JobViz = ({ vals, unitName, jobTitleAndSocCodePairs }) => {
   const jobToursRef = useRef(null);
   const [searchResults, setSearchResults] = useState([]);
   const [searchInput, setSearchInput] = useState('');
+  const searchParams = useSearchParams();
   const [isHighlighterOn, setIsHighlighterOn] = useState(true);
   const [isSearchResultsModalOn, setIsSearchResultsModalOn] = useState(false);
   const { ref, inView } = useInView({ threshold: 0 });
@@ -181,6 +183,7 @@ const JobViz = ({ vals, unitName, jobTitleAndSocCodePairs }) => {
                 jobCategory={jobCategory}
                 index={index}
                 isSearchResultsChainPresent
+                searchParams={searchParams.toString()}
               />
             );
           })}
@@ -188,7 +191,7 @@ const JobViz = ({ vals, unitName, jobTitleAndSocCodePairs }) => {
       )}
       {!parentJobCategories && (
         <section className="d-flex justify-content-center align-items-center flex-column w-100 pt-5 mt-5">
-          <JobCategoryChainCard />
+          <JobCategoryChainCard searchParams={searchParams.toString()} />
         </section>
       )}
       <section className="jobCategoriesAndBracketSec d-flex justify-content-center align-items-center flex-column pb-5 mb-5">
