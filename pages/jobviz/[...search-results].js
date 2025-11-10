@@ -7,6 +7,8 @@ import { useEffect } from 'react';
 import { ModalContext } from '../../providers/ModalProvider';
 import { useState } from 'react';
 import filterResults from '../../helperFns/filterResults';
+import { SOC_CODES_PARAM_NAME, UNIT_NAME_PARAM_NAME } from '../../components/LessonSection/JobVizConnections';
+import { getUnitRelatedJobs } from '../../helperFns/filterUnitRelatedJobs';
 
 const getParentJobCategories = jobCategoryIds => {
   let _jobVizData = jobVizDataObj.data.filter(jobCategory => jobCategoryIds.includes(jobCategory.id));
@@ -26,7 +28,7 @@ const getParentJobCategories = jobCategoryIds => {
   return _jobVizData;
 };
 
-const JobVizSearchResults = ({ metaDescription }) => {
+const JobVizSearchResults = ({ metaDescription, unitName, jobTitleAndSocCodePairs }) => {
   const router = useRouter();
   const { _selectedJob } = useContext(ModalContext);
   const [, setSelectedJob] = _selectedJob;
@@ -58,7 +60,6 @@ const JobVizSearchResults = ({ metaDescription }) => {
   }, []);
 
   useEffect(() => {
-
     if (willCheckParamsAgain) {
       let jobCategoryIds = params?.slice(2);
 
@@ -79,10 +80,22 @@ const JobVizSearchResults = ({ metaDescription }) => {
 
   }, [willCheckParamsAgain]);
 
-  return <JobViz vals={vals} />;
+  return (
+    <JobViz
+      vals={vals}
+      unitName={unitName}
+      jobTitleAndSocCodePairs={jobTitleAndSocCodePairs}
+    />
+  );
 };
 
 export const getServerSideProps = async (context) => {
+  const socCodesStr = context?.query?.[SOC_CODES_PARAM_NAME];
+  const unitName = context?.query?.[UNIT_NAME_PARAM_NAME] ?? 'Not found';
+  const socCodes = socCodesStr ? new Set(socCodesStr.split(',')) : null;
+  const jobTitleAndSocCodePairs = socCodes ? getUnitRelatedJobs(socCodes).map(
+    ({ title, soc_code }) => [title, soc_code]
+  ) : null;
   let paths = context.resolvedUrl.split('/');
   paths.splice(0, 2);
 
@@ -90,7 +103,11 @@ export const getServerSideProps = async (context) => {
     const targetJob = jobVizDataObj.data.find(({ id }) => id === parseInt(paths[paths.length - 1]));
 
     return {
-      props: { metaDescription: targetJob.soc_title },
+      props: {
+        metaDescription: targetJob.soc_title,
+        unitName,
+        jobTitleAndSocCodePairs,
+      },
     };
   }
 
@@ -100,7 +117,11 @@ export const getServerSideProps = async (context) => {
 
     if (jobInModal) {
       return {
-        props: { metaDescription: `${jobInModal.soc_title}: ${jobInModal.def}` },
+        props: {
+          metaDescription: `${jobInModal.soc_title}: ${jobInModal.def}`,
+          unitName,
+          jobTitleAndSocCodePairs,
+        },
       };
     }
 
@@ -113,17 +134,29 @@ export const getServerSideProps = async (context) => {
       const jobCategory = jobVizDataObj.data.find(({ id }) => id === parseInt(paths[paths.length - 2]));
 
       return {
-        props: { metaDescription: jobCategory.soc_title },
+        props: {
+          metaDescription: jobCategory.soc_title,
+          unitName,
+          jobTitleAndSocCodePairs,
+        },
       };
     }
 
     return {
-      props: { metaDescription: `${jobInModal.soc_title}: ${jobInModal.def}` },
+      props: {
+        metaDescription: `${jobInModal.soc_title}: ${jobInModal.def}`,
+        unitName,
+        jobTitleAndSocCodePairs,
+      },
     };
   }
 
   return {
-    props: { metaDescription: null },
+    props: {
+      metaDescription: null,
+      unitName,
+      jobTitleAndSocCodePairs,
+    },
   };
 };
 

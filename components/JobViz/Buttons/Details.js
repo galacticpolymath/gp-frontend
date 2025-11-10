@@ -17,7 +17,9 @@ const Details = ({ jobToShowInModal, setSelectedJob, id }) => {
         const [currentHierarchyNum, currentLevel] = router.query['search-results'];
         const jobCategoryIdPaths = getJobCategoryIds(router.query['search-results'], jobToShowInModal.id.toString())
         const pathUpdated = `/jobviz/${currentHierarchyNum}/${currentLevel}/${jobCategoryIdPaths.join('/')}`
+
         router.push({ pathname: pathUpdated }, null, { scroll: false })
+
         setSelectedJob(jobToShowInModal)
     }
 
