@@ -78,6 +78,8 @@ const JobViz = ({ vals, unitName, jobTitleAndSocCodePairs }) => {
     }
   }, []);
 
+  console.log('jobTitleAndSocCodePairs, hey there: ', jobTitleAndSocCodePairs);
+
   return (
     <Layout {...layoutProps}>
       <ToastContainer

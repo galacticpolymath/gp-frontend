@@ -15,6 +15,7 @@ import getNewPathsWhenModalCloses from '../../helperFns/getNewPathsWhenModalClos
 import { replaceCharAt } from '../../shared/fns';
 import CopyableTxt from '../CopyableTxt';
 import { toast } from 'react-toastify';
+import { useSearchParams } from 'next/navigation';
 
 const { Header, Title, Body } = Modal;
 const { data_start_yr: _data_start_yr, data_end_yr: _data_end_yr } =
@@ -171,7 +172,7 @@ const SelectedJob: React.FC = () => {
   const { _selectedJob, _isJobModalOn, _jobToursModalCssProps } =
     useModalContext();
   const router = useRouter();
-  const paths = router.query?.['search-results'] ?? [];
+  const searchParams = useSearchParams();
   const [selectedJob, setSelectedJob] = _selectedJob;
   const [isJobModal, setIsJobModal] = _isJobModalOn;
   const [, setJobToursModalCssProps] = _jobToursModalCssProps;
@@ -197,9 +198,19 @@ const SelectedJob: React.FC = () => {
       const newPaths = getNewPathsWhenModalCloses(
         router.query['search-results']
       );
-      router.push({ pathname: `/jobviz${newPaths}` }, undefined, {
-        scroll: false,
-      });
+      const url = `${
+        window.location.origin
+      }/jobviz${newPaths}?${searchParams.toString()}`;
+
+      console.log('Navigating to URL on modal close: ', url);
+
+      router.push(
+        url,
+        undefined,
+        {
+          scroll: false,
+        }
+      );
     }
 
     setSelectedJob(null);

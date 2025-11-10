@@ -6,7 +6,9 @@ import {
   ISelectedJob,
   useModalContext,
 } from '../../../providers/ModalProvider';
-import { sleep } from '../../../globalFns';
+import { getPathsOfSearchResult } from '../../../helperFns/getPathsOfSearchResult';
+import { usePathname, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/router';
 
 interface IJobToursCard {
   ref?: RefObject<HTMLElement | null>;
@@ -196,6 +198,9 @@ const JobToursCard: React.FC<IJobToursCard> = ({
   const {
     _selectedJob: [, setSelectedJob],
   } = useModalContext();
+  const pathname = usePathname();
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const handleJobTitleTxtClick = (socCode: string) => () => {
     if (onJobTitleTxtCick) {
       onJobTitleTxtCick();
@@ -276,6 +281,20 @@ const JobToursCard: React.FC<IJobToursCard> = ({
         }
       );
       return;
+    }
+
+    // if the user on the job viz page, then present the modal to the user
+
+    if(pathname.includes('jobviz')){
+      const paths = getPathsOfSearchResult(targetJob);
+      const searchParamsStr = searchParams.toString();
+      const url = `${window.location.origin}/jobviz${paths}?${searchParamsStr}`;
+
+      console.log('Navigating to JobViz URL: ', url);
+
+      router.push(url, url, { scroll: false });
+
+      // console.log('jobs path: ', paths);
     }
 
     setSelectedJob(targetJob);
