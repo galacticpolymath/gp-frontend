@@ -301,9 +301,12 @@ const JobToursCard: React.FC<IJobToursCard> = ({
                 <li
                   onClick={handleJobTitleTxtClick(socCode)}
                   key={index}
-                  className="underline-on-hover"
+                  style={{
+                    width: 'fit-content',
+                  }}
+                  className="text-primary li-dot-black"
                 >
-                  {jobTitle}
+                  <span className="text-primary underline-on-hover">{jobTitle}</span>
                 </li>
               );
             })}
@@ -314,9 +317,12 @@ const JobToursCard: React.FC<IJobToursCard> = ({
                 <li
                   onClick={handleJobTitleTxtClick(socCode)}
                   key={index}
-                  className="underline-on-hover"
+                  style={{
+                    width: 'fit-content',
+                  }}
+                  className="text-primary li-dot-black"
                 >
-                  {jobTitle}
+                  <span className="text-primary underline-on-hover">{jobTitle}</span>
                 </li>
               );
             })}

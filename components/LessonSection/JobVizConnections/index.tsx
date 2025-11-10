@@ -162,6 +162,9 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
           return (
             <li
               key={index}
+              style={{
+                width: 'fit-content',
+              }}
               onClick={() => {
                 if (!targetJob) {
                   showJobNotFoundToast();
@@ -170,9 +173,9 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
 
                 setSelectedJob(targetJob);
               }}
-              className="text-base cursor-pointer"
+              className="text-base underline-on-hover cursor-pointer"
             >
-              <span className="text-primary underline-on-hover">{job_title}</span>
+              <span className="text-primary">{job_title}</span>
             </li>
           );
         })}
