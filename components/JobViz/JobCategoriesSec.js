@@ -44,11 +44,14 @@ const JobCategoriesSec = ({ dynamicJobResults, currentHierarchyNum, resetSearch 
 
     const handleMoreJobsBtnClick = (level, currentJobsCategoryId) => {
         const nextLevelHierarchyNum = (currentHierarchyNum + 1)
-        const { query, asPath } = router;
+
+        console.log('router object: ', router)
+
+        const { query, pathname } = router;
 
         resetSearch()
 
-        if (asPath == '/jobviz') {
+        if (pathname == '/jobviz') {
             const baseUrl = `${window.location.origin}/jobviz/${nextLevelHierarchyNum}/${level}/${currentJobsCategoryId}`
             const urlUpdated = searchParamsStr.length ? `${baseUrl}?${searchParamsStr}` : baseUrl;
             router.push(urlUpdated, null, { scroll: false })

@@ -247,6 +247,7 @@ const JobViz = ({ vals, unitName, jobTitleAndSocCodePairs }) => {
 export const getServerSideProps = async (context) => {
   const socCodesStr = context?.query?.[SOC_CODES_PARAM_NAME];
   const unitName = context?.query?.[UNIT_NAME_PARAM_NAME] ?? 'Not found';
+  console.log('socCodesStr: ', socCodesStr);
   const socCodes = socCodesStr ? new Set(socCodesStr.split(',')) : null;
 
   if (socCodes) {

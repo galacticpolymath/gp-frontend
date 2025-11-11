@@ -189,6 +189,16 @@ export const useCreateHandleJobTitleTxtClick = (
   return handleJobTitleTxtClick;
 };
 
+export const createSelectedJobVizJobLink = (job: ISelectedJob) => {
+  const paths = getPathsOfSearchResult(job);
+
+  if(!paths){
+    return null;
+  }
+
+  return `${window.location.origin}/jobviz${paths}`;
+};
+
 const JobToursCard: React.FC<IJobToursCard> = ({
   ref,
   jobTitleAndSocCodePairs,

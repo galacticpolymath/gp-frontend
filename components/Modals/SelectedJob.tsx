@@ -16,6 +16,7 @@ import { replaceCharAt } from "../../shared/fns";
 import CopyableTxt from "../CopyableTxt";
 import { toast } from "react-toastify";
 import { useSearchParams } from "next/navigation";
+import { createSelectedJobVizJobLink } from "../JobViz/JobTours/JobToursCard";
 
 const { Header, Title, Body } = Modal;
 const { data_start_yr: _data_start_yr, data_end_yr: _data_end_yr } =
@@ -166,6 +167,7 @@ const SelectedJob: React.FC = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [selectedJob, setSelectedJob] = _selectedJob;
+  const [jobLink, setJobLink] = useState("");
   const [isJobModal, setIsJobModal] = _isJobModalOn;
   const [, setJobToursModalCssProps] = _jobToursModalCssProps;
   let { soc_title, def: _def, title, BLS_link } = selectedJob ?? {};
@@ -195,7 +197,7 @@ const SelectedJob: React.FC = () => {
         ? `${window.location.origin}/jobviz${newPaths}?${paramsStr}`
         : `${window.location.origin}/jobviz${newPaths}`;
 
-      console.log('Navigating to URL on modal close: ', url);
+      console.log("Navigating to URL on modal close: ", url);
 
       router.push(url, undefined, {
         scroll: false,
@@ -209,8 +211,8 @@ const SelectedJob: React.FC = () => {
   };
 
   const handleCopyLinkBtnClick = () => {
-    if (BLS_link) {
-      navigator.clipboard.writeText(BLS_link);
+    if (jobLink) {
+      navigator.clipboard.writeText(jobLink);
       return;
     }
 
@@ -224,12 +226,8 @@ const SelectedJob: React.FC = () => {
       toast.dismiss(toastLinkCopied.current);
     }
 
-    if (BLS_link) {
-      const toastId = toast.info("Link copied ✅!", {
-        position: "top-center",
-      });
-      toastLinkCopied.current = toastId.toString();
-      navigator.clipboard.writeText(BLS_link);
+    if (jobLink) {
+      navigator.clipboard.writeText(jobLink);
       return;
     }
 
@@ -244,6 +242,20 @@ const SelectedJob: React.FC = () => {
     <Modal
       show={!!selectedJob}
       onHide={handleOnHide}
+      onShow={() => {
+        const jobLink = selectedJob
+          ? createSelectedJobVizJobLink(selectedJob)
+          : null;
+
+        console.log(`Job link: ${jobLink}`);
+
+        if (selectedJob && jobLink) {
+          setJobLink(jobLink);
+          return;
+        }
+
+        console.error("selectedJob is falsy. Cannot create job link.");
+      }}
       contentClassName="selectedJobModal"
       dialogClassName="dialogJobVizModal"
       fullscreen="md-down"
@@ -270,43 +282,47 @@ const SelectedJob: React.FC = () => {
         <section className="jobInfoStatSec pt-3 row g-2 d-flex d-sm-none">
           <InfoCards infoCards={infoCards} />
         </section>
-        {BLS_link && (
-          <section className="flex-column flex-sm-row d-flex align-items-center justify-content-between pt-2 mt-3 border-top">
-            <div className="d-flex align-items-center justify-content-center text-sm-start text-center">
-              <span className="me-sm-2 ">
-                Learn More:{" "}
-                <span
-                  onClick={() => {
-                    window.location.href = BLS_link;
-                  }}
-                  className="text-decoration-underline no-link-decoration"
-                >
-                  Occupational Outlook Handbook
-                </span>
+        <section className="flex-column flex-sm-row d-flex align-items-center justify-content-between pt-2 mt-3 border-top">
+          <div
+            className={`d-flex align-items-center justify-content-center text-sm-start text-center ${
+              BLS_link ? "" : "pe-none invisible"
+            }`}
+          >
+            <span className="me-sm-2 ">
+              Learn More:{" "}
+              <span
+                onClick={() => {
+                  if (BLS_link) {
+                    window.open(BLS_link);
+                  }
+                }}
+                className="text-decoration-underline no-link-decoration pointer"
+              >
+                Occupational Outlook Handbook
               </span>
-            </div>
-            <div className="mt-2 mt-sm-0 d-flex align-items-center gap-2 px-2 py-1 bg-transparent small no-btn-styles underline-on-hover">
-              <CopyableTxt
-                implementLogicOnClick={handleCopyLinkBtnClick}
-                copyTxtIndicator="Copy link."
-                txtCopiedIndicator="Link copied ✅!"
-                parentClassName="pointer d-sm-block d-none"
-              >
-                <CopyLinkTxtAndIcon />
-              </CopyableTxt>
-              <CopyableTxt
-                implementLogicOnClick={handleCopyLinkBtnPressOnMobile}
-                copyTxtIndicator="Copy link."
-                txtCopiedIndicator="Link copied ✅!"
-                parentClassName="pointer d-sm-none d-block"
-                disableTxtCopiedShow
-                willDisplayModalOnHover={false}
-              >
-                <CopyLinkTxtAndIcon />
-              </CopyableTxt>
-            </div>
-          </section>
-        )}
+            </span>
+          </div>
+          <div className="mt-2 mt-sm-0 d-flex align-items-center gap-2 px-2 py-1 bg-transparent small no-btn-styles underline-on-hover">
+            <CopyableTxt
+              implementLogicOnClick={handleCopyLinkBtnClick}
+              copyTxtIndicator="Copy link."
+              txtCopiedIndicator="Link copied ✅!"
+              parentClassName="pointer d-sm-block d-none"
+            >
+              <CopyLinkTxtAndIcon />
+            </CopyableTxt>
+            <CopyableTxt
+              implementLogicOnClick={handleCopyLinkBtnPressOnMobile}
+              copyTxtIndicator="Copy link."
+              txtCopiedIndicator="Link copied ✅!"
+              parentClassName="pointer d-sm-none d-block"
+              disableTxtCopiedShow
+              willDisplayModalOnHover={false}
+            >
+              <CopyLinkTxtAndIcon />
+            </CopyableTxt>
+          </div>
+        </section>
       </Body>
     </Modal>
   );
