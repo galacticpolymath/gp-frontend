@@ -1,10 +1,15 @@
 import React from "react";
 import { HiOutlineRocketLaunch } from "react-icons/hi2";
 
+interface IHeroForGpPlusUsersProps {
+  className?: string;
+}
 
-const HeroForGpPlusUsers: React.FC = () => {
+const HeroForGpPlusUsers: React.FC<IHeroForGpPlusUsersProps> = ({
+  className = "jobviz-hero text-center text-light position-relative overflow-hidden",
+}) => {
   return (
-    <section className="jobviz-hero text-center text-light position-relative overflow-hidden">
+    <section className={className}>
       <div className="jobviz-bg"></div>
 
       <div className="container py-5 position-relative">
@@ -19,7 +24,7 @@ const HeroForGpPlusUsers: React.FC = () => {
         </p>
       </div>
 
-      <div className="container pb-5 animate-slideup position-relative">
+      <div className="container pb-5 animate-slideup position-relative d-flex justify-content-center align-items-center">
         <div className="assignment-card p-4 shadow-sm bg-white position-relative rounded-4 text-start overflow-hidden">
           <HiOutlineRocketLaunch className="wm-rocket" aria-hidden="true" />
 

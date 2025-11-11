@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-max-props-per-line */
- 
+
 import React from 'react';
 import Image from 'next/image';
 import styles from './Hero.module.css';
@@ -12,9 +12,17 @@ const Hero = ({
   childrenContainerStyle,
   imgContainerStyle,
   childrenContainerClassName,
+  customChildrenContainerClassName,
   className = '',
   heroContainerStyle = {},
 }) => {
+  let _childrenContainerClassName = `container row ${childrenContainerClassName ?? 'mx-auto'} align-items-start`
+
+  if (typeof customChildrenContainerClassName === 'string') {
+    _childrenContainerClassName = customChildrenContainerClassName
+  }
+
+
   return (
     <div
       style={heroContainerStyle}
@@ -36,7 +44,7 @@ const Hero = ({
           />
         </div>
       )}
-      <div style={childrenContainerStyle ?? {}} className={`container row ${childrenContainerClassName ?? 'mx-auto'} align-items-start`}>
+      <div style={childrenContainerStyle ?? {}} className={_childrenContainerClassName}>
         <div className='col offset-lg-0 col-lg-8 col-xl-6'>
           {children}
         </div>

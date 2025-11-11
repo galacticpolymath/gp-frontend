@@ -1,5 +1,6 @@
 import Hero from '../../components/Hero';
 import HeroForGpPlusUsers from '../../components/JobViz/Heros/HeroForGpPlusUsers';
+import HeroForFreeUsers from '../../components/JobViz/Heros/HeroForFreeUsers';
 import Layout from '../../components/Layout';
 import JobCategoriesSec from '../../components/JobViz/JobCategoriesSec';
 import JobCategoryChainCard from '../../components/JobViz/JobCategoryChainCard';
@@ -88,8 +89,8 @@ const JobViz = ({ vals, unitName, jobTitleAndSocCodePairs }) => {
         toastStyle={{ zIndex: 1000000 }}
         style={{ zIndex: 1000000000 }}
       />
-      <Hero className="jobVizHero">
-        <HeroForGpPlusUsers />
+      <Hero className="jobVizHero" isStylesHeroOn={false} customChildrenContainerClassName=''>
+        <HeroForFreeUsers className='jobviz-hero-free text-center text-light position-relative overflow-hidden pt-4 pb-5' />
       </Hero>
       {jobTitleAndSocCodePairs?.length && (
         <JobToursCard

@@ -7,8 +7,6 @@ $searchResultsHighlight: #ffc107;
 @import "./modals/selectedJobStyles.scss";
 @import "./modals/searchResults.scss";
 
-
-
 .jobViz-chain-txt {
   color: $jobVizCategoryChainTxtHovered;
 }
@@ -19,7 +17,17 @@ $searchResultsHighlight: #ffc107;
 
 .jobVizHero {
   background-color: $heroColor;
-  padding: 8vh 0 !important;
+  // padding: 8vh 0 !important;
+
+  > div > div {
+    width: 100%;
+    position: relative;
+  }
+
+  @media (max-width: 767px) {
+    // overriding .Hero_hero___E4fU class
+    // padding: 40px 0px 30px 0px !important;
+  }
 }
 
 .jobVizImgContainerOnPg {
@@ -86,18 +94,6 @@ $searchResultsHighlight: #ffc107;
   }
 }
 
-.jobVizHero {
-  > div > div {
-    width: 90%;
-    position: relative;
-  }
-
-  @media (max-width: 767px) {
-    // overriding .Hero_hero___E4fU class
-    padding: 40px 0px 30px 0px !important;
-  }
-}
-
 .jobVizCard {
   // height: 250px;
 
@@ -139,13 +135,9 @@ $searchResultsHighlight: #ffc107;
   }
 }
 
-
-
 #currentJobCategoryHeaderTxt {
   margin: 8px 0px 8px 0px;
 }
-
-
 
 .jobVizNavBtn {
   font-size: 14px;
@@ -209,12 +201,10 @@ $searchResultsHighlight: #ffc107;
   padding-top: 100px;
 }
 
-.searchCardContainer{
+.searchCardContainer {
   // height: 1100px;
   // background-color: red;
 }
-
-
 
 // .fadeInFromRight{
 //   animation: fadeInFromRight .7s ease-in-out;
@@ -283,18 +273,17 @@ $searchResultsHighlight: #ffc107;
 }
 
 /* The switch - the box around the sliderForBtn */
-.searchResultsCloseBtn{
+.searchResultsCloseBtn {
   width: 35px;
   height: 35px;
   display: flex;
   justify-content: center;
   align-items: center;
-  background: none;;
+  background: none;
   > svg {
     font-size: 55px !important;
   }
 }
-
 
 .searchResultsHeader {
   // min-height: 85px;
