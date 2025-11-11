@@ -236,10 +236,15 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
                     fontSize: "18px",
                     fontWeight: 400,
                     color: "#000",
+                    display: "flex",
+                    flexWrap: "nowrap",
+                    alignItems: "flex-start",
                   }}
-                  className="d-flex justify-content-center align-items-center"
                 >
-                  <div className="tours-btn-icon-container me-1 d-sm-block d-flex justify-content-center align-items-center">
+                  <div
+                    className="tours-btn-icon-container me-1"
+                    style={{ flexShrink: 0 }}
+                  >
                     <svg
                       width="20"
                       height="20"
@@ -257,7 +262,12 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
                       />
                     </svg>
                   </div>
-                  <div className="tours-btn-txt">
+                  <div
+                    className="tours-btn-txt"
+                    style={{
+                      whiteSpace: "nowrap",
+                    }}
+                  >
                     Open Career Tour Assignment
                   </div>
                 </div>
@@ -284,10 +294,15 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
                       fontSize: "18px",
                       fontWeight: 400,
                       color: "#000",
+                      display: "flex",
+                      flexWrap: "nowrap",
+                      alignItems: "flex-start",
                     }}
-                    className="d-flex justify-content-center align-items-center"
                   >
-                    <div className="tours-btn-icon-container me-1 d-sm-block d-flex justify-content-center align-items-center">
+                    <div
+                      className="tours-btn-icon-container me-1"
+                      style={{ flexShrink: 0 }}
+                    >
                       <svg
                         width="20"
                         height="20"
@@ -312,7 +327,14 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
                         />
                       </svg>
                     </div>
-                    <div className="tours-btn-txt">Copy Assignment Link</div>
+                    <div
+                      className="tours-btn-txt"
+                      style={{
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      Copy Assignment Link
+                    </div>
                   </div>
                 </button>
               </CopyableTxt>
