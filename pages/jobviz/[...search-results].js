@@ -122,7 +122,7 @@ const JobVizSearchResults = ({
 
 export const getServerSideProps = async ({ query, req, resolvedUrl }) => {
   const socCodesStr = query?.[SOC_CODES_PARAM_NAME];
-  const unitName = query?.[UNIT_NAME_PARAM_NAME] ?? "Not found";
+  const unitName = query?.[UNIT_NAME_PARAM_NAME] ?? null;
   const socCodes = socCodesStr ? new Set(socCodesStr.split(",")) : null;
   const jobTitleAndSocCodePairs = socCodes
     ? getUnitRelatedJobs(socCodes).map(({ title, soc_code }) => [
