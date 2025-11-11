@@ -1,5 +1,5 @@
 import Hero from '../../components/Hero';
-import JobVizIcon from '../../components/JobViz/JobVizIcon';
+import HeroForGpPlusUsers from '../../components/JobViz/Heros/HeroForGpPlusUsers';
 import Layout from '../../components/Layout';
 import JobCategoriesSec from '../../components/JobViz/JobCategoriesSec';
 import JobCategoryChainCard from '../../components/JobViz/JobCategoryChainCard';
@@ -89,16 +89,7 @@ const JobViz = ({ vals, unitName, jobTitleAndSocCodePairs }) => {
         style={{ zIndex: 1000000000 }}
       />
       <Hero className="jobVizHero">
-        <section className="d-flex jobVizHeroMainSec">
-          <section className="d-flex flex-column">
-            <h1 className="text-muted">JobViz Career Explorer</h1>
-            <p className="text-muted">{jobVizPgDescriptor}</p>
-            <p className="text-muted">What do you want to be?</p>
-          </section>
-          <section>
-            <JobVizIcon isOnJobVizPg />
-          </section>
-        </section>
+        <HeroForGpPlusUsers />
       </Hero>
       {jobTitleAndSocCodePairs?.length && (
         <JobToursCard
