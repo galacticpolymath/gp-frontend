@@ -135,10 +135,12 @@ export const getServerSideProps = async ({ query, req, resolvedUrl }) => {
   let hasGpPlusMembership = req?.cookies?.["isGpPlusMember"];
 
   console.log('hasGpPlusMembership before validation: ', hasGpPlusMembership);
+  console.log('is sessionToken present: ', !!sessionToken);
 
   if (typeof hasGpPlusMembership === 'string') {
     hasGpPlusMembership = hasGpPlusMembership === 'true'
   } else if (!hasGpPlusMembership && sessionToken) {
+    console.log('Checking membership with verifyJwt...');
     hasGpPlusMembership = !!(await verifyJwt(sessionToken))?.payload?.hasGpPlusMembership
   }
 

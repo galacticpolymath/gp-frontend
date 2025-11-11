@@ -1,41 +1,49 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { IJobVizConnection } from '../../../backend/models/Unit/JobViz';
-import { IConnectionJobViz } from '../../../backend/models/Unit/JobViz';
-import { GpPlusBtn } from '../../../pages/gp-plus';
-import { useRouter } from 'next/navigation';
-import JobToursModal from '../Modals/JobToursModal';
-import { DISABLE_FOOTER_PARAM_NAME } from '../../../components/Footer';
-import { DISABLE_NAVBAR_PARAM_NAME } from '../../../components/Navbar';
-import Image from 'next/image';
-import CopyableTxt from '../../CopyableTxt';
-import { getSessionStorageItem } from '../../../shared/fns';
-import { useUserContext } from '../../../providers/UserProvider';
-import { MdOutlineRocketLaunch } from 'react-icons/md';
-import { showJobNotFoundToast, useCreateHandleJobTitleTxtClick } from '../../JobViz/JobTours/JobToursCard';
-import { toast } from 'react-toastify';
-import jobVizDataObj from '../../../data/Jobviz/jobVizDataObj.json';
-import { ISelectedJob, useModalContext } from '../../../providers/ModalProvider';
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { IJobVizConnection } from "../../../backend/models/Unit/JobViz";
+import { IConnectionJobViz } from "../../../backend/models/Unit/JobViz";
+import { GpPlusBtn } from "../../../pages/gp-plus";
+import { useRouter } from "next/navigation";
+import JobToursModal from "../Modals/JobToursModal";
+import { DISABLE_FOOTER_PARAM_NAME } from "../../../components/Footer";
+import { DISABLE_NAVBAR_PARAM_NAME } from "../../../components/Navbar";
+import Image from "next/image";
+import CopyableTxt from "../../CopyableTxt";
+import { getSessionStorageItem } from "../../../shared/fns";
+import { useUserContext } from "../../../providers/UserProvider";
+import { MdOutlineRocketLaunch } from "react-icons/md";
+import {
+  showJobNotFoundToast,
+  useCreateHandleJobTitleTxtClick,
+} from "../../JobViz/JobTours/JobToursCard";
+import { toast } from "react-toastify";
+import jobVizDataObj from "../../../data/Jobviz/jobVizDataObj.json";
+import {
+  ISelectedJob,
+  useModalContext,
+} from "../../../providers/ModalProvider";
 
 interface IJobVizConnectionsProps {
   unitName?: string;
   jobVizConnections?: IConnectionJobViz[] | IJobVizConnection[] | null;
 }
 
-export const SOC_CODES_PARAM_NAME = 'socCodes';
-export const UNIT_NAME_PARAM_NAME = 'unitName';
+export const SOC_CODES_PARAM_NAME = "socCodes";
+export const UNIT_NAME_PARAM_NAME = "unitName";
 
 const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
   jobVizConnections,
   unitName,
 }) => {
   const router = useRouter();
-  const { _selectedJob: [, setSelectedJob] } = useModalContext();
+  const {
+    _selectedJob: [, setSelectedJob],
+  } = useModalContext();
   const {
     _isGpPlusMember: [isGpPlusMember],
   } = useUserContext();
   const didInitialRenderOccur = useRef(false);
   const isUserAGpPlusMember = useMemo(() => {
-    return !!getSessionStorageItem('isGpPlusUser');
+    return !!getSessionStorageItem("isGpPlusUser");
   }, [isGpPlusMember]);
   const [isJobsToursUpSellModalOn, setIsJobsToursUpSellModalOn] =
     useState(false);
@@ -52,7 +60,7 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
 
     if (!jobVizConnections?.length) {
       console.error(
-        'Developer Error: jobVizConnections is empty or undefined in JobVizConnections component.'
+        "Developer Error: jobVizConnections is empty or undefined in JobVizConnections component."
       );
 
       return [];
@@ -91,8 +99,8 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
     (job) => [job.job_title, job.soc_code]
   );
   const jobsToursUrl = useMemo(() => {
-    if (typeof window === 'undefined') {
-      return '';
+    if (typeof window === "undefined") {
+      return "";
     }
 
     const url = new URL(`${window.location.origin}/jobviz`);
@@ -100,7 +108,7 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
       .map((jobVizConnection) => {
         return jobVizConnection.soc_code;
       })
-      .join(',');
+      .join(",");
 
     url.searchParams.append(SOC_CODES_PARAM_NAME, socCodesStr);
 
@@ -129,7 +137,7 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
   }
 
   const handlePreviewCareerTourAssignmentsBtnClick = () => {
-    router.push(jobsToursUrl);
+    window.open(jobsToursUrl);
   };
 
   const handleSubscribeToTourAssignmentBtnClick = () => {
@@ -142,7 +150,7 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
         <div className="d-flex pt-1">
           <MdOutlineRocketLaunch size={25} />
         </div>
-        <div className="d-flex p-0 ms-1" style={{ fontSize: '20px' }}>
+        <div className="d-flex p-0 ms-1" style={{ fontSize: "20px" }}>
           JobViz connects classroom learning to the real world—helping students
           see how knowledge links to jobs, industries, and the wider economy.
           With data on 1,000+ occupations, it's a springboard for systems
@@ -150,7 +158,7 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
         </div>
       </div>
       <h3 className="text-lg font-semibold mb-3 mt-3">
-        Jobs and careers related to the &quot;{unitName ?? 'Not found'}&quot;
+        Jobs and careers related to the &quot;{unitName ?? "Not found"}&quot;
         unit:
       </h3>
       <ul className="list-disc pl-6 mb-6 space-y-2">
@@ -158,12 +166,12 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
           const targetJob = jobVizDataObj.data.find(
             (job) => job.soc_code === soc_code
           ) as ISelectedJob | undefined;
-          
+
           return (
             <li
               key={index}
               style={{
-                width: 'fit-content',
+                width: "fit-content",
               }}
               onClick={() => {
                 if (!targetJob) {
@@ -173,9 +181,11 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
 
                 setSelectedJob(targetJob);
               }}
-              className="text-base underline-on-hover cursor-pointer"
+              className="text-primary li-dot-black text-base underline-on-hover pointer"
             >
-              <span className="text-primary">{job_title}</span>
+              <span className="text-primary underline-on-hover pointer">
+                {job_title}
+              </span>
             </li>
           );
         })}
@@ -184,13 +194,13 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
         {isUserAGpPlusMember && didInitialRenderOccur.current ? (
           <div
             style={{
-              border: '2px solid #e5e7eb',
-              borderRadius: '12px',
-              display: 'flex',
-              maxWidth: '500px',
-              width: '100%',
-              position: 'relative',
-              minWidth: '270px',
+              border: "2px solid #e5e7eb",
+              borderRadius: "12px",
+              display: "flex",
+              maxWidth: "500px",
+              width: "100%",
+              position: "relative",
+              minWidth: "270px",
             }}
             className=""
           >
@@ -203,7 +213,7 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
             />
             <div
               style={{
-                gap: '12px',
+                gap: "12px",
                 flex: 1,
               }}
               className="tours-btn-container px-1 px-sm-4 pb-4 w-100 d-flex justify-content-center align-items-center flex-column"
@@ -211,23 +221,21 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
               <button
                 onClick={handlePreviewCareerTourAssignmentsBtnClick}
                 style={{
-                  background: 'none',
-                  border: 'none',
+                  background: "none",
+                  border: "none",
                   padding: 0,
-                  display: 'flex',
-                  alignItems: 'center',
-                  // gap: "12px",
-                  cursor: 'pointer',
-                  textAlign: 'left',
+                  display: "flex",
+                  alignItems: "center",
+                  cursor: "pointer",
+                  textAlign: "left",
                 }}
                 className="tours-btn d-flex justify-content-center justify-content-sm-start align-items-center align-items-sm-stretch"
               >
                 <div
                   style={{
-                    fontSize: '15px',
+                    fontSize: "18px",
                     fontWeight: 400,
-                    color: '#000',
-                    // width: "fit-content",
+                    color: "#000",
                   }}
                   className="d-flex justify-content-center align-items-center"
                 >
@@ -250,7 +258,7 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
                     </svg>
                   </div>
                   <div className="tours-btn-txt">
-                    Preview Career Tour Assignment
+                    Open Career Tour Assignment
                   </div>
                 </div>
               </button>
@@ -263,19 +271,19 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
               >
                 <button
                   style={{
-                    background: 'none',
-                    border: 'none',
+                    background: "none",
+                    border: "none",
                     padding: 0,
-                    gap: '12px',
-                    cursor: 'pointer',
+                    gap: "12px",
+                    cursor: "pointer",
                   }}
                   className="tours-btn d-flex justify-content-center justify-content-sm-start align-items-center align-items-sm-stretch"
                 >
                   <div
                     style={{
-                      fontSize: '15px',
+                      fontSize: "18px",
                       fontWeight: 400,
-                      color: '#000',
+                      color: "#000",
                     }}
                     className="d-flex justify-content-center align-items-center"
                   >
@@ -304,7 +312,7 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
                         />
                       </svg>
                     </div>
-                    <div className="tours-btn-txt">Copy assignment link</div>
+                    <div className="tours-btn-txt">Copy Assignment Link</div>
                   </div>
                 </button>
               </CopyableTxt>
@@ -315,24 +323,24 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
             onClick={handleSubscribeToTourAssignmentBtnClick}
             className="px-3 py-2 w-100 w-sm-auto"
             styles={{
-              minHeight: '48px',
-              backgroundColor: 'white',
-              border: 'solid 3px #2339C4',
-              borderRadius: '1.5em',
-              textTransform: 'none',
-              minWidth: 'auto',
-              width: '100%',
-              maxWidth: '500px',
+              minHeight: "48px",
+              backgroundColor: "white",
+              border: "solid 3px #2339C4",
+              borderRadius: "1.5em",
+              textTransform: "none",
+              minWidth: "auto",
+              width: "100%",
+              maxWidth: "500px",
             }}
           >
             <div
               style={{
-                lineHeight: '1.4',
-                fontSize: 'clamp(14px, 4vw, 18px)',
+                lineHeight: "1.4",
+                fontSize: "clamp(14px, 4vw, 18px)",
               }}
               className="d-flex flex-column text-black text-center text-sm-start"
             >
-              Preview job exploration assignment
+              Preview Job Exploration Assignment
             </div>
           </GpPlusBtn>
         )}
@@ -344,7 +352,7 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
         ]}
         url={`${jobsToursUrl}&${DISABLE_FOOTER_PARAM_NAME}=true&${DISABLE_NAVBAR_PARAM_NAME}=true#job-tours-section`}
         jobTitleAndSocCodePairs={jobTitleAndSocCodePairs}
-        unitName={unitName ?? 'Not found'}
+        unitName={unitName ?? "Not found"}
       />
     </div>
   );
