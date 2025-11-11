@@ -34,7 +34,7 @@ const JobViz = ({ vals, unitName, jobTitleAndSocCodePairs }) => {
   const jobToursRef = useRef(null);
   const [searchResults, setSearchResults] = useState([]);
   const [searchInput, setSearchInput] = useState('');
-  const searchParams = useSearchParams();
+  const searchParams = useSearchParams().toString();
   const [isHighlighterOn, setIsHighlighterOn] = useState(true);
   const [isSearchResultsModalOn, setIsSearchResultsModalOn] = useState(false);
   const { ref, inView } = useInView({ threshold: 0 });
@@ -129,6 +129,7 @@ const JobViz = ({ vals, unitName, jobTitleAndSocCodePairs }) => {
                   <PreviouslySelectedJobCategory
                     jobCategory={jobCategory}
                     isBrick
+                    searchParamsStr={searchParams}
                   />
                   <section className="w-100 d-flex justify-content-center align-items-center">
                     <div
@@ -156,7 +157,7 @@ const JobViz = ({ vals, unitName, jobTitleAndSocCodePairs }) => {
                   key={index}
                   className="d-flex justify-content-center flex-column align-items-center"
                 >
-                  <PreviouslySelectedJobCategory jobCategory={jobCategory} />
+                  <PreviouslySelectedJobCategory jobCategory={jobCategory} searchParamsStr={searchParams} />
                   <section className="w-100 d-flex justify-content-center align-items-center">
                     <div
                       style={{ height: 14, width: 3 }}
@@ -183,7 +184,7 @@ const JobViz = ({ vals, unitName, jobTitleAndSocCodePairs }) => {
                 jobCategory={jobCategory}
                 index={index}
                 isSearchResultsChainPresent
-                searchParams={searchParams.toString()}
+                searchParams={searchParams}
               />
             );
           })}
@@ -191,7 +192,7 @@ const JobViz = ({ vals, unitName, jobTitleAndSocCodePairs }) => {
       )}
       {!parentJobCategories && (
         <section className="d-flex justify-content-center align-items-center flex-column w-100 pt-5 mt-5">
-          <JobCategoryChainCard searchParams={searchParams.toString()} />
+          <JobCategoryChainCard searchParams={searchParams} />
         </section>
       )}
       <section className="jobCategoriesAndBracketSec d-flex justify-content-center align-items-center flex-column pb-5 mb-5">

@@ -55,6 +55,10 @@ const JobCategoriesSec = ({ dynamicJobResults, currentHierarchyNum, resetSearch 
             return;
         }
 
+        console.log('query: ', query);
+
+        // TODO: handle the following case: the search-results parameter is not present in the url
+
         let jobCategoryIds = [...query[`search-results`]]
         jobCategoryIds.splice(0, 2)
         jobCategoryIds.push(currentJobsCategoryId)
