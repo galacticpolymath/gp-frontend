@@ -262,11 +262,17 @@ export const getServerSideProps = async ({ query, req }) => {
   const socCodes = socCodesStr ? new Set(socCodesStr.split(",")) : null;
   const sessionToken = req.cookies["next-auth.session-token"];
   let hasGpPlusMembership = req?.cookies?.["isGpPlusMember"];
-  hasGpPlusMembership =
-    hasGpPlusMembership ??
-    (typeof sessionToken === "string"
-      ? !!(await verifyJwt(sessionToken))?.payload?.hasGpPlusMembership
-      : false);
+
+  console.log('hasGpPlusMembership before validation: ', hasGpPlusMembership);
+
+  if (typeof hasGpPlusMembership === 'string') {
+    hasGpPlusMembership = hasGpPlusMembership === 'true'
+  } else if (!hasGpPlusMembership && sessionToken) {
+    hasGpPlusMembership = !!(await verifyJwt(sessionToken))?.payload?.hasGpPlusMembership
+  }
+
+  hasGpPlusMembership = !!hasGpPlusMembership
+  console.log('hasGpPlusMembership after validation: ', hasGpPlusMembership);
 
   if (socCodes) {
     const jobTitleAndSocCodePairs = getUnitRelatedJobs(socCodes).map(

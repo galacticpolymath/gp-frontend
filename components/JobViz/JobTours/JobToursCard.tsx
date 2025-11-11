@@ -210,6 +210,10 @@ const JobToursCard: React.FC<IJobToursCard> = ({
   } = useModalContext();
   const pathname = usePathname();
   const router = useRouter();
+
+  console.log("pathname: ", pathname)  
+  console.log("router: ", router)  
+
   const searchParams = useSearchParams();
   const handleJobTitleTxtClick = (socCode: string) => () => {
     if (onJobTitleTxtCick) {
@@ -310,13 +314,14 @@ const JobToursCard: React.FC<IJobToursCard> = ({
     setSelectedJob(targetJob);
   };
 
-  if (pathname === "/jobviz" && jobTitleAndSocCodePairs?.length) {
+
+  if (pathname.includes("jobviz") && jobTitleAndSocCodePairs?.length) {
     console.log("Inside jobviz page, showing job tours modal");
     return (
       <>
         <ul
           className="d-none d-sm-block"
-          style={{ columnCount: 2, columnGap: "1.3rem" }}
+          style={{ columnCount: 2, columnGap: ".8rem" }}
         >
           {jobTitleAndSocCodePairs.map(([jobTitle, socCode], index) => {
             return (
@@ -325,6 +330,7 @@ const JobToursCard: React.FC<IJobToursCard> = ({
                 key={index}
                 style={{
                   width: "fit-content",
+                  maxWidth: "400px",
                 }}
                 className="text-primary li-dot-black"
               >

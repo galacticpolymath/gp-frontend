@@ -49,13 +49,7 @@ const HeroForGpPlusUsers: React.FC<IHeroForGpPlusUsersProps> = ({
               least interested in.
             </p>
 
-            <div className="row row-cols-sm-2 row-cols-1 position-relative">
-              <div className="col">
-                <JobToursCard
-                  jobTitleAndSocCodePairs={jobTitleAndSocCodePairs}
-                />
-              </div>
-            </div>
+            <JobToursCard jobTitleAndSocCodePairs={jobTitleAndSocCodePairs} />
           </div>
         </div>
       ) : (
