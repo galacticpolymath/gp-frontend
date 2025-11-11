@@ -13,7 +13,7 @@ import { useRouter } from "next/router";
 export interface IJobToursCard {
   ref?: RefObject<HTMLElement | null>;
   jobTitleAndSocCodePairs: [string, string][];
-  unitName: string;
+  unitName?: string;
   onJobTitleTxtCick?: () => void;
 }
 
@@ -310,7 +310,7 @@ const JobToursCard: React.FC<IJobToursCard> = ({
     setSelectedJob(targetJob);
   };
 
-  if (pathname === "/jobviz") {
+  if (pathname === "/jobviz" && jobTitleAndSocCodePairs?.length) {
     console.log("Inside jobviz page, showing job tours modal");
     return (
       <>

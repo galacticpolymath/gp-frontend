@@ -6,6 +6,42 @@
   --text-dark: #363636;
 }
 
+.gp-plus-user-jobviz-logo-shell {
+  width: 170px;
+  height: 170px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  box-shadow: 0 0 0 6px var(--purple),
+    /* bright blue ring */ 0 0 0 12px var(--fuchsia),
+    /* soft white outer ring */ 0 10px 24px var(--fuchsia); /* drop shadow */
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+
+/* hover polish */
+.gp-plus-user-jobviz-logo-shell:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 0 6px var(--purple), 0 0 0 14px var(--fuchsia),
+    0 14px 28px var(--fuchsia);
+}
+
+/* Responsive sizing */
+@media (max-width: 991px) {
+  .gp-plus-user-jobviz-logo-shell {
+    width: 140px;
+    height: 140px;
+  }
+}
+@media (max-width: 767px) {
+  .gp-plus-user-jobviz-logo-shell {
+    width: 120px;
+    height: 120px;
+    margin-top: 1rem;
+  }
+}
+
 /* ---------------- HERO ---------------- */
 .jobviz-hero {
   position: relative;

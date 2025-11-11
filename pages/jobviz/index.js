@@ -103,18 +103,15 @@ const JobViz = ({
         customChildrenContainerClassName=""
       >
         {hasGpPlusMembership ? (
-          <HeroForGpPlusUsers className="jobviz-hero text-center text-light position-relative overflow-hidden pt-3 pb-5" />
+          <HeroForGpPlusUsers
+            jobTitleAndSocCodePairs={jobTitleAndSocCodePairs}
+            unitName={unitName}
+            className="jobviz-hero text-center text-light position-relative overflow-hidden pt-3 pb-5"
+          />
         ) : (
           <HeroForFreeUsers className="jobviz-hero-free text-center text-light position-relative overflow-hidden pt-4 pb-5" />
         )}
       </Hero>
-      {jobTitleAndSocCodePairs?.length && (
-        <JobToursCard
-          jobTitleAndSocCodePairs={jobTitleAndSocCodePairs}
-          unitName={unitName}
-          ref={jobToursRef}
-        />
-      )}
       <SearchInputSec
         _searchResults={[searchResults, setSearchResults]}
         _searchInput={[searchInput, setSearchInput]}
@@ -260,7 +257,7 @@ export const getServerSideProps = async ({ query, req }) => {
   console.log("query, getServerSideProps: ", query);
 
   const socCodesStr = query?.[SOC_CODES_PARAM_NAME];
-  const unitName = query?.[UNIT_NAME_PARAM_NAME] ?? "Not found";
+  const unitName = query?.[UNIT_NAME_PARAM_NAME] ?? null;
   console.log("socCodesStr: ", socCodesStr);
   const socCodes = socCodesStr ? new Set(socCodesStr.split(",")) : null;
   const sessionToken = req.cookies["next-auth.session-token"];

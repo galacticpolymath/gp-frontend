@@ -43,28 +43,12 @@
   text-transform: uppercase;
 }
 
-/* ---------------- LOGO WRAPPER (blue rings) ---------------- */
-.jobviz-logo-shell {
-  width: 170px;
-  height: 170px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: transparent;
-  box-shadow:
-    0 0 0 6px rgba(0, 172, 235, 0.9),   /* bright blue ring */
-    0 0 0 12px rgba(255, 255, 255, 0.4),/* soft white outer ring */
-    0 10px 24px rgba(0, 0, 0, 0.45);    /* drop shadow */
-  transition: transform 0.4s ease, box-shadow 0.4s ease;
-}
-
 /* inner circle: actually crops the logo so black ring disappears */
 .jobviz-logo-inner {
   width: 78%;
   height: 78%;
   border-radius: 50%;
-  overflow: hidden;          /* hard crop */
+  overflow: hidden; /* hard crop */
   background: #ffffff;
   display: flex;
   align-items: center;
@@ -79,13 +63,26 @@
   transform: translateY(3%); /* tiny vertical nudge */
 }
 
+/* ---------------- LOGO WRAPPER (blue rings) ---------------- */
+.jobviz-logo-shell {
+  width: 170px;
+  height: 170px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  box-shadow: 0 0 0 6px rgba(0, 172, 235, 0.9),
+    /* bright blue ring */ 0 0 0 12px rgba(255, 255, 255, 0.4),
+    /* soft white outer ring */ 0 10px 24px rgba(0, 0, 0, 0.45); /* drop shadow */
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+
 /* hover polish */
 .jobviz-logo-shell:hover {
   transform: scale(1.05);
-  box-shadow:
-    0 0 0 6px rgba(0, 172, 235, 1),
-    0 0 0 14px rgba(255, 255, 255, 0.5),
-    0 14px 28px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 0 0 6px rgba(0, 172, 235, 1),
+    0 0 0 14px rgba(255, 255, 255, 0.5), 0 14px 28px rgba(0, 0, 0, 0.5);
 }
 
 /* Responsive sizing */
