@@ -1,12 +1,14 @@
 import React from "react";
 import { HiOutlineRocketLaunch } from "react-icons/hi2";
+import { IJobToursCard } from "../JobTours/JobToursCard";
 
-interface IHeroForGpPlusUsersProps {
+interface IHeroForGpPlusUsersProps extends Pick<IJobToursCard, "jobTitleAndSocCodePairs">{
   className?: string;
 }
 
 const HeroForGpPlusUsers: React.FC<IHeroForGpPlusUsersProps> = ({
   className = "jobviz-hero text-center text-light position-relative overflow-hidden",
+  jobTitleAndSocCodePairs
 }) => {
   return (
     <section className={className}>

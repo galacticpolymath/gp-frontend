@@ -1,16 +1,16 @@
-import React, { RefObject } from 'react';
-import jobVizDataObj from '../../../data/Jobviz/jobVizDataObj.json';
-import { toast } from 'react-toastify';
-import { SUPPORT_EMAIL } from '../../../shared/constants';
+import React, { RefObject } from "react";
+import jobVizDataObj from "../../../data/Jobviz/jobVizDataObj.json";
+import { toast } from "react-toastify";
+import { SUPPORT_EMAIL } from "../../../shared/constants";
 import {
   ISelectedJob,
   useModalContext,
-} from '../../../providers/ModalProvider';
-import { getPathsOfSearchResult } from '../../../helperFns/getPathsOfSearchResult';
-import { usePathname, useSearchParams } from 'next/navigation';
-import { useRouter } from 'next/router';
+} from "../../../providers/ModalProvider";
+import { getPathsOfSearchResult } from "../../../helperFns/getPathsOfSearchResult";
+import { usePathname, useSearchParams } from "next/navigation";
+import { useRouter } from "next/router";
 
-interface IJobToursCard {
+export interface IJobToursCard {
   ref?: RefObject<HTMLElement | null>;
   jobTitleAndSocCodePairs: [string, string][];
   unitName: string;
@@ -22,68 +22,68 @@ export const showJobNotFoundToast = () => {
     <>
       <div
         style={{
-          fontSize: '15px',
-          lineHeight: '1.6',
-          fontWeight: '500',
+          fontSize: "15px",
+          lineHeight: "1.6",
+          fontWeight: "500",
         }}
       >
         <div
           style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-            marginBottom: '8px',
+            display: "flex",
+            alignItems: "center",
+            gap: "8px",
+            marginBottom: "8px",
           }}
         >
-          <span style={{ fontSize: '20px' }}>🔍</span>
+          <span style={{ fontSize: "20px" }}>🔍</span>
           <strong>Oops! Job Data Not Found</strong>
         </div>
         <p
           style={{
-            margin: '0 0 10px 28px',
-            color: '#555',
-            fontWeight: '400',
+            margin: "0 0 10px 28px",
+            color: "#555",
+            fontWeight: "400",
           }}
         >
           We couldn&apos;t locate the information for this job selection.
         </p>
         <div
           style={{
-            marginLeft: '28px',
-            padding: '10px 12px',
-            backgroundColor: '#f8f9fa',
-            borderRadius: '6px',
-            borderLeft: '3px solid #1976d2',
+            marginLeft: "28px",
+            padding: "10px 12px",
+            backgroundColor: "#f8f9fa",
+            borderRadius: "6px",
+            borderLeft: "3px solid #1976d2",
           }}
         >
-          <span style={{ color: '#666', fontSize: '14px' }}>
-            Think this is an error?{' '}
+          <span style={{ color: "#666", fontSize: "14px" }}>
+            Think this is an error?{" "}
             <a
               href={SUPPORT_EMAIL}
               style={{
-                color: '#1976d2',
-                textDecoration: 'none',
-                fontWeight: '600',
-                borderBottom: '2px solid #1976d2',
+                color: "#1976d2",
+                textDecoration: "none",
+                fontWeight: "600",
+                borderBottom: "2px solid #1976d2",
               }}
               target="_blank"
               rel="noopener noreferrer"
             >
               Contact our support team
-            </a>{' '}
+            </a>{" "}
             and we&apos;ll help you out!
           </span>
         </div>
       </div>
     </>,
     {
-      position: 'top-center',
+      position: "top-center",
       autoClose: 8000,
       closeOnClick: true,
       pauseOnHover: true,
       style: {
-        borderRadius: '12px',
-        boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+        borderRadius: "12px",
+        boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
       },
     }
   );
@@ -111,68 +111,68 @@ export const useCreateHandleJobTitleTxtClick = (
         <>
           <div
             style={{
-              fontSize: '15px',
-              lineHeight: '1.6',
-              fontWeight: '500',
+              fontSize: "15px",
+              lineHeight: "1.6",
+              fontWeight: "500",
             }}
           >
             <div
               style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
-                marginBottom: '8px',
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+                marginBottom: "8px",
               }}
             >
-              <span style={{ fontSize: '20px' }}>🔍</span>
+              <span style={{ fontSize: "20px" }}>🔍</span>
               <strong>Oops! Job Data Not Found</strong>
             </div>
             <p
               style={{
-                margin: '0 0 10px 28px',
-                color: '#555',
-                fontWeight: '400',
+                margin: "0 0 10px 28px",
+                color: "#555",
+                fontWeight: "400",
               }}
             >
               We couldn&apos;t locate the information for this job selection.
             </p>
             <div
               style={{
-                marginLeft: '28px',
-                padding: '10px 12px',
-                backgroundColor: '#f8f9fa',
-                borderRadius: '6px',
-                borderLeft: '3px solid #1976d2',
+                marginLeft: "28px",
+                padding: "10px 12px",
+                backgroundColor: "#f8f9fa",
+                borderRadius: "6px",
+                borderLeft: "3px solid #1976d2",
               }}
             >
-              <span style={{ color: '#666', fontSize: '14px' }}>
-                Think this is an error?{' '}
+              <span style={{ color: "#666", fontSize: "14px" }}>
+                Think this is an error?{" "}
                 <a
                   href={SUPPORT_EMAIL}
                   style={{
-                    color: '#1976d2',
-                    textDecoration: 'none',
-                    fontWeight: '600',
-                    borderBottom: '2px solid #1976d2',
+                    color: "#1976d2",
+                    textDecoration: "none",
+                    fontWeight: "600",
+                    borderBottom: "2px solid #1976d2",
                   }}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
                   Contact our support team
-                </a>{' '}
+                </a>{" "}
                 and we&apos;ll help you out!
               </span>
             </div>
           </div>
         </>,
         {
-          position: 'top-center',
+          position: "top-center",
           autoClose: 8000,
           closeOnClick: true,
           pauseOnHover: true,
           style: {
-            borderRadius: '12px',
-            boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+            borderRadius: "12px",
+            boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
           },
         }
       );
@@ -192,7 +192,7 @@ export const useCreateHandleJobTitleTxtClick = (
 export const createSelectedJobVizJobLink = (job: ISelectedJob) => {
   const paths = getPathsOfSearchResult(job);
 
-  if(!paths){
+  if (!paths) {
     return null;
   }
 
@@ -225,68 +225,68 @@ const JobToursCard: React.FC<IJobToursCard> = ({
         <>
           <div
             style={{
-              fontSize: '15px',
-              lineHeight: '1.6',
-              fontWeight: '500',
+              fontSize: "15px",
+              lineHeight: "1.6",
+              fontWeight: "500",
             }}
           >
             <div
               style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
-                marginBottom: '8px',
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+                marginBottom: "8px",
               }}
             >
-              <span style={{ fontSize: '20px' }}>🔍</span>
+              <span style={{ fontSize: "20px" }}>🔍</span>
               <strong>Oops! Job Data Not Found</strong>
             </div>
             <p
               style={{
-                margin: '0 0 10px 28px',
-                color: '#555',
-                fontWeight: '400',
+                margin: "0 0 10px 28px",
+                color: "#555",
+                fontWeight: "400",
               }}
             >
               We couldn&apos;t locate the information for this job selection.
             </p>
             <div
               style={{
-                marginLeft: '28px',
-                padding: '10px 12px',
-                backgroundColor: '#f8f9fa',
-                borderRadius: '6px',
-                borderLeft: '3px solid #1976d2',
+                marginLeft: "28px",
+                padding: "10px 12px",
+                backgroundColor: "#f8f9fa",
+                borderRadius: "6px",
+                borderLeft: "3px solid #1976d2",
               }}
             >
-              <span style={{ color: '#666', fontSize: '14px' }}>
-                Think this is an error?{' '}
+              <span style={{ color: "#666", fontSize: "14px" }}>
+                Think this is an error?{" "}
                 <a
                   href={SUPPORT_EMAIL}
                   style={{
-                    color: '#1976d2',
-                    textDecoration: 'none',
-                    fontWeight: '600',
-                    borderBottom: '2px solid #1976d2',
+                    color: "#1976d2",
+                    textDecoration: "none",
+                    fontWeight: "600",
+                    borderBottom: "2px solid #1976d2",
                   }}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
                   Contact our support team
-                </a>{' '}
+                </a>{" "}
                 and we&apos;ll help you out!
               </span>
             </div>
           </div>
         </>,
         {
-          position: 'top-center',
+          position: "top-center",
           autoClose: 8000,
           closeOnClick: true,
           pauseOnHover: true,
           style: {
-            borderRadius: '12px',
-            boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+            borderRadius: "12px",
+            boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
           },
         }
       );
@@ -295,12 +295,12 @@ const JobToursCard: React.FC<IJobToursCard> = ({
 
     // if the user on the job viz page, then present the modal to the user
 
-    if(pathname.includes('jobviz')){
+    if (pathname.includes("jobviz")) {
       const paths = getPathsOfSearchResult(targetJob);
       const searchParamsStr = searchParams.toString();
       const url = `${window.location.origin}/jobviz${paths}?${searchParamsStr}`;
 
-      console.log('Navigating to JobViz URL: ', url);
+      console.log("Navigating to JobViz URL: ", url);
 
       router.push(url, url, { scroll: false });
 
@@ -310,35 +310,78 @@ const JobToursCard: React.FC<IJobToursCard> = ({
     setSelectedJob(targetJob);
   };
 
+  if (pathname === "/jobviz") {
+    console.log("Inside jobviz page, showing job tours modal");
+    return (
+      <>
+        <ul
+          className="d-none d-sm-block"
+          style={{ columnCount: 2, columnGap: "1.3rem" }}
+        >
+          {jobTitleAndSocCodePairs.map(([jobTitle, socCode], index) => {
+            return (
+              <li
+                onClick={handleJobTitleTxtClick(socCode)}
+                key={index}
+                style={{
+                  width: "fit-content",
+                }}
+                className="text-primary li-dot-black"
+              >
+                <span className="text-primary underline-on-hover">
+                  {jobTitle}
+                </span>
+              </li>
+            );
+          })}
+        </ul>
+        <ul className="mb-4 d-block d-sm-none">
+          {jobTitleAndSocCodePairs.map(([jobTitle, socCode], index) => {
+            return (
+              <li
+                onClick={handleJobTitleTxtClick(socCode)}
+                key={index}
+                style={{
+                  width: "fit-content",
+                }}
+                className="text-primary li-dot-black"
+              >
+                <span className="text-primary underline-on-hover">
+                  {jobTitle}
+                </span>
+              </li>
+            );
+          })}
+        </ul>
+      </>
+    );
+  }
+
   return (
-    <section
-      ref={ref}
-      id="job-tours-section"
-      className="container py-5"
-    >
+    <section ref={ref} id="job-tours-section" className="container py-5">
       <div className="card shadow-sm">
         <div className="card-body p-4">
           <h3 className="mb-4">
             Jobs and careers related to the &ldquo;{unitName}&rdquo; unit:
           </h3>
           <div className="d-flex align-items-start mb-4">
-            <div className="me-3 mt-1" style={{ fontSize: '2rem' }}>
+            <div className="me-3 mt-1" style={{ fontSize: "2rem" }}>
               ✏️
             </div>
             <div>
               <p className="mb-2">
-                <strong>Assignment:</strong> Research these jobs and explain{' '}
+                <strong>Assignment:</strong> Research these jobs and explain{" "}
                 <em>with data</em> which you would be most or least interested
                 in.
               </p>
-              <p className="text-muted mb-3" style={{ fontSize: '0.9rem' }}>
+              <p className="text-muted mb-3" style={{ fontSize: "0.9rem" }}>
                 Your teacher will provide instructions on how to share your
                 response.
               </p>
               <div
                 className="alert alert-info py-2 px-3 mb-0"
                 role="alert"
-                style={{ fontSize: '0.85rem' }}
+                style={{ fontSize: "0.85rem" }}
               >
                 ℹ️ <strong>Note:</strong> This feature is currently being built
                 and will be available soon.
@@ -347,7 +390,7 @@ const JobToursCard: React.FC<IJobToursCard> = ({
           </div>
           <ul
             className="d-none d-sm-block"
-            style={{ columnCount: 2, columnGap: '1.3rem' }}
+            style={{ columnCount: 2, columnGap: "1.3rem" }}
           >
             {jobTitleAndSocCodePairs.map(([jobTitle, socCode], index) => {
               return (
@@ -355,11 +398,13 @@ const JobToursCard: React.FC<IJobToursCard> = ({
                   onClick={handleJobTitleTxtClick(socCode)}
                   key={index}
                   style={{
-                    width: 'fit-content',
+                    width: "fit-content",
                   }}
                   className="text-primary li-dot-black"
                 >
-                  <span className="text-primary underline-on-hover">{jobTitle}</span>
+                  <span className="text-primary underline-on-hover">
+                    {jobTitle}
+                  </span>
                 </li>
               );
             })}
@@ -371,11 +416,13 @@ const JobToursCard: React.FC<IJobToursCard> = ({
                   onClick={handleJobTitleTxtClick(socCode)}
                   key={index}
                   style={{
-                    width: 'fit-content',
+                    width: "fit-content",
                   }}
                   className="text-primary li-dot-black"
                 >
-                  <span className="text-primary underline-on-hover">{jobTitle}</span>
+                  <span className="text-primary underline-on-hover">
+                    {jobTitle}
+                  </span>
                 </li>
               );
             })}
