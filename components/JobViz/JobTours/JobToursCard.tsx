@@ -321,8 +321,32 @@ const JobToursCard: React.FC<IJobToursCard> = ({
           <h3 className="mb-4">
             Jobs and careers related to the &ldquo;{unitName}&rdquo; unit:
           </h3>
+          <div className="d-flex align-items-start mb-4">
+            <div className="me-3 mt-1" style={{ fontSize: '2rem' }}>
+              ✏️
+            </div>
+            <div>
+              <p className="mb-2">
+                <strong>Assignment:</strong> Research these jobs and explain{' '}
+                <em>with data</em> which you would be most or least interested
+                in.
+              </p>
+              <p className="text-muted mb-3" style={{ fontSize: '0.9rem' }}>
+                Your teacher will provide instructions on how to share your
+                response.
+              </p>
+              <div
+                className="alert alert-info py-2 px-3 mb-0"
+                role="alert"
+                style={{ fontSize: '0.85rem' }}
+              >
+                ℹ️ <strong>Note:</strong> This feature is currently being built
+                and will be available soon.
+              </div>
+            </div>
+          </div>
           <ul
-            className="mb-4 d-none d-sm-block"
+            className="d-none d-sm-block"
             style={{ columnCount: 2, columnGap: '1.3rem' }}
           >
             {jobTitleAndSocCodePairs.map(([jobTitle, socCode], index) => {
@@ -356,30 +380,6 @@ const JobToursCard: React.FC<IJobToursCard> = ({
               );
             })}
           </ul>
-          <div className="d-flex align-items-start">
-            <div className="me-3 mt-1" style={{ fontSize: '2rem' }}>
-              ✏️
-            </div>
-            <div>
-              <p className="mb-2">
-                <strong>Assignment:</strong> Research these jobs and explain{' '}
-                <em>with data</em> which you would be most or least interested
-                in.
-              </p>
-              <p className="text-muted mb-3" style={{ fontSize: '0.9rem' }}>
-                Your teacher will provide instructions on how to share your
-                response.
-              </p>
-              <div
-                className="alert alert-info py-2 px-3 mb-0"
-                role="alert"
-                style={{ fontSize: '0.85rem' }}
-              >
-                ℹ️ <strong>Note:</strong> This feature is currently being built
-                and will be available soon.
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </section>
