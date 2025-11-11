@@ -9,6 +9,7 @@ import {
   TUserSchemaV2,
 } from '../backend/models/User/types';
 import { setLocalStorageItem, setSessionStorageItem } from '../shared/fns';
+import { useCustomCookies } from './useCustomCookies';
 
 export const getAboutUserFormForClient = (
   userAccount: TUserSchemaForClient<TUserSchemaV2 & IUserSchema>
@@ -254,6 +255,7 @@ export const useGetAboutUserForm = (willGetData: boolean = true) => {
   const { status, data } = useSession();
   const { _aboutUserForm } = useUserContext();
   const [aboutUserForm, setAboutUserForm] = _aboutUserForm;
+  const { setAppCookie } = useCustomCookies();
   const [gpPlusSub, setGpPlusSub] = useState<
     TUserSchemaForClient['gpPlusSubscription'] | null
   >(null);
@@ -343,6 +345,7 @@ export const useGetAboutUserForm = (willGetData: boolean = true) => {
 
           if (typeof isGpPlusMember === 'boolean') {
             setSessionStorageItem('isGpPlusUser', isGpPlusMember);
+            setAppCookie("isGpPlusMember", isGpPlusMember);
             userAccountForClient = {
               ...userAccountForClient,
               isGpPlusMember,

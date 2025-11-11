@@ -8,6 +8,7 @@ interface IAppCookies {
   gdriveEmail: string,
   isSignedInAsGpPlusUser: boolean;
   token: string;
+  isGpPlusMember: boolean;
 }
 
 export const useCustomCookies = () => {
@@ -26,16 +27,25 @@ export const useCustomCookies = () => {
   const getCookies = <TKey extends keyof IAppCookies>(
     keys: TKey[]
   ): Partial<Pick<IAppCookies, TKey>> => {
-    let siteCookies = (cookies.get() ?? {}) as Partial<Pick<IAppCookies, TKey>> ;
+    let siteCookies = (cookies.get() ?? {}) as Partial<Record<keyof Pick<IAppCookies, TKey>, string>> ;
+    let appCookies: Partial<Pick<IAppCookies, TKey>> = {};
 
     for (const key of keys) {
-      siteCookies = {
-        ...siteCookies,
-        [key]: siteCookies[key],
+      const val = siteCookies[key];
+
+      if(!val){
+        continue;
+      }
+
+      const _val: TKey = typeof val === "string" ? val : JSON.parse(val);
+
+      appCookies = {
+        ...appCookies,
+        [key]: _val,
       };
     }
 
-    return siteCookies;
+    return appCookies;
   };
 
   const setAppCookie = <

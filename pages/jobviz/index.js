@@ -1,30 +1,37 @@
-import Hero from '../../components/Hero';
-import HeroForGpPlusUsers from '../../components/JobViz/Heros/HeroForGpPlusUsers';
-import HeroForFreeUsers from '../../components/JobViz/Heros/HeroForFreeUsers';
-import Layout from '../../components/Layout';
-import JobCategoriesSec from '../../components/JobViz/JobCategoriesSec';
-import JobCategoryChainCard from '../../components/JobViz/JobCategoryChainCard';
-import PreviouslySelectedJobCategory from '../../components/JobViz/PreviouslySelectedJobCategory';
-import SearchInputSec from '../../components/JobViz/SearchInputSec';
-import Image from 'next/image';
-import { useMemo, useRef, useState } from 'react';
-import { useInView } from 'react-intersection-observer';
-import GoToSearchInput from '../../components/JobViz/Buttons/GoToSearchInput';
-import GoToJobVizChain from '../../components/JobViz/Buttons/GoToJobVizChain';
-import { ToastContainer } from 'react-toastify';
-import { useEffect } from 'react';
+import Hero from "../../components/Hero";
+import HeroForGpPlusUsers from "../../components/JobViz/Heros/HeroForGpPlusUsers";
+import HeroForFreeUsers from "../../components/JobViz/Heros/HeroForFreeUsers";
+import Layout from "../../components/Layout";
+import JobCategoriesSec from "../../components/JobViz/JobCategoriesSec";
+import JobCategoryChainCard from "../../components/JobViz/JobCategoryChainCard";
+import PreviouslySelectedJobCategory from "../../components/JobViz/PreviouslySelectedJobCategory";
+import SearchInputSec from "../../components/JobViz/SearchInputSec";
+import Image from "next/image";
+import { useMemo, useRef, useState } from "react";
+import { useInView } from "react-intersection-observer";
+import GoToSearchInput from "../../components/JobViz/Buttons/GoToSearchInput";
+import GoToJobVizChain from "../../components/JobViz/Buttons/GoToJobVizChain";
+import { ToastContainer } from "react-toastify";
+import { useEffect } from "react";
 import {
   SOC_CODES_PARAM_NAME,
   UNIT_NAME_PARAM_NAME,
-} from '../../components/LessonSection/JobVizConnections';
-import { getUnitRelatedJobs } from '../../helperFns/filterUnitRelatedJobs';
-import JobToursCard from '../../components/JobViz/JobTours/JobToursCard';
-import { useSearchParams } from 'next/navigation';
+} from "../../components/LessonSection/JobVizConnections";
+import { getUnitRelatedJobs } from "../../helperFns/filterUnitRelatedJobs";
+import JobToursCard from "../../components/JobViz/JobTours/JobToursCard";
+import { useSearchParams } from "next/navigation";
+import useSiteSession from "../../customHooks/useSiteSession";
+import { verifyJwt } from "../../nondependencyFns";
 
 const DATA_SOURCE_LINK =
-  'https://www.bls.gov/emp/tables/occupational-projections-and-characteristics.htm';
+  "https://www.bls.gov/emp/tables/occupational-projections-and-characteristics.htm";
 
-const JobViz = ({ vals, unitName, jobTitleAndSocCodePairs }) => {
+const JobViz = ({
+  vals,
+  unitName,
+  jobTitleAndSocCodePairs,
+  hasGpPlusMembership,
+}) => {
   const {
     dynamicJobResults,
     currentHierarchyNum,
@@ -32,32 +39,33 @@ const JobViz = ({ vals, unitName, jobTitleAndSocCodePairs }) => {
     parentJobCategories,
     metaDescription,
   } = vals ?? {};
+  const { isGpPlusMember } = useSiteSession();
   const jobToursRef = useRef(null);
   const [searchResults, setSearchResults] = useState([]);
-  const [searchInput, setSearchInput] = useState('');
+  const [searchInput, setSearchInput] = useState("");
   const searchParams = useSearchParams().toString();
   const [isHighlighterOn, setIsHighlighterOn] = useState(true);
   const [isSearchResultsModalOn, setIsSearchResultsModalOn] = useState(false);
   const { ref, inView } = useInView({ threshold: 0 });
   const jobVizPgDescriptor =
-    'A tool for middle and high school students to explore career possibilities. Browse, search, and share descriptions and stats for over a thousands jobs.';
+    "A tool for middle and high school students to explore career possibilities. Browse, search, and share descriptions and stats for over a thousands jobs.";
 
   const resetSearchResults = () => {
-    setSearchInput('');
+    setSearchInput("");
     setSearchResults([]);
   };
 
   const [didFirstRenderOccur, setDidFirstRenderOccur] = useState(false);
 
   const layoutProps = {
-    title: 'JobViz Career Explorer',
+    title: "JobViz Career Explorer",
     description: metaDescription || jobVizPgDescriptor,
     imgSrc:
       didFirstRenderOccur &&
       `${window.location.origin}/imgs/jobViz/jobviz_icon.png`,
-    url: 'https://galacticpolymath.com/jobviz',
+    url: "https://galacticpolymath.com/jobviz",
     keywords:
-      'jobviz, job viz, career explorer, career, career exploration, career exploration tool, career exploration for students, career exploration for high school students, career exploration for middle school students, career exploration for teens, career exploration for teenagers, career exploration for kids, career exploration for children, career exploration for young adults, career exploration for young people, career exploration for youth, career exploration for adolescents, career exploration for parents, career exploration for teachers, career exploration for counselors, career exploration',
+      "jobviz, job viz, career explorer, career, career exploration, career exploration tool, career exploration for students, career exploration for high school students, career exploration for middle school students, career exploration for teens, career exploration for teenagers, career exploration for kids, career exploration for children, career exploration for young adults, career exploration for young people, career exploration for youth, career exploration for adolescents, career exploration for parents, career exploration for teachers, career exploration for counselors, career exploration",
   };
 
   useEffect(() => {
@@ -71,8 +79,8 @@ const JobViz = ({ vals, unitName, jobTitleAndSocCodePairs }) => {
           const isInIframe = window.self !== window.top;
 
           jobToursRef.current.scrollIntoView({
-            behavior: 'smooth',
-            block: isInIframe ? 'start' : 'center',
+            behavior: "smooth",
+            block: isInIframe ? "start" : "center",
           });
         }
       }, 300);
@@ -81,7 +89,7 @@ const JobViz = ({ vals, unitName, jobTitleAndSocCodePairs }) => {
     }
   }, []);
 
-  console.log('jobTitleAndSocCodePairs, hey there: ', jobTitleAndSocCodePairs);
+  console.log("jobTitleAndSocCodePairs, hey there: ", jobTitleAndSocCodePairs);
 
   return (
     <Layout {...layoutProps}>
@@ -89,8 +97,16 @@ const JobViz = ({ vals, unitName, jobTitleAndSocCodePairs }) => {
         toastStyle={{ zIndex: 1000000 }}
         style={{ zIndex: 1000000000 }}
       />
-      <Hero className="jobVizHero" isStylesHeroOn={false} customChildrenContainerClassName=''>
-        <HeroForFreeUsers className='jobviz-hero-free text-center text-light position-relative overflow-hidden pt-4 pb-5' />
+      <Hero
+        className="jobVizHero"
+        isStylesHeroOn={false}
+        customChildrenContainerClassName=""
+      >
+        {hasGpPlusMembership ? (
+          <HeroForGpPlusUsers className="jobviz-hero text-center text-light position-relative overflow-hidden pt-3 pb-5" />
+        ) : (
+          <HeroForFreeUsers className="jobviz-hero-free text-center text-light position-relative overflow-hidden pt-4 pb-5" />
+        )}
       </Hero>
       {jobTitleAndSocCodePairs?.length && (
         <JobToursCard
@@ -134,7 +150,7 @@ const JobViz = ({ vals, unitName, jobTitleAndSocCodePairs }) => {
                         fill
                         sizes="3px"
                         style={{
-                          object: 'fit',
+                          object: "fit",
                         }}
                       />
                     </div>
@@ -149,7 +165,10 @@ const JobViz = ({ vals, unitName, jobTitleAndSocCodePairs }) => {
                   key={index}
                   className="d-flex justify-content-center flex-column align-items-center"
                 >
-                  <PreviouslySelectedJobCategory jobCategory={jobCategory} searchParamsStr={searchParams} />
+                  <PreviouslySelectedJobCategory
+                    jobCategory={jobCategory}
+                    searchParamsStr={searchParams}
+                  />
                   <section className="w-100 d-flex justify-content-center align-items-center">
                     <div
                       style={{ height: 14, width: 3 }}
@@ -161,7 +180,7 @@ const JobViz = ({ vals, unitName, jobTitleAndSocCodePairs }) => {
                         fill
                         sizes="3px"
                         style={{
-                          object: 'fit',
+                          object: "fit",
                         }}
                       />
                     </div>
@@ -198,7 +217,7 @@ const JobViz = ({ vals, unitName, jobTitleAndSocCodePairs }) => {
               alt="Galactic_Polymath_JobViz_Icon_Search"
               fill
               style={{
-                objectFit: 'fill',
+                objectFit: "fill",
               }}
               size="(max-width: 575px) 488.75px, (max-width: 767px) 651.945px, (max-width: 991px) 842.344px, (max-width: 1199px) 1019.15px, 1025px"
               priority
@@ -236,14 +255,23 @@ const JobViz = ({ vals, unitName, jobTitleAndSocCodePairs }) => {
   );
 };
 
-export const getServerSideProps = async (context) => {
-  const socCodesStr = context?.query?.[SOC_CODES_PARAM_NAME];
-  const unitName = context?.query?.[UNIT_NAME_PARAM_NAME] ?? 'Not found';
-  console.log('socCodesStr: ', socCodesStr);
-  const socCodes = socCodesStr ? new Set(socCodesStr.split(',')) : null;
+export const getServerSideProps = async ({ query, req }) => {
+  console.log("req, getServerSideProps: ", req);
+  console.log("query, getServerSideProps: ", query);
+
+  const socCodesStr = query?.[SOC_CODES_PARAM_NAME];
+  const unitName = query?.[UNIT_NAME_PARAM_NAME] ?? "Not found";
+  console.log("socCodesStr: ", socCodesStr);
+  const socCodes = socCodesStr ? new Set(socCodesStr.split(",")) : null;
+  const sessionToken = req.cookies["next-auth.session-token"];
+  let hasGpPlusMembership = req?.cookies?.["isGpPlusMember"];
+  hasGpPlusMembership =
+    hasGpPlusMembership ??
+    (typeof sessionToken === "string"
+      ? !!(await verifyJwt(sessionToken))?.payload?.hasGpPlusMembership
+      : false);
 
   if (socCodes) {
-    // TODO: get the soc codes as well
     const jobTitleAndSocCodePairs = getUnitRelatedJobs(socCodes).map(
       ({ title, soc_code }) => [title, soc_code]
     );
@@ -252,6 +280,7 @@ export const getServerSideProps = async (context) => {
       props: {
         unitName,
         jobTitleAndSocCodePairs: jobTitleAndSocCodePairs,
+        hasGpPlusMembership,
       },
     };
   }
@@ -260,6 +289,7 @@ export const getServerSideProps = async (context) => {
     props: {
       unitName,
       jobTitleAndSocCodePairs: null,
+      hasGpPlusMembership,
     },
   };
 };

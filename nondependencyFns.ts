@@ -28,6 +28,7 @@ interface JWTPayloadCustom extends JWTPayload {
   roles: string[];
   email: string;
   userId: string;
+  hasGpPlusMembership: boolean;
   name: {
     first: string;
     last: string;
@@ -133,12 +134,14 @@ export const getAuthorizeReqResult = async (
   }
 };
 
+
+
 /**
  * Given a authorization string, this function will return the payload of the jwt,
  * assuming the jwt is valid. If the authorization string is invalid or the jwt is
  * invalid, this function will return null.
  * @param {string} authorization The authorization string.
- * @returns {Promise<import('jose').JWTVerifyResult | null>}
+ * @returns {Promise<JWTPayloadCustom | null>}
  */
 export const getJwtPayloadPromise = (authorization = '') => {
   if (!authorization) {
