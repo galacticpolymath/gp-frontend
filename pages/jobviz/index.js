@@ -26,6 +26,9 @@ import { verifyJwt } from "../../nondependencyFns";
 const DATA_SOURCE_LINK =
   "https://www.bls.gov/emp/tables/occupational-projections-and-characteristics.htm";
 
+const JOB_VIZ_PG_DESCRIPTION_DEFAULT =
+    "A tool for middle and high school students to explore career possibilities. Browse, search, and share descriptions and stats for over a thousands jobs.";
+
 const JobViz = ({
   vals,
   unitName,
@@ -47,8 +50,6 @@ const JobViz = ({
   const [isHighlighterOn, setIsHighlighterOn] = useState(true);
   const [isSearchResultsModalOn, setIsSearchResultsModalOn] = useState(false);
   const { ref, inView } = useInView({ threshold: 0 });
-  const jobVizPgDescriptor =
-    "A tool for middle and high school students to explore career possibilities. Browse, search, and share descriptions and stats for over a thousands jobs.";
 
   const resetSearchResults = () => {
     setSearchInput("");
@@ -59,7 +60,7 @@ const JobViz = ({
 
   const layoutProps = {
     title: "JobViz Career Explorer",
-    description: metaDescription || jobVizPgDescriptor,
+    description: metaDescription ?? JOB_VIZ_PG_DESCRIPTION_DEFAULT,
     imgSrc:
       didFirstRenderOccur &&
       `${window.location.origin}/imgs/jobViz/jobviz_icon.png`,

@@ -216,34 +216,30 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
                 gap: "12px",
                 flex: 1,
               }}
-              className="tours-btn-container px-1 px-sm-4 pb-4 w-100 d-flex justify-content-center align-items-center flex-column"
+              className="tours-btn-container px-1 px-sm-4 pb-4 w-100"
             >
-              <button
-                onClick={handlePreviewCareerTourAssignmentsBtnClick}
-                style={{
-                  background: "none",
-                  border: "none",
-                  padding: 0,
-                  display: "flex",
-                  alignItems: "center",
-                  cursor: "pointer",
-                  textAlign: "left",
-                }}
-                className="tours-btn d-flex justify-content-center justify-content-sm-start align-items-center align-items-sm-stretch"
-              >
-                <div
+              <div className="w-100 d-flex justify-content-center align-items-center">
+                <button
+                  onClick={handlePreviewCareerTourAssignmentsBtnClick}
                   style={{
-                    fontSize: "18px",
-                    fontWeight: 400,
-                    color: "#000",
-                    display: "flex",
-                    flexWrap: "nowrap",
-                    alignItems: "flex-start",
+                    background: "none",
+                    border: "none",
+                    padding: 0,
+                    width: "fit-content",
+                    cursor: "pointer",
+                    textAlign: "left",
                   }}
+                  className="tours-btn"
                 >
                   <div
-                    className="tours-btn-icon-container me-1"
-                    style={{ flexShrink: 0 }}
+                    style={{
+                      fontSize: "18px",
+                      fontWeight: 400,
+                      color: "#000",
+                      display: "inline-block", // ensure the element behaves like inline-flex
+                      width: "fit-content", // allow width to shrink to content size
+                    }}
+                    className="w-100 text-center"
                   >
                     <svg
                       width="20"
@@ -251,7 +247,11 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
                       viewBox="0 0 24 24"
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"
-                      style={{ flexShrink: 0 }}
+                      style={{
+                        flexShrink: 0,
+                        fontSize: "18px",
+                        marginBottom: "3px",
+                      }}
                     >
                       <path
                         d="M10 6H6C4.89543 6 4 6.89543 4 8V18C4 19.1046 4.89543 20 6 20H16C17.1046 20 18 19.1046 18 18V14M14 4H20M20 4V10M20 4L10 14"
@@ -261,47 +261,40 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
                         strokeLinejoin="round"
                       />
                     </svg>
-                  </div>
-                  <div
-                    className="tours-btn-txt"
-                    style={{
-                      whiteSpace: "nowrap",
-                    }}
-                  >
                     Open Career Tour Assignment
                   </div>
-                </div>
-              </button>
-              <CopyableTxt
-                implementLogicOnClick={() => {
-                  navigator.clipboard.writeText(jobsToursUrl);
-                }}
-                copyTxtIndicator="Copy link"
-                txtCopiedIndicator="Link copied ✅!"
-              >
-                <button
-                  style={{
-                    background: "none",
-                    border: "none",
-                    padding: 0,
-                    gap: "12px",
-                    cursor: "pointer",
+                </button>
+              </div>
+              <div className="w-100 d-flex justify-content-center align-items-center">
+                <CopyableTxt
+                  implementLogicOnClick={() => {
+                    navigator.clipboard.writeText(jobsToursUrl);
                   }}
-                  className="tours-btn d-flex justify-content-center justify-content-sm-start align-items-center align-items-sm-stretch"
+                  copyTxtIndicator="Copy link"
+                  txtCopiedIndicator="Link copied ✅!"
+                  parentClassName="pointer mt-2"
                 >
-                  <div
+                  <button
                     style={{
-                      fontSize: "18px",
-                      fontWeight: 400,
-                      color: "#000",
-                      display: "flex",
-                      flexWrap: "nowrap",
-                      alignItems: "flex-start",
+                      background: "none",
+                      border: "none",
+                      padding: 0,
+                      gap: "12px",
+                      cursor: "pointer",
+                      width: "fit-content",
                     }}
+                    className="tours-btn"
                   >
                     <div
-                      className="tours-btn-icon-container me-1"
-                      style={{ flexShrink: 0 }}
+                      style={{
+                        fontSize: "18px",
+                        fontWeight: 400,
+                        color: "#000",
+                        display: "inline-block", // ensure the element behaves like inline-flex
+                        // alignItems: "flex-start",
+                        width: "fit-content", // allow width to shrink to content size
+                      }}
+                      className="w-100 text-center"
                     >
                       <svg
                         width="20"
@@ -309,35 +302,25 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
                         viewBox="0 0 24 24"
                         fill="none"
                         xmlns="http://www.w3.org/2000/svg"
-                        style={{ flexShrink: 0 }}
+                        style={{
+                          flexShrink: 0,
+                          fontSize: "18px",
+                          marginBottom: "3px",
+                        }}
                       >
-                        <rect
-                          x="8"
-                          y="8"
-                          width="12"
-                          height="12"
-                          rx="2"
-                          stroke="black"
-                          strokeWidth="2"
-                        />
                         <path
-                          d="M16 8V6C16 4.89543 15.1046 4 14 4H6C4.89543 4 4 4.89543 4 6V14C4 15.1046 4.89543 16 6 16H8"
+                          d="M10 6H6C4.89543 6 4 6.89543 4 8V18C4 19.1046 4.89543 20 6 20H16C17.1046 20 18 19.1046 18 18V14M14 4H20M20 4V10M20 4L10 14"
                           stroke="black"
                           strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
                         />
                       </svg>
-                    </div>
-                    <div
-                      className="tours-btn-txt"
-                      style={{
-                        whiteSpace: "nowrap",
-                      }}
-                    >
                       Copy Assignment Link
                     </div>
-                  </div>
-                </button>
-              </CopyableTxt>
+                  </button>
+                </CopyableTxt>
+              </div>
             </div>
           </div>
         ) : (
@@ -358,7 +341,7 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
             <div
               style={{
                 lineHeight: "1.4",
-                fontSize: "clamp(14px, 4vw, 18px)",
+                fontSize: "18px",
               }}
               className="d-flex flex-column text-black text-center text-sm-start"
             >
