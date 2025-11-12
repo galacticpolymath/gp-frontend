@@ -190,7 +190,7 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
           <MdOutlineRocketLaunch size={40} className="d-inline d-sm-none mb-2" />
         </div>
         <div
-          className="d-flex p-0 ms-1"
+          className="d-flex p-0 ms-sm-1"
           style={{ fontSize: "20px", fontWeight: 300 }}
         >
           JobViz connects classroom learning to the real world—helping students
