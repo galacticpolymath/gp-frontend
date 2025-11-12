@@ -27,7 +27,7 @@ const DATA_SOURCE_LINK =
 
 const JOB_VIZ_PG_DESCRIPTION_DEFAULT =
   "A streamlined web app to empower student exploration of 1,000+ careers—connecting classroom learning to workforce development and real-world opportunities.";
-export const JOBVIZ_BRACKET_SEARCH_ID = "jobviz-bracket-search"
+export const JOBVIZ_BRACKET_SEARCH_ID = "jobviz-bracket-search";
 
 const JobViz = ({
   vals,
@@ -50,53 +50,48 @@ const JobViz = ({
   const [isSearchResultsModalOn, setIsSearchResultsModalOn] = useState(false);
   const { ref, inView } = useInView({ threshold: 0 });
   const {
-      _willRenderJobToursStickyTopCard: [
-        willRenderJobToursStickyTopCard,
-        setWillRenderJobToursStickyTopCard,
-      ],
-    } = useLessonContext();
+    _willRenderJobToursStickyTopCard: [
+      willRenderJobToursStickyTopCard,
+      setWillRenderJobToursStickyTopCard,
+    ],
+  } = useLessonContext();
 
   const resetSearchResults = () => {
     setSearchInput("");
     setSearchResults([]);
   };
 
-  const timeoutRef = useRef(null)
+  const timeoutRef = useRef(null);
 
   const handleOnScroll = () => {
     if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current)
+      clearTimeout(timeoutRef.current);
     }
 
     timeoutRef.current = setTimeout(() => {
-      setWillRenderJobToursStickyTopCard(true)
-    }, 300)
-  }
- 
+      setWillRenderJobToursStickyTopCard(true);
+    }, 300);
+  };
+
   useEffect(() => {
-    document.addEventListener('scroll', handleOnScroll)
+    document.addEventListener("scroll", handleOnScroll);
     return () => {
-      document.removeEventListener('scroll', handleOnScroll);
+      document.removeEventListener("scroll", handleOnScroll);
       setWillRenderJobToursStickyTopCard(false);
-    }
+    };
   }, []);
 
-  const [didFirstRenderOccur, setDidFirstRenderOccur] = useState(false);
-
   const layoutProps = {
-    title: "JobViz Career Explorer | Connect Learning to 1,000+ Real-World Careers",
+    title:
+      "JobViz Career Explorer | Connect Learning to 1,000+ Real-World Careers",
     description: metaDescription ?? JOB_VIZ_PG_DESCRIPTION_DEFAULT,
-    imgSrc:
-      didFirstRenderOccur &&
-      `${window.location.origin}/imgs/jobViz/jobviz_icon.png`,
-    url: "https://galacticpolymath.com/jobviz",
+    imgSrc: "https://teach.galacticpolymath.com/imgs/jobViz/jobviz_icon.png",
+    url: "https://teach.galacticpolymath.com/jobviz",
     keywords:
       "jobviz, job viz, career explorer, career, career exploration, career exploration tool, career exploration for students, career exploration for high school students, career exploration for middle school students, career exploration for teens, career exploration for teenagers, career exploration for kids, career exploration for children, career exploration for young adults, career exploration for young people, career exploration for youth, career exploration for adolescents, career exploration for parents, career exploration for teachers, career exploration for counselors, career exploration",
   };
 
   useEffect(() => {
-    setDidFirstRenderOccur(true);
-
     if (jobTitleAndSocCodePairs?.length) {
       // Use a timeout to ensure content is rendered before scrolling
       const timeoutId = setTimeout(() => {
