@@ -1,15 +1,3 @@
-/* eslint-disable quotes */
-
-/* eslint-disable react/jsx-wrap-multilines */
-
-/* eslint-disable semi */
-/* eslint-disable no-multiple-empty-lines */
-/* eslint-disable no-console */
-/* eslint-disable react/jsx-max-props-per-line */
-/* eslint-disable react/jsx-indent-props */
-/* eslint-disable indent */
-/* eslint-disable react/jsx-indent */
-
 import { BsSearch } from "react-icons/bs";
 import { Card } from "react-bootstrap";
 import getSearchResultsAsync from "../../helperFns/getSearchResults";
@@ -26,6 +14,7 @@ const SearchInputSec = ({
   searchInputRef,
   _isHighlighterOn,
   _isSearchResultsModalOn,
+  searchParamsStr
 }) => {
   const [searchResults, setSearchResults] = _searchResults;
   const [, setForceReRenderer] = useState({});
@@ -153,6 +142,7 @@ const SearchInputSec = ({
                     _searchInput={[searchInput, setSearchInput]}
                     isHighlighterOn={isHighlighterOn}
                     closeSearchResultsModal={closeSearchResultsModal}
+                    searchParamsStr={searchParamsStr}
                   />
                 ))
               )}

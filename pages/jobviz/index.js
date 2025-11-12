@@ -18,9 +18,7 @@ import {
   UNIT_NAME_PARAM_NAME,
 } from "../../components/LessonSection/JobVizConnections";
 import { getUnitRelatedJobs } from "../../helperFns/filterUnitRelatedJobs";
-import JobToursCard from "../../components/JobViz/JobTours/JobToursCard";
 import { useSearchParams } from "next/navigation";
-import useSiteSession from "../../customHooks/useSiteSession";
 import { verifyJwt } from "../../nondependencyFns";
 import { useLessonContext } from "../../providers/LessonProvider";
 
@@ -160,6 +158,7 @@ const JobViz = ({
           isSearchResultsModalOn,
           setIsSearchResultsModalOn,
         ]}
+        searchParamsStr={searchParams}
       />
       {parentJobCategories && (
         <section className="d-flex justify-content-center align-items-center flex-column w-100 mt-5">
