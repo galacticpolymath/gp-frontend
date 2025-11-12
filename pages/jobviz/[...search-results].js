@@ -46,7 +46,7 @@ const JobVizSearchResults = ({
 }) => {
   const router = useRouter();
   const { _selectedJob } = useContext(ModalContext);
-  const [, setSelectedJob] = _selectedJob;
+  const [selectedJob, setSelectedJob] = _selectedJob;
   const params = router.query?.["search-results"] ?? null;
   const hierarchyNum = params?.[0] ?? null;
   let { jobCategories } = useGetJobCategories(
@@ -73,7 +73,7 @@ const JobVizSearchResults = ({
     const jobCategoryIds = params?.slice(2);
     let hierarchyNum = params?.[0];
 
-    if (parseInt(hierarchyNum) === jobCategoryIds?.length) {
+    if (!selectedJob && parseInt(hierarchyNum) === jobCategoryIds?.length) {
       let lastJobCategoryId = params?.[params.length - 1];
       const targetJobCategory = jobVizDataObj.data.find(
         (jobCategory) => jobCategory.id === parseInt(lastJobCategoryId)

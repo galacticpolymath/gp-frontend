@@ -22,6 +22,10 @@ export default function Navbar() {
   const {
     isGpPlusMember
   } = useSiteSession()
+  const {
+      _isJobToursStickyTopCardDisplayed: [isJobToursStickTopCardDisplayed],
+      _willRenderJobToursStickyTopCard: [willRenderJobToursStickyTopCard],
+    } = useLessonContext();
 
   return (
     <nav

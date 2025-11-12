@@ -22,6 +22,7 @@ import JobToursCard from "../../components/JobViz/JobTours/JobToursCard";
 import { useSearchParams } from "next/navigation";
 import useSiteSession from "../../customHooks/useSiteSession";
 import { verifyJwt } from "../../nondependencyFns";
+import { useLessonContext } from "../../providers/LessonProvider";
 
 const DATA_SOURCE_LINK =
   "https://www.bls.gov/emp/tables/occupational-projections-and-characteristics.htm";
@@ -50,11 +51,37 @@ const JobViz = ({
   const [isHighlighterOn, setIsHighlighterOn] = useState(true);
   const [isSearchResultsModalOn, setIsSearchResultsModalOn] = useState(false);
   const { ref, inView } = useInView({ threshold: 0 });
+  const {
+      _willRenderJobToursStickyTopCard: [
+        willRenderJobToursStickyTopCard,
+        setWillRenderJobToursStickyTopCard,
+      ],
+    } = useLessonContext();
 
   const resetSearchResults = () => {
     setSearchInput("");
     setSearchResults([]);
   };
+
+  const timeoutRef = useRef(null)
+
+  const handleOnScroll = () => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current)
+    }
+
+    timeoutRef.current = setTimeout(() => {
+      setWillRenderJobToursStickyTopCard(true)
+    }, 300)
+  }
+ 
+  useEffect(() => {
+    document.addEventListener('scroll', handleOnScroll)
+    return () => {
+      document.removeEventListener('scroll', handleOnScroll);
+      setWillRenderJobToursStickyTopCard(false);
+    }
+  }, []);
 
   const [didFirstRenderOccur, setDidFirstRenderOccur] = useState(false);
 

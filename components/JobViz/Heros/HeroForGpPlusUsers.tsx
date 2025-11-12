@@ -91,6 +91,7 @@ const HeroForGpPlusUsers: React.FC<IHeroForGpPlusUsersProps> = ({
   } = useLessonContext();
 
   const cleanup = () => {
+    console.log("Cleanup function called");
     setWillRenderJobToursStickTopCard(false);
     setIsJobToursStickyTopCardDisplayed(false);
   }
@@ -115,7 +116,6 @@ const HeroForGpPlusUsers: React.FC<IHeroForGpPlusUsersProps> = ({
     ) {
       console.log("job tours is not on dom, will render it and display it");
       setIsJobToursStickyTopCardDisplayed(true);
-      setWillRenderJobToursStickTopCard(true);
       return;
     }
 

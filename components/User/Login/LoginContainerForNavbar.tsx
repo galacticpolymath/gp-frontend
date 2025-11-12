@@ -92,7 +92,7 @@ const LoginContainerForNavbar: React.FC<IProps> = ({ _modalAnimation }) => {
   const didInitialRenderOccur = useRef(false);
   const [isRetrievingUserData] = _isRetrievingUserData;
   const pathName = usePathname();
-  const { status, user, token, gdriveAccessToken, gdriveRefreshToken } =
+  const { status, user, token, gdriveAccessToken } =
     useSiteSession();
   const userAccountSaved = useMemo(() => {
     if (status === "authenticated") {

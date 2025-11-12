@@ -18,7 +18,7 @@ import { toast } from "react-toastify";
 import { useSearchParams } from "next/navigation";
 import { createSelectedJobVizJobLink } from "../JobViz/JobTours/JobToursCard";
 import { JOBVIZ_BRACKET_SEARCH_ID } from "../../pages/jobviz/index";
-import Link from "next/link";
+import Button from "../General/Button";
 
 const { Header, Title, Body } = Modal;
 const { data_start_yr: _data_start_yr, data_end_yr: _data_end_yr } =
@@ -295,10 +295,29 @@ const SelectedJob: React.FC = () => {
           <InfoCards infoCards={infoCards} />
         </section>
         {wasSelectedFromJobToursCard && (
-          <section className="mt-2">
-            <Link href={`#${JOBVIZ_BRACKET_SEARCH_ID}`}>
+          <section className="mt-4">
+            <Button
+              classNameStr="text-decoration-underline no-link-decoration pointer no-btn-styles"
+              handleOnClick={() => {
+                const element = document.getElementById(
+                  JOBVIZ_BRACKET_SEARCH_ID
+                );
+
+                if(!element){
+                  console.error(`Element with id ${JOBVIZ_BRACKET_SEARCH_ID} not found.`);
+                  return;
+                }
+
+                element.scrollIntoView({
+                  behavior: "smooth",
+                  block: "center"
+                })
+
+                handleOnHide();
+              }}
+            >
               Explore related careers
-            </Link>
+            </Button>
           </section>
         )}
         <section className="flex-column flex-sm-row d-flex align-items-center justify-content-between pt-2 mt-3 border-top">

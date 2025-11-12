@@ -1,4 +1,4 @@
-import React, { RefObject, useState } from "react";
+import React, { RefObject, useEffect, useState } from "react";
 import jobVizDataObj from "../../../data/Jobviz/jobVizDataObj.json";
 import { toast } from "react-toastify";
 import { SUPPORT_EMAIL } from "../../../shared/constants";
@@ -292,11 +292,30 @@ const JobToursCard: React.FC<IJobToursCard> = ({
   } = useModalContext();
   const pathname = usePathname();
   const router = useRouter();
-
-  console.log("pathname: ", pathname);
-  console.log("router: ", router);
+  const {
+    _willRenderJobToursStickyTopCard: [
+      willRenderJobToursStickyTopCard,
+      setWillRenderJobToursStickyTopCard,
+    ],
+  } = useLessonContext();
 
   const searchParams = useSearchParams();
+
+  const [selectedJobOnJobVizPg, setSelectedJobOnJobVizPg] = useState<{
+    url: string;
+    targetJob: ISelectedJob;
+  } | null>(null);
+
+  useEffect(() => {
+    if (!willRenderJobToursStickyTopCard && selectedJobOnJobVizPg) {
+      setSelectedJob(selectedJobOnJobVizPg.targetJob);
+      router.push(selectedJobOnJobVizPg.url, selectedJobOnJobVizPg.url, {
+        scroll: false,
+      });
+      setSelectedJobOnJobVizPg(null);
+    }
+  }, [selectedJobOnJobVizPg, willRenderJobToursStickyTopCard]);
+
   const handleJobTitleTxtClick = (socCode: string) => () => {
     if (onJobTitleTxtCick) {
       onJobTitleTxtCick();
@@ -383,6 +402,25 @@ const JobToursCard: React.FC<IJobToursCard> = ({
 
     console.log("button clicked, jobviz, pathname: ", pathname);
 
+    if (pathname === "/jobviz") {
+      setWillRenderJobToursStickyTopCard(false);
+    }
+
+    if (pathname === "/jobviz") {
+      const paths = getPathsOfSearchResult(targetJob);
+      const searchParamsStr = searchParams.toString();
+      const url = `${window.location.origin}/jobviz${paths}?${searchParamsStr}`;
+      targetJob = {
+        ...targetJob,
+        wasSelectedFromJobToursCard: true,
+      };
+      setSelectedJobOnJobVizPg({
+        targetJob: targetJob,
+        url,
+      });
+      return;
+    }
+
     if (pathname.includes("jobviz")) {
       const paths = getPathsOfSearchResult(targetJob);
       const searchParamsStr = searchParams.toString();
@@ -391,12 +429,13 @@ const JobToursCard: React.FC<IJobToursCard> = ({
       console.log("Navigating to JobViz URL: ", url);
 
       router.push(url, url, { scroll: false });
+      targetJob = {
+        ...targetJob,
+        wasSelectedFromJobToursCard: true,
+      };
     }
 
-    setSelectedJob({
-      ...targetJob,
-      wasSelectedFromJobToursCard: true,
-    });
+    setSelectedJob(targetJob);
   };
 
   if (pathname.includes("jobviz") && jobTitleAndSocCodePairs?.length) {
