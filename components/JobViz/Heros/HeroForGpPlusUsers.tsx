@@ -29,7 +29,10 @@ const HeroForGpPlusUsers: React.FC<IHeroForGpPlusUsersProps> = ({
               Jobs related to our <em>{unitName}</em> unit
             </>
           ) : (
-            <>Jobs related to GP units</>
+            <>
+              Discover how classroom learning connects to real-world careers
+              across industries and the economy.
+            </>
           )}
         </p>
       </div>
