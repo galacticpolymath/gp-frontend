@@ -186,7 +186,7 @@ export const useCreateHandleJobTitleTxtClick = (
       return;
     }
 
-    setSelectedJob(targetJob);
+    setSelectedJob({ ...targetJob });
 
     if (onJobModalShow) {
       onJobModalShow();
@@ -302,7 +302,7 @@ const JobToursCard: React.FC<IJobToursCard> = ({
       onJobTitleTxtCick();
     }
 
-    const targetJob = jobVizDataObj.data.find(
+    let targetJob = jobVizDataObj.data.find(
       (job) => job.soc_code === socCode
     ) as ISelectedJob | undefined;
 
@@ -381,6 +381,8 @@ const JobToursCard: React.FC<IJobToursCard> = ({
 
     // if the user on the job viz page, then present the modal to the user
 
+    console.log("button clicked, jobviz, pathname: ", pathname);
+
     if (pathname.includes("jobviz")) {
       const paths = getPathsOfSearchResult(targetJob);
       const searchParamsStr = searchParams.toString();
@@ -389,11 +391,12 @@ const JobToursCard: React.FC<IJobToursCard> = ({
       console.log("Navigating to JobViz URL: ", url);
 
       router.push(url, url, { scroll: false });
-
-      // console.log('jobs path: ', paths);
     }
 
-    setSelectedJob(targetJob);
+    setSelectedJob({
+      ...targetJob,
+      wasSelectedFromJobToursCard: true,
+    });
   };
 
   if (pathname.includes("jobviz") && jobTitleAndSocCodePairs?.length) {

@@ -17,6 +17,8 @@ import CopyableTxt from "../CopyableTxt";
 import { toast } from "react-toastify";
 import { useSearchParams } from "next/navigation";
 import { createSelectedJobVizJobLink } from "../JobViz/JobTours/JobToursCard";
+import { JOBVIZ_BRACKET_SEARCH_ID } from "../../pages/jobviz/index";
+import Link from "next/link";
 
 const { Header, Title, Body } = Modal;
 const { data_start_yr: _data_start_yr, data_end_yr: _data_end_yr } =
@@ -168,9 +170,19 @@ const SelectedJob: React.FC = () => {
   const searchParams = useSearchParams();
   const [selectedJob, setSelectedJob] = _selectedJob;
   const [jobLink, setJobLink] = useState("");
-  const [isJobModal, setIsJobModal] = _isJobModalOn;
+  const [, setIsJobModal] = _isJobModalOn;
   const [, setJobToursModalCssProps] = _jobToursModalCssProps;
-  let { soc_title, def: _def, title, BLS_link } = selectedJob ?? {};
+  let {
+    soc_title,
+    def: _def,
+    title,
+    BLS_link,
+    wasSelectedFromJobToursCard,
+  } = selectedJob ?? {};
+
+  useEffect(() => {
+    console.log("selectedJob, WITHIN useEffect: ", selectedJob);
+  });
   let jobTitle = soc_title ?? title;
   jobTitle = jobTitle === "Total, all" ? "All US Jobs" : jobTitle;
   let def: string | null = _def ?? "";
@@ -282,6 +294,13 @@ const SelectedJob: React.FC = () => {
         <section className="jobInfoStatSec pt-3 row g-2 d-flex d-sm-none">
           <InfoCards infoCards={infoCards} />
         </section>
+        {wasSelectedFromJobToursCard && (
+          <section className="mt-2">
+            <Link href={`#${JOBVIZ_BRACKET_SEARCH_ID}`}>
+              Explore related careers
+            </Link>
+          </section>
+        )}
         <section className="flex-column flex-sm-row d-flex align-items-center justify-content-between pt-2 mt-3 border-top">
           <div
             className={`d-flex align-items-center justify-content-center text-sm-start text-center ${

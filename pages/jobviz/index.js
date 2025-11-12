@@ -27,7 +27,8 @@ const DATA_SOURCE_LINK =
   "https://www.bls.gov/emp/tables/occupational-projections-and-characteristics.htm";
 
 const JOB_VIZ_PG_DESCRIPTION_DEFAULT =
-  "A tool for middle and high school students to explore career possibilities. Browse, search, and share descriptions and stats for over a thousands jobs.";
+  "A streamlined web app to empower student exploration of 1,000+ careers—connecting classroom learning to workforce development and real-world opportunities.";
+export const JOBVIZ_BRACKET_SEARCH_ID = "jobviz-bracket-search"
 
 const JobViz = ({
   vals,
@@ -58,7 +59,7 @@ const JobViz = ({
   const [didFirstRenderOccur, setDidFirstRenderOccur] = useState(false);
 
   const layoutProps = {
-    title: "JobViz Career Explorer",
+    title: "JobViz Career Explorer | Connect Learning to 1,000+ Real-World Careers",
     description: metaDescription ?? JOB_VIZ_PG_DESCRIPTION_DEFAULT,
     imgSrc:
       didFirstRenderOccur &&
@@ -227,6 +228,7 @@ const JobViz = ({
               style={{
                 objectFit: "fill",
               }}
+              id={JOBVIZ_BRACKET_SEARCH_ID}
               size="(max-width: 575px) 488.75px, (max-width: 767px) 651.945px, (max-width: 991px) 842.344px, (max-width: 1199px) 1019.15px, 1025px"
               priority
             />
