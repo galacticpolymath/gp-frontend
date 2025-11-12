@@ -29,6 +29,7 @@ export type TLessonProviderVal = {
   _selectedLessonItems: TUseStateReturnVal<TSelectedLessonItems>;
   _idsOfLessonsBeingCopied: TUseStateReturnVal<TIdsOfLessonsBeingCopied>;
   _isJobToursStickyTopCardDisplayed: TUseStateReturnVal<boolean>;
+  _willRenderJobToursStickyTopCard: TUseStateReturnVal<boolean>;
 };
 
 export const LessonContext = createContext<TLessonProviderVal | null>(null);
@@ -37,6 +38,8 @@ export const LessonProvider: React.FC<PropsWithChildren> = ({
   children,
 }) => {
   const [isJobToursStickyTopCardDisplayed, setIsJobToursStickyTopCardDisplayed] =
+    useState(false);
+  const [willRenderJobToursStickyTopCard, setWillRenderJobToursStickyTopCard] =
     useState(false);
   const [idsOfLessonsBeingCopied, setIdsOfLessonsBeingCopied] =
     useState<TIdsOfLessonsBeingCopied>(new Set());
@@ -52,7 +55,14 @@ export const LessonProvider: React.FC<PropsWithChildren> = ({
       idsOfLessonsBeingCopied,
       setIdsOfLessonsBeingCopied,
     ],
-    _isJobToursStickyTopCardDisplayed: [isJobToursStickyTopCardDisplayed, setIsJobToursStickyTopCardDisplayed],
+    _willRenderJobToursStickyTopCard: [
+      willRenderJobToursStickyTopCard,
+      setWillRenderJobToursStickyTopCard,
+    ],
+    _isJobToursStickyTopCardDisplayed: [
+      isJobToursStickyTopCardDisplayed,
+      setIsJobToursStickyTopCardDisplayed,
+    ],
     _selectedLessonItems: [selectedLessonItems, setSelectedLessonItems],
     _lessonToCopy: [lessonToCopy, setLessonToCopy],
     _lessonsCopyJobs: [lessonsCopyJobs, setLessonsCopyJobs],

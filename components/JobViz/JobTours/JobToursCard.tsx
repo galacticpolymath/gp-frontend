@@ -242,22 +242,40 @@ const JobTitle: React.FC<IJobTitle> = ({
 export const JobToursCardTopSticky: React.FC = () => {
   const {
     _isJobToursStickyTopCardDisplayed: [isJobToursStickTopCardDisplayed],
+    _willRenderJobToursStickyTopCard: [willRenderJobToursStickyTopCard],
   } = useLessonContext();
 
-  return (
-    <JobToursCardWithRocket
-      cardClassName="assignment-card-on-top w-100 p-4 shadow-lg bg-white position-relative text-start overflow-hidden"
-      jobTitleAndSocCodePairs={[]}
-      className={`pb-3 ${
-        isJobToursStickTopCardDisplayed
-          ? "animate-slideup"
-          : "animate-slidedown"
-      } position-relative`}
-      style={{
-        width: "100vw",
-      }}
-    />
-  );
+  return willRenderJobToursStickyTopCard ? (
+    <>
+      <JobToursCardWithRocket
+        cardClassName="assignment-card-on-top w-100 p-4 shadow-lg bg-white position-relative text-start overflow-hidden"
+        jobTitleAndSocCodePairs={[]}
+        className={`d-none d-sm-block ${
+          isJobToursStickTopCardDisplayed
+            ? "animate-slideup"
+            : "animate-slidedown"
+        } position-relative`}
+        style={{
+          width: "100vw",
+        }}
+        willTrackViewportLocation={false}
+      />
+      <JobToursCardWithRocket
+        cardClassName="assignment-card-on-top w-100 p-4 shadow-lg bg-white position-relative text-start overflow-hidden"
+        jobTitleAndSocCodePairs={[]}
+        className={`d-block d-sm-none ${
+          isJobToursStickTopCardDisplayed
+            ? "animate-slideup"
+            : "animate-slidedown"
+        } position-relative`}
+        style={{
+          width: "100vw",
+        }}
+        willTrackViewportLocation={false}
+        useInViewThreshold={0}
+      />
+    </>
+  ) : null;
 };
 
 const JobToursCard: React.FC<IJobToursCard> = ({
@@ -269,9 +287,6 @@ const JobToursCard: React.FC<IJobToursCard> = ({
   const {
     _selectedJob: [, setSelectedJob],
   } = useModalContext();
-  const {
-    _isJobToursStickyTopCardDisplayed: [, setIsJobToursStickyTopCardDisplayed],
-  } = useLessonContext();
   const pathname = usePathname();
   const router = useRouter();
 

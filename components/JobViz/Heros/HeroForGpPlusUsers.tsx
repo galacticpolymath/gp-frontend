@@ -1,8 +1,8 @@
-import React, { CSSProperties } from "react";
+import React, { CSSProperties, useEffect, useRef } from "react";
 import { HiOutlineRocketLaunch } from "react-icons/hi2";
 import JobToursCard, { IJobToursCard } from "../JobTours/JobToursCard";
 import Image from "next/image";
-import Collapse from "react-bootstrap/Collapse";
+import { useInView } from "react-intersection-observer";
 import { useLessonContext } from "../../../providers/LessonProvider";
 
 interface IHeroForGpPlusUsersProps
@@ -14,7 +14,9 @@ interface IJobToursCardWithRocketProps
   extends Pick<IJobToursCard, "jobTitleAndSocCodePairs" | "unitName"> {
   className: string;
   cardClassName: string;
-  style?: CSSProperties
+  style?: CSSProperties;
+  willTrackViewportLocation: boolean,
+  useInViewThreshold?: number
 }
 
 export const JobToursCardWithRocket: React.FC<IJobToursCardWithRocketProps> = ({
@@ -22,22 +24,70 @@ export const JobToursCardWithRocket: React.FC<IJobToursCardWithRocketProps> = ({
   className = "pb-5 animate-slideup position-relative d-flex justify-content-center align-items-center",
   cardClassName = "assignment-card p-4 shadow-sm bg-white position-relative rounded-4 text-start overflow-hidden",
   style,
+  willTrackViewportLocation,
+  useInViewThreshold,
 }) => {
+  const didRenderInitially = useRef(false);
+  const { ref, inView } = useInView({ threshold: useInViewThreshold ?? 0.7 });
   const {
     _isJobToursStickyTopCardDisplayed: [
       isJobToursStickTopCardDisplayed,
-      setIsJobToursStickTopCardDisplayed,
+      setIsJobToursStickyTopCardDisplayed,
+    ],
+    _willRenderJobToursStickyTopCard: [
+      willRenderJobToursStickyTopCard,
+      setWillRenderJobToursStickTopCard,
     ],
   } = useLessonContext();
 
+  // TODO: write a clean-up function
+
+  useEffect(() => {
+    console.log(`inView: ${inView}`);
+
+    console.log(`didRenderInitially.current: `, didRenderInitially.current);
+
+    if (!willTrackViewportLocation) {
+      return;
+    }
+
+    if (
+      didRenderInitially.current &&
+      !inView &&
+      !willRenderJobToursStickyTopCard
+    ) {
+      console.log("job tours is not on dom, will render it and display it");
+      setIsJobToursStickyTopCardDisplayed(true);
+      setWillRenderJobToursStickTopCard(true);
+      return;
+    }
+
+    if (
+      didRenderInitially.current &&
+      !inView
+    ) {
+      console.log("is not dom, will will make it visable to the user.");
+      setIsJobToursStickyTopCardDisplayed(true);
+      return;
+    }
+
+    if (
+      isJobToursStickTopCardDisplayed &&
+      didRenderInitially.current &&
+      inView
+    ) {
+      console.log("will take job tours card off of the dom");
+      setIsJobToursStickyTopCardDisplayed(false);
+      return;
+    }
+  }, [inView]);
+
+  useEffect(() => {
+    didRenderInitially.current = true;
+  }, []);
+
   return (
-    <div
-      className={className}
-      style={style}
-      onClick={() => {
-        setIsJobToursStickTopCardDisplayed((state) => !state);
-      }}
-    >
+    <div ref={ref} className={className} style={style}>
       <div className={cardClassName}>
         <HiOutlineRocketLaunch className="wm-rocket" aria-hidden="true" />
 
@@ -91,6 +141,7 @@ const HeroForGpPlusUsers: React.FC<IHeroForGpPlusUsersProps> = ({
           className="container pb-5 animate-slideup position-relative d-flex justify-content-center align-items-center"
           jobTitleAndSocCodePairs={jobTitleAndSocCodePairs}
           cardClassName="assignment-card p-4 shadow-sm bg-white position-relative rounded-4 text-start overflow-hidden"
+          willTrackViewportLocation
         />
       ) : (
         <div className="pb-5 animate-slideup position-relative d-flex justify-content-center align-items-center">

@@ -7,7 +7,7 @@ import JobCategoryChainCard from "../../components/JobViz/JobCategoryChainCard";
 import PreviouslySelectedJobCategory from "../../components/JobViz/PreviouslySelectedJobCategory";
 import SearchInputSec from "../../components/JobViz/SearchInputSec";
 import Image from "next/image";
-import { useMemo, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import GoToSearchInput from "../../components/JobViz/Buttons/GoToSearchInput";
 import GoToJobVizChain from "../../components/JobViz/Buttons/GoToJobVizChain";
@@ -42,7 +42,6 @@ const JobViz = ({
     parentJobCategories,
     metaDescription,
   } = vals ?? {};
-  const { isGpPlusMember } = useSiteSession();
   const jobToursRef = useRef(null);
   const [searchResults, setSearchResults] = useState([]);
   const [searchInput, setSearchInput] = useState("");

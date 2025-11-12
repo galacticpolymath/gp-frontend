@@ -1,6 +1,3 @@
-/* eslint-disable react/jsx-indent */
-/* eslint-disable indent */
-
 import { useRouter } from 'next/router';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -10,7 +7,6 @@ import { useState } from 'react';
 import { useSession } from 'next-auth/react';
 import LoginContainerForNavbar from './User/Login/LoginContainerForNavbar';
 import { useSearchParams } from 'next/navigation';
-import { JobToursCardWithRocket } from './JobViz/Heros/HeroForGpPlusUsers';
 import { useLessonContext } from '../providers/LessonProvider';
 import { JobToursCardTopSticky } from './JobViz/JobTours/JobToursCard';
 
