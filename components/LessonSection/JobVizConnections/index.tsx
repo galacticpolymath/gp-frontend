@@ -30,11 +30,48 @@ interface IJobVizConnectionsProps {
 export const SOC_CODES_PARAM_NAME = "socCodes";
 export const UNIT_NAME_PARAM_NAME = "unitName";
 
+interface IJobTitle {
+  handleJobTitleBtnClick: () => void;
+  jobTitle: string;
+}
+
+const JobTitle: React.FC<IJobTitle> = ({
+  handleJobTitleBtnClick,
+  jobTitle,
+}) => {
+  const [wasClicked, setWasClicked] = useState(false);
+
+  return (
+    <li
+      onClick={() => {
+        setWasClicked(true);
+        handleJobTitleBtnClick();
+      }}
+      style={{
+        width: "fit-content",
+        maxWidth: "400px",
+        color: wasClicked ? "#00008B" : "#3d8dc8",
+        textDecoration: wasClicked ? "underline" : "none",
+      }}
+      className="text-primary li-dot-black"
+    >
+      <span
+        style={{
+          color: wasClicked ? "#00008B" : "#3d8dc8",
+          textDecoration: wasClicked ? "underline" : "none",
+        }}
+        className="underline-on-hover"
+      >
+        {jobTitle}
+      </span>
+    </li>
+  );
+};
+
 const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
   jobVizConnections,
   unitName,
 }) => {
-  const router = useRouter();
   const {
     _selectedJob: [, setSelectedJob],
   } = useModalContext();
@@ -168,12 +205,10 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
           ) as ISelectedJob | undefined;
 
           return (
-            <li
+            <JobTitle
+              jobTitle={job_title}
               key={index}
-              style={{
-                width: "fit-content",
-              }}
-              onClick={() => {
+              handleJobTitleBtnClick={() => {
                 if (!targetJob) {
                   showJobNotFoundToast();
                   return;
@@ -181,12 +216,7 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
 
                 setSelectedJob(targetJob);
               }}
-              className="text-primary li-dot-black text-base underline-on-hover pointer"
-            >
-              <span className="text-primary underline-on-hover pointer">
-                {job_title}
-              </span>
-            </li>
+            />
           );
         })}
       </ul>
@@ -242,16 +272,15 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
                     className="w-100 text-center"
                   >
                     <svg
-                      width="20"
-                      height="20"
+                      width="22"
+                      height="22"
                       viewBox="0 0 24 24"
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"
                       style={{
                         flexShrink: 0,
-                        fontSize: "18px",
-                        marginBottom: "3px",
                       }}
+                      className="me-1"
                     >
                       <path
                         d="M10 6H6C4.89543 6 4 6.89543 4 8V18C4 19.1046 4.89543 20 6 20H16C17.1046 20 18 19.1046 18 18V14M14 4H20M20 4V10M20 4L10 14"
@@ -297,23 +326,31 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
                       className="w-100 text-center"
                     >
                       <svg
-                        width="20"
-                        height="20"
+                        width="22"
+                        height="22"
                         viewBox="0 0 24 24"
                         fill="none"
                         xmlns="http://www.w3.org/2000/svg"
                         style={{
                           flexShrink: 0,
                           fontSize: "18px",
-                          marginBottom: "3px",
+                          marginBottom: "1px",
                         }}
+                        className="me-1"
                       >
-                        <path
-                          d="M10 6H6C4.89543 6 4 6.89543 4 8V18C4 19.1046 4.89543 20 6 20H16C17.1046 20 18 19.1046 18 18V14M14 4H20M20 4V10M20 4L10 14"
+                        <rect
+                          x="8"
+                          y="8"
+                          width="12"
+                          height="12"
+                          rx="2"
                           stroke="black"
                           strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
+                        />
+                        <path
+                          d="M16 8V6C16 4.89543 15.1046 4 14 4H6C4.89543 4 4 4.89543 4 6V14C4 15.1046 4.89543 16 6 16H8"
+                          stroke="black"
+                          strokeWidth="2"
                         />
                       </svg>
                       Copy Assignment Link

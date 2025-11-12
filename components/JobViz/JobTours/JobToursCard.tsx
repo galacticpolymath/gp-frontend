@@ -1,4 +1,4 @@
-import React, { RefObject } from "react";
+import React, { RefObject, useState } from "react";
 import jobVizDataObj from "../../../data/Jobviz/jobVizDataObj.json";
 import { toast } from "react-toastify";
 import { SUPPORT_EMAIL } from "../../../shared/constants";
@@ -199,6 +199,44 @@ export const createSelectedJobVizJobLink = (job: ISelectedJob) => {
   return `${window.location.origin}/jobviz${paths}`;
 };
 
+interface IJobTitle {
+  handleJobTitleBtnClick: () => void;
+  jobTitle: string;
+}
+
+const JobTitle: React.FC<IJobTitle> = ({
+  handleJobTitleBtnClick,
+  jobTitle,
+}) => {
+  const [wasClicked, setWasClicked] = useState(false);
+
+  return (
+    <li
+      onClick={() => {
+        setWasClicked(true);
+        handleJobTitleBtnClick();
+      }}
+      style={{
+        width: "fit-content",
+        maxWidth: "400px",
+        color: wasClicked ? "#00008B" : "#3d8dc8",
+        textDecoration: wasClicked ? "underline" : "none",
+      }}
+      className="text-primary li-dot-black"
+    >
+      <span
+        style={{
+          color: wasClicked ? "#00008B" : "#3d8dc8",
+          textDecoration: wasClicked ? "underline" : "none",
+        }}
+        className="underline-on-hover"
+      >
+        {jobTitle}
+      </span>
+    </li>
+  );
+};
+
 const JobToursCard: React.FC<IJobToursCard> = ({
   ref,
   jobTitleAndSocCodePairs,
@@ -211,8 +249,8 @@ const JobToursCard: React.FC<IJobToursCard> = ({
   const pathname = usePathname();
   const router = useRouter();
 
-  console.log("pathname: ", pathname)  
-  console.log("router: ", router)  
+  console.log("pathname: ", pathname);
+  console.log("router: ", router);
 
   const searchParams = useSearchParams();
   const handleJobTitleTxtClick = (socCode: string) => () => {
@@ -314,7 +352,6 @@ const JobToursCard: React.FC<IJobToursCard> = ({
     setSelectedJob(targetJob);
   };
 
-
   if (pathname.includes("jobviz") && jobTitleAndSocCodePairs?.length) {
     console.log("Inside jobviz page, showing job tours modal");
     return (
@@ -325,37 +362,22 @@ const JobToursCard: React.FC<IJobToursCard> = ({
         >
           {jobTitleAndSocCodePairs.map(([jobTitle, socCode], index) => {
             return (
-              <li
-                onClick={handleJobTitleTxtClick(socCode)}
+              <JobTitle
                 key={index}
-                style={{
-                  width: "fit-content",
-                  maxWidth: "400px",
-                }}
-                className="text-primary li-dot-black"
-              >
-                <span className="text-primary underline-on-hover">
-                  {jobTitle}
-                </span>
-              </li>
+                handleJobTitleBtnClick={handleJobTitleTxtClick(socCode)}
+                jobTitle={jobTitle}
+              />
             );
           })}
         </ul>
         <ul className="mb-4 d-block d-sm-none">
           {jobTitleAndSocCodePairs.map(([jobTitle, socCode], index) => {
             return (
-              <li
-                onClick={handleJobTitleTxtClick(socCode)}
+              <JobTitle
                 key={index}
-                style={{
-                  width: "fit-content",
-                }}
-                className="text-primary li-dot-black"
-              >
-                <span className="text-primary underline-on-hover">
-                  {jobTitle}
-                </span>
-              </li>
+                handleJobTitleBtnClick={handleJobTitleTxtClick(socCode)}
+                jobTitle={jobTitle}
+              />
             );
           })}
         </ul>
@@ -400,36 +422,22 @@ const JobToursCard: React.FC<IJobToursCard> = ({
           >
             {jobTitleAndSocCodePairs.map(([jobTitle, socCode], index) => {
               return (
-                <li
-                  onClick={handleJobTitleTxtClick(socCode)}
+                <JobTitle
                   key={index}
-                  style={{
-                    width: "fit-content",
-                  }}
-                  className="text-primary li-dot-black"
-                >
-                  <span className="text-primary underline-on-hover">
-                    {jobTitle}
-                  </span>
-                </li>
+                  handleJobTitleBtnClick={handleJobTitleTxtClick(socCode)}
+                  jobTitle={jobTitle}
+                />
               );
             })}
           </ul>
           <ul className="mb-4 d-block d-sm-none">
             {jobTitleAndSocCodePairs.map(([jobTitle, socCode], index) => {
               return (
-                <li
-                  onClick={handleJobTitleTxtClick(socCode)}
+                <JobTitle
                   key={index}
-                  style={{
-                    width: "fit-content",
-                  }}
-                  className="text-primary li-dot-black"
-                >
-                  <span className="text-primary underline-on-hover">
-                    {jobTitle}
-                  </span>
-                </li>
+                  handleJobTitleBtnClick={handleJobTitleTxtClick(socCode)}
+                  jobTitle={jobTitle}
+                />
               );
             })}
           </ul>
