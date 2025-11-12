@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { IJobVizConnection } from "../../../backend/models/Unit/JobViz";
 import { IConnectionJobViz } from "../../../backend/models/Unit/JobViz";
 import { GpPlusBtn } from "../../../pages/gp-plus";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import JobToursModal from "../Modals/JobToursModal";
 import { DISABLE_FOOTER_PARAM_NAME } from "../../../components/Footer";
 import { DISABLE_NAVBAR_PARAM_NAME } from "../../../components/Navbar";
@@ -72,6 +72,7 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
   jobVizConnections,
   unitName,
 }) => {
+  const pathname = usePathname();
   const {
     _selectedJob: [, setSelectedJob],
   } = useModalContext();
@@ -183,11 +184,15 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
 
   return (
     <div className="mt-4">
-      <div className="my-2 d-flex">
+      <div className="my-2 d-flex flex-column flex-sm-row">
         <div className="d-flex pt-1">
-          <MdOutlineRocketLaunch size={25} />
+          <MdOutlineRocketLaunch size={25} className="d-none d-sm-inline" />
+          <MdOutlineRocketLaunch size={40} className="d-inline d-sm-none mb-2" />
         </div>
-        <div className="d-flex p-0 ms-1" style={{ fontSize: "20px" }}>
+        <div
+          className="d-flex p-0 ms-1"
+          style={{ fontSize: "20px", fontWeight: 300 }}
+        >
           JobViz connects classroom learning to the real world—helping students
           see how knowledge links to jobs, industries, and the wider economy.
           With data on 1,000+ occupations, it's a springboard for systems

@@ -71,16 +71,16 @@ const Overview: React.FC<IOverviewProps> = ({
     const code = (event.target as HTMLAnchorElement).href.split('#')[1];
     console.log('code: ', code);
     console.log('descriptor: ', descriptor);
-    const el = document.getElementById(descriptor.code);
+    const element = document.getElementById(descriptor.code);
 
-    if (el) {
-      el.scrollIntoView({
+    if (element) {
+      element.scrollIntoView({
         behavior: 'smooth',
         block: 'center', // This centers the element vertically in the viewport
       });
-      el.className += ' bounce-animation';
+      element.className += ' bounce-animation';
       setTimeout(() => {
-        el.className = el.className.replace(' bounce-animation', '');
+        element.className = element.className.replace(' bounce-animation', '');
       }, 3500);
       return;
     }
