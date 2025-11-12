@@ -1,6 +1,7 @@
 import React from "react";
 import { HiOutlineRocketLaunch } from "react-icons/hi2";
 import JobToursCard, { IJobToursCard } from "../JobTours/JobToursCard";
+import Image from "next/image";
 
 interface IHeroForGpPlusUsersProps
   extends Pick<IJobToursCard, "jobTitleAndSocCodePairs" | "unitName"> {
@@ -51,18 +52,21 @@ const HeroForGpPlusUsers: React.FC<IHeroForGpPlusUsersProps> = ({
               explain&nbsp;<em>with data</em>&nbsp;which you would be most or
               least interested in.
             </p>
-
             <JobToursCard jobTitleAndSocCodePairs={jobTitleAndSocCodePairs} />
           </div>
         </div>
       ) : (
         <div className="pb-5 animate-slideup position-relative d-flex justify-content-center align-items-center">
           <div className="gp-plus-user-jobviz-logo-shell">
-            <div className="jobviz-logo-inner">
-              <img
-                src="https://dev.galacticpolymath.com/_next/image?url=%2Fimgs%2FjobViz%2Fjobviz_icon.png&w=3840&q=75"
+            <div className="jobviz-logo-inner position-relative">
+              <Image
+                src="/imgs/jobViz/icon_jobviz.png"
                 alt="JobViz Logo"
                 className="jobviz-logo-img"
+                fill
+                style={{
+                  objectFit: "contain",
+                }}
               />
             </div>
           </div>

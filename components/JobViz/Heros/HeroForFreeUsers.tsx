@@ -23,11 +23,15 @@ const HeroForFreeUsers: React.FC<IHeroForFreeUsersProps> = ({
           </div>
           <div className="col-md-4 d-flex justify-content-md-center justify-content-center animate-fadein delay-1">
             <div className="jobviz-logo-shell">
-              <div className="jobviz-logo-inner">
-                <img
-                  src="https://dev.galacticpolymath.com/_next/image?url=%2Fimgs%2FjobViz%2Fjobviz_icon.png&w=3840&q=75"
+              <div className="jobviz-logo-inner position-relative">
+                <Image
+                  src="/imgs/jobViz/icon_jobviz.png"
                   alt="JobViz Logo"
                   className="jobviz-logo-img"
+                  fill
+                  style={{
+                    objectFit: "contain",
+                  }}
                 />
               </div>
             </div>
