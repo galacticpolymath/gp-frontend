@@ -143,6 +143,21 @@
   }
 }
 
+.animate-slideup-fast {
+  opacity: 0;
+  animation: slideUpFast 650ms ease-out 0s forwards;
+}
+@keyframes slideUpFast {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .animate-slidedown {
   opacity: 1;
   animation: slideDown 650ms ease-out 0s forwards;

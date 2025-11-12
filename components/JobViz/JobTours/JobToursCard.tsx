@@ -11,6 +11,11 @@ import { usePathname, useSearchParams } from "next/navigation";
 import { useRouter } from "next/router";
 import { useLessonContext } from "../../../providers/LessonProvider";
 import { JobToursCardWithRocket } from "../Heros/HeroForGpPlusUsers";
+import {
+  SOC_CODES_PARAM_NAME,
+  UNIT_NAME_PARAM_NAME,
+} from "../../LessonSection/JobVizConnections";
+import { getUnitRelatedJobs } from "../../../helperFns/filterUnitRelatedJobs";
 
 export interface IJobToursCard {
   ref?: RefObject<HTMLElement | null>;
@@ -244,27 +249,28 @@ export const JobToursCardTopSticky: React.FC = () => {
     _isJobToursStickyTopCardDisplayed: [isJobToursStickTopCardDisplayed],
     _willRenderJobToursStickyTopCard: [willRenderJobToursStickyTopCard],
   } = useLessonContext();
+  const searchParams = useSearchParams();
+  const socCodesStr = searchParams.get(SOC_CODES_PARAM_NAME);
+  const socCodes = socCodesStr ? new Set(socCodesStr.split(",")) : null;
+  const unitName = searchParams.get(UNIT_NAME_PARAM_NAME);
+  const jobTitleAndSocCodePairs: [string, string][] | null = socCodes
+    ? getUnitRelatedJobs(socCodes).map(({ title, soc_code }) => [
+        title,
+        soc_code,
+      ])
+    : null;
 
-  return willRenderJobToursStickyTopCard ? (
+  return willRenderJobToursStickyTopCard &&
+    jobTitleAndSocCodePairs?.length &&
+    unitName ? (
     <>
       <JobToursCardWithRocket
         cardClassName="assignment-card-on-top w-100 p-4 shadow-lg bg-white position-relative text-start overflow-hidden"
-        jobTitleAndSocCodePairs={[]}
-        className={`d-none d-sm-block ${
+        unitName={unitName}
+        jobTitleAndSocCodePairs={jobTitleAndSocCodePairs}
+        className={`${
           isJobToursStickTopCardDisplayed
-            ? "animate-slideup"
-            : "animate-slidedown"
-        } position-relative`}
-        style={{
-          width: "100vw",
-        }}
-      />
-      <JobToursCardWithRocket
-        cardClassName="assignment-card-on-top w-100 p-4 shadow-lg bg-white position-relative text-start overflow-hidden"
-        jobTitleAndSocCodePairs={[]}
-        className={`d-block d-sm-none ${
-          isJobToursStickTopCardDisplayed
-            ? "animate-slideup"
+            ? "animate-slideup-fast"
             : "animate-slidedown"
         } position-relative`}
         style={{

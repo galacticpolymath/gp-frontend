@@ -17,8 +17,8 @@ const HeroForFreeUsers: React.FC<IHeroForFreeUsersProps> = ({
               <span className="free-tag ms-1">(FREE)</span>
             </h1>
             <p className="lead animate-fadein delay-1">
-              Discover how classroom learning connects to real-world careers
-              across industries and the economy.
+              A tool for grades 6–adult to explore career possibilities! Browse,
+              search & share key details about 1000+ jobs.
             </p>
           </div>
           <div className="col-md-4 d-flex justify-content-md-center justify-content-center animate-fadein delay-1">

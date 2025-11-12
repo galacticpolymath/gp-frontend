@@ -116,7 +116,7 @@ const JobViz = ({
               unitName={unitName}
               className="d-none d-sm-block jobviz-hero text-center text-light position-relative overflow-hidden pt-3 pb-5"
               willTrackIsInViewport
-              useInViewThreshold={0.7}
+              useInViewThreshold={0.4}
             />
           </>
         ) : (

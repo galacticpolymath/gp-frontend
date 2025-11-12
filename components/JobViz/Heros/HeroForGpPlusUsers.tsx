@@ -90,7 +90,14 @@ const HeroForGpPlusUsers: React.FC<IHeroForGpPlusUsersProps> = ({
     ],
   } = useLessonContext();
 
-  // TODO: write a clean-up function
+  const cleanup = () => {
+    setWillRenderJobToursStickTopCard(false);
+    setIsJobToursStickyTopCardDisplayed(false);
+  }
+
+  useEffect(() => {
+    return cleanup;
+  }, []);
 
   useEffect(() => {
     console.log(`inView: ${inView}`);
@@ -151,8 +158,8 @@ const HeroForGpPlusUsers: React.FC<IHeroForGpPlusUsersProps> = ({
             </>
           ) : (
             <>
-              Discover how classroom learning connects to real-world careers
-              across industries and the economy.
+              A tool for grades 6–adult to explore career possibilities! Browse,
+              search & share key details about 1000+ jobs.
             </>
           )}
         </p>
