@@ -124,7 +124,7 @@ const InfoCards: React.FC<{
     return (
       <div className="col-6 col-md-4" key={index}>
         <div className="jobInfoStatCard shadow h-100">
-          <div className="d-flex align-items-center justify-content-center border h-100">
+          <div className="d-flex align-items-center justify-content-center border h-100 py-2">
             <section className="d-flex flex-column w-75 position-relative">
               <section className="w-100">{icon}</section>
               <section className="w-100 mt-1">
@@ -303,15 +303,17 @@ const SelectedJob: React.FC = () => {
                   JOBVIZ_BRACKET_SEARCH_ID
                 );
 
-                if(!element){
-                  console.error(`Element with id ${JOBVIZ_BRACKET_SEARCH_ID} not found.`);
+                if (!element) {
+                  console.error(
+                    `Element with id ${JOBVIZ_BRACKET_SEARCH_ID} not found.`
+                  );
                   return;
                 }
 
                 element.scrollIntoView({
                   behavior: "smooth",
-                  block: "center"
-                })
+                  block: "center",
+                });
 
                 handleOnHide();
               }}
