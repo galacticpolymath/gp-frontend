@@ -258,7 +258,6 @@ export const JobToursCardTopSticky: React.FC = () => {
         style={{
           width: "100vw",
         }}
-        willTrackViewportLocation={false}
       />
       <JobToursCardWithRocket
         cardClassName="assignment-card-on-top w-100 p-4 shadow-lg bg-white position-relative text-start overflow-hidden"
@@ -271,8 +270,6 @@ export const JobToursCardTopSticky: React.FC = () => {
         style={{
           width: "100vw",
         }}
-        willTrackViewportLocation={false}
-        useInViewThreshold={0}
       />
     </>
   ) : null;

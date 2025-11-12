@@ -8,6 +8,8 @@ import { useLessonContext } from "../../../providers/LessonProvider";
 interface IHeroForGpPlusUsersProps
   extends Pick<IJobToursCard, "jobTitleAndSocCodePairs" | "unitName"> {
   className?: string;
+  useInViewThreshold?: number
+  willTrackIsInViewport?: boolean
 }
 
 interface IJobToursCardWithRocketProps
@@ -15,8 +17,6 @@ interface IJobToursCardWithRocketProps
   className: string;
   cardClassName: string;
   style?: CSSProperties;
-  willTrackViewportLocation: boolean,
-  useInViewThreshold?: number
 }
 
 export const JobToursCardWithRocket: React.FC<IJobToursCardWithRocketProps> = ({
@@ -24,11 +24,61 @@ export const JobToursCardWithRocket: React.FC<IJobToursCardWithRocketProps> = ({
   className = "pb-5 animate-slideup position-relative d-flex justify-content-center align-items-center",
   cardClassName = "assignment-card p-4 shadow-sm bg-white position-relative rounded-4 text-start overflow-hidden",
   style,
-  willTrackViewportLocation,
-  useInViewThreshold,
+}) => {
+  return (
+    <div className={className} style={style}>
+      <div className={cardClassName}>
+        <HiOutlineRocketLaunch className="wm-rocket" aria-hidden="true" />
+
+        <p className="assignment-title mb-3 text-dark d-flex align-items-center flex-wrap position-relative">
+          <HiOutlineRocketLaunch
+            className="assignment-icon me-2"
+            name="rocket-outline"
+          />
+          <strong>Assignment:</strong>&nbsp;Explore these jobs and explain&nbsp;
+          <em>with data</em>&nbsp;which you would be most or least interested
+          in.
+        </p>
+        <JobToursCard jobTitleAndSocCodePairs={jobTitleAndSocCodePairs} />
+      </div>
+    </div>
+  );
+};
+
+/**
+ * A hero component for the JobViz GP+ user page.
+ *
+ * It displays a background image with a title, a tagline, and a
+ * call-to-action button to explore the job titles and their corresponding
+ * data.
+ *
+ * The component uses the useInView hook to track whether the element
+ * is in the viewport or not. If it's not in the viewport and the
+ * willTrackViewportLocation prop is set to true, it will render the
+ * JobToursCardWithRocket component and make it visible to the user.
+ *
+ * If the element is in the viewport and the willTrackViewportLocation prop
+ * is set to true, it will remove the JobToursCardWithRocket component from
+ * the dom and make it invisible to the user.
+ *
+ * @param {string} className - The CSS class name for the hero container.
+ * @param {IJobToursCard[]} jobTitleAndSocCodePairs - An array of objects containing
+ * the job title and SOC code.
+ * @param {string} unitName - The name of the unit related to the job titles.
+ * @param {boolean} willTrackViewportLocation - A boolean indicating whether to track
+ * the element's visibility in the viewport.
+ * @param {number} useInViewThreshold - The threshold value for the useInView hook. For mobile = .2, for desktop .7
+ */
+
+const HeroForGpPlusUsers: React.FC<IHeroForGpPlusUsersProps> = ({
+  className = "jobviz-hero text-center text-light position-relative overflow-hidden",
+  jobTitleAndSocCodePairs,
+  unitName,
+  willTrackIsInViewport,
+  useInViewThreshold
 }) => {
   const didRenderInitially = useRef(false);
-  const { ref, inView } = useInView({ threshold: useInViewThreshold ?? 0.7 });
+  const { ref, inView } = useInView({ threshold: useInViewThreshold });
   const {
     _isJobToursStickyTopCardDisplayed: [
       isJobToursStickTopCardDisplayed,
@@ -47,7 +97,7 @@ export const JobToursCardWithRocket: React.FC<IJobToursCardWithRocketProps> = ({
 
     console.log(`didRenderInitially.current: `, didRenderInitially.current);
 
-    if (!willTrackViewportLocation) {
+    if (!willTrackIsInViewport) {
       return;
     }
 
@@ -62,10 +112,7 @@ export const JobToursCardWithRocket: React.FC<IJobToursCardWithRocketProps> = ({
       return;
     }
 
-    if (
-      didRenderInitially.current &&
-      !inView
-    ) {
+    if (didRenderInitially.current && !inView) {
       console.log("is not dom, will will make it visable to the user.");
       setIsJobToursStickyTopCardDisplayed(true);
       return;
@@ -87,32 +134,7 @@ export const JobToursCardWithRocket: React.FC<IJobToursCardWithRocketProps> = ({
   }, []);
 
   return (
-    <div ref={ref} className={className} style={style}>
-      <div className={cardClassName}>
-        <HiOutlineRocketLaunch className="wm-rocket" aria-hidden="true" />
-
-        <p className="assignment-title mb-3 text-dark d-flex align-items-center flex-wrap position-relative">
-          <HiOutlineRocketLaunch
-            className="assignment-icon me-2"
-            name="rocket-outline"
-          />
-          <strong>Assignment:</strong>&nbsp;Explore these jobs and explain&nbsp;
-          <em>with data</em>&nbsp;which you would be most or least interested
-          in.
-        </p>
-        <JobToursCard jobTitleAndSocCodePairs={jobTitleAndSocCodePairs} />
-      </div>
-    </div>
-  );
-};
-
-const HeroForGpPlusUsers: React.FC<IHeroForGpPlusUsersProps> = ({
-  className = "jobviz-hero text-center text-light position-relative overflow-hidden",
-  jobTitleAndSocCodePairs,
-  unitName,
-}) => {
-  return (
-    <section className={className}>
+    <section ref={ref} className={className}>
       <div className="jobviz-bg"></div>
 
       <div className="container pt-5 pb-4 position-relative">
@@ -141,7 +163,6 @@ const HeroForGpPlusUsers: React.FC<IHeroForGpPlusUsersProps> = ({
           className="container pb-5 animate-slideup position-relative d-flex justify-content-center align-items-center"
           jobTitleAndSocCodePairs={jobTitleAndSocCodePairs}
           cardClassName="assignment-card p-4 shadow-sm bg-white position-relative rounded-4 text-start overflow-hidden"
-          willTrackViewportLocation
         />
       ) : (
         <div className="pb-5 animate-slideup position-relative d-flex justify-content-center align-items-center">

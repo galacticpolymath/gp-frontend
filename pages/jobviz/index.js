@@ -27,7 +27,7 @@ const DATA_SOURCE_LINK =
   "https://www.bls.gov/emp/tables/occupational-projections-and-characteristics.htm";
 
 const JOB_VIZ_PG_DESCRIPTION_DEFAULT =
-    "A tool for middle and high school students to explore career possibilities. Browse, search, and share descriptions and stats for over a thousands jobs.";
+  "A tool for middle and high school students to explore career possibilities. Browse, search, and share descriptions and stats for over a thousands jobs.";
 
 const JobViz = ({
   vals,
@@ -103,11 +103,22 @@ const JobViz = ({
         customChildrenContainerClassName=""
       >
         {hasGpPlusMembership ? (
-          <HeroForGpPlusUsers
-            jobTitleAndSocCodePairs={jobTitleAndSocCodePairs}
-            unitName={unitName}
-            className="jobviz-hero text-center text-light position-relative overflow-hidden pt-3 pb-5"
-          />
+          <>
+            <HeroForGpPlusUsers
+              jobTitleAndSocCodePairs={jobTitleAndSocCodePairs}
+              unitName={unitName}
+              className="d-block d-sm-none jobviz-hero text-center text-light position-relative overflow-hidden pt-3 pb-5"
+              willTrackIsInViewport
+              useInViewThreshold={0.2}
+            />
+            <HeroForGpPlusUsers
+              jobTitleAndSocCodePairs={jobTitleAndSocCodePairs}
+              unitName={unitName}
+              className="d-none d-sm-block jobviz-hero text-center text-light position-relative overflow-hidden pt-3 pb-5"
+              willTrackIsInViewport
+              useInViewThreshold={0.7}
+            />
+          </>
         ) : (
           <HeroForFreeUsers className="jobviz-hero-free text-center text-light position-relative overflow-hidden pt-4 pb-5" />
         )}
@@ -263,16 +274,17 @@ export const getServerSideProps = async ({ query, req }) => {
   const sessionToken = req.cookies["next-auth.session-token"];
   let hasGpPlusMembership = req?.cookies?.["isGpPlusMember"];
 
-  console.log('hasGpPlusMembership before validation: ', hasGpPlusMembership);
+  console.log("hasGpPlusMembership before validation: ", hasGpPlusMembership);
 
-  if (typeof hasGpPlusMembership === 'string') {
-    hasGpPlusMembership = hasGpPlusMembership === 'true'
+  if (typeof hasGpPlusMembership === "string") {
+    hasGpPlusMembership = hasGpPlusMembership === "true";
   } else if (!hasGpPlusMembership && sessionToken) {
-    hasGpPlusMembership = !!(await verifyJwt(sessionToken))?.payload?.hasGpPlusMembership
+    hasGpPlusMembership = !!(await verifyJwt(sessionToken))?.payload
+      ?.hasGpPlusMembership;
   }
 
-  hasGpPlusMembership = !!hasGpPlusMembership
-  console.log('hasGpPlusMembership after validation: ', hasGpPlusMembership);
+  hasGpPlusMembership = !!hasGpPlusMembership;
+  console.log("hasGpPlusMembership after validation: ", hasGpPlusMembership);
 
   if (socCodes) {
     const jobTitleAndSocCodePairs = getUnitRelatedJobs(socCodes).map(
