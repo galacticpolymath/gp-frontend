@@ -1,12 +1,60 @@
-import React from "react";
+import React, { CSSProperties } from "react";
 import { HiOutlineRocketLaunch } from "react-icons/hi2";
 import JobToursCard, { IJobToursCard } from "../JobTours/JobToursCard";
 import Image from "next/image";
+import Collapse from "react-bootstrap/Collapse";
+import { useLessonContext } from "../../../providers/LessonProvider";
 
 interface IHeroForGpPlusUsersProps
   extends Pick<IJobToursCard, "jobTitleAndSocCodePairs" | "unitName"> {
   className?: string;
 }
+
+interface IJobToursCardWithRocketProps
+  extends Pick<IJobToursCard, "jobTitleAndSocCodePairs" | "unitName"> {
+  className: string;
+  cardClassName: string;
+  style?: CSSProperties
+}
+
+export const JobToursCardWithRocket: React.FC<IJobToursCardWithRocketProps> = ({
+  jobTitleAndSocCodePairs,
+  className = "pb-5 animate-slideup position-relative d-flex justify-content-center align-items-center",
+  cardClassName = "assignment-card p-4 shadow-sm bg-white position-relative rounded-4 text-start overflow-hidden",
+  style,
+}) => {
+  const {
+    _isJobToursStickyTopCardDisplayed: [
+      isJobToursStickTopCardDisplayed,
+      setIsJobToursStickTopCardDisplayed,
+    ],
+  } = useLessonContext();
+
+  return (
+    <div
+      className={className}
+      style={style}
+      onClick={() => {
+        setIsJobToursStickTopCardDisplayed((state) => !state);
+      }}
+    >
+      <div className={cardClassName}>
+        <HiOutlineRocketLaunch className="wm-rocket" aria-hidden="true" />
+
+        <p className="assignment-title mb-3 text-dark d-flex align-items-center flex-wrap position-relative">
+          <HiOutlineRocketLaunch
+            className="assignment-icon me-2"
+            name="rocket-outline"
+          />
+          <strong>Assignment:</strong>&nbsp;Explore these jobs and explain&nbsp;
+          <em>with data</em>&nbsp;which you would be most or least interested
+          in.
+        </p>
+        <JobToursCard jobTitleAndSocCodePairs={jobTitleAndSocCodePairs} />
+      </div>
+    </div>
+  );
+};
 
 const HeroForGpPlusUsers: React.FC<IHeroForGpPlusUsersProps> = ({
   className = "jobviz-hero text-center text-light position-relative overflow-hidden",
@@ -39,22 +87,11 @@ const HeroForGpPlusUsers: React.FC<IHeroForGpPlusUsersProps> = ({
       </div>
 
       {jobTitleAndSocCodePairs?.length ? (
-        <div className="container pb-5 animate-slideup position-relative d-flex justify-content-center align-items-center">
-          <div className="assignment-card p-4 shadow-sm bg-white position-relative rounded-4 text-start overflow-hidden">
-            <HiOutlineRocketLaunch className="wm-rocket" aria-hidden="true" />
-
-            <p className="assignment-title mb-3 text-dark d-flex align-items-center flex-wrap position-relative">
-              <HiOutlineRocketLaunch
-                className="assignment-icon me-2"
-                name="rocket-outline"
-              />
-              <strong>Assignment:</strong>&nbsp;Explore these jobs and
-              explain&nbsp;<em>with data</em>&nbsp;which you would be most or
-              least interested in.
-            </p>
-            <JobToursCard jobTitleAndSocCodePairs={jobTitleAndSocCodePairs} />
-          </div>
-        </div>
+        <JobToursCardWithRocket
+          className="container pb-5 animate-slideup position-relative d-flex justify-content-center align-items-center"
+          jobTitleAndSocCodePairs={jobTitleAndSocCodePairs}
+          cardClassName="assignment-card p-4 shadow-sm bg-white position-relative rounded-4 text-start overflow-hidden"
+        />
       ) : (
         <div className="pb-5 animate-slideup position-relative d-flex justify-content-center align-items-center">
           <div className="gp-plus-user-jobviz-logo-shell">

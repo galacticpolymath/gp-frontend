@@ -10,6 +10,9 @@ import { useState } from 'react';
 import { useSession } from 'next-auth/react';
 import LoginContainerForNavbar from './User/Login/LoginContainerForNavbar';
 import { useSearchParams } from 'next/navigation';
+import { JobToursCardWithRocket } from './JobViz/Heros/HeroForGpPlusUsers';
+import { useLessonContext } from '../providers/LessonProvider';
+import { JobToursCardTopSticky } from './JobViz/JobTours/JobToursCard';
 
 export const DISABLE_NAVBAR_PARAM_NAME = 'disableNavbar';
 
@@ -19,11 +22,17 @@ export default function Navbar() {
   const router = useRouter();
   const session = useSession();
   const [modalAnimation, setModalAnimation] = useState('d-none');
+  const {
+    _isJobToursStickyTopCardDisplayed: [
+      isJobToursStickTopCardDisplayed,
+      setIsJobToursStickTopCardDisplayed,
+    ],
+  } = useLessonContext();
 
   return (
     <nav
       style={{ zIndex: 1000 }}
-      className={`position-fixed w-100 navbar-expand-lg py-0 ${disableNavbar ? 'pe-none' : ''}`}
+      className={`fixed-top w-100 navbar-expand-lg py-0 ${disableNavbar ? 'pe-none' : ''}`}
     >
       <div className='navbar navbar-expand-lg w-100 navbar-dark bg-dark position-relative'>
         <div className='w-100 container'>
@@ -93,6 +102,7 @@ export default function Navbar() {
           </div>
         </div>
       </div>
+      <JobToursCardTopSticky />
     </nav>
   );
 }

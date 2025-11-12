@@ -9,6 +9,8 @@ import {
 import { getPathsOfSearchResult } from "../../../helperFns/getPathsOfSearchResult";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useRouter } from "next/router";
+import { useLessonContext } from "../../../providers/LessonProvider";
+import { JobToursCardWithRocket } from "../Heros/HeroForGpPlusUsers";
 
 export interface IJobToursCard {
   ref?: RefObject<HTMLElement | null>;
@@ -237,6 +239,27 @@ const JobTitle: React.FC<IJobTitle> = ({
   );
 };
 
+export const JobToursCardTopSticky: React.FC = () => {
+  const {
+    _isJobToursStickyTopCardDisplayed: [isJobToursStickTopCardDisplayed],
+  } = useLessonContext();
+
+  return (
+    <JobToursCardWithRocket
+      cardClassName="assignment-card-on-top w-100 p-4 shadow-lg bg-white position-relative text-start overflow-hidden"
+      jobTitleAndSocCodePairs={[]}
+      className={`pb-3 ${
+        isJobToursStickTopCardDisplayed
+          ? "animate-slideup"
+          : "animate-slidedown"
+      } position-relative`}
+      style={{
+        width: "100vw",
+      }}
+    />
+  );
+};
+
 const JobToursCard: React.FC<IJobToursCard> = ({
   ref,
   jobTitleAndSocCodePairs,
@@ -246,6 +269,9 @@ const JobToursCard: React.FC<IJobToursCard> = ({
   const {
     _selectedJob: [, setSelectedJob],
   } = useModalContext();
+  const {
+    _isJobToursStickyTopCardDisplayed: [, setIsJobToursStickyTopCardDisplayed],
+  } = useLessonContext();
   const pathname = usePathname();
   const router = useRouter();
 
@@ -392,6 +418,7 @@ const JobToursCard: React.FC<IJobToursCard> = ({
           <h3 className="mb-4">
             Jobs and careers related to the &ldquo;{unitName}&rdquo; unit:
           </h3>
+          {/* track if this card goes out of view */}
           <div className="d-flex align-items-start mb-4">
             <div className="me-3 mt-1" style={{ fontSize: "2rem" }}>
               ✏️
