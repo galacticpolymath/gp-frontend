@@ -6,6 +6,7 @@ import Navbar from "./Navbar";
 import { Noto_Sans } from "next/font/google";
 import { useEffect } from "react";
 import { removeLocalStorageItem } from "../shared/fns";
+import { JobToursCardWithRocket } from "./JobViz/Heros/HeroForGpPlusUsers";
 
 const notoSansLight = Noto_Sans({
   subsets: ["latin"],

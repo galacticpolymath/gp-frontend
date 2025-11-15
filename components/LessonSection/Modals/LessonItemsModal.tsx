@@ -1,5 +1,3 @@
-/* eslint-disable quotes */
-/* eslint-disable indent */
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Button, Modal, CloseButton } from "react-bootstrap";
 import { ILessonItem, useModalContext } from "../../../providers/ModalProvider";
@@ -19,11 +17,77 @@ import Image from "next/image";
 import { FcGoogle } from "react-icons/fc";
 import Dropdown from "react-bootstrap/Dropdown";
 import { LuMonitorPlay } from "react-icons/lu";
+import { GiFilmStrip } from "react-icons/gi";
 
-interface ICarouselItemNavBtn {
-  onClick: React.MouseEventHandler<HTMLButtonElement>;
-  arrowType: "left" | "right";
+const LESSON_ITEMS_MODAL_BG_COLOR = "#E2F0FD";
+
+interface ILessonItemCard {
+  previewUrl: string;
+  viewUrl: string;
+  index: number;
 }
+
+const LessonItemCard: React.FC<ILessonItemCard> = ({
+  previewUrl,
+  viewUrl,
+  index,
+}) => {
+  const [isMsgHidden, setIsMsgHidden] = useState(false);
+
+  return (
+    <CarouselCard key={`image-${index}`} className="h-100 position-relative">
+      <div
+        style={{
+          zIndex: 10000,
+          backgroundColor: LESSON_ITEMS_MODAL_BG_COLOR,
+          height: "10vh",
+          minHeight: "65px",
+          maxHeight: "75px",
+        }}
+        className={`top-0 w-100 position-absolute ${
+          isMsgHidden ? "d-none" : "d-block"
+        } d-xl-none`}
+      >
+        <div className="w-100 h-100 px-2 py-1 position-relative d-flex justify-content-center align-items-center">
+          <div style={{ maxWidth: "400px" }} className="position-relative">
+            <Button
+              style={{ top: "-5px" }}
+              className="position-absolute end-0 no-btn-styles"
+              onClick={() => {
+                setIsMsgHidden(true);
+              }}
+            >
+              <i
+                className="fa fa-times text-black"
+                aria-hidden="true"
+                style={{ fontSize: "12px" }}
+              />
+            </Button>
+            <div className="w-100 px-3 py-2 rounded bg-white justify-content-center align-items-center">
+              <div className="d-flex">
+                <div className="d-flex justify-content-center align-items-center">
+                  <GiFilmStrip size={40} />
+                </div>
+                <span
+                  style={{ fontSize: 14, lineHeight: 1.4 }}
+                  className="ms-1"
+                >
+                  <b>Preview</b>. To view slide deck, open on a desktop.
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="w-100 h-100 position-relative d-none d-xl-block">
+        <iframe src={viewUrl} className="w-100 h-100" />
+      </div>
+      <div className="w-100 h-100 position-relative d-xl-none d-block">
+        <iframe src={previewUrl} className="w-100 h-100" />
+      </div>
+    </CarouselCard>
+  );
+};
 
 const LessonItemDownloadBtnsDropDown: React.FC<{
   lessonItem: ILessonItem;
@@ -382,9 +446,40 @@ const LessonItemsModal: React.FC = () => {
                 isGpPlusMember
                   ? "col-12 col-sm-7 col-xxl-9"
                   : "col-6 col-sm-6 col-md-9 col-xxl-6 p-0"
-              } d-flex flex-column flex-md-row justify-content-md-end align-items-center p-sm-0`}
+              } d-flex flex-column flex-md-row justify-content-md-end align-items-sm-center p-sm-0`}
             >
-              <section className="w-100 d-flex flex-column flex-md-row justify-content-end align-items-stretch">
+              <section className="d-none d-sm-flex h-100 justify-content-end pe-sm-3">
+                <Button
+                  style={{
+                    backgroundColor: "transparent",
+                    transition: "background-color inifinte",
+                    width: "fit-content",
+                  }}
+                  className="mb-1 mb-md-0 d-flex no-btn-styles justify-content-center align-items-center underline-on-hover text-black pointer"
+                  onClick={handlePlayBtnClick}
+                >
+                  <section className="w-100 d-none d-sm-flex h-100 pt-1">
+                    <h6
+                      style={{
+                        height: "fit-content",
+                        textTransform: "none",
+                      }}
+                      className="mb-0 text-black d-flex d-md-block justify-content-center align-items-center h-100 text-nowrap me-2"
+                    >
+                      Play Now:
+                    </h6>
+                  </section>
+                  <section className="w-100 d-none d-sm-flex h-100">
+                    <div
+                      style={{ width: 44, height: 44 }}
+                      className="bg-white p-1 rounded"
+                    >
+                      <LuMonitorPlay color="black" size={35} />
+                    </div>
+                  </section>
+                </Button>
+              </section>
+              <section className="d-flex flex-column flex-md-row justify-content-end align-items-stretch">
                 {currentLessonItem.itemCat !== "web resource" &&
                   currentLessonItem.isExportable && (
                     <section className="w-100 d-none d-sm-flex justify-content-center justify-content-md-end pt-sm-1">
@@ -519,7 +614,7 @@ const LessonItemsModal: React.FC = () => {
           circular
           className="w-100 h-100"
           style={{
-            backgroundColor: "#E2F0FD",
+            backgroundColor: LESSON_ITEMS_MODAL_BG_COLOR,
           }}
           activeIndex={currentIndex}
         >
@@ -538,7 +633,17 @@ const LessonItemsModal: React.FC = () => {
                     : lessonItem.docUrl;
 
                 if (lessonItem.itemCat === "presentation") {
-                  url = `${lessonItem.gdriveRoot}/preview`;
+                  const viewUrl = `${lessonItem.gdriveRoot}/view`;
+                  const previewUrl = `${lessonItem.gdriveRoot}/preview`;
+
+                  return (
+                    <LessonItemCard
+                      key={index}
+                      index={index}
+                      previewUrl={previewUrl}
+                      viewUrl={viewUrl}
+                    />
+                  );
                 }
 
                 return (
@@ -552,7 +657,7 @@ const LessonItemsModal: React.FC = () => {
             </CarouselSlider>
           </div>
           <div
-            style={{ backgroundColor: "#E2F0FD" }}
+            style={{ backgroundColor: LESSON_ITEMS_MODAL_BG_COLOR }}
             className="px-2 px-sm-0 pt-2 d-flex justify-content-center align-items-center flex-row w-100"
           >
             <CarouselButton

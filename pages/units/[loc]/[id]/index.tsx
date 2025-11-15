@@ -51,6 +51,9 @@ import { getUnitGDriveChildItems } from '../../../../backend/services/gdriveServ
 import CopyLessonHelperModal from '../../../../components/GpPlus/CopyLessonHelperModal';
 import FailedCopiedFilesReportModal from '../../../../components/GpPlus/FailedCopiedFilesReportModal';
 import WelcomeNewUserModal from '../../../../components/Modals/WelcomeNewUserModal';
+import { unauthorized } from 'next/navigation';
+import { IOverviewProps } from '../../../../components/LessonSection/Overview';
+import { IConnectionJobViz, IJobVizConnectionsWithDeprecatedVals } from '../../../../backend/models/Unit/JobViz';
 
 const IS_ON_PROD = process.env.NODE_ENV === 'production';
 const GOOGLE_DRIVE_THUMBNAIL_URL = 'https://drive.google.com/thumbnail?id=';
@@ -131,9 +134,7 @@ interface IProps {
   unitGDriveChildItems: Awaited<ReturnType<typeof getUnitGDriveChildItems>>;
 }
 
-const SECTIONS_TO_FILTER_OUT: Set<keyof ISections> = new Set([
-  'jobvizConnections',
-] as (keyof ISections)[]);
+const SECTIONS_TO_FILTER_OUT: Set<keyof ISections> = new Set([] as (keyof ISections)[]);
 const SECTION_SORT_ORDER: Record<keyof ISections, number> = {
   overview: 0,
   preview: 1,
@@ -148,11 +149,70 @@ const SECTION_SORT_ORDER: Record<keyof ISections, number> = {
   acknowledgments: 10,
   versions: 11,
 };
+export const SECTION_SORT_ORDER_REVERSE: (keyof ISections)[] = [
+  'overview',
+  'preview',
+  'teachingMaterials',
+  'feedback',
+  'jobvizConnections',
+  'extensions',
+  'bonus',
+  'background',
+  'standards',
+  'credits',
+  'acknowledgments',
+  'versions',
+];
 
 const UNIT_DOCUMENT_ORIGINS = new Set([
   'https://storage.googleapis.com',
   'https://docs.google.com',
 ]);
+
+type TUpdateSection = (sectionVal: object, unit: TUnitForUI) => object;
+
+const SECTION_UPDATERS: Partial<Record<keyof TSectionsForUI, TUpdateSection>> = {
+  jobvizConnections: (sectionVal: object, unit: TUnitForUI) => {
+    return {
+      ...sectionVal,
+      unitName: unit.Title,
+    };
+  },
+  overview: (sectionVal: object, unit: TUnitForUI) => {
+    const jobVizConnectionsSec = unit.Sections?.jobvizConnections;
+
+    if (!jobVizConnectionsSec){
+      return sectionVal;
+    }
+
+    const previewJobsSliced = jobVizConnectionsSec.Content.slice(0, 3);
+    const jobTitleAndSocCodePairs: [string, string][] = [];
+
+    for (const previewJob of previewJobsSliced){
+      let jobTitle = Array.isArray(previewJob.job_title) ? previewJob.job_title.at(0) : previewJob.job_title;
+      let socCode = Array.isArray(previewJob.job_title) ? previewJob.job_title.at(0) : previewJob.job_title;
+
+      if(!socCode || !jobTitle){
+        console.error('Developer Error: Missing job title or SOC code in JobViz preview jobs.', { previewJob });
+        continue;
+      }
+
+      jobTitleAndSocCodePairs.push([jobTitle, socCode]);
+    }
+
+    const additionalJobsNum =
+      jobVizConnectionsSec.Content.length - jobTitleAndSocCodePairs.length;
+    const overviewSecProps: IOverviewProps = {
+      ...(sectionVal as IOverviewProps),
+      jobVizCareerConnections: {
+        additionalJobsNum,
+        jobTitleAndSocCodePairs,
+      },
+    };
+
+    return overviewSecProps;
+  },
+};
 
 const LessonDetails: React.FC<IProps> = ({ lesson, unit }) => {
   console.log('UNIT OBJECT: ', unit);
@@ -160,9 +220,31 @@ const LessonDetails: React.FC<IProps> = ({ lesson, unit }) => {
   useMemo(() => {
     if (unit?.Sections) {
       const unitSections = Object.entries(unit.Sections).reduce(
-        (sections, [sectionKey, sectionVal]) => {
-          if (SECTIONS_TO_FILTER_OUT.has(sectionKey as keyof TSectionsForUI)) {
+        (
+          sections: TSectionsForUI,
+          sectionKeyAndSection
+        ) => {
+          let [sectionKey, sectionVal] = sectionKeyAndSection as [
+            keyof TSectionsForUI,
+            object
+          ];
+
+          if (
+            SECTIONS_TO_FILTER_OUT.size &&
+            SECTIONS_TO_FILTER_OUT.has(sectionKey)
+          ) {
             return sections;
+          }
+
+          const updateSectionFn = SECTION_UPDATERS[sectionKey];
+
+          if(updateSectionFn){
+            sectionVal = updateSectionFn(sectionVal, unit);
+
+            return {
+              ...sections,
+              [sectionKey]: sectionVal,
+            };
           }
 
           return {

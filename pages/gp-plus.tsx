@@ -1,6 +1,6 @@
-import React, { ReactNode, useEffect, useMemo, useRef, useState } from 'react';
+import React, { PropsWithChildren, ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import Layout from '../components/Layout';
-import { Spinner } from 'react-bootstrap';
+import { Button, Spinner } from 'react-bootstrap';
 import Image from 'next/image';
 import Logo from '../assets/img/logo.ico';
 import useSiteSession from '../customHooks/useSiteSession';
@@ -38,6 +38,59 @@ interface IProps {
   errType?: string;
   errObj?: object;
 }
+
+type TFn = () => void;
+
+interface IGpPlusBtn extends PropsWithChildren{
+  styles?: React.CSSProperties,
+  className?: string
+  onClick: (() => Promise<void>) | (() => void);
+  isLoading?: boolean
+  disabled?: boolean
+}
+
+export const GpPlusBtn: React.FC<IGpPlusBtn> = ({
+  styles,
+  className = 'px-sm-3 py-sm-2 col-10 col-sm-12',
+  onClick,
+  disabled,
+  isLoading,
+  children,
+}) => {
+  if (!styles) {
+    styles = {
+      minHeight: '51px',
+      backgroundColor: 'white',
+      border: 'solid 3px #2339C4',
+      borderRadius: '2em',
+      textTransform: 'none',
+      minWidth: '300px',
+      pointerEvents: disabled || isLoading ? 'none' : 'auto',
+      width: 'fit-content',
+    };
+  }
+
+  return (
+    <Button
+      onClick={onClick}
+      style={styles}
+      className={`${className} ${
+        (disabled || isLoading) ? 'opacity-25' : 'opacity-100'
+      }`}
+      disabled={disabled || isLoading}
+    >
+      <div className="d-flex flex-column flex-sm-row align-items-center justify-content-center gap-2">
+        <Image 
+          alt="gp_plus_logo" 
+          src="/plus/plus.png" 
+          width={32} 
+          height={32} 
+        />
+        {children}
+      </div>
+    </Button>
+  );
+};
 
 export const SELECTED_GP_PLUS_BILLING_TYPE =
   'selected_gp_plus_billing_type' as const;

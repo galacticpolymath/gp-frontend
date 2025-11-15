@@ -10,11 +10,10 @@ const SubjectBreakDown = ({ SteamEpaulette, SteamEpaulette_vert }) => {
           src={SteamEpaulette}
           alt="Subject breakdown by standard alignments"
           priority
-          height={160}
+          height={90}
           width={2200}
           style={{
             objectFit: 'contain',
-            height: 'auto',
             width: '100%',
           }}
         />

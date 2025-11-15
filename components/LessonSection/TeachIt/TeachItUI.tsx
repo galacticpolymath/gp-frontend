@@ -650,19 +650,9 @@ const TeachItUI = <
                               : "block",
                           }}
                         >
-                          <Sparkles
-                            sparkleWrapperStyle={{
-                              height: 40,
-                              display: "flex",
-                              justifyContent: "center",
-                              alignItems: "center",
-                            }}
-                            color="purple"
-                          >
-                            <p style={{ transform: "translateY(20px)" }}>
-                              CLICK TO SEE MORE!
-                            </p>
-                          </Sparkles>
+                          <p style={{ transform: "translateY(20px)" }}>
+                            CLICK TO SEE MORE!
+                          </p>
                         </ClickMeArrow>
                       ) : null
                     }

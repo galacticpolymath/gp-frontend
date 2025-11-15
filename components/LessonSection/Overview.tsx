@@ -1,30 +1,27 @@
-/* eslint-disable no-console */
- 
-/* eslint-disable quotes */
+import React from 'react';
+import Link from 'next/link';
+import RichText from '../RichText';
+import { useMemo, useRef } from 'react';
+import useLessonElementInView from '../../customHooks/useLessonElementInView';
+import Title, { ITitleProps } from './Title';
+import { ISectionDots, TUseStateReturnVal } from '../../types/global';
+import { TOverviewForUI } from '../../backend/models/Unit/types/overview';
+import { TUnitForUI } from '../../backend/models/Unit/types/unit';
+import { ITargetStandardsCode } from '../../backend/models/Unit/types/standards';
+import GistCard, { IGistCard } from './GistCard';
 
-import React from "react";
-import Link from "next/link";
-import RichText from "../RichText";
-import { useMemo, useRef } from "react";
-import useLessonElementInView from "../../customHooks/useLessonElementInView";
-import Title, { ITitleProps } from "./Title";
-import { ISectionDots, TUseStateReturnVal } from "../../types/global";
-import { TOverviewForUI } from "../../backend/models/Unit/types/overview";
-import { TUnitForUI } from "../../backend/models/Unit/types/unit";
-import { ITargetStandardsCode } from "../../backend/models/Unit/types/standards";
-import GistCard from "./GistCard";
-
-interface IOverviewProps
+export interface IOverviewProps
   extends ITitleProps,
-    Pick<TOverviewForUI, "TheGist" | "EstUnitTime" | "UnitTags" | "Tags"> {
-  Accessibility: TOverviewForUI["Accessibility"];
+    Pick<TOverviewForUI, 'TheGist' | 'EstUnitTime' | 'UnitTags' | 'Tags'>,
+    Pick<IGistCard, 'jobVizCareerConnections'> {
+  Accessibility: TOverviewForUI['Accessibility'];
   Description: string;
   EstLessonTime: string;
   ForGrades: string[];
   GradesOrYears: string[];
   LearningSummary: string;
   SectionTitle: string;
-  TargetStandardsCodes?: TUnitForUI["TargetStandardsCodes"];
+  TargetStandardsCodes?: TUnitForUI['TargetStandardsCodes'];
   SteamEpaulette: string;
   SteamEpaulette_vert: string;
   TargetSubject: string;
@@ -32,8 +29,9 @@ interface IOverviewProps
   _sectionDots: TUseStateReturnVal<ISectionDots>;
 }
 
-const Overview = ({
+const Overview: React.FC<IOverviewProps> = ({
   LearningSummary,
+  jobVizCareerConnections,
   Description,
   EstLessonTime,
   ForGrades,
@@ -51,38 +49,38 @@ const Overview = ({
   TargetStandardsCodes,
   Accessibility,
   ...titleProps
-}: IOverviewProps) => {
-  console.log("UnitTags: ", UnitTags);
-  console.log("_Tags: ", _Tags);
-
+}) => {
+  console.log('UnitTags: ', UnitTags);
+  console.log('_Tags: ', _Tags);
+  
   let Tags = UnitTags ?? (_Tags ? _Tags.map((tag) => tag.Value) : []);
   const areTargetStandardsValid = TargetStandardsCodes?.every(
     (standard) =>
-      typeof standard?.code === "string" &&
-      typeof standard?.dim === "string" &&
-      typeof standard?.set === "string" &&
-      typeof standard?.subject === "string"
+      typeof standard?.code === 'string' &&
+      typeof standard?.dim === 'string' &&
+      typeof standard?.set === 'string' &&
+      typeof standard?.subject === 'string'
   );
-  let standards: Record<string, Omit<ITargetStandardsCode, "set">[]> = {};
+  let standards: Record<string, Omit<ITargetStandardsCode, 'set'>[]> = {};
 
   const handleLinkClick = (
     event: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
-    descriptor: Omit<ITargetStandardsCode, "set">
+    descriptor: Omit<ITargetStandardsCode, 'set'>
   ) => {
     event.preventDefault();
-    const code = (event.target as HTMLAnchorElement).href.split("#")[1];
-    console.log("code: ", code);
-    console.log("descriptor: ", descriptor);
-    const el = document.getElementById(descriptor.code);
+    const code = (event.target as HTMLAnchorElement).href.split('#')[1];
+    console.log('code: ', code);
+    console.log('descriptor: ', descriptor);
+    const element = document.getElementById(descriptor.code);
 
-    if (el) {
-      el.scrollIntoView({
-        behavior: "smooth",
-        block: "center", // This centers the element vertically in the viewport
+    if (element) {
+      element.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center', // This centers the element vertically in the viewport
       });
-      el.className += " bounce-animation";
+      element.className += ' bounce-animation';
       setTimeout(() => {
-        el.className = el.className.replace(" bounce-animation", "");
+        element.className = element.className.replace(' bounce-animation', '');
       }, 3500);
       return;
     }
@@ -91,20 +89,20 @@ const Overview = ({
 
     if (elementDim) {
       elementDim.scrollIntoView({
-        behavior: "smooth",
-        block: "center", // This centers the element vertically in the viewport
+        behavior: 'smooth',
+        block: 'center', // This centers the element vertically in the viewport
       });
-      elementDim.className += " bounce-animation";
+      elementDim.className += ' bounce-animation';
       setTimeout(() => {
         elementDim.className = elementDim.className.replace(
-          " bounce-animation",
-          ""
+          ' bounce-animation',
+          ''
         );
       }, 3500);
       return;
     }
 
-    console.log("code: ", code);
+    console.log('code: ', code);
   };
 
   if (areTargetStandardsValid && TargetStandardsCodes) {
@@ -126,17 +124,17 @@ const Overview = ({
   }
 
   const ref = useRef(null);
-  const { h2Id } = useLessonElementInView(_sectionDots, "0. Overview", ref);
+  const { h2Id } = useLessonElementInView(_sectionDots, '0. Overview', ref);
   const _h2Id = SectionTitle.toLowerCase()
-    .replace(/[0-9.]/g, "")
+    .replace(/[0-9.]/g, '')
     .trim()
-    .replace(/ /g, "-");
+    .replace(/ /g, '-');
   const isAccessibilityValid = useMemo(() => {
     return (
       Accessibility?.length &&
       Accessibility.every(
         (val) =>
-          typeof val.Description === "string" && typeof val.Link === "string"
+          typeof val.Description === 'string' && typeof val.Link === 'string'
       )
     );
   }, []);
@@ -146,17 +144,17 @@ const Overview = ({
       id="overview_sec"
       ref={ref}
       className={`SectionHeading container mb-4 px-0 position-relative ${
-        SectionTitle?.replace(/[\s!]/gi, "_")?.toLowerCase() ?? ""
+        SectionTitle?.replace(/[\s!]/gi, '_')?.toLowerCase() ?? ''
       }`}
     >
       <div
         id={h2Id}
-        style={{ height: 30, width: 30, transform: "translateY(-45px)" }}
+        style={{ height: 30, width: 30, transform: 'translateY(-45px)' }}
         className="position-absolute"
       />
       <div
         id={_h2Id}
-        style={{ height: 30, width: 30, transform: "translateY(-45px)" }}
+        style={{ height: 30, width: 30, transform: 'translateY(-45px)' }}
         className="position-absolute"
       />
       <Title {...titleProps} />
@@ -171,8 +169,9 @@ const Overview = ({
           isOnPreview={false}
           standards={standards}
           areTargetStandardsValid={!!areTargetStandardsValid}
-          TargetStandardsCodes={TargetStandardsCodes}
+          TargetStandardsCodes={TargetStandardsCodes ?? null}
           className="col-xxl-12 bg-light-gray px-4 py-2 rounded-3 text-center"
+          jobVizCareerConnections={jobVizCareerConnections}
         />
       </div>
       <RichText className="mt-4" content={Text} />
@@ -211,8 +210,8 @@ const Overview = ({
                     target="_blank"
                     href={accessibility.Link}
                     style={{
-                      wordWrap: "break-word",
-                      overflowWrap: "break-word",
+                      wordWrap: 'break-word',
+                      overflowWrap: 'break-word',
                     }}
                   >
                     {accessibility.Description}

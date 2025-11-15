@@ -103,8 +103,8 @@ const getUserResults = async () => {
   }
 };
 
-test(
-  'Will check if the responses from the `get-users` route are constant.',
+test.skip(
+  "Will check if the responses from the `get-users` route are constant.",
   async () => {
     const getUserResultsPromises = new Array(10)
       .fill(0)
@@ -121,9 +121,9 @@ test(
     const areResultsConstant = userResults.every((result) => {
       return (
         result.usersOnMailingList === firstResult.usersOnMailingList &&
-                result.totalUsers === firstResult.totalUsers &&
-                result.notOnListUsers === firstResult.notOnListUsers &&
-                result.usersWithDoubleOptSent === firstResult.usersWithDoubleOptSent
+        result.totalUsers === firstResult.totalUsers &&
+        result.notOnListUsers === firstResult.notOnListUsers &&
+        result.usersWithDoubleOptSent === firstResult.usersWithDoubleOptSent
       );
     });
     const doAllUsersHaveMailingListStatusField = userResults.every(

@@ -14,6 +14,6 @@ interface IAcknowledgementsData {
     records: IRecord[];
 }
 
-type TAcknowledgments = {
+export type TAcknowledgments = {
     Data: IAcknowledgementsData[]
 } & IUnitSectionObj

@@ -1,9 +1,11 @@
 import { IAcknowledgments } from '../Acknowledgments';
+import { IJobVizSection } from '../JobViz';
 import { IUnitPreview } from '../Preview';
 import { TGeneralSection } from '../Section';
 import { IStandard } from '../Standards';
 import { ITeachingMaterials } from '../TeachingMaterials';
 import { IVersionNotes } from '../VersionNotes';
+import { TAcknowledgments } from './acknowledgments';
 import { IOverview, IUnitOverview, TOverviewForUI } from './overview';
 import { IPreview } from './preview';
 import { IStandards, IStandardsSec, ITargetStandardsCode, TStandardsForUI } from './standards';
@@ -105,7 +107,7 @@ export interface IUnitOld {
     acknowledgements: IAcknowledgments | null;
     versionNotes: IVersionNotes | null;
   } | null;
-  LsnStatuses: LsnStatusSchema[] | null;
+  LsnStatuses: any[] | null;
   ShortURL: string | null;
 }
 

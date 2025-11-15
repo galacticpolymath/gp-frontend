@@ -1,7 +1,6 @@
-import { signOut, useSession } from 'next-auth/react';
-import { useState, useEffect } from 'react';
-import { IUserSession } from '../types/global';
-import { useCustomCookies } from './useCustomCookies';
+import { signOut, useSession } from "next-auth/react";
+import { IUserSession } from "../types/global";
+import { useCustomCookies } from "./useCustomCookies";
 
 const useSiteSession = () => {
   const session = useSession();
@@ -9,10 +8,11 @@ const useSiteSession = () => {
   const { user, token } = (data ?? {}) as IUserSession;
   const { clearCookies, getCookies } = useCustomCookies();
   const gdriveTokensInfo = getCookies([
-    'gdriveAccessToken',
-    'gdriveRefreshToken',
-    'gdriveEmail',
-    'gdriveAccessTokenExp',
+    "gdriveAccessToken",
+    "gdriveRefreshToken",
+    "gdriveEmail",
+    "gdriveAccessTokenExp",
+    "isGpPlusMember",
   ]);
 
   const logUserOut = () => {

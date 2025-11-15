@@ -1,5 +1,5 @@
 /* eslint-disable quotes */
- 
+
 /* eslint-disable react/jsx-indent-props */
 /* eslint-disable indent */
 /* eslint-disable react/jsx-indent */
@@ -35,12 +35,9 @@ export const CustomCloseButton = ({
 };
 
 const ModalContainers = () => {
-    const { _selectedJob } = useContext(ModalContext);
-    const [selectedJob] = _selectedJob;
-
     return (
         <>
-            {selectedJob ? <SelectedJob /> : null}
+            <SelectedJob />
             <DownloadTipModal />
             <LoginModal />
             <SignUpModal />

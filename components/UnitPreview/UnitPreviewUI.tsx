@@ -122,7 +122,7 @@ const UnitPreviewUI = ({
               SteamEpaulette={SteamEpaulette}
               SteamEpaulette_vert={SteamEpaulette_vert}
               areTargetStandardsValid={!!areTargetStandardsValid}
-              TargetStandardsCodes={TargetStandardsCodes}
+              TargetStandardsCodes={TargetStandardsCodes ?? null}
               standards={
                 standards as Record<string, Omit<ITargetStandardsCode, 'set'>[]>
               }

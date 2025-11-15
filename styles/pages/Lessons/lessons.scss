@@ -911,6 +911,34 @@ $active-dot-color: rgba(44, 131, 195, 0.6) !important;
   overflow-y: auto;
 }
 
+.tours-btn-icon-container {
+  // width: 20%;
+  @media (min-width: 576px) {
+  }
+  width: auto;
+}
+
+.tours-btn-txt {
+  @media (min-width: 576px) {
+    width: auto;
+  }
+}
+
+.tours-btn-container{
+  padding-top: 2.2rem;
+  @media (min-width: 576px) {
+    padding-top: 1.5rem;
+  }
+}
+
+.tours-btn {
+  // width: 100%;
+  // @media (min-width: 576px) {
+  //   width: 270px;
+  // }
+  width: 270px;
+}
+
 .picker-dialog-content {
   z-index: 10000000000 !important;
   position: relative !important;
@@ -929,4 +957,30 @@ $active-dot-color: rgba(44, 131, 195, 0.6) !important;
     max-height: 1010px;
     max-width: 1260px;
   }
+}
+
+.job-viz-btn {
+  @media (min-width: 992px) {
+    height: 80px;
+  }
+}
+
+.job-viz-connections-btn-txt{
+  // white-space: nowrap;
+}
+
+.parent {
+  width: 100%;
+  height: 100vh;
+  background: #f4f9fa;
+  overflow: hidden;
+}
+
+.magicpattern {
+  width: 100%;
+  height: 100%;
+  background-color: #f4f9fa;
+  background-repeat: repeat;
+  background-size: 70px 70px; /* closer spacing */
+  background-image: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='75' height='75'%3E%3Cg stroke='%23cccccc' stroke-width='1.2'%3E%3Cline x1='35' y1='32' x2='35' y2='38'/%3E%3Cline x1='32' y1='35' x2='38' y2='35'/%3E%3C/g%3E%3C/svg%3E");
 }

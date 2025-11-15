@@ -20,7 +20,7 @@ import {
   TAccountStageLabel,
 } from "../../backend/services/outsetaServices";
 
-const HAS_MEMBERSHIP_STATUSES: Set<TAccountStageLabel> = new Set([
+export const HAS_MEMBERSHIP_STATUSES: Set<TAccountStageLabel> = new Set([
   "Cancelling",
   "Subscribing",
 ] as TAccountStageLabel[]);

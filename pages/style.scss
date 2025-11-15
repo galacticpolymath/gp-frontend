@@ -184,6 +184,30 @@ body {
   }
 }
 
+.gp-plus-tours-modal {
+  height: 100vh;
+  width: 100vw;
+  border-radius: 0px;
+  top: 5px;
+  background-color: #f4f9fa;
+  background-repeat: repeat;
+  background-size: 70px 70px; /* closer spacing */
+  background-image: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='75' height='75'%3E%3Cg stroke='%23cccccc' stroke-width='1.2'%3E%3Cline x1='35' y1='32' x2='35' y2='38'/%3E%3Cline x1='32' y1='35' x2='38' y2='35'/%3E%3C/g%3E%3C/svg%3E");
+
+  @media (min-width: 576px) {
+    height: 99vh;
+    border-radius: 4em;
+  }
+}
+
+.modal-dialog-override {
+  max-width: none;
+  margin-right: 0px;
+  margin-left: 0px;
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
 .account-sm-modal {
   width: 21vw;
   right: 30%;
@@ -1204,4 +1228,12 @@ img {
   padding: 0.5rem 1rem;
   color: white;
   display: inline-block;
+}
+
+.li-dot-black::marker{
+  color: black
+}
+
+.clicked:active{
+  color: #012341
 }

@@ -1,0 +1,286 @@
+:root {
+  --hydrogen: #2c83c3;
+  --purple: #6c2d82;
+  --fuchsia: #ff3dac;
+  --atomic: #6812d1;
+  --text-dark: #363636;
+}
+
+.gp-plus-user-jobviz-logo-shell {
+  width: 170px;
+  height: 170px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  box-shadow: 0 0 0 6px var(--purple),
+    /* bright blue ring */ 0 0 0 12px var(--fuchsia),
+    /* soft white outer ring */ 0 10px 24px var(--fuchsia); /* drop shadow */
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+
+/* hover polish */
+.gp-plus-user-jobviz-logo-shell:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 0 6px var(--purple), 0 0 0 14px var(--fuchsia),
+    0 14px 28px var(--fuchsia);
+}
+
+/* Responsive sizing */
+@media (max-width: 991px) {
+  .gp-plus-user-jobviz-logo-shell {
+    width: 140px;
+    height: 140px;
+  }
+}
+@media (max-width: 767px) {
+  .gp-plus-user-jobviz-logo-shell {
+    width: 120px;
+    height: 120px;
+    margin-top: 1rem;
+  }
+}
+
+/* ---------------- HERO ---------------- */
+.jobviz-hero {
+  position: relative;
+  overflow: hidden;
+  color: #fff;
+  background: linear-gradient(
+    135deg,
+    var(--hydrogen) 0%,
+    var(--purple) 40%,
+    var(--fuchsia) 85%,
+    var(--atomic) 100%
+  );
+  background-size: 400% 400%;
+  animation: gradientSweep 14s ease-in-out infinite alternate;
+}
+
+/* Animated GP+ gradient */
+@keyframes gradientSweep {
+  0% {
+    background-position: 0% 80%;
+    filter: brightness(0.9);
+  }
+  50% {
+    background-position: 50% 50%;
+    filter: brightness(1);
+  }
+  100% {
+    background-position: 100% 20%;
+    filter: brightness(0.95);
+  }
+}
+
+/* ---------------- PLUS BACKGROUND ---------------- */
+.jobviz-bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-repeat: repeat;
+  background-size: 120px 120px; /* bigger and denser */
+  background-position: center;
+  background-image: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cg stroke='%23ffffff' stroke-opacity='0.18' stroke-width='2'%3E%3Cline x1='60' y1='56' x2='60' y2='64'/%3E%3Cline x1='56' y1='60' x2='64' y2='60'/%3E%3C/g%3E%3C/svg%3E");
+
+  /* Mask hole around hero text for readability */
+  -webkit-mask-image: radial-gradient(
+    circle at 50% 40%,
+    rgba(0, 0, 0, 0) 0%,
+    rgba(0, 0, 0, 0) 45%,
+    rgba(0, 0, 0, 1) 70%
+  );
+  mask-image: radial-gradient(
+    circle at 50% 40%,
+    rgba(0, 0, 0, 0) 0%,
+    rgba(0, 0, 0, 0) 45%,
+    rgba(0, 0, 0, 1) 70%
+  );
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+}
+
+/* Make sure hero text sits above everything */
+.jobviz-hero .container {
+  position: relative;
+  z-index: 2;
+}
+
+/* ---------------- ANIMATIONS ---------------- */
+.animate-fadein {
+  opacity: 0;
+  animation: fadeIn 1.2s ease-out forwards;
+}
+.animate-fadein.delay-1 {
+  animation-delay: 0.4s;
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-slideup {
+  opacity: 0;
+  animation: slideUp 1.3s ease-out 0.6s forwards;
+}
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-slideup-fast {
+  opacity: 0;
+  animation: slideUpFast 650ms ease-out 0s forwards;
+}
+@keyframes slideUpFast {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-slidedown {
+  opacity: 1;
+  animation: slideDown 650ms ease-out 0s forwards;
+}
+
+@keyframes slideDown {
+  0% {
+    opacity: 1;
+    transform: translateY(0px);
+  }
+  90% {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(40px);
+    display: none;
+  }
+}
+
+/* ---------------- ASSIGNMENT CARD ---------------- */
+.assignment-card {
+  background: #ffffffee;
+  backdrop-filter: blur(8px);
+  border-radius: 1rem;
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+  width: 75vw;
+
+  @media (min-width: 1200px) {
+    max-width: 1370px;
+  }
+}
+
+.assignment-card-on-top {
+  background: #ffffffee;
+  backdrop-filter: blur(8px);
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+  // width: 100vw;
+}
+
+/* inline rocket next to "Assignment" */
+.assignment-icon {
+  font-size: 1.4rem;
+  color: var(--text-dark);
+}
+
+/* text + layout */
+.assignment-title {
+  font-size: 1rem;
+  color: var(--text-dark);
+}
+
+/* job list */
+.job-list {
+  padding-left: 1.25rem;
+  margin-bottom: 0;
+}
+.job-list li {
+  list-style-type: disc;
+  margin-bottom: 0.45rem;
+}
+
+/* real Ionicon watermark rocket (inside card) */
+.wm-rocket {
+  position: absolute;
+  bottom: 1rem;
+  right: 1.25rem;
+  font-size: clamp(7rem, 12vw, 9rem);
+  color: rgba(108, 45, 130, 0.08); /* faint lightning purple */
+  transform: rotate(-10deg);
+  pointer-events: none;
+  display: none;
+}
+@media (min-width: 992px) {
+  .wm-rocket {
+    display: block;
+  }
+}
+
+/* ---------------- MISC TYPOGRAPHY ---------------- */
+.jobviz-hero h1,
+.jobviz-hero h2 {
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+}
+
+.jobviz-logo-plus-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+  margin-bottom: 2rem;
+}
+
+.jobviz-logo-plus-img-container {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  overflow: hidden;
+
+  /* ONE border only */
+  box-shadow: 0 0 0 6px rgba(255, 255, 255, 0.88),
+    0 0 30px rgba(255, 61, 172, 0.55), 0 0 60px rgba(104, 18, 209, 0.35);
+
+  /* Hover interaction */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.jobviz-logo-plus-img-container:hover {
+  transform: translateY(-6px) scale(1.03);
+  box-shadow: 0 0 0 6px rgba(255, 255, 255, 1),
+    0 0 40px rgba(255, 61, 172, 0.75), 0 0 75px rgba(104, 18, 209, 0.45);
+}
+
+.jobviz-logo-plus-img-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+
+  /* ensures the PNG hits the edge with NO gap */
+  border-radius: 50%;
+}

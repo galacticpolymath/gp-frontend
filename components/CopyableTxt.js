@@ -3,8 +3,10 @@ import { useEffect, useState } from 'react';
 const CopyableTxt = ({
   children,
   implementLogicOnClick,
+  willDisplayModalOnHover = true,
   copyTxtIndicator = 'Copy text.',
   txtCopiedIndicator = 'Text copied ✅!',
+  disableTxtCopiedShow = false,
   copyTxtModalDefaultStyleObj = {
     position: 'fixed',
     width: '110px',
@@ -33,15 +35,30 @@ const CopyableTxt = ({
   };
 
   const handleOnClick = event => {
+    if (!willDisplayModalOnHover && !disableTxtCopiedShow) {
+      setIsModalOn(true);
+    }
+
     implementLogicOnClick(event);
-    setModalTxt(txtCopiedIndicator);
+
+    if (!disableTxtCopiedShow) {
+      setModalTxt(txtCopiedIndicator);
+    }
   };
 
   const handleOnMouseEnter = () => {
+    if (!willDisplayModalOnHover) {
+      return;
+    }
+
     setIsModalOn(true);
   };
 
   const handleOnMouseLeave = () => {
+    if (!willDisplayModalOnHover) {
+      return;
+    }
+
     setIsModalOn(false);
     setModalTxt(copyTxtIndicator);
   };
