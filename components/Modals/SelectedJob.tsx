@@ -191,10 +191,6 @@ const SelectedJob: React.FC = () => {
       ? null
       : def;
 
-  // on first render, update the meta tags for the job viz page with the following info:
-  // og:title: JobViz Career Explorer
-  // og:description: Coaches and Scouts: {projectedPercentageEmploymentChange} in demand by 2031
-
   const infoCards = createInfoCards(selectedJob);
 
   const handleOnHide = () => {
@@ -269,7 +265,7 @@ const SelectedJob: React.FC = () => {
         console.error("selectedJob is falsy. Cannot create job link.");
       }}
       contentClassName="selectedJobModal"
-      dialogClassName="dialogJobVizModal py-2"
+      dialogClassName="dialogJobVizModal py-2 d-sm-flex justify-content-center align-items-center"
       fullscreen="md-down"
       style={{
         zIndex: 10000000,
