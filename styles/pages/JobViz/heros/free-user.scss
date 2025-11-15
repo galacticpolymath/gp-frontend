@@ -56,7 +56,7 @@
 }
 
 /* the image itself, slightly zoomed + nudged */
-.jobviz-logo-img {
+.job-viz-hero-pic-container {
   width: 120%;
   height: 120%;
   object-fit: cover;
@@ -141,7 +141,7 @@
   justify-content: center;
 }
 
-.jobviz-logo-img {
+.job-viz-hero-pic-container {
   display: block;
   width: 180px;
   height: 180px;
@@ -156,26 +156,26 @@
 }
 
 /* Hover: slight lift + scale */
-.jobviz-logo-img:hover {
+.job-viz-hero-pic-container:hover {
   transform: translateY(-4px) scale(1.03);
   box-shadow: 0 0 0 6px #58c2f5, 0 15px 24px rgba(0, 0, 0, 0.32);
 }
 
 /* Active / click */
-.jobviz-logo-img:active {
+.job-viz-hero-pic-container:active {
   transform: translateY(-1px) scale(0.98);
   box-shadow: 0 0 0 6px #58c2f5, 0 8px 14px rgba(0, 0, 0, 0.28);
 }
 
 /* Responsive tweaks */
 @media (max-width: 991px) {
-  .jobviz-logo-img {
+  .job-viz-hero-pic-container {
     width: 150px;
     height: 150px;
   }
 }
 @media (max-width: 767px) {
-  .jobviz-logo-img {
+  .job-viz-hero-pic-container {
     width: 120px;
     height: 120px;
   }

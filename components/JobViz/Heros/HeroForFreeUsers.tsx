@@ -23,11 +23,13 @@ const HeroForFreeUsers: React.FC<IHeroForFreeUsersProps> = ({
           </div>
           <div className="col-md-4 d-flex justify-content-md-center justify-content-center animate-fadein delay-1">
             <div className="jobviz-logo-free">
-              <img
-                className="jobviz-logo-img"
-                src="/imgs/jobViz/icon_jobviz.png"
-                alt="JobViz logo"
-              />
+              <div className="job-viz-hero-pic-container">
+                <Image
+                  src="/imgs/jobViz/icon_jobviz.png"
+                  alt="JobViz logo"
+                  fill
+                />
+              </div>
             </div>
           </div>
         </div>
