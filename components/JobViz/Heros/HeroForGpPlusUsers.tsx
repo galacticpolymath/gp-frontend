@@ -8,8 +8,8 @@ import { useLessonContext } from "../../../providers/LessonProvider";
 interface IHeroForGpPlusUsersProps
   extends Pick<IJobToursCard, "jobTitleAndSocCodePairs" | "unitName"> {
   className?: string;
-  useInViewThreshold?: number
-  willTrackIsInViewport?: boolean
+  useInViewThreshold?: number;
+  willTrackIsInViewport?: boolean;
 }
 
 interface IJobToursCardWithRocketProps
@@ -75,7 +75,7 @@ const HeroForGpPlusUsers: React.FC<IHeroForGpPlusUsersProps> = ({
   jobTitleAndSocCodePairs,
   unitName,
   willTrackIsInViewport,
-  useInViewThreshold
+  useInViewThreshold,
 }) => {
   const didRenderInitially = useRef(false);
   const { ref, inView } = useInView({ threshold: useInViewThreshold });
@@ -94,7 +94,7 @@ const HeroForGpPlusUsers: React.FC<IHeroForGpPlusUsersProps> = ({
     console.log("Cleanup function called");
     setWillRenderJobToursStickTopCard(false);
     setIsJobToursStickyTopCardDisplayed(false);
-  }
+  };
 
   useEffect(() => {
     return cleanup;
@@ -145,7 +145,7 @@ const HeroForGpPlusUsers: React.FC<IHeroForGpPlusUsersProps> = ({
       <div className="jobviz-bg"></div>
 
       <div className="container pt-5 pb-4 position-relative">
-        <h1 className="fw-bold display-5 mb-3 animate-fadein">
+        <h1 className="fw-bold display-5 mt-2 mt-sm-5 mt-md-0 mb-3 animate-fadein">
           JobViz Career Explorer+
         </h1>
         <p
@@ -172,19 +172,9 @@ const HeroForGpPlusUsers: React.FC<IHeroForGpPlusUsersProps> = ({
           cardClassName="assignment-card p-4 shadow-sm bg-white position-relative rounded-4 text-start overflow-hidden"
         />
       ) : (
-        <div className="pb-5 animate-slideup position-relative d-flex justify-content-center align-items-center">
-          <div className="gp-plus-user-jobviz-logo-shell">
-            <div className="jobviz-logo-inner position-relative">
-              <Image
-                src="/imgs/jobViz/icon_jobviz.png"
-                alt="JobViz Logo"
-                className="jobviz-logo-img"
-                fill
-                style={{
-                  objectFit: "contain",
-                }}
-              />
-            </div>
+        <div className="jobviz-logo-plus-wrapper animate-fadein delay-1">
+          <div className="jobviz-logo-plus-img-container position-relative">
+            <Image src="/imgs/jobViz/icon_jobviz.png" alt="JobViz logo" fill />
           </div>
         </div>
       )}

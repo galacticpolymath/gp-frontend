@@ -10,7 +10,7 @@ const HeroForFreeUsers: React.FC<IHeroForFreeUsersProps> = ({
   return (
     <section className={className}>
       <div className="container py-5 position-relative">
-        <div className="row align-items-center justify-content-center text-center text-md-start g-4">
+        <div className="pt-4 pt-md-0 row align-items-center justify-content-center text-center text-md-start g-4">
           <div className="col-md-7">
             <h1 className="fw-bold display-5 mb-2 animate-fadein">
               JobViz Career Explorer{" "}
