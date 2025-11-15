@@ -1,5 +1,3 @@
-/* eslint-disable quotes */
-/* eslint-disable indent */
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Button, Modal, CloseButton } from "react-bootstrap";
 import { ILessonItem, useModalContext } from "../../../providers/ModalProvider";
