@@ -213,7 +213,6 @@ export const createDrive = async (
       private_key: creds?.private_key?.replace(/\\n/g, '\n').replace(/"/g, ''),
     },
     scopes: scopes,
-    clientOptions,
   });
   const authClient = (await auth.getClient()) as OAuth2Client;
 
