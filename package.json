@@ -24,7 +24,7 @@
     "@google-cloud/local-auth": "^3.0.1",
     "@google-cloud/resource-manager": "^6.2.1",
     "@google-cloud/storage": "^7.17.3",
-    "@googleworkspace/drive-picker-element": "^0.6.2",
+    "@googleworkspace/drive-picker-element": "^0.6.5",
     "@headlessui/react": "^2.2.9",
     "@ionic/react": "^8.7.9",
     "@magic-ext/oauth": "^24.0.0",
