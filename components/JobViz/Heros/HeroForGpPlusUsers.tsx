@@ -4,6 +4,7 @@ import JobToursCard, { IJobToursCard } from "../JobTours/JobToursCard";
 import Image from "next/image";
 import { useInView } from "react-intersection-observer";
 import { useLessonContext } from "../../../providers/LessonProvider";
+import { usePathname } from "next/navigation";
 
 interface IHeroForGpPlusUsersProps
   extends Pick<IJobToursCard, "jobTitleAndSocCodePairs" | "unitName"> {
@@ -77,6 +78,7 @@ const HeroForGpPlusUsers: React.FC<IHeroForGpPlusUsersProps> = ({
   willTrackIsInViewport,
   useInViewThreshold,
 }) => {
+  const pathname = usePathname();
   const didRenderInitially = useRef(false);
   const { ref, inView } = useInView({ threshold: useInViewThreshold });
   const {
@@ -92,8 +94,10 @@ const HeroForGpPlusUsers: React.FC<IHeroForGpPlusUsersProps> = ({
 
   const cleanup = () => {
     console.log("Cleanup function called");
-    setWillRenderJobToursStickTopCard(false);
-    setIsJobToursStickyTopCardDisplayed(false);
+    if (pathname !== "/jobviz") {
+      setWillRenderJobToursStickTopCard(false);
+      setIsJobToursStickyTopCardDisplayed(false);
+    }
   };
 
   useEffect(() => {

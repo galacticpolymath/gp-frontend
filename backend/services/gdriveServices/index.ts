@@ -1539,7 +1539,7 @@ export const updatePermissionsForSharedFileItems = async (
   // make the target files read only
   for (const fileId of fileIds) {
     // @ts-ignore
-    const fileUpdated = await drive.files.update({
+    await drive.files.update({
       fileId: fileId,
       supportsAllDrives: true,
       requestBody: {
@@ -1550,8 +1550,7 @@ export const updatePermissionsForSharedFileItems = async (
         },
       },
     });
-
-    console.log('fileUpdated: ', fileUpdated);
+    console.log('File was made readonly.');
   }
 
   return { id: parentFolderId, permissionId: targetPermission.id };

@@ -123,7 +123,7 @@ const JobViz = ({
         isStylesHeroOn={false}
         customChildrenContainerClassName=""
       >
-        {hasGpPlusMembership ? (
+        {jobTitleAndSocCodePairs && unitName ? (
           <>
             <HeroForGpPlusUsers
               jobTitleAndSocCodePairs={jobTitleAndSocCodePairs}
