@@ -50,10 +50,7 @@ const JobViz = ({
   const [isSearchResultsModalOn, setIsSearchResultsModalOn] = useState(false);
   const { ref, inView } = useInView({ threshold: 0 });
   const {
-    _willRenderJobToursStickyTopCard: [
-      willRenderJobToursStickyTopCard,
-      setWillRenderJobToursStickyTopCard,
-    ],
+    _willRenderJobToursStickyTopCard: [, setWillRenderJobToursStickyTopCard],
   } = useLessonContext();
 
   const resetSearchResults = () => {
@@ -123,7 +120,7 @@ const JobViz = ({
         isStylesHeroOn={false}
         customChildrenContainerClassName=""
       >
-        {jobTitleAndSocCodePairs && unitName ? (
+        {((jobTitleAndSocCodePairs && unitName) || hasGpPlusMembership) ? (
           <>
             <HeroForGpPlusUsers
               jobTitleAndSocCodePairs={jobTitleAndSocCodePairs}
