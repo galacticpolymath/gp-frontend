@@ -18,6 +18,7 @@ import { FcGoogle } from "react-icons/fc";
 import Dropdown from "react-bootstrap/Dropdown";
 import { LuMonitorPlay } from "react-icons/lu";
 import { GiFilmStrip } from "react-icons/gi";
+import { IoOpenOutline } from "react-icons/io5";
 
 const LESSON_ITEMS_MODAL_BG_COLOR = "#E2F0FD";
 
@@ -466,7 +467,10 @@ const LessonItemsModal: React.FC = () => {
                       }}
                       className="mb-0 text-black d-flex d-md-block justify-content-center align-items-center h-100 text-nowrap me-2"
                     >
-                      Play Now:
+                      <span className="d-none d-md-block">
+                        Open in New Tab:
+                      </span>
+                      <span className="d-block d-md-none">New Tab:</span>
                     </h6>
                   </section>
                   <section className="w-100 d-none d-sm-flex h-100">
@@ -474,7 +478,7 @@ const LessonItemsModal: React.FC = () => {
                       style={{ width: 44, height: 44 }}
                       className="bg-white p-1 rounded"
                     >
-                      <LuMonitorPlay color="black" size={35} />
+                      <IoOpenOutline color="black" size={35} />
                     </div>
                   </section>
                 </Button>
