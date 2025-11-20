@@ -1,0 +1,46 @@
+import * as React from "react";
+import styles from "../../styles/jobvizGlass.module.css";
+import { LucideIcon } from "./LucideIcon";
+
+export interface JobVizCardProps {
+  title: string;
+  iconName: string;
+  level: 1 | 2;
+  onClick?: () => void;
+}
+
+export const JobVizCard: React.FC<JobVizCardProps> = ({
+  title,
+  iconName,
+  level,
+  onClick,
+}) => {
+  const levelClass =
+    level === 1 ? styles.categoryCardLevel1 : styles.categoryCardLevel2;
+
+  return (
+    <article
+      className={`${styles.categoryCard} ${levelClass}`}
+      onClick={onClick}
+      role={onClick ? "button" : undefined}
+      tabIndex={onClick ? 0 : undefined}
+      onKeyDown={(e) => {
+        if (!onClick) return;
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onClick();
+        }
+      }}
+    >
+      <div className={styles.categoryHeader}>
+        <div className={styles.categoryIconWrap}>
+          <LucideIcon name={iconName} />
+        </div>
+        <h3 className={styles.categoryTitle}>{title}</h3>
+      </div>
+      <div className={styles.categoryFooter}>
+        <span className={styles.categoryExplore}>Explore</span>
+      </div>
+    </article>
+  );
+};

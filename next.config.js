@@ -29,7 +29,6 @@ module.exports = {
     MONGODB_DB_NAME: process.env.MONGODB_DB_NAME,
   },
   reactStrictMode: true,
-  swcMinify: true,
   images: {
     domains: [
       'catalog.galacticpolymath.com',

@@ -1,0 +1,360 @@
+.jobvizHero {
+  background: linear-gradient(
+    135deg,
+    var(--hydrogen, #2c83c3) 0%,
+    var(--purple, #6c2d82) 40%,
+    var(--fuchsia, #ff3dac) 85%,
+    var(--atomic, #6812d1) 100%
+  );
+  background-size: 350% 350%;
+  animation: jobvizSweep 14s ease-in-out infinite alternate;
+  color: #ffffff;
+}
+
+.jobvizHeroInner {
+  padding: 4rem 1rem;
+  text-align: center;
+}
+
+.jobvizHeroTitle {
+  font-family: "Noto Sans", system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
+  font-weight: 700;
+  font-size: clamp(2.25rem, 3vw, 3rem);
+  margin-bottom: 0.75rem;
+}
+
+.jobvizHeroSubtitle {
+  max-width: 680px;
+  margin: 0 auto;
+  font-size: 1.05rem;
+  opacity: 0.92;
+}
+
+@keyframes jobvizSweep {
+  0% {
+    background-position: 0% 70%;
+  }
+  100% {
+    background-position: 100% 30%;
+  }
+}
+
+/* Section background with plus pattern */
+.jobvizSection {
+  position: relative;
+  padding-block: 3.5rem;
+  overflow: hidden;
+}
+
+.jobvizSectionBg {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.96) 0%,
+    rgba(242, 244, 255, 0.96) 45%,
+    rgba(255, 249, 255, 0.95) 100%
+  );
+  z-index: 0;
+}
+
+.jobvizSectionPattern {
+  position: absolute;
+  inset: 0;
+  background-image: url("/plus/jobviz-plus-pattern.svg");
+  background-size: 120px 120px;
+  opacity: 0.4;
+  mix-blend-mode: soft-light;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.jobvizSectionInner {
+  position: relative;
+  z-index: 2;
+}
+
+/* Breadcrumb */
+.jobvizBreadcrumb {
+  font-family: "Noto Sans Mono", ui-monospace, SFMono-Regular, Menlo, Monaco,
+    Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 0.86rem;
+  color: #363636;
+  margin-bottom: 0.75rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.breadcrumbButton {
+  border: none;
+  padding: 0;
+  margin: 0;
+  background: none;
+  cursor: pointer;
+}
+
+.breadcrumbButton:hover .breadcrumbLabel {
+  text-decoration: underline;
+}
+
+.breadcrumbSegment,
+.breadcrumbSegmentActive {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.breadcrumbSegment svg,
+.breadcrumbSegmentActive svg {
+  width: 14px;
+  height: 14px;
+  stroke-width: 2.1;
+}
+
+.breadcrumbSegmentActive {
+  font-weight: 600;
+}
+
+.breadcrumbSeparator {
+  opacity: 0.6;
+  padding-inline: 0.1rem;
+}
+
+/* Cards */
+.categoryCard {
+  position: relative;
+  border-radius: 1.5rem;
+  padding: 1.7rem 1.7rem 1.4rem;
+  min-height: 180px;
+
+  background: rgba(255, 255, 255, 0.22);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  box-shadow:
+    0 12px 28px rgba(0, 0, 0, 0.06),
+    0 0 0 1px rgba(255, 255, 255, 0.35) inset;
+  color: #363636;
+  display: flex;
+  flex-direction: column;
+
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.categoryCard:hover {
+  transform: translateY(-6px);
+  box-shadow:
+    0 18px 38px rgba(0, 0, 0, 0.12),
+    0 0 0 1px rgba(255, 255, 255, 0.4) inset;
+}
+
+.categoryCardLevel1 {
+}
+
+.categoryCardLevel2 {
+}
+
+/* card header */
+.categoryHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.categoryIconWrap svg {
+  width: 28px;
+  height: 28px;
+  stroke: #363636;
+  stroke-width: 2;
+  filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.9));
+}
+
+/* Smaller icon for level 2 could be applied via parent */
+.categoryCardLevel2 .categoryIconWrap svg {
+  width: 24px;
+  height: 24px;
+}
+
+/* Titles & text */
+.categoryTitle {
+  font-family: "Noto Sans", system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
+  font-size: 1.02rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+/* Explore link */
+.categoryFooter {
+  margin-top: auto;
+  padding-top: 0.9rem;
+}
+
+.categoryExplore {
+  position: relative;
+  font-size: 0.96rem;
+  font-weight: 500;
+  color: #363636;
+  cursor: pointer;
+}
+
+.categoryExplore::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 100%;
+  height: 2px;
+  background: #6c2d82; /* GP purple */
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.2s ease-out;
+  opacity: 0.85;
+}
+
+.categoryCard:hover .categoryExplore::after {
+  transform: scaleX(1);
+}
+
+/* Layout helpers */
+.jobvizSectionHeading {
+  font-family: "Noto Sans", system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
+  font-weight: 600;
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.assignmentBanner {
+  position: relative;
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.25rem;
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.82);
+  border: 1px solid rgba(108, 45, 130, 0.12);
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.06),
+    0 0 0 1px rgba(255, 255, 255, 0.35) inset;
+  backdrop-filter: blur(10px);
+}
+
+.assignmentMarker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-weight: 700;
+  color: #6c2d82;
+}
+
+.assignmentMarker svg {
+  width: 18px;
+  height: 18px;
+}
+
+.assignmentContent {
+  flex: 1;
+}
+
+.assignmentTitle {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.assignmentCopy {
+  margin: 0.25rem 0 0;
+  color: #2c2c2c;
+  font-size: 0.95rem;
+}
+
+.jobvizDetail {
+  margin-top: 2rem;
+  background: rgba(255, 255, 255, 0.88);
+  border-radius: 1.25rem;
+  padding: 1.5rem;
+  border: 1px solid rgba(108, 45, 130, 0.12);
+  box-shadow:
+    0 14px 32px rgba(0, 0, 0, 0.08),
+    0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+}
+
+.jobvizDetailHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.65rem;
+}
+
+.jobvizDetailHeader svg {
+  width: 26px;
+  height: 26px;
+  stroke-width: 2.2;
+}
+
+.jobvizDetailTitle {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.jobvizDetailSoc {
+  margin: 0;
+  font-family: "Noto Sans Mono", ui-monospace, SFMono-Regular, Menlo, Monaco,
+    Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 0.92rem;
+  color: #555;
+}
+
+.jobvizDetailBody {
+  margin: 0 0 1rem;
+  line-height: 1.6;
+  color: #2f2f2f;
+}
+
+.jobvizDetailMeta {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.jobvizStat {
+  padding: 0.85rem 1rem;
+  background: rgba(255, 255, 255, 0.78);
+  border-radius: 0.9rem;
+  border: 1px solid rgba(108, 45, 130, 0.1);
+}
+
+.jobvizStatLabel {
+  display: block;
+  margin-bottom: 0.15rem;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  font-size: 0.82rem;
+  color: #555;
+}
+
+.jobvizStatValue {
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: #161616;
+}
+
+.jobvizSource {
+  font-size: 0.9rem;
+  color: #3b3b3b;
+}
+
+.jobvizSource a {
+  color: #6c2d82;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(108, 45, 130, 0.35);
+}
