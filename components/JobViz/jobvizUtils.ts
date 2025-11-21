@@ -170,8 +170,7 @@ export const buildIdPathForNode = (node: JobVizNode) => {
     }
   });
 
-  const allowDuplicateCurrent = node.occupation_type === "Summary";
-  if (allowDuplicateCurrent || !ids.includes(node.id)) {
+  if (!ids.includes(node.id)) {
     ids.push(node.id);
   }
 

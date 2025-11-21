@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { useRouter } from "next/router";
 import Layout from "../../components/Layout";
 import { AssignmentBanner } from "../../components/JobViz/AssignmentBanner";
@@ -22,12 +22,14 @@ import {
   jobVizNodeById,
   parseJobvizPath,
 } from "../../components/JobViz/jobvizUtils";
+import { JobVizSearch } from "../../components/JobViz/JobVizSearch";
 import {
   SOC_CODES_PARAM_NAME,
   UNIT_NAME_PARAM_NAME,
 } from "../../components/LessonSection/JobVizConnections";
 import { getUnitRelatedJobs } from "../../helperFns/filterUnitRelatedJobs";
 import { verifyJwt } from "../../backend/utils/security";
+import { useModalContext } from "../../providers/ModalProvider";
 
 const JOBVIZ_DATA_SOURCE =
   "https://www.bls.gov/emp/tables/occupational-projections-and-characteristics.htm";
@@ -50,6 +52,9 @@ const JobVizSearchResults = ({
   hasGpPlusMembership,
 }) => {
   const router = useRouter();
+  const { _selectedJob, _isJobModalOn } = useModalContext();
+  const [, setSelectedJob] = _selectedJob;
+  const [, setIsJobModalOn] = _isJobModalOn;
 
   const parsed = useMemo(
     () => parseJobvizPath(router.query?.["search-results"]),
@@ -146,7 +151,7 @@ const JobVizSearchResults = ({
   const sectionHeading =
     parentForHeading?.soc_title ||
     parentForHeading?.title ||
-    "Explore job families";
+    "Browse jobs by category or search";
 
   const handleGridClick = (item) => {
     const node = jobVizNodeById.get(Number(item.id));
@@ -188,11 +193,20 @@ const JobVizSearchResults = ({
     chainNodes.forEach((node, index) => {
       const targetLevelForNode = getTargetLevelForNode(node);
       const isLast = index === chainNodes.length - 1;
+      const label = getDisplayTitle(node)
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-");
+
+      // Avoid duplicate consecutive labels when idPath contains the same node twice.
+      const isDuplicate =
+        segments.length &&
+        segments[segments.length - 1].label === label &&
+        segments[segments.length - 1].iconName === getIconNameForNode(node);
+
+      if (isDuplicate) return;
 
       segments.push({
-        label: getDisplayTitle(node)
-          .toLowerCase()
-          .replace(/[^a-z0-9]+/g, "-"),
+        label,
         iconName: getIconNameForNode(node),
         isActive: isLast,
         onClick: isLast
@@ -217,9 +231,19 @@ const JobVizSearchResults = ({
     return segments;
   }, [assignmentParams, chainNodes, parsed.targetLevel, router]);
 
-  const heroSubtitle = hasGpPlusMembership
-    ? "Jump between categories and job details with breadcrumbs that keep your assignment context."
-    : "Browse the hierarchy and drill down into live BLS job data with the JobViz glass UI.";
+  const heroSubtitle =
+    "A tool for grades 6 to adult to explore career possibilities! Browse, search & share key details about 1000+ jobs.";
+
+  useEffect(() => {
+    if (activeNode && activeNode.occupation_type === "Line item") {
+      setSelectedJob({ ...activeNode, wasSelectedFromJobToursCard: false });
+      setIsJobModalOn(true);
+      return;
+    }
+
+    setIsJobModalOn(false);
+    setSelectedJob(null);
+  }, [activeNode, setIsJobModalOn, setSelectedJob]);
 
   const layoutProps = {
     title: "JobViz Career Explorer | Search results",
@@ -242,6 +266,8 @@ const JobVizSearchResults = ({
 
         <JobVizBreadcrumb segments={breadcrumbs} />
         <h2 className={styles.jobvizSectionHeading}>{sectionHeading}</h2>
+
+        <JobVizSearch assignmentParams={assignmentParams} />
 
         <JobVizGrid items={gridItems} onItemClick={handleGridClick} />
 

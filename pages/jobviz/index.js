@@ -17,12 +17,15 @@ import {
   jobVizData,
   jobVizNodeById,
 } from "../../components/JobViz/jobvizUtils";
+import { JobVizSearch } from "../../components/JobViz/JobVizSearch";
 import {
   SOC_CODES_PARAM_NAME,
   UNIT_NAME_PARAM_NAME,
 } from "../../components/LessonSection/JobVizConnections";
 import { getUnitRelatedJobs } from "../../helperFns/filterUnitRelatedJobs";
 import { verifyJwt } from "../../nondependencyFns";
+
+export const JOBVIZ_BRACKET_SEARCH_ID = "jobviz-bracket-search";
 
 const JOBVIZ_DESCRIPTION =
   "Explore the full BLS hierarchy with the JobViz glass UI—glass cards, glowing breadcrumbs, and animated explore links keyed to real SOC data.";
@@ -104,9 +107,8 @@ const JobViz = ({ unitName, jobTitleAndSocCodePairs, hasGpPlusMembership }) => {
     []
   );
 
-  const heroSubtitle = hasGpPlusMembership
-    ? "Welcome back! Explore the full SOC tree or jump straight to your linked lessons."
-    : "Prototype-inspired JobViz refresh with glass cards, Lucide icons, and animated explore links.";
+  const heroSubtitle =
+    "A tool for grades 6 to adult to explore career possibilities! Browse, search & share key details about 1000+ jobs.";
 
   const layoutProps = {
     title:
@@ -124,13 +126,18 @@ const JobViz = ({ unitName, jobTitleAndSocCodePairs, hasGpPlusMembership }) => {
         heroTitle="JobViz Career Explorer+"
         heroSubtitle={heroSubtitle}
       >
+        <div id={JOBVIZ_BRACKET_SEARCH_ID} />
         <AssignmentBanner
           unitName={preservedUnitName}
           jobs={jobTitleAndSocCodePairs}
         />
 
         <JobVizBreadcrumb segments={breadcrumbs} />
-        <h2 className={styles.jobvizSectionHeading}>Explore job families</h2>
+        <h2 className={styles.jobvizSectionHeading}>
+          Browse jobs by category or search
+        </h2>
+
+        <JobVizSearch assignmentParams={assignmentParams} />
 
         <JobVizGrid items={gridItems} onItemClick={handleRootClick} />
 
