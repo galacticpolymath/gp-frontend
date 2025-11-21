@@ -46,7 +46,6 @@ export const JobVizCard: React.FC<JobVizCardProps> = ({
             highlightClicked ? styles.categoryBookmarkVisited : ""
           }`}
         >
-          <LucideIcon name="Bookmark" className={styles.categoryBookmarkIcon} />
         </div>
       )}
       <div className={styles.categoryHeader}>

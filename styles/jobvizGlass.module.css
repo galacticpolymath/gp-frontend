@@ -154,26 +154,20 @@
 
 .categoryBookmark {
   position: absolute;
-  top: 2px;
+  top: 0;
   right: 14px;
   width: 16px;
   height: 24px;
   background: #1826bc;
-  border-radius: 4px 4px 6px 6px;
+  clip-path: polygon(
+    0 0,
+    100% 0,
+    100% 100%,
+    50% 76%,
+    0 100%
+  );
   box-shadow: 0 6px 12px rgba(24, 38, 188, 0.14);
   pointer-events: none;
-}
-
-.categoryBookmark::after {
-  content: "";
-  position: absolute;
-  bottom: -1px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 12px;
-  height: 8px;
-  background: rgba(255, 255, 255, 0.96);
-  clip-path: polygon(0 0, 50% 100%, 100% 0);
 }
 
 .categoryBookmarkVisited {
