@@ -8,22 +8,15 @@ import { useSession } from 'next-auth/react';
 import LoginContainerForNavbar from './User/Login/LoginContainerForNavbar';
 import { useSearchParams } from 'next/navigation';
 import { JobToursCardTopSticky } from './JobViz/JobTours/JobToursCard';
-import useSiteSession from '../customHooks/useSiteSession';
-import { UNIT_NAME_PARAM_NAME, SOC_CODES_PARAM_NAME } from './LessonSection/JobVizConnections';
 
 export const DISABLE_NAVBAR_PARAM_NAME = 'disableNavbar';
 
 export default function Navbar() {
   const searchParams = useSearchParams();
   const disableNavbar = searchParams.get(DISABLE_NAVBAR_PARAM_NAME) === 'true';
-  const socCodes = searchParams.get(SOC_CODES_PARAM_NAME) === 'true';
-  const unitName = searchParams.get(UNIT_NAME_PARAM_NAME) === 'true';
   const router = useRouter();
   const session = useSession();
   const [modalAnimation, setModalAnimation] = useState('d-none');
-  const {
-    isGpPlusMember
-  } = useSiteSession();
 
   return (
     <nav
@@ -98,7 +91,7 @@ export default function Navbar() {
           </div>
         </div>
       </div>
-      {(router.pathname.includes('jobviz') && isGpPlusMember) && <JobToursCardTopSticky />}
+      {router.pathname.includes('jobviz') && <JobToursCardTopSticky />}
     </nav>
   );
 }
