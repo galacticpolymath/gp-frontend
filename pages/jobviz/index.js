@@ -24,6 +24,7 @@ import {
 } from "../../components/LessonSection/JobVizConnections";
 import { getUnitRelatedJobs } from "../../helperFns/filterUnitRelatedJobs";
 import { verifyJwt } from "../../nondependencyFns";
+import { useModalContext } from "../../providers/ModalProvider";
 
 export const JOBVIZ_BRACKET_SEARCH_ID = "jobviz-bracket-search";
 
@@ -34,6 +35,9 @@ const JOBVIZ_DATA_SOURCE =
 
 const JobViz = ({ unitName, jobTitleAndSocCodePairs, hasGpPlusMembership }) => {
   const router = useRouter();
+  const { _selectedJob, _isJobModalOn } = useModalContext();
+  const [, setSelectedJob] = _selectedJob;
+  const [, setIsJobModalOn] = _isJobModalOn;
 
   const assignmentSocCodes = useMemo(() => {
     const param = router.query?.[SOC_CODES_PARAM_NAME];
@@ -60,15 +64,20 @@ const JobViz = ({ unitName, jobTitleAndSocCodePairs, hasGpPlusMembership }) => {
     [assignmentSocCodes]
   );
 
+  const handleAssignmentJobClick = (socCode) => {
+    const node = jobVizData.find((n) => n.soc_code === socCode);
+    if (!node) return;
+
+    setSelectedJob({ ...node, wasSelectedFromJobToursCard: false });
+    setIsJobModalOn(true);
+
+    const url = buildJobvizUrl({ fromNode: node }, assignmentParams);
+    router.push(url, undefined, { scroll: false });
+  };
+
   const level1Nodes = useMemo(() => {
-    const nodes = jobVizData.filter((node) => node.hierarchy === 1);
-
-    if (!assignmentAncestors.size) return nodes;
-
-    const filtered = nodes.filter((node) => assignmentAncestors.has(node.id));
-
-    return filtered.length ? filtered : nodes;
-  }, [assignmentAncestors]);
+    return jobVizData.filter((node) => node.hierarchy === 1);
+  }, []);
 
   const gridItems = useMemo(
     () =>
@@ -77,8 +86,11 @@ const JobViz = ({ unitName, jobTitleAndSocCodePairs, hasGpPlusMembership }) => {
         title: getDisplayTitle(node),
         iconName: getIconNameForNode(node),
         level: 1,
+        highlight:
+          assignmentAncestors.has(node.id) ||
+          (assignmentSocCodes?.has(node.soc_code) ?? false),
       })),
-    [level1Nodes]
+    [level1Nodes, assignmentAncestors, assignmentSocCodes]
   );
 
   const handleRootClick = (item) => {
@@ -93,7 +105,7 @@ const JobViz = ({ unitName, jobTitleAndSocCodePairs, hasGpPlusMembership }) => {
       assignmentParams
     );
 
-    router.push(nextUrl);
+    router.push(nextUrl, undefined, { scroll: false });
   };
 
   const breadcrumbs = useMemo(
@@ -127,10 +139,16 @@ const JobViz = ({ unitName, jobTitleAndSocCodePairs, hasGpPlusMembership }) => {
         heroSubtitle={heroSubtitle}
       >
         <div id={JOBVIZ_BRACKET_SEARCH_ID} />
-        <AssignmentBanner
-          unitName={preservedUnitName}
-          jobs={jobTitleAndSocCodePairs}
-        />
+        <div className={styles.assignmentStrip}>
+          <div className={styles.assignmentStripInner}>
+            <AssignmentBanner
+              unitName={preservedUnitName}
+              jobs={jobTitleAndSocCodePairs}
+              assignmentParams={assignmentParams}
+              onJobClick={handleAssignmentJobClick}
+            />
+          </div>
+        </div>
 
         <JobVizBreadcrumb segments={breadcrumbs} />
         <h2 className={styles.jobvizSectionHeading}>

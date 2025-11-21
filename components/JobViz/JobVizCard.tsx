@@ -7,6 +7,8 @@ export interface JobVizCardProps {
   iconName: string;
   level: 1 | 2;
   onClick?: () => void;
+  highlight?: boolean;
+  highlightClicked?: boolean;
 }
 
 export const JobVizCard: React.FC<JobVizCardProps> = ({
@@ -14,13 +16,17 @@ export const JobVizCard: React.FC<JobVizCardProps> = ({
   iconName,
   level,
   onClick,
+  highlight,
+  highlightClicked,
 }) => {
   const levelClass =
     level === 1 ? styles.categoryCardLevel1 : styles.categoryCardLevel2;
 
   return (
     <article
-      className={`${styles.categoryCard} ${levelClass}`}
+      className={`${styles.categoryCard} ${levelClass} ${
+        highlight ? styles.categoryCardHighlight : ""
+      } ${highlightClicked ? styles.categoryCardClicked : ""}`}
       onClick={onClick}
       role={onClick ? "button" : undefined}
       tabIndex={onClick ? 0 : undefined}

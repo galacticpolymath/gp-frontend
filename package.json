@@ -6,7 +6,7 @@
     "build": "next build",
     "start": "next dev",
     "prod": "next build && next start",
-    "lint": "next lint",
+    "lint": "eslint .",
     "lint_fix": "eslint --fix --ext .js,.jsx .",
     "ci": "start-server-and-test 'npm run start-server' http://localhost:3000 'npm run test:integration'",
     "start-server": "next dev -p 3000",

@@ -110,23 +110,21 @@ const JobVizSearchResults = ({
   );
 
   const filteredSlice = useMemo(() => {
-    const scoped = assignmentSocCodes
-      ? hierarchySlice.filter(
-          (node) =>
-            assignmentAncestors.has(node.id) ||
-            assignmentSocCodes.has(node.soc_code)
-        )
-      : hierarchySlice;
-
-    const narrowed = assignmentSocCodes
-      ? filterJobsBySocCodes(scoped, assignmentSocCodes)
-      : scoped;
-
-    if (narrowed.length) return narrowed;
-    if (scoped.length) return scoped;
-
     return hierarchySlice;
-  }, [hierarchySlice, assignmentAncestors, assignmentSocCodes]);
+  }, [hierarchySlice]);
+
+  const handleAssignmentJobClick = (socCode) => {
+    const node = jobVizData.find((n) => n.soc_code === socCode);
+    if (!node) return;
+
+    setSelectedJob({ ...node, wasSelectedFromJobToursCard: false });
+    setIsJobModalOn(true);
+
+    const url = buildJobvizUrl({ fromNode: node }, assignmentParams);
+    router.push(url, undefined, { scroll: false });
+  };
+
+  const activeNode = chainNodes[chainNodes.length - 1] ?? null;
 
   const gridItems = useMemo(
     () =>
@@ -135,11 +133,20 @@ const JobVizSearchResults = ({
         title: getDisplayTitle(node),
         iconName: getIconNameForNode(node),
         level: parsed.targetLevel === 2 ? 1 : 2,
+        highlight:
+          assignmentAncestors.has(node.id) ||
+          (assignmentSocCodes?.has(node.soc_code) ?? false),
+        highlightClicked: activeNode?.id === node.id,
       })),
-    [filteredSlice, parsed.targetLevel]
+    [
+      filteredSlice,
+      parsed.targetLevel,
+      assignmentAncestors,
+      assignmentSocCodes,
+      activeNode?.id,
+    ]
   );
 
-  const activeNode = chainNodes[chainNodes.length - 1] ?? null;
   const showDetail = activeNode && activeNode.occupation_type === "Line item";
   const parentForHeading = useMemo(() => {
     if (selectedLevel) {
@@ -168,7 +175,7 @@ const JobVizSearchResults = ({
       assignmentParams
     );
 
-    router.push(nextUrl);
+    router.push(nextUrl, undefined, { scroll: false });
   };
 
   const breadcrumbs = useMemo(() => {
@@ -183,7 +190,9 @@ const JobVizSearchResults = ({
                   buildJobvizUrl(
                     { targetLevel: 1, selectedLevel: null, idPath: [] },
                     assignmentParams
-                  )
+                  ),
+                  undefined,
+                  { scroll: false }
                 )
             : undefined,
         isActive: !chainNodes.length,
@@ -223,7 +232,9 @@ const JobVizSearchResults = ({
                     idPath: buildIdPathForNode(node),
                   },
                   assignmentParams
-                )
+                ),
+                undefined,
+                { scroll: false }
               ),
       });
     });
@@ -259,10 +270,16 @@ const JobVizSearchResults = ({
   return (
     <Layout {...layoutProps}>
       <JobVizLayout heroTitle="JobViz Career Explorer+" heroSubtitle={heroSubtitle}>
-        <AssignmentBanner
-          unitName={preservedUnitName}
-          jobs={jobTitleAndSocCodePairs}
-        />
+        <div className={styles.assignmentStrip}>
+          <div className={styles.assignmentStripInner}>
+            <AssignmentBanner
+              unitName={preservedUnitName}
+              jobs={jobTitleAndSocCodePairs}
+              assignmentParams={assignmentParams}
+              onJobClick={handleAssignmentJobClick}
+            />
+          </div>
+        </div>
 
         <JobVizBreadcrumb segments={breadcrumbs} />
         <h2 className={styles.jobvizSectionHeading}>{sectionHeading}</h2>

@@ -42,7 +42,7 @@ export const JobVizSearch: React.FC<JobVizSearchProps> = ({
     if (!node) return;
 
     const url = buildJobvizUrl({ fromNode: node }, assignmentParams);
-    router.push(url);
+    router.push(url, undefined, { scroll: false });
   };
 
   return (

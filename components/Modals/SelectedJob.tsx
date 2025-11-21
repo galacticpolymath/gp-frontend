@@ -19,6 +19,13 @@ import { useSearchParams } from "next/navigation";
 import { createSelectedJobVizJobLink } from "../JobViz/JobTours/JobToursCard";
 import { JOBVIZ_BRACKET_SEARCH_ID } from "../../pages/jobviz/index";
 import Button from "../General/Button";
+import {
+  buildJobvizUrl,
+} from "../JobViz/jobvizUtils";
+import {
+  SOC_CODES_PARAM_NAME,
+  UNIT_NAME_PARAM_NAME,
+} from "../LessonSection/JobVizConnections";
 
 const { Header, Title, Body } = Modal;
 const { data_start_yr: _data_start_yr, data_end_yr: _data_end_yr } =
@@ -246,6 +253,27 @@ const SelectedJob: React.FC = () => {
     setIsJobModal(true);
   }, []);
 
+  const handleExploreRelatedCareers = () => {
+    if (!selectedJob) return;
+
+    const socCodesStr = searchParams.get(SOC_CODES_PARAM_NAME);
+    const unitNameParam = searchParams.get(UNIT_NAME_PARAM_NAME);
+    const url = buildJobvizUrl(
+      {
+        fromNode: selectedJob,
+      },
+      {
+        socCodes: socCodesStr
+          ? new Set(socCodesStr.split(",").filter(Boolean))
+          : undefined,
+        unitName: unitNameParam ?? undefined,
+      }
+    );
+
+    router.push(url, undefined, { scroll: false });
+    setIsJobModal(false);
+  };
+
   return (
     <Modal
       show={!!selectedJob}
@@ -289,6 +317,15 @@ const SelectedJob: React.FC = () => {
         </section>
         <section className="jobInfoStatSec pt-3 row g-2 d-flex d-sm-none">
           <InfoCards infoCards={infoCards} />
+        </section>
+        <section className="mt-3">
+          <button
+            type="button"
+            className="bg-transparent border-0 text-decoration-underline fw-semibold p-0"
+            onClick={handleExploreRelatedCareers}
+          >
+            Explore related careers
+          </button>
         </section>
         {wasSelectedFromJobToursCard && (
           <section className="mt-4">

@@ -45,9 +45,13 @@ export const jobVizNodeById = new Map<number, JobVizNode>(
 );
 
 const nodeByCodeAndHierarchy = new Map<string, JobVizNode>();
+const nodeBySocCode = new Map<string, JobVizNode>();
 
 jobVizData.forEach((node) => {
   nodeByCodeAndHierarchy.set(`${node.soc_code}:${node.hierarchy}`, node);
+  if (node.soc_code) {
+    nodeBySocCode.set(node.soc_code, node);
+  }
 });
 
 export const parseJobvizPath = (
@@ -133,6 +137,11 @@ const iconByPrefix: Record<string, string> = {
 export const getIconNameForNode = (node: JobVizNode) => {
   const prefix = node.soc_code?.slice(0, 2);
   return (prefix && iconByPrefix[prefix]) || "Sparkles";
+};
+
+export const getNodeBySocCode = (socCode?: string | null) => {
+  if (!socCode) return undefined;
+  return nodeBySocCode.get(socCode);
 };
 
 export const getTargetLevelForNode = (node: JobVizNode) => {
