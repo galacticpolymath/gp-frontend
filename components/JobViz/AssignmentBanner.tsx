@@ -59,12 +59,17 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
       role="status"
       aria-live="polite"
     >
+      {unitName && (
+        <div className={styles.assignmentUnitBadge} aria-hidden="true">
+          Jobs related to the <em>{unitName}</em>
+        </div>
+      )}
+
       <div className={styles.assignmentMarker}>
         <LucideIcon name="Rocket" />
         <span>Assignment</span>
       </div>
       <div className={styles.assignmentContent}>
-        {unitName && <h3 className={styles.assignmentTitle}>{unitName}</h3>}
         <p className={styles.assignmentCopy}>
           Assignment: Explore these jobs and explain <em>with data</em> which you
           would be most or least interested in.

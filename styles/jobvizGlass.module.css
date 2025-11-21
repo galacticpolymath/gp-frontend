@@ -43,8 +43,8 @@
 /* Section background with plus pattern */
 .jobvizSection {
   position: relative;
-  padding-block: 3.5rem;
-  overflow: hidden;
+  padding: 0 0 3.5rem;
+  overflow: visible;
 }
 
 .jobvizSectionBg {
@@ -322,14 +322,24 @@
   display: flex;
   gap: 1rem;
   align-items: flex-start;
-  padding: 1rem 1.25rem;
-  margin: 0;
-  border-radius: 0.85rem;
-  background: #fdfefe;
-  border: 1px solid rgba(13, 110, 253, 0.14);
-  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.07);
-  backdrop-filter: blur(8px);
-  overflow: hidden;
+  justify-content: space-between;
+  padding: 1.5rem 1.85rem;
+  margin: 0 auto 1.5rem;
+  border-radius: 0.65rem;
+  width: min(1280px, calc(100vw - 1.5rem));
+  background: linear-gradient(
+    115deg,
+    rgba(255, 255, 255, 0.98) 0%,
+    rgba(255, 248, 240, 0.92) 30%,
+    rgba(247, 244, 255, 0.94) 60%,
+    rgba(232, 242, 255, 0.92) 100%
+  );
+  border: 1px solid rgba(255, 255, 255, 0.78);
+  box-shadow:
+    0 18px 38px rgba(255, 201, 134, 0.07),
+    0 0 0 1px rgba(13, 110, 253, 0.03);
+  backdrop-filter: blur(12px);
+  overflow: visible;
   width: 100%;
 }
 
@@ -350,6 +360,7 @@
 
 .assignmentContent {
   flex: 1;
+  min-width: 0;
 }
 
 .assignmentTitle {
@@ -359,9 +370,9 @@
 }
 
 .assignmentCopy {
-  margin: 0.2rem 0 0.2rem;
-  color: #1c2731;
-  font-size: 0.93rem;
+  margin: 0.25rem 0 0.35rem;
+  color: #0f1a27;
+  font-size: 0.96rem;
 }
 
 .assignmentListWrap {
@@ -399,47 +410,51 @@
   content: "";
   position: absolute;
   inset: 6px 6px 10px 6px;
-  background: radial-gradient(circle at 12% 20%, rgba(13, 110, 253, 0.12), transparent 35%),
-    radial-gradient(circle at 82% 12%, rgba(120, 95, 255, 0.12), transparent 35%),
-    radial-gradient(circle at 50% 85%, rgba(13, 110, 253, 0.06), transparent 45%);
+  background:
+    radial-gradient(circle at 12% 18%, rgba(255, 214, 150, 0.16), transparent 38%),
+    radial-gradient(circle at 78% 16%, rgba(158, 136, 255, 0.15), transparent 32%),
+    radial-gradient(circle at 50% 80%, rgba(13, 110, 253, 0.05), transparent 48%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0));
   pointer-events: none;
-  opacity: 0.9;
+  opacity: 0.35;
 }
 
 .assignmentBanner::before {
-  content: "";
-  position: absolute;
-  inset: -8px -10px 12px;
-  border-radius: 1.1rem;
-  background: linear-gradient(180deg, rgba(13, 110, 253, 0.06), rgba(13, 110, 253, 0));
-  filter: blur(12px);
-  z-index: -1;
+  content: none;
 }
 
 .assignmentBannerSticky {
-  position: sticky;
-  top: 72px;
-  z-index: 5;
-  width: 100%;
-  left: auto;
-  transform: none;
-  margin-left: 0;
-  margin-right: 0;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  position: static;
+}
+
+.assignmentUnitBadge {
+  position: absolute;
+  top: -1.35rem;
+  right: 1.5rem;
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 500;
+  font-size: 0.88rem;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+  white-space: nowrap;
+  pointer-events: none;
 }
 
 .assignmentStrip {
+  position: sticky;
+  top: 64px;
+  z-index: 8;
   width: 100%;
-  padding: 0 1rem;
-  margin: 1rem 0 1.5rem;
-  background: radial-gradient(circle at 10% 20%, rgba(13, 110, 253, 0.1), transparent 35%),
-    radial-gradient(circle at 90% 10%, rgba(255, 148, 255, 0.12), transparent 35%),
-    linear-gradient(180deg, rgba(248, 251, 255, 0.8), rgba(240, 245, 255, 0.8));
+  padding: 0 0 1rem;
+  margin: 0 0 1rem;
+  display: flex;
+  justify-content: center;
+  background: none;
 }
 
 .assignmentStripInner {
-  max-width: 1240px;
-  margin: 0 auto;
+  width: 100%;
+  display: flex;
+  justify-content: center;
 }
 
 .jobvizDetail {
