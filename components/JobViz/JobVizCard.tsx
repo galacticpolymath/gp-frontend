@@ -41,13 +41,12 @@ export const JobVizCard: React.FC<JobVizCardProps> = ({
       }}
     >
       {showBookmark && (
-        <div className={styles.categoryBookmark}>
-          <LucideIcon
-            name="Bookmark"
-            className={`${styles.categoryBookmarkIcon} ${
-              highlightClicked ? styles.categoryBookmarkVisited : ""
-            }`}
-          />
+        <div
+          className={`${styles.categoryBookmark} ${
+            highlightClicked ? styles.categoryBookmarkVisited : ""
+          }`}
+        >
+          <LucideIcon name="Bookmark" className={styles.categoryBookmarkIcon} />
         </div>
       )}
       <div className={styles.categoryHeader}>

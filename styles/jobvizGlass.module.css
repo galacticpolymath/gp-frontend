@@ -127,7 +127,7 @@
 .categoryCard {
   position: relative;
   border-radius: 1.5rem;
-  padding: 2rem 1.7rem 1.4rem;
+  padding: 1.7rem 1.7rem 1.4rem;
   min-height: 180px;
 
   background: rgba(255, 255, 255, 0.22);
@@ -154,21 +154,30 @@
 
 .categoryBookmark {
   position: absolute;
-  top: -6px;
+  top: 2px;
   right: 14px;
+  width: 16px;
+  height: 24px;
+  background: #1826bc;
+  border-radius: 4px 4px 6px 6px;
+  box-shadow: 0 6px 12px rgba(24, 38, 188, 0.14);
+  pointer-events: none;
 }
 
-.categoryBookmarkIcon {
-  width: 22px;
-  height: 22px;
-  stroke: #1826bc;
-  fill: #1826bc;
-  filter: drop-shadow(0 6px 12px rgba(24, 38, 188, 0.22));
+.categoryBookmark::after {
+  content: "";
+  position: absolute;
+  bottom: -1px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 12px;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.96);
+  clip-path: polygon(0 0, 50% 100%, 100% 0);
 }
 
 .categoryBookmarkVisited {
-  stroke: #0a126e;
-  fill: #0a126e;
+  filter: brightness(0.85);
 }
 
 .categoryCardHighlight {
@@ -319,15 +328,13 @@
   display: flex;
   gap: 1rem;
   align-items: flex-start;
-  padding: 1.25rem 1.5rem;
+  padding: 1rem 1.25rem;
   margin: 0;
-  border-radius: 0.9rem;
-  background: linear-gradient(135deg, rgba(245, 249, 255, 0.98), rgba(236, 242, 255, 0.98));
-  border: 1px solid rgba(13, 110, 253, 0.18);
-  box-shadow:
-    0 12px 28px rgba(41, 82, 168, 0.08),
-    0 0 0 1px rgba(255, 255, 255, 0.5) inset;
-  backdrop-filter: blur(12px);
+  border-radius: 0.85rem;
+  background: #fdfefe;
+  border: 1px solid rgba(13, 110, 253, 0.14);
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.07);
+  backdrop-filter: blur(8px);
   overflow: hidden;
   width: 100%;
 }
@@ -343,8 +350,8 @@
 }
 
 .assignmentMarker svg {
-  width: 18px;
-  height: 18px;
+  width: 17px;
+  height: 17px;
 }
 
 .assignmentContent {
@@ -358,9 +365,9 @@
 }
 
 .assignmentCopy {
-  margin: 0.25rem 0 0;
+  margin: 0.2rem 0 0.2rem;
   color: #1c2731;
-  font-size: 0.95rem;
+  font-size: 0.93rem;
 }
 
 .assignmentListWrap {
@@ -397,12 +404,22 @@
 .assignmentBanner::after {
   content: "";
   position: absolute;
-  inset: 0;
-  background-image: url("/plus/jobviz-plus-pattern.svg");
-  background-size: 180px 180px;
-  opacity: 0.18;
-  mix-blend-mode: soft-light;
+  inset: 6px 6px 10px 6px;
+  background: radial-gradient(circle at 12% 20%, rgba(13, 110, 253, 0.12), transparent 35%),
+    radial-gradient(circle at 82% 12%, rgba(120, 95, 255, 0.12), transparent 35%),
+    radial-gradient(circle at 50% 85%, rgba(13, 110, 253, 0.06), transparent 45%);
   pointer-events: none;
+  opacity: 0.9;
+}
+
+.assignmentBanner::before {
+  content: "";
+  position: absolute;
+  inset: -8px -10px 12px;
+  border-radius: 1.1rem;
+  background: linear-gradient(180deg, rgba(13, 110, 253, 0.06), rgba(13, 110, 253, 0));
+  filter: blur(12px);
+  z-index: -1;
 }
 
 .assignmentBannerSticky {
