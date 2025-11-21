@@ -143,6 +143,11 @@ const HeroForGpPlusUsers: React.FC<IHeroForGpPlusUsersProps> = ({
   return (
     <section ref={ref} className={className}>
       <div className="jobviz-bg"></div>
+      <div className="jobviz-logo-plus-wrapper hero-overlay animate-fadein delay-1">
+        <div className="jobviz-logo-plus-img-container position-relative">
+          <Image src="/imgs/jobViz/icon_jobviz.png" alt="JobViz logo" fill />
+        </div>
+      </div>
 
       <div className="container pt-5 pb-4 position-relative">
         <h1 className="fw-bold display-5 mt-2 mt-sm-5 mt-md-0 mb-3 animate-fadein">

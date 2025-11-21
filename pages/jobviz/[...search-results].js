@@ -6,6 +6,7 @@ import { JobVizBreadcrumb } from "../../components/JobViz/JobVizBreadcrumb";
 import { JobVizGrid } from "../../components/JobViz/JobVizGrid";
 import { JobVizLayout } from "../../components/JobViz/JobVizLayout";
 import { LucideIcon } from "../../components/JobViz/LucideIcon";
+import HeroForFreeUsers from "../../components/JobViz/Heros/HeroForFreeUsers";
 import styles from "../../styles/jobvizGlass.module.css";
 import {
   buildIdPathForNode,
@@ -163,6 +164,8 @@ const JobVizSearchResults = ({
     parentForHeading?.title ||
     "Browse jobs by category or search";
 
+  const showIntroHeading = chainNodes.length === 0;
+
   const handleGridClick = (item) => {
     const node = jobVizNodeById.get(Number(item.id));
     if (!node) return;
@@ -247,6 +250,9 @@ const JobVizSearchResults = ({
 
   const heroSubtitle =
     "A tool for grades 6 to adult to explore career possibilities! Browse, search & share key details about 1000+ jobs.";
+  const forceGpPlusHero = !!router.query?.soc_code;
+  const isGpPlusHero = hasGpPlusMembership || forceGpPlusHero;
+  const heroSlot = isGpPlusHero ? null : <HeroForFreeUsers />;
 
   useEffect(() => {
     if (activeNode && activeNode.occupation_type === "Line item") {
@@ -272,7 +278,11 @@ const JobVizSearchResults = ({
 
   return (
     <Layout {...layoutProps}>
-      <JobVizLayout heroTitle="JobViz Career Explorer+" heroSubtitle={heroSubtitle}>
+      <JobVizLayout
+        heroTitle="JobViz Career Explorer+"
+        heroSubtitle={heroSubtitle}
+        heroSlot={heroSlot}
+      >
         <div className={styles.assignmentStrip}>
           <div className={styles.assignmentStripInner}>
             <AssignmentBanner
@@ -284,79 +294,81 @@ const JobVizSearchResults = ({
           </div>
         </div>
 
-        <JobVizBreadcrumb segments={breadcrumbs} />
-        <h2 className={styles.jobvizSectionHeading}>{sectionHeading}</h2>
+        {showIntroHeading && (
+          <h2 className={styles.jobvizSectionHeading}>{sectionHeading}</h2>
+        )}
 
         <JobVizSearch assignmentParams={assignmentParams} />
+        <div className={styles.jobvizContextZone}>
+          <JobVizBreadcrumb segments={breadcrumbs} />
 
-        <JobVizGrid items={gridItems} onItemClick={handleGridClick} />
+          <div className={styles.jobvizGridWrap}>
+            <JobVizGrid items={gridItems} onItemClick={handleGridClick} />
+          </div>
 
-        {showDetail && activeNode && (
-          <article className={styles.jobvizDetail}>
-            <div className={styles.jobvizDetailHeader}>
-              <LucideIcon name={getIconNameForNode(activeNode)} />
-              <div>
-                <p className={styles.jobvizDetailSoc}>{activeNode.soc_code}</p>
-                <h3 className={styles.jobvizDetailTitle}>
-                  {getDisplayTitle(activeNode)}
-                </h3>
+          {showDetail && activeNode && (
+            <article className={styles.jobvizDetail}>
+              <div className={styles.jobvizDetailHeader}>
+                <LucideIcon name={getIconNameForNode(activeNode)} />
+                <div>
+                  <p className={styles.jobvizDetailSoc}>{activeNode.soc_code}</p>
+                  <h3 className={styles.jobvizDetailTitle}>
+                    {getDisplayTitle(activeNode)}
+                  </h3>
+                </div>
               </div>
-            </div>
-            {activeNode.def && (
-              <p className={styles.jobvizDetailBody}>{activeNode.def}</p>
-            )}
-
-            <div className={styles.jobvizDetailMeta}>
-              <div className={styles.jobvizStat}>
-                <span className={styles.jobvizStatLabel}>Median wage</span>
-                <span className={styles.jobvizStatValue}>
-                  {formatCurrency(activeNode.median_annual_wage)}
-                </span>
-              </div>
-              <div className={styles.jobvizStat}>
-                <span className={styles.jobvizStatLabel}>
-                  Employment change
-                </span>
-                <span className={styles.jobvizStatValue}>
-                  {formatPercent(activeNode.employment_change_percent)}
-                </span>
-              </div>
-              <div className={styles.jobvizStat}>
-                <span className={styles.jobvizStatLabel}>Education</span>
-                <span className={styles.jobvizStatValue}>
-                  {activeNode.typical_education_needed_for_entry || "—"}
-                </span>
-              </div>
-              <div className={styles.jobvizStat}>
-                <span className={styles.jobvizStatLabel}>Training</span>
-                <span className={styles.jobvizStatValue}>
-                  {activeNode[
-                    "typical_on-the-job_training_needed_to_attain_competency_in_the_occupation"
-                  ] || "—"}
-                </span>
-              </div>
-            </div>
-
-            <p className={styles.jobvizSource}>
-              Data source:{" "}
-              <a href={JOBVIZ_DATA_SOURCE} target="_blank" rel="noreferrer">
-                US Bureau of Labor Statistics
-              </a>
-              {activeNode.BLS_link && (
-                <>
-                  {"  "}•{" "}
-                  <a
-                    href={activeNode.BLS_link}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    View on BLS
-                  </a>
-                </>
+              {activeNode.def && (
+                <p className={styles.jobvizDetailBody}>{activeNode.def}</p>
               )}
-            </p>
-          </article>
-        )}
+
+              <div className={styles.jobvizDetailMeta}>
+                <div className={styles.jobvizStat}>
+                  <span className={styles.jobvizStatLabel}>Median wage</span>
+                  <span className={styles.jobvizStatValue}>
+                    {formatCurrency(activeNode.median_annual_wage)}
+                  </span>
+                </div>
+                <div className={styles.jobvizStat}>
+                  <span className={styles.jobvizStatLabel}>
+                    Employment change
+                  </span>
+                  <span className={styles.jobvizStatValue}>
+                    {formatPercent(activeNode.employment_change_percent)}
+                  </span>
+                </div>
+                <div className={styles.jobvizStat}>
+                  <span className={styles.jobvizStatLabel}>Education</span>
+                  <span className={styles.jobvizStatValue}>
+                    {activeNode.typical_education_needed_for_entry || "—"}
+                  </span>
+                </div>
+                <div className={styles.jobvizStat}>
+                  <span className={styles.jobvizStatLabel}>Training</span>
+                  <span className={styles.jobvizStatValue}>
+                    {activeNode[
+                      "typical_on-the-job_training_needed_to_attain_competency_in_the_occupation"
+                    ] || "—"}
+                  </span>
+                </div>
+              </div>
+            </article>
+          )}
+
+          <p className={`${styles.jobvizSource} ${styles.jobvizSourceFixed}`}>
+            Data source:{" "}
+            <a href={JOBVIZ_DATA_SOURCE} target="_blank" rel="noreferrer">
+              US Bureau of Labor Statistics
+            </a>
+            {activeNode?.BLS_link && (
+              <>
+                {"  "}•{" "}
+                <a href={activeNode.BLS_link} target="_blank" rel="noreferrer">
+                  View on BLS
+                </a>
+              </>
+            )}
+          </p>
+        </div>
       </JobVizLayout>
     </Layout>
   );

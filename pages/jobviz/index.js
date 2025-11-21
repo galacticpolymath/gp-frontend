@@ -6,6 +6,7 @@ import { JobVizBreadcrumb } from "../../components/JobViz/JobVizBreadcrumb";
 import { JobVizGrid } from "../../components/JobViz/JobVizGrid";
 import { JobVizLayout } from "../../components/JobViz/JobVizLayout";
 import styles from "../../styles/jobvizGlass.module.css";
+import HeroForFreeUsers from "../../components/JobViz/Heros/HeroForFreeUsers";
 import {
   buildIdPathForNode,
   buildJobvizUrl,
@@ -125,6 +126,9 @@ const JobViz = ({ unitName, jobTitleAndSocCodePairs, hasGpPlusMembership }) => {
 
   const heroSubtitle =
     "A tool for grades 6 to adult to explore career possibilities! Browse, search & share key details about 1000+ jobs.";
+  const forceGpPlusHero = !!router.query?.soc_code;
+  const isGpPlusHero = hasGpPlusMembership || forceGpPlusHero;
+  const heroSlot = isGpPlusHero ? null : <HeroForFreeUsers />;
 
   const layoutProps = {
     title:
@@ -141,8 +145,14 @@ const JobViz = ({ unitName, jobTitleAndSocCodePairs, hasGpPlusMembership }) => {
       <JobVizLayout
         heroTitle="JobViz Career Explorer+"
         heroSubtitle={heroSubtitle}
+        heroSlot={heroSlot}
       >
         <div id={JOBVIZ_BRACKET_SEARCH_ID} />
+        {preservedUnitName && (
+          <p className={styles.assignmentUnitLabel}>
+            Jobs related to <em>{preservedUnitName}</em>
+          </p>
+        )}
         <div className={styles.assignmentStrip}>
           <div className={styles.assignmentStripInner}>
             <AssignmentBanner
@@ -154,21 +164,25 @@ const JobViz = ({ unitName, jobTitleAndSocCodePairs, hasGpPlusMembership }) => {
           </div>
         </div>
 
-        <JobVizBreadcrumb segments={breadcrumbs} />
         <h2 className={styles.jobvizSectionHeading}>
           Browse jobs by category or search
         </h2>
 
         <JobVizSearch assignmentParams={assignmentParams} />
+        <div className={styles.jobvizContextZone}>
+          <JobVizBreadcrumb segments={breadcrumbs} />
 
-        <JobVizGrid items={gridItems} onItemClick={handleRootClick} />
+          <div className={styles.jobvizGridWrap}>
+            <JobVizGrid items={gridItems} onItemClick={handleRootClick} />
+          </div>
 
-        <p className={`${styles.jobvizSource} mt-4`}>
-          Data source:{" "}
-          <a href={JOBVIZ_DATA_SOURCE} target="_blank" rel="noreferrer">
-            US Bureau of Labor Statistics
-          </a>
-        </p>
+          <p className={`${styles.jobvizSource} ${styles.jobvizSourceFixed}`}>
+            Data source:{" "}
+            <a href={JOBVIZ_DATA_SOURCE} target="_blank" rel="noreferrer">
+              US Bureau of Labor Statistics
+            </a>
+          </p>
+        </div>
       </JobVizLayout>
     </Layout>
   );

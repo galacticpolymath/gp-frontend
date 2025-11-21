@@ -5,23 +5,27 @@ interface JobVizLayoutProps {
   heroTitle: string;
   heroSubtitle?: string;
   children: React.ReactNode;
+  heroSlot?: React.ReactNode;
 }
 
 export const JobVizLayout: React.FC<JobVizLayoutProps> = ({
   heroTitle,
   heroSubtitle,
   children,
+  heroSlot,
 }) => {
   return (
     <>
-      <section className={styles.jobvizHero}>
-        <div className={styles.jobvizHeroInner}>
-          <h1 className={styles.jobvizHeroTitle}>{heroTitle}</h1>
-          {heroSubtitle && (
-            <p className={styles.jobvizHeroSubtitle}>{heroSubtitle}</p>
-          )}
-        </div>
-      </section>
+      {heroSlot ?? (
+        <section className={styles.jobvizHero}>
+          <div className={styles.jobvizHeroInner}>
+            <h1 className={styles.jobvizHeroTitle}>{heroTitle}</h1>
+            {heroSubtitle && (
+              <p className={styles.jobvizHeroSubtitle}>{heroSubtitle}</p>
+            )}
+          </div>
+        </section>
+      )}
 
       <section className={styles.jobvizSection}>
         <div className={styles.jobvizSectionBg} />
