@@ -127,7 +127,7 @@
 .categoryCard {
   position: relative;
   border-radius: 1.5rem;
-  padding: 1.7rem 1.7rem 1.4rem;
+  padding: 2rem 1.7rem 1.4rem;
   min-height: 180px;
 
   background: rgba(255, 255, 255, 0.22);
@@ -152,18 +152,35 @@
     0 0 0 1px rgba(255, 255, 255, 0.4) inset;
 }
 
+.categoryBookmark {
+  position: absolute;
+  top: -6px;
+  right: 14px;
+}
+
+.categoryBookmarkIcon {
+  width: 22px;
+  height: 22px;
+  stroke: #1826bc;
+  fill: #1826bc;
+  filter: drop-shadow(0 6px 12px rgba(24, 38, 188, 0.22));
+}
+
+.categoryBookmarkVisited {
+  stroke: #0a126e;
+  fill: #0a126e;
+}
+
 .categoryCardHighlight {
   box-shadow:
-    0 0 0 2px #1826bc,
-    0 20px 42px rgba(28, 106, 217, 0.18),
-    0 0 0 1px rgba(255, 255, 255, 0.4) inset;
+    0 12px 28px rgba(0, 0, 0, 0.06),
+    0 0 0 1px rgba(255, 255, 255, 0.35) inset;
 }
 
 .categoryCardClicked {
   box-shadow:
-    0 0 0 2px #0f1a8f,
-    0 20px 42px rgba(15, 26, 143, 0.25),
-    0 0 0 1px rgba(255, 255, 255, 0.4) inset;
+    0 12px 28px rgba(0, 0, 0, 0.06),
+    0 0 0 1px rgba(255, 255, 255, 0.35) inset;
 }
 
 .categoryCardLevel1 {
@@ -374,7 +391,7 @@
 }
 
 .assignmentLinkClicked {
-  color: #0f1a8f;
+  color: #0a126e;
 }
 
 .assignmentBanner::after {

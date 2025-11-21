@@ -9,6 +9,7 @@ export interface JobVizGridItem {
   level: 1 | 2;
   highlight?: boolean;
   highlightClicked?: boolean;
+  showBookmark?: boolean;
 }
 
 export interface JobVizGridProps {
@@ -27,6 +28,7 @@ export const JobVizGrid: React.FC<JobVizGridProps> = ({ items, onItemClick }) =>
             level={item.level}
             highlight={item.highlight}
             highlightClicked={item.highlightClicked}
+            showBookmark={item.showBookmark}
             onClick={onItemClick ? () => onItemClick(item) : undefined}
           />
         </div>

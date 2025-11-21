@@ -9,6 +9,7 @@ export interface JobVizCardProps {
   onClick?: () => void;
   highlight?: boolean;
   highlightClicked?: boolean;
+  showBookmark?: boolean;
 }
 
 export const JobVizCard: React.FC<JobVizCardProps> = ({
@@ -18,6 +19,7 @@ export const JobVizCard: React.FC<JobVizCardProps> = ({
   onClick,
   highlight,
   highlightClicked,
+  showBookmark,
 }) => {
   const levelClass =
     level === 1 ? styles.categoryCardLevel1 : styles.categoryCardLevel2;
@@ -38,6 +40,16 @@ export const JobVizCard: React.FC<JobVizCardProps> = ({
         }
       }}
     >
+      {showBookmark && (
+        <div className={styles.categoryBookmark}>
+          <LucideIcon
+            name="Bookmark"
+            className={`${styles.categoryBookmarkIcon} ${
+              highlightClicked ? styles.categoryBookmarkVisited : ""
+            }`}
+          />
+        </div>
+      )}
       <div className={styles.categoryHeader}>
         <div className={styles.categoryIconWrap}>
           <LucideIcon name={iconName} />

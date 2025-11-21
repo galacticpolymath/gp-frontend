@@ -89,6 +89,10 @@ const JobViz = ({ unitName, jobTitleAndSocCodePairs, hasGpPlusMembership }) => {
         highlight:
           assignmentAncestors.has(node.id) ||
           (assignmentSocCodes?.has(node.soc_code) ?? false),
+        highlightClicked: false,
+        showBookmark:
+          assignmentAncestors.has(node.id) ||
+          (assignmentSocCodes?.has(node.soc_code) ?? false),
       })),
     [level1Nodes, assignmentAncestors, assignmentSocCodes]
   );

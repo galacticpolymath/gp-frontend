@@ -137,6 +137,9 @@ const JobVizSearchResults = ({
           assignmentAncestors.has(node.id) ||
           (assignmentSocCodes?.has(node.soc_code) ?? false),
         highlightClicked: activeNode?.id === node.id,
+        showBookmark:
+          assignmentAncestors.has(node.id) ||
+          (assignmentSocCodes?.has(node.soc_code) ?? false),
       })),
     [
       filteredSlice,
