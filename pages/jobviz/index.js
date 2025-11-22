@@ -21,6 +21,7 @@ import { getUnitRelatedJobs } from "../../helperFns/filterUnitRelatedJobs";
 import { useSearchParams } from "next/navigation";
 import { verifyJwt } from "../../nondependencyFns";
 import { useLessonContext } from "../../providers/LessonProvider";
+import { getSessionStorageItem, removeSessionStorageItem, setSessionStorageItem } from "../../shared/fns";
 
 const DATA_SOURCE_LINK =
   "https://www.bls.gov/emp/tables/occupational-projections-and-characteristics.htm";
@@ -103,9 +104,24 @@ const JobViz = ({
         }
       }, 300);
 
-      return () => clearTimeout(timeoutId);
+      return () => {
+        clearTimeout(timeoutId)
+        removeSessionStorageItem("didJobVizPgInitialRendered")
+      };
+    }
+
+    setSessionStorageItem("didJobVizPgInitialRendered", true);
+
+    return () => {
+      removeSessionStorageItem("didJobVizPgInitialRendered")
     }
   }, []);
+
+  const didJobVizPgInitialRendered = !!getSessionStorageItem(
+    "didJobVizPgInitialRendered"
+  );
+
+  console.log("didJobVizPgInitialRendered: ", didJobVizPgInitialRendered);
 
   console.log("jobTitleAndSocCodePairs, hey there: ", jobTitleAndSocCodePairs);
 
@@ -120,19 +136,21 @@ const JobViz = ({
         isStylesHeroOn={false}
         customChildrenContainerClassName=""
       >
-        {((jobTitleAndSocCodePairs && unitName) || hasGpPlusMembership) ? (
+        {(jobTitleAndSocCodePairs && unitName) || hasGpPlusMembership ? (
           <>
             <HeroForGpPlusUsers
               jobTitleAndSocCodePairs={jobTitleAndSocCodePairs ?? []}
               unitName={unitName ?? undefined}
-              className="d-block d-sm-none jobviz-hero text-center text-light position-relative overflow-hidden pt-3 pb-5"
+              className={`d-block d-sm-none ${didJobVizPgInitialRendered ? "" : "jobviz-hero"
+                } text-center text-light position-relative overflow-hidden pt-3 pb-5`}
               willTrackIsInViewport
               useInViewThreshold={0.2}
             />
             <HeroForGpPlusUsers
               jobTitleAndSocCodePairs={jobTitleAndSocCodePairs ?? []}
               unitName={unitName ?? undefined}
-              className="d-none d-sm-block jobviz-hero text-center text-light position-relative overflow-hidden pt-3 pb-5"
+              className={`d-none d-sm-block ${didJobVizPgInitialRendered ? "" : "jobviz-hero"
+                } text-center text-light position-relative overflow-hidden pt-3 pb-5`}
               willTrackIsInViewport
               useInViewThreshold={0.4}
             />

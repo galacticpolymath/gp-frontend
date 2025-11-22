@@ -188,6 +188,7 @@ export interface ISessionStorage{
   userEntryRedirectUrl: string; 
   wasWelcomeNewUserModalShown: boolean
   isGpPlusUser: boolean
+  didJobVizPgInitialRendered: boolean
 }
 
 export interface ILocalStorage extends Pick<TUserSchemaV2, 'willShowGpPlusCopyLessonHelperModal'>{

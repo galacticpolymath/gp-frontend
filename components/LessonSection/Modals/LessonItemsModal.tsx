@@ -506,7 +506,7 @@ const LessonItemsModal: React.FC = () => {
                             onClick={handlePlayBtnClick}
                             className="py-2 px-3 bg-white rounded-2 no-btn-styles me-2"
                           >
-                            <LuMonitorPlay size={35} />
+                            <TbExternalLink size={35} />
                           </button>
                         </section>
                       )}
