@@ -66,7 +66,7 @@ type TSelectedJobModal = Partial<{
 
 export interface ISelectedJob extends TSelectedJobModal {
   id: number;
-  wasSelectedFromJobToursCard?: boolean
+  wasSelectedFromJobToursCard?: boolean;
   title: string;
   soc_code: string;
   occupation_type: string;
