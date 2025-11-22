@@ -43,7 +43,7 @@
 /* Section background with plus pattern */
 .jobvizSection {
   position: relative;
-  padding: 0 0 3.5rem;
+  padding: 0 0 0;
   overflow: visible;
 }
 
@@ -77,21 +77,24 @@
 
 .jobvizContextZone {
   position: relative;
-  width: 100vw;
-  margin-left: calc(-50vw + 50%);
-  margin-right: calc(-50vw + 50%);
-  padding: 1.2rem 0 2.5rem;
-  overflow: hidden;
+  width: 100%;
+  margin: 0 auto;
+  padding: 1.2rem 0.75rem 2.5rem;
+  overflow: visible;
 }
 
 .jobvizContextZone::before {
   content: "";
   position: absolute;
-  inset: 0;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100vw;
+  height: 100%;
   background-color: #fffafe;
-  background-image: radial-gradient(#d14f86 0.7px, #fffafe 0.7px);
-  background-size: 14px 14px;
-  opacity: 0.4;
+  background-image: radial-gradient(#d14f86 0.9px, #fffafe 0.9px);
+  background-size: 18px 18px;
+  opacity: 0.45;
   pointer-events: none;
   z-index: 0;
 }
@@ -218,6 +221,7 @@
   position: relative;
   margin-top: 1.25rem;
   padding: 0;
+  width: 100%;
 }
 
 .categoryCardClicked {
@@ -366,10 +370,11 @@
   justify-content: space-between;
   padding: 1.5rem 1.85rem;
   margin: 0 auto 0.5rem;
+  max-width: 1280px;
   border-radius: 0 0 16px 16px;
   width: 100%;
   background: #fefbf8;
-  border: 3px solid #1826bc;
+  border: 3px solid #363636;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
@@ -407,13 +412,13 @@
   justify-content: flex-start;
   align-self: flex-start;
   font-weight: 800;
-  color: #1826bc;
+  color: #363636;
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
 
 .assignmentMarkerIcon {
-  color: #1826bc;
+  color: #363636;
   width: 60px;
   height: 60px;
   padding-top: 1rem;
@@ -430,6 +435,10 @@
   min-width: 0;
   align-self: flex-start;
   text-align: left;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
 }
 
 .assignmentTitle {
@@ -440,21 +449,31 @@
 
 .assignmentCopy {
   margin: 0 0 0.35rem;
-  color: #0f1a27;
+  color: #363636;
   font-size: 0.96rem;
 }
 
 .assignmentListWrap {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 0.35rem 1.5rem;
   margin-top: 0.75rem;
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 0.35rem 2rem;
+  justify-items: start;
+  align-items: start;
+  text-align: left;
+  justify-content: start;
 }
 
 .assignmentList {
   margin: 0;
   padding-left: 0;
   list-style: none;
+  text-align: left;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 .assignmentLink {
@@ -462,9 +481,15 @@
   padding: 0.1rem 0;
   background: none;
   color: #1826bc;
-  font-weight: 700;
+  font-weight: 500;
   text-decoration: none;
   cursor: pointer;
+  display: inline-flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  text-align: left;
+  width: 100%;
+  white-space: normal;
 }
 
 .assignmentLink:hover {
@@ -479,6 +504,7 @@
   display: flex;
   align-items: center;
   gap: 0.4rem;
+  width: 100%;
 }
 
 .assignmentListIcon {
@@ -494,6 +520,8 @@
   gap: 1.25rem;
   align-items: flex-start;
   width: 100%;
+  position: relative;
+  z-index: 1;
 }
 
 .assignmentCarousel {
@@ -633,12 +661,12 @@
     display: none;
   }
 
-  .assignmentCarousel {
-    display: flex;
-  }
-
   .assignmentContent {
     width: 100%;
+  }
+
+  .assignmentCarousel {
+    display: flex;
   }
 }
 
@@ -652,6 +680,7 @@
     linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
   pointer-events: none;
   opacity: 0.6;
+  z-index: 0;
 }
 
 .assignmentBanner::before {
@@ -677,7 +706,9 @@
 }
 
 .assignmentStrip {
-  position: static;
+  position: sticky;
+  top: 32px;
+  z-index: 6;
   width: 100%;
   padding: 0 0 1rem;
   margin: 0 0 1rem;
