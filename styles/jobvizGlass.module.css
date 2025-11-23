@@ -457,12 +457,11 @@
   margin-top: 0.75rem;
   width: 100%;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 0.35rem 2rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.35rem 1.5rem;
   justify-items: start;
   align-items: start;
   text-align: left;
-  justify-content: start;
 }
 
 .assignmentList {
@@ -471,9 +470,6 @@
   list-style: none;
   text-align: left;
   width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
 }
 
 .assignmentLink {
@@ -502,8 +498,8 @@
 
 .assignmentListItem {
   display: flex;
-  align-items: center;
-  gap: 0.4rem;
+  align-items: flex-start;
+  gap: 0.35rem;
   width: 100%;
 }
 
@@ -667,6 +663,12 @@
 
   .assignmentCarousel {
     display: flex;
+  }
+}
+
+@media (max-width: 900px) and (min-width: 769px) {
+  .assignmentListWrap {
+    grid-template-columns: 1fr;
   }
 }
 
