@@ -57,8 +57,10 @@ jobVizData.forEach((node) => {
 export const parseJobvizPath = (
   segments?: string[] | string | string[][] | null
 ): ParsedJobvizPath => {
-  const parts = Array.isArray(segments)
-    ? segments
+  const parts: string[] = Array.isArray(segments)
+    ? segments.flatMap((segment) =>
+        Array.isArray(segment) ? segment : [segment]
+      )
     : typeof segments === "string"
       ? segments.split("/").filter(Boolean)
       : [];
@@ -209,7 +211,7 @@ const appendAssignmentQuery = (
 export const buildJobvizUrl = (
   parsed: ParsedJobvizPath | { fromNode: JobVizNode },
   assignmentParams?: AssignmentParams
-) => {
+): string => {
   if ("fromNode" in parsed) {
     const node = parsed.fromNode;
     const targetLevel = getTargetLevelForNode(node);

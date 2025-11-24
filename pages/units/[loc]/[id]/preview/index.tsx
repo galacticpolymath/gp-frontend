@@ -407,6 +407,11 @@ export const getStaticPaths = async () => {
       'An error has occurred in getting the available paths for the selected lesson page. Error message: ',
       error
     );
+
+    return {
+      paths: [],
+      fallback: false,
+    };
   }
 };
 
