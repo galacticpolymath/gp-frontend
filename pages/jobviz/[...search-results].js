@@ -7,6 +7,7 @@ import { JobVizGrid } from "../../components/JobViz/JobVizGrid";
 import { JobVizLayout } from "../../components/JobViz/JobVizLayout";
 import { LucideIcon } from "../../components/JobViz/LucideIcon";
 import HeroForFreeUsers from "../../components/JobViz/Heros/HeroForFreeUsers";
+import { JOBVIZ_BRACKET_SEARCH_ID } from "../../pages/jobviz/index";
 import styles from "../../styles/jobvizGlass.module.css";
 import {
   buildIdPathForNode,
@@ -299,60 +300,13 @@ const JobVizSearchResults = ({
         )}
 
         <JobVizSearch assignmentParams={assignmentParams} />
+        <div id={JOBVIZ_BRACKET_SEARCH_ID} />
         <div className={styles.jobvizContextZone}>
           <JobVizBreadcrumb segments={breadcrumbs} />
 
           <div className={styles.jobvizGridWrap}>
             <JobVizGrid items={gridItems} onItemClick={handleGridClick} />
           </div>
-
-          {showDetail && activeNode && (
-            <article className={styles.jobvizDetail}>
-              <div className={styles.jobvizDetailHeader}>
-                <LucideIcon name={getIconNameForNode(activeNode)} />
-                <div>
-                  <p className={styles.jobvizDetailSoc}>{activeNode.soc_code}</p>
-                  <h3 className={styles.jobvizDetailTitle}>
-                    {getDisplayTitle(activeNode)}
-                  </h3>
-                </div>
-              </div>
-              {activeNode.def && (
-                <p className={styles.jobvizDetailBody}>{activeNode.def}</p>
-              )}
-
-              <div className={styles.jobvizDetailMeta}>
-                <div className={styles.jobvizStat}>
-                  <span className={styles.jobvizStatLabel}>Median wage</span>
-                  <span className={styles.jobvizStatValue}>
-                    {formatCurrency(activeNode.median_annual_wage)}
-                  </span>
-                </div>
-                <div className={styles.jobvizStat}>
-                  <span className={styles.jobvizStatLabel}>
-                    Employment change
-                  </span>
-                  <span className={styles.jobvizStatValue}>
-                    {formatPercent(activeNode.employment_change_percent)}
-                  </span>
-                </div>
-                <div className={styles.jobvizStat}>
-                  <span className={styles.jobvizStatLabel}>Education</span>
-                  <span className={styles.jobvizStatValue}>
-                    {activeNode.typical_education_needed_for_entry || "—"}
-                  </span>
-                </div>
-                <div className={styles.jobvizStat}>
-                  <span className={styles.jobvizStatLabel}>Training</span>
-                  <span className={styles.jobvizStatValue}>
-                    {activeNode[
-                      "typical_on-the-job_training_needed_to_attain_competency_in_the_occupation"
-                    ] || "—"}
-                  </span>
-                </div>
-              </div>
-            </article>
-          )}
 
           <p className={`${styles.jobvizSource} ${styles.jobvizSourceFixed}`}>
             Data source:{" "}

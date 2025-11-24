@@ -1,13 +1,6 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import Modal from "react-bootstrap/Modal";
-import { IoIosSchool } from "react-icons/io";
-import { BiTrendingUp } from "react-icons/bi";
-import {
-  MdOutlineTransferWithinAStation,
-  MdOutlineDirectionsWalk,
-  MdSupervisedUserCircle,
-  MdAttachMoney,
-} from "react-icons/md";
+import { LucideIcon } from "../JobViz/LucideIcon";
 import { ISelectedJob, useModalContext } from "../../providers/ModalProvider";
 import jobVizDataObj from "../../data/Jobviz/jobVizDataObj.json";
 import { useRouter } from "next/router";
@@ -70,37 +63,37 @@ const createInfoCards = (selectedJob: ISelectedJob | null) => {
       id: "medianAnnualWage",
       title: `Median ${DATA_START_YR} Annual Wage`,
       txt: formatDataTxtToCurrency(median_annual_wage),
-      icon: <MdAttachMoney />,
+      icon: <LucideIcon name="DollarSign" />,
     },
     {
       id: "educationNeededForEntry",
       title: "Education Needed",
       txt: typical_education_needed_for_entry,
-      icon: <IoIosSchool />,
+      icon: <LucideIcon name="GraduationCap" />,
     },
     {
       id: "onTheJobTraining",
       title: "On-the-job Training",
       txt: onTheJobTraining,
-      icon: <MdSupervisedUserCircle />,
+      icon: <LucideIcon name="Wrench" />,
     },
     {
       id: "employmentStartYr",
       title: `${DATA_START_YR} Employment`,
       txt: employment_start_yr.toLocaleString(),
-      icon: <MdOutlineDirectionsWalk />,
+      icon: <LucideIcon name="CalendarCheck" />,
     },
     {
       id: "employmentEndYr",
       title: `Predicted ${DATA_END_YR} Employment`,
       txt: employment_end_yr.toLocaleString(),
-      icon: <MdOutlineTransferWithinAStation />,
+      icon: <LucideIcon name="CalendarClock" />,
     },
     {
       id: "employmentChange",
       title: `Predicted change in Employment ${DATA_START_YR} - ${DATA_END_YR}`,
       txt: employment_change_percent,
-      icon: <BiTrendingUp />,
+      icon: <LucideIcon name="TrendingUpDown" />,
     },
   ] as const;
 
@@ -253,7 +246,7 @@ const SelectedJob: React.FC = () => {
     setIsJobModal(true);
   }, []);
 
-  const handleExploreRelatedCareers = () => {
+  const handleExploreRelatedCareers = async () => {
     if (!selectedJob) return;
 
     const socCodesStr = searchParams.get(SOC_CODES_PARAM_NAME);
@@ -270,8 +263,30 @@ const SelectedJob: React.FC = () => {
       }
     );
 
-    router.push(url, undefined, { scroll: false });
-    setIsJobModal(false);
+    const isSamePath = router.asPath === url;
+    const scrollToJobs = () => {
+      const target = document.getElementById(JOBVIZ_BRACKET_SEARCH_ID);
+      if (target) {
+        const rect = target.getBoundingClientRect();
+        const absoluteTop = rect.top + window.pageYOffset;
+        window.scrollTo({
+          top: absoluteTop - 48,
+          behavior: "smooth",
+        });
+      }
+    };
+
+    try {
+      if (!isSamePath) {
+        await router.push(url, undefined, { scroll: false });
+      }
+    } catch (e) {
+      console.error("Failed to navigate to related careers", e);
+    } finally {
+      setIsJobModal(false);
+      setSelectedJob(null);
+      requestAnimationFrame(scrollToJobs);
+    }
   };
 
   return (
@@ -327,34 +342,6 @@ const SelectedJob: React.FC = () => {
             Explore related careers
           </button>
         </section>
-        {wasSelectedFromJobToursCard && (
-          <section className="mt-4">
-            <Button
-              classNameStr="text-decoration-underline no-link-decoration pointer no-btn-styles"
-              handleOnClick={() => {
-                const element = document.getElementById(
-                  JOBVIZ_BRACKET_SEARCH_ID
-                );
-
-                if (!element) {
-                  console.error(
-                    `Element with id ${JOBVIZ_BRACKET_SEARCH_ID} not found.`
-                  );
-                  return;
-                }
-
-                element.scrollIntoView({
-                  behavior: "smooth",
-                  block: "center",
-                });
-
-                handleOnHide();
-              }}
-            >
-              Explore related careers
-            </Button>
-          </section>
-        )}
         <section className="flex-column flex-sm-row d-flex align-items-center justify-content-between pt-2 mt-3 border-top">
           <div
             className={`d-flex align-items-center justify-content-center text-sm-start text-center ${
