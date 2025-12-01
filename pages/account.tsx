@@ -28,6 +28,7 @@ import { SELECTED_GP_PLUS_BILLING_TYPE } from './gp-plus';
 import { ILocalStorage } from '../types/global';
 import useOutsetaInputValidation from '../customHooks/useOutsetaInputValidation';
 import { useHandleGpPlusCheckoutSessionModal } from '../customHooks/useHandleGpPlusCheckoutSessionModal';
+import EmailNewsletterSignUp from '../components/User/Modals/EmailNewsletterSignUp';
 
 export const getUserAccountData = async (
   token: string,
@@ -663,6 +664,7 @@ const AccountPg: React.FC = () => {
       </div>
       <AboutUserModal />
       <ThankYouModal />
+      <EmailNewsletterSignUp show />
       <Modal
         show={isGpPlusSignUpModalDisplayed}
         onShow={() => {
