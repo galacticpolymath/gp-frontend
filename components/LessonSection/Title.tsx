@@ -1,8 +1,5 @@
-/* eslint-disable quotes */
-/* eslint-disable indent */
-
 import { format } from "date-fns";
-import { useMemo } from "react";
+import React, { useMemo } from "react";
 import RichText from "../RichText";
 import Image from "next/image";
 import { useRouter } from "next/router";
@@ -34,7 +31,7 @@ export interface ITitleProps extends Partial<TUnitOverviewPropsForUI> {
   lessonUrl: string;
 }
 
-const Title = (props: ITitleProps) => {
+const Title: React.FC<ITitleProps> = (props) => {
   const {
     availLocs,
     locale,
@@ -50,38 +47,6 @@ const Title = (props: ITitleProps) => {
     lessonUrl,
   } = props;
   const router = useRouter();
-  let sponsors = useMemo(() => {
-    let sponsorsLinkTxts = [];
-
-    if (SponsoredBy && typeof SponsoredBy === "string") {
-      let urls = SponsoredBy.match(/\((.*?)\)/g);
-      const urlStrs = urls?.length
-        ? urls.map((txt) => txt.replace(/\(|\)/g, ""))
-        : urls;
-      let sponsorByTxtArr = SponsoredBy.match(/\[(.*?)\]/g);
-      const sponsorByTxtStrsArr = sponsorByTxtArr?.length
-        ? sponsorByTxtArr.map((txt) => txt.replace(/\[|\]/g, ""))
-        : [];
-
-      for (let index = 0; index < sponsorByTxtStrsArr.length; index++) {
-        let url = urlStrs?.[index];
-
-        if (!url) {
-          continue;
-        }
-
-        let sponsorByTxt = sponsorByTxtStrsArr[index];
-
-        sponsorsLinkTxts.push(`[${sponsorByTxt}](${url})`);
-      }
-    }
-
-    if (!sponsorsLinkTxts.length) {
-      return [SponsoredBy];
-    }
-
-    return sponsorsLinkTxts;
-  }, []);
 
   const handleBtnClick = () => {
     if (!document.getElementById("versions-container")?.offsetParent) {
