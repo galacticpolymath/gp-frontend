@@ -1,5 +1,5 @@
 import React from "react";
-import { Modal, Button } from "react-bootstrap";
+import { Modal, Button, CloseButton } from "react-bootstrap";
 import Image from "next/image";
 import { RiMailSendFill } from "react-icons/ri";
 import Wave from "react-wavify";
@@ -112,6 +112,7 @@ const EmailNewsletterSignUp: React.FC<EmailNewsletterSignUpProps> = ({
     ],
   } = useModalContext();
   const { userEmailNewsLetterStatus } = emailNewsletterSignUpModal ?? {};
+  const wasDoubleOptEmailSent = userEmailNewsLetterStatus === "double-opt-sent";
 
   const handleResendClick = () => {
     // Resend logic will go here
@@ -125,51 +126,74 @@ const EmailNewsletterSignUp: React.FC<EmailNewsletterSignUpProps> = ({
       size="lg"
       className="email-newsletter-modal"
     >
-      <div
-        style={{ borderTopLeftRadius: "1em", borderTopRightRadius: "1em" }}
-        className="gp-plus-modal-gradient position-relative"
+      {/* <Button
+        variant="link"
+        className="position-absolute text-dark"
+        onClick={onHide}
+        style={{
+          top: "1rem",
+          right: "1rem",
+          fontSize: "1.5rem",
+          textDecoration: "none",
+          zIndex: 1002,
+        }}
       >
-        <div
+        &times;
+      </Button> */}
+      <div className="position-relative">
+        <CloseButton
+          className="position-absolute"
           style={{
-            zIndex: 1000,
-            left: "50%",
-            transform: "translate(-50%, 0%)",
-          }}
-          className="position-absolute d-flex flex-column justify-content-center align-items-center pt-2"
-        >
-          <div className="d-flex justify-content-center mb-2">
-            <Image
-              src="/GP_bubbleLogo300px.png"
-              alt="Galactic Polymath Logo"
-              width={120}
-              height={120}
-              className="img-fluid"
-            />
-          </div>
-
-          {/* <h2 className="mb-3 fw-bold">Oops!</h2> */}
-          <JoinMailingListTitle
-            emailStatus={userEmailNewsLetterStatus ?? "double-opt-sent"}
-          />
-        </div>
-        <Wave
-          fill="white"
-          paused
-          style={{
-            display: "flex",
-            borderBottom: "solid 1px white",
-          }}
-          options={{
-            height: 60,
-            amplitude: 450,
-            speed: 0.15,
-            points: 2,
+            top: "5px",
+            right: "5px",
+            zIndex: 1001,
           }}
         />
-      </div>
-      <Modal.Body className="text-center p-4 mt-2">
-        <UserNotOnMailingListCopy userEmailNewsLetterStatus="not-on-list" />
-        {/* <section className="w-100 d-flex justify-content-center align-items-center flex-column">
+        <div
+          style={{ borderTopLeftRadius: "1em", borderTopRightRadius: "1em" }}
+          className="gp-plus-modal-gradient position-relative"
+        >
+          <div
+            style={{
+              zIndex: 1000,
+              left: "50%",
+              transform: "translate(-50%, 0%)",
+            }}
+            className="position-absolute d-flex flex-column justify-content-center align-items-center pt-2"
+          >
+            <div className="d-flex justify-content-center mb-2">
+              <Image
+                src="/GP_bubbleLogo300px.png"
+                alt="Galactic Polymath Logo"
+                width={120}
+                height={120}
+                className="img-fluid"
+              />
+            </div>
+
+            {/* <h2 className="mb-3 fw-bold">Oops!</h2> */}
+            <JoinMailingListTitle
+              emailStatus={userEmailNewsLetterStatus ?? "double-opt-sent"}
+            />
+          </div>
+          <Wave
+            fill="white"
+            paused
+            style={{
+              display: "flex",
+              borderBottom: "solid 1px white",
+            }}
+            options={{
+              height: 60,
+              amplitude: 450,
+              speed: 0.15,
+              points: 2,
+            }}
+          />
+        </div>
+        <Modal.Body className="text-center p-4 mt-2 position-relative">
+          <UserNotOnMailingListCopy userEmailNewsLetterStatus="not-on-list" />
+          {/* <section className="w-100 d-flex justify-content-center align-items-center flex-column">
           <p
             style={{ textWrap: "pretty", maxWidth: "29em" }}
             className="mt-2 text-muted mb-0 text-center lh-lg"
@@ -185,19 +209,20 @@ const EmailNewsletterSignUp: React.FC<EmailNewsletterSignUpProps> = ({
           </p>
         </section> */}
 
-        <Button
-          onClick={handleResendClick}
-          className="btn btn-primary px-4 py-2 mt-4 btn-scale-on-hover"
-          style={{
-            backgroundColor: "#007BFF",
-            borderColor: "#007BFF",
-            borderRadius: "6px",
-            fontWeight: "500",
-          }}
-        >
-          Resend Invite
-        </Button>
-      </Modal.Body>
+          <Button
+            onClick={handleResendClick}
+            className="btn btn-primary px-4 py-2 mt-4 btn-scale-on-hover"
+            style={{
+              backgroundColor: "#007BFF",
+              borderColor: "#007BFF",
+              borderRadius: "6px",
+              fontWeight: "500",
+            }}
+          >
+            {wasDoubleOptEmailSent ? "Resend Invite" : "Send Invite"}
+          </Button>
+        </Modal.Body>
+      </div>
     </Modal>
   );
 };
