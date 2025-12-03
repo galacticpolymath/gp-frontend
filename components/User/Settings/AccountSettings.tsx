@@ -1,8 +1,3 @@
-/* eslint-disable react/jsx-curly-brace-presence */
-/* eslint-disable quotes */
- 
-/* eslint-disable no-console */
- 
 import {
   Modal,
   ModalBody,
@@ -31,7 +26,11 @@ import { useRouter } from "next/router";
 import CustomLink from "../../CustomLink";
 import { CONTACT_SUPPORT_EMAIL } from "../../../globalVars";
 import Image from "next/image";
-import { getLocalStorageItem, setLocalStorageItem } from "../../../shared/fns";
+import {
+  getLocalStorageItem,
+  setLocalStorageItem,
+  setSessionStorageItem,
+} from "../../../shared/fns";
 import useSiteSession from "../../../customHooks/useSiteSession";
 import { revokeGoogleAuthToken } from "../Login/LoginContainerForNavbar";
 import { TUserSchemaForClient } from "../../../backend/models/User/types";
@@ -102,10 +101,9 @@ const AccountSettings = () => {
       return;
     }
 
-    const isUserSignedIntoGpPlus =
-      window?.Outseta
-        ? !!(window as any).Outseta.getAccessToken()
-        : false;
+    const isUserSignedIntoGpPlus = window?.Outseta
+      ? !!(window as any).Outseta.getAccessToken()
+      : false;
     const { wasSuccessful: didDeleteUserSuccessfully, errType } =
       await sendDeleteUserReq(token);
     const wasUserNotFound = errType === "userNotFound";
@@ -174,10 +172,16 @@ const AccountSettings = () => {
     }
 
     if (userAccountPrevVals?.isOnMailingList !== accountForm.isOnMailingList) {
+      console.log(
+        `mailing list status was set to ${
+          accountForm.isOnMailingList ? "on list" : "not on list"
+        }`
+      );
+
       additionalReqBodyProps = {
         ...additionalReqBodyProps,
         willUpdateMailingListStatusOnly: true,
-        willSendEmailListingSubConfirmationEmail: true,
+        willSendEmailListingSubConfirmationEmail: accountForm.isOnMailingList,
         clientUrl: `${window.location.origin}/mailing-list-confirmation`,
       };
     }
@@ -189,7 +193,7 @@ const AccountSettings = () => {
       token
     );
 
-    console.log("responseBody, sup there: ", responseBody);
+    console.log("responseBody: ", responseBody);
 
     if (!responseBody) {
       setTimeout(() => {
@@ -197,6 +201,10 @@ const AccountSettings = () => {
         setIsSavingChangesSpinnerOn(false);
       }, 250);
       return;
+    }
+
+    if (responseBody.wasSuccessful && accountForm.isOnMailingList === false) {
+      setSessionStorageItem("didOptOutOfMailingList", true);
     }
 
     setTimeout(() => {

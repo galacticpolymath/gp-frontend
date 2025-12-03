@@ -1,5 +1,5 @@
-import React from "react";
-import { Modal, Button, CloseButton } from "react-bootstrap";
+import React, { ReactNode, useRef, useState } from "react";
+import { Modal, Button, CloseButton, Form } from "react-bootstrap";
 import Image from "next/image";
 import { RiMailSendFill } from "react-icons/ri";
 import Wave from "react-wavify";
@@ -7,12 +7,18 @@ import {
   TUserEmailNewLetterStatus,
   useModalContext,
 } from "../../../providers/ModalProvider";
+import { BtnWithSpinner } from "../../General/BtnWithSpinner";
+import { VALID_ORIGINS } from "../../../shared/constants";
+import { updateUser } from "../../../apiServices/user/crudFns";
+import useSiteSession from "../../../customHooks/useSiteSession";
+import { toast } from "react-toastify";
+import { setSessionStorageItem } from "../../../shared/fns";
 
 interface IJoinMailingListTitle {
   emailStatus: TUserEmailNewLetterStatus;
 }
 
-const JoinMailingListTitle: React.FC<IJoinMailingListTitle> = ({
+const JoinMailingListTitleModalTitle: React.FC<IJoinMailingListTitle> = ({
   emailStatus,
 }) => {
   return (
@@ -47,7 +53,7 @@ interface EmailNewsletterSignUpProps {
 
 interface IUserNotOnMailingListCopyTxt {
   intro: string;
-  callToAction: string;
+  callToAction: string | ReactNode;
 }
 
 const USER_NOT_ON_MAILING_LIST_COPY_TXT: Record<
@@ -56,12 +62,22 @@ const USER_NOT_ON_MAILING_LIST_COPY_TXT: Record<
 > = {
   "double-opt-sent": {
     intro: "You signed up for emails, but haven't confirmed your email.",
-    callToAction:
-      "To make sure you get all our latest updates and free stuff, check your spam for an email or click the button below to resend the invite.",
+    callToAction: (
+      <>
+        To make sure you get all our latest updates and free stuff, check your
+        spam for an email or click <i>Resend Invite</i> to receive another
+        invitation email.
+      </>
+    ),
   },
   "not-on-list": {
-    intro: "You're missing on our latest updates and free stuff!",
-    callToAction: "To join our monthly newsletter, click the button below.",
+    intro: "You're missing our latest updates and free stuff!",
+    callToAction: (
+      <>
+        To join our monthly newsletter, click <i>Send Invite</i> to receive an
+        invitation email.
+      </>
+    ),
   },
 };
 
@@ -69,7 +85,7 @@ interface IUserNotOnMailingListCopyCompProps {
   userEmailNewsLetterStatus: TUserEmailNewLetterStatus;
 }
 
-const UserNotOnMailingListCopy: React.FC<
+const UserNotOnMailingListCopyTxt: React.FC<
   IUserNotOnMailingListCopyCompProps
 > = ({ userEmailNewsLetterStatus }) => {
   const userNotOnMailingListCopy =
@@ -101,45 +117,152 @@ const UserNotOnMailingListCopy: React.FC<
   );
 };
 
-const EmailNewsletterSignUp: React.FC<EmailNewsletterSignUpProps> = ({
-  show,
-  onHide,
-}) => {
+const EmailNewsletterSignUp: React.FC = () => {
   const {
     _emailNewsletterSignUpModal: [
       emailNewsletterSignUpModal,
       setEmailNewsletterSignUpModal,
     ],
   } = useModalContext();
-  const { userEmailNewsLetterStatus } = emailNewsletterSignUpModal ?? {};
+  const { token, user } = useSiteSession();
+  const {
+    userEmailNewsLetterStatus,
+    isDisplayed,
+    handleOnHide: onHide,
+  } = emailNewsletterSignUpModal ?? {};
   const wasDoubleOptEmailSent = userEmailNewsLetterStatus === "double-opt-sent";
+  const [
+    willNotShowEmailNewsLetterSignUpModalAgin,
+    setWillNotShowEmailNewsLetterSignUpModalAgain,
+  ] = useState(false);
+  const wasUserAddedToMailingListRef = useRef(false);
+  const [isBtnSpinnerDisplayed, setIsBtnSpinnerDisplayed] = useState(false);
 
-  const handleResendClick = () => {
-    // Resend logic will go here
+  const handleSendInviteBtnClick = async () => {
+    try {
+      setIsBtnSpinnerDisplayed(true);
+
+      if (!VALID_ORIGINS.has(window.location.origin)) {
+        throw new Error(
+          `DEVELOPER ERROR: The origin ${window.location.origin} is not supported`
+        );
+      }
+
+      const additionalReqBodyProps = {
+        willUpdateMailingListStatusOnly: true,
+        willSendEmailListingSubConfirmationEmail: true,
+        clientUrl: `${window.location.origin}/mailing-list-confirmation`,
+      };
+      const responseBody = await updateUser(
+        undefined,
+        {},
+        additionalReqBodyProps,
+        token
+      );
+
+      console.log("Response body, update user: ", responseBody);
+
+      if (!responseBody?.wasSuccessful) {
+        throw new Error("Unable to send invite to the target user.");
+      }
+
+      wasUserAddedToMailingListRef.current = true;
+
+      setTimeout(() => {
+        toast.info(
+          <span style={{ fontSize: "14px" }}>
+            Invite sent to <i>{user.email}</i>. Please check your inbox.
+          </span>,
+          {
+            position: "top-center",
+          }
+        );
+      }, 250);
+
+      setEmailNewsletterSignUpModal((state) => {
+        if (!state) {
+          return state;
+        }
+
+        return {
+          ...state,
+          isDisplayed: false,
+        };
+      });
+    } catch (error) {
+      console.log("An error has occurred: ", error);
+
+      toast.error(
+        <span style={{ fontSize: "14px" }}>
+          Failed to send mailing list invite. Please try again or refresh the
+          page.
+        </span>,
+        {
+          position: "top-center",
+        }
+      );
+    } finally {
+      setIsBtnSpinnerDisplayed(false);
+    }
+  };
+
+  if (!userEmailNewsLetterStatus) {
+    console.error(
+      "DEVELOPER ERROR: Unable to find user email newsletter status. Check the 'emailNewsletterSignUpModal' in the modal provider file."
+    );
+    return null;
+  }
+
+  const handleOnClose = async () => {
+    if (onHide) {
+      onHide();
+    }
+
+    console.log(
+      "Will not show email newsletter sign up modal again: ",
+      willNotShowEmailNewsLetterSignUpModalAgin
+    );
+
+    if (willNotShowEmailNewsLetterSignUpModalAgin) {
+      setSessionStorageItem("canShowEmailNewsLetterSignUpModal", false);
+      const responseBody = await updateUser(
+        undefined,
+        {
+          willNotShowEmailNewsLetterSignUpModal: true,
+        },
+        {},
+        token
+      );
+
+      console.log("responseBody, bacon: ", responseBody);
+
+      if (!responseBody?.wasSuccessful) {
+        console.error(
+          "Unable to set 'willNotShowEmailNewsLetterSignUpModal' as true."
+        );
+      }
+    }
+
+    setEmailNewsletterSignUpModal((state) => {
+      if (!state) {
+        return state;
+      }
+
+      return {
+        ...state,
+        isDisplayed: false,
+      };
+    });
   };
 
   return (
     <Modal
-      show={show}
-      onHide={onHide}
+      show={isDisplayed}
+      onHide={handleOnClose}
       centered
       size="lg"
       className="email-newsletter-modal"
     >
-      {/* <Button
-        variant="link"
-        className="position-absolute text-dark"
-        onClick={onHide}
-        style={{
-          top: "1rem",
-          right: "1rem",
-          fontSize: "1.5rem",
-          textDecoration: "none",
-          zIndex: 1002,
-        }}
-      >
-        &times;
-      </Button> */}
       <div className="position-relative">
         <CloseButton
           className="position-absolute"
@@ -148,6 +271,7 @@ const EmailNewsletterSignUp: React.FC<EmailNewsletterSignUpProps> = ({
             right: "5px",
             zIndex: 1001,
           }}
+          onClick={handleOnClose}
         />
         <div
           style={{ borderTopLeftRadius: "1em", borderTopRightRadius: "1em" }}
@@ -170,9 +294,7 @@ const EmailNewsletterSignUp: React.FC<EmailNewsletterSignUpProps> = ({
                 className="img-fluid"
               />
             </div>
-
-            {/* <h2 className="mb-3 fw-bold">Oops!</h2> */}
-            <JoinMailingListTitle
+            <JoinMailingListTitleModalTitle
               emailStatus={userEmailNewsLetterStatus ?? "double-opt-sent"}
             />
           </div>
@@ -192,35 +314,53 @@ const EmailNewsletterSignUp: React.FC<EmailNewsletterSignUpProps> = ({
           />
         </div>
         <Modal.Body className="text-center p-4 mt-2 position-relative">
-          <UserNotOnMailingListCopy userEmailNewsLetterStatus="not-on-list" />
-          {/* <section className="w-100 d-flex justify-content-center align-items-center flex-column">
-          <p
-            style={{ textWrap: "pretty", maxWidth: "29em" }}
-            className="mt-2 text-muted mb-0 text-center lh-lg"
-          >
-            You signed up for emails, but haven't confirmed your email.
-          </p>
-          <p
-            style={{ textWrap: "pretty", maxWidth: "29em" }}
-            className="text-muted mb-0 text-center lh-lg"
-          >
-            To make sure you get all our latest updates and free stuff, check
-            your spam for an email or click here to resend.
-          </p>
-        </section> */}
-
-          <Button
-            onClick={handleResendClick}
-            className="btn btn-primary px-4 py-2 mt-4 btn-scale-on-hover"
-            style={{
-              backgroundColor: "#007BFF",
-              borderColor: "#007BFF",
-              borderRadius: "6px",
-              fontWeight: "500",
-            }}
-          >
-            {wasDoubleOptEmailSent ? "Resend Invite" : "Send Invite"}
-          </Button>
+          <UserNotOnMailingListCopyTxt
+            userEmailNewsLetterStatus={userEmailNewsLetterStatus}
+          />
+          <div className="d-flex justify-content-center align-items-center">
+            <Form.Check
+              type="checkbox"
+              id="dont-show-again"
+              label="Don't remind me again."
+              checked={willNotShowEmailNewsLetterSignUpModalAgin}
+              onChange={(event) =>
+                setWillNotShowEmailNewsLetterSignUpModalAgain(
+                  event.target.checked
+                )
+              }
+              className="mt-3 text-muted"
+              style={{ fontSize: "0.9rem", width: "fit-content" }}
+            />
+          </div>
+          <div className="d-flex justify-content-center align-items-center gap-2">
+            <Button
+              onClick={handleOnClose}
+              className="btn btn-primary px-4 py-2 mt-4"
+              style={{
+                borderRadius: "6px",
+                fontWeight: "500",
+                borderColor: "gray",
+                backgroundColor: "gray",
+                textTransform: "none",
+              }}
+            >
+              Close
+            </Button>
+            <BtnWithSpinner
+              wasClicked={isBtnSpinnerDisplayed}
+              onClick={handleSendInviteBtnClick}
+              className="btn btn-primary px-4 py-2 mt-4 btn-scale-on-hover"
+              style={{
+                backgroundColor: "#007BFF",
+                borderColor: "#007BFF",
+                borderRadius: "6px",
+                fontWeight: "500",
+                minWidth: "190px",
+              }}
+            >
+              {wasDoubleOptEmailSent ? "Resend Invite" : "Send Invite"}
+            </BtnWithSpinner>
+          </div>
         </Modal.Body>
       </div>
     </Modal>

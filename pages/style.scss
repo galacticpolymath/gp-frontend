@@ -1253,3 +1253,8 @@ img {
 .btn-scale-on-hover:hover {
   transform: scale(1.05);
 }
+
+#dont-show-again {
+  box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.5);
+  border-color: grey;
+}

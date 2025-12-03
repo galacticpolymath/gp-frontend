@@ -72,7 +72,7 @@ export interface IUserSchemaBaseProps {
   lastSignIn?: Date;
 }
 
-// user schema v1, has the deprecated fields and the v2 fields
+// user schema v1 has the deprecated fields and the v2 fields
 export interface IUserSchema extends TAboutUserForm, IUserSchemaBaseProps {}
 
 export type TOutseta = {
@@ -100,6 +100,7 @@ export type TUserSchemaV2 = IUserSchemaBaseProps &
     unitGDriveLessons: IUnitGDriveLesson[];
     gdriveAuthEmails: string[];
     willShowGpPlusCopyLessonHelperModal: boolean;
+    willNotShowEmailNewsLetterSignUpModal: boolean;
   };
 
 type TGpPlusMembershipStatus = Awaited<ReturnType<typeof getGpPlusMembership>>;

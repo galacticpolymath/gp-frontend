@@ -12,13 +12,12 @@ import { IItemForClient, TUseStateReturnVal } from "../types/global";
 export const ModalContext = createContext<IModalProviderValue | null>(null);
 
 interface IModal {
-  handleOnHide: () => void;
+  handleOnHide?: () => void;
   isDisplayed: boolean;
 }
 
 export interface INotifyModalVal extends IModal {
   isDisplayed: boolean;
-  handleOnHide: () => void;
   bodyTxt: string | ReactNode;
   headerTxt: string;
   closeBtnTxt?: string;
@@ -27,7 +26,7 @@ export interface INotifyModalVal extends IModal {
 export type TUserEmailNewLetterStatus = "double-opt-sent" | "not-on-list";
 
 export interface IEmailNewsletterSignUpModal extends IModal {
-  userEmailNewsLetterStatus: TUserEmailNewLetterStatus;
+  userEmailNewsLetterStatus?: TUserEmailNewLetterStatus;
 }
 
 export const defautlNotifyModalVal: INotifyModalVal = {
@@ -72,7 +71,7 @@ export interface IModalProviderValue {
   _isCopyLessonHelperModalDisplayed: TUseStateReturnVal<boolean>;
   _lessonItemModal: TUseStateReturnVal<ILessonItemsModal>;
   _jobToursModalCssProps: TUseStateReturnVal<CSSProperties>;
-  _emailNewsletterSignUpModal: TUseStateReturnVal<TEmailNewsletterSignUpModal | null>;
+  _emailNewsletterSignUpModal: TUseStateReturnVal<TEmailNewsletterSignUpModal>;
 }
 
 type TSelectedJobModal = Partial<{
@@ -144,7 +143,9 @@ export const ModalProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const [selectedJob, setSelectedJob] = useState<ISelectedJob | null>(null);
   const [isJobModalOn, setIsJobModalOn] = useState(false);
   const [emailNewsletterSignUpModal, setEmailNewsletterSignUpModal] =
-    useState<TEmailNewsletterSignUpModal | null>(null);
+    useState<TEmailNewsletterSignUpModal>({
+      isDisplayed: false,
+    });
   const [isCreatingGpPlusAccount, setIsCreatingGpPlusAccount] = useState(false);
   const [isDownloadModalInfoOn, setIsDownloadModalInfoOn] = useState(false);
   const [isLoginModalDisplayed, setIsLoginModalDisplayed] = useState(false);

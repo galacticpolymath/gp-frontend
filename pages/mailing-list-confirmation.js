@@ -16,7 +16,7 @@ const OnEmailListingCheckResultUI = ({
     <span className="mt-2">
       {resultTxt}
       <br />
-      <span className="mt-4">
+      <span className="mt-5 pt-2">
         Click{' '}
         <CustomLink hrefStr={href} className="color-primary underline-on-hover">
           here
