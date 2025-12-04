@@ -517,27 +517,28 @@ export default function JobVizDesignPreview() {
             <div className={styles.cardCluster}>
               {featuredCategories.map((cat) => (
                 <article key={cat.soc_code} className={styles.categoryCard}>
-                  <div className={styles.cardHeader}>
-                    <div className={styles.iconBadge}>
+                  <div className={styles.categoryTop}>
+                    <div className={styles.categoryIconBadge}>
                       <LucideIcon name={getIconNameForNode(cat)} />
                     </div>
+                    <h3 className={styles.categoryTitle}>
+                      {cat.soc_title ?? cat.title}
+                    </h3>
+                  </div>
+                  <div className={styles.categoryMetaRow}>
                     <div>
-                      <h3 className={styles.cardTitle}>
-                        {cat.soc_title ?? cat.title}
-                      </h3>
-                      <p className={styles.cardDescriptor}>
-                        {summarizeDefinition(cat.def)}
-                      </p>
+                      <span className={styles.categoryLabel}>Jobs</span>
+                      <strong className={styles.categoryValue}>
+                        {formatNumber(getDescendantLineItems(cat))}
+                      </strong>
+                    </div>
+                    <div>
+                      <span className={styles.categoryLabel}>Growth</span>
+                      <strong className={styles.categoryValue}>
+                        {formatPercent(cat.employment_change_percent)}
+                      </strong>
                     </div>
                   </div>
-                  <footer className={styles.cardFooter}>
-                    <span>
-                      {formatNumber(getDescendantLineItems(cat))} line-item roles
-                    </span>
-                    <span className={styles.cardAction}>
-                      {formatCurrency(cat.median_annual_wage)}
-                    </span>
-                  </footer>
                 </article>
               ))}
             </div>
