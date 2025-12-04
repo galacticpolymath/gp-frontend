@@ -10,12 +10,23 @@ import React, {
 import { IItemForClient, TUseStateReturnVal } from "../types/global";
 
 export const ModalContext = createContext<IModalProviderValue | null>(null);
-export interface INotifyModalVal {
+
+interface IModal {
+  handleOnHide?: () => void;
+  isDisplayed: boolean;
+}
+
+export interface INotifyModalVal extends IModal {
   isDisplayed: boolean;
   bodyTxt: string | ReactNode;
   headerTxt: string;
   closeBtnTxt?: string;
-  handleOnHide: () => void;
+}
+
+export type TUserEmailNewLetterStatus = "double-opt-sent" | "not-on-list";
+
+export interface IEmailNewsletterSignUpModal extends IModal {
+  userEmailNewsLetterStatus?: TUserEmailNewLetterStatus;
 }
 
 export const defautlNotifyModalVal: INotifyModalVal = {
@@ -38,6 +49,8 @@ export interface ILessonItemsModal {
   copyLessonBtnRef: RefObject<HTMLButtonElement | null> | null;
 }
 
+type TEmailNewsletterSignUpModal = IEmailNewsletterSignUpModal;
+
 export interface IModalProviderValue {
   _customModalFooter: TUseStateReturnVal<null | ReactNode>;
   _isAccountModalMobileOn: TUseStateReturnVal<boolean>;
@@ -58,6 +71,7 @@ export interface IModalProviderValue {
   _isCopyLessonHelperModalDisplayed: TUseStateReturnVal<boolean>;
   _lessonItemModal: TUseStateReturnVal<ILessonItemsModal>;
   _jobToursModalCssProps: TUseStateReturnVal<CSSProperties>;
+  _emailNewsletterSignUpModal: TUseStateReturnVal<TEmailNewsletterSignUpModal>;
 }
 
 type TSelectedJobModal = Partial<{
@@ -128,6 +142,10 @@ export interface ISelectedJobDeprecatedProps {
 export const ModalProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const [selectedJob, setSelectedJob] = useState<ISelectedJob | null>(null);
   const [isJobModalOn, setIsJobModalOn] = useState(false);
+  const [emailNewsletterSignUpModal, setEmailNewsletterSignUpModal] =
+    useState<TEmailNewsletterSignUpModal>({
+      isDisplayed: false,
+    });
   const [isCreatingGpPlusAccount, setIsCreatingGpPlusAccount] = useState(false);
   const [isDownloadModalInfoOn, setIsDownloadModalInfoOn] = useState(false);
   const [isLoginModalDisplayed, setIsLoginModalDisplayed] = useState(false);
@@ -169,6 +187,10 @@ export const ModalProvider: React.FC<PropsWithChildren> = ({ children }) => {
   );
   const value: IModalProviderValue = {
     _jobToursModalCssProps: [jobToursModalCssProps, setJobToursModalCssProps],
+    _emailNewsletterSignUpModal: [
+      emailNewsletterSignUpModal,
+      setEmailNewsletterSignUpModal,
+    ],
     _isCopyLessonHelperModalDisplayed: [
       isCopyLessonHelperModalDisplayed,
       setIsCopyLessonHelperModalDisplayed,

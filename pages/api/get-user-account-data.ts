@@ -19,6 +19,8 @@ import {
   getGpPlusMembership,
   TAccountStageLabel,
 } from "../../backend/services/outsetaServices";
+import { findMailingListConfirmationByEmail, findMailingListConfirmationsByEmails } from "../../backend/services/mailingListConfirmationServices";
+import { TMailingListConfirmation } from "../../backend/models/MailingListConfirmation/types";
 
 export const HAS_MEMBERSHIP_STATUSES: Set<TAccountStageLabel> = new Set([
   "Cancelling",
@@ -39,6 +41,8 @@ const PROJECTIONS: Partial<
   isTeacher: 1,
   firstName: 1,
   lastName: 1,
+  willNotShowEmailNewsLetterSignUpModal: 1,
+  mailingListConfirmationEmailId: 1,
   name: 1,
   referredByDefault: 1,
   referredByOther: 1,
@@ -107,6 +111,17 @@ export default async function handler(
         ),
         gpPlusSubscription: gpPlusMembership,
       };
+    }
+
+    const mailingListConfirmation = (await findMailingListConfirmationByEmail(email) as (TMailingListConfirmation | null));
+
+    console.log("mailingListConfirmation: ", mailingListConfirmation);
+
+    if(mailingListConfirmation?._id){
+      userAccount = {
+        ...userAccount,
+        mailingListConfirmationEmailId: mailingListConfirmation._id
+      }
     }
 
     if (!request.query.willNotRetrieveMailingListStatus) {

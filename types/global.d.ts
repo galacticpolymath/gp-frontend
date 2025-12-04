@@ -189,6 +189,8 @@ export interface ISessionStorage{
   wasWelcomeNewUserModalShown: boolean
   isGpPlusUser: boolean
   didJobVizPgInitialRendered: boolean
+  canShowEmailNewsLetterSignUpModal: boolean
+  didOptOutOfMailingList: boolean
 }
 
 export interface ILocalStorage extends Pick<TUserSchemaV2, 'willShowGpPlusCopyLessonHelperModal'>{
