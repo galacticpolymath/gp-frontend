@@ -1,5 +1,5 @@
 import Head from "next/head";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { LucideIcon } from "../../components/JobViz/LucideIcon";
 import {
   jobVizData,
@@ -324,7 +324,47 @@ export default function JobVizDesignPreview() {
   const [assignmentCollapsed, setAssignmentCollapsed] = useState(false);
   const [showWageInfo, setShowWageInfo] = useState(false);
   const [infoModal, setInfoModal] = useState<InfoModalType | null>(null);
-  const activeInfoModal = infoModal ? infoModalContent[infoModal] : null;
+  const [modalHistory, setModalHistory] = useState<InfoModalType | null>(null);
+  const [isModalClosing, setIsModalClosing] = useState(false);
+  const closeModalTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const activeInfoModal = modalHistory ? infoModalContent[modalHistory] : null;
+
+  const shouldRenderInfoModal =
+    (infoModal !== null || isModalClosing) && !!activeInfoModal;
+
+  const triggerHaptic = (duration = 14) => {
+    if (typeof navigator !== "undefined" && "vibrate" in navigator) {
+      navigator.vibrate(duration);
+    }
+  };
+
+  const openInfoModal = (type: InfoModalType) => {
+    setModalHistory(type);
+    setInfoModal(type);
+    setIsModalClosing(false);
+    triggerHaptic();
+  };
+
+  const closeInfoModal = () => {
+    triggerHaptic(6);
+    setIsModalClosing(true);
+    setInfoModal(null);
+    if (closeModalTimeoutRef.current) {
+      clearTimeout(closeModalTimeoutRef.current);
+    }
+    closeModalTimeoutRef.current = setTimeout(() => {
+      setIsModalClosing(false);
+      closeModalTimeoutRef.current = null;
+    }, 280);
+  };
+
+  useEffect(() => {
+    return () => {
+      if (closeModalTimeoutRef.current) {
+        clearTimeout(closeModalTimeoutRef.current);
+      }
+    };
+  }, []);
 
   return (
     <>
@@ -351,7 +391,10 @@ export default function JobVizDesignPreview() {
                   className={`${styles.toneButton} ${
                     tone === option ? styles.toneButtonActive : ""
                   }`}
-                  onClick={() => setTone(option)}
+                  onClick={() => {
+                    setTone(option);
+                    triggerHaptic();
+                  }}
                 >
                   {option === "calm" ? "Calm blues" : "Burst accents"}
                 </button>
@@ -407,53 +450,69 @@ export default function JobVizDesignPreview() {
               className={styles.infoButton}
               aria-expanded={showWageInfo}
               aria-controls="wage-tier-explainer"
-              onClick={() => setShowWageInfo((prev) => !prev)}
+              onClick={() => {
+                setShowWageInfo((prev) => !prev);
+                triggerHaptic();
+              }}
             >
               <LucideIcon name="Info" />
               Wage tag explainer
             </button>
           </header>
-          {showWageInfo && (
-            <div className={styles.tierInfoCard} id="wage-tier-explainer">
-              <div className={styles.tierInfoHeader}>
-                <h3>What does median wage mean?</h3>
-                <button
-                  type="button"
-                  className={styles.closeInfoButton}
-                  onClick={() => setShowWageInfo(false)}
-                  aria-label="Close wage tag explainer"
-                >
-                  <LucideIcon name="X" />
-                </button>
-              </div>
-              <p>
-                Median wage is the pay right in the middle when all salaries are
-                lined up from lowest to highest. It tells us more than an average,
-                because a few super-high earners can’t skew it.
-              </p>
-              <ul className={styles.tierList}>
-                {wageTiers.map((tier) => (
-                  <li key={tier.label} className={styles.tierItem}>
-                    <div className={styles.tierListHeading}>
-                      <span className={styles.tierLabel}>{tier.label}</span>
-                      <span className={styles.tierRange}>
-                        {tier.max === Infinity
-                          ? `${formatCurrency(tier.min)}+`
-                          : `${formatCurrency(tier.min)} – ${formatCurrency(
-                              tier.max
-                            )}`}
-                      </span>
-                    </div>
-                    <p>{tier.descriptor}</p>
-                  </li>
-                ))}
-              </ul>
-              <p className={styles.tierFootnote}>
-                Ranges are based on recent U.S. full-time worker medians (about{" "}
-                {formatCurrency(62000)}). Every family’s situation is different.
-              </p>
+          <div
+            className={`${styles.tierInfoCard} ${
+              showWageInfo ? styles.tierInfoCardOpen : ""
+            }`}
+            id="wage-tier-explainer"
+            aria-hidden={!showWageInfo}
+          >
+            <div className={styles.tierInfoInner}>
+              {showWageInfo && (
+                <>
+                <div className={styles.tierInfoHeader}>
+                  <h3>What does median wage mean?</h3>
+                  <button
+                    type="button"
+                    className={styles.closeInfoButton}
+                    onClick={() => {
+                      setShowWageInfo(false);
+                      triggerHaptic(8);
+                    }}
+                    aria-label="Close wage tag explainer"
+                  >
+                    <LucideIcon name="X" />
+                  </button>
+                </div>
+                <p>
+                  Median wage is the pay right in the middle when all salaries are
+                  lined up from lowest to highest. It tells us more than an average,
+                  because a few super-high earners can’t skew it.
+                </p>
+                <ul className={styles.tierList}>
+                  {wageTiers.map((tier) => (
+                    <li key={tier.label} className={styles.tierItem}>
+                      <div className={styles.tierListHeading}>
+                        <span className={styles.tierLabel}>{tier.label}</span>
+                        <span className={styles.tierRange}>
+                          {tier.max === Infinity
+                            ? `${formatCurrency(tier.min)}+`
+                            : `${formatCurrency(tier.min)} – ${formatCurrency(
+                                tier.max
+                              )}`}
+                        </span>
+                      </div>
+                      <p>{tier.descriptor}</p>
+                    </li>
+                  ))}
+                </ul>
+                <p className={styles.tierFootnote}>
+                  Ranges are based on recent U.S. full-time worker medians (about{" "}
+                  {formatCurrency(62000)}). Every family’s situation is different.
+                </p>
+              </>
+              )}
             </div>
-          )}
+          </div>
           <div className={styles.cardWall}>
             <div className={styles.cardCluster}>
               {featuredCategories.map((cat) => (
@@ -552,7 +611,10 @@ export default function JobVizDesignPreview() {
               <button
                 type="button"
                 className={styles.assignmentToggle}
-                onClick={() => setAssignmentCollapsed((prev) => !prev)}
+                onClick={() => {
+                  setAssignmentCollapsed((prev) => !prev);
+                  triggerHaptic();
+                }}
               >
                 {assignmentCollapsed ? "Expand brief" : "Collapse brief"}
               </button>
@@ -575,6 +637,7 @@ export default function JobVizDesignPreview() {
                   key={emoji.label}
                   type="button"
                   className={styles.emojiButton}
+                  onClick={() => triggerHaptic(6)}
                 >
                   <span role="img" aria-label={emoji.label}>
                     {emoji.icon}
@@ -620,7 +683,7 @@ export default function JobVizDesignPreview() {
                       className={styles.inlineInfoButton}
                       aria-haspopup="dialog"
                       aria-controls="jobviz-info-modal"
-                      onClick={() => setInfoModal("wage")}
+                      onClick={() => openInfoModal("wage")}
                       aria-label="Open wage explainer"
                     >
                       <LucideIcon name="Info" />
@@ -636,7 +699,7 @@ export default function JobVizDesignPreview() {
                       className={styles.inlineInfoButton}
                       aria-haspopup="dialog"
                       aria-controls="jobviz-info-modal"
-                      onClick={() => setInfoModal("growth")}
+                      onClick={() => openInfoModal("growth")}
                       aria-label="Open growth explainer"
                     >
                       <LucideIcon name="Info" />
@@ -652,7 +715,7 @@ export default function JobVizDesignPreview() {
                       className={styles.inlineInfoButton}
                       aria-haspopup="dialog"
                       aria-controls="jobviz-info-modal"
-                      onClick={() => setInfoModal("jobs")}
+                      onClick={() => openInfoModal("jobs")}
                       aria-label="Open job count explainer"
                     >
                       <LucideIcon name="Info" />
@@ -697,14 +760,15 @@ export default function JobVizDesignPreview() {
             </article>
           )}
         </section>
-        {activeInfoModal && (
+        {shouldRenderInfoModal && activeInfoModal && (
           <div
             className={styles.infoModalBackdrop}
             role="dialog"
             aria-modal="true"
             aria-labelledby="jobviz-info-modal-title"
             id="jobviz-info-modal"
-            onClick={() => setInfoModal(null)}
+            data-state={isModalClosing ? "closing" : "open"}
+            onClick={closeInfoModal}
           >
             <div
               className={styles.infoModal}
@@ -731,7 +795,7 @@ export default function JobVizDesignPreview() {
                   type="button"
                   className={styles.closeInfoButton}
                   aria-label="Close info explainer"
-                  onClick={() => setInfoModal(null)}
+                  onClick={closeInfoModal}
                 >
                   <LucideIcon name="X" />
                 </button>

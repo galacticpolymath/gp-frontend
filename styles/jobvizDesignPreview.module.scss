@@ -2,10 +2,10 @@
   --preview-blue-950: #020812;
   --preview-blue-900: #061327;
   --preview-blue-800: #0b2645;
-  --preview-blue-700: #10345c;
-  --preview-blue-500: #1f5a8f;
-  --preview-blue-300: #7aa8dc;
-  --preview-blue-200: #e6f0ff;
+  --preview-blue-700: #0f2352;
+  --preview-blue-500: #1b47a1;
+  --preview-blue-300: #6ec8ff;
+  --preview-blue-200: #dff2ff;
   --preview-glass: rgba(255, 255, 255, 0.08);
   --preview-glass-strong: rgba(11, 38, 69, 0.65);
   --preview-border: rgba(136, 174, 214, 0.35);
@@ -14,28 +14,26 @@
   --preview-pulse: #ff5ab5;
   --preview-shadow: 0 35px 60px rgba(3, 11, 24, 0.55);
 
+  position: relative;
   min-height: 100vh;
   padding: clamp(2rem, 3vw, 4rem) clamp(1.5rem, 5vw, 5rem) 5rem;
-  background: radial-gradient(
-    circle at 25% 20%,
-    #10345c 0%,
-    #061327 58%,
-    #030714 100%
-  );
+  background:
+    linear-gradient(180deg, rgba(255, 95, 190, 0.24) 0%, rgba(18, 35, 95, 0) 30%),
+    linear-gradient(0deg, rgba(0, 172, 235, 0.18) 0%, rgba(11, 18, 53, 0) 40%),
+    linear-gradient(145deg, #030617 0%, #050b22 50%, #081740 100%);
   color: var(--preview-blue-200);
   font-family: "Noto Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
   display: flex;
   flex-direction: column;
   gap: 3rem;
+  overflow: hidden;
 }
 
 .previewPage[data-tone="burst"] {
-  background: radial-gradient(
-    circle at 18% 18%,
-    #123055 0%,
-    #080f2e 55%,
-    #1a0d24 100%
-  );
+  background:
+    linear-gradient(180deg, rgba(255, 61, 172, 0.35) 0%, transparent 35%),
+    linear-gradient(0deg, rgba(32, 202, 255, 0.18) 0%, transparent 50%),
+    linear-gradient(145deg, #05011c 0%, #18043d 55%, #2a0a55 100%);
 }
 
 .previewSection {
@@ -77,6 +75,9 @@
   gap: 0.4rem;
   cursor: pointer;
   font-size: 0.9rem;
+  transition: transform 0.25s ease, border-color 0.25s ease,
+    box-shadow 0.25s ease;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
 }
 
 .infoButton svg,
@@ -85,16 +86,50 @@
   height: 18px;
 }
 
+.infoButton:hover,
+.closeInfoButton:hover,
+.infoButton:focus-visible,
+.closeInfoButton:focus-visible {
+  transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.5);
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.45);
+}
+
 .tierInfoCard {
   margin-top: 1rem;
   border-radius: 24px;
   border: 1px solid var(--preview-border);
   background: rgba(4, 15, 32, 0.92);
-  padding: 1.2rem 1.4rem;
+  box-shadow: var(--preview-shadow);
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transform-origin: top;
+  transition:
+    max-height 0.5s ease,
+    opacity 0.45s ease;
+}
+
+.tierInfoCardOpen {
+  max-height: 800px;
+  opacity: 1;
+  margin-bottom: 0.5rem;
+}
+
+.tierInfoInner {
+  padding: 0 1.4rem;
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
-  box-shadow: var(--preview-shadow);
+  animation: panelFade 0.45s ease forwards;
+}
+
+.tierInfoInner:first-child {
+  padding-top: 1.2rem;
+}
+
+.tierInfoInner:last-child {
+  padding-bottom: 1.2rem;
 }
 
 .tierInfoHeader {
@@ -123,10 +158,25 @@
   border: 1px solid rgba(0, 172, 235, 0.25);
   border-radius: 20px;
   padding: 0.9rem 1rem;
-  background: rgba(0, 172, 235, 0.06);
+  background: rgba(0, 172, 235, 0.08);
   display: flex;
   flex-direction: column;
   gap: 0.35rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.tierItem::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, rgba(255, 255, 255, 0.15), transparent 60%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.tierItem:hover::after {
+  opacity: 1;
 }
 
 .tierListHeading {
@@ -172,6 +222,16 @@
   padding: clamp(1rem, 4vw, 2.5rem);
   overflow-y: auto;
   z-index: 1000;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.infoModalBackdrop[data-state="open"] {
+  opacity: 1;
+}
+
+.infoModalBackdrop[data-state="closing"] {
+  opacity: 0;
 }
 
 .infoModal {
@@ -188,6 +248,21 @@
   overflow-y: auto;
   position: relative;
   margin: auto;
+  opacity: 0;
+  transform: translateY(-12px) scale(0.97);
+  transition:
+    opacity 0.35s ease,
+    transform 0.35s ease;
+}
+
+.infoModalBackdrop[data-state="open"] .infoModal {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.infoModalBackdrop[data-state="closing"] .infoModal {
+  opacity: 0;
+  transform: translateY(-16px) scale(0.96);
 }
 
 .infoModalHeader {
@@ -252,15 +327,32 @@
   gap: clamp(1.5rem, 3vw, 3rem);
   padding: clamp(1.5rem, 3vw, 3.5rem);
   border-radius: 32px;
-  background: linear-gradient(
-    135deg,
-    rgba(6, 19, 39, 0.85),
-    rgba(15, 50, 85, 0.9)
-  );
+  background: linear-gradient(135deg, rgba(5, 12, 32, 0.92), rgba(15, 67, 116, 0.82));
   border: 1px solid var(--preview-border);
   box-shadow: var(--preview-shadow);
   position: relative;
   overflow: hidden;
+  transform-style: preserve-3d;
+}
+
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: -20%;
+  border-radius: inherit;
+  background: linear-gradient(
+    135deg,
+    rgba(0, 181, 255, 0.45) 0%,
+    rgba(96, 72, 255, 0.35) 45%,
+    rgba(255, 103, 205, 0.4) 75%,
+    rgba(0, 181, 255, 0.45) 100%
+  );
+  background-size: 320% 320%;
+  mix-blend-mode: screen;
+  opacity: 0.55;
+  filter: blur(80px);
+  animation: heroSweep 18s linear infinite;
+  pointer-events: none;
 }
 
 .hero::after {
@@ -273,6 +365,7 @@
     transparent 60%
   );
   pointer-events: none;
+  animation: pulseSweep 10s ease-in-out infinite;
 }
 
 .previewPage[data-tone="burst"] .hero::after {
@@ -427,6 +520,19 @@
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  position: relative;
+  transition: transform 0.4s ease, box-shadow 0.4s ease, border-color 0.3s ease;
+}
+
+.categoryCard::after,
+.jobCard::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(circle at top, rgba(255, 255, 255, 0.18), transparent 60%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
 }
 
 .jobCard {
@@ -435,6 +541,21 @@
     rgba(14, 37, 66, 0.85),
     rgba(9, 26, 48, 0.95)
   );
+}
+
+.categoryCard:hover,
+.categoryCard:focus-within,
+.jobCard:hover,
+.jobCard:focus-within {
+  transform: translateY(-10px) scale(1.01);
+  box-shadow: 0 35px 60px rgba(3, 11, 24, 0.65);
+}
+
+.categoryCard:hover::after,
+.categoryCard:focus-within::after,
+.jobCard:hover::after,
+.jobCard:focus-within::after {
+  opacity: 1;
 }
 
 .cardHeader {
@@ -519,6 +640,14 @@
   padding: 0.65rem 0.85rem;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(0, 172, 235, 0.18);
+  transition: transform 0.25s ease, border-color 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.statChip:hover {
+  transform: translateY(-4px);
+  border-color: rgba(0, 172, 235, 0.45);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
 }
 
 .statLabel {
@@ -614,6 +743,14 @@
   justify-content: space-between;
   align-items: center;
   min-width: 150px;
+  transition: transform 0.3s ease, border-color 0.25s ease,
+    box-shadow 0.3s ease;
+}
+
+.assignmentJob:hover {
+  transform: translateY(-4px);
+  border-color: rgba(0, 172, 235, 0.5);
+  box-shadow: 0 15px 30px rgba(2, 12, 30, 0.45);
 }
 
 .assignmentJobTitle {
@@ -650,6 +787,15 @@
   align-items: center;
   gap: 0.4rem;
   cursor: pointer;
+  transition: transform 0.2s ease, border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.emojiButton:hover,
+.emojiButton:focus-visible {
+  transform: translateY(-3px);
+  border-color: rgba(255, 255, 255, 0.35);
+  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.3);
 }
 
 .modalCard {
@@ -805,5 +951,43 @@
 
   .assignmentCarousel {
     grid-auto-columns: 60%;
+  }
+
+  .infoModal {
+    width: 100%;
+    max-height: 95vh;
+  }
+}
+
+@keyframes pulseSweep {
+  0% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 0.6;
+  }
+  100% {
+    opacity: 0.35;
+  }
+}
+
+@keyframes panelFade {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes heroSweep {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 60%;
+  }
+  100% {
+    background-position: 0% 50%;
   }
 }
