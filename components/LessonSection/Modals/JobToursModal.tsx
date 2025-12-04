@@ -1,10 +1,14 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { Button, Modal, Spinner } from "react-bootstrap";
 import useSiteSession from "../../../customHooks/useSiteSession";
 import { TUseStateReturnVal } from "../../../types/global";
 import { GpPlusBtn } from "../../../pages/gp-plus";
-import JobToursCard from "../../JobViz/JobTours/JobToursCard";
 import { useModalContext } from "../../../providers/ModalProvider";
+import { useRouter } from "next/navigation";
+import {
+  SOC_CODES_PARAM_NAME,
+  UNIT_NAME_PARAM_NAME,
+} from "../JobVizConnections";
 
 interface GpPlusModalProps {
   onClose?: () => void;
@@ -15,28 +19,41 @@ interface GpPlusModalProps {
   jobTitleAndSocCodePairs: [string, string][];
 }
 
-const JobToursModal: React.FC<GpPlusModalProps> = ({
-  _isModalDisplayed,
-  unitName,
-  jobTitleAndSocCodePairs,
-}) => {
+const SOC_CODES_FOR_JOB_TOURS_DEMO = [
+  "11-9121",
+  "29-2033",
+  "15-2051",
+  "15-1243",
+  "29-1211",
+  "29-1071",
+  "15-2011",
+  "23-1012",
+].join(",");
+const JOBS_TOURS_DEMO_UNIT_NAME =
+  "Demo Unit Showcasing a Diversity of Lesser Known Careers";
+
+const JobToursModal: React.FC<GpPlusModalProps> = ({ _isModalDisplayed }) => {
   const {
     _jobToursModalCssProps: [jobToursModalCssProps, setJobToursModalCssProps],
   } = useModalContext();
   const [isModalDisplayed, setIsModalDisplayed] = _isModalDisplayed;
   const [isDoneLoading, setIsDoneLoading] = useState(false);
-  const [zIndex, setZIndex] = useState(10000);
+  const [isMouseOverDemoGif, setIsMouseOverDemoGif] = useState(false);
+  const router = useRouter();
+
+  const createDemoGifMouseEventHandler = (isMouseOver: boolean) => () => {
+    setIsMouseOverDemoGif(isMouseOver);
+  };
 
   const handleOnClose = () => {
     setIsModalDisplayed(false);
     setIsDoneLoading(false);
   };
 
-  const handleOnJobTitleClick = () => {
-    setJobToursModalCssProps({
-      zIndex: 1000,
-      // zIndex: 10000,
-    });
+  const handleInteractiveDemoBtnClick = () => {
+    router.push(
+      `/jobviz?${SOC_CODES_PARAM_NAME}=${SOC_CODES_FOR_JOB_TOURS_DEMO}&${UNIT_NAME_PARAM_NAME}=${JOBS_TOURS_DEMO_UNIT_NAME}`
+    );
   };
 
   return (
@@ -67,9 +84,20 @@ const JobToursModal: React.FC<GpPlusModalProps> = ({
       <div className="gp-plus-modal-content h-100 d-flex flex-column">
         <h2 className="job-tours-title text-center">Job Tours Demo</h2>
         <div className="position-relative d-flex flex-column job-tours-iframe-container">
+          {isMouseOverDemoGif && (
+            <span
+              className="demo-overlay-text no-btn-styles"
+              style={{ textTransform: "none" }}
+            >
+              Click to view <i>Interactive Demo Career Tour Assignment</i>
+            </span>
+          )}
           <img
             src="/imgs/jobViz/jobviz_demo.gif"
             alt="Job Viz Demo"
+            onClick={handleInteractiveDemoBtnClick}
+            onMouseOver={createDemoGifMouseEventHandler(true)}
+            onMouseLeave={createDemoGifMouseEventHandler(false)}
             style={{
               width: "100%",
               height: "100%",
@@ -77,48 +105,65 @@ const JobToursModal: React.FC<GpPlusModalProps> = ({
             }}
           />
         </div>
-        <section className="mt-2 mt-sm-3 d-flex flex-column-reverse flex-lg-row justify-content-center align-items-center align-items-lg-center w-100 px-2 px-sm-3 job-tours-buttons-container flex-shrink-0">
-          <Button
-            style={{
-              borderRadius: "1em",
-              backgroundColor: "#6C757D",
-              paddingLeft: "1rem",
-              paddingRight: "1rem",
-            }}
-            onClick={() => {
-              handleOnClose();
-            }}
-            className="job-viz-btn job-viz-btn-close me-lg-2 d-flex justify-content-center align-items-center border mt-2 mt-lg-0 w-100 w-lg-auto"
-          >
-            <span style={{ fontSize: "0.875rem" }}>CLOSE</span>
-          </Button>
-          <GpPlusBtn
-            onClick={() => {
-              if (typeof window === "undefined") {
-                return;
-              }
-
-              window.location.href = "/gp-plus";
-            }}
-            disabled={false}
-            isLoading={false}
-            className="job-viz-btn job-viz-btn-subscribe ms-lg-2 w-100 w-lg-auto bg-white d-flex justify-content-center align-items-center"
-            styles={{
-              backgroundColor: "white",
-              border: "solid 3px #2339C4",
-              borderRadius: "1em",
-              textTransform: "none",
-              paddingLeft: "1rem",
-              paddingRight: "1rem",
-            }}
-          >
-            <span
-              className="text-black text-center"
-              style={{ fontSize: "0.875rem" }}
+        <section className="mt-2 mt-sm-3 w-100 px-2 px-sm-3 job-tours-buttons-container flex-shrink-0">
+          <section className="d-flex justify-content-center align-items-center mt-2">
+            <Button
+              style={{
+                borderRadius: "1em",
+                paddingLeft: "1rem",
+                paddingRight: "1rem",
+                maxWidth: "500px",
+                width: "fit-content",
+              }}
+              onClick={handleInteractiveDemoBtnClick}
+              className="d-flex justify-content-center align-items-center border mt-2 mt-lg-0"
             >
-              Subscribe to GP+ to share this Career Tour
-            </span>
-          </GpPlusBtn>
+              <span style={{ fontSize: "0.875rem" }}>
+                Interactive Demo Career Tour Assignment
+              </span>
+            </Button>
+          </section>
+          <section className="mt-3 d-flex flex-column-reverse flex-lg-row justify-content-center align-items-center align-items-lg-center">
+            <Button
+              style={{
+                borderRadius: "1em",
+                backgroundColor: "#6C757D",
+                paddingLeft: "1rem",
+                paddingRight: "1rem",
+              }}
+              onClick={handleOnClose}
+              className="job-viz-btn job-viz-btn-close me-lg-2 d-flex justify-content-center align-items-center border mt-2 mt-lg-0 w-100 w-lg-auto"
+            >
+              <span style={{ fontSize: "0.875rem" }}>CLOSE</span>
+            </Button>
+            <GpPlusBtn
+              onClick={() => {
+                if (typeof window === "undefined") {
+                  return;
+                }
+
+                window.location.href = "/gp-plus";
+              }}
+              disabled={false}
+              isLoading={false}
+              className="job-viz-btn job-viz-btn-subscribe ms-lg-2 w-100 w-lg-auto bg-white d-flex justify-content-center align-items-center"
+              styles={{
+                backgroundColor: "white",
+                border: "solid 3px #2339C4",
+                borderRadius: "1em",
+                textTransform: "none",
+                paddingLeft: "1rem",
+                paddingRight: "1rem",
+              }}
+            >
+              <span
+                className="text-black text-center"
+                style={{ fontSize: "0.875rem" }}
+              >
+                Subscribe to GP+ to share this Career Tour
+              </span>
+            </GpPlusBtn>
+          </section>
         </section>
       </div>
       <style>
@@ -131,8 +176,43 @@ const JobToursModal: React.FC<GpPlusModalProps> = ({
             flex-shrink: 0;
           }
 
+          .demo-overlay-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.85);
+            color: #ffffff;
+            padding: 1.25rem 1.75rem;
+            border-radius: 0.5rem;
+            font-size: 1.125rem;
+            font-weight: 500;
+            text-align: center;
+            z-index: 10;
+            pointer-events: none;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(4px);
+            transition: opacity 0.2s ease-in-out;
+            max-width: 90%;
+            line-height: 1.5;
+          }
+
+          .demo-overlay-text i {
+            font-style: italic;
+            // color: #ffd700;
+          }
+
+          .job-tours-iframe-container {
+            cursor: pointer;
+          }
+
           .job-tours-iframe-container img {
             border-radius: 0.5rem;
+            transition: filter 0.2s ease-in-out;
+          }
+
+          .job-tours-iframe-container:hover img {
+            filter: brightness(0.7);
           }
 
           @media (max-width: 575px) {
@@ -187,6 +267,11 @@ const JobToursModal: React.FC<GpPlusModalProps> = ({
               max-height: none !important;
               padding: 0.75rem 1rem !important;
             }
+
+            .demo-overlay-text {
+              font-size: 0.875rem;
+              padding: 0.875rem 1.25rem;
+            }
           }
 
           @media (min-width: 576px) and (max-width: 767px) {
@@ -221,6 +306,11 @@ const JobToursModal: React.FC<GpPlusModalProps> = ({
 
             .job-viz-btn-subscribe {
               max-width: 100% !important;
+            }
+
+            .demo-overlay-text {
+              font-size: 1rem;
+              padding: 1rem 1.5rem;
             }
           }
 
@@ -266,7 +356,7 @@ const JobToursModal: React.FC<GpPlusModalProps> = ({
             }
 
             .job-tours-iframe-container {
-              height: 84% !important;
+              height: 73% !important;
               min-height: 350px !important;
             }
 
