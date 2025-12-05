@@ -64,7 +64,7 @@ soc_code,job_title,icon_name
 13-2053,"Insurance underwriters",PenSquare
 13-2054,"Financial risk specialists",AlignJustify
 13-2061,"Financial examiners",AlignLeft
-13-2071,"Credit counselors",HelpingHand
+13-2071,"Credit counselors",Handshake
 13-2072,"Loan officers",AlignRight
 13-2081,"Tax examiners and collectors, and revenue agents",AlignStartHorizontal
 13-2082,"Tax preparers",AlignStartVertical
@@ -204,21 +204,21 @@ soc_code,job_title,icon_name
 25-1022,"Mathematical science teachers, postsecondary",BadgeCent
 25-1031,"Architecture teachers, postsecondary",BadgeCheck
 25-1032,"Engineering teachers, postsecondary",BadgeDollarSign
-25-1041,"Agricultural sciences teachers, postsecondary",BadgeEuro
-25-1042,"Biological science teachers, postsecondary",BadgeHelp
-25-1043,"Forestry and conservation science teachers, postsecondary",BadgeIndianRupee
-25-1051,"Atmospheric, earth, etc",BadgeInfo
-25-1052,"Chemistry teachers, postsecondary",BadgeJapaneseYen
-25-1053,"Environmental science teachers, postsecondary",BadgeMinus
-25-1054,"Physics teachers, postsecondary",BadgePercent
-25-1061,"Anthropology and archeology teachers, postsecondary",BadgePlus
-25-1062,"Area, ethnic, etc",BadgePoundSterling
-25-1063,"Economics teachers, postsecondary",BadgeQuestionMark
-25-1064,"Geography teachers, postsecondary",BadgeRussianRuble
-25-1065,"Political science teachers, postsecondary",BadgeSwissFranc
-25-1066,"Psychology teachers, postsecondary",BadgeTurkishLira
-25-1067,"Sociology teachers, postsecondary",BadgeX
-25-1069,"Social sciences teachers, postsecondary, etc",BaggageClaim
+25-1041,"Agricultural sciences teachers, postsecondary",Sprout
+25-1042,"Biological science teachers, postsecondary",Microscope
+25-1043,"Forestry and conservation science teachers, postsecondary",TreePine
+25-1051,"Atmospheric, earth, etc",CloudSun
+25-1052,"Chemistry teachers, postsecondary",FlaskRound
+25-1053,"Environmental science teachers, postsecondary",Leaf
+25-1054,"Physics teachers, postsecondary",Atom
+25-1061,"Anthropology and archeology teachers, postsecondary",Bone
+25-1062,"Area, ethnic, etc",Globe
+25-1063,"Economics teachers, postsecondary",LineChart
+25-1064,"Geography teachers, postsecondary",Map
+25-1065,"Political science teachers, postsecondary",Flag
+25-1066,"Psychology teachers, postsecondary",Brain
+25-1067,"Sociology teachers, postsecondary",Users
+25-1069,"Social sciences teachers, postsecondary, etc",UsersRound
 25-1071,"Health specialties teachers, postsecondary",Ban
 25-1072,"Nursing instructors and teachers, postsecondary",Banana
 25-1081,"Education teachers, postsecondary",BanknoteArrowDown
@@ -235,7 +235,7 @@ soc_code,job_title,icon_name
 25-1192,"Family and consumer sciences teachers, postsecondary",Barcode
 25-1193,"Recreation and fitness studies teachers, postsecondary",Barrel
 25-1194,"Career/technical education teachers, postsecondary",Baseline
-25-1199,"Postsecondary teachers, all other",Bath
+25-1199,"Postsecondary teachers, all other",GraduationCap
 25-2011,"Preschool teachers, except special education",BatteryCharging
 25-2012,"Kindergarten teachers, except special education",BatteryFull
 25-2021,"Elementary school teachers, except special education",BatteryLow
@@ -491,7 +491,7 @@ soc_code,job_title,icon_name
 41-4012,"Sales representatives, wholesale and manufacturing, etc",CircleFadingArrowUp
 41-9011,"Demonstrators and product promoters",CircleFadingPlus
 41-9012,"Models",CircleGauge
-41-9021,"Real estate brokers",CircleHelp
+41-9021,"Real estate brokers",House
 41-9022,"Real estate sales agents",CircleMinus
 41-9031,"Sales engineers",CircleOff
 41-9041,"Telemarketers",CircleParkingOff
@@ -502,7 +502,7 @@ soc_code,job_title,icon_name
 43-2021,"Telephone operators",CirclePlus
 43-2099,"Communications equipment operators, all other",CirclePoundSterling
 43-3011,"Bill and account collectors",CirclePower
-43-3021,"Billing and posting clerks",CircleQuestionMark
+43-3021,"Billing and posting clerks",Receipt
 43-3031,"Bookkeeping, accounting, etc",CircleSlash2
 43-3041,"Gambling cage workers",CircleSlash
 43-3051,"Payroll and timekeeping clerks",CircleSlashed
@@ -763,8 +763,8 @@ soc_code,job_title,icon_name
 51-9061,"Inspectors, testers, etc",FilePlus2
 51-9071,"Jewelers and precious stone and metal workers",FilePlusCorner
 51-9081,"Dental laboratory technicians",FilePlus
-51-9082,"Medical appliance technicians",FileQuestionMark
-51-9083,"Ophthalmic laboratory technicians",FileQuestion
+51-9082,"Medical appliance technicians",Wrench
+51-9083,"Ophthalmic laboratory technicians",Eye
 51-9111,"Packaging and filling machine operators and tenders",FileScan
 51-9123,"Painting, coating, etc",FileSearch2
 51-9124,"Coating, painting, etc",FileSearchCorner
@@ -782,7 +782,7 @@ soc_code,job_title,icon_name
 51-9198,"Helpers--production workers",FileType
 51-9199,"Production workers, all other",FileUp
 53-1041,"Aircraft cargo handling supervisors",FileUser
-53-1047,"First-line supervisors of transportation and material moving workers, except aircraft cargo handling supervisors",FileVideo2
+53-1047,"First-line supervisors of transportation and material moving workers, except aircraft cargo handling supervisors",UsersRound
 53-2011,"Airline pilots, copilots, etc",FileVideoCamera
 53-2012,"Commercial pilots",FileVideo
 53-2021,"Air traffic controllers",FileVolume2

@@ -2,7 +2,10 @@ import { useMemo } from "react";
 import { useRouter } from "next/router";
 import Layout from "../../components/Layout";
 import { AssignmentBanner } from "../../components/JobViz/AssignmentBanner";
-import { JobVizBreadcrumb } from "../../components/JobViz/JobVizBreadcrumb";
+import {
+  JobVizBreadcrumb,
+  JOBVIZ_BREADCRUMB_ID,
+} from "../../components/JobViz/JobVizBreadcrumb";
 import { JobVizGrid } from "../../components/JobViz/JobVizGrid";
 import { JobVizLayout } from "../../components/JobViz/JobVizLayout";
 import styles from "../../styles/jobvizBurst.module.scss";
@@ -101,6 +104,17 @@ const JobViz = ({ unitName, jobTitleAndSocCodePairs, hasGpPlusMembership }) => {
     [level1Nodes, assignmentAncestors, assignmentSocCodes]
   );
 
+  const scrollToBreadcrumb = () => {
+    if (typeof window === "undefined") return;
+    window.requestAnimationFrame(() => {
+      const el = document.getElementById(JOBVIZ_BREADCRUMB_ID);
+      if (!el) return;
+      const offset = 32;
+      const top = el.getBoundingClientRect().top + window.scrollY - offset;
+      window.scrollTo({ top, behavior: "smooth" });
+    });
+  };
+
   const handleRootClick = (item) => {
     const node = jobVizNodeById.get(Number(item.id));
     if (!node) return;
@@ -113,7 +127,9 @@ const JobViz = ({ unitName, jobTitleAndSocCodePairs, hasGpPlusMembership }) => {
       assignmentParams
     );
 
-    router.push(nextUrl, undefined, { scroll: false });
+    router.push(nextUrl, undefined, { scroll: false }).finally(
+      scrollToBreadcrumb
+    );
   };
 
   const breadcrumbs = useMemo(
@@ -133,6 +149,7 @@ const JobViz = ({ unitName, jobTitleAndSocCodePairs, hasGpPlusMembership }) => {
   const isGpPlusHero = hasGpPlusMembership || forceGpPlusHero;
   const heroSlot = isGpPlusHero ? null : <HeroForFreeUsers />;
   const hasAssignmentJobs = Boolean(jobTitleAndSocCodePairs?.length);
+
 
   const layoutProps = {
     title:
@@ -173,6 +190,9 @@ const JobViz = ({ unitName, jobTitleAndSocCodePairs, hasGpPlusMembership }) => {
         <h2 className={styles.jobvizSectionHeading}>
           Browse jobs by category or search
         </h2>
+        <h3 className={styles.jobvizSearchAppeal}>
+          Explore the true diversity of career opportunities.
+        </h3>
 
         <JobVizSearch assignmentParams={assignmentParams} />
         <div className={styles.jobvizContextZone}>

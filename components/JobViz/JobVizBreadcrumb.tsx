@@ -2,6 +2,8 @@ import * as React from "react";
 import styles from "../../styles/jobvizBurst.module.scss";
 import { LucideIcon } from "./LucideIcon";
 
+export const JOBVIZ_BREADCRUMB_ID = "jobviz-breadcrumb";
+
 export interface BreadcrumbSegment {
   label: string;
   iconName: string;
@@ -19,7 +21,11 @@ export const JobVizBreadcrumb: React.FC<JobVizBreadcrumbProps> = ({
   if (!segments.length) return null;
 
   return (
-    <nav className={styles.jobvizBreadcrumb} aria-label="JobViz navigation">
+    <nav
+      className={styles.jobvizBreadcrumb}
+      aria-label="JobViz navigation"
+      id={JOBVIZ_BREADCRUMB_ID}
+    >
       {segments.map((seg, idx) => {
         const isLast = idx === segments.length - 1;
         const content = (

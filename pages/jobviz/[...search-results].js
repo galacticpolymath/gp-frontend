@@ -2,7 +2,10 @@ import { useEffect, useMemo } from "react";
 import { useRouter } from "next/router";
 import Layout from "../../components/Layout";
 import { AssignmentBanner } from "../../components/JobViz/AssignmentBanner";
-import { JobVizBreadcrumb } from "../../components/JobViz/JobVizBreadcrumb";
+import {
+  JobVizBreadcrumb,
+  JOBVIZ_BREADCRUMB_ID,
+} from "../../components/JobViz/JobVizBreadcrumb";
 import { JobVizGrid } from "../../components/JobViz/JobVizGrid";
 import { JobVizLayout } from "../../components/JobViz/JobVizLayout";
 import { LucideIcon } from "../../components/JobViz/LucideIcon";
@@ -119,6 +122,17 @@ const JobVizSearchResults = ({
 
   const activeNode = chainNodes[chainNodes.length - 1] ?? null;
 
+  const scrollToBreadcrumb = () => {
+    if (typeof window === "undefined") return;
+    window.requestAnimationFrame(() => {
+      const el = document.getElementById(JOBVIZ_BREADCRUMB_ID);
+      if (!el) return;
+      const offset = 32;
+      const top = el.getBoundingClientRect().top + window.scrollY - offset;
+      window.scrollTo({ top, behavior: "smooth" });
+    });
+  };
+
   const gridItems = useMemo(
     () =>
       filteredSlice.map((node) => ({
@@ -184,7 +198,9 @@ const JobVizSearchResults = ({
       assignmentParams
     );
 
-    router.push(nextUrl, undefined, { scroll: false });
+    router.push(nextUrl, undefined, { scroll: false }).finally(
+      scrollToBreadcrumb
+    );
   };
 
   const breadcrumbs = useMemo(() => {
@@ -258,6 +274,7 @@ const JobVizSearchResults = ({
   const heroSlot = isGpPlusHero ? null : <HeroForFreeUsers />;
   const hasAssignmentJobs = Boolean(jobTitleAndSocCodePairs?.length);
 
+
   useEffect(() => {
     if (activeNode && activeNode.occupation_type === "Line item") {
       setSelectedJob({ ...activeNode, wasSelectedFromJobToursCard: false });
@@ -303,6 +320,9 @@ const JobVizSearchResults = ({
         {showIntroHeading && (
           <h2 className={styles.jobvizSectionHeading}>{sectionHeading}</h2>
         )}
+        <h3 className={styles.jobvizSearchAppeal}>
+          Explore the true diversity of career opportunities.
+        </h3>
 
         <JobVizSearch assignmentParams={assignmentParams} />
         <div id={JOBVIZ_BRACKET_SEARCH_ID} />

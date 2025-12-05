@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import Modal from "react-bootstrap/Modal";
 import { useRouter } from "next/router";
 import { toast } from "react-toastify";
@@ -19,6 +20,7 @@ import {
   UNIT_NAME_PARAM_NAME,
 } from "../LessonSection/JobVizConnections";
 import styles from "../../styles/jobvizBurst.module.scss";
+import jobvizLogo from "../../assets/img/GP+JobViz_Horiz_white_400px.png";
 import {
   formatCurrency,
   formatNumber,
@@ -49,6 +51,8 @@ const SelectedJob: React.FC = () => {
   const [isInfoClosing, setIsInfoClosing] = useState(false);
   const closeModalTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const copyToastId = useRef<string | number | null>(null);
+  const copyResetTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [didCopyLink, setDidCopyLink] = useState(false);
 
   const activeInfoModal = modalHistory ? infoModalContent[modalHistory] : null;
   const shouldRenderInfoModal =
@@ -84,6 +88,9 @@ const SelectedJob: React.FC = () => {
     return () => {
       if (closeModalTimeoutRef.current) {
         clearTimeout(closeModalTimeoutRef.current);
+      }
+      if (copyResetTimeoutRef.current) {
+        clearTimeout(copyResetTimeoutRef.current);
       }
     };
   }, []);
@@ -132,6 +139,14 @@ const SelectedJob: React.FC = () => {
         toast.dismiss(copyToastId.current);
       }
       copyToastId.current = toast.success("Link copied!");
+      setDidCopyLink(true);
+      if (copyResetTimeoutRef.current) {
+        clearTimeout(copyResetTimeoutRef.current);
+      }
+      copyResetTimeoutRef.current = setTimeout(() => {
+        setDidCopyLink(false);
+        copyResetTimeoutRef.current = null;
+      }, 1400);
     } catch (error) {
       console.error("Failed to copy job link.", error);
     }
@@ -233,6 +248,7 @@ const SelectedJob: React.FC = () => {
         }}
         contentClassName="selectedJobModal"
         dialogClassName="dialogJobVizModal py-2 d-sm-flex justify-content-center align-items-center"
+        backdropClassName="selectedJobBackdrop"
         fullscreen="md-down"
         style={{
           zIndex: 10000000,
@@ -252,13 +268,13 @@ const SelectedJob: React.FC = () => {
                     )}
                   </div>
                   <div>
-                    <p className={styles.modalEyebrow}>Job detail modal</p>
+                    <p className={styles.modalEyebrow}>Job detail</p>
                     <h3 className={styles.modalTitle}>{jobTitle}</h3>
                   </div>
                 </div>
                 <div className={styles.modalHeaderActions}>
-                  <span className={styles.modalBadge}>
-                    {selectedJob.soc_code}
+                  <span className={styles.modalSocCode}>
+                    SOC {selectedJob.soc_code}
                   </span>
                   <button
                     type="button"
@@ -317,6 +333,7 @@ const SelectedJob: React.FC = () => {
                   className={styles.ghostButton}
                   onClick={handleExploreRelatedCareers}
                 >
+                  <LucideIcon name="Route" />
                   Explore related careers
                 </button>
                 {selectedJob.BLS_link && (
@@ -326,17 +343,32 @@ const SelectedJob: React.FC = () => {
                     target="_blank"
                     rel="noreferrer"
                   >
+                    <LucideIcon name="ExternalLink" />
                     View BLS profile
                   </a>
                 )}
                 <button
                   type="button"
-                  className={styles.primaryButton}
+                  className={`${styles.primaryButton} ${
+                    didCopyLink ? styles.copySuccess : ""
+                  }`}
                   onClick={handleCopyLink}
+                  aria-live="polite"
                 >
-                  Copy share link
+                  <LucideIcon name={didCopyLink ? "Check" : "Link"} />
+                  {didCopyLink ? "Copied!" : "Share job details"}
                 </button>
               </footer>
+              <div className={styles.modalBrand}>
+                <Image
+                  src={jobvizLogo}
+                  alt="JobViz Burst logo"
+                  width={240}
+                  height={21}
+                  priority
+                  className={styles.modalLogo}
+                />
+              </div>
             </article>
           )}
         </Body>

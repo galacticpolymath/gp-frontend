@@ -38,6 +38,39 @@ export const JobVizLayout: React.FC<JobVizLayoutProps> = ({
     },
   ];
 
+  React.useEffect(() => {
+    if (typeof window === "undefined") return;
+    let rafId: number | null = null;
+    const updateParallax = () => {
+      rafId = null;
+      const scrollY = window.scrollY || 0;
+      const heroOffset = Math.min(scrollY * 0.12, 160);
+      const bgOffset = Math.min(scrollY * 0.2, 220);
+      document.documentElement.style.setProperty(
+        "--jobviz-hero-offset",
+        `${heroOffset}px`
+      );
+      document.documentElement.style.setProperty(
+        "--jobviz-bg-offset",
+        `${bgOffset}px`
+      );
+    };
+    const handleScroll = () => {
+      if (rafId !== null) return;
+      rafId = window.requestAnimationFrame(updateParallax);
+    };
+    updateParallax();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => {
+      if (rafId !== null) {
+        window.cancelAnimationFrame(rafId);
+      }
+      window.removeEventListener("scroll", handleScroll);
+      document.documentElement.style.setProperty("--jobviz-hero-offset", "0px");
+      document.documentElement.style.setProperty("--jobviz-bg-offset", "0px");
+    };
+  }, []);
+
   return (
     <>
       {heroSlot ?? (

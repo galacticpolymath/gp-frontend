@@ -24,6 +24,8 @@ const currencyFormatter = new Intl.NumberFormat("en-US", {
   maximumFractionDigits: 0,
 });
 
+const compactTitle = (value: string) => value.replace(/\sand\s/gi, " & ");
+
 const formatPercent = (raw?: number | string | null) => {
   if (raw === null || raw === undefined) return "—";
   const numeric =
@@ -46,6 +48,7 @@ export const JobVizCard: React.FC<JobVizCardProps> = ({
   education,
   jobIconName,
 }) => {
+  const [isHovered, setHover] = React.useState(false);
   const containerClass = level === 1 ? styles.categoryCard : styles.jobCard;
   const highlightClass =
     highlight && level === 1
@@ -55,6 +58,7 @@ export const JobVizCard: React.FC<JobVizCardProps> = ({
         : "";
   const visitedClass =
     highlightClicked && level === 2 ? styles.jobCardVisited : "";
+  const tooltipId = React.useId();
 
   return (
     <article
@@ -62,6 +66,10 @@ export const JobVizCard: React.FC<JobVizCardProps> = ({
       onClick={onClick}
       role={onClick ? "button" : undefined}
       tabIndex={onClick ? 0 : undefined}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      onFocus={() => setHover(true)}
+      onBlur={() => setHover(false)}
       onKeyDown={(e) => {
         if (!onClick) return;
         if (e.key === "Enter" || e.key === " ") {
@@ -69,6 +77,8 @@ export const JobVizCard: React.FC<JobVizCardProps> = ({
           onClick();
         }
       }}
+      aria-label={level === 1 ? "Click to view jobs" : "Click for job details"}
+      aria-describedby={isHovered ? tooltipId : undefined}
     >
       {level === 1 ? (
         <>
@@ -76,8 +86,9 @@ export const JobVizCard: React.FC<JobVizCardProps> = ({
             <div className={styles.categoryIconBadge}>
               <LucideIcon name={iconName} />
             </div>
-            <h3 className={styles.categoryTitle}>{title}</h3>
+            <h3 className={styles.categoryTitle}>{compactTitle(title)}</h3>
           </div>
+          <p className={styles.categoryDeck}>GROUPING</p>
           <div className={styles.categoryMetaRow}>
             <div>
               <span className={styles.categoryLabel}>Jobs</span>
@@ -88,7 +99,7 @@ export const JobVizCard: React.FC<JobVizCardProps> = ({
               </strong>
             </div>
             <div>
-              <span className={styles.categoryLabel}>Growth</span>
+              <span className={styles.categoryLabel}>Avg. Growth</span>
               <strong className={styles.categoryValue}>
                 {formatPercent(growthPercent)}
               </strong>
@@ -114,7 +125,7 @@ export const JobVizCard: React.FC<JobVizCardProps> = ({
               )}
             </div>
             <div className={styles.cardHeading}>
-              <h3 className={styles.cardTitle}>{title}</h3>
+              <h3 className={styles.cardTitle}>{compactTitle(title)}</h3>
             </div>
           </div>
           <div className={styles.statRow}>
@@ -142,6 +153,11 @@ export const JobVizCard: React.FC<JobVizCardProps> = ({
             </div>
           </div>
         </>
+      )}
+      {isHovered && onClick && (
+        <div className={styles.cardTooltip} id={tooltipId} role="status">
+          {level === 1 ? "Click to view jobs" : "Click for job details"}
+        </div>
       )}
     </article>
   );
