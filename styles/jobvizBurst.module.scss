@@ -42,6 +42,10 @@
   gap: 1.25rem;
 }
 
+.assignmentSection {
+  gap: 1.5rem;
+}
+
 .sectionHeading {
   font-size: clamp(1.5rem, 2.2vw, 2rem);
   margin: 0;
@@ -221,7 +225,7 @@
   align-items: flex-start;
   padding: clamp(1rem, 4vw, 2.5rem);
   overflow-y: auto;
-  z-index: 1000;
+  z-index: 10000020;
   opacity: 0;
   transition: opacity 0.3s ease;
 }
@@ -288,16 +292,20 @@
   width: 40px;
   height: 40px;
   border-radius: 12px;
-  background: rgba(0, 172, 235, 0.1);
-  border: 1px solid rgba(0, 172, 235, 0.4);
+  background: radial-gradient(circle at 35% 35%, rgba(255, 179, 255, 0.6), rgba(81, 23, 105, 0.9));
+  border: 1px solid rgba(255, 210, 255, 0.55);
   display: grid;
   place-items: center;
-  color: var(--preview-blue-200);
+  color: #fff5ff;
+  box-shadow:
+    inset 0 0 16px rgba(255, 255, 255, 0.3),
+    0 8px 22px rgba(0, 0, 0, 0.45);
 }
 
 .infoModalIcon svg {
   width: 20px;
   height: 20px;
+  stroke: currentColor;
 }
 
 .infoModalEyebrow {
@@ -305,13 +313,13 @@
   text-transform: uppercase;
   letter-spacing: 0.2em;
   font-size: 0.7rem;
-  color: rgba(230, 240, 255, 0.6);
+  color: rgba(255, 255, 255, 0.92);
 }
 
 .infoModalHeading {
   margin: 0.2rem 0 0;
   font-size: 1.4rem;
-  color: #f8fbff;
+  color: #ffffff;
 }
 
 .infoModalBody {
@@ -319,14 +327,18 @@
   flex-direction: column;
   gap: 0.75rem;
   flex: 1 1 auto;
+  color: rgba(250, 252, 255, 0.95);
+  line-height: 1.65;
 }
 
-.hero {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: clamp(1.5rem, 3vw, 3rem);
-  padding: clamp(1.5rem, 3vw, 3.5rem);
-  border-radius: 32px;
+.infoModalBody p {
+  color: rgba(250, 252, 255, 0.95);
+}
+
+.hero,
+.jobvizHero {
+  padding: clamp(2rem, 4vw, 4rem);
+  border-radius: 0;
   background: linear-gradient(135deg, rgba(5, 12, 32, 0.92), rgba(15, 67, 116, 0.82));
   border: 1px solid var(--preview-border);
   box-shadow: var(--preview-shadow);
@@ -335,7 +347,22 @@
   transform-style: preserve-3d;
 }
 
-.hero::before {
+.jobvizHeroContent {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1.5rem, 3vw, 3rem);
+}
+
+@media (min-width: 900px) {
+  .jobvizHeroContent {
+    flex-direction: row;
+    align-items: stretch;
+    gap: clamp(2rem, 4vw, 4rem);
+  }
+}
+
+.hero::before,
+.jobvizHero::before {
   content: "";
   position: absolute;
   inset: -20%;
@@ -355,7 +382,8 @@
   pointer-events: none;
 }
 
-.hero::after {
+.hero::after,
+.jobvizHero::after {
   content: "";
   position: absolute;
   inset: 0;
@@ -368,7 +396,8 @@
   animation: pulseSweep 10s ease-in-out infinite;
 }
 
-.previewPage[data-tone="burst"] .hero::after {
+.previewPage[data-tone="burst"] .hero::after,
+.jobvizHero[data-tone="burst"]::after {
   background: radial-gradient(
     circle at 90% 10%,
     rgba(255, 90, 181, 0.35),
@@ -376,15 +405,19 @@
   );
 }
 
-.heroCopy {
+.heroCopy,
+.jobvizHeroInner {
   display: flex;
   flex-direction: column;
   gap: 1rem;
   position: relative;
   z-index: 1;
+  flex: 1.35;
+  min-width: 0;
 }
 
-.heroEyebrow {
+.heroEyebrow,
+.jobvizHeroEyebrow {
   margin: 0;
   text-transform: uppercase;
   letter-spacing: 0.2em;
@@ -392,17 +425,20 @@
   color: rgba(230, 240, 255, 0.65);
 }
 
-.heroTitle {
+.heroTitle,
+.jobvizHeroTitle {
   margin: 0;
   font-size: clamp(2rem, 4vw, 2.75rem);
   font-weight: 300;
   color: #f6fbff;
 }
 
-.heroSubtitle {
+.heroSubtitle,
+.jobvizHeroSubtitle {
   margin: 0;
   color: rgba(230, 240, 255, 0.78);
   line-height: 1.6;
+  max-width: 48ch;
 }
 
 .heroToggles {
@@ -428,11 +464,42 @@
   color: white;
 }
 
-.heroStats {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+.heroStatsColumn {
+  flex: 1;
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 1.5rem;
+  background: rgba(7, 15, 40, 0.75);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 20px 35px rgba(0, 0, 0, 0.4);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   gap: 1rem;
-  align-self: center;
+  min-width: min(320px, 100%);
+  align-self: stretch;
+}
+
+@media (min-width: 900px) {
+  .heroStatsColumn {
+    max-width: 360px;
+    margin-left: auto;
+  }
+}
+
+.heroStats {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  height: 100%;
+  justify-content: center;
+}
+
+@media (min-width: 600px) {
+  .heroStats {
+    gap: 1.25rem;
+  }
 }
 
 .heroStat {
@@ -440,22 +507,22 @@
   border-radius: 20px;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid var(--preview-border);
-  text-align: center;
+  text-align: left;
 }
 
 .heroStatLabel {
   display: block;
-  font-size: 0.8rem;
-  color: rgba(230, 240, 255, 0.65);
-  text-transform: uppercase;
-  letter-spacing: 0.15em;
+  font-size: 0.85rem;
+  color: rgba(230, 240, 255, 0.75);
+  text-transform: none;
+  letter-spacing: 0.02em;
 }
 
 .heroStatValue {
   display: block;
-  font-size: 1.75rem;
-  font-weight: 400;
-  margin-top: 0.25rem;
+  font-size: 1.5rem;
+  font-weight: 500;
+  margin-top: 0.35rem;
   color: #f8fbff;
 }
 
@@ -521,6 +588,7 @@
   gap: 1rem;
   position: relative;
   transition: transform 0.4s ease, box-shadow 0.4s ease, border-color 0.3s ease;
+  min-height: 100%;
 }
 
 .categoryCard {
@@ -533,7 +601,7 @@
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
   display: flex;
   flex-direction: column;
-  gap: 0;
+  gap: 0.75rem;
   min-height: 100%;
   position: relative;
   transition: transform 0.4s ease, box-shadow 0.4s ease, border-color 0.3s ease;
@@ -627,10 +695,51 @@
   opacity: 1;
 }
 
+.categoryCardHighlight {
+  box-shadow:
+    0 0 0 2px rgba(118, 159, 255, 0.5),
+    0 28px 55px rgba(6, 8, 22, 0.65),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.jobCardHighlight {
+  box-shadow:
+    0 0 0 2px rgba(255, 168, 255, 0.5),
+    0 28px 60px rgba(12, 0, 20, 0.8),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+.jobCardVisited {
+  border-color: rgba(255, 168, 255, 0.45);
+  opacity: 0.95;
+}
+
+.categoryBookmark {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.categoryBookmarkVisited {
+  border-color: rgba(255, 168, 255, 0.6);
+  background: rgba(255, 168, 255, 0.2);
+}
+
 .cardHeader {
   display: flex;
   gap: 1rem;
   align-items: flex-start;
+}
+
+.cardHeading {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
 }
 
 .iconBadge {
@@ -645,12 +754,15 @@
   place-items: center;
   box-shadow: inset 0 0 12px rgba(255, 255, 255, 0.15),
     0 10px 25px rgba(7, 0, 13, 0.6);
+  color: #ffffff;
 }
 
 .iconBadge svg {
   width: 28px;
   height: 28px;
   stroke-width: 1.5;
+  stroke: currentColor;
+  fill: none;
 }
 
 .nestedIcon {
@@ -660,16 +772,17 @@
   width: 26px;
   height: 26px;
   border-radius: 999px;
-  background: linear-gradient(145deg, rgba(255, 255, 255, 0.95), rgba(212, 197, 255, 0.8));
-  border: 1px solid rgba(129, 83, 255, 0.6);
+  background: radial-gradient(circle at 25% 25%, rgba(115, 47, 148, 0.9), rgba(46, 12, 80, 0.95));
+  border: 1px solid rgba(197, 120, 255, 0.7);
   display: grid;
   place-items: center;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.45);
 }
 
 .nestedIcon svg {
   width: 16px;
   height: 16px;
-  stroke: var(--preview-indigo);
+  stroke: #2b0055;
   stroke-width: 1.6;
 }
 
@@ -733,6 +846,167 @@
   font-size: 1.1rem;
   color: #f8fbff;
   margin-top: 0.2rem;
+}
+
+.assignmentStrip {
+  margin-bottom: clamp(1.5rem, 4vw, 3rem);
+  padding-bottom: clamp(0.5rem, 2vw, 1.5rem);
+}
+
+.assignmentStripInner {
+  border-radius: 36px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: radial-gradient(circle at 15% 20%, rgba(255, 255, 255, 0.05), transparent 45%),
+    rgba(4, 10, 26, 0.95);
+  box-shadow:
+    0 35px 60px rgba(2, 0, 10, 0.6),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  padding: clamp(1rem, 3vw, 2rem);
+  position: relative;
+  overflow: hidden;
+}
+
+.assignmentStripInner::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(125deg, rgba(255, 61, 172, 0.15), transparent 60%);
+  pointer-events: none;
+}
+
+.assignmentUnitLabel {
+  margin: 0 0 0.75rem;
+  font-size: 0.95rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(222, 238, 255, 0.75);
+}
+
+.assignmentBannerShell {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.assignmentUnitLabelInline {
+  font-size: 0.95rem;
+  color: rgba(230, 240, 255, 0.85);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.assignmentUnitIcon {
+  width: 18px;
+  height: 18px;
+}
+
+.assignmentBanner {
+  border-radius: 30px;
+  padding: clamp(1rem, 3vw, 1.6rem);
+  background: rgba(9, 13, 30, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 25px 45px rgba(4, 0, 9, 0.55);
+}
+
+.assignmentBannerSticky {
+  position: relative;
+}
+
+.assignmentInner {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  position: relative;
+  z-index: 1;
+}
+
+.assignmentInnerFlash {
+  animation: panelFade 0.3s ease;
+}
+
+.assignmentMarker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.4rem 0.9rem;
+  border-radius: 999px;
+  background: rgba(0, 172, 235, 0.08);
+  border: 1px solid rgba(0, 172, 235, 0.3);
+  width: fit-content;
+}
+
+.assignmentMarkerLabel {
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 0.7rem;
+  color: rgba(222, 238, 255, 0.85);
+}
+
+.assignmentMarkerIcon {
+  width: 16px;
+  height: 16px;
+  color: var(--preview-cyan);
+}
+
+.assignmentContent {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.assignmentCopy {
+  margin: 0;
+  font-size: 1rem;
+  color: rgba(230, 240, 255, 0.85);
+}
+
+.assignmentListWrap {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.5rem;
+}
+
+.assignmentList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.assignmentListItem {
+  list-style: none;
+}
+
+.assignmentLink {
+  width: 100%;
+  text-align: left;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 18px;
+  padding: 0.6rem 0.75rem;
+  color: #f6fbff;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: transform 0.2s ease, border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.assignmentLink:hover,
+.assignmentLink:focus-visible {
+  transform: translateY(-3px);
+  border-color: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+}
+
+.assignmentLinkClicked {
+  border-color: rgba(0, 172, 235, 0.5);
 }
 
 .assignmentDock {
@@ -804,6 +1078,50 @@
   border-radius: 999px;
 }
 
+.assignmentCarouselBtn {
+  border: none;
+  background: rgba(255, 255, 255, 0.08);
+  color: #f6fbff;
+  width: 42px;
+  height: 42px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.assignmentCarouselBtn:hover,
+.assignmentCarouselBtn:focus-visible {
+  transform: translateY(-3px);
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.assignmentCarouselItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 20px;
+  padding: 0.7rem 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+  min-height: 72px;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.assignmentCarouselItemNext {
+  animation: slideInFromRight 0.3s ease;
+}
+
+.assignmentCarouselItemPrev {
+  animation: slideInFromLeft 0.3s ease;
+}
+
+.assignmentCarouselMeta {
+  font-size: 0.85rem;
+  color: rgba(230, 240, 255, 0.7);
+}
+
 .assignmentJob {
   border-radius: 18px;
   border: 1px solid rgba(0, 172, 235, 0.25);
@@ -831,9 +1149,43 @@
   font-size: 0.95rem;
 }
 
-.assignmentJobTitle svg {
+.assignmentListIconWrap {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.15),
+    0 8px 18px rgba(0, 0, 0, 0.35);
+}
+
+.assignmentListIcon {
+  width: 22px;
+  height: 22px;
+}
+
+.assignmentListNestedIcon {
+  position: absolute;
+  bottom: -4px;
+  right: -6px;
   width: 18px;
   height: 18px;
+  border-radius: 999px;
+  background: radial-gradient(circle at 30% 30%, rgba(114, 46, 168, 0.9), rgba(45, 8, 82, 0.9));
+  border: 1px solid rgba(189, 115, 255, 0.7);
+  display: grid;
+  place-items: center;
+}
+
+.assignmentListNestedIcon svg {
+  width: 12px;
+  height: 12px;
+  stroke: #2b0055;
+  stroke-width: 1.4;
 }
 
 .assignmentEmoji {
@@ -918,6 +1270,31 @@
   font-family: "Noto Sans Mono", ui-monospace;
 }
 
+.modalHeaderActions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.modalCloseButton {
+  border: none;
+  background: rgba(255, 255, 255, 0.08);
+  color: #f7fbff;
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.modalCloseButton:hover,
+.modalCloseButton:focus-visible {
+  transform: translateY(-3px);
+  background: rgba(255, 255, 255, 0.18);
+}
+
 .modalSummary {
   margin: 0;
   color: rgba(230, 240, 255, 0.75);
@@ -960,27 +1337,29 @@
 }
 
 .inlineInfoButton {
-  border: none;
-  background: rgba(255, 255, 255, 0.08);
-  color: #def2ff;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
   border-radius: 999px;
   width: 28px;
   height: 28px;
   display: grid;
   place-items: center;
   cursor: pointer;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.4);
 }
 
 .inlineInfoButton svg {
   width: 16px;
   height: 16px;
+  stroke: currentColor;
 }
 
 .modalList {
   margin: 0;
   padding-left: 1.2rem;
-  color: rgba(230, 240, 255, 0.75);
-  line-height: 1.5;
+  color: rgba(248, 250, 255, 0.92);
+  line-height: 1.6;
 }
 
 .modalActions {
@@ -1061,78 +1440,288 @@
     background-position: 0% 50%;
   }
 }
+
+@keyframes slideInFromRight {
+  0% {
+    opacity: 0;
+    transform: translateX(12px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInFromLeft {
+  0% {
+    opacity: 0;
+    transform: translateX(-12px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
 .categoryTop {
   display: flex;
-  gap: 1rem;
-  align-items: center;
-}
-
-.categoryIconBadge {
-  width: 72px;
-  height: 72px;
-  border-radius: 22px;
-  background: radial-gradient(circle, rgba(96, 144, 255, 0.18), transparent 70%);
-  border: 1px solid rgba(104, 140, 255, 0.55);
-  display: grid;
-  place-items: center;
-  box-shadow: inset 0 0 12px rgba(104, 140, 255, 0.3);
-}
-
-.categoryIconBadge svg {
-  width: 36px;
-  height: 36px;
-  stroke-width: 1.6;
-}
-
-.categoryTop {
-  display: flex;
-  gap: 1rem;
-  align-items: center;
+  gap: 1.25rem;
+  align-items: flex-start;
+  flex: 1 1 66%;
   min-height: 66%;
 }
 
+@media (max-width: 650px) {
+  .categoryTop {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
 .categoryIconBadge {
-  width: 80px;
-  height: 80px;
+  width: 82px;
+  height: 82px;
   border-radius: 24px;
-  background: radial-gradient(circle, rgba(96, 144, 255, 0.2), transparent 70%);
-  border: 1px solid rgba(104, 140, 255, 0.55);
+  background: radial-gradient(circle at 30% 30%, rgba(150, 193, 255, 0.45), rgba(17, 29, 74, 0.25));
+  border: 1px solid rgba(150, 193, 255, 0.7);
   display: grid;
   place-items: center;
-  box-shadow: inset 0 0 15px rgba(104, 140, 255, 0.3);
+  box-shadow:
+    inset 0 0 20px rgba(150, 193, 255, 0.35),
+    0 18px 40px rgba(3, 6, 20, 0.65);
+  color: #ffffff;
 }
 
 .categoryIconBadge svg {
   width: 38px;
   height: 38px;
   stroke-width: 1.6;
+  stroke: currentColor;
+  fill: none;
 }
 
 .categoryTitle {
   margin: 0;
-  font-size: 1.55rem;
+  font-size: clamp(1.4rem, 2vw, 1.9rem);
   color: #f6f8ff;
+  line-height: 1.25;
 }
 
 .categoryMetaRow {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.75rem;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, auto));
+  align-items: flex-end;
+  column-gap: 0.65rem;
+  row-gap: 0.35rem;
   padding: 0.35rem 0;
   border-top: 1px solid rgba(255, 255, 255, 0.08);
+  margin-top: auto;
 }
 
 .categoryLabel {
   display: block;
   font-size: 0.75rem;
-  letter-spacing: 0.07em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: rgba(222, 229, 255, 0.7);
+  color: rgba(222, 229, 255, 0.75);
 }
 
 .categoryValue {
   display: block;
-  font-size: 1.3rem;
-  margin-top: 0.2rem;
-  color: #f9faff;
+  font-size: 1.35rem;
+  margin-top: 0.15rem;
+  color: #fefeff;
+}
+.jobvizSection {
+  position: relative;
+  padding: clamp(2rem, 4vw, 4rem) 0 clamp(4rem, 7vw, 7rem);
+}
+
+.jobvizSectionBg {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(13, 18, 40, 0.9) 0%,
+    rgba(6, 8, 22, 0.95) 60%,
+    rgba(3, 5, 15, 0.95) 100%
+  );
+  opacity: 0.95;
+}
+
+.jobvizSectionPattern {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(
+      circle at 1px 1px,
+      rgba(255, 255, 255, 0.04) 1px,
+      transparent 0
+    ),
+    linear-gradient(
+      120deg,
+      rgba(255, 61, 172, 0.08),
+      transparent 60%
+    );
+  background-size: 12px 12px, 100% 100%;
+  opacity: 0.8;
+}
+
+.jobvizSectionInner {
+  position: relative;
+  z-index: 1;
+  padding-bottom: clamp(2rem, 5vw, 4rem);
+}
+
+.jobvizSectionHeading {
+  font-size: clamp(1.5rem, 2.5vw, 2.25rem);
+  color: #f4f7ff;
+  margin-bottom: 1.5rem;
+}
+
+.jobvizContextZone {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding-bottom: 3.5rem;
+}
+
+.jobvizGridWrap {
+  border-radius: 32px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(5, 10, 24, 0.9);
+  padding: clamp(1rem, 3vw, 1.75rem);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 35px 60px rgba(0, 0, 0, 0.55);
+}
+
+.jobvizSource {
+  color: rgba(237, 243, 255, 0.86);
+  font-size: 0.95rem;
+  margin-top: 1.75rem;
+  margin-bottom: 4rem;
+  line-height: 1.6;
+}
+
+.jobvizSource a {
+  color: #64c8ff;
+}
+
+.jobvizSourceFixed {
+  margin-top: 1.25rem;
+}
+.jobvizBreadcrumb {
+  font-family: "Noto Sans Mono", ui-monospace, SFMono-Regular, Menlo, Monaco,
+    Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 0.86rem;
+  color: rgba(255, 255, 255, 0.95);
+  margin-bottom: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.45);
+}
+
+.breadcrumbButton {
+  border: none;
+  padding: 0;
+  margin: 0;
+  background: none;
+  cursor: pointer;
+}
+
+.breadcrumbButton:hover .breadcrumbLabel {
+  text-decoration: underline;
+}
+
+.breadcrumbSegment,
+.breadcrumbSegmentActive {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.breadcrumbSegment svg,
+.breadcrumbSegmentActive svg {
+  width: 14px;
+  height: 14px;
+  stroke-width: 2.1;
+  stroke: currentColor;
+}
+
+.breadcrumbSegmentActive {
+  font-weight: 700;
+  color: #ffffff;
+  padding: 0.25rem 0.55rem;
+  border-radius: 999px;
+  background: rgba(242, 127, 165, 0.35);
+  border: 1px solid rgba(209, 79, 134, 0.45);
+  box-shadow: 0 0 12px rgba(242, 127, 165, 0.3);
+}
+
+.breadcrumbSeparator {
+  opacity: 0.6;
+  padding-inline: 0.2rem;
+}
+
+.breadcrumbLabel {
+  color: inherit;
+}
+
+.jobvizSearch {
+  margin-bottom: 2rem;
+}
+
+.jobvizSearchInput {
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: rgba(0, 0, 0, 0.2);
+  color: #f9fcff;
+  padding: 0.75rem 1rem;
+}
+
+.jobvizSearchInput:focus {
+  border-color: rgba(0, 172, 235, 0.7);
+  box-shadow: 0 0 0 2px rgba(0, 172, 235, 0.2);
+}
+
+.jobvizSearchResults {
+  margin-top: 0.75rem;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(3, 8, 22, 0.92);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+  display: grid;
+}
+
+.jobvizSearchResult {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: none;
+  background: transparent;
+  color: inherit;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  text-align: left;
+}
+
+.jobvizSearchResult:last-of-type {
+  border-bottom: none;
+}
+
+.jobvizSearchResult:hover,
+.jobvizSearchResult:focus-visible {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.jobvizSearchTitle {
+  font-weight: 600;
+  color: #f9fbff;
+}
+
+.jobvizSearchMeta {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.6);
 }

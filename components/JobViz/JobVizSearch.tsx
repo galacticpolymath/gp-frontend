@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useRouter } from "next/router";
-import styles from "../../styles/jobvizGlass.module.css";
+import styles from "../../styles/jobvizBurst.module.scss";
 import {
   AssignmentParams,
   buildJobvizUrl,

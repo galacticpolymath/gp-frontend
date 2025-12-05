@@ -1,167 +1,39 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Modal from "react-bootstrap/Modal";
-import { LucideIcon } from "../JobViz/LucideIcon";
-import { ISelectedJob, useModalContext } from "../../providers/ModalProvider";
-import jobVizDataObj from "../../data/Jobviz/jobVizDataObj.json";
 import { useRouter } from "next/router";
-import getNewPathsWhenModalCloses from "../../helperFns/getNewPathsWhenModalCloses";
-import { replaceCharAt } from "../../shared/fns";
-import CopyableTxt from "../CopyableTxt";
 import { toast } from "react-toastify";
 import { useSearchParams } from "next/navigation";
+import { LucideIcon } from "../JobViz/LucideIcon";
+import { useModalContext } from "../../providers/ModalProvider";
+import jobVizDataObj from "../../data/Jobviz/jobVizDataObj.json";
+import getNewPathsWhenModalCloses from "../../helperFns/getNewPathsWhenModalCloses";
 import { createSelectedJobVizJobLink } from "../JobViz/JobTours/JobToursCard";
 import { JOBVIZ_BRACKET_SEARCH_ID } from "../../pages/jobviz/index";
-import Button from "../General/Button";
 import {
   buildJobvizUrl,
+  getIconNameForNode,
+  getJobSpecificIconName,
 } from "../JobViz/jobvizUtils";
 import {
   SOC_CODES_PARAM_NAME,
   UNIT_NAME_PARAM_NAME,
 } from "../LessonSection/JobVizConnections";
+import styles from "../../styles/jobvizBurst.module.scss";
+import {
+  formatCurrency,
+  formatNumber,
+  formatPercent,
+  infoModalContent,
+  InfoModalType,
+} from "../JobViz/infoModalContent";
 
-const { Header, Title, Body } = Modal;
-const { data_start_yr: _data_start_yr, data_end_yr: _data_end_yr } =
-  jobVizDataObj;
-const DATA_START_YR = _data_start_yr[0];
-const DATA_END_YR = _data_end_yr[0];
+const { Body } = Modal;
+const DATA_END_YR = jobVizDataObj.data_end_yr?.[0] ?? 2034;
 
-const formatToCurrency = (num: number) =>
-  num.toLocaleString("en-US", {
-    style: "currency",
-    currency: "USD",
-    maximumFractionDigits: 0,
-  });
-
-const formatDataTxtToCurrency = (dataTxt: number | null) => {
-  if (typeof dataTxt === "number") {
-    return formatToCurrency(dataTxt);
-  }
-
-  return "Data unavailable";
-};
-
-const createInfoCards = (selectedJob: ISelectedJob | null) => {
-  if (!selectedJob) {
-    return [];
-  }
-
-  // Destructure all the properties needed by infoCards from selectedJob
-  const {
-    median_annual_wage,
-    typical_education_needed_for_entry,
-    employment_start_yr,
-    employment_end_yr,
-    employment_change_percent,
-  } = selectedJob;
-  const onTheJobTraining =
-    selectedJob[
-      "typical_on-the-job_training_needed_to_attain_competency_in_the_occupation"
-    ];
-  const infoCards = [
-    {
-      id: "medianAnnualWage",
-      title: `Median ${DATA_START_YR} Annual Wage`,
-      txt: formatDataTxtToCurrency(median_annual_wage),
-      icon: <LucideIcon name="DollarSign" />,
-    },
-    {
-      id: "educationNeededForEntry",
-      title: "Education Needed",
-      txt: typical_education_needed_for_entry,
-      icon: <LucideIcon name="GraduationCap" />,
-    },
-    {
-      id: "onTheJobTraining",
-      title: "On-the-job Training",
-      txt: onTheJobTraining,
-      icon: <LucideIcon name="Wrench" />,
-    },
-    {
-      id: "employmentStartYr",
-      title: `${DATA_START_YR} Employment`,
-      txt: employment_start_yr.toLocaleString(),
-      icon: <LucideIcon name="CalendarCheck" />,
-    },
-    {
-      id: "employmentEndYr",
-      title: `Predicted ${DATA_END_YR} Employment`,
-      txt: employment_end_yr.toLocaleString(),
-      icon: <LucideIcon name="CalendarClock" />,
-    },
-    {
-      id: "employmentChange",
-      title: `Predicted change in Employment ${DATA_START_YR} - ${DATA_END_YR}`,
-      txt: employment_change_percent,
-      icon: <LucideIcon name="TrendingUpDown" />,
-    },
-  ] as const;
-
-  return infoCards;
-};
-
-const InfoCards: React.FC<{
-  infoCards: ReturnType<typeof createInfoCards>;
-}> = ({ infoCards }) => {
-  return infoCards.map((card, index) => {
-    const { icon, title, txt, id } = card;
-    let _txt = txt;
-
-    if (typeof _txt === "string" && _txt.split(" ").length === 2) {
-      const txtSplitted = _txt.split(" ");
-      let [firstWord, secondWord] = txtSplitted;
-      const firstChar = firstWord.charAt(0);
-      firstWord = replaceCharAt(firstWord, 0, firstChar.toUpperCase());
-      _txt = `${firstWord} ${secondWord}`;
-    }
-
-    if (id === "employmentChange" && typeof _txt === "number") {
-      _txt = `${Math.sign(_txt) ? "+" : ""}${_txt.toLocaleString()}%`;
-    } else if (id === "employmentChange") {
-      _txt = "Data unavailable";
-    }
-
-    return (
-      <div className="col-6 col-md-4" key={index}>
-        <div className="jobInfoStatCard shadow h-100">
-          <div className="d-flex align-items-center justify-content-center border h-100 py-2">
-            <section className="d-flex flex-column w-75 position-relative">
-              <section className="w-100">{icon}</section>
-              <section className="w-100 mt-1">
-                <h5 className="fw-bold">{title}</h5>
-              </section>
-              <section className="w-100 position-absolute">
-                <span className="d-inline-block w-100 ">{_txt}</span>
-              </section>
-            </section>
-          </div>
-        </div>
-      </div>
-    );
-  });
-};
-
-const CopyLinkTxtAndIcon: React.FC = () => {
-  return (
-    <>
-      <span className="me-1">Copy Link</span>
-      <svg
-        width="16"
-        height="16"
-        className="mb-1"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      >
-        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-      </svg>
-    </>
-  );
-};
+const describe = (value?: string | null) =>
+  value && value.trim().length && value.toLowerCase() !== "data unavailable"
+    ? value
+    : "Data unavailable";
 
 const SelectedJob: React.FC = () => {
   const { _selectedJob, _isJobModalOn, _jobToursModalCssProps } =
@@ -169,43 +41,66 @@ const SelectedJob: React.FC = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [selectedJob, setSelectedJob] = _selectedJob;
-  const [jobLink, setJobLink] = useState("");
   const [, setIsJobModal] = _isJobModalOn;
   const [, setJobToursModalCssProps] = _jobToursModalCssProps;
-  let {
-    soc_title,
-    def: _def,
-    title,
-    BLS_link,
-    wasSelectedFromJobToursCard,
-  } = selectedJob ?? {};
+  const [jobLink, setJobLink] = useState("");
+  const [infoModal, setInfoModal] = useState<InfoModalType | null>(null);
+  const [modalHistory, setModalHistory] = useState<InfoModalType | null>(null);
+  const [isInfoClosing, setIsInfoClosing] = useState(false);
+  const closeModalTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const copyToastId = useRef<string | number | null>(null);
+
+  const activeInfoModal = modalHistory ? infoModalContent[modalHistory] : null;
+  const shouldRenderInfoModal =
+    (infoModal !== null || isInfoClosing) && !!activeInfoModal;
+
+  const triggerHaptic = (duration = 14) => {
+    if (typeof navigator !== "undefined" && "vibrate" in navigator) {
+      navigator.vibrate(duration);
+    }
+  };
+
+  const openInfoModal = (type: InfoModalType) => {
+    triggerHaptic();
+    setModalHistory(type);
+    setInfoModal(type);
+    setIsInfoClosing(false);
+  };
+
+  const closeInfoModal = () => {
+    triggerHaptic(6);
+    setIsInfoClosing(true);
+    setInfoModal(null);
+    if (closeModalTimeoutRef.current) {
+      clearTimeout(closeModalTimeoutRef.current);
+    }
+    closeModalTimeoutRef.current = setTimeout(() => {
+      setIsInfoClosing(false);
+      closeModalTimeoutRef.current = null;
+    }, 280);
+  };
 
   useEffect(() => {
-    console.log("selectedJob, WITHIN useEffect: ", selectedJob);
-  });
-  let jobTitle = soc_title ?? title;
-  jobTitle = jobTitle === "Total, all" ? "All US Jobs" : jobTitle;
-  let def: string | null = _def ?? "";
-  def =
-    def.toLowerCase() === "no definition found for this summary category."
-      ? null
-      : def;
+    return () => {
+      if (closeModalTimeoutRef.current) {
+        clearTimeout(closeModalTimeoutRef.current);
+      }
+    };
+  }, []);
 
-  const infoCards = createInfoCards(selectedJob);
+  useEffect(() => {
+    setIsJobModal(true);
+  }, [setIsJobModal]);
 
   const handleOnHide = () => {
     const searchResults = router.query["search-results"];
 
     if (router.asPath.includes("jobviz") && Array.isArray(searchResults)) {
-      const newPaths = getNewPathsWhenModalCloses(
-        router.query["search-results"]
-      );
+      const newPaths = getNewPathsWhenModalCloses(searchResults);
       const paramsStr = searchParams.toString();
       const url = paramsStr.length
         ? `${window.location.origin}/jobviz${newPaths}?${paramsStr}`
         : `${window.location.origin}/jobviz${newPaths}`;
-
-      console.log("Navigating to URL on modal close: ", url);
 
       router.push(url, undefined, {
         scroll: false,
@@ -213,38 +108,34 @@ const SelectedJob: React.FC = () => {
     }
 
     setSelectedJob(null);
+    setInfoModal(null);
+    setModalHistory(null);
+    setIsInfoClosing(false);
+    if (closeModalTimeoutRef.current) {
+      clearTimeout(closeModalTimeoutRef.current);
+      closeModalTimeoutRef.current = null;
+    }
     setJobToursModalCssProps({
       zIndex: 10000,
     });
   };
 
-  const handleCopyLinkBtnClick = () => {
-    if (jobLink) {
-      navigator.clipboard.writeText(jobLink);
+  const handleCopyLink = async () => {
+    if (!jobLink) {
+      console.error("Job link unavailable. Cannot copy.");
       return;
     }
 
-    console.error("BLS_link is falsy. Cannot copy link.");
-  };
-
-  const toastLinkCopied = useRef("");
-
-  const handleCopyLinkBtnPressOnMobile = () => {
-    if (toastLinkCopied.current) {
-      toast.dismiss(toastLinkCopied.current);
+    try {
+      await navigator.clipboard.writeText(jobLink);
+      if (copyToastId.current) {
+        toast.dismiss(copyToastId.current);
+      }
+      copyToastId.current = toast.success("Link copied!");
+    } catch (error) {
+      console.error("Failed to copy job link.", error);
     }
-
-    if (jobLink) {
-      navigator.clipboard.writeText(jobLink);
-      return;
-    }
-
-    console.error("BLS_link is falsy. Cannot copy link.");
   };
-
-  useEffect(() => {
-    setIsJobModal(true);
-  }, []);
 
   const handleExploreRelatedCareers = async () => {
     if (!selectedJob) return;
@@ -289,102 +180,233 @@ const SelectedJob: React.FC = () => {
     }
   };
 
+  const jobTitle =
+    selectedJob?.soc_title ?? selectedJob?.title ?? "Job overview";
+  const definition =
+    selectedJob?.def &&
+    selectedJob.def.toLowerCase() !==
+      "no definition found for this summary category."
+      ? selectedJob.def
+      : null;
+  const categoryIcon = selectedJob
+    ? getIconNameForNode(selectedJob)
+    : "Sparkles";
+  const jobIcon = selectedJob ? getJobSpecificIconName(selectedJob) : undefined;
+
+  const stats = selectedJob
+    ? [
+        {
+          id: "median",
+          label: "Median wage",
+          value: formatCurrency(selectedJob.median_annual_wage),
+          infoType: "wage" as InfoModalType,
+        },
+        {
+          id: "growth",
+          label: "10-year change",
+          value: formatPercent(selectedJob.employment_change_percent),
+          infoType: "growth" as InfoModalType,
+        },
+        {
+          id: "jobs",
+          label: `Jobs by ${DATA_END_YR}`,
+          value: formatNumber(selectedJob.employment_end_yr),
+          infoType: "jobs" as InfoModalType,
+        },
+      ]
+    : [];
+
   return (
-    <Modal
-      show={!!selectedJob}
-      onHide={handleOnHide}
-      onShow={() => {
-        const jobLink = selectedJob
-          ? createSelectedJobVizJobLink(selectedJob)
-          : null;
+    <>
+      <Modal
+        show={!!selectedJob}
+        onHide={handleOnHide}
+        onShow={() => {
+          const nextLink = selectedJob
+            ? createSelectedJobVizJobLink(selectedJob)
+            : null;
+          if (selectedJob && nextLink) {
+            setJobLink(nextLink);
+          } else {
+            console.error("selectedJob is falsy. Cannot create job link.");
+          }
+        }}
+        contentClassName="selectedJobModal"
+        dialogClassName="dialogJobVizModal py-2 d-sm-flex justify-content-center align-items-center"
+        fullscreen="md-down"
+        style={{
+          zIndex: 10000000,
+        }}
+      >
+        <Body className="selectedJobBody">
+          {selectedJob && (
+            <article className={styles.modalCard}>
+              <header className={styles.modalHeader}>
+                <div className={styles.modalIdentity}>
+                  <div className={`${styles.iconBadge} ${styles.modalIcon}`}>
+                    <LucideIcon name={categoryIcon} />
+                    {jobIcon && (
+                      <span className={styles.nestedIcon}>
+                        <LucideIcon name={jobIcon} />
+                      </span>
+                    )}
+                  </div>
+                  <div>
+                    <p className={styles.modalEyebrow}>Job detail modal</p>
+                    <h3 className={styles.modalTitle}>{jobTitle}</h3>
+                  </div>
+                </div>
+                <div className={styles.modalHeaderActions}>
+                  <span className={styles.modalBadge}>
+                    {selectedJob.soc_code}
+                  </span>
+                  <button
+                    type="button"
+                    className={styles.modalCloseButton}
+                    onClick={handleOnHide}
+                    aria-label="Close job details"
+                  >
+                    <LucideIcon name="X" />
+                  </button>
+                </div>
+              </header>
+              <p className={styles.modalSummary}>
+                {definition ?? "Definition unavailable from the BLS feed."}
+              </p>
+              <dl className={styles.modalStats}>
+                {stats.map((stat) => (
+                  <div key={stat.id} className={styles.modalStat}>
+                    <div className={styles.modalStatHeader}>
+                      <dt>{stat.label}</dt>
+                      <button
+                        type="button"
+                        className={styles.inlineInfoButton}
+                        aria-haspopup="dialog"
+                        aria-controls="jobviz-info-modal"
+                        aria-label={`Open ${stat.label} explainer`}
+                        onClick={() => openInfoModal(stat.infoType)}
+                      >
+                        <LucideIcon name="Info" />
+                      </button>
+                    </div>
+                    <dd>{stat.value}</dd>
+                  </div>
+                ))}
+              </dl>
+              <ul className={styles.modalList}>
+                <li>
+                  Typical education:{" "}
+                  {describe(selectedJob.typical_education_needed_for_entry)}
+                </li>
+                <li>
+                  Work experience:{" "}
+                  {describe(selectedJob.work_experience_in_a_related_occupation)}
+                </li>
+                <li>
+                  On-the-job training:{" "}
+                  {describe(
+                    selectedJob[
+                      "typical_on-the-job_training_needed_to_attain_competency_in_the_occupation"
+                    ]
+                  )}
+                </li>
+              </ul>
+              <footer className={styles.modalActions}>
+                <button
+                  type="button"
+                  className={styles.ghostButton}
+                  onClick={handleExploreRelatedCareers}
+                >
+                  Explore related careers
+                </button>
+                {selectedJob.BLS_link && (
+                  <a
+                    className={styles.ghostButton}
+                    href={selectedJob.BLS_link}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    View BLS profile
+                  </a>
+                )}
+                <button
+                  type="button"
+                  className={styles.primaryButton}
+                  onClick={handleCopyLink}
+                >
+                  Copy share link
+                </button>
+              </footer>
+            </article>
+          )}
+        </Body>
+      </Modal>
 
-        console.log(`Job link: ${jobLink}`);
-
-        if (selectedJob && jobLink) {
-          setJobLink(jobLink);
-          return;
-        }
-
-        console.error("selectedJob is falsy. Cannot create job link.");
-      }}
-      contentClassName="selectedJobModal"
-      dialogClassName="dialogJobVizModal py-2 d-sm-flex justify-content-center align-items-center"
-      fullscreen="md-down"
-      style={{
-        zIndex: 10000000,
-      }}
-    >
-      <Header className="selectedJobHeader border-0 pb-0 pt-3" closeButton>
-        <Title className="w-100 pt-1">
-          <h3 className="text-center text-sm-start pt-2 pt-sm-0 mb-0">
-            {jobTitle}
-          </h3>
-        </Title>
-      </Header>
-      <Body className="selectedJobBody">
-        {def && (
-          <section>
-            <h5 className="text-center text-sm-start">{def}</h5>
-          </section>
-        )}
-        <section className="jobInfoStatSec pt-3 d-none d-sm-flex">
-          <InfoCards infoCards={infoCards} />
-        </section>
-        <section className="jobInfoStatSec pt-3 row g-2 d-flex d-sm-none">
-          <InfoCards infoCards={infoCards} />
-        </section>
-        <section className="mt-3">
-          <button
-            type="button"
-            className="bg-transparent border-0 text-decoration-underline fw-semibold p-0"
-            onClick={handleExploreRelatedCareers}
-          >
-            Explore related careers
-          </button>
-        </section>
-        <section className="flex-column flex-sm-row d-flex align-items-center justify-content-between pt-2 mt-3 border-top">
+      {shouldRenderInfoModal && activeInfoModal && (
+        <div
+          className={styles.infoModalBackdrop}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="jobviz-info-modal-title"
+          id="jobviz-info-modal"
+          data-state={isInfoClosing ? "closing" : "open"}
+          onClick={closeInfoModal}
+        >
           <div
-            className={`d-flex align-items-center justify-content-center text-sm-start text-center ${
-              BLS_link ? "" : "pe-none invisible"
-            }`}
+            className={styles.infoModal}
+            onClick={(event) => event.stopPropagation()}
           >
-            <span className="me-sm-2 ">
-              Learn More:{" "}
-              <span
-                onClick={() => {
-                  if (BLS_link) {
-                    window.open(BLS_link);
-                  }
-                }}
-                className="text-decoration-underline no-link-decoration pointer"
+            <header className={styles.infoModalHeader}>
+              <div className={styles.infoModalTitle}>
+                <span className={styles.infoModalIcon}>
+                  <LucideIcon name="Info" />
+                </span>
+                <div>
+                  <p className={styles.infoModalEyebrow}>
+                    {activeInfoModal.eyebrow}
+                  </p>
+                  <h3
+                    className={styles.infoModalHeading}
+                    id="jobviz-info-modal-title"
+                  >
+                    {activeInfoModal.heading}
+                  </h3>
+                </div>
+              </div>
+              <button
+                type="button"
+                className={styles.closeInfoButton}
+                aria-label="Close info explainer"
+                onClick={closeInfoModal}
               >
-                Occupational Outlook Handbook
-              </span>
-            </span>
+                <LucideIcon name="X" />
+              </button>
+            </header>
+            <div className={styles.infoModalBody}>
+              {activeInfoModal.paragraphs.map((paragraph) => (
+                <p key={paragraph}>{paragraph}</p>
+              ))}
+              <ul className={styles.tierList}>
+                {activeInfoModal.tiers.map((tier) => (
+                  <li key={tier.label} className={styles.tierItem}>
+                    <div className={styles.tierListHeading}>
+                      <span className={styles.tierLabel}>{tier.label}</span>
+                      <span className={styles.tierRange}>
+                        {activeInfoModal.rangeFormatter(tier)}
+                      </span>
+                    </div>
+                    <p>{tier.descriptor}</p>
+                  </li>
+                ))}
+              </ul>
+              <p className={styles.tierFootnote}>
+                {activeInfoModal.footnote}
+              </p>
+            </div>
           </div>
-          <div className="mt-2 mt-sm-0 d-flex align-items-center gap-2 px-2 py-1 bg-transparent small no-btn-styles underline-on-hover">
-            <CopyableTxt
-              implementLogicOnClick={handleCopyLinkBtnClick}
-              copyTxtIndicator="Copy link."
-              txtCopiedIndicator="Link copied ✅!"
-              parentClassName="pointer d-sm-block d-none"
-            >
-              <CopyLinkTxtAndIcon />
-            </CopyableTxt>
-            <CopyableTxt
-              implementLogicOnClick={handleCopyLinkBtnPressOnMobile}
-              copyTxtIndicator="Copy link."
-              txtCopiedIndicator="Link copied ✅!"
-              parentClassName="pointer d-sm-none d-block"
-              disableTxtCopiedShow
-              willDisplayModalOnHover={false}
-            >
-              <CopyLinkTxtAndIcon />
-            </CopyableTxt>
-          </div>
-        </section>
-      </Body>
-    </Modal>
+        </div>
+      )}
+    </>
   );
 };
 

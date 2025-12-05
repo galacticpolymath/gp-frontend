@@ -1,4 +1,5 @@
 import jobVizDataObj from "../../data/Jobviz/jobVizDataObj.json";
+import { categoryIconMap, jobIconMap } from "./iconMappings";
 import {
   SOC_CODES_PARAM_NAME,
   UNIT_NAME_PARAM_NAME,
@@ -19,6 +20,8 @@ export interface JobVizNode {
   soc_title?: string | null;
   median_annual_wage?: number | null;
   employment_change_percent?: number | string | null;
+  employment_start_yr?: number | null;
+  employment_end_yr?: number | null;
   typical_education_needed_for_entry?: string | null;
   work_experience_in_a_related_occupation?: string | null;
   ["typical_on-the-job_training_needed_to_attain_competency_in_the_occupation"]?: string | null;
@@ -46,6 +49,21 @@ export const jobVizNodeById = new Map<number, JobVizNode>(
 
 const nodeByCodeAndHierarchy = new Map<string, JobVizNode>();
 const nodeBySocCode = new Map<string, JobVizNode>();
+const lineItemNodes = jobVizData.filter(
+  (node) => node.occupation_type === "Line item"
+);
+const topLevelNodes = jobVizData.filter((node) => node.hierarchy === 1);
+const lineItemCountCache = new Map<number, number>();
+export const totalLineItems = lineItemNodes.length;
+export const totalTopLevelCategories = topLevelNodes.length;
+export const averageLineItemGrowth =
+  lineItemNodes.reduce((sum, node) => {
+    const value =
+      typeof node.employment_change_percent === "number"
+        ? node.employment_change_percent
+        : Number.parseFloat(String(node.employment_change_percent ?? 0));
+    return sum + (Number.isFinite(value) ? value : 0);
+  }, 0) / (lineItemNodes.length || 1);
 
 jobVizData.forEach((node) => {
   nodeByCodeAndHierarchy.set(`${node.soc_code}:${node.hierarchy}`, node);
@@ -110,35 +128,53 @@ export const filterJobsBySocCodes = (
 export const getDisplayTitle = (node: JobVizNode) =>
   node.soc_title ?? node.title;
 
-const iconByPrefix: Record<string, string> = {
-  "11": "BriefcaseBusiness",
-  "13": "LineChart",
-  "15": "Cpu",
-  "17": "Cog",
-  "19": "Atom",
-  "21": "GraduationCap",
-  "23": "Gavel",
-  "25": "BookOpenCheck",
-  "27": "Palette",
-  "29": "Stethoscope",
-  "31": "HandHeart",
-  "33": "ShieldAlert",
-  "35": "CookingPot",
-  "37": "Sparkles",
-  "39": "HeartPulse",
-  "41": "BadgeDollarSign",
-  "43": "Files",
-  "45": "Tractor",
-  "47": "Hammer",
-  "49": "Wrench",
-  "51": "Factory",
-  "53": "Truck",
-  "55": "ShieldHalf",
+const categoryFallbackIcon = "Sparkles";
+
+const getCategoryIconFromSocCode = (socCode?: string | null) => {
+  if (!socCode) return undefined;
+  if (socCode in categoryIconMap) {
+    return categoryIconMap[socCode as keyof typeof categoryIconMap];
+  }
+  return undefined;
 };
 
 export const getIconNameForNode = (node: JobVizNode) => {
-  const prefix = node.soc_code?.slice(0, 2);
-  return (prefix && iconByPrefix[prefix]) || "Sparkles";
+  const candidates = [
+    node.soc_code,
+    node.level3,
+    node.level2,
+    node.level1,
+  ];
+  for (const code of candidates) {
+    const icon = getCategoryIconFromSocCode(code ?? undefined);
+    if (icon) return icon;
+  }
+  const prefixCode = node.soc_code ? `${node.soc_code.slice(0, 2)}-0000` : null;
+  if (prefixCode && prefixCode in categoryIconMap) {
+    return categoryIconMap[prefixCode as keyof typeof categoryIconMap];
+  }
+  return categoryFallbackIcon;
+};
+
+export const getJobSpecificIconName = (node: JobVizNode) => {
+  if (!node.soc_code) return undefined;
+  if (node.soc_code in jobIconMap) {
+    return jobIconMap[node.soc_code as keyof typeof jobIconMap];
+  }
+  return undefined;
+};
+
+export const getLineItemCountForNode = (node: JobVizNode) => {
+  if (!node) return 0;
+  if (lineItemCountCache.has(node.id)) {
+    return lineItemCountCache.get(node.id)!;
+  }
+  const targetPath = node.path || node.soc_code || "";
+  const count = lineItemNodes.filter((lineItem) =>
+    lineItem.path.startsWith(targetPath)
+  ).length;
+  lineItemCountCache.set(node.id, count);
+  return count;
 };
 
 export const getNodeBySocCode = (socCode?: string | null) => {

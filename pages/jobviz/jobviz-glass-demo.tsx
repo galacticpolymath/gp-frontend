@@ -1,6 +1,7 @@
+/* eslint-disable @next/next/no-page-custom-font */
 import Head from "next/head";
 import { useState } from "react";
-import styles from "../../styles/jobvizGlass.module.css";
+import styles from "../../styles/jobvizBurst.module.scss";
 import { JobVizGrid, JobVizGridItem } from "../../components/JobViz/JobVizGrid";
 import {
   JobVizBreadcrumb,

@@ -1,6 +1,6 @@
 import * as React from "react";
 import { JobVizCard } from "./JobVizCard";
-import styles from "../../styles/jobvizGlass.module.css";
+import styles from "../../styles/jobvizBurst.module.scss";
 
 export interface JobVizGridItem {
   id: string;
@@ -10,6 +10,11 @@ export interface JobVizGridItem {
   highlight?: boolean;
   highlightClicked?: boolean;
   showBookmark?: boolean;
+  jobsCount?: number;
+  growthPercent?: number | string | null;
+  wage?: number | null;
+  education?: string | null;
+  jobIconName?: string;
 }
 
 export interface JobVizGridProps {
@@ -26,6 +31,11 @@ export const JobVizGrid: React.FC<JobVizGridProps> = ({ items, onItemClick }) =>
             title={item.title}
             iconName={item.iconName}
             level={item.level}
+            jobsCount={item.jobsCount}
+            growthPercent={item.growthPercent}
+            wage={item.wage}
+            education={item.education}
+            jobIconName={item.jobIconName}
             highlight={item.highlight}
             highlightClicked={item.highlightClicked}
             showBookmark={item.showBookmark}

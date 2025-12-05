@@ -5,7 +5,7 @@ import { AssignmentBanner } from "../../components/JobViz/AssignmentBanner";
 import { JobVizBreadcrumb } from "../../components/JobViz/JobVizBreadcrumb";
 import { JobVizGrid } from "../../components/JobViz/JobVizGrid";
 import { JobVizLayout } from "../../components/JobViz/JobVizLayout";
-import styles from "../../styles/jobvizGlass.module.css";
+import styles from "../../styles/jobvizBurst.module.scss";
 import HeroForFreeUsers from "../../components/JobViz/Heros/HeroForFreeUsers";
 import {
   buildIdPathForNode,
@@ -15,6 +15,7 @@ import {
   getTargetLevelForNode,
   getSelectedSocCodeForLevel,
   getIconNameForNode,
+  getLineItemCountForNode,
   jobVizData,
   jobVizNodeById,
 } from "../../components/JobViz/jobvizUtils";
@@ -87,6 +88,8 @@ const JobViz = ({ unitName, jobTitleAndSocCodePairs, hasGpPlusMembership }) => {
         title: getDisplayTitle(node),
         iconName: getIconNameForNode(node),
         level: 1,
+        jobsCount: getLineItemCountForNode(node),
+        growthPercent: node.employment_change_percent ?? null,
         highlight:
           assignmentAncestors.has(node.id) ||
           (assignmentSocCodes?.has(node.soc_code) ?? false),
@@ -125,10 +128,11 @@ const JobViz = ({ unitName, jobTitleAndSocCodePairs, hasGpPlusMembership }) => {
   );
 
   const heroSubtitle =
-    "A tool for grades 6 to adult to explore career possibilities! Browse, search & share key details about 1000+ jobs.";
+    "A tool for grades 6 to adult to explore career possibilities!";
   const forceGpPlusHero = !!router.query?.soc_code;
   const isGpPlusHero = hasGpPlusMembership || forceGpPlusHero;
   const heroSlot = isGpPlusHero ? null : <HeroForFreeUsers />;
+  const hasAssignmentJobs = Boolean(jobTitleAndSocCodePairs?.length);
 
   const layoutProps = {
     title:
@@ -148,21 +152,23 @@ const JobViz = ({ unitName, jobTitleAndSocCodePairs, hasGpPlusMembership }) => {
         heroSlot={heroSlot}
       >
         <div id={JOBVIZ_BRACKET_SEARCH_ID} />
-        {preservedUnitName && (
+        {hasAssignmentJobs && preservedUnitName && (
           <p className={styles.assignmentUnitLabel}>
             Jobs related to <em>{preservedUnitName}</em>
           </p>
         )}
-        <div className={styles.assignmentStrip}>
-          <div className={styles.assignmentStripInner}>
-            <AssignmentBanner
-              unitName={preservedUnitName}
-              jobs={jobTitleAndSocCodePairs}
-              assignmentParams={assignmentParams}
-              onJobClick={handleAssignmentJobClick}
-            />
+        {hasAssignmentJobs && (
+          <div className={styles.assignmentStrip}>
+            <div className={styles.assignmentStripInner}>
+              <AssignmentBanner
+                unitName={preservedUnitName}
+                jobs={jobTitleAndSocCodePairs}
+                assignmentParams={assignmentParams}
+                onJobClick={handleAssignmentJobClick}
+              />
+            </div>
           </div>
-        </div>
+        )}
 
         <h2 className={styles.jobvizSectionHeading}>
           Browse jobs by category or search

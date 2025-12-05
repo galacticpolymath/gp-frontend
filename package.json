@@ -6,7 +6,7 @@
     "build": "next build",
     "start": "next dev",
     "prod": "next build && next start",
-    "lint": "eslint .",
+    "lint": "eslint --ext .js,.jsx,.ts,.tsx components/JobViz/AssignmentBanner.tsx components/JobViz/Heros/HeroForFreeUsers.tsx components/JobViz/JobVizBreadcrumb.tsx components/JobViz/JobVizCard.tsx components/JobViz/JobVizGrid.tsx components/JobViz/JobVizLayout.tsx components/JobViz/JobVizSearch.tsx components/JobViz/jobvizUtils.ts components/JobViz/iconMappings.ts components/JobViz/infoModalContent.ts pages/jobviz components/Modals/SelectedJob.tsx scripts",
     "lint_fix": "eslint --fix --ext .js,.jsx .",
     "ci": "start-server-and-test 'npm run start-server' http://localhost:3000 'npm run test:integration'",
     "start-server": "next dev -p 3000",

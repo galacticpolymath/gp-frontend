@@ -1,11 +1,12 @@
 import * as React from "react";
 import { useRouter } from "next/router";
-import styles from "../../styles/jobvizGlass.module.css";
+import styles from "../../styles/jobvizBurst.module.scss";
 import { LucideIcon } from "./LucideIcon";
 import {
   AssignmentParams,
   buildJobvizUrl,
   getIconNameForNode,
+  getJobSpecificIconName,
   getNodeBySocCode,
 } from "./jobvizUtils";
 
@@ -29,8 +30,8 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
   const [activeJobIdx, setActiveJobIdx] = React.useState(0);
   const [slideDir, setSlideDir] = React.useState<"next" | "prev" | null>(null);
   const [flash, setFlash] = React.useState(false);
-
-  if (!unitName && !jobs?.length) return null;
+  const shouldRenderBanner =
+    Boolean(unitName) || Boolean(jobs?.length);
 
   const handleJobClick = (socCode: string) => {
     setClickedSocCodes((prev) => {
@@ -56,7 +57,8 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
     return jobs.map(([title, soc]) => {
       const node = getNodeBySocCode(soc);
       const iconName = node ? getIconNameForNode(node) : "CircleDot";
-      return { title, soc, iconName };
+      const jobIconName = node ? getJobSpecificIconName(node) : undefined;
+      return { title, soc, iconName, jobIconName };
     });
   }, [jobs]);
 
@@ -82,6 +84,10 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
     const t = setTimeout(() => setFlash(false), 250);
     return () => clearTimeout(t);
   }, [activeJobIdx, jobItems.length]);
+
+  if (!shouldRenderBanner) {
+    return null;
+  }
 
   return (
     <div className={styles.assignmentBannerShell}>
@@ -115,7 +121,7 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
               <div className={styles.assignmentListWrap}>
                 {splitJobs.map((jobGroup, idx) => (
                   <ul key={idx} className={styles.assignmentList}>
-                    {jobGroup.map(({ title, soc, iconName }) => (
+                    {jobGroup.map(({ title, soc, iconName, jobIconName }) => (
                       <li key={soc} className={styles.assignmentListItem}>
                         <button
                           type="button"
@@ -126,10 +132,17 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
                           }`}
                           onClick={() => handleJobClick(soc)}
                         >
-                          <LucideIcon
-                            name={iconName}
-                            className={styles.assignmentListIcon}
-                          />
+                          <span className={styles.assignmentListIconWrap}>
+                            <LucideIcon
+                              name={iconName}
+                              className={styles.assignmentListIcon}
+                            />
+                            {jobIconName && (
+                              <span className={styles.assignmentListNestedIcon}>
+                                <LucideIcon name={jobIconName} />
+                              </span>
+                            )}
+                          </span>
                           {title}
                         </button>
                       </li>
@@ -162,10 +175,17 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
                         : ""
                   }`}
                 >
-                  <LucideIcon
-                    name={jobItems[activeJobIdx].iconName}
-                    className={styles.assignmentListIcon}
-                  />
+                  <span className={styles.assignmentListIconWrap}>
+                    <LucideIcon
+                      name={jobItems[activeJobIdx].iconName}
+                      className={styles.assignmentListIcon}
+                    />
+                    {jobItems[activeJobIdx].jobIconName && (
+                      <span className={styles.assignmentListNestedIcon}>
+                        <LucideIcon name={jobItems[activeJobIdx].jobIconName!} />
+                      </span>
+                    )}
+                  </span>
                   <button
                     type="button"
                     className={`${styles.assignmentLink} ${

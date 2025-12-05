@@ -8,7 +8,7 @@ import { JobVizLayout } from "../../components/JobViz/JobVizLayout";
 import { LucideIcon } from "../../components/JobViz/LucideIcon";
 import HeroForFreeUsers from "../../components/JobViz/Heros/HeroForFreeUsers";
 import { JOBVIZ_BRACKET_SEARCH_ID } from "../../pages/jobviz/index";
-import styles from "../../styles/jobvizGlass.module.css";
+import styles from "../../styles/jobvizBurst.module.scss";
 import {
   buildIdPathForNode,
   buildJobvizUrl,
@@ -18,6 +18,8 @@ import {
   getDisplayTitle,
   getHierarchySlice,
   getIconNameForNode,
+  getJobSpecificIconName,
+  getLineItemCountForNode,
   getSelectedSocCodeForLevel,
   getTargetLevelForNode,
   jobVizData,
@@ -35,17 +37,6 @@ import { useModalContext } from "../../providers/ModalProvider";
 
 const JOBVIZ_DATA_SOURCE =
   "https://www.bls.gov/emp/tables/occupational-projections-and-characteristics.htm";
-
-const formatCurrency = (value) => {
-  if (typeof value !== "number") return "—";
-  return `$${value.toLocaleString()}`;
-};
-
-const formatPercent = (value) => {
-  if (typeof value !== "number") return "—";
-  const sign = value > 0 ? "+" : "";
-  return `${sign}${value.toFixed(1)}%`;
-};
 
 const JobVizSearchResults = ({
   metaDescription,
@@ -134,7 +125,24 @@ const JobVizSearchResults = ({
         id: String(node.id),
         title: getDisplayTitle(node),
         iconName: getIconNameForNode(node),
-        level: parsed.targetLevel === 2 ? 1 : 2,
+        level: node.occupation_type === "Line item" ? 2 : 1,
+        jobsCount:
+          node.occupation_type === "Line item"
+            ? undefined
+            : getLineItemCountForNode(node),
+        growthPercent: node.employment_change_percent ?? null,
+        wage:
+          node.occupation_type === "Line item"
+            ? node.median_annual_wage ?? null
+            : null,
+        education:
+          node.occupation_type === "Line item"
+            ? node.typical_education_needed_for_entry ?? null
+            : null,
+        jobIconName:
+          node.occupation_type === "Line item"
+            ? getJobSpecificIconName(node)
+            : undefined,
         highlight:
           assignmentAncestors.has(node.id) ||
           (assignmentSocCodes?.has(node.soc_code) ?? false),
@@ -143,13 +151,7 @@ const JobVizSearchResults = ({
           assignmentAncestors.has(node.id) ||
           (assignmentSocCodes?.has(node.soc_code) ?? false),
       })),
-    [
-      filteredSlice,
-      parsed.targetLevel,
-      assignmentAncestors,
-      assignmentSocCodes,
-      activeNode?.id,
-    ]
+    [filteredSlice, assignmentAncestors, assignmentSocCodes, activeNode?.id]
   );
 
   const showDetail = activeNode && activeNode.occupation_type === "Line item";
@@ -250,10 +252,11 @@ const JobVizSearchResults = ({
   }, [assignmentParams, chainNodes, parsed.targetLevel, router]);
 
   const heroSubtitle =
-    "A tool for grades 6 to adult to explore career possibilities! Browse, search & share key details about 1000+ jobs.";
+    "A tool for grades 6 to adult to explore career possibilities!";
   const forceGpPlusHero = !!router.query?.soc_code;
   const isGpPlusHero = hasGpPlusMembership || forceGpPlusHero;
   const heroSlot = isGpPlusHero ? null : <HeroForFreeUsers />;
+  const hasAssignmentJobs = Boolean(jobTitleAndSocCodePairs?.length);
 
   useEffect(() => {
     if (activeNode && activeNode.occupation_type === "Line item") {
@@ -284,16 +287,18 @@ const JobVizSearchResults = ({
         heroSubtitle={heroSubtitle}
         heroSlot={heroSlot}
       >
-        <div className={styles.assignmentStrip}>
-          <div className={styles.assignmentStripInner}>
-            <AssignmentBanner
-              unitName={preservedUnitName}
-              jobs={jobTitleAndSocCodePairs}
-              assignmentParams={assignmentParams}
-              onJobClick={handleAssignmentJobClick}
-            />
+        {hasAssignmentJobs && (
+          <div className={styles.assignmentStrip}>
+            <div className={styles.assignmentStripInner}>
+              <AssignmentBanner
+                unitName={preservedUnitName}
+                jobs={jobTitleAndSocCodePairs}
+                assignmentParams={assignmentParams}
+                onJobClick={handleAssignmentJobClick}
+              />
+            </div>
           </div>
-        </div>
+        )}
 
         {showIntroHeading && (
           <h2 className={styles.jobvizSectionHeading}>{sectionHeading}</h2>

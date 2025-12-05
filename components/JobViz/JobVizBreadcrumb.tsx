@@ -1,5 +1,5 @@
 import * as React from "react";
-import styles from "../../styles/jobvizGlass.module.css";
+import styles from "../../styles/jobvizBurst.module.scss";
 import { LucideIcon } from "./LucideIcon";
 
 export interface BreadcrumbSegment {

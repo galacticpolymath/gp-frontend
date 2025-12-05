@@ -1,36 +1,55 @@
-import Image from "next/image";
+import styles from "../../../styles/jobvizBurst.module.scss";
+import {
+  averageLineItemGrowth,
+  totalLineItems,
+  totalTopLevelCategories,
+} from "../jobvizUtils";
 
 interface IHeroForFreeUsersProps {
   className?: string;
 }
 
+const numberFormatter = new Intl.NumberFormat("en-US");
+const growthLabel = `${averageLineItemGrowth > 0 ? "+" : ""}${averageLineItemGrowth.toFixed(1)}%`;
+
 const HeroForFreeUsers: React.FC<IHeroForFreeUsersProps> = ({
-  className = "jobviz-hero-free text-light position-relative overflow-hidden",
+  className = "",
 }) => {
+const heroStats = [
+  {
+    label: "Search details about",
+    value: `${numberFormatter.format(totalLineItems)} jobs`,
+  },
+  {
+    label: "Browse",
+    value: `${numberFormatter.format(totalTopLevelCategories)} job categories`,
+  },
+  { label: "Learn which careers are heating up", value: growthLabel },
+];
+
   return (
-    <section className={className}>
-      <div className="container py-5 position-relative">
-        <div className="pt-4 pt-md-0 row align-items-center justify-content-center text-center text-md-start g-4">
-          <div className="col-md-7">
-            <h1 className="fw-bold display-5 mb-2 animate-fadein">
-              JobViz Career Explorer{" "}
-              <span className="free-tag ms-1">(FREE)</span>
-            </h1>
-            <p className="lead animate-fadein delay-1">
-              A tool for grades 6–adult to explore career possibilities! Browse,
-              search & share key details about 1000+ jobs.
-            </p>
-          </div>
-          <div className="col-md-4 d-flex justify-content-md-center justify-content-center animate-fadein delay-1">
-            <div className="jobviz-logo-free">
-              <div className="job-viz-hero-pic-container">
-                <Image
-                  src="/imgs/jobViz/icon_jobviz.png"
-                  alt="JobViz logo"
-                  fill
-                />
+    <section
+      className={`${styles.jobvizHero} ${className}`.trim()}
+      data-tone="burst"
+    >
+      <div className={styles.jobvizHeroContent}>
+        <div className={styles.jobvizHeroInner}>
+          <p className={styles.heroEyebrow}>JobViz Free Preview</p>
+          <h1 className={styles.heroTitle}>JobViz Career Explorer (FREE)</h1>
+          <p className={styles.heroSubtitle}>
+            Explore the calmer Burst palette, animated cards, and stacked icons.
+            GP+ members unlock share links, assignments, and live classroom
+            prompts.
+          </p>
+        </div>
+        <div className={styles.heroStatsColumn}>
+          <div className={styles.heroStats}>
+            {heroStats.map((stat) => (
+              <div key={stat.label} className={styles.heroStat}>
+                <span className={styles.heroStatLabel}>{stat.label}</span>
+                <strong className={styles.heroStatValue}>{stat.value}</strong>
               </div>
-            </div>
+            ))}
           </div>
         </div>
       </div>
