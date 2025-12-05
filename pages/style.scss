@@ -1230,10 +1230,31 @@ img {
   display: inline-block;
 }
 
-.li-dot-black::marker{
-  color: black
+.li-dot-black::marker {
+  color: black;
 }
 
-.clicked:active{
-  color: #012341
+.clicked:active {
+  color: #012341;
+}
+
+.email-newsletter-modal {
+  transform: translateY(-3vh);
+
+  @media (min-width: 992px) {
+    transform: translateY(-15vh);
+  }
+}
+
+.btn-scale-on-hover {
+  transition: transform 300ms ease-in-out;
+}
+
+.btn-scale-on-hover:hover {
+  transform: scale(1.05);
+}
+
+#dont-show-again {
+  box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.5);
+  border-color: grey;
 }

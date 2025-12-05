@@ -7,9 +7,7 @@ import { useState } from 'react';
 import { useSession } from 'next-auth/react';
 import LoginContainerForNavbar from './User/Login/LoginContainerForNavbar';
 import { useSearchParams } from 'next/navigation';
-import { useLessonContext } from '../providers/LessonProvider';
 import { JobToursCardTopSticky } from './JobViz/JobTours/JobToursCard';
-import useSiteSession from '../customHooks/useSiteSession';
 
 export const DISABLE_NAVBAR_PARAM_NAME = 'disableNavbar';
 
@@ -19,13 +17,6 @@ export default function Navbar() {
   const router = useRouter();
   const session = useSession();
   const [modalAnimation, setModalAnimation] = useState('d-none');
-  const {
-    isGpPlusMember
-  } = useSiteSession()
-  const {
-      _isJobToursStickyTopCardDisplayed: [isJobToursStickTopCardDisplayed],
-      _willRenderJobToursStickyTopCard: [willRenderJobToursStickyTopCard],
-    } = useLessonContext();
 
   return (
     <nav
@@ -100,7 +91,7 @@ export default function Navbar() {
           </div>
         </div>
       </div>
-      {(router.pathname.includes('jobviz') && isGpPlusMember) && <JobToursCardTopSticky />}
+      {router.pathname.includes('jobviz') && <JobToursCardTopSticky />}
     </nav>
   );
 }

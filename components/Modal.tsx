@@ -1,5 +1,3 @@
-/* eslint-disable quotes */
-
 import React from "react";
 import { Button, Modal as BootstrapModal } from "react-bootstrap";
 

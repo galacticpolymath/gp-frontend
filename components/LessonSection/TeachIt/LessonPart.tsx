@@ -748,9 +748,6 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                       filePreviewImg,
                       itemCat,
                       gdriveRoot,
-                      isExportable,
-                      mimeType,
-                      externalUrl,
                       itemType,
                     } = item;
                     const _links = links
