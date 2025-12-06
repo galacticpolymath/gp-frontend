@@ -272,7 +272,6 @@ const JobVizSearchResults = ({
   const forceGpPlusHero = !!router.query?.soc_code;
   const isGpPlusHero = hasGpPlusMembership || forceGpPlusHero;
   const heroSlot = isGpPlusHero ? null : <HeroForFreeUsers />;
-  const hasAssignmentJobs = Boolean(jobTitleAndSocCodePairs?.length);
 
 
   useEffect(() => {
@@ -299,56 +298,61 @@ const JobVizSearchResults = ({
 
   return (
     <Layout {...layoutProps}>
-      <JobVizLayout
-        heroTitle="JobViz Career Explorer+"
-        heroSubtitle={heroSubtitle}
-        heroSlot={heroSlot}
-      >
-        {hasAssignmentJobs && (
-          <div className={styles.assignmentStrip}>
-            <div className={styles.assignmentStripInner}>
-              <AssignmentBanner
-                unitName={preservedUnitName}
-                jobs={jobTitleAndSocCodePairs}
-                assignmentParams={assignmentParams}
-                onJobClick={handleAssignmentJobClick}
-              />
-            </div>
-          </div>
-        )}
-
-        {showIntroHeading && (
-          <h2 className={styles.jobvizSectionHeading}>{sectionHeading}</h2>
-        )}
-        <h3 className={styles.jobvizSearchAppeal}>
-          Explore the true diversity of career opportunities.
-        </h3>
-
-        <JobVizSearch assignmentParams={assignmentParams} />
-        <div id={JOBVIZ_BRACKET_SEARCH_ID} />
-        <div className={styles.jobvizContextZone}>
-          <JobVizBreadcrumb segments={breadcrumbs} />
-
-          <div className={styles.jobvizGridWrap}>
-            <JobVizGrid items={gridItems} onItemClick={handleGridClick} />
-          </div>
-
-          <p className={`${styles.jobvizSource} ${styles.jobvizSourceFixed}`}>
-            Data source:{" "}
-            <a href={JOBVIZ_DATA_SOURCE} target="_blank" rel="noreferrer">
-              US Bureau of Labor Statistics
-            </a>
-            {activeNode?.BLS_link && (
-              <>
-                {"  "}•{" "}
-                <a href={activeNode.BLS_link} target="_blank" rel="noreferrer">
-                  View on BLS
-                </a>
-              </>
+      <AssignmentBanner
+        variant="mobile"
+        unitName={preservedUnitName}
+        jobs={jobTitleAndSocCodePairs}
+        assignmentParams={assignmentParams}
+        onJobClick={handleAssignmentJobClick}
+      />
+      <div className={styles.jobvizPageShell}>
+        <div className={styles.jobvizMainColumn}>
+          <JobVizLayout
+            heroTitle="JobViz Career Explorer+"
+            heroSubtitle={heroSubtitle}
+            heroSlot={heroSlot}
+          >
+            {showIntroHeading && (
+              <h2 className={styles.jobvizSectionHeading}>{sectionHeading}</h2>
             )}
-          </p>
+            <h3 className={styles.jobvizSearchAppeal}>
+              Explore the true diversity of career opportunities.
+            </h3>
+
+            <JobVizSearch assignmentParams={assignmentParams} />
+            <div id={JOBVIZ_BRACKET_SEARCH_ID} />
+            <div className={styles.jobvizContextZone}>
+              <JobVizBreadcrumb segments={breadcrumbs} />
+
+              <div className={styles.jobvizGridWrap}>
+                <JobVizGrid items={gridItems} onItemClick={handleGridClick} />
+              </div>
+
+              <p className={`${styles.jobvizSource} ${styles.jobvizSourceFixed}`}>
+                Data source:{" "}
+                <a href={JOBVIZ_DATA_SOURCE} target="_blank" rel="noreferrer">
+                  US Bureau of Labor Statistics
+                </a>
+                {activeNode?.BLS_link && (
+                  <>
+                    {"  "}•{" "}
+                    <a href={activeNode.BLS_link} target="_blank" rel="noreferrer">
+                      View on BLS
+                    </a>
+                  </>
+                )}
+              </p>
+            </div>
+          </JobVizLayout>
         </div>
-      </JobVizLayout>
+        <AssignmentBanner
+          variant="desktop"
+          unitName={preservedUnitName}
+          jobs={jobTitleAndSocCodePairs}
+          assignmentParams={assignmentParams}
+          onJobClick={handleAssignmentJobClick}
+        />
+      </div>
     </Layout>
   );
 };

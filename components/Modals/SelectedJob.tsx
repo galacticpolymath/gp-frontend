@@ -258,33 +258,30 @@ const SelectedJob: React.FC = () => {
           {selectedJob && (
             <article className={styles.modalCard}>
               <header className={styles.modalHeader}>
-                <div className={styles.modalIdentity}>
-                  <div className={`${styles.iconBadge} ${styles.modalIcon}`}>
-                    <LucideIcon name={categoryIcon} />
-                    {jobIcon && (
-                      <span className={styles.nestedIcon}>
-                        <LucideIcon name={jobIcon} />
-                      </span>
-                    )}
-                  </div>
-                  <div>
-                    <p className={styles.modalEyebrow}>Job detail</p>
-                    <h3 className={styles.modalTitle}>{jobTitle}</h3>
-                  </div>
+              <div className={styles.modalHeaderTop}>
+                <p className={styles.modalEyebrow}>
+                  Job detail <span className={styles.modalSocCodeInline}>(SOC {selectedJob.soc_code})</span>
+                </p>
+                <button
+                  type="button"
+                  className={styles.modalCloseButton}
+                  onClick={handleOnHide}
+                  aria-label="Close job details"
+                >
+                  <LucideIcon name="X" />
+                </button>
+              </div>
+              <div className={styles.modalIdentityRow}>
+                <div className={`${styles.iconBadge} ${styles.modalIcon}`}>
+                  <LucideIcon name={categoryIcon} />
+                  {jobIcon && (
+                    <span className={styles.nestedIcon}>
+                      <LucideIcon name={jobIcon} />
+                    </span>
+                  )}
                 </div>
-                <div className={styles.modalHeaderActions}>
-                  <span className={styles.modalSocCode}>
-                    SOC {selectedJob.soc_code}
-                  </span>
-                  <button
-                    type="button"
-                    className={styles.modalCloseButton}
-                    onClick={handleOnHide}
-                    aria-label="Close job details"
-                  >
-                    <LucideIcon name="X" />
-                  </button>
-                </div>
+                <h3 className={styles.modalTitle}>{jobTitle}</h3>
+              </div>
               </header>
               <p className={styles.modalSummary}>
                 {definition ?? "Definition unavailable from the BLS feed."}

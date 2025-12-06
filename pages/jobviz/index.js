@@ -148,7 +148,6 @@ const JobViz = ({ unitName, jobTitleAndSocCodePairs, hasGpPlusMembership }) => {
   const forceGpPlusHero = !!router.query?.soc_code;
   const isGpPlusHero = hasGpPlusMembership || forceGpPlusHero;
   const heroSlot = isGpPlusHero ? null : <HeroForFreeUsers />;
-  const hasAssignmentJobs = Boolean(jobTitleAndSocCodePairs?.length);
 
 
   const layoutProps = {
@@ -163,53 +162,53 @@ const JobViz = ({ unitName, jobTitleAndSocCodePairs, hasGpPlusMembership }) => {
 
   return (
     <Layout {...layoutProps}>
-      <JobVizLayout
-        heroTitle="JobViz Career Explorer+"
-        heroSubtitle={heroSubtitle}
-        heroSlot={heroSlot}
-      >
-        <div id={JOBVIZ_BRACKET_SEARCH_ID} />
-        {hasAssignmentJobs && preservedUnitName && (
-          <p className={styles.assignmentUnitLabel}>
-            Jobs related to <em>{preservedUnitName}</em>
-          </p>
-        )}
-        {hasAssignmentJobs && (
-          <div className={styles.assignmentStrip}>
-            <div className={styles.assignmentStripInner}>
-              <AssignmentBanner
-                unitName={preservedUnitName}
-                jobs={jobTitleAndSocCodePairs}
-                assignmentParams={assignmentParams}
-                onJobClick={handleAssignmentJobClick}
-              />
+      <AssignmentBanner
+        variant="mobile"
+        unitName={preservedUnitName}
+        jobs={jobTitleAndSocCodePairs}
+        assignmentParams={assignmentParams}
+        onJobClick={handleAssignmentJobClick}
+      />
+      <div className={styles.jobvizPageShell}>
+        <div className={styles.jobvizMainColumn}>
+          <JobVizLayout
+            heroTitle="JobViz Career Explorer+"
+            heroSubtitle={heroSubtitle}
+            heroSlot={heroSlot}
+          >
+            <div id={JOBVIZ_BRACKET_SEARCH_ID} />
+            <h2 className={styles.jobvizSectionHeading}>
+              Browse jobs by category or search
+            </h2>
+            <h3 className={styles.jobvizSearchAppeal}>
+              Explore the true diversity of career opportunities.
+            </h3>
+
+            <JobVizSearch assignmentParams={assignmentParams} />
+            <div className={styles.jobvizContextZone}>
+              <JobVizBreadcrumb segments={breadcrumbs} />
+
+              <div className={styles.jobvizGridWrap}>
+                <JobVizGrid items={gridItems} onItemClick={handleRootClick} />
+              </div>
+
+              <p className={`${styles.jobvizSource} ${styles.jobvizSourceFixed}`}>
+                Data source:{" "}
+                <a href={JOBVIZ_DATA_SOURCE} target="_blank" rel="noreferrer">
+                  US Bureau of Labor Statistics
+                </a>
+              </p>
             </div>
-          </div>
-        )}
-
-        <h2 className={styles.jobvizSectionHeading}>
-          Browse jobs by category or search
-        </h2>
-        <h3 className={styles.jobvizSearchAppeal}>
-          Explore the true diversity of career opportunities.
-        </h3>
-
-        <JobVizSearch assignmentParams={assignmentParams} />
-        <div className={styles.jobvizContextZone}>
-          <JobVizBreadcrumb segments={breadcrumbs} />
-
-          <div className={styles.jobvizGridWrap}>
-            <JobVizGrid items={gridItems} onItemClick={handleRootClick} />
-          </div>
-
-          <p className={`${styles.jobvizSource} ${styles.jobvizSourceFixed}`}>
-            Data source:{" "}
-            <a href={JOBVIZ_DATA_SOURCE} target="_blank" rel="noreferrer">
-              US Bureau of Labor Statistics
-            </a>
-          </p>
+          </JobVizLayout>
         </div>
-      </JobVizLayout>
+        <AssignmentBanner
+          variant="desktop"
+          unitName={preservedUnitName}
+          jobs={jobTitleAndSocCodePairs}
+          assignmentParams={assignmentParams}
+          onJobClick={handleAssignmentJobClick}
+        />
+      </div>
     </Layout>
   );
 };
