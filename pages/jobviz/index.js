@@ -55,6 +55,8 @@ const JobViz = ({ unitName, jobTitleAndSocCodePairs, hasGpPlusMembership }) => {
 
   const preservedUnitName =
     unitName ?? (router.query?.[UNIT_NAME_PARAM_NAME]?.toString() || null);
+  const shouldRenderAssignment =
+    Boolean(preservedUnitName) || Boolean(jobTitleAndSocCodePairs?.length);
 
   const assignmentParams = useMemo(
     () => ({
@@ -162,19 +164,22 @@ const JobViz = ({ unitName, jobTitleAndSocCodePairs, hasGpPlusMembership }) => {
 
   return (
     <Layout {...layoutProps}>
-      <AssignmentBanner
-        variant="mobile"
-        unitName={preservedUnitName}
-        jobs={jobTitleAndSocCodePairs}
-        assignmentParams={assignmentParams}
-        onJobClick={handleAssignmentJobClick}
-      />
+      {shouldRenderAssignment && (
+        <AssignmentBanner
+          variant="mobile"
+          unitName={preservedUnitName}
+          jobs={jobTitleAndSocCodePairs}
+          assignmentParams={assignmentParams}
+          onJobClick={handleAssignmentJobClick}
+        />
+      )}
       <div className={styles.jobvizPageShell}>
         <div className={styles.jobvizMainColumn}>
           <JobVizLayout
             heroTitle="JobViz Career Explorer+"
             heroSubtitle={heroSubtitle}
             heroSlot={heroSlot}
+            suppressHero={shouldRenderAssignment}
           >
             <div id={JOBVIZ_BRACKET_SEARCH_ID} />
             <h2 className={styles.jobvizSectionHeading}>
@@ -201,13 +206,15 @@ const JobViz = ({ unitName, jobTitleAndSocCodePairs, hasGpPlusMembership }) => {
             </div>
           </JobVizLayout>
         </div>
-        <AssignmentBanner
-          variant="desktop"
-          unitName={preservedUnitName}
-          jobs={jobTitleAndSocCodePairs}
-          assignmentParams={assignmentParams}
-          onJobClick={handleAssignmentJobClick}
-        />
+        {shouldRenderAssignment && (
+          <AssignmentBanner
+            variant="desktop"
+            unitName={preservedUnitName}
+            jobs={jobTitleAndSocCodePairs}
+            assignmentParams={assignmentParams}
+            onJobClick={handleAssignmentJobClick}
+          />
+        )}
       </div>
     </Layout>
   );

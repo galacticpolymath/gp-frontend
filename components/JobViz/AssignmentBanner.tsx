@@ -34,8 +34,12 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
   const [activeJobIdx, setActiveJobIdx] = React.useState(0);
   const [slideDir, setSlideDir] = React.useState<"next" | "prev" | null>(null);
   const [flash, setFlash] = React.useState(false);
+  const [mobileCollapsed, setMobileCollapsed] = React.useState(false);
   const shouldRenderBanner =
     Boolean(unitName) || Boolean(jobs?.length);
+  const isMobile = variant === "mobile";
+  const infoSectionId = isMobile ? "assignmentInfoBlock" : undefined;
+  const hideInfoSection = isMobile && mobileCollapsed;
 
   const handleJobClick = (socCode: string) => {
     setClickedSocCodes((prev) => {
@@ -102,6 +106,7 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
     <div
       className={`${styles.assignmentBannerShell} ${wrapperClass}`}
       data-mode={variant === "desktop" ? "docked" : "default"}
+      data-collapsed={isMobile && mobileCollapsed ? "true" : "false"}
     >
       <div
         className={`${styles.assignmentBanner} ${styles.assignmentBannerSticky} ${
@@ -116,27 +121,58 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
           className={`${styles.assignmentInner} ${
             flash ? styles.assignmentInnerFlash : ""
           }`}
+          data-mobile-collapsed={isMobile && mobileCollapsed ? "true" : "false"}
         >
-      {unitName && (
-        <span className={styles.assignmentUnitLabelInline}>
-          <span> Jobs related to the <span className={styles.assignmentUnitName}>{unitName}</span> unit
-        </span></span> 
-      )}
-          <div className={styles.assignmentMarker}>
-            <span className={styles.assignmentMarkerLabel}>
-              <img
-                src={ASSIGNMENT_LOGO}
-                alt="GP+"
-                className={styles.assignmentMarkerLogo}
-                width={26}
-                height={26}
-              />
-              JobViz | Assignment
-            </span>
-            <p className={styles.assignmentCopy}>
-              Explore these jobs and explain <em>with data</em> which you would
-              be most or least interested in.
-            </p>
+          {isMobile && (
+            <button
+              type="button"
+              className={styles.assignmentCollapseToggle}
+              aria-expanded={!hideInfoSection}
+              aria-controls={infoSectionId}
+              onClick={() => setMobileCollapsed((prev) => !prev)}
+            >
+              {mobileCollapsed ? "Show assignment" : "Hide assignment"}
+              <span
+                className={styles.assignmentCollapseToggleIcon}
+                aria-hidden="true"
+              >
+                <LucideIcon
+                  name={mobileCollapsed ? "ChevronDown" : "ChevronUp"}
+                />
+              </span>
+            </button>
+          )}
+          <div
+            id={infoSectionId}
+            hidden={hideInfoSection}
+            className={styles.assignmentInfoBlock}
+          >
+            {unitName && (
+              <span className={styles.assignmentUnitLabelInline}>
+                <span>
+                  {" "}
+                  Jobs related to the{" "}
+                  <span className={styles.assignmentUnitName}>{unitName}</span>{" "}
+                  unit
+                </span>
+              </span>
+            )}
+            <div className={styles.assignmentMarker}>
+              <span className={styles.assignmentMarkerLabel}>
+                <img
+                  src={ASSIGNMENT_LOGO}
+                  alt="GP+"
+                  className={styles.assignmentMarkerLogo}
+                  width={26}
+                  height={26}
+                />
+                JobViz | Assignment
+              </span>
+              <p className={styles.assignmentCopy}>
+                Explore these jobs and explain <em>with data</em> which you would
+                be most or least interested in.
+              </p>
+            </div>
           </div>
           <div
             className={`${styles.assignmentContent} ${
@@ -183,24 +219,24 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
                 className={styles.assignmentCarousel}
                 aria-label="Assignment jobs carousel"
               >
-                <button
-                  type="button"
-                  className={styles.assignmentCarouselBtn}
-                  onClick={handlePrev}
-                  aria-label="Previous job"
-                >
-                  <LucideIcon name="ChevronLeft" />
-                </button>
                 <div
-                  key={jobItems[activeJobIdx].soc}
-                  className={`${styles.assignmentCarouselItem} ${
+                  className={`${styles.assignmentCarouselSlide} ${
                     slideDir === "next"
                       ? styles.assignmentCarouselItemNext
                       : slideDir === "prev"
                         ? styles.assignmentCarouselItemPrev
                         : ""
                   }`}
+                  key={jobItems[activeJobIdx].soc}
                 >
+                  <button
+                    type="button"
+                    className={styles.assignmentCarouselArrow}
+                    onClick={handlePrev}
+                    aria-label="Previous job"
+                  >
+                    <LucideIcon name="ChevronLeft" />
+                  </button>
                   <button
                     type="button"
                     className={`${styles.assignmentCarouselLink} ${
@@ -218,7 +254,9 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
                         />
                         {jobItems[activeJobIdx].jobIconName && (
                           <span className={styles.assignmentListNestedIcon}>
-                            <LucideIcon name={jobItems[activeJobIdx].jobIconName!} />
+                            <LucideIcon
+                              name={jobItems[activeJobIdx].jobIconName!}
+                            />
                           </span>
                         )}
                       </span>
@@ -232,15 +270,15 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
                       </span>
                     </div>
                   </button>
+                  <button
+                    type="button"
+                    className={styles.assignmentCarouselArrow}
+                    onClick={handleNext}
+                    aria-label="Next job"
+                  >
+                    <LucideIcon name="ChevronRight" />
+                  </button>
                 </div>
-                <button
-                  type="button"
-                  className={styles.assignmentCarouselBtn}
-                  onClick={handleNext}
-                  aria-label="Next job"
-                >
-                  <LucideIcon name="ChevronRight" />
-                </button>
               </div>
             )}
           </div>

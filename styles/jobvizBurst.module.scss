@@ -893,19 +893,90 @@
 .assignmentBannerShell {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 0.35rem;
+  width: 100%;
+}
+
+.assignmentBannerShell[data-mode="default"] {
+  align-items: center;
+  padding-left: 0;
+  padding-right: 0;
+  width: 100%;
+  margin: 0;
+}
+
+@media (min-width: 1100px) {
+  .assignmentBannerShell[data-mode="default"] {
+    width: min(960px, 94vw);
+    margin: 0 auto;
+  }
 }
 
 .assignmentMobileWrapper {
   position: sticky;
-  top: clamp(4rem, 6vw, 4.5rem);
+  top: 8px;
   z-index: 15;
+  width: 100vw;
+  max-width: 100vw;
+  margin-left: calc(-50vw + 50%);
+  padding: clamp(0.45rem, 2vw, 0.85rem) 0;
+  background: linear-gradient(
+    175deg,
+    rgba(12, 21, 66, 0.95),
+    rgba(30, 12, 68, 0.92),
+    rgba(47, 8, 50, 0.9)
+  );
+  border-top: 1px solid rgba(51, 82, 255, 0.45);
+  border-bottom: 1px solid rgba(51, 82, 255, 0.35);
+  box-shadow:
+    0 25px 55px rgba(1, 2, 9, 0.6),
+    inset 0 0 25px rgba(83, 114, 255, 0.08);
+  box-sizing: border-box;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.assignmentMobileWrapper::before,
+.assignmentMobileWrapper::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.assignmentMobileWrapper::before {
+  background: radial-gradient(
+      circle at 20% 18%,
+      rgba(147, 168, 255, 0.35),
+      transparent 55%
+    ),
+    radial-gradient(circle at 80% 12%, rgba(255, 119, 210, 0.2), transparent 50%);
+}
+
+.assignmentMobileWrapper::after {
+  background: linear-gradient(
+    120deg,
+    transparent 0%,
+    rgba(156, 126, 255, 0.2) 35%,
+    rgba(255, 146, 220, 0.12) 60%,
+    transparent 100%
+  );
+  background-size: 200% 200%;
+  animation: dockSweep 18s ease-in-out infinite;
+  opacity: 0.85;
 }
 
 @media (min-width: 1200px) {
   .assignmentMobileWrapper {
     display: none;
   }
+}
+
+.assignmentMobileWrapper .assignmentBanner,
+.assignmentMobileWrapper .assignmentCarousel {
+  width: 100%;
+  margin: 0;
 }
 
 .assignmentDesktopDock {
@@ -917,25 +988,88 @@
     display: flex;
     flex-direction: column;
     position: fixed;
-    right: clamp(0.5rem, 3vw, 1.5rem);
-    top: clamp(4rem, 6vw, 5rem);
-    bottom: clamp(1rem, 3vw, 2rem);
-    width: min(360px, 26vw);
+    right: 0;
+    top: 72px;
+    bottom: 0;
+    width: clamp(320px, 28vw, 360px);
     animation: dockSlide 0.35s ease;
     z-index: 2000;
-    padding-right: clamp(0.1rem, 1vw, 0.4rem);
+    padding: clamp(0.4rem, 1vw, 0.7rem);
+    box-sizing: border-box;
+    border-radius: 0;
+    background: linear-gradient(
+      175deg,
+      rgba(12, 21, 66, 0.93),
+      rgba(33, 10, 72, 0.9),
+      rgba(54, 9, 60, 0.88)
+    );
+    border: none;
+    box-shadow: -4px 0 28px rgba(5, 0, 20, 0.45);
+    backdrop-filter: blur(14px);
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  .assignmentDesktopDock::before,
+  .assignmentDesktopDock::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    border-radius: inherit;
+  }
+
+  .assignmentDesktopDock::before {
+    background: radial-gradient(
+        circle at 18% 18%,
+        rgba(147, 168, 255, 0.35),
+        transparent 55%
+      ),
+      radial-gradient(circle at 80% 10%, rgba(255, 119, 210, 0.18), transparent 45%);
+    opacity: 0.7;
+  }
+
+  .assignmentDesktopDock::after {
+    background: linear-gradient(
+      115deg,
+      transparent 0%,
+      rgba(156, 126, 255, 0.18) 32%,
+      rgba(255, 146, 220, 0.12) 55%,
+      transparent 95%
+    );
+    background-size: 200% 200%;
+    animation: dockSweep 18s ease-in-out infinite;
+  }
+
+  .assignmentDesktopDock > * {
+    position: relative;
+    z-index: 1;
   }
 
   .assignmentDesktopDock .assignmentBanner {
     height: 100%;
     display: flex;
     flex-direction: column;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    padding: clamp(0.4rem, 1vw, 0.65rem);
+    gap: 0.9rem;
+  }
+
+  .assignmentDesktopDock .assignmentMarker {
+    width: 100%;
+    padding: 0.4rem 0.85rem;
+  }
+
+  .assignmentDesktopDock .assignmentInner {
+    gap: 0.9rem;
   }
 
   .assignmentDesktopDock .assignmentContent {
     overflow-y: auto;
     flex: 1;
-    padding-right: 0.35rem;
+    padding-right: 0.2rem;
   }
 
   .assignmentDesktopDock .assignmentListWrap {
@@ -944,6 +1078,18 @@
 
   .assignmentDesktopDock .assignmentCarousel {
     display: none;
+  }
+}
+
+@keyframes dockSweep {
+  0% {
+    background-position: 0% 0%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 0%;
   }
 }
 
@@ -967,9 +1113,12 @@
 .assignmentBanner {
   border-radius: 30px;
   padding: clamp(1rem, 3vw, 1.2rem);
+  margin: 0;
 }
 
 .assignmentBannerDefault {
+  margin: 0;
+  width: 100%;
   background: rgba(9, 13, 30, 0.92);
   border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow:
@@ -984,6 +1133,8 @@
   border: none;
   box-shadow: none;
   padding: clamp(1rem, 2vw, 1.4rem);
+  padding-left: 0;
+  padding-right: 0;
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -1007,6 +1158,56 @@
   animation: panelFade 0.3s ease;
 }
 
+.assignmentCollapseToggle {
+  align-self: flex-end;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.75rem;
+  letter-spacing: 0.02em;
+  padding: 0.08rem 0.75rem;
+  border-radius: 999px;
+  border: 1px solid rgba(101, 129, 255, 0.7);
+  color: rgba(238, 242, 255, 0.9);
+  background: rgba(11, 15, 35, 0.55);
+  box-shadow: inset 0 0 8px rgba(96, 122, 255, 0.25);
+  text-transform: uppercase;
+  font-weight: 600;
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease,
+    background 0.2s ease;
+  margin-bottom: -0.4rem;
+}
+
+.assignmentCollapseToggle:hover,
+.assignmentCollapseToggle:focus-visible {
+  color: #fff;
+  border-color: rgba(119, 149, 255, 0.95);
+  background: rgba(15, 22, 54, 0.8);
+}
+
+.assignmentCollapseToggleIcon svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+@media (min-width: 1200px) {
+  .assignmentCollapseToggle {
+    display: none;
+  }
+}
+
+.assignmentInfoBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.assignmentInfoBlock[hidden] {
+  display: none;
+}
+
 .assignmentMarker {
   display: inline-flex;
   flex-direction: column;
@@ -1017,6 +1218,8 @@
   border: 1px solid #1826bc;
   box-shadow: inset 0 0 10px rgba(24, 38, 188, 0.35);
   width: fit-content;
+  text-align: center;
+  align-self: center;
 }
 
 .assignmentMarkerLabel {
@@ -1160,13 +1363,26 @@
 .assignmentCarousel {
   display: flex;
   align-items: stretch;
-  gap: 0.9rem;
-  overflow-x: auto;
-  padding: 0 0 0.5rem;
+  padding: 0;
   scroll-snap-type: x mandatory;
+  position: relative;
+  width: 100%;
+  background: rgba(9, 12, 28, 0.65);
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-@media (min-width: 768px) {
+.assignmentCarouselSlide {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 0.2rem;
+  width: 100%;
+  padding: 0.35rem 0.2rem;
+  background: transparent;
+}
+
+@media (min-width: 1200px) {
   .assignmentCarousel {
     display: none;
   }
@@ -1181,39 +1397,30 @@
   border-radius: 999px;
 }
 
-.assignmentCarouselBtn {
+.assignmentCarouselArrow {
   border: none;
   background: rgba(255, 255, 255, 0.08);
   color: #f6fbff;
-  width: 42px;
-  height: 42px;
-  border-radius: 999px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
   display: grid;
   place-items: center;
   cursor: pointer;
   transition: transform 0.2s ease, background 0.2s ease;
 }
 
-.assignmentCarouselBtn:hover,
-.assignmentCarouselBtn:focus-visible {
-  transform: translateY(-3px);
+.assignmentCarouselArrow:hover,
+.assignmentCarouselArrow:focus-visible {
+  transform: translateY(-2px);
   background: rgba(255, 255, 255, 0.18);
 }
 
-.assignmentCarouselItem {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  scroll-snap-align: start;
-  min-width: min(70vw, 240px);
-  transition: transform 0.3s ease, opacity 0.3s ease;
-}
-
-.assignmentCarouselItemNext {
+.assignmentCarouselSlide.assignmentCarouselItemNext {
   animation: slideInFromRight 0.3s ease;
 }
 
-.assignmentCarouselItemPrev {
+.assignmentCarouselSlide.assignmentCarouselItemPrev {
   animation: slideInFromLeft 0.3s ease;
 }
 
@@ -1223,31 +1430,35 @@
 }
 
 .assignmentCarouselLink {
-  display: flex;
-  flex-direction: column;
+  display: inline-flex;
+  flex-direction: row;
   align-items: center;
-  text-align: left;
+  justify-content: center;
+  text-align: center;
   gap: 0.35rem;
-  border: none;
-  background: rgba(255, 255, 255, 0.04);
-  border-radius: 16px;
-  padding: 0.5rem 0.6rem;
-  min-height: 68px;
-  min-width: 100%;
-  color: #f6fbff;
   width: 100%;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(5, 8, 18, 0.7);
+  border-radius: 14px;
+  padding: 0.5rem 0.85rem;
+  min-height: 58px;
+  flex: 1 1 auto;
+  color: #f6fbff;
 }
 
 .assignmentCarouselText {
-  display: flex;
-  align-items: baseline;
-  gap: 0.4rem;
-  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  white-space: normal;
+  text-align: center;
+  flex-wrap: wrap;
 }
 
 .assignmentCarouselTitle {
   font-size: 0.9rem;
-  font-weight: 600;
+  font-weight: 400;
   color: #f9fbff;
 }
 
@@ -1280,9 +1491,9 @@
 
 .assignmentListIconWrap {
   position: relative;
-  width: 40px;
-  height: 40px;
-  border-radius: 14px;
+  width: 45px;
+  height: 45px;
+  border-radius: 16px;
   background: radial-gradient(circle, rgba(255, 255, 255, 0.18), transparent);
   border: 1px solid rgba(255, 255, 255, 0.32);
   display: inline-flex;
@@ -1793,7 +2004,7 @@
   font-size: clamp(1.15rem, 2vw, 1.5rem);
   color: rgba(235, 240, 255, 0.9);
   margin: -0.5rem 0 1rem;
-  font-weight: 500;
+  font-weight: 200;
 }
 
 .jobvizContextZone {
@@ -2062,12 +2273,12 @@
   .jobvizPageShell {
     flex-direction: row;
     align-items: flex-start;
-    background: linear-gradient(145deg, rgba(9, 18, 35, 0.96), rgba(4, 8, 18, 0.98));
   }
   .jobvizMainColumn {
     flex: 1;
-    margin-right: clamp(380px, 30vw, 420px);
-    padding-right: clamp(1rem, 3vw, 2rem);
+    margin-right: clamp(320px, 28vw, 360px);
+    padding-right: 0;
+    padding-left: 0;
   }
 }
 .assignmentUnitName {
@@ -2084,13 +2295,73 @@
 .assignmentMobileContentSticky {
   position: sticky;
   top: clamp(5rem, 7vw, 5.5rem);
-  background: rgba(9, 13, 30, 0.96);
+  background: transparent;
   padding-top: 0.4rem;
   border-radius: 0;
 }
 .assignmentCarouselRow {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 0.55rem;
+  gap: 0.35rem;
   width: 100%;
+  justify-content: center;
+  flex-wrap: nowrap;
+}
+
+@media (max-width: 480px) {
+  .assignmentCarouselLink {
+    padding: 0.3rem 0.45rem;
+    min-height: 50px;
+  }
+
+  .assignmentCarouselText {
+    flex-direction: column;
+    white-space: normal;
+  }
+
+  .assignmentCarouselTitle {
+    font-size: 0.82rem;
+    line-height: 1.2;
+  }
+
+  .assignmentCarouselMeta {
+    font-size: 0.65rem;
+  }
+
+  .assignmentListIconWrap {
+    width: 38px;
+    height: 38px;
+  }
+}
+.assignmentCarousel {
+  position: relative;
+}
+
+.assignmentCarousel::before,
+.assignmentCarousel::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1rem;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.assignmentCarousel::before {
+  left: 0;
+  background: linear-gradient(
+    to right,
+    rgba(9, 13, 30, 0.95),
+    transparent
+  );
+}
+
+.assignmentCarousel::after {
+  right: 0;
+  background: linear-gradient(
+    to left,
+    rgba(9, 13, 30, 0.95),
+    transparent
+  );
 }

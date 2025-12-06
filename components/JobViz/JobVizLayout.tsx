@@ -11,6 +11,7 @@ interface JobVizLayoutProps {
   heroSubtitle?: string;
   children: React.ReactNode;
   heroSlot?: React.ReactNode;
+  suppressHero?: boolean;
 }
 
 export const JobVizLayout: React.FC<JobVizLayoutProps> = ({
@@ -18,6 +19,7 @@ export const JobVizLayout: React.FC<JobVizLayoutProps> = ({
   heroSubtitle,
   children,
   heroSlot,
+  suppressHero = false,
 }) => {
   const growthLabel = `${averageLineItemGrowth > 0 ? "+" : ""}${averageLineItemGrowth.toFixed(1)}%`;
   const effectiveSubtitle =
@@ -73,29 +75,30 @@ export const JobVizLayout: React.FC<JobVizLayoutProps> = ({
 
   return (
     <>
-      {heroSlot ?? (
-        <section className={styles.jobvizHero} data-tone="burst">
-          <div className={styles.jobvizHeroContent}>
-            <div className={styles.jobvizHeroInner}>
-              <p className={styles.heroEyebrow}>JobViz Burst Edition</p>
-              <h1 className={styles.heroTitle}>{heroTitle}</h1>
-              <p className={styles.heroSubtitle}>{effectiveSubtitle}</p>
-            </div>
-            <div className={styles.heroStatsColumn}>
-              <div className={styles.heroStats}>
-                {heroStats.map((stat) => (
-                  <div key={stat.label} className={styles.heroStat}>
-                    <span className={styles.heroStatLabel}>{stat.label}</span>
-                    <strong className={styles.heroStatValue}>
-                      {stat.value}
-                    </strong>
-                  </div>
-                ))}
+      {!suppressHero &&
+        (heroSlot ?? (
+          <section className={styles.jobvizHero} data-tone="burst">
+            <div className={styles.jobvizHeroContent}>
+              <div className={styles.jobvizHeroInner}>
+                <p className={styles.heroEyebrow}>JobViz Burst Edition</p>
+                <h1 className={styles.heroTitle}>{heroTitle}</h1>
+                <p className={styles.heroSubtitle}>{effectiveSubtitle}</p>
+              </div>
+              <div className={styles.heroStatsColumn}>
+                <div className={styles.heroStats}>
+                  {heroStats.map((stat) => (
+                    <div key={stat.label} className={styles.heroStat}>
+                      <span className={styles.heroStatLabel}>{stat.label}</span>
+                      <strong className={styles.heroStatValue}>
+                        {stat.value}
+                      </strong>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
-          </div>
-        </section>
-      )}
+          </section>
+        ))}
 
       <section className={styles.jobvizSection}>
         <div className={styles.jobvizSectionBg} />
