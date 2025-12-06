@@ -48,6 +48,7 @@ export const JobVizLayout: React.FC<JobVizLayoutProps> = ({
       const scrollY = window.scrollY || 0;
       const heroOffset = Math.min(scrollY * 0.12, 160);
       const bgOffset = Math.min(scrollY * 0.2, 220);
+      const sectionOffset = Math.min(scrollY * 0.2, 220);
       document.documentElement.style.setProperty(
         "--jobviz-hero-offset",
         `${heroOffset}px`
@@ -55,6 +56,10 @@ export const JobVizLayout: React.FC<JobVizLayoutProps> = ({
       document.documentElement.style.setProperty(
         "--jobviz-bg-offset",
         `${bgOffset}px`
+      );
+      document.documentElement.style.setProperty(
+        "--jobviz-section-offset",
+        `${sectionOffset}px`
       );
     };
     const handleScroll = () => {
@@ -70,6 +75,7 @@ export const JobVizLayout: React.FC<JobVizLayoutProps> = ({
       window.removeEventListener("scroll", handleScroll);
       document.documentElement.style.setProperty("--jobviz-hero-offset", "0px");
       document.documentElement.style.setProperty("--jobviz-bg-offset", "0px");
+      document.documentElement.style.setProperty("--jobviz-section-offset", "0px");
     };
   }, []);
 

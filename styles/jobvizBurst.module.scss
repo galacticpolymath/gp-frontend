@@ -893,7 +893,7 @@
 .assignmentBannerShell {
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
+  gap: 0.2rem;
   width: 100%;
 }
 
@@ -905,7 +905,7 @@
   margin: 0;
 }
 
-@media (min-width: 1100px) {
+@media (min-width: 1200px) {
   .assignmentBannerShell[data-mode="default"] {
     width: min(960px, 94vw);
     margin: 0 auto;
@@ -919,7 +919,7 @@
   width: 100vw;
   max-width: 100vw;
   margin-left: calc(-50vw + 50%);
-  padding: clamp(0.45rem, 2vw, 0.85rem) 0;
+  padding: clamp(0.3rem, 2vw, 0.65rem) 0;
   background: linear-gradient(
     175deg,
     rgba(12, 21, 66, 0.95),
@@ -989,7 +989,7 @@
     flex-direction: column;
     position: fixed;
     right: 0;
-    top: 72px;
+    top: 64px;
     bottom: 0;
     width: clamp(320px, 28vw, 360px);
     animation: dockSlide 0.35s ease;
@@ -1366,7 +1366,8 @@
   padding: 0;
   scroll-snap-type: x mandatory;
   position: relative;
-  width: 100%;
+  width: 100vw;
+  margin-left: calc(-50vw + 50%);
   background: rgba(9, 12, 28, 0.65);
   border-radius: 18px;
   border: 1px solid rgba(255, 255, 255, 0.08);
@@ -1954,6 +1955,9 @@
 .jobvizSection {
   position: relative;
   padding: clamp(2rem, 4vw, 4rem) 0 clamp(4rem, 7vw, 7rem);
+  transform: translate3d(0, calc(var(--jobviz-section-offset, 0px) * -1), 0);
+  transition: transform 0.2s ease-out;
+  will-change: transform;
 }
 
 .jobvizSectionBg {
@@ -2310,8 +2314,8 @@
 
 @media (max-width: 480px) {
   .assignmentCarouselLink {
-    padding: 0.3rem 0.45rem;
-    min-height: 50px;
+    padding: 0.25rem 0.4rem;
+    min-height: 46px;
   }
 
   .assignmentCarouselText {
@@ -2320,7 +2324,7 @@
   }
 
   .assignmentCarouselTitle {
-    font-size: 0.82rem;
+    font-size: 0.8rem;
     line-height: 1.2;
   }
 

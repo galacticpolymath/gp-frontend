@@ -32,16 +32,19 @@ export default function Navbar() {
       style={{ zIndex: 1000 }}
       className={`fixed-top w-100 navbar-expand-lg py-0 ${disableNavbar ? 'pe-none' : ''}`}
     >
-      <div className='navbar navbar-expand-lg w-100 navbar-dark bg-dark position-relative'>
+      <div
+        className='navbar navbar-expand-lg w-100 navbar-dark bg-dark position-relative'
+        style={{ paddingTop: '0.35rem', paddingBottom: '0.35rem' }}
+      >
         <div className='w-100 container'>
           <Image
             className='object-fit-contain d-none d-sm-block'
             alt='Galactic Polymath'
             src={logo}
-            height={68}
-            width={841}
+            height={56}
+            width={700}
             style={{
-              maxHeight: '60px',
+              maxHeight: '48px',
               width: 'auto',
               height: 'auto',
             }}
@@ -50,10 +53,10 @@ export default function Navbar() {
             className='object-fit-contain d-block d-sm-none'
             alt='Galactic Polymath'
             src={mobileLogo}
-            height={68}
+            height={56}
             width={150}
             style={{
-              maxHeight: '60px',
+              maxHeight: '48px',
               width: 'auto',
               height: 'auto',
             }}

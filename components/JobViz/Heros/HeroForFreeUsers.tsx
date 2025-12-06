@@ -37,9 +37,8 @@ const heroStats = [
           <p className={styles.heroEyebrow}>JobViz Free Preview</p>
           <h1 className={styles.heroTitle}>JobViz Career Explorer (FREE)</h1>
           <p className={styles.heroSubtitle}>
-            Explore the calmer Burst palette, animated cards, and stacked icons.
-            GP+ members unlock share links, assignments, and live classroom
-            prompts.
+            A simple tool for understanding the world of work. Discover paths
+            you never knew you could take!
           </p>
         </div>
         <div className={styles.heroStatsColumn}>
