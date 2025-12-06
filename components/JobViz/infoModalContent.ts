@@ -178,6 +178,7 @@ export type InfoModalContent = {
   tiers: InfoTier[];
   rangeFormatter: (tier: InfoTier) => string;
   footnote: string;
+  tagline: string;
 };
 
 export const infoModalContent: Record<InfoModalType, InfoModalContent> = {
@@ -191,6 +192,7 @@ export const infoModalContent: Record<InfoModalType, InfoModalContent> = {
     rangeFormatter: (tier) => formatCurrencyRange(tier.min, tier.max),
     footnote:
       "Data: U.S. Bureau of Labor Statistics (2024). The ranges center on a typical U.S. full-time wage (~$62,000). Where you live and how many people your paycheck supports will change how any salary feels, so treat these categories as conversation starters—not labels for classmates.",
+    tagline: "Tiers based on US median wages (~$62,000).",
   },
   growth: {
     eyebrow: "Growth context",
@@ -203,6 +205,7 @@ export const infoModalContent: Record<InfoModalType, InfoModalContent> = {
     rangeFormatter: (tier) => formatPercentRange(tier.min, tier.max),
     footnote:
       "Projections are from the U.S. Bureau of Labor Statistics (2024 release). Actual change can differ with technology and policy shifts.",
+    tagline: "Change based on projected job growth through 2034.",
   },
   jobs: {
     eyebrow: "Job count context",
@@ -215,5 +218,20 @@ export const infoModalContent: Record<InfoModalType, InfoModalContent> = {
     rangeFormatter: (tier) => formatEmploymentRange(tier.min, tier.max),
     footnote:
       "Data: U.S. Bureau of Labor Statistics (2024 release). Different regions or industries might make the job feel more or less visible where you live.",
+    tagline: "Job counts come from BLS 2034 projections.",
   },
+};
+const findTierForValue = (tiers: InfoTier[], value?: number | null) => {
+  if (value === null || value === undefined) return null;
+  const numeric = Number(value);
+  if (!Number.isFinite(numeric)) return null;
+  return (
+    tiers.find((tier) => numeric >= tier.min && numeric < tier.max) ||
+    tiers[tiers.length - 1]
+  );
+};
+
+export const resolveTierLabel = (type: InfoModalType, value?: number | null) => {
+  const tier = findTierForValue(infoModalContent[type].tiers, value);
+  return tier?.label ?? null;
 };

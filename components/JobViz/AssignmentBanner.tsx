@@ -9,6 +9,11 @@ import {
   getJobSpecificIconName,
   getNodeBySocCode,
 } from "./jobvizUtils";
+import {
+  countRatings,
+  ratingEmoji,
+  useJobRatings,
+} from "./jobRatingsStore";
 
 interface AssignmentBannerProps {
   unitName?: string | null;
@@ -40,6 +45,22 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
   const isMobile = variant === "mobile";
   const infoSectionId = isMobile ? "assignmentInfoBlock" : undefined;
   const hideInfoSection = isMobile && mobileCollapsed;
+  const { ratings, clearRatings } = useJobRatings();
+  const [isMounted, setIsMounted] = React.useState(false);
+  React.useEffect(() => {
+    setIsMounted(true);
+  }, []);
+  const assignmentSocCodes = React.useMemo(
+    () => (jobs?.map(([, soc]) => soc) ?? []).filter(Boolean),
+    [jobs]
+  );
+  const clientProgress = React.useMemo(
+    () => countRatings(assignmentSocCodes),
+    [assignmentSocCodes, ratings]
+  );
+  const progress = isMounted
+    ? clientProgress
+    : { rated: 0, total: assignmentSocCodes.length };
 
   const handleJobClick = (socCode: string) => {
     setClickedSocCodes((prev) => {
@@ -101,6 +122,12 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
     variant === "desktop"
       ? styles.assignmentDesktopDock
       : styles.assignmentMobileWrapper;
+  const [showRatingHint, setShowRatingHint] = React.useState(true);
+  React.useEffect(() => {
+    if (!jobs?.length) return;
+    const timer = window.setTimeout(() => setShowRatingHint(false), 4000);
+    return () => window.clearTimeout(timer);
+  }, [jobs?.length, variant]);
 
   return (
     <div
@@ -169,11 +196,33 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
                 JobViz | Assignment
               </span>
               <p className={styles.assignmentCopy}>
-                Explore these jobs and explain <em>with data</em> which you would
-                be most or least interested in.
+                Explore and rate each of these jobs. Be prepared to explain your
+                ratings <em>with data</em>.
               </p>
+              <button
+                type="button"
+                className={styles.assignmentClearButton}
+                onClick={clearRatings}
+              >
+                Clear ratings
+              </button>
             </div>
           </div>
+          {assignmentSocCodes.length > 0 && (
+            <div className={styles.assignmentProgressRow}>
+              <div className={styles.assignmentProgressLabel}>
+                Rated {progress.rated}/{progress.total} jobs
+              </div>
+              <div className={styles.assignmentProgressTrack}>
+                <div
+                  className={styles.assignmentProgressFill}
+                  style={{
+                    width: `${progress.total ? (progress.rated / progress.total) * 100 : 0}%`,
+                  }}
+                />
+              </div>
+            </div>
+          )}
           <div
             className={`${styles.assignmentContent} ${
               variant === "mobile" ? styles.assignmentMobileContentSticky : ""
@@ -183,12 +232,19 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
               <div className={styles.assignmentListWrap}>
                 {splitJobs.map((jobGroup, idx) => (
                   <ul key={idx} className={styles.assignmentList}>
-                    {jobGroup.map(({ title, soc, iconName, jobIconName }) => (
+                    {jobGroup.map(({ title, soc, iconName, jobIconName }, jobIdx) => {
+                      const ratingValue = ratings[soc];
+                      return (
                       <li key={soc} className={styles.assignmentListItem}>
-                        <button
-                          type="button"
-                          className={`${styles.assignmentLink} ${
-                            clickedSocCodes.has(soc)
+                          {showRatingHint && idx === 0 && jobIdx === 0 && (
+                            <div className={styles.assignmentHintArrow}>
+                              <span>Click to explore and rate</span>
+                            </div>
+                          )}
+                          <button
+                            type="button"
+                            className={`${styles.assignmentLink} ${
+                              clickedSocCodes.has(soc)
                               ? styles.assignmentLinkClicked
                               : ""
                           }`}
@@ -205,10 +261,14 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
                               </span>
                             )}
                           </span>
-                          {title}
-                        </button>
-                      </li>
-                    ))}
+                              {title}
+                      <span className={styles.assignmentListRating}>
+                        {isMounted ? ratingEmoji(ratingValue) : "?"}
+                      </span>
+                          </button>
+                        </li>
+                      );
+                    })}
                   </ul>
                 ))}
               </div>
@@ -229,6 +289,11 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
                   }`}
                   key={jobItems[activeJobIdx].soc}
                 >
+                  {showRatingHint && variant === "mobile" && activeJobIdx === 0 && (
+                    <div className={`${styles.assignmentHintArrow} ${styles.assignmentHintArrowFloating}`}>
+                      <span>Click to explore and rate</span>
+                    </div>
+                  )}
                   <button
                     type="button"
                     className={styles.assignmentCarouselArrow}
@@ -247,6 +312,11 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
                     onClick={() => handleJobClick(jobItems[activeJobIdx].soc)}
                   >
                     <div className={styles.assignmentCarouselRow}>
+                      <span className={styles.assignmentListRating}>
+                        {isMounted
+                          ? ratingEmoji(ratings[jobItems[activeJobIdx].soc])
+                          : "?"}
+                      </span>
                       <span className={styles.assignmentListIconWrap}>
                         <LucideIcon
                           name={jobItems[activeJobIdx].iconName}
@@ -283,6 +353,13 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
             )}
           </div>
         </div>
+        {variant === "desktop" && (
+          <div className={styles.assignmentClearFooter}>
+            <button type="button" onClick={clearRatings}>
+              Clear ratings
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

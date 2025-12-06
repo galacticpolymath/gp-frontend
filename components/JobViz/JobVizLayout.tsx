@@ -2,6 +2,7 @@ import * as React from "react";
 import styles from "../../styles/jobvizBurst.module.scss";
 import {
   averageLineItemGrowth,
+  growthRange,
   totalLineItems,
   totalTopLevelCategories,
 } from "./jobvizUtils";
@@ -25,6 +26,11 @@ export const JobVizLayout: React.FC<JobVizLayoutProps> = ({
   const effectiveSubtitle =
     heroSubtitle ??
     "A tool for grades 6 to adult to explore career possibilities!";
+  const formatPercentRangeValue = (value: number) => {
+    const formatted = Math.abs(value).toFixed(1).replace(/\.0$/, "");
+    const sign = value > 0 ? "+" : value < 0 ? "-" : "";
+    return `${sign}${formatted}%`;
+  };
   const heroStats = [
     {
       label: "Search details about",
@@ -36,7 +42,7 @@ export const JobVizLayout: React.FC<JobVizLayoutProps> = ({
     },
     {
       label: "Learn which careers are heating up",
-      value: growthLabel,
+      value: `Range: ${formatPercentRangeValue(growthRange.min)} to ${formatPercentRangeValue(growthRange.max)}`,
     },
   ];
 

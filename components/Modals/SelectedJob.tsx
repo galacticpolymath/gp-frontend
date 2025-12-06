@@ -27,7 +27,10 @@ import {
   formatPercent,
   infoModalContent,
   InfoModalType,
+  resolveTierLabel,
 } from "../JobViz/infoModalContent";
+import type { JobRatingValue } from "../JobViz/jobRatingsStore";
+import { ratingOptions, useJobRatings } from "../JobViz/jobRatingsStore";
 
 const { Body } = Modal;
 const DATA_END_YR = jobVizDataObj.data_end_yr?.[0] ?? 2034;
@@ -53,10 +56,22 @@ const SelectedJob: React.FC = () => {
   const copyToastId = useRef<string | number | null>(null);
   const copyResetTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [didCopyLink, setDidCopyLink] = useState(false);
+  const { ratings, setRating } = useJobRatings();
+  const [ratingBurst, setRatingBurst] = useState<JobRatingValue | null>(null);
 
   const activeInfoModal = modalHistory ? infoModalContent[modalHistory] : null;
   const shouldRenderInfoModal =
     (infoModal !== null || isInfoClosing) && !!activeInfoModal;
+  const currentRating = selectedJob?.soc_code
+    ? ratings[selectedJob.soc_code]
+    : undefined;
+
+  const handleRatingSelect = (value: JobRatingValue) => {
+    if (!selectedJob?.soc_code) return;
+    setRating(selectedJob.soc_code, value);
+    setRatingBurst(value);
+    window.setTimeout(() => setRatingBurst(null), 900);
+  };
 
   const triggerHaptic = (duration = 14) => {
     if (typeof navigator !== "undefined" && "vibrate" in navigator) {
@@ -215,18 +230,27 @@ const SelectedJob: React.FC = () => {
           label: "Median wage",
           value: formatCurrency(selectedJob.median_annual_wage),
           infoType: "wage" as InfoModalType,
+          descriptor: null,
         },
         {
           id: "growth",
           label: "10-year change",
           value: formatPercent(selectedJob.employment_change_percent),
           infoType: "growth" as InfoModalType,
+          descriptor: resolveTierLabel(
+            "growth",
+            selectedJob.employment_change_percent ?? null
+          ),
         },
         {
           id: "jobs",
           label: `Jobs by ${DATA_END_YR}`,
           value: formatNumber(selectedJob.employment_end_yr),
           infoType: "jobs" as InfoModalType,
+          descriptor: resolveTierLabel(
+            "jobs",
+            selectedJob.employment_end_yr ?? null
+          ),
         },
       ]
     : [];
@@ -286,6 +310,37 @@ const SelectedJob: React.FC = () => {
               <p className={styles.modalSummary}>
                 {definition ?? "Definition unavailable from the BLS feed."}
               </p>
+              <section className={styles.modalRatingBlock}>
+                <div className={styles.modalRatingHeader}>
+                  <span>Rate this job</span>
+                  {ratingBurst && (
+                    <span
+                      className={`${styles.modalRatingConfetti} ${styles[`modalRatingConfetti-${ratingBurst}`]}` }
+                      aria-hidden="true"
+                    >
+                      {ratingOptions.find((o) => o.value === ratingBurst)?.emoji ?? ""}
+                    </span>
+                  )}
+                </div>
+                <div className={styles.modalRatingButtons}>
+                  {ratingOptions.map((option) => (
+                    <button
+                      type="button"
+                      key={option.value}
+                      className={`${styles.modalRatingButton} ${
+                        currentRating === option.value
+                          ? styles.modalRatingButtonActive
+                          : ""
+                      }`}
+                      onClick={() => handleRatingSelect(option.value)}
+                      aria-pressed={currentRating === option.value}
+                    >
+                      <span className={styles.modalRatingEmoji}>{option.emoji}</span>
+                      <span>{option.label}</span>
+                    </button>
+                  ))}
+                </div>
+              </section>
               <dl className={styles.modalStats}>
                 {stats.map((stat) => (
                   <div key={stat.id} className={styles.modalStat}>
@@ -303,6 +358,11 @@ const SelectedJob: React.FC = () => {
                       </button>
                     </div>
                     <dd>{stat.value}</dd>
+                    {stat.descriptor && (
+                      <div className={styles.modalStatInfoTag}>
+                        {stat.descriptor}
+                      </div>
+                    )}
                   </div>
                 ))}
               </dl>

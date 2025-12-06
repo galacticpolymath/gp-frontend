@@ -65,6 +65,26 @@ export const averageLineItemGrowth =
     return sum + (Number.isFinite(value) ? value : 0);
   }, 0) / (lineItemNodes.length || 1);
 
+const growthExtent = lineItemNodes.reduce(
+  (acc, node) => {
+    const raw =
+      typeof node.employment_change_percent === "number"
+        ? node.employment_change_percent
+        : Number.parseFloat(String(node.employment_change_percent ?? 0));
+    if (Number.isFinite(raw)) {
+      acc.min = Math.min(acc.min, raw);
+      acc.max = Math.max(acc.max, raw);
+    }
+    return acc;
+  },
+  { min: Infinity, max: -Infinity }
+);
+
+export const growthRange = {
+  min: Number.isFinite(growthExtent.min) ? growthExtent.min : 0,
+  max: Number.isFinite(growthExtent.max) ? growthExtent.max : 0,
+};
+
 jobVizData.forEach((node) => {
   nodeByCodeAndHierarchy.set(`${node.soc_code}:${node.hierarchy}`, node);
   if (node.soc_code) {

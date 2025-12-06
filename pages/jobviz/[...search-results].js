@@ -157,6 +157,10 @@ const JobVizSearchResults = ({
           node.occupation_type === "Line item"
             ? getJobSpecificIconName(node)
             : undefined,
+        socCode: node.soc_code ?? null,
+        isAssignmentJob: node.occupation_type === "Line item"
+          ? (assignmentSocCodes?.has(node.soc_code) ?? false)
+          : false,
         highlight:
           assignmentAncestors.has(node.id) ||
           (assignmentSocCodes?.has(node.soc_code) ?? false),
@@ -305,7 +309,10 @@ const JobVizSearchResults = ({
         assignmentParams={assignmentParams}
         onJobClick={handleAssignmentJobClick}
       />
-      <div className={styles.jobvizPageShell}>
+      <div
+        className={styles.jobvizPageShell}
+        data-has-assignment={Boolean(jobTitleAndSocCodePairs?.length)}
+      >
         <div className={styles.jobvizMainColumn}>
           <JobVizLayout
             heroTitle="JobViz Career Explorer+"

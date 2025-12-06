@@ -1,6 +1,8 @@
 import * as React from "react";
 import styles from "../../styles/jobvizBurst.module.scss";
 import { LucideIcon } from "./LucideIcon";
+import { ratingEmoji, useJobRatings } from "./jobRatingsStore";
+import type { JobRatingValue } from "./jobRatingsStore";
 
 export interface JobVizCardProps {
   title: string;
@@ -15,6 +17,8 @@ export interface JobVizCardProps {
   wage?: number | null;
   education?: string | null;
   jobIconName?: string;
+  socCode?: string | null;
+  isAssignmentJob?: boolean;
 }
 
 const numberFormatter = new Intl.NumberFormat("en-US");
@@ -34,6 +38,12 @@ const formatPercent = (raw?: number | string | null) => {
   return `${numeric > 0 ? "+" : ""}${numeric.toFixed(1).replace(/\\.0$/, "")}%`;
 };
 
+const ratingMessages: Record<JobRatingValue, string> = {
+  love: "You love this job",
+  like: "You like this job",
+  dislike: "Not your pick",
+};
+
 export const JobVizCard: React.FC<JobVizCardProps> = ({
   title,
   iconName,
@@ -47,6 +57,8 @@ export const JobVizCard: React.FC<JobVizCardProps> = ({
   wage,
   education,
   jobIconName,
+  socCode,
+  isAssignmentJob,
 }) => {
   const [isHovered, setHover] = React.useState(false);
   const containerClass = level === 1 ? styles.categoryCard : styles.jobCard;
@@ -59,6 +71,13 @@ export const JobVizCard: React.FC<JobVizCardProps> = ({
   const visitedClass =
     highlightClicked && level === 2 ? styles.jobCardVisited : "";
   const tooltipId = React.useId();
+  const { ratings } = useJobRatings();
+  const currentRating = socCode ? ratings[socCode] : undefined;
+  const ratingLabel = currentRating
+    ? ratingMessages[currentRating as JobRatingValue]
+    : isAssignmentJob
+      ? "Rate this assignment job"
+      : "Rate this unassigned job";
 
   return (
     <article
@@ -108,14 +127,7 @@ export const JobVizCard: React.FC<JobVizCardProps> = ({
         </>
       ) : (
         <>
-          {showBookmark && (
-            <div
-              className={`${styles.categoryBookmark} ${
-                highlightClicked ? styles.categoryBookmarkVisited : ""
-              }`}
-            ></div>
-          )}
-          <div className={styles.cardHeader}>
+        <div className={styles.cardHeader}>
             <div className={styles.iconBadge}>
               <LucideIcon name={iconName} />
               {jobIconName && (
@@ -124,11 +136,30 @@ export const JobVizCard: React.FC<JobVizCardProps> = ({
                 </span>
               )}
             </div>
-            <div className={styles.cardHeading}>
-              <h3 className={styles.cardTitle}>{compactTitle(title)}</h3>
-            </div>
+          <div className={styles.cardHeading}>
+            <h3 className={styles.cardTitle}>{compactTitle(title)}</h3>
           </div>
-          <div className={styles.statRow}>
+        </div>
+        {level === 2 && (
+          <div
+            className={`${styles.cardRatingRow} ${
+              currentRating ? styles.cardRatingRowRated : styles.cardRatingRowIdle
+            } ${isAssignmentJob ? styles.cardRatingRowAssignment : ""}`}
+          >
+            <span
+              className={`${styles.cardRatingBadge} ${
+                currentRating
+                  ? styles[`cardRating-${currentRating}`]
+                  : styles.cardRatingPlaceholder
+              }`}
+              aria-label={ratingLabel}
+            >
+              {ratingEmoji(currentRating)}
+            </span>
+            <span className={styles.cardRatingLabel}>{ratingLabel}</span>
+          </div>
+        )}
+        <div className={styles.statRow}>
             <div className={styles.statChip}>
               <span className={styles.statLabel}>Median wage</span>
               <strong className={styles.statValue}>

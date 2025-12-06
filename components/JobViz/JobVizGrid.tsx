@@ -15,6 +15,8 @@ export interface JobVizGridItem {
   wage?: number | null;
   education?: string | null;
   jobIconName?: string;
+  socCode?: string | null;
+  isAssignmentJob?: boolean;
 }
 
 export interface JobVizGridProps {
@@ -36,6 +38,8 @@ export const JobVizGrid: React.FC<JobVizGridProps> = ({ items, onItemClick }) =>
             wage={item.wage}
             education={item.education}
             jobIconName={item.jobIconName}
+            socCode={item.socCode}
+            isAssignmentJob={item.isAssignmentJob}
             highlight={item.highlight}
             highlightClicked={item.highlightClicked}
             showBookmark={item.showBookmark}

@@ -1,6 +1,6 @@
 import styles from "../../../styles/jobvizBurst.module.scss";
 import {
-  averageLineItemGrowth,
+  growthRange,
   totalLineItems,
   totalTopLevelCategories,
 } from "../jobvizUtils";
@@ -10,7 +10,11 @@ interface IHeroForFreeUsersProps {
 }
 
 const numberFormatter = new Intl.NumberFormat("en-US");
-const growthLabel = `${averageLineItemGrowth > 0 ? "+" : ""}${averageLineItemGrowth.toFixed(1)}%`;
+const formatPercent = (value: number) => {
+  const formatted = Math.abs(value).toFixed(1).replace(/\.0$/, "");
+  const sign = value > 0 ? "+" : value < 0 ? "-" : "";
+  return `${sign}${formatted}%`;
+};
 
 const HeroForFreeUsers: React.FC<IHeroForFreeUsersProps> = ({
   className = "",
@@ -24,7 +28,10 @@ const heroStats = [
     label: "Browse",
     value: `${numberFormatter.format(totalTopLevelCategories)} job categories`,
   },
-  { label: "Learn which careers are heating up", value: growthLabel },
+  {
+    label: "Learn which careers are heating up",
+    value: `Range: ${formatPercent(growthRange.min)} to ${formatPercent(growthRange.max)}`,
+  },
 ];
 
   return (

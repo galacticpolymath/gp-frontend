@@ -95,6 +95,8 @@ const JobViz = ({ unitName, jobTitleAndSocCodePairs, hasGpPlusMembership }) => {
         level: 1,
         jobsCount: getLineItemCountForNode(node),
         growthPercent: node.employment_change_percent ?? null,
+        socCode: node.soc_code ?? null,
+        isAssignmentJob: false,
         highlight:
           assignmentAncestors.has(node.id) ||
           (assignmentSocCodes?.has(node.soc_code) ?? false),
@@ -173,7 +175,10 @@ const JobViz = ({ unitName, jobTitleAndSocCodePairs, hasGpPlusMembership }) => {
           onJobClick={handleAssignmentJobClick}
         />
       )}
-      <div className={styles.jobvizPageShell}>
+      <div
+        className={styles.jobvizPageShell}
+        data-has-assignment={shouldRenderAssignment}
+      >
         <div className={styles.jobvizMainColumn}>
           <JobVizLayout
             heroTitle="JobViz Career Explorer+"
