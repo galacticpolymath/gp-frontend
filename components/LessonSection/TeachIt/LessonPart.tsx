@@ -1,8 +1,8 @@
-import { PiArrowsSplit } from 'react-icons/pi';
-import { RxMagnifyingGlass } from 'react-icons/rx';
-import Accordion from '../../Accordion';
-import LessonChunk from './LessonChunk';
-import RichText from '../../RichText';
+import { PiArrowsSplit } from "react-icons/pi";
+import { RxMagnifyingGlass } from "react-icons/rx";
+import Accordion from "../../Accordion";
+import LessonChunk from "./LessonChunk";
+import RichText from "../../RichText";
 import {
   CSSProperties,
   memo,
@@ -11,14 +11,14 @@ import {
   useMemo,
   useRef,
   useState,
-} from 'react';
-import Link from 'next/link';
-import CopyableTxt from '../../CopyableTxt';
-import { useRouter } from 'next/router';
-import React, { useEffect } from 'react';
-import { Button } from 'react-bootstrap';
-import { ILessonItem, useModalContext } from '../../../providers/ModalProvider';
-import { useUserContext } from '../../../providers/UserProvider';
+} from "react";
+import Link from "next/link";
+import CopyableTxt from "../../CopyableTxt";
+import { useRouter } from "next/router";
+import React, { useEffect } from "react";
+import { Button } from "react-bootstrap";
+import { ILessonItem, useModalContext } from "../../../providers/ModalProvider";
+import { useUserContext } from "../../../providers/UserProvider";
 import {
   IChunk,
   IGoingFurtherVal,
@@ -28,28 +28,28 @@ import {
   INewUnitLesson,
   IResource,
   IStep,
-} from '../../../backend/models/Unit/types/teachingMaterials';
+} from "../../../backend/models/Unit/types/teachingMaterials";
 import {
   IItemForClient,
   ILessonForUI,
   TSetter,
   TUseStateReturnVal,
-} from '../../../types/global';
+} from "../../../types/global";
 import {
   checkIfElementClickedWasClipboard,
   setLocalStorageItem,
   setSessionStorageItem,
-} from '../../../shared/fns';
+} from "../../../shared/fns";
 import {
   LAST_LESSON_NUM_ID,
   PRESENT_WELCOME_MODAL_PARAM_NAME,
   UNITS_URL_PATH,
-} from '../../../shared/constants';
-import CopyLessonBtn, { ICopyLessonBtnProps } from './CopyLessonBtn';
-import { INewUnitSchema } from '../../../backend/models/Unit/types/unit';
-import useSiteSession from '../../../customHooks/useSiteSession';
+} from "../../../shared/constants";
+import CopyLessonBtn, { ICopyLessonBtnProps } from "./CopyLessonBtn";
+import { INewUnitSchema } from "../../../backend/models/Unit/types/unit";
+import useSiteSession from "../../../customHooks/useSiteSession";
 
-const LESSON_PART_BTN_COLOR = '#2C83C3';
+const LESSON_PART_BTN_COLOR = "#2C83C3";
 
 interface ISignInSuggestionProps extends PropsWithChildren {
   txt?: string;
@@ -62,11 +62,11 @@ const SignInSuggestion: React.FC<ISignInSuggestionProps> = ({
   children,
   txt,
   style = { zIndex: 100 },
-  className = 'center-absolutely d-flex flex-column justify-content-center col-12 mt-4',
-  txtClassName = 'text-center fw-bold',
+  className = "center-absolutely d-flex flex-column justify-content-center col-12 mt-4",
+  txtClassName = "text-center fw-bold",
 }) => {
   if (!txt) {
-    txt = 'For teachers guides, sign in with a free account!';
+    txt = "For teachers guides, sign in with a free account!";
   }
 
   return (
@@ -80,12 +80,12 @@ const SignInSuggestion: React.FC<ISignInSuggestionProps> = ({
 export interface ILessonPartProps
   extends Pick<
       INewUnitLesson,
-      | 'allUnitLessons'
-      | 'lessonsFolder'
-      | 'userGDriveLessonFolderId'
-      | 'sharedGDriveLessonFolders'
+      | "allUnitLessons"
+      | "lessonsFolder"
+      | "userGDriveLessonFolderId"
+      | "sharedGDriveLessonFolders"
     >,
-    Pick<ICopyLessonBtnProps, 'isRetrievingLessonFolderIds'> {
+    Pick<ICopyLessonBtnProps, "isRetrievingLessonFolderIds"> {
   resources?: IResource;
   GradesOrYears?: string | null;
   removeClickToSeeMoreTxt: () => void;
@@ -112,7 +112,7 @@ export interface ILessonPartProps
   gradeVarNote?: string | null;
   unitMediumTitle?: string | null;
   GdrivePublicID?: string | null;
-  unitId: Pick<INewUnitSchema, '_id'>['_id'];
+  unitId: Pick<INewUnitSchema, "_id">["_id"];
   unitTitle?: string | null;
   setParts: TSetter<(INewUnitLesson<IItemV2> | ILessonForUI)[]>;
 }
@@ -153,25 +153,25 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
 
   const sharedGDriveLessonFolder = useMemo(() => {
     if (!sharedGDriveLessonFolders) {
-      console.log('No shared Google Drive lesson folders available');
+      console.log("No shared Google Drive lesson folders available");
       return undefined;
     }
 
-    console.log('sharedGDriveLessonFolders: ', sharedGDriveLessonFolders);
+    console.log("sharedGDriveLessonFolders: ", sharedGDriveLessonFolders);
 
     const targetLessonFolder = sharedGDriveLessonFolders.find((folder) => {
       if (lsnNum == 100) {
-        return folder.name === 'assessments';
+        return folder.name === "assessments";
       }
 
       const parentFolderGradeType = folder.parentFolder?.name
-        ?.split('_')
+        ?.split("_")
         ?.at(-1)
         ?.toLowerCase();
 
-      console.log('parentFolderGradeType: ', parentFolderGradeType);
+      console.log("parentFolderGradeType: ", parentFolderGradeType);
 
-      console.log('selectedGrade: ', selectedGrade);
+      console.log("selectedGrade: ", selectedGrade);
 
       return (
         parentFolderGradeType &&
@@ -198,11 +198,14 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
     setNumsOfLessonPartsThatAreExpanded,
   ] = _numsOfLessonPartsThatAreExpanded;
   const copyLessonBtnRef = useRef<HTMLButtonElement | null>(null);
-  const isOnAssessments = lsnTitle === 'Assessments';
+  const isOnAssessments = lsnTitle === "Assessments";
   const durList = isOnAssessments
     ? null
     : chunks && chunks.map(({ chunkDur }) => chunkDur);
   let _itemList = itemList;
+
+  console.log("_itemList: ", _itemList);
+
   const targetLessonsResources = resources?.lessons?.find((lesson) => {
     return lesson?.lsn == lsnNum;
   });
@@ -212,8 +215,8 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
     itemList: linkResources,
   } = targetLessonsResources ?? {};
 
-  console.log('lsnTags: ', lsnTags);
-  console.log('_allTags: ', _allTags);
+  console.log("lsnTags: ", lsnTags);
+  console.log("_allTags: ", _allTags);
 
   let allTags = lsnTags ?? _allTags;
   _itemList = (_itemList ?? linkResources) as IItemForClient[] | null;
@@ -221,9 +224,9 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
   let restOfTags = null;
   let lsnNumParsed = NaN;
 
-  if (typeof lsnNum === 'string' && !isNaN(Number(lsnNum))) {
+  if (typeof lsnNum === "string" && !isNaN(Number(lsnNum))) {
     lsnNumParsed = parseInt(lsnNum);
-  } else if (typeof lsnNum === 'number' && !isNaN(Number(lsnNum))) {
+  } else if (typeof lsnNum === "number" && !isNaN(Number(lsnNum))) {
     lsnNumParsed = lsnNum;
   }
 
@@ -236,7 +239,7 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
     return _itemList.map((item) => {
       const externalUrl = item.externalUrl ?? item.links?.[0]?.url;
       const itemDocUrl =
-        item.itemType === 'presentation'
+        item.itemType === "presentation"
           ? `${item.gdriveRoot}/view`
           : `${item.gdriveRoot}/preview`;
 
@@ -251,7 +254,7 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
   const handlePreviewDownloadBtnClick = (lessonItemIndex: number) => {
     if (!lsnNum) {
       alert(
-        'Error: Unable to preview lesson. Please contact the administrator.'
+        "Error: Unable to preview lesson. Please contact the administrator."
       );
       return;
     }
@@ -260,14 +263,14 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
       currentIndex: lessonItemIndex,
       lessonItems: allLessonItems,
       isDisplayed: true,
-      lessonId: typeof lsnNum === 'number' ? lsnNum.toString() : lsnNum,
+      lessonId: typeof lsnNum === "number" ? lsnNum.toString() : lsnNum,
       copyLessonBtnRef: copyLessonBtnRef,
     });
   };
 
   const handleClipBoardIconClick = () => {
     let url = window.location.href;
-    const currentSectionInView = router.asPath.split('#').at(-1);
+    const currentSectionInView = router.asPath.split("#").at(-1);
 
     if (!(currentSectionInView === _accordionId)) {
       url = `${window.location.origin}/${UNITS_URL_PATH}/${router.query.loc}/${router.query.id}#lesson_${_accordionId}`;
@@ -277,12 +280,12 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
   };
 
   useEffect(() => {
-    const lessonPartIdInUrl = window.location.href.split('#').at(-1);
+    const lessonPartIdInUrl = window.location.href.split("#").at(-1);
 
     if (
       lessonPartIdInUrl === `lesson_${_accordionId}` &&
       !ComingSoonLessonEmailSignUp &&
-      typeof lsnNum === 'string' &&
+      typeof lsnNum === "string" &&
       lsnNum === LAST_LESSON_NUM_ID.toString()
     ) {
       const previousLessonPartNum = partsArr.length - 1;
@@ -300,7 +303,7 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
     } else if (
       lessonPartIdInUrl === `lesson_${_accordionId}` &&
       !ComingSoonLessonEmailSignUp &&
-      typeof lsnNum === 'string' &&
+      typeof lsnNum === "string" &&
       !isNaN(Number(lsnNum))
     ) {
       const previousLessonPartNum = parseInt(lsnNum) - 1;
@@ -348,7 +351,7 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
   };
 
   const handleUpdateProfileBtnClick = () => {
-    router.push('/account?show_about_user_form=true');
+    router.push("/account?show_about_user_form=true");
   };
 
   if (allTags?.length && Array.isArray(allTags)) {
@@ -357,14 +360,14 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
     restOfTags = allTags?.length > 3 ? allTags.slice(3) : [];
   }
 
-  const defaultBorder = 'solid 2.5px rgb(222, 226, 230)';
-  const highlightedBorderColor = '#3987C5';
+  const defaultBorder = "solid 2.5px rgb(222, 226, 230)";
+  const highlightedBorderColor = "#3987C5";
   const highlightedBorder = `solid 2.5px ${highlightedBorderColor}`;
-  const highlightedGlow = 'inset 0px 0px 20px 0px rgba(44,131,195,0.25)';
-  let _borderTop = 'none';
+  const highlightedGlow = "inset 0px 0px 20px 0px rgba(44,131,195,0.25)";
+  let _borderTop = "none";
 
   if (isExpanded && lsnNumParsed == 1) {
-    _borderTop = 'none';
+    _borderTop = "none";
   } else if (!isExpanded && lsnNumParsed == 1) {
     _borderTop = defaultBorder;
   }
@@ -372,50 +375,50 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
   const _borderBottom =
     numsOfLessonPartsThatAreExpanded.find((num) => num === lsnNumParsed) ||
     isExpanded
-      ? 'none'
+      ? "none"
       : defaultBorder;
   const accordionStyle = {
-    borderLeft: isExpanded ? 'none' : defaultBorder,
-    borderRight: isExpanded ? 'none' : defaultBorder,
+    borderLeft: isExpanded ? "none" : defaultBorder,
+    borderRight: isExpanded ? "none" : defaultBorder,
     borderTop: _borderTop,
     borderBottom: _borderBottom,
-    boxShadow: isExpanded ? highlightedGlow : 'none',
+    boxShadow: isExpanded ? highlightedGlow : "none",
   };
 
-  let _borderTopAccordionWrapper = 'none';
+  let _borderTopAccordionWrapper = "none";
 
   if (isExpanded && lsnNumParsed == 1) {
     _borderTopAccordionWrapper = highlightedBorder;
   }
 
   if (!isExpanded && lsnNumParsed == 1) {
-    _borderTopAccordionWrapper = 'none';
+    _borderTopAccordionWrapper = "none";
   }
 
   const _borderBottomAccordionWrapper =
     numsOfLessonPartsThatAreExpanded.find((num) => num == lsnNumParsed) ||
     isExpanded
       ? highlightedBorder
-      : 'none';
+      : "none";
   const accordionStyleAccordionWrapper = {
-    borderLeft: isExpanded ? highlightedBorder : 'none',
-    borderRight: isExpanded ? highlightedBorder : 'none',
+    borderLeft: isExpanded ? highlightedBorder : "none",
+    borderRight: isExpanded ? highlightedBorder : "none",
     borderTop: _borderTopAccordionWrapper,
     borderBottom: _borderBottomAccordionWrapper,
-    boxShadow: isExpanded ? highlightedGlow : 'none',
-    pointerEvent: 'none',
+    boxShadow: isExpanded ? highlightedGlow : "none",
+    pointerEvent: "none",
   };
   const lessonsFolder =
     lsnNum == 100
       ? // will use the assessments folder itself as the parent folder
-      {
-        name: sharedGDriveLessonFolder?.name,
-        sharedGDriveId: sharedGDriveLessonFolder?.id,
-      }
+        {
+          name: sharedGDriveLessonFolder?.name,
+          sharedGDriveId: sharedGDriveLessonFolder?.id,
+        }
       : {
-        name: sharedGDriveLessonFolder?.parentFolder.name,
-        sharedGDriveId: sharedGDriveLessonFolder?.parentFolder.id,
-      };
+          name: sharedGDriveLessonFolder?.parentFolder.name,
+          sharedGDriveId: sharedGDriveLessonFolder?.parentFolder.id,
+        };
 
   return (
     <div style={accordionStyleAccordionWrapper}>
@@ -425,12 +428,12 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
         highlighted={undefined}
         setContentId={undefined}
         buttonClassName={`w-100 text-start border-0 p-0 ${
-          isExpanded ? '' : 'bg-white'
+          isExpanded ? "" : "bg-white"
         }`}
         key={lsnNum}
         btnStyle={
           isExpanded
-            ? { background: 'none', ...accordionBtnStyle }
+            ? { background: "none", ...accordionBtnStyle }
             : { ...accordionBtnStyle }
         }
         id={_accordionId}
@@ -438,7 +441,7 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
         style={accordionStyle}
         dataBsToggle={undefined}
         initiallyExpanded={isExpanded}
-        button={(
+        button={
           <div
             onClick={
               isAccordionExpandable ? handleAccordionBtnOnClick : () => {}
@@ -447,9 +450,9 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
           >
             <div
               style={{
-                height: '10px',
-                width: '100%',
-                top: '-50%',
+                height: "10px",
+                width: "100%",
+                top: "-50%",
                 zIndex: -1,
               }}
               className="position-absolute"
@@ -466,8 +469,8 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                         className="fs-5 fw-bold text-left px-md-0 pe-1"
                       >
                         {isOnAssessments
-                          ? 'Assessments'
-                          : `Lesson ${lsnNum}: ${lsnTitle ?? ''}`}
+                          ? "Assessments"
+                          : `Lesson ${lsnNum}: ${lsnTitle ?? ""}`}
                       </h3>
                       <div className="d-flex align-items-center flex-column position-relative">
                         <div
@@ -476,13 +479,13 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                             width: 30,
                             height: 30,
                             border: `solid 2.3px ${
-                              isExpanded ? highlightedBorderColor : '#DEE2E6'
+                              isExpanded ? highlightedBorderColor : "#DEE2E6"
                             }`,
                           }}
                         >
                           {ClickToSeeMoreComp}
                           <i
-                            style={{ color: '#DEE2E6' }}
+                            style={{ color: "#DEE2E6" }}
                             className="fs-4 bi-chevron-down"
                           />
                           <i
@@ -501,17 +504,17 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                             implementLogicOnClick={handleClipBoardIconClick}
                             parentClassName="pointer d-flex"
                             copyTxtModalDefaultStyleObj={{
-                              position: 'fixed',
-                              width: '150px',
-                              backgroundColor: '#212529',
-                              textAlign: 'center',
+                              position: "fixed",
+                              width: "150px",
+                              backgroundColor: "#212529",
+                              textAlign: "center",
                               zIndex: 0,
                             }}
                             pointerContainerStyle={{ zIndex: 1 }}
                           >
                             <i
                               className="bi bi-clipboard"
-                              style={{ fontSize: '30px', color: '#A2A2A2' }}
+                              style={{ fontSize: "30px", color: "#A2A2A2" }}
                             />
                           </CopyableTxt>
                         </div>
@@ -532,7 +535,7 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                             style={{
                               border: `solid .5px ${LESSON_PART_BTN_COLOR}`,
                             }}
-                            id={`${lsnNum}-${tag.split(' ').join('-')}`}
+                            id={`${lsnNum}-${tag.split(" ").join("-")}`}
                             className="rounded-pill badge bg-white p-2 mt-2"
                           >
                             <span
@@ -558,13 +561,13 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                           width: 35,
                           height: 35,
                           border: `solid 2.3px ${
-                            isExpanded ? highlightedBorderColor : '#DEE2E6'
+                            isExpanded ? highlightedBorderColor : "#DEE2E6"
                           }`,
                         }}
                       >
                         {ClickToSeeMoreComp}
                         <i
-                          style={{ color: '#DEE2E6' }}
+                          style={{ color: "#DEE2E6" }}
                           className="fs-4 bi-chevron-down"
                         />
                         <i
@@ -582,17 +585,17 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                           txtCopiedIndicator="Lesson link copied ✅!"
                           implementLogicOnClick={handleClipBoardIconClick}
                           copyTxtModalDefaultStyleObj={{
-                            position: 'fixed',
-                            width: '150px',
-                            backgroundColor: '#212529',
-                            textAlign: 'center',
+                            position: "fixed",
+                            width: "150px",
+                            backgroundColor: "#212529",
+                            textAlign: "center",
                             zIndex: 0,
                           }}
                           pointerContainerStyle={{ zIndex: 1 }}
                         >
                           <i
                             className="bi bi-clipboard"
-                            style={{ fontSize: '30px', color: '#A2A2A2' }}
+                            style={{ fontSize: "30px", color: "#A2A2A2" }}
                           />
                         </CopyableTxt>
                       </div>
@@ -603,7 +606,7 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
             </div>
             {ComingSoonLessonEmailSignUp}
           </div>
-        )}
+        }
       >
         <div className="p-0 lessonPartContent pb-3">
           {!!restOfTags?.length && (
@@ -611,7 +614,7 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
               {restOfTags.map((tag: string, index) => (
                 <div
                   key={index}
-                  id={`${lsnNum}-${tag.split(' ').join('-')}`}
+                  id={`${lsnNum}-${tag.split(" ").join("-")}`}
                   style={{ border: `solid .5px ${LESSON_PART_BTN_COLOR}` }}
                   className="rounded-pill badge bg-white p-2"
                 >
@@ -648,7 +651,7 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
               </ol>
             </div>
           )}
-          {typeof learningObjectives === 'string' && (
+          {typeof learningObjectives === "string" && (
             <div className="mt-4 d-col col-12 col-lg-8">
               <div className="d-flex align-items-start">
                 <h5 className="fw-bold">
@@ -671,9 +674,9 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
             <div className="d-flex align-items-start">
               <i className="bi bi-ui-checks-grid me-2 fw-bolder"></i>
               <h5 className="fw-bold" id="materials-title">
-                Materials for{' '}
+                Materials for{" "}
                 {lsnNum == 100
-                  ? 'Assessments'
+                  ? "Assessments"
                   : `${selectedGrade.gradePrefix} (Lesson ${lsnNum})`}
               </h5>
             </div>
@@ -700,15 +703,15 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
             )}
             <div
               className={`col-12 col-sm-12 col-lg-7 ${
-                status === 'authenticated' ? 'position-static' : ''
-              } ${status === 'unauthenticated' ? 'position-relative' : ''} ${
-                status === 'loading' ? 'pe-none position-relative' : ''
+                status === "authenticated" ? "position-static" : ""
+              } ${status === "unauthenticated" ? "position-relative" : ""} ${
+                status === "loading" ? "pe-none position-relative" : ""
               }`}
             >
-              {status === 'unauthenticated' && (
+              {status === "unauthenticated" && (
                 <SignInSuggestion
                   className="position-absolute start-50 translate-middle col-12 d-flex justify-content-center align-items-center flex-column"
-                  style={{ zIndex: 100, top: '20%' }}
+                  style={{ zIndex: 100, top: "20%" }}
                   txt="Create a free account to see teaching materials"
                   txtClassName="d-inline-flex justify-center items-center text-center fw-bold"
                 >
@@ -718,12 +721,12 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                         const url = `${window.location.origin}/${UNITS_URL_PATH}/${router.query.loc}/${router.query.id}?${PRESENT_WELCOME_MODAL_PARAM_NAME}=true`;
 
                         setLocalStorageItem(
-                          'lessonIdToViewAfterRedirect',
+                          "lessonIdToViewAfterRedirect",
                           `lesson_${_accordionId}`
                         );
-                        setSessionStorageItem('userEntryRedirectUrl', url);
+                        setSessionStorageItem("userEntryRedirectUrl", url);
 
-                        router.push('/sign-up');
+                        router.push("/sign-up");
                       }}
                       className="mt-2 sign-in-teacher-materials-btn d-flex justify-content-center align-items-center underline-on-hover"
                     >
@@ -734,9 +737,9 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
               )}
               <ol
                 className={`mt-2 materials-list w-100 ${
-                  status === 'unauthenticated'
-                    ? 'restricted-content pe-none'
-                    : ''
+                  status === "unauthenticated"
+                    ? "restricted-content pe-none"
+                    : ""
                 }`}
               >
                 {!!_itemList?.length &&
@@ -750,25 +753,26 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                       gdriveRoot,
                       itemType,
                     } = item;
+                    const openInNewTabLink = itemType === "presentation"
                     const _links = links
                       ? Array.isArray(links)
                         ? links
                         : [links]
                       : null;
                     const imgLink =
-                      itemCat === 'web resource'
-                        ? _links?.[0]?.url ?? ''
-                        : _links?.[1]?.url ?? '';
+                      itemCat === "web resource"
+                        ? _links?.[0]?.url ?? ""
+                        : _links?.[1]?.url ?? "";
                     const isTeacherItem = itemTitle
-                      ? itemTitle.toLowerCase().includes('teacher')
+                      ? itemTitle.toLowerCase().includes("teacher")
                       : false;
-                    let blurTxt = '';
-                    let btnTxt = 'Sign in';
+                    let blurTxt = "";
+                    let btnTxt = "Sign in";
                     let handleBtnClick = handleSignInBtnClick;
 
-                    if (!isUserTeacher && status === 'authenticated') {
-                      blurTxt = 'You must be a teacher to view this item.';
-                      btnTxt = 'Update Profile';
+                    if (!isUserTeacher && status === "authenticated") {
+                      blurTxt = "You must be a teacher to view this item.";
+                      btnTxt = "Update Profile";
                       handleBtnClick = handleUpdateProfileBtnClick;
                     }
 
@@ -776,14 +780,14 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                       <li
                         key={itemIndex}
                         className={`${
-                          itemIndex === 0 ? 'mt-2' : 'mt-4'
+                          itemIndex === 0 ? "mt-2" : "mt-4"
                         } mb-0 w-100`}
                       >
                         <div className="d-flex flex-column flex-md-row">
                           <section className="col-12 position-relative">
                             {isTeacherItem &&
                               !isUserTeacher &&
-                              status !== 'unauthenticated' && (
+                              status !== "unauthenticated" && (
                                 <SignInSuggestion txt={blurTxt}>
                                   <div className="d-flex justify-content-center align-items-center">
                                     <Button
@@ -794,7 +798,7 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                                     </Button>
                                   </div>
                                 </SignInSuggestion>
-                            )}
+                              )}
                             <strong>
                               <RichText
                                 content={itemTitle}
@@ -805,15 +809,15 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                               style={{
                                 filter:
                                   isTeacherItem && !isUserTeacher
-                                    ? 'blur(12px)'
-                                    : 'none',
+                                    ? "blur(12px)"
+                                    : "none",
                               }}
                               className="d-flex justify-content-between position-relative bg-white flex-sm-row flex-column"
                             >
                               <section>
                                 <div
                                   className="fst-italic mb-1"
-                                  style={{ color: '#353637' }}
+                                  style={{ color: "#353637" }}
                                 >
                                   <RichText
                                     className="lesson-item-description"
@@ -821,23 +825,23 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                                   />
                                 </div>
                                 <ul
-                                  style={{ listStyle: 'none' }}
+                                  style={{ listStyle: "none" }}
                                   className="links-list p-0"
                                 >
-                                  {itemType === 'presentation' && (
+                                  {itemType === "presentation" && (
                                     <li className="mb-0 d-flex">
                                       <div className="d-flex justify-content-center align-items-sm-center">
                                         <button
                                           className={`${
                                             isTeacherItem
                                               ? isUserTeacher
-                                                ? ''
-                                                : 'link-disabled'
-                                              : ''
+                                                ? ""
+                                                : "link-disabled"
+                                              : ""
                                           } no-btn-styles no-hover-color-change`}
                                         >
                                           <i
-                                            style={{ color: '#4498CC' }}
+                                            style={{ color: "#4498CC" }}
                                             className="bi bi-box-arrow-up-right"
                                           />
                                         </button>
@@ -848,17 +852,17 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                                           target="_blank"
                                           rel="noopener noreferrer"
                                           style={{
-                                            color: '#2c83c3',
+                                            color: "#2c83c3",
                                           }}
                                           className={`${
                                             isTeacherItem
                                               ? isUserTeacher
-                                                ? ''
-                                                : 'link-disabled'
-                                              : ''
+                                                ? ""
+                                                : "link-disabled"
+                                              : ""
                                           }`}
                                         >
-                                          Present
+                                          Open/Present
                                         </a>
                                       </div>
                                     </li>
@@ -869,9 +873,9 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                                         className={`${
                                           isTeacherItem
                                             ? isUserTeacher
-                                              ? ''
-                                              : 'link-disabled'
-                                            : ''
+                                              ? ""
+                                              : "link-disabled"
+                                            : ""
                                         } no-btn-styles no-hover-color-change d-flex justify-content-center align-items-center`}
                                         onClick={() => {
                                           handlePreviewDownloadBtnClick(
@@ -881,9 +885,9 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                                       >
                                         <RxMagnifyingGlass
                                           style={{
-                                            color: '#2c83c3',
-                                            fontSize: '22px',
-                                            transform: 'translateY(-1px)',
+                                            color: "#2c83c3",
+                                            fontSize: "22px",
+                                            transform: "translateY(-1px)",
                                           }}
                                         />
                                       </button>
@@ -891,14 +895,14 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                                     <div className="d-flex justify-content-center align-items-center ps-2">
                                       <button
                                         style={{
-                                          color: '#2c83c3',
+                                          color: "#2c83c3",
                                         }}
                                         className={`${
                                           isTeacherItem
                                             ? isUserTeacher
-                                              ? ''
-                                              : 'link-disabled'
-                                            : ''
+                                              ? ""
+                                              : "link-disabled"
+                                            : ""
                                         } fw-bolder no-btn-styles no-hover-color-change underline-on-hover`}
                                         onClick={() => {
                                           handlePreviewDownloadBtnClick(
@@ -906,9 +910,7 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                                           );
                                         }}
                                       >
-                                        {itemType === 'presentation'
-                                          ? 'Preview/Download'
-                                          : 'Preview'}
+                                        Preview/Download
                                       </button>
                                     </div>
                                   </li>
@@ -921,22 +923,22 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                                       src={filePreviewImg}
                                       alt="lesson_tile"
                                       className={`h-auto w-auto lesson-file-img-testing cursor-pointer ${
-                                        status === 'unauthenticated' ||
-                                        status === 'loading'
-                                          ? 'pe-none'
-                                          : 'none'
+                                        status === "unauthenticated" ||
+                                        status === "loading"
+                                          ? "pe-none"
+                                          : "none"
                                       }`}
                                       style={{
-                                        objectFit: 'contain',
-                                        maxHeight: '100px',
-                                        maxWidth: '100px',
-                                        cursor: 'pointer',
-                                        border: '1px solid gray',
+                                        objectFit: "contain",
+                                        maxHeight: "100px",
+                                        maxWidth: "100px",
+                                        cursor: "pointer",
+                                        border: "1px solid gray",
                                         pointerEvents: isTeacherItem
                                           ? isUserTeacher
-                                            ? 'auto'
-                                            : 'none'
-                                          : 'auto',
+                                            ? "auto"
+                                            : "none"
+                                          : "auto",
                                       }}
                                       onClick={() => {
                                         handlePreviewDownloadBtnClick(
@@ -1003,14 +1005,14 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
               <ol className="mt-2">
                 {(lsnExt || goingFurther)?.map(
                   ({ itemTitle, itemDescription, item, itemLink }) => {
-                    let itemClassNameTitle = '';
-                    let itemClassNameDescription = '';
+                    let itemClassNameTitle = "";
+                    let itemClassNameDescription = "";
 
                     if (itemTitle) {
                       const itemClassNameRoot = itemTitle
-                        .split(' ')
-                        .join('-')
-                        .replace(/[^a-zA-Z]/g, '');
+                        .split(" ")
+                        .join("-")
+                        .replace(/[^a-zA-Z]/g, "");
                       itemClassNameTitle = `${itemClassNameRoot}-title`;
                       itemClassNameDescription = `${itemClassNameRoot}-description`;
                     }
@@ -1019,7 +1021,7 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                       <li
                         key={item}
                         className="fw-bold"
-                        style={{ color: '#4397D5' }}
+                        style={{ color: "#4397D5" }}
                       >
                         <h6 className="mb-1">
                           {itemLink && (
