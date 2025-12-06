@@ -1,7 +1,3 @@
-/* eslint-disable quotes */
-/* eslint-disable indent */
-/* eslint-disable react/jsx-wrap-multilines */
-
 import React, {
   Dispatch,
   ReactNode,
