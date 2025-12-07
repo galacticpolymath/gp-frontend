@@ -79,13 +79,13 @@ const SignInSuggestion: React.FC<ISignInSuggestionProps> = ({
 
 export interface ILessonPartProps
   extends Pick<
-      INewUnitLesson,
-      | "allUnitLessons"
-      | "lessonsFolder"
-      | "userGDriveLessonFolderId"
-      | "sharedGDriveLessonFolders"
-    >,
-    Pick<ICopyLessonBtnProps, "isRetrievingLessonFolderIds"> {
+    INewUnitLesson,
+    | "allUnitLessons"
+    | "lessonsFolder"
+    | "userGDriveLessonFolderId"
+    | "sharedGDriveLessonFolders"
+  >,
+  Pick<ICopyLessonBtnProps, "isRetrievingLessonFolderIds"> {
   resources?: IResource;
   GradesOrYears?: string | null;
   removeClickToSeeMoreTxt: () => void;
@@ -374,7 +374,7 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
 
   const _borderBottom =
     numsOfLessonPartsThatAreExpanded.find((num) => num === lsnNumParsed) ||
-    isExpanded
+      isExpanded
       ? "none"
       : defaultBorder;
   const accordionStyle = {
@@ -397,7 +397,7 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
 
   const _borderBottomAccordionWrapper =
     numsOfLessonPartsThatAreExpanded.find((num) => num == lsnNumParsed) ||
-    isExpanded
+      isExpanded
       ? highlightedBorder
       : "none";
   const accordionStyleAccordionWrapper = {
@@ -411,14 +411,14 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
   const lessonsFolder =
     lsnNum == 100
       ? // will use the assessments folder itself as the parent folder
-        {
-          name: sharedGDriveLessonFolder?.name,
-          sharedGDriveId: sharedGDriveLessonFolder?.id,
-        }
+      {
+        name: sharedGDriveLessonFolder?.name,
+        sharedGDriveId: sharedGDriveLessonFolder?.id,
+      }
       : {
-          name: sharedGDriveLessonFolder?.parentFolder.name,
-          sharedGDriveId: sharedGDriveLessonFolder?.parentFolder.id,
-        };
+        name: sharedGDriveLessonFolder?.parentFolder.name,
+        sharedGDriveId: sharedGDriveLessonFolder?.parentFolder.id,
+      };
 
   return (
     <div style={accordionStyleAccordionWrapper}>
@@ -427,9 +427,8 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
         handleOnClick={undefined}
         highlighted={undefined}
         setContentId={undefined}
-        buttonClassName={`w-100 text-start border-0 p-0 ${
-          isExpanded ? "" : "bg-white"
-        }`}
+        buttonClassName={`w-100 text-start border-0 p-0 ${isExpanded ? "" : "bg-white"
+          }`}
         key={lsnNum}
         btnStyle={
           isExpanded
@@ -444,7 +443,7 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
         button={
           <div
             onClick={
-              isAccordionExpandable ? handleAccordionBtnOnClick : () => {}
+              isAccordionExpandable ? handleAccordionBtnOnClick : () => { }
             }
             className="position-relative lesson-part-btn"
           >
@@ -478,9 +477,8 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                           style={{
                             width: 30,
                             height: 30,
-                            border: `solid 2.3px ${
-                              isExpanded ? highlightedBorderColor : "#DEE2E6"
-                            }`,
+                            border: `solid 2.3px ${isExpanded ? highlightedBorderColor : "#DEE2E6"
+                              }`,
                           }}
                         >
                           {ClickToSeeMoreComp}
@@ -560,9 +558,8 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                         style={{
                           width: 35,
                           height: 35,
-                          border: `solid 2.3px ${
-                            isExpanded ? highlightedBorderColor : "#DEE2E6"
-                          }`,
+                          border: `solid 2.3px ${isExpanded ? highlightedBorderColor : "#DEE2E6"
+                            }`,
                         }}
                       >
                         {ClickToSeeMoreComp}
@@ -702,11 +699,9 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
               />
             )}
             <div
-              className={`col-12 col-sm-12 col-lg-7 ${
-                status === "authenticated" ? "position-static" : ""
-              } ${status === "unauthenticated" ? "position-relative" : ""} ${
-                status === "loading" ? "pe-none position-relative" : ""
-              }`}
+              className={`col-12 col-sm-12 col-lg-7 ${status === "authenticated" ? "position-static" : ""
+                } ${status === "unauthenticated" ? "position-relative" : ""} ${status === "loading" ? "pe-none position-relative" : ""
+                }`}
             >
               {status === "unauthenticated" && (
                 <SignInSuggestion
@@ -736,11 +731,10 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                 </SignInSuggestion>
               )}
               <ol
-                className={`mt-2 materials-list w-100 ${
-                  status === "unauthenticated"
-                    ? "restricted-content pe-none"
-                    : ""
-                }`}
+                className={`mt-2 materials-list w-100 ${status === "unauthenticated"
+                  ? "restricted-content pe-none"
+                  : ""
+                  }`}
               >
                 {!!_itemList?.length &&
                   _itemList.map((item, itemIndex) => {
@@ -779,9 +773,9 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                     return (
                       <li
                         key={itemIndex}
-                        className={`${
-                          itemIndex === 0 ? "mt-2" : "mt-4"
-                        } mb-0 w-100`}
+                        style={{ minHeight: "105px" }}
+                        className={`${itemIndex === 0 ? "mt-2" : "mt-4"
+                          } mb-0 w-100`}
                       >
                         <div className="d-flex flex-column flex-md-row">
                           <section className="col-12 position-relative">
@@ -832,13 +826,12 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                                     <li className="mb-0 d-flex">
                                       <div className="d-flex justify-content-center align-items-sm-center">
                                         <button
-                                          className={`${
-                                            isTeacherItem
-                                              ? isUserTeacher
-                                                ? ""
-                                                : "link-disabled"
-                                              : ""
-                                          } no-btn-styles no-hover-color-change`}
+                                          className={`${isTeacherItem
+                                            ? isUserTeacher
+                                              ? ""
+                                              : "link-disabled"
+                                            : ""
+                                            } no-btn-styles no-hover-color-change`}
                                         >
                                           <i
                                             style={{ color: "#4498CC" }}
@@ -854,13 +847,12 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                                           style={{
                                             color: "#2c83c3",
                                           }}
-                                          className={`${
-                                            isTeacherItem
-                                              ? isUserTeacher
-                                                ? ""
-                                                : "link-disabled"
-                                              : ""
-                                          }`}
+                                          className={`${isTeacherItem
+                                            ? isUserTeacher
+                                              ? ""
+                                              : "link-disabled"
+                                            : ""
+                                            }`}
                                         >
                                           Open/Present
                                         </a>
@@ -870,13 +862,12 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                                   <li className="mb-0 d-flex">
                                     <div className="d-flex justify-content-center align-items-sm-center">
                                       <button
-                                        className={`${
-                                          isTeacherItem
-                                            ? isUserTeacher
-                                              ? ""
-                                              : "link-disabled"
-                                            : ""
-                                        } no-btn-styles no-hover-color-change d-flex justify-content-center align-items-center`}
+                                        className={`${isTeacherItem
+                                          ? isUserTeacher
+                                            ? ""
+                                            : "link-disabled"
+                                          : ""
+                                          } no-btn-styles no-hover-color-change d-flex justify-content-center align-items-center`}
                                         onClick={() => {
                                           handlePreviewDownloadBtnClick(
                                             itemIndex
@@ -897,13 +888,12 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                                         style={{
                                           color: "#2c83c3",
                                         }}
-                                        className={`${
-                                          isTeacherItem
-                                            ? isUserTeacher
-                                              ? ""
-                                              : "link-disabled"
-                                            : ""
-                                        } fw-bolder no-btn-styles no-hover-color-change underline-on-hover`}
+                                        className={`${isTeacherItem
+                                          ? isUserTeacher
+                                            ? ""
+                                            : "link-disabled"
+                                          : ""
+                                          } fw-bolder no-btn-styles no-hover-color-change underline-on-hover`}
                                         onClick={() => {
                                           handlePreviewDownloadBtnClick(
                                             itemIndex
@@ -922,16 +912,16 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                                     <img
                                       src={filePreviewImg}
                                       alt="lesson_tile"
-                                      className={`h-auto w-auto lesson-file-img-testing cursor-pointer ${
-                                        status === "unauthenticated" ||
+                                      className={`w-100 lesson-file-img-testing cursor-pointer ${status === "unauthenticated" ||
                                         status === "loading"
-                                          ? "pe-none"
-                                          : "none"
-                                      }`}
+                                        ? "pe-none"
+                                        : "none"
+                                        }`}
                                       style={{
-                                        objectFit: "contain",
-                                        maxHeight: "100px",
+                                        maxHeight: '55px',
+                                        minHeight: '50px',
                                         maxWidth: "100px",
+                                        objectFit: "contain",
                                         cursor: "pointer",
                                         border: "1px solid gray",
                                         pointerEvents: isTeacherItem
