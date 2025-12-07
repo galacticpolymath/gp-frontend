@@ -65,6 +65,8 @@ export default async function handler(
   response: NextApiResponse
 ) {
   try {
+    console.log("API called: get-user-account-data");
+
     const authorization = request?.headers?.["authorization"] ?? "";
     const authSplit = authorization.split(" ");
 
@@ -117,7 +119,7 @@ export default async function handler(
 
     console.log("mailingListConfirmation: ", mailingListConfirmation);
 
-    if(mailingListConfirmation?._id){
+    if (mailingListConfirmation?._id) {
       userAccount = {
         ...userAccount,
         mailingListConfirmationEmailId: mailingListConfirmation._id
@@ -141,9 +143,8 @@ export default async function handler(
     );
 
     return response.status(code ?? 500).json({
-      msg: `Error message: ${
-        message ?? "An error has occurred on the server."
-      }`,
+      msg: `Error message: ${message ?? "An error has occurred on the server."
+        }`,
     });
   }
 }

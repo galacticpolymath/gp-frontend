@@ -288,9 +288,10 @@ export const useGetAboutUserForm = (
             },
           };
 
+          const url = `${window.location.origin}/api/get-user-account-data`;
           const response = await axios.get<
             TUserSchemaForClient<TUserSchemaV2 & IUserSchema>
-          >("/api/get-user-account-data", paramsAndHeaders);
+          >(url, paramsAndHeaders);
 
           console.log("userAccount data: ", response.data);
 

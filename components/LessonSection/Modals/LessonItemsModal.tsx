@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Button, Modal, CloseButton } from "react-bootstrap";
 import { ILessonItem, useModalContext } from "../../../providers/ModalProvider";
 import { TbDownload } from "react-icons/tb";
@@ -16,7 +16,6 @@ import useSiteSession from "../../../customHooks/useSiteSession";
 import Image from "next/image";
 import { FcGoogle } from "react-icons/fc";
 import Dropdown from "react-bootstrap/Dropdown";
-import { LuMonitorPlay } from "react-icons/lu";
 import { GiFilmStrip } from "react-icons/gi";
 import { IoOpenOutline } from "react-icons/io5";
 
@@ -45,9 +44,8 @@ const LessonItemCard: React.FC<ILessonItemCard> = ({
           minHeight: "65px",
           maxHeight: "75px",
         }}
-        className={`top-0 w-100 position-absolute ${
-          isMsgHidden ? "d-none" : "d-block"
-        } d-xl-none`}
+        className={`top-0 w-100 position-absolute ${isMsgHidden ? "d-none" : "d-block"
+          } d-xl-none`}
       >
         <div className="w-100 h-100 px-2 py-1 position-relative d-flex justify-content-center align-items-center">
           <div style={{ maxWidth: "400px" }} className="position-relative">
@@ -217,6 +215,9 @@ const LessonItemsModal: React.FC = () => {
     lessonId,
     userGDriveLessonFolderId,
   } = lessonItemModal;
+
+  console.log("lessonItems, hey there; ", lessonItems);
+
   const currentLessonItem = lessonItems[currentIndex] ?? {};
   const {
     docUrl: currentLessonItemDocUrl,
@@ -356,15 +357,13 @@ const LessonItemsModal: React.FC = () => {
             className="w-100 h-100 row m-0 ps-0 pe-md-5 py-3 d-flex flex-column flex-sm-row"
           >
             <section
-              className={`${
-                isGpPlusMember
-                  ? "col-12 col-sm-5 col-xxl-3"
-                  : "col-sm-6 col-md-3 col-xxl-6"
-              } d-flex ${
-                isGpPlusMember
+              className={`${isGpPlusMember
+                ? "col-12 col-sm-5 col-xxl-3"
+                : "col-sm-6 col-md-3 col-xxl-6"
+                } d-flex ${isGpPlusMember
                   ? "justify-content-end justify-content-sm-start align-items-stretch"
                   : "justify-content-start align-items-center ps-1"
-              }`}
+                }`}
             >
               {isGpPlusMember ? (
                 <CopyLessonBtnUI
@@ -442,11 +441,10 @@ const LessonItemsModal: React.FC = () => {
               )}
             </section>
             <section
-              className={` ${
-                isGpPlusMember
-                  ? "col-12 col-sm-7 col-xxl-9"
-                  : "col-6 col-sm-6 col-md-9 col-xxl-6 p-0"
-              } d-flex flex-column flex-md-row justify-content-md-end align-items-sm-center p-sm-0`}
+              className={` ${isGpPlusMember
+                ? "col-12 col-sm-7 col-xxl-9"
+                : "col-6 col-sm-6 col-md-9 col-xxl-6 p-0"
+                } d-flex flex-column flex-md-row justify-content-md-end align-items-sm-center p-sm-0`}
             >
               {itemType === "presentation" && (
                 <section className="d-none d-sm-flex h-100 justify-content-end pe-sm-3">
@@ -492,11 +490,10 @@ const LessonItemsModal: React.FC = () => {
                     </section>
                   )}
                 <section
-                  className={`d-flex flex-row flex-md-column ${
-                    isGpPlusMember
-                      ? "justify-content-end"
-                      : " justify-content-start ms-1"
-                  } align-items-sm-stretch justify-content-sm-center align-items-sm-center lessons-item-modal-download mt-3 mt-sm-0`}
+                  className={`d-flex flex-row flex-md-column ${isGpPlusMember
+                    ? "justify-content-end"
+                    : " justify-content-start ms-1"
+                    } align-items-sm-stretch justify-content-sm-center align-items-sm-center lessons-item-modal-download mt-3 mt-sm-0`}
                 >
                   {currentLessonItem.isExportable && (
                     <div className="d-flex d-sm-none">
@@ -632,7 +629,7 @@ const LessonItemsModal: React.FC = () => {
           >
             <CarouselSlider className="w-100 h-100">
               {lessonItems.map((lessonItem, index) => {
-                let url =
+                const url =
                   lessonItem.itemCat === "web resource"
                     ? lessonItem.externalUrl
                     : lessonItem.docUrl;
