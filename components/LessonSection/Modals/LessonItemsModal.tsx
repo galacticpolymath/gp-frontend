@@ -482,7 +482,7 @@ const LessonItemsModal: React.FC = () => {
                   </Button>
                 </section>
               )}
-              <section className="d-flex flex-column flex-md-row justify-content-end align-items-stretch">
+              <section className="h-100 d-flex flex-column flex-md-row justify-content-end align-items-stretch">
                 {currentLessonItem.itemCat !== "web resource" &&
                   currentLessonItem.isExportable && (
                     <section className="w-100 d-none d-sm-flex justify-content-center justify-content-md-end pt-sm-1">
@@ -491,9 +491,9 @@ const LessonItemsModal: React.FC = () => {
                   )}
                 <section
                   className={`d-flex flex-row flex-md-column ${isGpPlusMember
-                    ? "justify-content-end"
-                    : " justify-content-start ms-1"
-                    } align-items-sm-stretch justify-content-sm-center align-items-sm-center lessons-item-modal-download mt-3 mt-sm-0`}
+                    ? "justify-content-end align-items-sm-stretch justify-content-sm-center align-items-sm-center"
+                    : " justify-content-start ms-1 align-items-stretch"
+                    } lessons-item-modal-download mt-3 mt-sm-0`}
                 >
                   {currentLessonItem.isExportable && (
                     <div className="d-flex d-sm-none">
@@ -557,13 +557,13 @@ const LessonItemsModal: React.FC = () => {
                     </div>
                   )}
                   {currentLessonItem.isExportable && (
-                    <div className="d-none d-sm-flex mt-md-2 ms-md-0 ms-2">
+                    <div className={`d-none d-sm-flex ${isGpPlusMember ? "ms-2 mt-md-2 ms-md-0" : ""}`}>
                       <Button
                         style={{
                           backgroundColor: "transparent",
                           transition: "background-color inifinte",
                         }}
-                        className="d-flex no-btn-styles flex-row justify-content-center align-items-center "
+                        className="d-flex no-btn-styles flex-row justify-content-center align-items-center"
                         onClick={handleDownloadPdfBtnClick}
                       >
                         <div
