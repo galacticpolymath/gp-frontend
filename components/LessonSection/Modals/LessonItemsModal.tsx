@@ -492,7 +492,7 @@ const LessonItemsModal: React.FC = () => {
                 <section
                   className={`d-flex flex-row flex-md-column ${isGpPlusMember
                     ? "justify-content-end align-items-sm-stretch justify-content-sm-center align-items-sm-center"
-                    : " justify-content-start ms-1 align-items-stretch"
+                    : "justify-content-start ms-2 align-items-stretch"
                     } lessons-item-modal-download mt-3 mt-sm-0`}
                 >
                   {currentLessonItem.isExportable && (
@@ -563,7 +563,7 @@ const LessonItemsModal: React.FC = () => {
                           backgroundColor: "transparent",
                           transition: "background-color inifinte",
                         }}
-                        className="d-flex no-btn-styles flex-row justify-content-center align-items-center"
+                        className={`d-flex no-btn-styles flex-row ${isGpPlusMember ? 'justify-content-center align-items-center' : ''}`}
                         onClick={handleDownloadPdfBtnClick}
                       >
                         <div
@@ -572,7 +572,7 @@ const LessonItemsModal: React.FC = () => {
                         >
                           <TbDownload color="black" size={35} />
                         </div>
-                        <section className="d-flex justify-content-center align-items-center ms-2">
+                        <section className={`d-flex justify-content-center align-items-center ${isGpPlusMember ? 'ms-2' : ''}`} >
                           <div
                             style={{ height: "fit-content" }}
                             className="mb-0 text-black text-decoration-underline lessons-item-modal-btns-text-container"
