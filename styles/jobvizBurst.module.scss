@@ -528,6 +528,41 @@
   color: #f8fbff;
 }
 
+.heroRangeValue {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.heroRangeDivider {
+  margin: 0 0.35rem;
+  opacity: 0.4;
+}
+
+.statValueHot {
+  color: #ff94d7;
+}
+
+.statValueCool {
+  color: #7ccaff;
+}
+
+.statValueNeutral {
+  color: #f8fbff;
+}
+
+.statValueHot {
+  color: #ff94d7;
+}
+
+.statValueCool {
+  color: #7ccaff;
+}
+
+.statValueNeutral {
+  color: #f8fbff;
+}
+
 .paletteBoard {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -1045,7 +1080,7 @@
     position: fixed;
     right: 0;
     top: 64px;
-    bottom: 0;
+    bottom: clamp(1.5rem, 4vw, 3rem);
     width: clamp(320px, 28vw, 360px);
     animation: dockSlide 0.35s ease;
     z-index: 2000;
@@ -2193,9 +2228,6 @@
 .jobvizSection {
   position: relative;
   padding: clamp(2rem, 4vw, 4rem) 0 clamp(4rem, 7vw, 7rem);
-  transform: translate3d(0, calc(var(--jobviz-section-offset, 0px) * -1), 0);
-  transition: transform 0.2s ease-out;
-  will-change: transform;
 }
 
 .jobvizSectionBg {
@@ -2208,9 +2240,6 @@
     rgba(3, 5, 15, 0.95) 100%
   );
   opacity: 0.95;
-  transform: translate3d(0, calc(var(--jobviz-bg-offset, 0px) * -0.25), 0);
-  transition: transform 0.15s ease-out;
-  will-change: transform;
 }
 
 .jobvizSectionPattern {

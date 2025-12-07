@@ -123,6 +123,9 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
       ? styles.assignmentDesktopDock
       : styles.assignmentMobileWrapper;
   const [showRatingHint, setShowRatingHint] = React.useState(true);
+  const [dockCollapsed, setDockCollapsed] = React.useState(false);
+  const isDesktopVariant = variant === "desktop";
+  const isDockCollapsed = isDesktopVariant && dockCollapsed;
   React.useEffect(() => {
     if (!jobs?.length) return;
     const timer = window.setTimeout(() => setShowRatingHint(false), 4000);
@@ -134,6 +137,7 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
       className={`${styles.assignmentBannerShell} ${wrapperClass}`}
       data-mode={variant === "desktop" ? "docked" : "default"}
       data-collapsed={isMobile && mobileCollapsed ? "true" : "false"}
+      data-dock-collapsed={isDockCollapsed ? "true" : "false"}
     >
       <div
         className={`${styles.assignmentBanner} ${styles.assignmentBannerSticky} ${
@@ -150,6 +154,17 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
           }`}
           data-mobile-collapsed={isMobile && mobileCollapsed ? "true" : "false"}
         >
+          {isDesktopVariant && (
+            <button
+              type="button"
+              className={styles.assignmentDockToggle}
+              onClick={() => setDockCollapsed((prev) => !prev)}
+              aria-expanded={!isDockCollapsed}
+              aria-label={isDockCollapsed ? "Expand assignment" : "Collapse assignment"}
+            >
+              <LucideIcon name={isDockCollapsed ? "ChevronLeft" : "ChevronRight"} />
+            </button>
+          )}
           {isMobile && (
             <button
               type="button"
@@ -169,110 +184,164 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
               </span>
             </button>
           )}
-          <div
-            id={infoSectionId}
-            hidden={hideInfoSection}
-            className={styles.assignmentInfoBlock}
-          >
-            {unitName && (
-              <span className={styles.assignmentUnitLabelInline}>
-                <span>
-                  {" "}
-                  Jobs related to the{" "}
-                  <span className={styles.assignmentUnitName}>{unitName}</span>{" "}
-                  unit
-                </span>
-              </span>
-            )}
-            <div className={styles.assignmentMarker}>
-              <span className={styles.assignmentMarkerLabel}>
-                <img
-                  src={ASSIGNMENT_LOGO}
-                  alt="GP+"
-                  className={styles.assignmentMarkerLogo}
-                  width={26}
-                  height={26}
-                />
-                JobViz | Assignment
-              </span>
-              <p className={styles.assignmentCopy}>
-                Explore and rate each of these jobs. Be prepared to explain your
-                ratings <em>with data</em>.
-              </p>
-              <button
-                type="button"
-                className={styles.assignmentClearButton}
-                onClick={clearRatings}
+          {!isDockCollapsed && (
+            <>
+              <div
+                id={infoSectionId}
+                hidden={hideInfoSection}
+                className={styles.assignmentInfoBlock}
               >
-                Clear ratings
-              </button>
-            </div>
-          </div>
-          {assignmentSocCodes.length > 0 && (
-            <div className={styles.assignmentProgressRow}>
-              <div className={styles.assignmentProgressLabel}>
-                Rated {progress.rated}/{progress.total} jobs
+                {unitName && (
+                  <span className={styles.assignmentUnitLabelInline}>
+                    <span>
+                      {" "}
+                      Jobs related to the{" "}
+                      <span className={styles.assignmentUnitName}>{unitName}</span>{" "}
+                      unit
+                    </span>
+                  </span>
+                )}
+                <div className={styles.assignmentMarker}>
+                  <span className={styles.assignmentMarkerLabel}>
+                    <img
+                      src={ASSIGNMENT_LOGO}
+                      alt="GP+"
+                      className={styles.assignmentMarkerLogo}
+                      width={26}
+                      height={26}
+                    />
+                    JobViz | Assignment
+                  </span>
+                  <p className={styles.assignmentCopy}>
+                    Explore and rate each of these jobs. Be prepared to explain your
+                    ratings <em>with data</em>.
+                  </p>
+                  <button
+                    type="button"
+                    className={styles.assignmentClearButton}
+                    onClick={clearRatings}
+                  >
+                    Clear ratings
+                  </button>
+                </div>
               </div>
-              <div className={styles.assignmentProgressTrack}>
-                <div
-                  className={styles.assignmentProgressFill}
-                  style={{
-                    width: `${progress.total ? (progress.rated / progress.total) * 100 : 0}%`,
-                  }}
-                />
-              </div>
-            </div>
-          )}
-          <div
-            className={`${styles.assignmentContent} ${
-              variant === "mobile" ? styles.assignmentMobileContentSticky : ""
-            }`}
-          >
-            {variant === "desktop" && splitJobs.length > 0 && (
-              <div className={styles.assignmentListWrap}>
-                {splitJobs.map((jobGroup, idx) => (
-                  <ul key={idx} className={styles.assignmentList}>
-                    {jobGroup.map(({ title, soc, iconName, jobIconName }, jobIdx) => {
-                      const ratingValue = ratings[soc];
-                      return (
-                      <li key={soc} className={styles.assignmentListItem}>
-                          {showRatingHint && idx === 0 && jobIdx === 0 && (
-                            <div className={styles.assignmentHintArrow}>
-                              <span>Click to explore and rate</span>
-                            </div>
+              {assignmentSocCodes.length > 0 && (
+                <div className={styles.assignmentProgressRow}>
+                  <div className={styles.assignmentProgressLabel}>
+                    Rated {progress.rated}/{progress.total} jobs
+                  </div>
+                  <div className={styles.assignmentProgressTrack}>
+                    <div
+                      className={styles.assignmentProgressFill}
+                      style={{
+                        width: `${progress.total ? (progress.rated / progress.total) * 100 : 0}%`,
+                      }}
+                    />
+                  </div>
+                </div>
+              )}
+              <div
+                className={`${styles.assignmentContent} ${
+                  variant === "mobile" ? styles.assignmentMobileContentSticky : ""
+                }`}
+              >
+                {variant === "desktop" && splitJobs.length > 0 && (
+                  <div className={styles.assignmentListWrap}>
+                    {splitJobs.map((jobGroup, idx) => (
+                      <ul key={idx} className={styles.assignmentList}>
+                        {jobGroup.map(({ title, soc, iconName, jobIconName }, jobIdx) => {
+                          const ratingValue = ratings[soc];
+                          return (
+                            <li key={soc} className={styles.assignmentListItem}>
+                              {showRatingHint && idx === 0 && jobIdx === 0 && (
+                                <div className={styles.assignmentHintArrow}>
+                                  <span>Click to explore and rate</span>
+                                </div>
+                              )}
+                              <button
+                                type="button"
+                                className={`${styles.assignmentLink} ${
+                                  clickedSocCodes.has(soc)
+                                    ? styles.assignmentLinkClicked
+                                    : ""
+                                }`}
+                                onClick={() => handleJobClick(soc)}
+                              >
+                                <span className={styles.assignmentListIconWrap}>
+                                  <LucideIcon
+                                    name={iconName}
+                                    className={styles.assignmentListIcon}
+                                  />
+                                  {jobIconName && (
+                                    <span className={styles.assignmentListNestedIcon}>
+                                      <LucideIcon name={jobIconName} />
+                                    </span>
+                                  )}
+                                </span>
+                                {isMounted ? (
+                                  <span className={styles.assignmentListRating}>
+                                    {ratingEmoji(ratingValue)}
+                                  </span>
+                                ) : null}
+                                {title}
+                              </button>
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    ))}
+                  </div>
+                )}
+
                           )}
-                          <button
-                            type="button"
-                            className={`${styles.assignmentLink} ${
-                              clickedSocCodes.has(soc)
-                              ? styles.assignmentLinkClicked
-                              : ""
-                          }`}
-                          onClick={() => handleJobClick(soc)}
-                        >
+                      <button
+                        type="button"
+                        className={`${styles.assignmentCarouselLink} ${
+                          clickedSocCodes.has(jobItems[activeJobIdx].soc)
+                            ? styles.assignmentLinkClicked
+                            : ""
+                        }`}
+                        onClick={() => handleJobClick(jobItems[activeJobIdx].soc)}
+                      >
+                        <div className={styles.assignmentCarouselRow}>
+                          <span className={styles.assignmentListRating}>
+                            {isMounted
+                              ? ratingEmoji(ratings[jobItems[activeJobIdx].soc])
+                              : "?"}
+                          </span>
                           <span className={styles.assignmentListIconWrap}>
                             <LucideIcon
-                              name={iconName}
+                              name={jobItems[activeJobIdx].iconName}
                               className={styles.assignmentListIcon}
                             />
-                            {jobIconName && (
+                            {jobItems[activeJobIdx].jobIconName && (
                               <span className={styles.assignmentListNestedIcon}>
-                                <LucideIcon name={jobIconName} />
+                                <LucideIcon name={jobItems[activeJobIdx].jobIconName!} />
                               </span>
                             )}
                           </span>
-                              {title}
-                      <span className={styles.assignmentListRating}>
-                        {isMounted ? ratingEmoji(ratingValue) : "?"}
-                      </span>
-                          </button>
-                        </li>
-                      );
-                    })}
-                  </ul>
-                ))}
+                          <span className={styles.assignmentCarouselText}>
+                            <span className={styles.assignmentCarouselTitle}>
+                              {jobItems[activeJobIdx].title}
+                            </span>
+                            <span className={styles.assignmentCarouselMeta}>
+                              {activeJobIdx + 1}/{jobItems.length}
+                            </span>
+                          </span>
+                        </div>
+                      </button>
+                      <button
+                        type="button"
+                        className={styles.assignmentCarouselArrow}
+                        onClick={handleNext}
+                        aria-label="Next job"
+                      >
+                        <LucideIcon name="ChevronRight" />
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
-            )}
 
             {variant === "mobile" && jobItems.length > 0 && (
               <div

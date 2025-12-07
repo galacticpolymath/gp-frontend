@@ -12,8 +12,8 @@ interface IHeroForFreeUsersProps {
 const numberFormatter = new Intl.NumberFormat("en-US");
 const formatPercent = (value: number) => {
   const formatted = Math.abs(value).toFixed(1).replace(/\.0$/, "");
-  const sign = value > 0 ? "+" : value < 0 ? "-" : "";
-  return `${sign}${formatted}%`;
+  const arrow = value > 0 ? "↑" : value < 0 ? "↓" : "→";
+  return `${arrow} ${formatted}%`;
 };
 
 const HeroForFreeUsers: React.FC<IHeroForFreeUsersProps> = ({
@@ -30,7 +30,7 @@ const heroStats = [
   },
   {
     label: "Learn which careers are heating up",
-    value: `Range: ${formatPercent(growthRange.min)} to ${formatPercent(growthRange.max)}`,
+    value: `${formatPercent(growthRange.min)} · ${formatPercent(growthRange.max)}`,
   },
 ];
 

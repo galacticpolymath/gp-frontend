@@ -22,16 +22,16 @@ export const JobVizLayout: React.FC<JobVizLayoutProps> = ({
   heroSlot,
   suppressHero = false,
 }) => {
-  const growthLabel = `${averageLineItemGrowth > 0 ? "+" : ""}${averageLineItemGrowth.toFixed(1)}%`;
   const effectiveSubtitle =
     heroSubtitle ??
     "A tool for grades 6 to adult to explore career possibilities!";
   const formatPercentRangeValue = (value: number) => {
     const formatted = Math.abs(value).toFixed(1).replace(/\.0$/, "");
-    const sign = value > 0 ? "+" : value < 0 ? "-" : "";
-    return `${sign}${formatted}%`;
+    const arrow = value > 0 ? "↑" : value < 0 ? "↓" : "→";
+    const colorClass = value > 0 ? styles.statValueHot : value < 0 ? styles.statValueCool : styles.statValueNeutral;
+    return { label: `${formatted}%`, arrow, colorClass };
   };
-  const heroStats = [
+const heroStats = [
     {
       label: "Search details about",
       value: `${totalLineItems.toLocaleString("en-US")} jobs`,
@@ -42,7 +42,10 @@ export const JobVizLayout: React.FC<JobVizLayoutProps> = ({
     },
     {
       label: "Learn which careers are heating up",
-      value: `Range: ${formatPercentRangeValue(growthRange.min)} to ${formatPercentRangeValue(growthRange.max)}`,
+      range: [
+        formatPercentRangeValue(growthRange.min),
+        formatPercentRangeValue(growthRange.max),
+      ],
     },
   ];
 
@@ -52,20 +55,10 @@ export const JobVizLayout: React.FC<JobVizLayoutProps> = ({
     const updateParallax = () => {
       rafId = null;
       const scrollY = window.scrollY || 0;
-      const heroOffset = Math.min(scrollY * 0.12, 160);
-      const bgOffset = Math.min(scrollY * 0.2, 220);
-      const sectionOffset = Math.min(scrollY * 0.2, 220);
+      const heroOffset = Math.max(scrollY * -0.12, -160);
       document.documentElement.style.setProperty(
         "--jobviz-hero-offset",
         `${heroOffset}px`
-      );
-      document.documentElement.style.setProperty(
-        "--jobviz-bg-offset",
-        `${bgOffset}px`
-      );
-      document.documentElement.style.setProperty(
-        "--jobviz-section-offset",
-        `${sectionOffset}px`
       );
     };
     const handleScroll = () => {
@@ -81,7 +74,6 @@ export const JobVizLayout: React.FC<JobVizLayoutProps> = ({
       window.removeEventListener("scroll", handleScroll);
       document.documentElement.style.setProperty("--jobviz-hero-offset", "0px");
       document.documentElement.style.setProperty("--jobviz-bg-offset", "0px");
-      document.documentElement.style.setProperty("--jobviz-section-offset", "0px");
     };
   }, []);
 
@@ -102,7 +94,23 @@ export const JobVizLayout: React.FC<JobVizLayoutProps> = ({
                     <div key={stat.label} className={styles.heroStat}>
                       <span className={styles.heroStatLabel}>{stat.label}</span>
                       <strong className={styles.heroStatValue}>
-                        {stat.value}
+                        {stat.range ? (
+                          <>
+                            <span
+                              className={`${styles.heroRangeValue} ${stat.range[0].colorClass}`}
+                            >
+                              {stat.range[0].arrow} {stat.range[0].label}
+                            </span>
+                            <span className={styles.heroRangeDivider}>·</span>
+                            <span
+                              className={`${styles.heroRangeValue} ${stat.range[1].colorClass}`}
+                            >
+                              {stat.range[1].arrow} {stat.range[1].label}
+                            </span>
+                          </>
+                        ) : (
+                          stat.value
+                        )}
                       </strong>
                     </div>
                   ))}
