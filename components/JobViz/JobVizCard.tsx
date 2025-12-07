@@ -138,6 +138,13 @@ export const JobVizCard: React.FC<JobVizCardProps> = ({
             </div>
           <div className={styles.cardHeading}>
             <h3 className={styles.cardTitle}>{compactTitle(title)}</h3>
+            {isAssignmentJob && (
+              <span
+                className={styles.assignmentBadgeDot}
+                title="Part of this assignment"
+                aria-hidden="true"
+              />
+            )}
           </div>
         </div>
         {level === 2 && (

@@ -357,12 +357,14 @@ const SelectedJob: React.FC = () => {
                         <LucideIcon name="Info" />
                       </button>
                     </div>
-                    <dd>{stat.value}</dd>
-                    {stat.descriptor && (
-                      <div className={styles.modalStatInfoTag}>
-                        {stat.descriptor}
-                      </div>
-                    )}
+                    <dd className={styles.modalStatValue}>
+                      <span className={styles.modalStatNumber}>{stat.value}</span>
+                      {stat.descriptor && (
+                        <span className={styles.modalStatInfoTag}>
+                          {stat.descriptor}
+                        </span>
+                      )}
+                    </dd>
                   </div>
                 ))}
               </dl>

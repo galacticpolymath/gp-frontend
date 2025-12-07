@@ -46,7 +46,8 @@ $jobInfoStatCard: rgba(14, 21, 54, 0.85);
 
 .dialogJobVizModal {
   @media (min-width: 767px) {
-    max-width: 820px !important;
+    max-width: min(96vw, 960px) !important;
+    width: min(96vw, 960px) !important;
   }
 
   @media (min-width: 1200px) {

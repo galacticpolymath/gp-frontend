@@ -36,6 +36,11 @@ export const JobVizBreadcrumb: React.FC<JobVizBreadcrumbProps> = ({
                 : styles.breadcrumbSegment
             }
           >
+            {idx > 0 && (
+              <span className={styles.breadcrumbMobileCue}>
+                <LucideIcon name="CornerDownRight" />
+              </span>
+            )}
             <LucideIcon name={seg.iconName} />
             <span className={styles.breadcrumbLabel}>{seg.label}</span>
           </span>

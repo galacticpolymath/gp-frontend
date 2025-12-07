@@ -782,8 +782,28 @@
 
 .cardHeading {
   display: flex;
-  flex-direction: column;
-  gap: 0.3rem;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.assignmentBadgeDot {
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  background: radial-gradient(circle at 30% 30%, rgba(103, 151, 255, 0.95), rgba(214, 132, 255, 0.9));
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  box-shadow: 0 0 16px rgba(144, 158, 255, 0.45);
+  flex-shrink: 0;
+  position: relative;
+}
+
+.assignmentBadgeDot::after {
+  content: "";
+  position: absolute;
+  inset: 3px;
+  border-radius: inherit;
+  background: rgba(8, 12, 28, 0.35);
 }
 
 .cardRatingRow {
@@ -881,6 +901,7 @@
   margin: 0;
   font-size: 1.2rem;
   color: #f8fbff;
+  flex: 1;
 }
 
 .cardDescriptor {
@@ -977,6 +998,7 @@
   flex-direction: column;
   gap: 0.2rem;
   width: 100%;
+  position: relative;
 }
 
 .assignmentBannerShell[data-mode="default"] {
@@ -1069,6 +1091,29 @@
   gap: 0.4rem;
 }
 
+.assignmentMobileWrapper .assignmentMarker {
+  margin-left: auto;
+  margin-right: auto;
+  max-width: min(520px, 92vw);
+  align-self: stretch;
+}
+
+.assignmentMobileWrapper .assignmentInfoBlock {
+  width: min(520px, 92vw);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.assignmentMobileWrapper .assignmentProgressRow,
+.assignmentMobileWrapper .assignmentMobileControls {
+  width: min(520px, 92vw);
+  margin-left: auto;
+  margin-right: auto;
+}
+.assignmentMobileWrapper .assignmentMobileControls {
+  margin-bottom: 0.35rem;
+}
+
 .assignmentDesktopDock {
   display: none;
 }
@@ -1077,13 +1122,13 @@
   .assignmentDesktopDock {
     display: flex;
     flex-direction: column;
-    position: fixed;
-    right: 0;
+    position: sticky;
     top: 64px;
-    bottom: clamp(1.5rem, 4vw, 3rem);
+    align-self: flex-start;
     width: clamp(320px, 28vw, 360px);
+    height: calc(100vh - 64px - 2rem);
     animation: dockSlide 0.35s ease;
-    z-index: 2000;
+    z-index: 2;
     padding: clamp(0.4rem, 1vw, 0.7rem);
     box-sizing: border-box;
     border-radius: 0;
@@ -1168,6 +1213,14 @@
 
   .assignmentDesktopDock .assignmentCarousel {
     display: none;
+  }
+
+  .assignmentDesktopDock[data-dock-collapsed="true"] {
+    width: clamp(48px, 4vw, 60px);
+    padding: clamp(0.35rem, 0.6vw, 0.5rem);
+    height: calc(100vh - 64px - 2rem);
+    justify-content: center;
+    align-items: center;
   }
 }
 
@@ -1288,6 +1341,51 @@
   }
 }
 
+.assignmentDockToggle {
+  position: absolute;
+  top: clamp(0.4rem, 1vw, 0.9rem);
+  right: clamp(0.4rem, 1vw, 0.9rem);
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(6, 9, 28, 0.6);
+  color: #f6fbff;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  z-index: 3;
+  transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+
+.assignmentDockToggle:hover,
+.assignmentDockToggle:focus-visible {
+  transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.35);
+  background: rgba(12, 18, 44, 0.7);
+}
+
+.assignmentDesktopDock[data-dock-collapsed="true"] .assignmentDockToggle {
+  position: static;
+  margin-bottom: 0.5rem;
+}
+
+.assignmentDockCollapsedNotice {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.85rem;
+  color: rgba(230, 240, 255, 0.8);
+  text-align: center;
+  opacity: 0.85;
+  margin-top: 0.5rem;
+}
+
+.assignmentDesktopDock[data-dock-collapsed="true"] .assignmentDockCollapsedNotice {
+  display: flex;
+}
+
 .assignmentInfoBlock {
   display: flex;
   flex-direction: column;
@@ -1366,6 +1464,22 @@
   background: linear-gradient(90deg, rgba(103, 151, 255, 0.9), rgba(214, 132, 255, 0.9));
   border-radius: inherit;
   transition: width 0.25s ease;
+}
+
+.assignmentMobileControls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.4rem;
+}
+
+.assignmentClearButtonInline {
+  margin-top: 0;
+  padding: 0.25rem 0.9rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  color: rgba(238, 242, 255, 0.95);
 }
 
 .assignmentClearButton {
@@ -1774,7 +1888,7 @@
 }
 
 .modalBrand {
-  margin: 1.25rem 0 0.2rem;
+  margin: 0.6rem 0 0.1rem;
   padding-right: 0.25rem;
   display: flex;
   justify-content: flex-end;
@@ -1889,8 +2003,8 @@
 .modalRatingBlock {
   display: flex;
   flex-direction: column;
-  gap: 0.65rem;
-  margin: 0.75rem 0 0;
+  gap: 0.6rem;
+  margin: 0.45rem 0 0;
 }
 
 .modalRatingHeader {
@@ -1970,14 +2084,22 @@
   text-transform: uppercase;
 }
 
-.modalStat dd {
+.modalStatValue {
   margin: 0.15rem 0 0;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+}
+
+.modalStatNumber {
   font-size: 1.1rem;
   color: #f7fbff;
+  font-weight: 600;
 }
 
 .modalStatInfoTag {
-  margin-top: 0.45rem;
+  margin: 0;
   display: inline-flex;
   align-items: center;
   font-size: 0.78rem;
@@ -2339,8 +2461,13 @@
 .breadcrumbSegmentActive {
   display: inline-flex;
   align-items: center;
+  justify-content: flex-start;
   gap: 0.35rem;
   color: rgba(255, 255, 255, 0.92);
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  text-align: left;
 }
 
 .breadcrumbSegment svg,
@@ -2354,8 +2481,6 @@
 .breadcrumbSegmentActive {
   font-weight: 700;
   color: #ffffff;
-  padding: 0.25rem 0.55rem;
-  border-radius: 999px;
   background: rgba(86, 126, 255, 0.35);
   border: 1px solid rgba(86, 126, 255, 0.65);
   box-shadow: 0 0 15px rgba(86, 126, 255, 0.35);
@@ -2368,6 +2493,57 @@
 
 .breadcrumbLabel {
   color: inherit;
+}
+
+.breadcrumbMobileCue {
+  display: none;
+}
+
+@media (max-width: 640px) {
+  .jobvizBreadcrumb {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.35rem;
+  }
+
+  .breadcrumbSeparator {
+    display: none;
+  }
+
+  .breadcrumbSegment,
+  .breadcrumbSegmentActive {
+    width: 100%;
+    justify-content: flex-start;
+    padding-left: 0;
+    gap: 0.45rem;
+    border-radius: 12px;
+    border: none;
+    padding-right: 0;
+    text-align: left;
+  }
+
+  .breadcrumbSegmentActive {
+    border: 1px solid rgba(86, 126, 255, 0.4);
+    padding: 0.3rem 0.6rem;
+  }
+
+  .breadcrumbSegment svg,
+  .breadcrumbSegmentActive svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .breadcrumbMobileCue {
+    display: inline-flex;
+    align-items: center;
+    color: rgba(255, 255, 255, 0.6);
+  }
+
+  .breadcrumbMobileCue svg {
+    width: 18px;
+    height: 18px;
+    stroke-width: 2;
+  }
 }
 
 .jobvizSearch {
@@ -2544,15 +2720,12 @@
   .jobvizPageShell {
     flex-direction: row;
     align-items: flex-start;
-  }
-  .jobvizPageShell[data-has-assignment="true"] .jobvizMainColumn {
-    margin-right: clamp(320px, 28vw, 360px);
+    gap: 0;
   }
   .jobvizMainColumn {
     flex: 1;
-    padding-right: 0;
-    padding-left: 0;
-    margin-right: 0;
+    min-width: 0;
+    width: auto;
   }
 }
 .assignmentUnitName {

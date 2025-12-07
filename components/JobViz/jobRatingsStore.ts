@@ -36,9 +36,7 @@ const persist = () => {
 const listeners = new Set<() => void>();
 
 const notify = () => {
-  for (const listener of listeners) {
-    listener();
-  }
+  listeners.forEach((listener) => listener());
 };
 
 const subscribe = (listener: () => void) => {
@@ -94,14 +92,17 @@ export const ratingEmoji = (rating?: JobRatingValue | null) => {
   return option?.emoji ?? "?";
 };
 
-export const countRatings = (socCodes?: string[] | null) => {
+export const countRatings = (
+  socCodes?: string[] | null,
+  map: JobRatingsMap = ratingsStore
+) => {
   if (!socCodes || socCodes.length === 0) {
     return { rated: 0, total: 0 };
   }
   loadFromStorage();
   let rated = 0;
   for (const soc of socCodes) {
-    if (soc && ratingsStore[soc]) rated += 1;
+    if (soc && map[soc]) rated += 1;
   }
   return { rated, total: socCodes.length };
 };
