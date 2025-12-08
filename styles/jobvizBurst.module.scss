@@ -1126,9 +1126,9 @@
     top: 64px;
     align-self: flex-start;
     width: clamp(320px, 28vw, 360px);
-    height: calc(100vh - 64px - 2rem);
+    height: calc(100vh - 64px);
     animation: dockSlide 0.35s ease;
-    z-index: 2;
+    z-index: 1100;
     padding: clamp(0.4rem, 1vw, 0.7rem);
     box-sizing: border-box;
     border-radius: 0;
@@ -1149,7 +1149,10 @@
   .assignmentDesktopDock::after {
     content: "";
     position: absolute;
-    inset: 0;
+    top: -20px;
+    bottom: -40px;
+    left: 0;
+    right: 0;
     pointer-events: none;
     border-radius: inherit;
   }
@@ -1209,6 +1212,7 @@
 
   .assignmentDesktopDock .assignmentListWrap {
     grid-template-columns: 1fr;
+    position: relative;
   }
 
   .assignmentDesktopDock .assignmentCarousel {
@@ -1342,9 +1346,9 @@
 }
 
 .assignmentDockToggle {
-  position: absolute;
-  top: clamp(0.4rem, 1vw, 0.9rem);
-  right: clamp(0.4rem, 1vw, 0.9rem);
+  position: sticky;
+  top: clamp(0.6rem, 1vw, 1rem);
+  align-self: flex-end;
   width: 40px;
   height: 40px;
   border-radius: 999px;
@@ -1365,11 +1369,6 @@
   background: rgba(12, 18, 44, 0.7);
 }
 
-.assignmentDesktopDock[data-dock-collapsed="true"] .assignmentDockToggle {
-  position: static;
-  margin-bottom: 0.5rem;
-}
-
 .assignmentDockCollapsedNotice {
   display: none;
   flex-direction: column;
@@ -1384,6 +1383,7 @@
 
 .assignmentDesktopDock[data-dock-collapsed="true"] .assignmentDockCollapsedNotice {
   display: flex;
+  font-size: 0.78rem;
 }
 
 .assignmentInfoBlock {
@@ -2385,6 +2385,7 @@
   position: relative;
   z-index: 1;
   padding-bottom: clamp(2rem, 5vw, 4rem);
+  margin-top: calc(var(--jobviz-hero-offset, 0px) * -1);
 }
 
 .jobvizSectionHeading {

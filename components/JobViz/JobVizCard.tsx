@@ -61,6 +61,8 @@ export const JobVizCard: React.FC<JobVizCardProps> = ({
   isAssignmentJob,
 }) => {
   const [isHovered, setHover] = React.useState(false);
+  const [isClient, setIsClient] = React.useState(false);
+  React.useEffect(() => setIsClient(true), []);
   const containerClass = level === 1 ? styles.categoryCard : styles.jobCard;
   const highlightClass =
     highlight && level === 1
@@ -155,13 +157,13 @@ export const JobVizCard: React.FC<JobVizCardProps> = ({
           >
             <span
               className={`${styles.cardRatingBadge} ${
-                currentRating
+                isClient && currentRating
                   ? styles[`cardRating-${currentRating}`]
                   : styles.cardRatingPlaceholder
               }`}
               aria-label={ratingLabel}
             >
-              {ratingEmoji(currentRating)}
+              {isClient ? ratingEmoji(currentRating) : "?"}
             </span>
             <span className={styles.cardRatingLabel}>{ratingLabel}</span>
           </div>

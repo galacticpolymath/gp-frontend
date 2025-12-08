@@ -139,35 +139,35 @@ export const employmentTiers: InfoTier[] = [
     min: 0,
     max: 25000,
     descriptor:
-      "Small, specialized teams—you might not meet someone with this job in your town.",
+      "Small, specialized teams—you might not meet someone with this job in your town. (≈0.0% of total employment)",
   },
   {
     label: "Uncommon",
     min: 25000,
     max: 100000,
     descriptor:
-      "Shows up in certain industries or regions; you may only know a few adults who do it.",
+      "Shows up in certain industries or regions; you may only know a few adults who do it. (≈0.0%–0.2%)",
   },
   {
     label: "Common",
     min: 100000,
     max: 500000,
     descriptor:
-      "Found across many regions and industries—you probably see people doing this work.",
+      "Found across many regions and industries—you probably see people doing this work. (≈0.2%–0.8%)",
   },
   {
     label: "Very Common",
     min: 500000,
     max: 1500000,
     descriptor:
-      "Part of everyday life in most communities; you interact with these workers often.",
+      "Part of everyday life in most communities; you interact with these workers often. (≈0.8%–2.4%)",
   },
   {
     label: "Everywhere",
     min: 1500000,
     max: Infinity,
     descriptor:
-      "Essential nationwide—you'll notice these workers in every region you visit.",
+      "Essential nationwide—you'll notice these workers in every region you visit. (≈2.4%+)",
   },
 ];
 
@@ -211,8 +211,8 @@ export const infoModalContent: Record<InfoModalType, InfoModalContent> = {
     eyebrow: "Job count context",
     heading: "How many people do this work?",
     paragraphs: [
-      "“Jobs by 2034” estimates how many people will work in this occupation nationwide.",
-      "Use it to compare how common a job might feel for you and your community—it doesn’t say how important the work is.",
+      "“Jobs by 2034” estimates how many people will work in this occupation nationwide. As of 2025, about <a href=\"https://www.bls.gov/web/empsit/cpseea08a.htm\" rel=\"noreferrer\" target=\"_blank\">63 million people are employed in the US</a>.",
+      "Our categories below classify jobs by how many people do them (with % of 63 million total jobs). This is useful because rare jobs tend to be more competitive, while jobs that are “Everywhere” can give you more flexibility to find employment wherever you want to live. (But these are just guidelines—specifics vary over time and by region or industry.)",
     ],
     tiers: employmentTiers,
     rangeFormatter: (tier) => formatEmploymentRange(tier.min, tier.max),

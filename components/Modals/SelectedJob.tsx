@@ -474,8 +474,11 @@ const SelectedJob: React.FC = () => {
               </button>
             </header>
             <div className={styles.infoModalBody}>
-              {activeInfoModal.paragraphs.map((paragraph) => (
-                <p key={paragraph}>{paragraph}</p>
+              {activeInfoModal.paragraphs.map((paragraph, idx) => (
+                <p
+                  key={`${activeInfoModal.heading}-${idx}`}
+                  dangerouslySetInnerHTML={{ __html: paragraph }}
+                />
               ))}
               <ul className={styles.tierList}>
                 {activeInfoModal.tiers.map((tier) => (

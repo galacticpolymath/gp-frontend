@@ -392,7 +392,7 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
       {isDesktopVariant && isDockCollapsed && (
         <div className={styles.assignmentDockCollapsedNotice}>
           <LucideIcon name="ClipboardList" aria-hidden="true" />
-          <span>Assignment hidden</span>
+          <span>Show more</span>
         </div>
       )}
     </div>
