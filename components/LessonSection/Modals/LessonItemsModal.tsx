@@ -444,7 +444,7 @@ const LessonItemsModal: React.FC = () => {
               className={` ${isGpPlusMember
                 ? "col-12 col-sm-7 col-xxl-9"
                 : "col-6 col-sm-6 col-md-9 col-xxl-6 p-0"
-                } d-flex flex-column flex-md-row justify-content-md-end align-items-sm-center p-sm-0`}
+                } ${isGpPlusMember ? 'd-flex flex-column flex-md-row' : 'd-flex flex-column flex-lg-row'} ${isGpPlusMember ? 'justify-content-md-end align-items-sm-center' : 'justify-content-md-end align-items-sm-end'} p-sm-0`}
             >
               {itemType === "presentation" && (
                 <section className="d-none d-sm-flex h-100 justify-content-end pe-sm-3">
