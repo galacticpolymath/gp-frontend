@@ -443,7 +443,7 @@ const LessonItemsModal: React.FC = () => {
             <section
               className={` ${isGpPlusMember
                 ? "col-12 col-sm-7 col-xxl-9"
-                : "col-6 col-sm-6 col-md-9 col-xxl-6 p-0"
+                : "col-12 col-sm-6 col-md-9 col-xxl-6 p-0"
                 } ${isGpPlusMember ? 'd-flex flex-column flex-md-row' : 'd-flex flex-column flex-lg-row'} ${isGpPlusMember ? 'justify-content-md-end align-items-sm-center' : 'justify-content-md-end align-items-sm-end'} p-sm-0`}
             >
               <section className={`h-100 ${isGpPlusMember ? 'd-flex flex-column flex-md-row' : 'd-flex flex-column flex-lg-row pt-sm-2 pt-md-0 pe-sm-5 pe-md-0'}`}>
