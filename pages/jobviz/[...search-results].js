@@ -451,7 +451,7 @@ const JobVizSearchResults = ({
             heroTitle="JobViz Career Explorer+"
             heroSubtitle={heroSubtitle}
             heroSlot={heroSlot}
-            heroEyebrow={isGpPlusHero ? "GP+ Subscriber Version" : undefined}
+            heroEyebrow={isGpPlusHero ? "Premium | GP+ Subscriber" : undefined}
           >
             {showIntroHeading && (
               <h2 className={styles.jobvizSectionHeading}>{sectionHeading}</h2>

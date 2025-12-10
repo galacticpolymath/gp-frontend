@@ -1136,14 +1136,14 @@
 }
 
 @media (min-width: 1200px) {
-.assignmentDesktopDock {
+  .assignmentDesktopDock {
     display: flex;
     flex-direction: column;
     position: sticky;
-    top: 64px;
+    top: 0;
     align-self: flex-start;
     width: clamp(320px, 28vw, 360px);
-    height: calc(100vh - 64px);
+    height: calc(100vh + 50px);
     animation: dockSlide 0.35s ease;
     z-index: 900;
     padding: clamp(0.4rem, 1vw, 0.7rem);
@@ -1239,7 +1239,7 @@
   .assignmentDesktopDock[data-dock-collapsed="true"] {
     width: clamp(48px, 4vw, 60px);
     padding: clamp(0.35rem, 0.6vw, 0.5rem);
-    min-height: calc(100vh - 64px);
+    min-height: calc(100vh + 50px);
     justify-content: center;
     align-items: center;
   }
@@ -1829,8 +1829,8 @@
 
 .assignmentListIconWrap {
   position: relative;
-  width: 48px;
-  height: 48px;
+  width: 52px;
+  height: 52px;
   border-radius: 16px;
   background: radial-gradient(circle, rgba(255, 255, 255, 0.18), transparent);
   border: 1px solid rgba(255, 255, 255, 0.32);
@@ -1842,17 +1842,17 @@
 }
 
 .assignmentListIcon {
-  width: 22px;
-  height: 22px;
+  width: 24px;
+  height: 24px;
   stroke: #e08dff;
 }
 
 .assignmentListNestedIcon {
   position: absolute;
   bottom: -4px;
-  right: -6px;
-  width: 20px;
-  height: 20px;
+  right: -4px;
+  width: 22px;
+  height: 22px;
   border-radius: 999px;
   background: radial-gradient(circle at 30% 30%, rgba(114, 46, 168, 0.9), rgba(45, 8, 82, 0.9));
   border: 1px solid rgba(189, 115, 255, 0.7);
@@ -1861,8 +1861,8 @@
 }
 
 .assignmentListNestedIcon svg {
-  width: 12px;
-  height: 12px;
+  width: 13px;
+  height: 13px;
   stroke: #ffffff;
   stroke-width: 1.4;
 }
@@ -1871,8 +1871,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 34px;
-  height: 34px;
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
   border: 1px solid rgba(255, 255, 255, 0.18);
   background: rgba(255, 255, 255, 0.08);

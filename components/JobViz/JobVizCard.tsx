@@ -80,11 +80,18 @@ export const JobVizCard: React.FC<JobVizCardProps> = ({
   const tooltipId = React.useId();
   const { ratings } = useJobRatings();
   const currentRating = socCode ? ratings[socCode] : undefined;
-  const ratingLabel = currentRating
-    ? ratingMessages[currentRating as JobRatingValue]
-    : isAssignmentJob
-      ? "Rate this assignment job"
-      : "Rate this unassigned job";
+  const defaultRatingLabel = isAssignmentJob
+    ? "Rate this assignment job"
+    : "Rate this unassigned job";
+  const ratingLabel = React.useMemo(() => {
+    if (!isClient) {
+      return defaultRatingLabel;
+    }
+    if (currentRating) {
+      return ratingMessages[currentRating as JobRatingValue];
+    }
+    return defaultRatingLabel;
+  }, [isClient, currentRating, defaultRatingLabel]);
 
   return (
     <article
