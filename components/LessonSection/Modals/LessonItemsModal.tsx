@@ -21,10 +21,11 @@ import { GiFilmStrip } from "react-icons/gi";
 import { IoOpenOutline } from "react-icons/io5";
 import ReactMaterialCarousel from 'react-material-ui-carousel';
 import { Paper, Button as MaterialUIBtn } from '@mui/material';
+import { IItemV2 } from "../../../backend/models/Unit/types/teachingMaterials";
 
 const LESSON_ITEMS_MODAL_BG_COLOR = "#E2F0FD";
 
-interface ILessonItemCard {
+interface ILessonItemCard extends Pick<IItemV2, "itemCat"> {
   previewUrl: string;
   viewUrl: string;
   index: number;
@@ -118,6 +119,7 @@ const LessonItemCard: React.FC<ILessonItemCard> = ({
   previewUrl,
   viewUrl,
   index,
+  itemCat
 }) => {
   const [isMsgHidden, setIsMsgHidden] = useState(false);
 
@@ -165,12 +167,20 @@ const LessonItemCard: React.FC<ILessonItemCard> = ({
           </div>
         </div>
       </div>
-      <div className="w-100 h-100 position-relative d-none d-xl-block">
-        <iframe src={viewUrl} className="w-100 h-100" />
-      </div>
-      <div className="w-100 h-100 position-relative d-xl-none d-block">
-        <iframe src={previewUrl} className="w-100 h-100" />
-      </div>
+      {itemCat === "presentation" ?
+        <>
+          <div className="w-100 h-100 position-relative d-none d-xl-block">
+            <iframe src={viewUrl} className="w-100 h-100" />
+          </div>
+          <div className="w-100 h-100 position-relative d-xl-none d-block">
+            <iframe src={previewUrl} className="w-100 h-100" />
+          </div>
+        </>
+        :
+        <div className="w-100 h-100 position-relative d-xl-none d-block">
+          <iframe src={previewUrl} className="w-100 h-100" />
+        </div>
+      }
     </CarouselCard>
   );
 };
@@ -306,6 +316,7 @@ const LessonItemsModal: React.FC = () => {
   console.log("lessonItems, hey there; ", lessonItems);
 
   const currentLessonItem = lessonItems[currentIndex] ?? {};
+  console.log("currentLessonItem: ", currentLessonItem);
   const {
     docUrl: currentLessonItemDocUrl,
     itemTitle: currentLessonItemName,
@@ -724,7 +735,7 @@ const LessonItemsModal: React.FC = () => {
                     ? lessonItem.externalUrl
                     : lessonItem.docUrl;
 
-                if (lessonItem.itemCat === "presentation") {
+                if (lessonItem.itemType === "presentation") {
                   const viewUrl = `${lessonItem.gdriveRoot}/view`;
                   const previewUrl = `${lessonItem.gdriveRoot}/preview`;
 
@@ -734,6 +745,7 @@ const LessonItemsModal: React.FC = () => {
                       index={index}
                       previewUrl={previewUrl}
                       viewUrl={viewUrl}
+                      itemCat={lessonItem.itemCat}
                     />
                   );
                 }

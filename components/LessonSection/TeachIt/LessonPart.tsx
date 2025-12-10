@@ -854,7 +854,7 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                                             : ""
                                             }`}
                                         >
-                                          Open/Present
+                                          Open in New Tab
                                         </a>
                                       </div>
                                     </li>
