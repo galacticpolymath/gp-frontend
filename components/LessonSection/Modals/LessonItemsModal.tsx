@@ -5,6 +5,7 @@ import { TbDownload } from "react-icons/tb";
 import { TbExternalLink } from "react-icons/tb";
 import { useUserContext } from "../../../providers/UserProvider";
 import { useLessonContext } from "../../../providers/LessonProvider";
+import { MdKeyboardArrowRight, MdKeyboardArrowLeft } from "react-icons/md";
 import {
   Carousel,
   CarouselSlider,
@@ -18,6 +19,8 @@ import { FcGoogle } from "react-icons/fc";
 import Dropdown from "react-bootstrap/Dropdown";
 import { GiFilmStrip } from "react-icons/gi";
 import { IoOpenOutline } from "react-icons/io5";
+import ReactMaterialCarousel from 'react-material-ui-carousel';
+import { Paper, Button as MaterialUIBtn } from '@mui/material';
 
 const LESSON_ITEMS_MODAL_BG_COLOR = "#E2F0FD";
 
@@ -25,6 +28,90 @@ interface ILessonItemCard {
   previewUrl: string;
   viewUrl: string;
   index: number;
+}
+
+function Item(props: any) {
+  return (
+    <Paper>
+      <h2>{props.item.name}</h2>
+      <p>{props.item.description}</p>
+
+      <Button className="CheckButton">
+        Check it out!
+      </Button>
+    </Paper>
+  )
+}
+
+interface INavBtn {
+  onClick: Function;
+  className: string;
+  style: React.CSSProperties;
+  next: boolean;
+  prev: boolean;
+}
+
+const NavBtn = ({ onClick, next, className, style, prev }: {
+  onClick: Function;
+  className: string;
+  style: React.CSSProperties;
+  next: boolean;
+  prev: boolean;
+}) => {
+  return (
+    <button
+      type="button"
+      className={className}
+      style={style}
+      onClick={() => onClick()}
+    >
+      {next ? "Next" : "Previous"}
+    </button>
+  )
+}
+
+function Example() {
+  var items = [
+    {
+      name: "Random Name #1",
+      description: "Probably the most random thing you have ever seen!"
+    },
+    {
+      name: "Random Name #2",
+      description: "Hello World!"
+    }
+  ];
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  return (
+    <ReactMaterialCarousel
+      animation="slide"
+      index={activeIndex}
+      // NextIcon={<MdKeyboardArrowRight />}
+      // PrevIcon={<MdKeyboardArrowLeft />}
+      onChange={ }
+      navButtonsAlwaysVisible
+    // NavButton={(props: INavBtn) => {
+    //   return (
+    //     <button
+    //       onClick={() => {
+    //         if (props.next) {
+    //           setActiveIndex(activeIndex + 1);
+    //         } else {
+    //           setActiveIndex(activeIndex - 1);
+    //         }
+    //       }}
+    //     >
+    //       {props.next ? "Next" : "Previous"}
+    //     </button>
+    //   )
+    // }}
+    >
+      {
+        items.map((item, i) => <Item key={i} item={item} />)
+      }
+    </ReactMaterialCarousel>
+  )
 }
 
 const LessonItemCard: React.FC<ILessonItemCard> = ({
@@ -613,7 +700,8 @@ const LessonItemsModal: React.FC = () => {
             </section>
           </div>
         </section>
-        <Carousel
+        <Example />
+        {/* <Carousel
           groupSize={1}
           circular
           className="w-100 h-100"
@@ -704,7 +792,7 @@ const LessonItemsModal: React.FC = () => {
               name="next"
             />
           </div>
-        </Carousel>
+        </Carousel> */}
       </Modal>
     </>
   );
