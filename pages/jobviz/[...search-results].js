@@ -406,8 +406,7 @@ const JobVizSearchResults = ({
 
   const heroSubtitle =
     "A tool for grades 6 to adult to explore career possibilities!";
-  const forceGpPlusHero = !!router.query?.soc_code;
-  const isGpPlusHero = hasGpPlusMembership || forceGpPlusHero;
+  const isGpPlusHero = !!hasGpPlusMembership;
   const heroSlot = isGpPlusHero ? null : <HeroForFreeUsers />;
 
 
@@ -561,7 +560,10 @@ export const getServerSideProps = async ({ query, req, resolvedUrl }) => {
       ])
     : null;
   let metaDescription = null;
-  const sessionToken = req.cookies["next-auth.session-token"];
+  const sessionToken =
+    req.cookies["next-auth.session-token"] ||
+    req.cookies["__Secure-next-auth.session-token"] ||
+    null;
   let hasGpPlusMembership = req?.cookies?.["isGpPlusMember"];
 
   if (typeof hasGpPlusMembership === "string") {
@@ -571,7 +573,8 @@ export const getServerSideProps = async ({ query, req, resolvedUrl }) => {
       ?.hasGpPlusMembership;
   }
 
-  hasGpPlusMembership = !!hasGpPlusMembership;
+  const isAuthenticated = Boolean(sessionToken);
+  hasGpPlusMembership = Boolean(isAuthenticated && hasGpPlusMembership);
 
   const pathWithoutQuery = resolvedUrl.split("?")[0];
   const pathSegments = pathWithoutQuery.split("/").slice(2);

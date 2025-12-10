@@ -277,8 +277,7 @@ const JobViz = ({ unitName, jobTitleAndSocCodePairs, hasGpPlusMembership }) => {
 
   const heroSubtitle =
     "A tool for grades 6 to adult to explore career possibilities!";
-  const forceGpPlusHero = !!router.query?.soc_code;
-  const isGpPlusHero = hasGpPlusMembership || forceGpPlusHero;
+  const isGpPlusHero = !!hasGpPlusMembership;
   const heroSlot = isGpPlusHero ? null : <HeroForFreeUsers />;
 
 
@@ -409,7 +408,10 @@ export const getServerSideProps = async ({ query, req }) => {
   const socCodesStr = query?.[SOC_CODES_PARAM_NAME];
   const unitName = query?.[UNIT_NAME_PARAM_NAME] ?? null;
   const socCodes = socCodesStr ? new Set(socCodesStr.split(",")) : null;
-  const sessionToken = req.cookies["next-auth.session-token"];
+  const sessionToken =
+    req.cookies["next-auth.session-token"] ||
+    req.cookies["__Secure-next-auth.session-token"] ||
+    null;
   let hasGpPlusMembership = req?.cookies?.["isGpPlusMember"];
 
   if (typeof hasGpPlusMembership === "string") {
@@ -419,7 +421,8 @@ export const getServerSideProps = async ({ query, req }) => {
       ?.hasGpPlusMembership;
   }
 
-  hasGpPlusMembership = !!hasGpPlusMembership;
+  const isAuthenticated = Boolean(sessionToken);
+  hasGpPlusMembership = Boolean(isAuthenticated && hasGpPlusMembership);
 
   if (socCodes) {
     const jobTitleAndSocCodePairs = getUnitRelatedJobs(socCodes).map(
