@@ -7,6 +7,7 @@ const cspHeader = `
     style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
     object-src 'none';
     base-uri 'self';
+    img-src 'self' data: blob: https://*.googleusercontent.com https://secure.gravatar.com https://cdn.outseta.com https://storage.googleapis.com https://img.youtube.com https://i3.ytimg.com https://images.unsplash.com https://plus.unsplash.com https://res.cloudinary.com https://avatars.githubusercontent.com https://pbs.twimg.com https://abs.twimg.com https://platform-lookaside.fbsbx.com https://s.gravatar.com https://ui-avatars.com https://graph.facebook.com https://media.licdn.com;
     connect-src 'self'
       https://galacticpolymath.com/api/auth/signin/google
       https://apis.google.com

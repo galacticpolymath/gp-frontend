@@ -3,7 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import logo from '../assets/img/logo.png';
 import mobileLogo from '../assets/img/mobile_logo.png';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import LoginContainerForNavbar from './User/Login/LoginContainerForNavbar';
 import { useSearchParams } from 'next/navigation';
@@ -19,6 +19,9 @@ export default function Navbar() {
   const router = useRouter();
   const session = useSession();
   const [modalAnimation, setModalAnimation] = useState('d-none');
+  const [isNavHidden, setIsNavHidden] = useState(false);
+  const lastScrollY = useRef(0);
+  const ticking = useRef(false);
   const {
     isGpPlusMember
   } = useSiteSession()
@@ -27,9 +30,44 @@ export default function Navbar() {
       _willRenderJobToursStickyTopCard: [willRenderJobToursStickyTopCard],
     } = useLessonContext();
 
+  useEffect(() => {
+    if (typeof window === 'undefined' || disableNavbar) return;
+
+    const handleScroll = () => {
+      if (ticking.current) return;
+      ticking.current = true;
+      window.requestAnimationFrame(() => {
+        const currentY = window.scrollY || 0;
+        const previousY = lastScrollY.current;
+        const delta = currentY - previousY;
+
+        if (currentY < 80) {
+          setIsNavHidden(false);
+        } else if (delta > 5) {
+          setIsNavHidden(true);
+        } else if (delta < -5) {
+          setIsNavHidden(false);
+        }
+
+        lastScrollY.current = currentY;
+        ticking.current = false;
+      });
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [disableNavbar]);
+
   return (
     <nav
-      style={{ zIndex: 1000 }}
+      style={{
+        zIndex: 1000,
+        transform: isNavHidden ? 'translateY(-115%)' : 'translateY(0)',
+        opacity: isNavHidden ? 0.92 : 1,
+        transition:
+          'transform 0.5s cubic-bezier(0.19, 1, 0.22, 1), opacity 0.35s ease',
+        willChange: 'transform, opacity',
+      }}
       className={`fixed-top w-100 navbar-expand-lg py-0 ${disableNavbar ? 'pe-none' : ''}`}
     >
       <div

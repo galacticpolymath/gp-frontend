@@ -329,29 +329,48 @@ const JobViz = ({ unitName, jobTitleAndSocCodePairs, hasGpPlusMembership }) => {
             <div className={styles.jobvizContextZone}>
               <div className={styles.jobvizGridWrap}>
                 {(!showAssignmentOnly || !hasAssignmentList) && (
-                  <JobVizBreadcrumb segments={breadcrumbs} />
+                  <>
+                    <div className={styles.gridContextLabel}>Current Path</div>
+                    <JobVizBreadcrumb segments={breadcrumbs} />
+                  </>
                 )}
                 <div className={styles.gridFilterRow}>
                   {hasAssignmentList && (
-                    <button
-                      type="button"
-                      className={`${styles.gridFilterButton} ${
-                        !showAssignmentOnly
-                          ? styles.gridFilterButtonActive
-                          : ""
-                      }`}
-                      onClick={() => setShowAssignmentOnly((prev) => !prev)}
-                    >
-                      {showAssignmentOnly
-                        ? "Show all jobs"
-                        : "Focus assigned jobs"}
-                    </button>
+                    <div className={styles.gridFilterActions}>
+                      <span className={styles.gridFilterLabel}>
+                        {showAssignmentOnly
+                          ? "Showing Only Assigned"
+                          : "Showing All Jobs"}
+                      </span>
+                      <button
+                        type="button"
+                        className={`${styles.gridFilterButton} ${
+                          !showAssignmentOnly
+                            ? styles.gridFilterButtonActive
+                            : ""
+                        }`}
+                        onClick={() => setShowAssignmentOnly((prev) => !prev)}
+                      >
+                        {showAssignmentOnly
+                          ? "Show All Jobs"
+                          : "Show Only Assigned"}
+                      </button>
+                    </div>
                   )}
-                  <JobVizSortControl
-                    activeOptionId={sortOptionId}
-                    onChange={handleSortControlChange}
-                    options={JOBVIZ_SORT_OPTIONS}
-                  />
+                  {hasAssignmentList && (
+                    <JobVizSortControl
+                      activeOptionId={sortOptionId}
+                      onChange={handleSortControlChange}
+                      options={JOBVIZ_SORT_OPTIONS}
+                    />
+                  )}
+                  {!hasAssignmentList && (
+                    <JobVizSortControl
+                      activeOptionId={sortOptionId}
+                      onChange={handleSortControlChange}
+                      options={JOBVIZ_SORT_OPTIONS}
+                    />
+                  )}
                 </div>
                 <JobVizGrid
                   items={filteredGridItems}

@@ -2487,6 +2487,28 @@
   margin-bottom: clamp(0.75rem, 2vw, 1.25rem);
 }
 
+.gridContextLabel {
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(230, 235, 255, 0.75);
+  margin-bottom: 0.3rem;
+}
+
+.gridFilterActions {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+}
+
+.gridFilterLabel {
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(230, 235, 255, 0.75);
+}
+
 .gridFilterButton {
   border-radius: 999px;
   border: 1px solid rgba(255, 255, 255, 0.25);
@@ -2500,8 +2522,8 @@
   transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
 }
 
-.gridFilterButton:hover,
-.gridFilterButton:focus-visible {
+.gridFilterButton:not(.gridFilterButtonActive):hover,
+.gridFilterButton:not(.gridFilterButtonActive):focus-visible {
   border-color: rgba(255, 255, 255, 0.45);
   background: rgba(255, 255, 255, 0.14);
   transform: translateY(-1px);
@@ -2515,6 +2537,17 @@
     rgba(214, 132, 255, 0.35)
   );
   color: #f7fbff;
+}
+
+.gridFilterButtonActive:hover,
+.gridFilterButtonActive:focus-visible {
+  border-color: rgba(159, 198, 255, 0.95);
+  background: linear-gradient(
+    135deg,
+    rgba(123, 171, 255, 0.45),
+    rgba(224, 152, 255, 0.5)
+  );
+  transform: translateY(-1px);
 }
 
 .sortControl {
