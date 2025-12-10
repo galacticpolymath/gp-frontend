@@ -12,12 +12,15 @@ import { createSubscriptionCancellationEmail } from '../emailTemplates/gpPlusSub
 const SCOPES = ['https://www.googleapis.com/auth/gmail.send'];
 const MAILING_LIST_ID = 7;
 const BREVO_PG_LIMIT = 1_000;
+const rawServiceAccountKey =
+  process.env.EMAIL_SENDER_SERVICE_ACCOUNT_PRIVATE_KEY;
+const SERVICE_ACCOUNT_PRIVATE_KEY = rawServiceAccountKey
+  ? rawServiceAccountKey.replace(/\\n/g, '\n')
+  : null;
+
 const CREDENTIALS = {
   client_id: process.env.EMAIL_SENDER_SERVICE_ACCOUNT_CLIENT_ID,
-  private_key: process.env.EMAIL_SENDER_SERVICE_ACCOUNT_PRIVATE_KEY.replace(
-    /\\n/g,
-    '\n'
-  ),
+  private_key: SERVICE_ACCOUNT_PRIVATE_KEY,
   client_email: 'techguy@galacticpolymath.com',
 };
 
@@ -36,7 +39,12 @@ const CREDENTIALS = {
  */
 export const sendEmail = async (mailOpts) => {
   try {
-    const privateKey = process.env.EMAIL_SENDER_SERVICE_ACCOUNT_PRIVATE_KEY.split('\\n').join('\n');
+    if (!SERVICE_ACCOUNT_PRIVATE_KEY) {
+      throw new Error(
+        'EMAIL_SENDER_SERVICE_ACCOUNT_PRIVATE_KEY is not set; cannot send email.'
+      );
+    }
+    const privateKey = SERVICE_ACCOUNT_PRIVATE_KEY;
     const emailTransport = {
       host: 'smtp.gmail.com',
       port: 465,

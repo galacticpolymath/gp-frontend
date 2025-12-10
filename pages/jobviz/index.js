@@ -1,318 +1,416 @@
-import Hero from "../../components/Hero";
-import HeroForGpPlusUsers from "../../components/JobViz/Heros/HeroForGpPlusUsers";
-import HeroForFreeUsers from "../../components/JobViz/Heros/HeroForFreeUsers";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/router";
 import Layout from "../../components/Layout";
-import JobCategoriesSec from "../../components/JobViz/JobCategoriesSec";
-import JobCategoryChainCard from "../../components/JobViz/JobCategoryChainCard";
-import PreviouslySelectedJobCategory from "../../components/JobViz/PreviouslySelectedJobCategory";
-import SearchInputSec from "../../components/JobViz/SearchInputSec";
-import Image from "next/image";
-import { useRef, useState } from "react";
-import { useInView } from "react-intersection-observer";
-import GoToSearchInput from "../../components/JobViz/Buttons/GoToSearchInput";
-import GoToJobVizChain from "../../components/JobViz/Buttons/GoToJobVizChain";
-import { ToastContainer } from "react-toastify";
-import { useEffect } from "react";
+import { AssignmentBanner } from "../../components/JobViz/AssignmentBanner";
+import {
+  JobVizBreadcrumb,
+  JOBVIZ_BREADCRUMB_ID,
+} from "../../components/JobViz/JobVizBreadcrumb";
+import { JobVizGrid } from "../../components/JobViz/JobVizGrid";
+import { JobVizLayout } from "../../components/JobViz/JobVizLayout";
+import styles from "../../styles/jobvizBurst.module.scss";
+import HeroForFreeUsers from "../../components/JobViz/Heros/HeroForFreeUsers";
+import { JobVizSortControl } from "../../components/JobViz/JobVizSortControl";
+import {
+  buildIdPathForNode,
+  buildJobvizUrl,
+  collectAssignmentAncestorIds,
+  getDisplayTitle,
+  getTargetLevelForNode,
+  getSelectedSocCodeForLevel,
+  getIconNameForNode,
+  getLineItemCountForNode,
+  getJobSpecificIconName,
+  jobVizData,
+  jobVizNodeById,
+} from "../../components/JobViz/jobvizUtils";
+import { JobVizSearch } from "../../components/JobViz/JobVizSearch";
+import {
+  JOBVIZ_DEFAULT_SORT_OPTION,
+  JOBVIZ_SORT_OPTIONS,
+  getSortOptionById,
+  sortJobVizItems,
+} from "../../components/JobViz/jobvizSorting";
 import {
   SOC_CODES_PARAM_NAME,
   UNIT_NAME_PARAM_NAME,
 } from "../../components/LessonSection/JobVizConnections";
 import { getUnitRelatedJobs } from "../../helperFns/filterUnitRelatedJobs";
-import { useSearchParams } from "next/navigation";
 import { verifyJwt } from "../../nondependencyFns";
-import { useLessonContext } from "../../providers/LessonProvider";
-import { getSessionStorageItem, removeSessionStorageItem, setSessionStorageItem } from "../../shared/fns";
+import { useModalContext } from "../../providers/ModalProvider";
 
-const DATA_SOURCE_LINK =
-  "https://www.bls.gov/emp/tables/occupational-projections-and-characteristics.htm";
-
-const JOB_VIZ_PG_DESCRIPTION_DEFAULT =
-  "A streamlined web app to empower student exploration of 1,000+ careers—connecting classroom learning to workforce development and real-world opportunities.";
 export const JOBVIZ_BRACKET_SEARCH_ID = "jobviz-bracket-search";
 
-const JobViz = ({
-  vals,
-  unitName,
-  jobTitleAndSocCodePairs,
-  hasGpPlusMembership,
-}) => {
-  const {
-    dynamicJobResults,
-    currentHierarchyNum,
-    isLoading,
-    parentJobCategories,
-    metaDescription,
-  } = vals ?? {};
-  const jobToursRef = useRef(null);
-  const [searchResults, setSearchResults] = useState([]);
-  const [searchInput, setSearchInput] = useState("");
-  const searchParams = useSearchParams().toString();
-  const [isHighlighterOn, setIsHighlighterOn] = useState(true);
-  const [isSearchResultsModalOn, setIsSearchResultsModalOn] = useState(false);
-  const { ref, inView } = useInView({ threshold: 0 });
-  const {
-    _willRenderJobToursStickyTopCard: [, setWillRenderJobToursStickyTopCard],
-  } = useLessonContext();
+const JOBVIZ_DESCRIPTION =
+  "Explore the full BLS hierarchy with the JobViz glass UI—glass cards, glowing breadcrumbs, and animated explore links keyed to real SOC data.";
+const JOBVIZ_DATA_SOURCE =
+  "https://www.bls.gov/emp/tables/occupational-projections-and-characteristics.htm";
 
-  const resetSearchResults = () => {
-    setSearchInput("");
-    setSearchResults([]);
-  };
+const JobViz = ({ unitName, jobTitleAndSocCodePairs, hasGpPlusMembership }) => {
+  const router = useRouter();
+  const { _selectedJob, _isJobModalOn } = useModalContext();
+  const [, setSelectedJob] = _selectedJob;
+  const [, setIsJobModalOn] = _isJobModalOn;
 
-  const timeoutRef = useRef(null);
+  const assignmentSocCodes = useMemo(() => {
+    const param = router.query?.[SOC_CODES_PARAM_NAME];
+    const value = Array.isArray(param) ? param.join(",") : param;
 
-  const handleOnScroll = () => {
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-    }
+    if (!value) return null;
 
-    timeoutRef.current = setTimeout(() => {
-      setWillRenderJobToursStickyTopCard(true);
-    }, 300);
-  };
+    return new Set(value.split(",").filter(Boolean));
+  }, [router.query]);
+
+  const preservedUnitName =
+    unitName ?? (router.query?.[UNIT_NAME_PARAM_NAME]?.toString() || null);
+  const shouldRenderAssignment =
+    Boolean(preservedUnitName) || Boolean(jobTitleAndSocCodePairs?.length);
+
+  const assignmentParams = useMemo(
+    () => ({
+      socCodes: assignmentSocCodes ?? undefined,
+      unitName: preservedUnitName,
+    }),
+    [assignmentSocCodes, preservedUnitName]
+  );
+
+  const assignmentAncestors = useMemo(
+    () => collectAssignmentAncestorIds(assignmentSocCodes ?? undefined),
+    [assignmentSocCodes]
+  );
+  const hasAssignmentList = Boolean(assignmentSocCodes?.size);
+  const [showAssignmentOnly, setShowAssignmentOnly] = useState(false);
+  const sortQueryFromRouter =
+    typeof router.query?.sort === "string" ? router.query.sort : undefined;
+  const normalizedSortFromQuery = useMemo(
+    () => getSortOptionById(sortQueryFromRouter).id,
+    [sortQueryFromRouter]
+  );
+  const [sortOptionId, setSortOptionId] = useState(normalizedSortFromQuery);
+  useEffect(() => {
+    setSortOptionId(normalizedSortFromQuery);
+  }, [normalizedSortFromQuery]);
+  const persistSortInQuery = useCallback(
+    (nextId) => {
+      const [path, search = ""] = router.asPath.split("?");
+      const params = new URLSearchParams(search);
+      if (nextId && nextId !== JOBVIZ_DEFAULT_SORT_OPTION.id) {
+        params.set("sort", nextId);
+      } else {
+        params.delete("sort");
+      }
+      const queryString = params.toString();
+      const nextUrl = queryString ? `${path}?${queryString}` : path;
+      router.replace(nextUrl, undefined, { shallow: true, scroll: false });
+    },
+    [router]
+  );
+  const handleSortControlChange = useCallback(
+    (nextId) => {
+      setSortOptionId(nextId);
+      persistSortInQuery(nextId);
+    },
+    [persistSortInQuery]
+  );
+  const sortQueryParam =
+    sortOptionId === JOBVIZ_DEFAULT_SORT_OPTION.id ? undefined : sortOptionId;
+  const sortQueryParams = useMemo(
+    () => (sortQueryParam ? { sort: sortQueryParam } : undefined),
+    [sortQueryParam]
+  );
+  const focusAssignedActive = Boolean(showAssignmentOnly && hasAssignmentList);
 
   useEffect(() => {
-    document.addEventListener("scroll", handleOnScroll);
+    if (typeof document !== "undefined") {
+      document.body.dataset.jobvizFocus = focusAssignedActive ? "true" : "false";
+    }
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(
+        new CustomEvent("jobviz-focus-toggle", {
+          detail: { value: focusAssignedActive },
+        })
+      );
+    }
+  }, [focusAssignedActive]);
+
+  useEffect(() => {
     return () => {
-      document.removeEventListener("scroll", handleOnScroll);
-      setWillRenderJobToursStickyTopCard(false);
+      if (typeof document !== "undefined") {
+        delete document.body.dataset.jobvizFocus;
+      }
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(
+          new CustomEvent("jobviz-focus-toggle", { detail: { value: false } })
+        );
+      }
     };
   }, []);
+
+  const handleAssignmentJobClick = (socCode) => {
+    const node = jobVizData.find((n) => n.soc_code === socCode);
+    if (!node) return;
+
+    setSelectedJob({ ...node, wasSelectedFromJobToursCard: false });
+    setIsJobModalOn(true);
+
+    const url = buildJobvizUrl(
+      { fromNode: node },
+      assignmentParams,
+      sortQueryParams
+    );
+    router.push(url, undefined, { scroll: false });
+  };
+
+  const level1Nodes = useMemo(() => {
+    return jobVizData.filter((node) => node.hierarchy === 1);
+  }, []);
+
+  const gridItems = useMemo(() => {
+    return level1Nodes.map((node) => ({
+      id: String(node.id),
+      title: getDisplayTitle(node),
+      iconName: getIconNameForNode(node),
+      level: 1,
+      jobsCount: getLineItemCountForNode(node),
+      growthPercent: node.employment_change_percent ?? null,
+      wage: node.median_annual_wage ?? null,
+      socCode: node.soc_code ?? null,
+      isAssignmentJob: false,
+      highlight:
+        assignmentAncestors.has(node.id) ||
+        (assignmentSocCodes?.has(node.soc_code) ?? false),
+      highlightClicked: false,
+      showBookmark:
+        assignmentAncestors.has(node.id) ||
+        (assignmentSocCodes?.has(node.soc_code) ?? false),
+    }));
+  }, [level1Nodes, assignmentAncestors, assignmentSocCodes]);
+  const assignmentJobItems = useMemo(() => {
+    if (!assignmentSocCodes?.size) return [];
+    return Array.from(assignmentSocCodes)
+      .map((code) => jobVizData.find((node) => node.soc_code === code))
+      .filter(Boolean)
+      .map((node) => ({
+        id: String(node.id),
+        title: getDisplayTitle(node),
+        iconName: getIconNameForNode(node),
+        level: 2,
+        jobsCount: undefined,
+        growthPercent: node.employment_change_percent ?? null,
+        wage: node.median_annual_wage ?? null,
+        education: node.typical_education_needed_for_entry ?? null,
+        jobIconName: getJobSpecificIconName(node),
+        socCode: node.soc_code ?? null,
+        isAssignmentJob: true,
+        highlight: true,
+        highlightClicked: false,
+        showBookmark: true,
+      }));
+  }, [assignmentSocCodes]);
+
+  const sortedGridItems = useMemo(
+    () => sortJobVizItems(gridItems, sortOptionId),
+    [gridItems, sortOptionId]
+  );
+
+  const sortedAssignmentItems = useMemo(
+    () => sortJobVizItems(assignmentJobItems, sortOptionId),
+    [assignmentJobItems, sortOptionId]
+  );
+
+  const filteredGridItems = useMemo(() => {
+    if (showAssignmentOnly && hasAssignmentList) {
+      return sortedAssignmentItems;
+    }
+    return sortedGridItems;
+  }, [
+    sortedGridItems,
+    sortedAssignmentItems,
+    showAssignmentOnly,
+    hasAssignmentList,
+  ]);
+
+  const scrollToBreadcrumb = () => {
+    if (typeof window === "undefined") return;
+    window.requestAnimationFrame(() => {
+      const el = document.getElementById(JOBVIZ_BREADCRUMB_ID);
+      if (!el) return;
+      const offset = 32;
+      const top = el.getBoundingClientRect().top + window.scrollY - offset;
+      window.scrollTo({ top, behavior: "smooth" });
+    });
+  };
+
+  const openJobDetailFromGrid = (item) => {
+    if (!item?.socCode) return;
+    handleAssignmentJobClick(item.socCode);
+  };
+
+  const handleRootClick = (item) => {
+    const node = jobVizNodeById.get(Number(item.id));
+    if (!node) return;
+
+    const targetLevel = getTargetLevelForNode(node);
+    const selectedLevel = getSelectedSocCodeForLevel(node, targetLevel);
+    const idPath = buildIdPathForNode(node);
+    const nextUrl = buildJobvizUrl(
+      { targetLevel, selectedLevel, idPath },
+      assignmentParams,
+      sortQueryParams
+    );
+
+    router.push(nextUrl, undefined, { scroll: false }).finally(
+      scrollToBreadcrumb
+    );
+  };
+
+  const breadcrumbs = useMemo(
+    () => [
+      {
+        label: "job-categories",
+        iconName: "Grid2x2",
+        isActive: true,
+      },
+    ],
+    []
+  );
+
+  const heroSubtitle =
+    "A tool for grades 6 to adult to explore career possibilities!";
+  const forceGpPlusHero = !!router.query?.soc_code;
+  const isGpPlusHero = hasGpPlusMembership || forceGpPlusHero;
+  const heroSlot = isGpPlusHero ? null : <HeroForFreeUsers />;
+
 
   const layoutProps = {
     title:
       "JobViz Career Explorer | Connect Learning to 1,000+ Real-World Careers",
-    description: metaDescription ?? JOB_VIZ_PG_DESCRIPTION_DEFAULT,
+    description: JOBVIZ_DESCRIPTION,
     imgSrc: "https://teach.galacticpolymath.com/imgs/jobViz/jobviz_icon.png",
     url: "https://teach.galacticpolymath.com/jobviz",
     keywords:
       "jobviz, job viz, career explorer, career, career exploration, career exploration tool, career exploration for students, career exploration for high school students, career exploration for middle school students, career exploration for teens, career exploration for teenagers, career exploration for kids, career exploration for children, career exploration for young adults, career exploration for young people, career exploration for youth, career exploration for adolescents, career exploration for parents, career exploration for teachers, career exploration for counselors, career exploration",
   };
 
-  useEffect(() => {
-    if (jobTitleAndSocCodePairs?.length) {
-      // Use a timeout to ensure content is rendered before scrolling
-      const timeoutId = setTimeout(() => {
-        if (jobToursRef?.current) {
-          // Check if we're in an iframe
-          const isInIframe = window.self !== window.top;
-
-          jobToursRef.current.scrollIntoView({
-            behavior: "smooth",
-            block: isInIframe ? "start" : "center",
-          });
-        }
-      }, 300);
-
-      return () => {
-        clearTimeout(timeoutId)
-        removeSessionStorageItem("didJobVizPgInitialRendered")
-      };
-    }
-
-    setSessionStorageItem("didJobVizPgInitialRendered", true);
-
-    return () => {
-      removeSessionStorageItem("didJobVizPgInitialRendered")
-    }
-  }, []);
-
-  const didJobVizPgInitialRendered = !!getSessionStorageItem(
-    "didJobVizPgInitialRendered"
-  );
-
-  console.log("didJobVizPgInitialRendered: ", didJobVizPgInitialRendered);
-
-  console.log("jobTitleAndSocCodePairs, hey there: ", jobTitleAndSocCodePairs);
-
   return (
     <Layout {...layoutProps}>
-      <ToastContainer
-        toastStyle={{ zIndex: 1000000 }}
-        style={{ zIndex: 1000000000 }}
-      />
-      <Hero
-        className="jobVizHero"
-        isStylesHeroOn={false}
-        customChildrenContainerClassName=""
-      >
-        {(jobTitleAndSocCodePairs && unitName) || hasGpPlusMembership ? (
-          <>
-            <HeroForGpPlusUsers
-              jobTitleAndSocCodePairs={jobTitleAndSocCodePairs ?? []}
-              unitName={unitName ?? undefined}
-              className={`d-block d-sm-none ${didJobVizPgInitialRendered ? "" : "jobviz-hero"
-                } text-center text-light position-relative overflow-hidden pt-3 pb-5`}
-              willTrackIsInViewport
-              useInViewThreshold={0.2}
-            />
-            <HeroForGpPlusUsers
-              jobTitleAndSocCodePairs={jobTitleAndSocCodePairs ?? []}
-              unitName={unitName ?? undefined}
-              className={`d-none d-sm-block ${didJobVizPgInitialRendered ? "" : "jobviz-hero"
-                } text-center text-light position-relative overflow-hidden pt-3 pb-5`}
-              willTrackIsInViewport
-              useInViewThreshold={0.4}
-            />
-          </>
-        ) : (
-          <HeroForFreeUsers className="jobviz-hero-free text-center text-light position-relative overflow-hidden pt-4 pb-5" />
-        )}
-      </Hero>
-      <SearchInputSec
-        _searchResults={[searchResults, setSearchResults]}
-        _searchInput={[searchInput, setSearchInput]}
-        searchInputRef={ref}
-        _isHighlighterOn={[isHighlighterOn, setIsHighlighterOn]}
-        _isSearchResultsModalOn={[
-          isSearchResultsModalOn,
-          setIsSearchResultsModalOn,
-        ]}
-        searchParamsStr={searchParams}
-      />
-      {parentJobCategories && (
-        <section className="d-flex justify-content-center align-items-center flex-column w-100 mt-5">
-          {parentJobCategories.map((jobCategory, index, self) => {
-            if (index === 0) {
-              return (
-                <div
-                  key={index}
-                  className="d-flex justify-content-center align-items-center flex-column"
-                >
-                  <PreviouslySelectedJobCategory
-                    jobCategory={jobCategory}
-                    isBrick
-                    searchParamsStr={searchParams}
-                  />
-                  <section className="w-100 d-flex justify-content-center align-items-center">
-                    <div
-                      style={{ height: 14, width: 3 }}
-                      className="position-relative"
-                    >
-                      <Image
-                        src="/imgs/jobViz/chain.png"
-                        alt="chain_JobViz_Galactic_Polymath"
-                        fill
-                        sizes="3px"
-                        style={{
-                          object: "fit",
-                        }}
-                      />
-                    </div>
-                  </section>
-                </div>
-              );
-            }
-
-            if (index !== 0 && index !== self.length - 1) {
-              return (
-                <div
-                  key={index}
-                  className="d-flex justify-content-center flex-column align-items-center"
-                >
-                  <PreviouslySelectedJobCategory
-                    jobCategory={jobCategory}
-                    searchParamsStr={searchParams}
-                  />
-                  <section className="w-100 d-flex justify-content-center align-items-center">
-                    <div
-                      style={{ height: 14, width: 3 }}
-                      className="position-relative"
-                    >
-                      <Image
-                        src="/imgs/jobViz/chain.png"
-                        alt="chain_JobViz_Galactic_Polymath"
-                        fill
-                        sizes="3px"
-                        style={{
-                          object: "fit",
-                        }}
-                      />
-                    </div>
-                  </section>
-                </div>
-              );
-            }
-
-            return (
-              <JobCategoryChainCard
-                key={index}
-                jobCategory={jobCategory}
-                index={index}
-                isSearchResultsChainPresent
-                searchParams={searchParams}
-              />
-            );
-          })}
-        </section>
-      )}
-      {!parentJobCategories && (
-        <section className="d-flex justify-content-center align-items-center flex-column w-100 pt-5 mt-5">
-          <JobCategoryChainCard searchParams={searchParams} />
-        </section>
-      )}
-      <section className="jobCategoriesAndBracketSec d-flex justify-content-center align-items-center flex-column pb-5 mb-5">
-        <section className="bracketSec d-flex justify-content-center align-items-center">
-          <div
-            style={{ height: 70 }}
-            className="bracketImgContainer position-relative w-100"
-          >
-            <Image
-              src="/imgs/jobViz/bracket_search.png"
-              alt="Galactic_Polymath_JobViz_Icon_Search"
-              fill
-              style={{
-                objectFit: "fill",
-              }}
-              id={JOBVIZ_BRACKET_SEARCH_ID}
-              size="(max-width: 575px) 488.75px, (max-width: 767px) 651.945px, (max-width: 991px) 842.344px, (max-width: 1199px) 1019.15px, 1025px"
-              priority
-            />
-          </div>
-        </section>
-        <JobCategoriesSec
-          dynamicJobResults={dynamicJobResults}
-          currentHierarchyNum={currentHierarchyNum ?? 1}
-          isLoading={isLoading}
-          resetSearch={resetSearchResults}
+      {shouldRenderAssignment && (
+        <AssignmentBanner
+          variant="mobile"
+          unitName={preservedUnitName}
+          jobs={jobTitleAndSocCodePairs}
+          assignmentParams={assignmentParams}
+          onJobClick={handleAssignmentJobClick}
         />
-        <section className="w-100 d-flex justify-content-sm-end justify-content-center align-items-center mt-5">
-          <span className="d-block d-sm-inline me-sm-5">
-            <span className="d-block d-sm-inline font-weight-bold me-sm-2 text-sm-start text-center">
-              Data Source:
-            </span>
-            <a
-              href={DATA_SOURCE_LINK}
-              target="_blank"
-              className="underline-on-hover text-sm-start text-center"
-            >
-              US Bureau of Labor Statistics
-            </a>
-          </span>
-        </section>
-      </section>
-      {isSearchResultsModalOn && searchResults.length && (
-        <GoToSearchInput isScrollToInputBtnVisible={inView} />
       )}
-      {isSearchResultsModalOn && searchResults.length && (
-        <GoToJobVizChain isScrollToJobVizChainBtnVisible={inView} />
-      )}
+      <div
+        className={styles.jobvizPageShell}
+        data-has-assignment={shouldRenderAssignment}
+      >
+        <div className={styles.jobvizMainColumn}>
+          <JobVizLayout
+            heroTitle="JobViz Career Explorer+"
+            heroSubtitle={heroSubtitle}
+            heroSlot={heroSlot}
+            heroEyebrow={isGpPlusHero ? "GP+ Subscriber Version" : undefined}
+          >
+            <div id={JOBVIZ_BRACKET_SEARCH_ID} />
+            <h2 className={styles.jobvizSectionHeading}>
+              Browse jobs by category or search
+            </h2>
+            <h3 className={styles.jobvizSearchAppeal}>
+              Explore the true diversity of career opportunities.
+            </h3>
+
+            <JobVizSearch
+              assignmentParams={assignmentParams}
+              extraQueryParams={sortQueryParams}
+            />
+            <div className={styles.jobvizContextZone}>
+              <div className={styles.jobvizGridWrap}>
+                {(!showAssignmentOnly || !hasAssignmentList) && (
+                  <>
+                    <div className={styles.gridContextLabel}>Current Path</div>
+                    <JobVizBreadcrumb segments={breadcrumbs} />
+                  </>
+                )}
+                <div className={styles.gridFilterRow}>
+                  {hasAssignmentList && (
+                    <div className={styles.gridFilterActions}>
+                      <span className={styles.gridFilterLabel}>
+                        {showAssignmentOnly
+                          ? "Showing Only Assigned"
+                          : "Showing All Jobs"}
+                      </span>
+                      <button
+                        type="button"
+                        className={`${styles.gridFilterButton} ${
+                          !showAssignmentOnly
+                            ? styles.gridFilterButtonActive
+                            : ""
+                        }`}
+                        onClick={() => setShowAssignmentOnly((prev) => !prev)}
+                      >
+                        {showAssignmentOnly
+                          ? "Show All Jobs"
+                          : "Show Only Assigned"}
+                      </button>
+                    </div>
+                  )}
+                  {hasAssignmentList && (
+                    <JobVizSortControl
+                      activeOptionId={sortOptionId}
+                      onChange={handleSortControlChange}
+                      options={JOBVIZ_SORT_OPTIONS}
+                    />
+                  )}
+                  {!hasAssignmentList && (
+                    <JobVizSortControl
+                      activeOptionId={sortOptionId}
+                      onChange={handleSortControlChange}
+                      options={JOBVIZ_SORT_OPTIONS}
+                    />
+                  )}
+                </div>
+                <JobVizGrid
+                  items={filteredGridItems}
+                  onItemClick={
+                    showAssignmentOnly && hasAssignmentList
+                      ? openJobDetailFromGrid
+                      : handleRootClick
+                  }
+                />
+              </div>
+
+              <p className={`${styles.jobvizSource} ${styles.jobvizSourceFixed}`}>
+                Data source:{" "}
+                <a href={JOBVIZ_DATA_SOURCE} target="_blank" rel="noreferrer">
+                  US Bureau of Labor Statistics
+                </a>
+              </p>
+            </div>
+          </JobVizLayout>
+        </div>
+        {shouldRenderAssignment && (
+          <AssignmentBanner
+            variant="desktop"
+            unitName={preservedUnitName}
+            jobs={jobTitleAndSocCodePairs}
+            assignmentParams={assignmentParams}
+            onJobClick={handleAssignmentJobClick}
+          />
+        )}
+      </div>
     </Layout>
   );
 };
 
 export const getServerSideProps = async ({ query, req }) => {
-  console.log("req, getServerSideProps: ", req);
-  console.log("query, getServerSideProps: ", query);
-
   const socCodesStr = query?.[SOC_CODES_PARAM_NAME];
   const unitName = query?.[UNIT_NAME_PARAM_NAME] ?? null;
-  console.log("socCodesStr: ", socCodesStr);
   const socCodes = socCodesStr ? new Set(socCodesStr.split(",")) : null;
   const sessionToken = req.cookies["next-auth.session-token"];
   let hasGpPlusMembership = req?.cookies?.["isGpPlusMember"];
-
-  console.log("hasGpPlusMembership before validation: ", hasGpPlusMembership);
 
   if (typeof hasGpPlusMembership === "string") {
     hasGpPlusMembership = hasGpPlusMembership === "true";
@@ -322,7 +420,6 @@ export const getServerSideProps = async ({ query, req }) => {
   }
 
   hasGpPlusMembership = !!hasGpPlusMembership;
-  console.log("hasGpPlusMembership after validation: ", hasGpPlusMembership);
 
   if (socCodes) {
     const jobTitleAndSocCodePairs = getUnitRelatedJobs(socCodes).map(
@@ -332,7 +429,7 @@ export const getServerSideProps = async ({ query, req }) => {
     return {
       props: {
         unitName,
-        jobTitleAndSocCodePairs: jobTitleAndSocCodePairs,
+        jobTitleAndSocCodePairs,
         hasGpPlusMembership,
       },
     };

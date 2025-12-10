@@ -6,7 +6,6 @@
 
 
 const getNewPathsWhenModalCloses = require('../../../helperFns/getNewPathsWhenModalCloses');
-const jobVizDataObj = require("../../data/Jobviz/jobVizDataObj.json")
 
 
 // ['3', '37-1000', '581', '582']

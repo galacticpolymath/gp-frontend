@@ -3,15 +3,9 @@
 import Head from "next/head";
 import Footer from "./Footer";
 import Navbar from "./Navbar";
-import { Noto_Sans } from "next/font/google";
 import { useEffect } from "react";
 import { removeLocalStorageItem } from "../shared/fns";
 import { JobToursCardWithRocket } from "./JobViz/Heros/HeroForGpPlusUsers";
-
-const notoSansLight = Noto_Sans({
-  subsets: ["latin"],
-  weight: "variable",
-});
 
 export default function Layout({
   title,
@@ -37,7 +31,7 @@ export default function Layout({
   }, []);
 
   return (
-    <div style={style} className={`${notoSansLight.className} ${className}`}>
+    <div style={style} className={className}>
       <Head>
         <title>{title}</title>
         <meta property="og:title" content={title} />

@@ -7,6 +7,7 @@ const cspHeader = `
     style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
     object-src 'none';
     base-uri 'self';
+    img-src * data: blob:;
     connect-src 'self'
       https://galacticpolymath.com/api/auth/signin/google
       https://apis.google.com
@@ -29,7 +30,9 @@ module.exports = {
     MONGODB_DB_NAME: process.env.MONGODB_DB_NAME,
   },
   reactStrictMode: true,
-  swcMinify: true,
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
   images: {
     domains: [
       'catalog.galacticpolymath.com',

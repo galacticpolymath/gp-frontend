@@ -20,6 +20,18 @@ export class GDriveItem {
   }
 }
 
+export class FileMetaData {
+  constructor(
+    name,
+    parents = [],
+    mimeType = "application/vnd.google-apps.folder"
+  ) {
+    this.name = name;
+    this.parents = parents;
+    this.mimeType = mimeType;
+  }
+}
+
 export class Credentials {
   constructor() {
     const {
