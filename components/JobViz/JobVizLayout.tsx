@@ -13,6 +13,7 @@ interface JobVizLayoutProps {
   children: React.ReactNode;
   heroSlot?: React.ReactNode;
   suppressHero?: boolean;
+  heroEyebrow?: string;
 }
 
 export const JobVizLayout: React.FC<JobVizLayoutProps> = ({
@@ -21,6 +22,7 @@ export const JobVizLayout: React.FC<JobVizLayoutProps> = ({
   children,
   heroSlot,
   suppressHero = false,
+  heroEyebrow = "JobViz Burst Edition",
 }) => {
   const effectiveSubtitle =
     heroSubtitle ??
@@ -84,7 +86,7 @@ const heroStats = [
           <section className={styles.jobvizHero} data-tone="burst">
             <div className={styles.jobvizHeroContent}>
               <div className={styles.jobvizHeroInner}>
-                <p className={styles.heroEyebrow}>JobViz Burst Edition</p>
+                <p className={styles.heroEyebrow}>{heroEyebrow}</p>
                 <h1 className={styles.heroTitle}>{heroTitle}</h1>
                 <p className={styles.heroSubtitle}>{effectiveSubtitle}</p>
               </div>

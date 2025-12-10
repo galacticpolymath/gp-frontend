@@ -87,6 +87,7 @@ export const JOBVIZ_SORT_OPTIONS: JobVizSortOption[] = [
   {
     id: "growth-asc",
     label: "Growth",
+    detail: "(Low-High)",
     icon: "ArrowUp",
     metric: "growthPercent",
     direction: "asc",
@@ -94,6 +95,7 @@ export const JOBVIZ_SORT_OPTIONS: JobVizSortOption[] = [
   {
     id: "growth-desc",
     label: "Growth",
+    detail: "(High-Low)",
     icon: "ArrowDown",
     metric: "growthPercent",
     direction: "desc",
@@ -101,6 +103,7 @@ export const JOBVIZ_SORT_OPTIONS: JobVizSortOption[] = [
   {
     id: "wage-asc",
     label: "Median Wage",
+    detail: "(Low-High)",
     icon: "ArrowUp",
     metric: "wage",
     direction: "asc",
@@ -108,6 +111,7 @@ export const JOBVIZ_SORT_OPTIONS: JobVizSortOption[] = [
   {
     id: "wage-desc",
     label: "Median Wage",
+    detail: "(High-Low)",
     icon: "ArrowDown",
     metric: "wage",
     direction: "desc",

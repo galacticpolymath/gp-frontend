@@ -312,7 +312,7 @@ const JobViz = ({ unitName, jobTitleAndSocCodePairs, hasGpPlusMembership }) => {
             heroTitle="JobViz Career Explorer+"
             heroSubtitle={heroSubtitle}
             heroSlot={heroSlot}
-            suppressHero={shouldRenderAssignment}
+            heroEyebrow={isGpPlusHero ? "GP+ Subscriber Version" : undefined}
           >
             <div id={JOBVIZ_BRACKET_SEARCH_ID} />
             <h2 className={styles.jobvizSectionHeading}>
