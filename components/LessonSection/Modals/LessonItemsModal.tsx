@@ -1,10 +1,11 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Button, Modal, CloseButton } from "react-bootstrap";
 import { ILessonItem, useModalContext } from "../../../providers/ModalProvider";
 import { TbDownload } from "react-icons/tb";
 import { TbExternalLink } from "react-icons/tb";
 import { useUserContext } from "../../../providers/UserProvider";
 import { useLessonContext } from "../../../providers/LessonProvider";
+import { MdKeyboardArrowRight, MdKeyboardArrowLeft } from "react-icons/md";
 import {
   Carousel,
   CarouselSlider,
@@ -16,9 +17,10 @@ import useSiteSession from "../../../customHooks/useSiteSession";
 import Image from "next/image";
 import { FcGoogle } from "react-icons/fc";
 import Dropdown from "react-bootstrap/Dropdown";
-import { LuMonitorPlay } from "react-icons/lu";
 import { GiFilmStrip } from "react-icons/gi";
 import { IoOpenOutline } from "react-icons/io5";
+import ReactMaterialCarousel from 'react-material-ui-carousel';
+import { Paper, Button as MaterialUIBtn } from '@mui/material';
 
 const LESSON_ITEMS_MODAL_BG_COLOR = "#E2F0FD";
 
@@ -26,6 +28,90 @@ interface ILessonItemCard {
   previewUrl: string;
   viewUrl: string;
   index: number;
+}
+
+function Item(props: any) {
+  return (
+    <Paper>
+      <h2>{props.item.name}</h2>
+      <p>{props.item.description}</p>
+
+      <Button className="CheckButton">
+        Check it out!
+      </Button>
+    </Paper>
+  )
+}
+
+interface INavBtn {
+  onClick: Function;
+  className: string;
+  style: React.CSSProperties;
+  next: boolean;
+  prev: boolean;
+}
+
+const NavBtn = ({ onClick, next, className, style, prev }: {
+  onClick: Function;
+  className: string;
+  style: React.CSSProperties;
+  next: boolean;
+  prev: boolean;
+}) => {
+  return (
+    <button
+      type="button"
+      className={className}
+      style={style}
+      onClick={() => onClick()}
+    >
+      {next ? "Next" : "Previous"}
+    </button>
+  )
+}
+
+function Example() {
+  var items = [
+    {
+      name: "Random Name #1",
+      description: "Probably the most random thing you have ever seen!"
+    },
+    {
+      name: "Random Name #2",
+      description: "Hello World!"
+    }
+  ];
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  return (
+    <ReactMaterialCarousel
+      animation="slide"
+      index={activeIndex}
+      // NextIcon={<MdKeyboardArrowRight />}
+      // PrevIcon={<MdKeyboardArrowLeft />}
+      // onChange={ }
+      navButtonsAlwaysVisible
+    // NavButton={(props: INavBtn) => {
+    //   return (
+    //     <button
+    //       onClick={() => {
+    //         if (props.next) {
+    //           setActiveIndex(activeIndex + 1);
+    //         } else {
+    //           setActiveIndex(activeIndex - 1);
+    //         }
+    //       }}
+    //     >
+    //       {props.next ? "Next" : "Previous"}
+    //     </button>
+    //   )
+    // }}
+    >
+      {
+        items.map((item, i) => <Item key={i} item={item} />)
+      }
+    </ReactMaterialCarousel>
+  )
 }
 
 const LessonItemCard: React.FC<ILessonItemCard> = ({
@@ -45,9 +131,8 @@ const LessonItemCard: React.FC<ILessonItemCard> = ({
           minHeight: "65px",
           maxHeight: "75px",
         }}
-        className={`top-0 w-100 position-absolute ${
-          isMsgHidden ? "d-none" : "d-block"
-        } d-xl-none`}
+        className={`top-0 w-100 position-absolute ${isMsgHidden ? "d-none" : "d-block"
+          } d-xl-none`}
       >
         <div className="w-100 h-100 px-2 py-1 position-relative d-flex justify-content-center align-items-center">
           <div style={{ maxWidth: "400px" }} className="position-relative">
@@ -217,6 +302,9 @@ const LessonItemsModal: React.FC = () => {
     lessonId,
     userGDriveLessonFolderId,
   } = lessonItemModal;
+
+  console.log("lessonItems, hey there; ", lessonItems);
+
   const currentLessonItem = lessonItems[currentIndex] ?? {};
   const {
     docUrl: currentLessonItemDocUrl,
@@ -356,15 +444,13 @@ const LessonItemsModal: React.FC = () => {
             className="w-100 h-100 row m-0 ps-0 pe-md-5 py-3 d-flex flex-column flex-sm-row"
           >
             <section
-              className={`${
-                isGpPlusMember
-                  ? "col-12 col-sm-5 col-xxl-3"
-                  : "col-sm-6 col-md-3 col-xxl-6"
-              } d-flex ${
-                isGpPlusMember
+              className={`${isGpPlusMember
+                ? "col-12 col-sm-5 col-xxl-3"
+                : "col-sm-6 col-md-3 col-xxl-6"
+                } d-flex ${isGpPlusMember
                   ? "justify-content-end justify-content-sm-start align-items-stretch"
-                  : "justify-content-start align-items-center ps-1"
-              }`}
+                  : "justify-content-start align-items-center ps-sm-1"
+                }`}
             >
               {isGpPlusMember ? (
                 <CopyLessonBtnUI
@@ -442,178 +528,179 @@ const LessonItemsModal: React.FC = () => {
               )}
             </section>
             <section
-              className={` ${
-                isGpPlusMember
-                  ? "col-12 col-sm-7 col-xxl-9"
-                  : "col-6 col-sm-6 col-md-9 col-xxl-6 p-0"
-              } d-flex flex-column flex-md-row justify-content-md-end align-items-sm-center p-sm-0`}
+              className={` ${isGpPlusMember
+                ? "col-12 col-sm-7 col-xxl-9"
+                : "col-12 col-sm-6 col-md-9 col-xxl-6 p-0"
+                } ${isGpPlusMember ? 'd-flex flex-column flex-md-row' : 'd-flex flex-column flex-lg-row'} ${isGpPlusMember ? 'justify-content-md-end align-items-sm-center' : 'justify-content-md-end align-items-sm-end'} p-sm-0`}
             >
-              {itemType === "presentation" && (
-                <section className="d-none d-sm-flex h-100 justify-content-end pe-sm-3">
-                  <Button
-                    style={{
-                      backgroundColor: "transparent",
-                      transition: "background-color inifinte",
-                      width: "fit-content",
-                    }}
-                    className="mb-1 mb-md-0 d-flex no-btn-styles justify-content-center align-items-center text-black pointer"
-                    onClick={handleOpenInNewTabBtnClick}
-                  >
-                    <section className="w-100 d-none d-sm-flex h-100 pt-1">
-                      <h6
-                        style={{
-                          height: "fit-content",
-                          textTransform: "none",
-                        }}
-                        className="mb-0 text-black d-flex d-md-block justify-content-center align-items-center h-100 text-nowrap me-2"
-                      >
-                        <span className="d-none d-lg-block underline-on-hover">
-                          Open in New Tab:
-                        </span>
-                        <span className="d-block d-lg-none">New Tab:</span>
-                      </h6>
-                    </section>
-                    <section className="w-100 d-none d-sm-flex h-100">
-                      <div
-                        style={{ width: 44, height: 44 }}
-                        className="bg-white p-1 rounded"
-                      >
-                        <IoOpenOutline color="black" size={35} />
-                      </div>
-                    </section>
-                  </Button>
-                </section>
-              )}
-              <section className="d-flex flex-column flex-md-row justify-content-end align-items-stretch">
-                {currentLessonItem.itemCat !== "web resource" &&
-                  currentLessonItem.isExportable && (
-                    <section className="w-100 d-none d-sm-flex justify-content-center justify-content-md-end pt-sm-1">
-                      <h6>Download as: </h6>
-                    </section>
-                  )}
-                <section
-                  className={`d-flex flex-row flex-md-column ${
-                    isGpPlusMember
-                      ? "justify-content-end"
-                      : " justify-content-start ms-1"
-                  } align-items-sm-stretch justify-content-sm-center align-items-sm-center lessons-item-modal-download mt-3 mt-sm-0`}
-                >
-                  {currentLessonItem.isExportable && (
-                    <div className="d-flex d-sm-none">
-                      {currentLessonItem.itemCat === "presentation" && (
-                        <section className="d-flex justify-content-center align-items-center">
-                          <button
-                            style={{ height: "60px" }}
-                            onClick={handleOpenInNewTabBtnClick}
-                            className="py-2 px-3 bg-white rounded-2 no-btn-styles me-2"
-                          >
-                            <TbExternalLink size={35} />
-                          </button>
-                        </section>
-                      )}
-                      <section className="d-flex justify-content-center align-items-center">
-                        <LessonItemDownloadBtnsDropDown
-                          lessonItem={currentLessonItem}
-                          isGpPlusMember={isGpPlusMember}
-                        />
-                      </section>
-                    </div>
-                  )}
-                  {currentLessonItem.isExportable && isGpPlusMember && (
-                    <div className="d-none d-sm-block">
-                      <Button
-                        style={{
-                          backgroundColor: "transparent",
-                          transition: "background-color inifinte",
-                        }}
-                        className="d-flex no-btn-styles flex-row justify-content-center align-items-center"
-                        onClick={handleOfficeBtnClick}
-                      >
-                        <div
-                          style={{ width: 44, height: 44 }}
-                          className="bg-white p-1 rounded position-relative"
+              <section className={`h-100 ${isGpPlusMember ? 'd-flex flex-column flex-md-row' : 'd-flex flex-column flex-lg-row pt-sm-2 pt-md-0 pe-sm-5 pe-md-0'}`}>
+                {itemType === "presentation" && (
+                  <section className={`d-none d-sm-flex h-100 ${isGpPlusMember ? 'pe-md-3 align-items-sm-center justify-content-sm-center align-items-md-stretch justify-content-md-end' : 'justify-content-center align-items-center justify-content-lg-start align-items-lg-stretch'}`}>
+                    <Button
+                      style={{
+                        backgroundColor: "transparent",
+                        transition: "background-color inifinte",
+                        width: "fit-content",
+                      }}
+                      className="mb-1 mb-md-0 d-flex no-btn-styles justify-content-center align-items-center text-black pointer"
+                      onClick={handleOpenInNewTabBtnClick}
+                    >
+                      <section className="w-100 d-none d-sm-flex h-100 pt-1">
+                        <h6
+                          style={{
+                            height: "fit-content",
+                            textTransform: "none",
+                          }}
+                          className="mb-0 text-black d-flex d-md-block justify-content-center align-items-center h-100 text-nowrap me-2"
                         >
-                          <Image
-                            alt="office"
-                            fill
-                            src="/imgs/office.png"
-                            className="w-100 h-100 position-absolute"
-                            style={{
-                              maxWidth: "35px",
-                              maxHeight: "35px",
-                              objectFit: "contain",
-                              top: "50%",
-                              left: "50%",
-                              transform: "translate(-50%, -50%)",
-                            }}
-                          />
-                        </div>
-                        <section className="d-flex justify-content-center align-items-center ms-2">
-                          <div
-                            style={{ height: "fit-content" }}
-                            className="mb-0 text-black text-decoration-underline lessons-item-modal-btns-text-container"
-                          >
-                            Office
-                          </div>
-                        </section>
-                      </Button>
-                    </div>
-                  )}
-                  {currentLessonItem.isExportable && (
-                    <div className="d-none d-sm-flex mt-md-2 ms-md-0 ms-2">
-                      <Button
-                        style={{
-                          backgroundColor: "transparent",
-                          transition: "background-color inifinte",
-                        }}
-                        className="d-flex no-btn-styles flex-row justify-content-center align-items-center "
-                        onClick={handleDownloadPdfBtnClick}
-                      >
+                          <span className="d-none d-lg-block underline-on-hover">
+                            Open in New Tab:
+                          </span>
+                          <span className="d-block d-lg-none">New Tab:</span>
+                        </h6>
+                      </section>
+                      <section className="w-100 d-none d-sm-flex h-100">
                         <div
                           style={{ width: 44, height: 44 }}
                           className="bg-white p-1 rounded"
                         >
-                          <TbDownload color="black" size={35} />
+                          <IoOpenOutline color="black" size={35} />
                         </div>
-                        <section className="d-flex justify-content-center align-items-center ms-2">
-                          <div
-                            style={{ height: "fit-content" }}
-                            className="mb-0 text-black text-decoration-underline lessons-item-modal-btns-text-container"
-                          >
-                            PDF
-                          </div>
-                        </section>
-                      </Button>
-                    </div>
-                  )}
-                  {currentLessonItem.itemCat === "web resource" && (
-                    <Button
-                      style={{
-                        backgroundColor: "white",
-                        width: "95%",
-                        maxWidth: "405px",
-                      }}
-                      className="d-flex no-btn-styles flex-row justify-content-center align-items-center ms-1 ms-sm-0 ps-sm-2 pe-sm-2 py-1"
-                      onClick={handleOpenInNewTabBtnClick}
-                    >
-                      <section className="d-flex justify-content-center align-items-center h-100">
-                        <TbExternalLink
-                          className="gp-plus-btn-icons-lesson-item-modal"
-                          style={{
-                            color: "#4699CC",
-                          }}
-                        />
-                      </section>
-                      <section className="justify-content-center align-items-center ms-sm-2 d-flex py-2 py-sm-0">
-                        <p className="mb-0 text-black">Open in New Tab</p>
                       </section>
                     </Button>
-                  )}
+                  </section>
+                )}
+                <section className={`h-100 d-flex flex-column flex-md-row ${isGpPlusMember ? 'justify-content-end align-items-stretch' : 'mt-sm-2 mt-lg-0 justify-content-lg-end align-items-lg-stretch'}`}>
+                  {currentLessonItem.itemCat !== "web resource" &&
+                    currentLessonItem.isExportable && (
+                      <section className={`w-100 d-none d-sm-flex pt-sm-1 ${isGpPlusMember ? 'justify-content-center justify-content-md-end' : 'justify-content-center align-items-center align-items-lg-stretch justify-content-lg-end ms-lg-3'}`}>
+                        <h6>Download as: </h6>
+                      </section>
+                    )}
+                  <section
+                    className={`d-flex flex-row flex-md-column ${isGpPlusMember
+                      ? "justify-content-end align-items-sm-stretch justify-content-sm-center align-items-sm-center"
+                      : "justify-content-sm-start ms-2 align-items-sm-stretch"
+                      } lessons-item-modal-download mt-3 mt-sm-0`}
+                  >
+                    {currentLessonItem.isExportable && (
+                      <div className="d-flex d-sm-none">
+                        {currentLessonItem.itemCat === "presentation" && (
+                          <section className="d-flex justify-content-center align-items-center">
+                            <button
+                              style={{ height: "60px" }}
+                              onClick={handleOpenInNewTabBtnClick}
+                              className="py-2 px-3 bg-white rounded-2 no-btn-styles me-2"
+                            >
+                              <TbExternalLink size={35} />
+                            </button>
+                          </section>
+                        )}
+                        <section className="d-flex justify-content-center align-items-center">
+                          <LessonItemDownloadBtnsDropDown
+                            lessonItem={currentLessonItem}
+                            isGpPlusMember={isGpPlusMember}
+                          />
+                        </section>
+                      </div>
+                    )}
+                    {currentLessonItem.isExportable && isGpPlusMember && (
+                      <div className="d-none d-sm-block">
+                        <Button
+                          style={{
+                            backgroundColor: "transparent",
+                            transition: "background-color inifinte",
+                          }}
+                          className="d-flex no-btn-styles flex-row justify-content-center align-items-center"
+                          onClick={handleOfficeBtnClick}
+                        >
+                          <div
+                            style={{ width: 44, height: 44 }}
+                            className="bg-white p-1 rounded position-relative"
+                          >
+                            <Image
+                              alt="office"
+                              fill
+                              src="/imgs/office.png"
+                              className="w-100 h-100 position-absolute"
+                              style={{
+                                maxWidth: "35px",
+                                maxHeight: "35px",
+                                objectFit: "contain",
+                                top: "50%",
+                                left: "50%",
+                                transform: "translate(-50%, -50%)",
+                              }}
+                            />
+                          </div>
+                          <section className="d-flex justify-content-center align-items-center ms-2">
+                            <div
+                              style={{ height: "fit-content" }}
+                              className="mb-0 text-black text-decoration-underline lessons-item-modal-btns-text-container"
+                            >
+                              Office
+                            </div>
+                          </section>
+                        </Button>
+                      </div>
+                    )}
+                    {currentLessonItem.isExportable && (
+                      <div className={`${isGpPlusMember ? "ms-2 mt-md-2 ms-md-0 d-none d-sm-flex" : "d-none d-sm-flex w-100 justify-content-center align-items-center justify-content-lg-start align-items-lg-stretch"}`}>
+                        <Button
+                          style={{
+                            backgroundColor: "transparent",
+                            transition: "background-color inifinte",
+                          }}
+                          className={`d-flex no-btn-styles flex-row ${isGpPlusMember ? 'justify-content-center align-items-center' : ''}`}
+                          onClick={handleDownloadPdfBtnClick}
+                        >
+                          <div
+                            style={{ width: 44, height: 44 }}
+                            className="bg-white p-1 rounded"
+                          >
+                            <TbDownload color="black" size={35} />
+                          </div>
+                          <section className={`d-flex justify-content-center align-items-center ${isGpPlusMember ? 'ms-2' : 'ms-2 ms-md-0'}`} >
+                            <div
+                              style={{ height: "fit-content" }}
+                              className="mb-0 text-black text-decoration-underline lessons-item-modal-btns-text-container"
+                            >
+                              PDF
+                            </div>
+                          </section>
+                        </Button>
+                      </div>
+                    )}
+                    {currentLessonItem.itemCat === "web resource" && (
+                      <Button
+                        style={{
+                          backgroundColor: "white",
+                          width: "95%",
+                          maxWidth: "405px",
+                        }}
+                        className="d-flex no-btn-styles flex-row justify-content-center align-items-center ms-1 ms-sm-0 ps-sm-2 pe-sm-2 py-1"
+                        onClick={handleOpenInNewTabBtnClick}
+                      >
+                        <section className="d-flex justify-content-center align-items-center h-100">
+                          <TbExternalLink
+                            className="gp-plus-btn-icons-lesson-item-modal"
+                            style={{
+                              color: "#4699CC",
+                            }}
+                          />
+                        </section>
+                        <section className="justify-content-center align-items-center ms-sm-2 d-flex py-2 py-sm-0">
+                          <p className="mb-0 text-black">Open in New Tab</p>
+                        </section>
+                      </Button>
+                    )}
+                  </section>
                 </section>
               </section>
             </section>
           </div>
         </section>
+        {/* <Example /> */}
         <Carousel
           groupSize={1}
           circular
@@ -632,7 +719,7 @@ const LessonItemsModal: React.FC = () => {
           >
             <CarouselSlider className="w-100 h-100">
               {lessonItems.map((lessonItem, index) => {
-                let url =
+                const url =
                   lessonItem.itemCat === "web resource"
                     ? lessonItem.externalUrl
                     : lessonItem.docUrl;
@@ -676,12 +763,15 @@ const LessonItemsModal: React.FC = () => {
               name="prev"
             />
             <div
-              style={{ minWidth: "45vw", maxWidth: "500px" }}
+              style={{
+                minWidth: "60vw",
+                maxWidth: "550px"
+              }}
               className="h-100 p-0 col-10"
             >
               <div
                 style={{ borderRadius: ".2em" }}
-                className="h-100 d-flex justify-content-center align-items-center flex-column border border-2 px-2 py-1"
+                className="h-100 d-flex justify-content-center align-items-center flex-column border border-2 px-1 px-sm-2 py-1"
               >
                 <div className="text-black fw-normal text-center">
                   {currentLessonItemName}
