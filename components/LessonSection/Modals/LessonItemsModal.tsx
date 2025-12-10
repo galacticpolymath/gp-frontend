@@ -483,7 +483,7 @@ const LessonItemsModal: React.FC = () => {
                     </Button>
                   </section>
                 )}
-                <section className={`h-100 d-flex flex-column flex-md-row ${isGpPlusMember ? 'justify-content-end align-items-stretch' : 'mt-sm-2 mt-lg-0 justify-content-center align-items-center justify-content-lg-end align-items-lg-stretch'}`}>
+                <section className={`h-100 d-flex flex-column flex-md-row ${isGpPlusMember ? 'justify-content-end align-items-stretch' : 'mt-sm-2 mt-lg-0 justify-content-lg-end align-items-lg-stretch'}`}>
                   {currentLessonItem.itemCat !== "web resource" &&
                     currentLessonItem.isExportable && (
                       <section className={`w-100 d-none d-sm-flex pt-sm-1 ${isGpPlusMember ? 'justify-content-center justify-content-md-end' : 'justify-content-center align-items-center align-items-lg-stretch justify-content-lg-end ms-lg-3'}`}>
@@ -493,7 +493,7 @@ const LessonItemsModal: React.FC = () => {
                   <section
                     className={`d-flex flex-row flex-md-column ${isGpPlusMember
                       ? "justify-content-end align-items-sm-stretch justify-content-sm-center align-items-sm-center"
-                      : "justify-content-center align-items-center justify-content-sm-start ms-2 align-items-sm-stretch"
+                      : "justify-content-sm-start ms-2 align-items-sm-stretch"
                       } lessons-item-modal-download mt-3 mt-sm-0`}
                   >
                     {currentLessonItem.isExportable && (
@@ -675,12 +675,15 @@ const LessonItemsModal: React.FC = () => {
               name="prev"
             />
             <div
-              style={{ minWidth: "45vw", maxWidth: "500px" }}
+              style={{
+                minWidth: "60vw",
+                maxWidth: "550px"
+              }}
               className="h-100 p-0 col-10"
             >
               <div
                 style={{ borderRadius: ".2em" }}
-                className="h-100 d-flex justify-content-center align-items-center flex-column border border-2 px-2 py-1"
+                className="h-100 d-flex justify-content-center align-items-center flex-column border border-2 px-1 px-sm-2 py-1"
               >
                 <div className="text-black fw-normal text-center">
                   {currentLessonItemName}
