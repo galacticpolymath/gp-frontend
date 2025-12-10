@@ -89,7 +89,7 @@ function Example() {
       index={activeIndex}
       // NextIcon={<MdKeyboardArrowRight />}
       // PrevIcon={<MdKeyboardArrowLeft />}
-      onChange={ }
+      // onChange={ }
       navButtonsAlwaysVisible
     // NavButton={(props: INavBtn) => {
     //   return (
@@ -535,7 +535,7 @@ const LessonItemsModal: React.FC = () => {
             >
               <section className={`h-100 ${isGpPlusMember ? 'd-flex flex-column flex-md-row' : 'd-flex flex-column flex-lg-row pt-sm-2 pt-md-0 pe-sm-5 pe-md-0'}`}>
                 {itemType === "presentation" && (
-                  <section className={`d-none d-sm-flex h-100 ${isGpPlusMember ? 'pe-md-3 align-items-center justify-content-center align-items-lg-stretch justify-content-lg-end' : 'justify-content-center align-items-center justify-content-lg-start align-items-lg-stretch'}`}>
+                  <section className={`d-none d-sm-flex h-100 ${isGpPlusMember ? 'pe-md-3 align-items-sm-center justify-content-sm-center align-items-md-stretch justify-content-md-end' : 'justify-content-center align-items-center justify-content-lg-start align-items-lg-stretch'}`}>
                     <Button
                       style={{
                         backgroundColor: "transparent",
@@ -700,8 +700,8 @@ const LessonItemsModal: React.FC = () => {
             </section>
           </div>
         </section>
-        <Example />
-        {/* <Carousel
+        {/* <Example /> */}
+        <Carousel
           groupSize={1}
           circular
           className="w-100 h-100"
@@ -792,7 +792,7 @@ const LessonItemsModal: React.FC = () => {
               name="next"
             />
           </div>
-        </Carousel> */}
+        </Carousel>
       </Modal>
     </>
   );
