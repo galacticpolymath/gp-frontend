@@ -10,10 +10,16 @@ interface IHeroForFreeUsersProps {
 }
 
 const numberFormatter = new Intl.NumberFormat("en-US");
-const formatPercent = (value: number) => {
+const formatPercentRangeValue = (value: number) => {
   const formatted = Math.abs(value).toFixed(1).replace(/\.0$/, "");
   const arrow = value > 0 ? "↑" : value < 0 ? "↓" : "→";
-  return `${arrow} ${formatted}%`;
+  const colorClass =
+    value > 0
+      ? styles.statValueHot
+      : value < 0
+        ? styles.statValueCool
+        : styles.statValueNeutral;
+  return { label: `${formatted}%`, arrow, colorClass };
 };
 
 const HeroForFreeUsers: React.FC<IHeroForFreeUsersProps> = ({
@@ -30,7 +36,10 @@ const heroStats = [
   },
   {
     label: "Learn which careers are heating up",
-    value: `${formatPercent(growthRange.min)} · ${formatPercent(growthRange.max)}`,
+    range: [
+      formatPercentRangeValue(growthRange.min),
+      formatPercentRangeValue(growthRange.max),
+    ],
   },
 ];
 
@@ -53,7 +62,25 @@ const heroStats = [
             {heroStats.map((stat) => (
               <div key={stat.label} className={styles.heroStat}>
                 <span className={styles.heroStatLabel}>{stat.label}</span>
-                <strong className={styles.heroStatValue}>{stat.value}</strong>
+                <strong className={styles.heroStatValue}>
+                  {stat.range ? (
+                    <>
+                      <span
+                        className={`${styles.heroRangeValue} ${stat.range[0].colorClass}`}
+                      >
+                        {stat.range[0].arrow} {stat.range[0].label}
+                      </span>
+                      <span className={styles.heroRangeDivider}>·</span>
+                      <span
+                        className={`${styles.heroRangeValue} ${stat.range[1].colorClass}`}
+                      >
+                        {stat.range[1].arrow} {stat.range[1].label}
+                      </span>
+                    </>
+                  ) : (
+                    stat.value
+                  )}
+                </strong>
               </div>
             ))}
           </div>
