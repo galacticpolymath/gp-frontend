@@ -92,8 +92,7 @@ const LoginContainerForNavbar: React.FC<IProps> = ({ _modalAnimation }) => {
   const didInitialRenderOccur = useRef(false);
   const [isRetrievingUserData] = _isRetrievingUserData;
   const pathName = usePathname();
-  const { status, user, token, gdriveAccessToken } =
-    useSiteSession();
+  const { status, user, token, gdriveAccessToken } = useSiteSession();
   const userAccountSaved = useMemo(() => {
     if (status === "authenticated") {
       return (
@@ -255,7 +254,10 @@ const LoginContainerForNavbar: React.FC<IProps> = ({ _modalAnimation }) => {
   }
 
   return (
-    <div className="login-container position-relative">
+    <div
+      className="login-container position-relative"
+      style={{ zIndex: 100000 }}
+    >
       <Button
         handleOnClick={handleAccountBtnClick}
         classNameStr="rounded px-2 py-2 border-0 d-flex justify-content-center align-items-center"
@@ -271,32 +273,34 @@ const LoginContainerForNavbar: React.FC<IProps> = ({ _modalAnimation }) => {
           <span style={{ color: "white", fontWeight: 410 }}>LOGIN</span>
         )}
         {!wasUIDataLoaded && <Spinner color="white" />}
-        {didInitialRenderOccur && status === "authenticated" && wasUIDataLoaded && (
-          <div className="position-relative d-flex align-items-center">
-            {image ? (
-              <div
-                className={`avatar-ring ${
-                  isGpPlusMember ? "gp-plus-user-color" : "free-user-color"
-                }`}
-              >
-                <img
-                  src={image}
-                  alt="user_img"
-                  style={{ objectFit: "contain" }}
-                  className="rounded-circle w-100 h-100"
-                />
-              </div>
-            ) : (
-              <div
-                className={`avatar-ring ${
-                  isGpPlusMember ? "gp-plus-user-color" : "free-user-color"
-                }`}
-              >
-                <FaUserAlt color="#2C83C3" />
-              </div>
-            )}
-          </div>
-        )}
+        {didInitialRenderOccur &&
+          status === "authenticated" &&
+          wasUIDataLoaded && (
+            <div className="position-relative d-flex align-items-center">
+              {image ? (
+                <div
+                  className={`avatar-ring ${
+                    isGpPlusMember ? "gp-plus-user-color" : "free-user-color"
+                  }`}
+                >
+                  <img
+                    src={image}
+                    alt="user_img"
+                    style={{ objectFit: "contain" }}
+                    className="rounded-circle w-100 h-100"
+                  />
+                </div>
+              ) : (
+                <div
+                  className={`avatar-ring ${
+                    isGpPlusMember ? "gp-plus-user-color" : "free-user-color"
+                  }`}
+                >
+                  <FaUserAlt color="#2C83C3" />
+                </div>
+              )}
+            </div>
+          )}
       </Button>
       <div
         id={USER_ACCOUNT_MODAL_ID}
@@ -312,7 +316,10 @@ const LoginContainerForNavbar: React.FC<IProps> = ({ _modalAnimation }) => {
           handleOnClick={closeModal}
           classNameStr="position-absolute top-0 end-0 me-2 no-btn-styles"
         >
-          <i className="fa fa-times" style={{ color: "black", fontSize: "15px" }} />
+          <i
+            className="fa fa-times"
+            style={{ color: "black", fontSize: "15px" }}
+          />
         </Button>
         <div className="py-2">
           <section

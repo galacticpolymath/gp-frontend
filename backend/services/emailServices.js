@@ -178,7 +178,7 @@ export const addUserToEmailList = async (email, clientUrl) => {
       console.error('Failed to save the document into the database.');
     }
 
-    return { wasSuccessful: true };
+    return { wasSuccessful: true, mailingListConfirmationId };
   } catch (error) {
     console.error(error);
 

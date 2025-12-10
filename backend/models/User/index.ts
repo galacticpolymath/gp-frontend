@@ -113,6 +113,7 @@ export const UserSchema = new Schema<TUserSchemaV2>(
     email: { type: String, required: true, unique: true },
     outsetaAccountEmail: { type: String, unique: true },
     mailingListConfirmationEmailId: { type: String, required: false },
+    willNotShowEmailNewsLetterSignUpModal: Boolean,
     password: {
       hash: { type: String, required: false },
       salt: { type: String, required: false },
