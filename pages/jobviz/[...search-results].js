@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/router";
 import Layout from "../../components/Layout";
 import { AssignmentBanner } from "../../components/JobViz/AssignmentBanner";
@@ -104,6 +104,36 @@ const JobVizSearchResults = ({
     () => collectAssignmentAncestorIds(assignmentSocCodes ?? undefined),
     [assignmentSocCodes]
   );
+  const hasAssignmentList = Boolean(assignmentSocCodes?.size);
+  const [showAssignmentOnly, setShowAssignmentOnly] = useState(false);
+  // filter state managed via button; when assignment data is absent the toggle is ignored.
+  const focusAssignedActive = Boolean(showAssignmentOnly && hasAssignmentList);
+
+  useEffect(() => {
+    if (typeof document !== "undefined") {
+      document.body.dataset.jobvizFocus = focusAssignedActive ? "true" : "false";
+    }
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(
+        new CustomEvent("jobviz-focus-toggle", {
+          detail: { value: focusAssignedActive },
+        })
+      );
+    }
+  }, [focusAssignedActive]);
+
+  useEffect(() => {
+    return () => {
+      if (typeof document !== "undefined") {
+        delete document.body.dataset.jobvizFocus;
+      }
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(
+          new CustomEvent("jobviz-focus-toggle", { detail: { value: false } })
+        );
+      }
+    };
+  }, []);
 
   const filteredSlice = useMemo(() => {
     return hierarchySlice;
@@ -133,44 +163,97 @@ const JobVizSearchResults = ({
     });
   };
 
-  const gridItems = useMemo(
-    () =>
-      filteredSlice.map((node) => ({
+  const gridItems = useMemo(() => {
+    const items = filteredSlice.map((node) => ({
+      id: String(node.id),
+      title: getDisplayTitle(node),
+      iconName: getIconNameForNode(node),
+      level: node.occupation_type === "Line item" ? 2 : 1,
+      jobsCount:
+        node.occupation_type === "Line item"
+          ? undefined
+          : getLineItemCountForNode(node),
+      growthPercent: node.employment_change_percent ?? null,
+      wage:
+        node.occupation_type === "Line item"
+          ? node.median_annual_wage ?? null
+          : null,
+      education:
+        node.occupation_type === "Line item"
+          ? node.typical_education_needed_for_entry ?? null
+          : null,
+      jobIconName:
+        node.occupation_type === "Line item"
+          ? getJobSpecificIconName(node)
+          : undefined,
+      socCode: node.soc_code ?? null,
+      isAssignmentJob:
+        node.occupation_type === "Line item"
+          ? assignmentSocCodes?.has(node.soc_code) ?? false
+          : false,
+      highlight:
+        assignmentAncestors.has(node.id) ||
+        (assignmentSocCodes?.has(node.soc_code) ?? false),
+      highlightClicked: activeNode?.id === node.id,
+      showBookmark:
+        assignmentAncestors.has(node.id) ||
+        (assignmentSocCodes?.has(node.soc_code) ?? false),
+    }));
+
+    return items.sort((a, b) => {
+      const classA = a.level === 1 ? 0 : 1;
+      const classB = b.level === 1 ? 0 : 1;
+      if (classA !== classB) {
+        return classA - classB;
+      }
+      return a.title.localeCompare(b.title, undefined, {
+        sensitivity: "base",
+      });
+    });
+  }, [
+    filteredSlice,
+    assignmentAncestors,
+    assignmentSocCodes,
+    activeNode?.id,
+  ]);
+
+  const assignmentJobItems = useMemo(() => {
+    if (!assignmentSocCodes?.size) return [];
+    return Array.from(assignmentSocCodes)
+      .map((code) => jobVizData.find((node) => node.soc_code === code))
+      .filter(Boolean)
+      .map((node) => ({
         id: String(node.id),
         title: getDisplayTitle(node),
         iconName: getIconNameForNode(node),
-        level: node.occupation_type === "Line item" ? 2 : 1,
-        jobsCount:
-          node.occupation_type === "Line item"
-            ? undefined
-            : getLineItemCountForNode(node),
+        level: 2,
+        jobsCount: undefined,
         growthPercent: node.employment_change_percent ?? null,
-        wage:
-          node.occupation_type === "Line item"
-            ? node.median_annual_wage ?? null
-            : null,
-        education:
-          node.occupation_type === "Line item"
-            ? node.typical_education_needed_for_entry ?? null
-            : null,
-        jobIconName:
-          node.occupation_type === "Line item"
-            ? getJobSpecificIconName(node)
-            : undefined,
+        wage: node.median_annual_wage ?? null,
+        education: node.typical_education_needed_for_entry ?? null,
+        jobIconName: getJobSpecificIconName(node),
         socCode: node.soc_code ?? null,
-        isAssignmentJob: node.occupation_type === "Line item"
-          ? (assignmentSocCodes?.has(node.soc_code) ?? false)
-          : false,
-        highlight:
-          assignmentAncestors.has(node.id) ||
-          (assignmentSocCodes?.has(node.soc_code) ?? false),
-        highlightClicked: activeNode?.id === node.id,
-        showBookmark:
-          assignmentAncestors.has(node.id) ||
-          (assignmentSocCodes?.has(node.soc_code) ?? false),
-      })),
-    [filteredSlice, assignmentAncestors, assignmentSocCodes, activeNode?.id]
-  );
+        isAssignmentJob: true,
+        highlight: true,
+        highlightClicked: false,
+        showBookmark: true,
+      }))
+      .sort((a, b) =>
+        a.title.localeCompare(b.title, undefined, { sensitivity: "base" })
+      );
+  }, [assignmentSocCodes]);
+
+  const filteredGridItems = useMemo(() => {
+    if (showAssignmentOnly && hasAssignmentList) {
+      return assignmentJobItems;
+    }
+    return gridItems;
+  }, [
+    gridItems,
+    assignmentJobItems,
+    showAssignmentOnly,
+    hasAssignmentList,
+  ]);
 
   const showDetail = activeNode && activeNode.occupation_type === "Line item";
   const parentForHeading = useMemo(() => {
@@ -186,6 +269,11 @@ const JobVizSearchResults = ({
     "Browse jobs by category or search";
 
   const showIntroHeading = chainNodes.length === 0;
+
+  const handleAssignmentGridClick = (item) => {
+    if (!item?.socCode) return;
+    handleAssignmentJobClick(item.socCode);
+  };
 
   const handleGridClick = (item) => {
     const node = jobVizNodeById.get(Number(item.id));
@@ -329,10 +417,35 @@ const JobVizSearchResults = ({
             <JobVizSearch assignmentParams={assignmentParams} />
             <div id={JOBVIZ_BRACKET_SEARCH_ID} />
             <div className={styles.jobvizContextZone}>
-              <JobVizBreadcrumb segments={breadcrumbs} />
-
               <div className={styles.jobvizGridWrap}>
-                <JobVizGrid items={gridItems} onItemClick={handleGridClick} />
+                {(!showAssignmentOnly || !hasAssignmentList) && (
+                  <JobVizBreadcrumb segments={breadcrumbs} />
+                )}
+                {hasAssignmentList && (
+                  <div className={styles.gridFilterRow}>
+                    <button
+                      type="button"
+                      className={`${styles.gridFilterButton} ${
+                        !showAssignmentOnly
+                          ? styles.gridFilterButtonActive
+                          : ""
+                      }`}
+                      onClick={() => setShowAssignmentOnly((prev) => !prev)}
+                    >
+                      {showAssignmentOnly
+                        ? "Show all jobs"
+                        : "Focus assigned jobs"}
+                    </button>
+                  </div>
+                )}
+                <JobVizGrid
+                  items={filteredGridItems}
+                  onItemClick={
+                    showAssignmentOnly && hasAssignmentList
+                      ? handleAssignmentGridClick
+                      : handleGridClick
+                  }
+                />
               </div>
 
               <p className={`${styles.jobvizSource} ${styles.jobvizSourceFixed}`}>

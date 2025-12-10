@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import Modal from "react-bootstrap/Modal";
 import { useRouter } from "next/router";
@@ -58,6 +58,32 @@ const SelectedJob: React.FC = () => {
   const [didCopyLink, setDidCopyLink] = useState(false);
   const { ratings, setRating } = useJobRatings();
   const [ratingBurst, setRatingBurst] = useState<JobRatingValue | null>(null);
+  const [isFocusAssignmentView, setIsFocusAssignmentView] = useState(false);
+  const assignmentQueryParam = router.query?.[SOC_CODES_PARAM_NAME];
+
+  const assignmentSocCodes = useMemo(() => {
+    const value = Array.isArray(assignmentQueryParam)
+      ? assignmentQueryParam.join(",")
+      : assignmentQueryParam;
+    if (!value) return null;
+    return new Set(value.split(",").filter(Boolean));
+  }, [assignmentQueryParam]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return undefined;
+    const readFlag = () =>
+      typeof document !== "undefined" &&
+      document.body?.dataset?.jobvizFocus === "true";
+    setIsFocusAssignmentView(readFlag());
+    const handleToggle = (event: Event) => {
+      const customEvent = event as CustomEvent<{ value?: boolean }>;
+      setIsFocusAssignmentView(Boolean(customEvent.detail?.value));
+    };
+    window.addEventListener("jobviz-focus-toggle", handleToggle);
+    return () => {
+      window.removeEventListener("jobviz-focus-toggle", handleToggle);
+    };
+  }, []);
 
   const activeInfoModal = modalHistory ? infoModalContent[modalHistory] : null;
   const shouldRenderInfoModal =
@@ -222,6 +248,9 @@ const SelectedJob: React.FC = () => {
     ? getIconNameForNode(selectedJob)
     : "Sparkles";
   const jobIcon = selectedJob ? getJobSpecificIconName(selectedJob) : undefined;
+  const isAssignmentJob =
+    !!selectedJob?.soc_code &&
+    Boolean(assignmentSocCodes?.has(selectedJob.soc_code));
 
   const stats = selectedJob
     ? [
@@ -254,6 +283,7 @@ const SelectedJob: React.FC = () => {
         },
       ]
     : [];
+  const disableExploreRelated = isFocusAssignmentView;
 
   return (
     <>
@@ -304,7 +334,16 @@ const SelectedJob: React.FC = () => {
                     </span>
                   )}
                 </div>
-                <h3 className={styles.modalTitle}>{jobTitle}</h3>
+                <div className={styles.modalTitleGroup}>
+                  <h3 className={styles.modalTitle}>{jobTitle}</h3>
+                  {isAssignmentJob && (
+                    <span
+                      className={styles.assignmentBadgeDot}
+                      title="Part of this assignment"
+                      aria-label="Part of this assignment"
+                    />
+                  )}
+                </div>
               </div>
               </header>
               <p className={styles.modalSummary}>
@@ -391,6 +430,7 @@ const SelectedJob: React.FC = () => {
                   type="button"
                   className={styles.ghostButton}
                   onClick={handleExploreRelatedCareers}
+                  disabled={disableExploreRelated}
                 >
                   <LucideIcon name="Route" />
                   Explore related careers

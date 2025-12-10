@@ -28,7 +28,12 @@ const currencyFormatter = new Intl.NumberFormat("en-US", {
   maximumFractionDigits: 0,
 });
 
-const compactTitle = (value: string) => value.replace(/\sand\s/gi, " & ");
+const compactTitle = (value: string) =>
+  value
+    .replace(/\sand\s/gi, " & ")
+    .replace(/occupations/gi, (match) =>
+      match[0] === match[0].toUpperCase() ? "Jobs" : "jobs"
+    );
 
 const formatPercent = (raw?: number | string | null) => {
   if (raw === null || raw === undefined) return "—";
@@ -183,14 +188,7 @@ export const JobVizCard: React.FC<JobVizCardProps> = ({
                 {formatPercent(growthPercent)}
               </strong>
             </div>
-            <div className={styles.statChip}>
-              <span className={styles.statLabel}>Entry edu.</span>
-              <strong className={styles.statValue}>
-                {education && education !== "data unavailable"
-                  ? education
-                  : "—"}
-              </strong>
-            </div>
+
           </div>
         </>
       )}

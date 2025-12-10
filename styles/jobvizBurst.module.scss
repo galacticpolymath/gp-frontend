@@ -791,26 +791,27 @@
   width: 18px;
   height: 18px;
   border-radius: 999px;
-  background: radial-gradient(circle at 30% 30%, rgba(103, 151, 255, 0.95), rgba(214, 132, 255, 0.9));
+  background: radial-gradient(circle at 30% 30%, rgba(103, 151, 255, 1), rgba(214, 132, 255, 0.85));
   border: 1px solid rgba(255, 255, 255, 0.55);
   box-shadow: 0 0 16px rgba(144, 158, 255, 0.45);
   flex-shrink: 0;
   position: relative;
 }
 
-.assignmentBadgeDot::after {
-  content: "";
-  position: absolute;
-  inset: 3px;
-  border-radius: inherit;
-  background: rgba(8, 12, 28, 0.35);
-}
 
 .cardRatingRow {
   display: flex;
   align-items: center;
   gap: 0.4rem;
   margin: 0.4rem 0;
+}
+
+.jobCard .cardRatingRow {
+  margin-top: auto;
+}
+
+.jobCard .statRow {
+  margin-top: 0.4rem;
 }
 
 .cardRatingRowAssignment .cardRatingBadge {
@@ -1037,7 +1038,7 @@
     0 25px 55px rgba(1, 2, 9, 0.6),
     inset 0 0 25px rgba(83, 114, 255, 0.08);
   box-sizing: border-box;
-  overflow: hidden;
+  overflow: visible;
   isolation: isolate;
 }
 
@@ -1119,7 +1120,7 @@
 }
 
 @media (min-width: 1200px) {
-  .assignmentDesktopDock {
+.assignmentDesktopDock {
     display: flex;
     flex-direction: column;
     position: sticky;
@@ -1128,7 +1129,7 @@
     width: clamp(320px, 28vw, 360px);
     height: calc(100vh - 64px);
     animation: dockSlide 0.35s ease;
-    z-index: 1100;
+    z-index: 900;
     padding: clamp(0.4rem, 1vw, 0.7rem);
     box-sizing: border-box;
     border-radius: 0;
@@ -1141,16 +1142,16 @@
     border: none;
     box-shadow: -4px 0 28px rgba(5, 0, 20, 0.45);
     backdrop-filter: blur(14px);
-    overflow: hidden;
+    overflow: visible;
     isolation: isolate;
   }
 
-  .assignmentDesktopDock::before,
-  .assignmentDesktopDock::after {
+.assignmentDesktopDock::before,
+.assignmentDesktopDock::after {
     content: "";
     position: absolute;
-    top: -20px;
-    bottom: -40px;
+    top: 0;
+    bottom: 0;
     left: 0;
     right: 0;
     pointer-events: none;
@@ -1207,7 +1208,7 @@
   .assignmentDesktopDock .assignmentContent {
     overflow-y: auto;
     flex: 1;
-    padding-right: 0.2rem;
+    padding-right: 0.4rem;
   }
 
   .assignmentDesktopDock .assignmentListWrap {
@@ -1222,9 +1223,15 @@
   .assignmentDesktopDock[data-dock-collapsed="true"] {
     width: clamp(48px, 4vw, 60px);
     padding: clamp(0.35rem, 0.6vw, 0.5rem);
-    height: calc(100vh - 64px - 2rem);
+    min-height: calc(100vh - 64px);
     justify-content: center;
     align-items: center;
+  }
+
+  .assignmentDesktopDock[data-dock-collapsed="true"]::before,
+  .assignmentDesktopDock[data-dock-collapsed="true"]::after {
+    top: 0;
+    bottom: 0;
   }
 }
 
@@ -1437,6 +1444,8 @@
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  z-index: 3;
+  padding-top: 0.9rem;
 }
 
 .assignmentProgressRow {
@@ -1444,6 +1453,9 @@
   flex-direction: column;
   gap: 0.2rem;
   margin: 0.15rem 0 0.15rem;
+  position: relative;
+  z-index: -1;
+  overflow: visible;
 }
 
 .assignmentProgressLabel {
@@ -1516,6 +1528,8 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 0.5rem;
+  position: relative;
+  z-index: 5;
 }
 
 @media (max-width: 767px) {
@@ -1536,6 +1550,7 @@
 .assignmentListItem {
   list-style: none;
   position: relative;
+  z-index: 5;
 }
 
 .assignmentLink {
@@ -1544,7 +1559,7 @@
   border: 1px solid rgba(255, 255, 255, 0.08);
   background: rgba(255, 255, 255, 0.03);
   border-radius: 18px;
-  padding: 0.6rem 0.75rem;
+  padding: 0.6rem 1rem;
   color: #f6fbff;
   display: inline-flex;
   align-items: center;
@@ -1682,7 +1697,7 @@
 
 .assignmentHintArrow {
   position: absolute;
-  top: -1.8rem;
+  top: -1rem;
   left: 0;
   background: rgba(255, 255, 255, 0.9);
   color: #1a1c3a;
@@ -1690,8 +1705,10 @@
   border-radius: 999px;
   font-size: 0.75rem;
   letter-spacing: 0.02em;
-  animation: hintBounce 0.8s ease-in-out infinite;
+  animation: hintBounce 1s ease-in-out infinite;
   box-shadow: 0 8px 18px rgba(0, 0, 0, 0.25);
+  z-index: 4;
+  pointer-events: none;
 }
 
 .assignmentHintArrow::after {
@@ -1704,6 +1721,7 @@
   background: rgba(255, 255, 255, 0.9);
   transform: rotate(45deg);
   box-shadow: 6px 6px 12px rgba(0, 0, 0, 0.15);
+  z-index: -1;
 }
 
 .assignmentHintArrowFloating {
@@ -1789,8 +1807,8 @@
 
 .assignmentListIconWrap {
   position: relative;
-  width: 45px;
-  height: 45px;
+  width: 48px;
+  height: 48px;
   border-radius: 16px;
   background: radial-gradient(circle, rgba(255, 255, 255, 0.18), transparent);
   border: 1px solid rgba(255, 255, 255, 0.32);
@@ -1811,8 +1829,8 @@
   position: absolute;
   bottom: -4px;
   right: -6px;
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
   border-radius: 999px;
   background: radial-gradient(circle at 30% 30%, rgba(114, 46, 168, 0.9), rgba(45, 8, 82, 0.9));
   border: 1px solid rgba(189, 115, 255, 0.7);
@@ -1831,18 +1849,18 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
+  width: 34px;
+  height: 34px;
   border-radius: 50%;
   border: 1px solid rgba(255, 255, 255, 0.18);
-  background: rgba(255, 255, 255, 0.04);
-  font-size: 1rem;
+  background: rgba(255, 255, 255, 0.08);
+  font-size: 1.05rem;
   color: #c08bff;
   margin-left: 0.45rem;
 }
 
 .assignmentEmoji {
-  font-size: 1.4rem;
+  font-size: 1.5rem;
 }
 
 .emojiScale {
@@ -1924,6 +1942,13 @@
   grid-template-columns: auto 1fr;
   gap: 1rem;
   align-items: center;
+}
+
+.modalTitleGroup {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
 }
 
 .modalIcon {
@@ -2167,6 +2192,13 @@
   border-color: rgba(255, 255, 255, 0.2);
   background: transparent;
   color: #f7fbff;
+}
+
+.ghostButton:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  border-color: rgba(255, 255, 255, 0.15);
+  color: rgba(247, 251, 255, 0.6);
 }
 
 .primaryButton {
@@ -2418,11 +2450,55 @@
     0 35px 60px rgba(0, 0, 0, 0.55);
 }
 
+.jobvizGridWrap > .jobvizBreadcrumb {
+  margin-bottom: clamp(0.75rem, 2vw, 1.25rem);
+  padding-bottom: clamp(0.35rem, 1vw, 0.75rem);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.gridFilterRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: clamp(0.75rem, 2vw, 1.25rem);
+}
+
+.gridFilterButton {
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(243, 247, 255, 0.9);
+  padding: 0.3rem 0.9rem;
+  font-size: 0.85rem;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+
+.gridFilterButton:hover,
+.gridFilterButton:focus-visible {
+  border-color: rgba(255, 255, 255, 0.45);
+  background: rgba(255, 255, 255, 0.14);
+  transform: translateY(-1px);
+}
+
+.gridFilterButtonActive {
+  border-color: rgba(103, 151, 255, 0.8);
+  background: linear-gradient(
+    135deg,
+    rgba(103, 151, 255, 0.3),
+    rgba(214, 132, 255, 0.35)
+  );
+  color: #f7fbff;
+}
+
 .jobvizSource {
   color: rgba(237, 243, 255, 0.86);
   font-size: 0.95rem;
   margin-top: 1.75rem;
-  margin-bottom: 4rem;
+  margin-bottom: 2rem;
   line-height: 1.6;
 }
 
@@ -2552,26 +2628,27 @@
 }
 
 .jobvizSearchField {
-  position: relative;
   display: flex;
   align-items: center;
+  gap: 0.75rem;
 }
 
 .jobvizSearchIcon {
-  position: absolute;
-  left: 1.1rem;
+  position: relative;
   width: 20px;
   height: 20px;
-  color: rgba(255, 255, 255, 0.75);
+  color: #ffffff;
   pointer-events: none;
 }
 
 .jobvizSearchInput {
   border-radius: 18px;
   border: 1px solid rgba(255, 255, 255, 0.25);
-  background: rgba(0, 0, 0, 0.2);
-  color: #f9fcff;
-  padding: 0.75rem 1rem 0.75rem 2.75rem;
+  background: rgba(255, 255, 255, 0.95);
+  color: #0b152d;
+  padding: 0.75rem 1rem;
+  flex: 1 1 auto;
+  background: rgba(255, 255, 255, 0.95);
 }
 
 .jobvizSearchInput:focus {

@@ -20,6 +20,17 @@ export const JobVizBreadcrumb: React.FC<JobVizBreadcrumbProps> = ({
 }) => {
   if (!segments.length) return null;
 
+  const scrollBreadcrumbIntoView = () => {
+    if (typeof window === "undefined") return;
+    window.requestAnimationFrame(() => {
+      const el = document.getElementById(JOBVIZ_BREADCRUMB_ID);
+      if (!el) return;
+      const offset = 32;
+      const top = el.getBoundingClientRect().top + window.scrollY - offset;
+      window.scrollTo({ top, behavior: "smooth" });
+    });
+  };
+
   return (
     <nav
       className={styles.jobvizBreadcrumb}
@@ -54,7 +65,10 @@ export const JobVizBreadcrumb: React.FC<JobVizBreadcrumbProps> = ({
             {seg.onClick && !isLast ? (
               <button
                 type="button"
-                onClick={seg.onClick}
+                onClick={() => {
+                  seg.onClick?.();
+                  scrollBreadcrumbIntoView();
+                }}
                 className={styles.breadcrumbButton}
               >
                 {content}
