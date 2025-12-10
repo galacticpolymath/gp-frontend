@@ -246,7 +246,8 @@ export const buildIdPathForNode = (node: JobVizNode) => {
 
 const appendAssignmentQuery = (
   url: string,
-  assignmentParams?: AssignmentParams
+  assignmentParams?: AssignmentParams,
+  extraParams?: Record<string, string | null | undefined>
 ) => {
   const params = new URLSearchParams();
   const normalized = normalizeSocCodes(assignmentParams?.socCodes);
@@ -259,6 +260,15 @@ const appendAssignmentQuery = (
     params.set(UNIT_NAME_PARAM_NAME, assignmentParams.unitName);
   }
 
+  if (extraParams) {
+    Object.entries(extraParams).forEach(([key, value]) => {
+      if (value === null || value === undefined || value === "") {
+        return;
+      }
+      params.set(key, value);
+    });
+  }
+
   const query = params.toString();
 
   return query ? `${url}?${query}` : url;
@@ -266,7 +276,8 @@ const appendAssignmentQuery = (
 
 export const buildJobvizUrl = (
   parsed: ParsedJobvizPath | { fromNode: JobVizNode },
-  assignmentParams?: AssignmentParams
+  assignmentParams?: AssignmentParams,
+  extraParams?: Record<string, string | null | undefined>
 ): string => {
   if ("fromNode" in parsed) {
     const node = parsed.fromNode;
@@ -276,7 +287,8 @@ export const buildJobvizUrl = (
 
     return buildJobvizUrl(
       { targetLevel, selectedLevel, idPath },
-      assignmentParams
+      assignmentParams,
+      extraParams
     );
   }
 
@@ -284,7 +296,7 @@ export const buildJobvizUrl = (
   const safeLevel = clampLevel(targetLevel);
 
   if (!selectedLevel) {
-    return appendAssignmentQuery("/jobviz", assignmentParams);
+    return appendAssignmentQuery("/jobviz", assignmentParams, extraParams);
   }
 
   const pathParts = [
@@ -296,7 +308,7 @@ export const buildJobvizUrl = (
 
   const url = pathParts.join("/").replace(/\/+/g, "/");
 
-  return appendAssignmentQuery(url, assignmentParams);
+  return appendAssignmentQuery(url, assignmentParams, extraParams);
 };
 
 export const getChainFromIds = (ids: number[]) =>

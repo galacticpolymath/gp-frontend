@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/router";
 import Layout from "../../components/Layout";
 import { AssignmentBanner } from "../../components/JobViz/AssignmentBanner";
@@ -9,6 +9,7 @@ import {
 import { JobVizGrid } from "../../components/JobViz/JobVizGrid";
 import { JobVizLayout } from "../../components/JobViz/JobVizLayout";
 import { LucideIcon } from "../../components/JobViz/LucideIcon";
+import { JobVizSortControl } from "../../components/JobViz/JobVizSortControl";
 import HeroForFreeUsers from "../../components/JobViz/Heros/HeroForFreeUsers";
 import { JOBVIZ_BRACKET_SEARCH_ID } from "../../pages/jobviz/index";
 import styles from "../../styles/jobvizBurst.module.scss";
@@ -30,6 +31,12 @@ import {
   parseJobvizPath,
 } from "../../components/JobViz/jobvizUtils";
 import { JobVizSearch } from "../../components/JobViz/JobVizSearch";
+import {
+  JOBVIZ_DEFAULT_SORT_OPTION,
+  JOBVIZ_SORT_OPTIONS,
+  getSortOptionById,
+  sortJobVizItems,
+} from "../../components/JobViz/jobvizSorting";
 import {
   SOC_CODES_PARAM_NAME,
   UNIT_NAME_PARAM_NAME,
@@ -106,6 +113,44 @@ const JobVizSearchResults = ({
   );
   const hasAssignmentList = Boolean(assignmentSocCodes?.size);
   const [showAssignmentOnly, setShowAssignmentOnly] = useState(false);
+  const sortQueryFromRouter =
+    typeof router.query?.sort === "string" ? router.query.sort : undefined;
+  const normalizedSortFromQuery = useMemo(
+    () => getSortOptionById(sortQueryFromRouter).id,
+    [sortQueryFromRouter]
+  );
+  const [sortOptionId, setSortOptionId] = useState(normalizedSortFromQuery);
+  useEffect(() => {
+    setSortOptionId(normalizedSortFromQuery);
+  }, [normalizedSortFromQuery]);
+  const persistSortInQuery = useCallback(
+    (nextId) => {
+      const [path, search = ""] = router.asPath.split("?");
+      const params = new URLSearchParams(search);
+      if (nextId && nextId !== JOBVIZ_DEFAULT_SORT_OPTION.id) {
+        params.set("sort", nextId);
+      } else {
+        params.delete("sort");
+      }
+      const queryString = params.toString();
+      const nextUrl = queryString ? `${path}?${queryString}` : path;
+      router.replace(nextUrl, undefined, { shallow: true, scroll: false });
+    },
+    [router]
+  );
+  const handleSortControlChange = useCallback(
+    (nextId) => {
+      setSortOptionId(nextId);
+      persistSortInQuery(nextId);
+    },
+    [persistSortInQuery]
+  );
+  const sortQueryParam =
+    sortOptionId === JOBVIZ_DEFAULT_SORT_OPTION.id ? undefined : sortOptionId;
+  const sortQueryParams = useMemo(
+    () => (sortQueryParam ? { sort: sortQueryParam } : undefined),
+    [sortQueryParam]
+  );
   // filter state managed via button; when assignment data is absent the toggle is ignored.
   const focusAssignedActive = Boolean(showAssignmentOnly && hasAssignmentList);
 
@@ -146,7 +191,11 @@ const JobVizSearchResults = ({
     setSelectedJob({ ...node, wasSelectedFromJobToursCard: false });
     setIsJobModalOn(true);
 
-    const url = buildJobvizUrl({ fromNode: node }, assignmentParams);
+    const url = buildJobvizUrl(
+      { fromNode: node },
+      assignmentParams,
+      sortQueryParams
+    );
     router.push(url, undefined, { scroll: false });
   };
 
@@ -164,7 +213,7 @@ const JobVizSearchResults = ({
   };
 
   const gridItems = useMemo(() => {
-    const items = filteredSlice.map((node) => ({
+    return filteredSlice.map((node) => ({
       id: String(node.id),
       title: getDisplayTitle(node),
       iconName: getIconNameForNode(node),
@@ -174,10 +223,7 @@ const JobVizSearchResults = ({
           ? undefined
           : getLineItemCountForNode(node),
       growthPercent: node.employment_change_percent ?? null,
-      wage:
-        node.occupation_type === "Line item"
-          ? node.median_annual_wage ?? null
-          : null,
+      wage: node.median_annual_wage ?? null,
       education:
         node.occupation_type === "Line item"
           ? node.typical_education_needed_for_entry ?? null
@@ -199,17 +245,6 @@ const JobVizSearchResults = ({
         assignmentAncestors.has(node.id) ||
         (assignmentSocCodes?.has(node.soc_code) ?? false),
     }));
-
-    return items.sort((a, b) => {
-      const classA = a.level === 1 ? 0 : 1;
-      const classB = b.level === 1 ? 0 : 1;
-      if (classA !== classB) {
-        return classA - classB;
-      }
-      return a.title.localeCompare(b.title, undefined, {
-        sensitivity: "base",
-      });
-    });
   }, [
     filteredSlice,
     assignmentAncestors,
@@ -237,20 +272,27 @@ const JobVizSearchResults = ({
         highlight: true,
         highlightClicked: false,
         showBookmark: true,
-      }))
-      .sort((a, b) =>
-        a.title.localeCompare(b.title, undefined, { sensitivity: "base" })
-      );
+      }));
   }, [assignmentSocCodes]);
+
+  const sortedGridItems = useMemo(
+    () => sortJobVizItems(gridItems, sortOptionId),
+    [gridItems, sortOptionId]
+  );
+
+  const sortedAssignmentItems = useMemo(
+    () => sortJobVizItems(assignmentJobItems, sortOptionId),
+    [assignmentJobItems, sortOptionId]
+  );
 
   const filteredGridItems = useMemo(() => {
     if (showAssignmentOnly && hasAssignmentList) {
-      return assignmentJobItems;
+      return sortedAssignmentItems;
     }
-    return gridItems;
+    return sortedGridItems;
   }, [
-    gridItems,
-    assignmentJobItems,
+    sortedGridItems,
+    sortedAssignmentItems,
     showAssignmentOnly,
     hasAssignmentList,
   ]);
@@ -287,7 +329,8 @@ const JobVizSearchResults = ({
     const idPath = buildIdPathForNode(node);
     const nextUrl = buildJobvizUrl(
       { targetLevel, selectedLevel: selectedLevelForNode, idPath },
-      assignmentParams
+      assignmentParams,
+      sortQueryParams
     );
 
     router.push(nextUrl, undefined, { scroll: false }).finally(
@@ -306,7 +349,8 @@ const JobVizSearchResults = ({
                 router.push(
                   buildJobvizUrl(
                     { targetLevel: 1, selectedLevel: null, idPath: [] },
-                    assignmentParams
+                    assignmentParams,
+                    sortQueryParams
                   ),
                   undefined,
                   { scroll: false }
@@ -348,7 +392,8 @@ const JobVizSearchResults = ({
                     ),
                     idPath: buildIdPathForNode(node),
                   },
-                  assignmentParams
+                  assignmentParams,
+                  sortQueryParams
                 ),
                 undefined,
                 { scroll: false }
@@ -414,15 +459,18 @@ const JobVizSearchResults = ({
               Explore the true diversity of career opportunities.
             </h3>
 
-            <JobVizSearch assignmentParams={assignmentParams} />
+            <JobVizSearch
+              assignmentParams={assignmentParams}
+              extraQueryParams={sortQueryParams}
+            />
             <div id={JOBVIZ_BRACKET_SEARCH_ID} />
             <div className={styles.jobvizContextZone}>
               <div className={styles.jobvizGridWrap}>
                 {(!showAssignmentOnly || !hasAssignmentList) && (
                   <JobVizBreadcrumb segments={breadcrumbs} />
                 )}
-                {hasAssignmentList && (
-                  <div className={styles.gridFilterRow}>
+                <div className={styles.gridFilterRow}>
+                  {hasAssignmentList && (
                     <button
                       type="button"
                       className={`${styles.gridFilterButton} ${
@@ -436,8 +484,13 @@ const JobVizSearchResults = ({
                         ? "Show all jobs"
                         : "Focus assigned jobs"}
                     </button>
-                  </div>
-                )}
+                  )}
+                  <JobVizSortControl
+                    activeOptionId={sortOptionId}
+                    onChange={handleSortControlChange}
+                    options={JOBVIZ_SORT_OPTIONS}
+                  />
+                </div>
                 <JobVizGrid
                   items={filteredGridItems}
                   onItemClick={

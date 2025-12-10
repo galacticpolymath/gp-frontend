@@ -154,6 +154,14 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
           />
         </button>
       )}
+      {isDesktopVariant && isDockCollapsed && (
+        <div
+          className={styles.assignmentDockCollapsedLabel}
+          aria-hidden="true"
+        >
+          <span>Assignment</span>
+        </div>
+      )}
       {showAssignmentPanel && (
         <div
           className={`${styles.assignmentBanner} ${styles.assignmentBannerSticky} ${

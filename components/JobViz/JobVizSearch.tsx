@@ -12,10 +12,12 @@ import {
 
 interface JobVizSearchProps {
   assignmentParams?: AssignmentParams;
+  extraQueryParams?: Record<string, string | null | undefined>;
 }
 
 export const JobVizSearch: React.FC<JobVizSearchProps> = ({
   assignmentParams,
+  extraQueryParams,
 }) => {
   const router = useRouter();
   const [query, setQuery] = React.useState("");
@@ -73,7 +75,11 @@ export const JobVizSearch: React.FC<JobVizSearchProps> = ({
     const node = jobVizData.find((n) => n.id === nodeId);
     if (!node) return;
 
-    const url = buildJobvizUrl({ fromNode: node }, assignmentParams);
+    const url = buildJobvizUrl(
+      { fromNode: node },
+      assignmentParams,
+      extraQueryParams
+    );
     const isGroup = node.occupation_type !== "Line item";
     const pushPromise = router.push(url, undefined, {
       scroll: !isGroup,
