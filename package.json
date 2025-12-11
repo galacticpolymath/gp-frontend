@@ -98,6 +98,7 @@
     "react-scroll-parallax": "^3.5.0",
     "react-share": "^5.2.2",
     "react-showdown": "^2.3.1",
+    "react-simply-carousel": "^9.1.13",
     "react-toastify": "^11.0.5",
     "react-wavify": "^1.11.1",
     "sanitize-html": "^2.17.0",

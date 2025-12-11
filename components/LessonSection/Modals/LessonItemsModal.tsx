@@ -22,6 +22,101 @@ import { IoOpenOutline } from "react-icons/io5";
 import ReactMaterialCarousel from 'react-material-ui-carousel';
 import { Paper, Button as MaterialUIBtn } from '@mui/material';
 import { IItemV2 } from "../../../backend/models/Unit/types/teachingMaterials";
+import SimplCarousel from "react-simply-carousel";
+
+function CustomCarousel() {
+  const [activeSlide, setActiveSlide] = useState(0);
+
+  return (
+    <div>
+      <SimplCarousel
+        containerProps={{
+          style: {
+            width: "100%",
+            // justifyContent: "space-between",
+            // userSelect: "none",
+          }
+        }}
+        innerProps={
+          {
+            style: {
+              border: 'solid 1px pink',
+              width: '100%',
+              height: '100%'
+            }
+          }
+        }
+        preventScrollOnSwipe
+        swipeTreshold={60}
+        activeSlideIndex={activeSlide}
+        activeSlideProps={{
+          style: {
+            background: "blue"
+          }
+        }}
+        onRequestChange={setActiveSlide}
+        // forwardBtnProps={{
+        //   children: ">",
+        //   style: {
+        //     width: 60,
+        //     height: 60,
+        //     minWidth: 60,
+        //     alignSelf: "center"
+        //   }
+        // }}
+        // backwardBtnProps={{
+        //   children: "<",
+        //   style: {
+        //     width: 60,
+        //     height: 60,
+        //     minWidth: 60,
+        //     alignSelf: "center"
+        //   }
+        // }}
+        dotsNav={{
+          show: true,
+          itemBtnProps: {
+            style: {
+              height: 16,
+              width: 16,
+              borderRadius: "50%",
+              border: 0
+            }
+          },
+          activeItemBtnProps: {
+            style: {
+              height: 16,
+              width: 16,
+              borderRadius: "50%",
+              border: 0,
+              background: "black"
+            }
+          }
+        }}
+        itemsToShow={1}
+        speed={400}
+        centerMode
+      >
+        {Array.from({ length: 10 }).map((item, index) => (
+          <div
+            style={{
+              background: "yellow",
+              border: "30px solid white",
+              textAlign: "center",
+              lineHeight: "240px",
+              boxSizing: "border-box"
+            }}
+            key={index}
+            className="w-100 h-100"
+          >
+            {index}
+          </div>
+        ))}
+      </SimplCarousel>
+    </div>
+  );
+}
+
 
 const LESSON_ITEMS_MODAL_BG_COLOR = "#E2F0FD";
 
@@ -84,6 +179,8 @@ function Example() {
   ];
   const [activeIndex, setActiveIndex] = useState(0);
 
+  console.log(`Active index: ${activeIndex}`);
+
   return (
     <ReactMaterialCarousel
       animation="slide"
@@ -92,21 +189,21 @@ function Example() {
       // PrevIcon={<MdKeyboardArrowLeft />}
       // onChange={ }
       navButtonsAlwaysVisible
-    // NavButton={(props: INavBtn) => {
-    //   return (
-    //     <button
-    //       onClick={() => {
-    //         if (props.next) {
-    //           setActiveIndex(activeIndex + 1);
-    //         } else {
-    //           setActiveIndex(activeIndex - 1);
-    //         }
-    //       }}
-    //     >
-    //       {props.next ? "Next" : "Previous"}
-    //     </button>
-    //   )
-    // }}
+      NavButton={(props: INavBtn) => {
+        return (
+          <button
+            onClick={() => {
+              if (props.next) {
+                setActiveIndex(activeIndex + 1);
+              } else {
+                setActiveIndex(activeIndex - 1);
+              }
+            }}
+          >
+            {props.next ? "Next" : "Previous"}
+          </button>
+        )
+      }}
     >
       {
         items.map((item, i) => <Item key={i} item={item} />)
@@ -711,8 +808,8 @@ const LessonItemsModal: React.FC = () => {
             </section>
           </div>
         </section>
-        {/* <Example /> */}
-        <Carousel
+        <CustomCarousel />
+        {/* <Carousel
           groupSize={1}
           circular
           className="w-100 h-100"
@@ -804,7 +901,7 @@ const LessonItemsModal: React.FC = () => {
               name="next"
             />
           </div>
-        </Carousel>
+        </Carousel> */}
       </Modal>
     </>
   );
