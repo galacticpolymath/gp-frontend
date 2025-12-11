@@ -1,11 +1,10 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { RefObject, useEffect, useRef, useState } from "react";
 import { Button, Modal, CloseButton } from "react-bootstrap";
 import { ILessonItem, useModalContext } from "../../../providers/ModalProvider";
 import { TbDownload } from "react-icons/tb";
 import { TbExternalLink } from "react-icons/tb";
 import { useUserContext } from "../../../providers/UserProvider";
 import { useLessonContext } from "../../../providers/LessonProvider";
-import { MdKeyboardArrowRight, MdKeyboardArrowLeft } from "react-icons/md";
 import {
   Carousel,
   CarouselSlider,
@@ -22,98 +21,20 @@ import { IoOpenOutline } from "react-icons/io5";
 import ReactMaterialCarousel from 'react-material-ui-carousel';
 import { Paper, Button as MaterialUIBtn } from '@mui/material';
 import { IItemV2 } from "../../../backend/models/Unit/types/teachingMaterials";
-import SimplCarousel from "react-simply-carousel";
+import { Carousel as ReactCarousel } from '@trendyol-js/react-carousel';
+
+
+
 
 function CustomCarousel() {
   const [activeSlide, setActiveSlide] = useState(0);
 
   return (
-    <div>
-      <SimplCarousel
-        containerProps={{
-          style: {
-            width: "100%",
-            // justifyContent: "space-between",
-            // userSelect: "none",
-          }
-        }}
-        innerProps={
-          {
-            style: {
-              border: 'solid 1px pink',
-              width: '100%',
-              height: '100%'
-            }
-          }
-        }
-        preventScrollOnSwipe
-        swipeTreshold={60}
-        activeSlideIndex={activeSlide}
-        activeSlideProps={{
-          style: {
-            background: "blue"
-          }
-        }}
-        onRequestChange={setActiveSlide}
-        // forwardBtnProps={{
-        //   children: ">",
-        //   style: {
-        //     width: 60,
-        //     height: 60,
-        //     minWidth: 60,
-        //     alignSelf: "center"
-        //   }
-        // }}
-        // backwardBtnProps={{
-        //   children: "<",
-        //   style: {
-        //     width: 60,
-        //     height: 60,
-        //     minWidth: 60,
-        //     alignSelf: "center"
-        //   }
-        // }}
-        dotsNav={{
-          show: true,
-          itemBtnProps: {
-            style: {
-              height: 16,
-              width: 16,
-              borderRadius: "50%",
-              border: 0
-            }
-          },
-          activeItemBtnProps: {
-            style: {
-              height: 16,
-              width: 16,
-              borderRadius: "50%",
-              border: 0,
-              background: "black"
-            }
-          }
-        }}
-        itemsToShow={1}
-        speed={400}
-        centerMode
-      >
-        {Array.from({ length: 10 }).map((item, index) => (
-          <div
-            style={{
-              background: "yellow",
-              border: "30px solid white",
-              textAlign: "center",
-              lineHeight: "240px",
-              boxSizing: "border-box"
-            }}
-            key={index}
-            className="w-100 h-100"
-          >
-            {index}
-          </div>
-        ))}
-      </SimplCarousel>
-    </div>
+    <ReactCarousel show={1} slide={1}>
+      <div key={0}>I am the first div.</div>
+      <div key={1}>I am the second div.</div>
+      <div key={2}>I am the third div.</div>
+    </ReactCarousel>
   );
 }
 
@@ -398,6 +319,8 @@ const LessonItemsModal: React.FC = () => {
   const { gdriveAccessToken } = useSiteSession();
   const [idsOfLessonsBeingCopied] = _idsOfLessonsBeingCopied;
   const [lessonItemModal, setLessonItemModal] = _lessonItemModal;
+  const rightArrownRef = useRef<HTMLButtonElement>(null);
+  const leftArrownRef = useRef<HTMLButtonElement>(null);
   const [isGpPlusModalDisplayed, setIsGpPlusModalDisplayed] =
     _isGpPlusModalDisplayed;
   const [isGpPlusMember] = _isGpPlusMember;
@@ -409,6 +332,37 @@ const LessonItemsModal: React.FC = () => {
     lessonId,
     userGDriveLessonFolderId,
   } = lessonItemModal;
+
+  const createOnNavLessonItemsClickHandler = (indexChange: -1 | 1) => () => {
+    // the user is at the start and clicks on the prev button
+    if (indexChange === -1 && currentIndex === 0) {
+      setLessonItemModal(state => {
+        return {
+          ...state,
+          currentIndex: lessonItems.length - 1
+        }
+      });
+      return;
+    }
+
+    // the user is at the end and clicks on the next button
+    if (indexChange === 1 && currentIndex === (lessonItems.length - 1)) {
+      setLessonItemModal(state => {
+        return {
+          ...state,
+          currentIndex: 0
+        }
+      });
+      return;
+    }
+
+    setLessonItemModal(state => {
+      return {
+        ...state,
+        currentIndex: currentIndex + indexChange
+      }
+    });
+  }
 
   console.log("lessonItems, hey there; ", lessonItems);
 
@@ -469,25 +423,13 @@ const LessonItemsModal: React.FC = () => {
     });
   };
 
-  const handleCarouselNavBtnClick = (indexShift: 1 | -1) => () => {
-    let _currentIndex = currentIndex + indexShift;
-
-    // going left
-    if (indexShift === -1 && _currentIndex < 0) {
-      _currentIndex = lessonItems.length - 1;
+  const handleCarouselNavBtnClick = (navDirection: "left" | "right") => () => {
+    if (navDirection === "right") {
+      rightArrownRef.current?.click();
+      return;
     }
 
-    // going right
-    if (indexShift === 1 && _currentIndex > lessonItems.length - 1) {
-      _currentIndex = 0;
-    }
-
-    setLessonItemModal((state) => {
-      return {
-        ...state,
-        currentIndex: _currentIndex,
-      };
-    });
+    leftArrownRef.current?.click();
   };
 
   const handleCopyLessonBtnClick = () => {
@@ -808,100 +750,86 @@ const LessonItemsModal: React.FC = () => {
             </section>
           </div>
         </section>
-        <CustomCarousel />
-        {/* <Carousel
-          groupSize={1}
-          circular
-          className="w-100 h-100"
-          style={{
-            backgroundColor: LESSON_ITEMS_MODAL_BG_COLOR,
-          }}
-          activeIndex={currentIndex}
+        <ReactCarousel
+          show={1}
+          slide={1}
+          rightArrow={<button style={{ zIndex: -9999 }} className="position-fixed opacity-0" onClick={createOnNavLessonItemsClickHandler(1)} ref={rightArrownRef} />}
+          leftArrow={<button style={{ zIndex: -9999 }} className="position-fixed opacity-0" ref={leftArrownRef} onClick={createOnNavLessonItemsClickHandler(-1)} />}
         >
+          {lessonItems.map((lessonItem, index) => {
+            const url =
+              lessonItem.itemCat === "web resource"
+                ? lessonItem.externalUrl
+                : lessonItem.docUrl;
+
+            if (lessonItem.itemType === "presentation") {
+              const viewUrl = `${lessonItem.gdriveRoot}/view`;
+              const previewUrl = `${lessonItem.gdriveRoot}/preview`;
+
+              return (
+                <LessonItemCard
+                  key={index}
+                  index={index}
+                  previewUrl={previewUrl}
+                  viewUrl={viewUrl}
+                  itemCat={lessonItem.itemCat}
+                />
+              );
+            }
+
+            return (
+              <CarouselCard key={`image-${index}`} className="h-100">
+                <div className="w-100 h-100 position-relative">
+                  <iframe src={url} className="w-100 h-100" />
+                </div>
+              </CarouselCard>
+            );
+          })}
+        </ReactCarousel>
+        <div
+          style={{ backgroundColor: LESSON_ITEMS_MODAL_BG_COLOR }}
+          className="px-2 px-sm-0 pt-2 d-flex justify-content-center align-items-center flex-row w-100"
+        >
+          <CarouselButton
+            ref={leftBtnRef}
+            onClick={handleCarouselNavBtnClick('left')}
+            size="large"
+            shape="circular"
+            className="ms-sm-0 ms-1"
+            appearance="primary"
+            navType="prev"
+            name="prev"
+          />
           <div
-            className="w-100 lesson-items-carousel"
             style={{
-              borderTop: ".1em solid rgba(0, 0, 0, 0.175)",
-              borderBottom: ".1em solid rgba(0, 0, 0, 0.175)",
+              minWidth: "60vw",
+              maxWidth: "550px"
             }}
+            className="h-100 p-0 col-10"
           >
-            <CarouselSlider className="w-100 h-100">
-              {lessonItems.map((lessonItem, index) => {
-                const url =
-                  lessonItem.itemCat === "web resource"
-                    ? lessonItem.externalUrl
-                    : lessonItem.docUrl;
-
-                if (lessonItem.itemType === "presentation") {
-                  const viewUrl = `${lessonItem.gdriveRoot}/view`;
-                  const previewUrl = `${lessonItem.gdriveRoot}/preview`;
-
-                  return (
-                    <LessonItemCard
-                      key={index}
-                      index={index}
-                      previewUrl={previewUrl}
-                      viewUrl={viewUrl}
-                      itemCat={lessonItem.itemCat}
-                    />
-                  );
-                }
-
-                return (
-                  <CarouselCard key={`image-${index}`} className="h-100">
-                    <div className="w-100 h-100 position-relative">
-                      <iframe src={url} className="w-100 h-100" />
-                    </div>
-                  </CarouselCard>
-                );
-              })}
-            </CarouselSlider>
-          </div>
-          <div
-            style={{ backgroundColor: LESSON_ITEMS_MODAL_BG_COLOR }}
-            className="px-2 px-sm-0 pt-2 d-flex justify-content-center align-items-center flex-row w-100"
-          >
-            <CarouselButton
-              ref={leftBtnRef}
-              onClick={handleCarouselNavBtnClick(-1)}
-              size="large"
-              shape="circular"
-              className="ms-sm-0 ms-1"
-              appearance="primary"
-              navType="prev"
-              name="prev"
-            />
             <div
-              style={{
-                minWidth: "60vw",
-                maxWidth: "550px"
-              }}
-              className="h-100 p-0 col-10"
+              style={{ borderRadius: ".2em" }}
+              className="h-100 d-flex justify-content-center align-items-center flex-column border border-2 px-1 px-sm-2 py-1"
             >
-              <div
-                style={{ borderRadius: ".2em" }}
-                className="h-100 d-flex justify-content-center align-items-center flex-column border border-2 px-1 px-sm-2 py-1"
-              >
-                <div className="text-black fw-normal text-center">
-                  {currentLessonItemName}
-                </div>
-                <div>
-                  {currentIndex + 1}/{lessonItems.length}
-                </div>
+              <div className="text-black fw-normal text-center">
+                {currentLessonItemName}
+              </div>
+              <div>
+                {currentIndex + 1}/{lessonItems.length}
               </div>
             </div>
-            <CarouselButton
-              ref={rightBtnRef}
-              onClick={handleCarouselNavBtnClick(1)}
-              size="large"
-              shape="circular"
-              appearance="primary"
-              className="me-sm-0 me-1"
-              navType="next"
-              name="next"
-            />
           </div>
-        </Carousel> */}
+          <CarouselButton
+            ref={rightBtnRef}
+            onClick={handleCarouselNavBtnClick('right')}
+            size="large"
+            shape="circular"
+            appearance="primary"
+            className="me-sm-0 me-1"
+            navType="next"
+            name="next"
+          />
+        </div>
       </Modal>
     </>
   );
