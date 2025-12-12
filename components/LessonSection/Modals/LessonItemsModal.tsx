@@ -40,7 +40,7 @@ function CustomCarousel() {
 }
 
 
-const LESSON_ITEMS_MODAL_BG_COLOR = "#E2F0FD";
+export const LESSON_ITEMS_MODAL_BG_COLOR = "#E2F0FD";
 
 interface ILessonItemCard extends Pick<IItemV2, "itemCat"> {
   previewUrl: string;
@@ -790,7 +790,7 @@ const LessonItemsModal: React.FC = () => {
         <ImageSlider items={lessonItems} currentIndex={currentIndex} />
         <div
           style={{ backgroundColor: LESSON_ITEMS_MODAL_BG_COLOR }}
-          className="px-2 px-sm-0 pt-2 d-flex justify-content-center align-items-center flex-row w-100"
+          className="px-2 px-sm-0 d-flex justify-content-center align-items-center flex-row w-100"
         >
           <button
             ref={leftBtnRef}
