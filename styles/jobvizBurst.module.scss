@@ -1,3 +1,6 @@
+$assignment-layer-z: 10000050; // keep assignment UI above modals/blur layers
+$jobviz-nav-height: 64px;
+
 .previewPage {
   --preview-blue-950: #020812;
   --preview-blue-900: #061327;
@@ -1049,7 +1052,7 @@
 .assignmentMobileWrapper {
   position: sticky;
   top: calc(var(--jobviz-nav-offset, 64px));
-  z-index: 10000050;
+  z-index: $assignment-layer-z;
   width: 100%;
   max-width: 100%;
   margin-left: 0;
@@ -1157,12 +1160,12 @@
     display: flex;
     flex-direction: column;
     position: sticky;
-    top: 0;
+    top: var(--jobviz-nav-offset, #{$jobviz-nav-height});
     align-self: flex-start;
     width: clamp(320px, 28vw, 360px);
-    height: calc(100vh + 50px);
+    height: calc(100vh - var(--jobviz-nav-offset, #{$jobviz-nav-height}) + 10px);
     animation: dockSlide 0.35s ease;
-    z-index: 900;
+    z-index: $assignment-layer-z;
     padding: clamp(0.4rem, 1vw, 0.7rem);
     box-sizing: border-box;
     border-radius: 0;
@@ -1175,7 +1178,8 @@
     border: none;
     box-shadow: -4px 0 28px rgba(5, 0, 20, 0.45);
     backdrop-filter: blur(14px);
-    overflow: visible;
+    overflow-y: auto;
+    overflow-x: hidden;
     isolation: isolate;
   }
 

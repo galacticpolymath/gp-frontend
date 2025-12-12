@@ -336,7 +336,7 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
         releaseTimeout = null;
       }
     };
-    const scheduleRelease = (delay = 700) => {
+    const scheduleRelease = (delay = 450) => {
       if (releaseTimeout) {
         window.clearTimeout(releaseTimeout);
       }
@@ -345,37 +345,53 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
         releaseTimeout = null;
       }, delay);
     };
-
-    const handlePointerStart = () => {
-      activateIntent();
+    const clearIntent = () => {
+      if (releaseTimeout) {
+        window.clearTimeout(releaseTimeout);
+        releaseTimeout = null;
+      }
+      delete document.body.dataset.jobvizAssignmentScrollIntent;
     };
 
-    const handlePointerMove = () => {
-      activateIntent();
+    const containsTarget = (target: EventTarget | null) =>
+      target instanceof Node && element.contains(target);
+
+    const handlePointerDown = (event: PointerEvent) => {
+      if (containsTarget(event.target)) {
+        activateIntent();
+      }
     };
 
-    const handlePointerEnd = () => {
-      scheduleRelease(350);
+    const handlePointerMove = (event: PointerEvent) => {
+      if (containsTarget(event.target)) {
+        activateIntent();
+      }
     };
 
-    const handleWheel = () => {
-      activateIntent();
+    const handlePointerUp = () => {
       scheduleRelease();
     };
 
-    const passiveOptions: AddEventListenerOptions = { passive: true };
-    element.addEventListener("wheel", handleWheel, passiveOptions);
-    element.addEventListener("pointerdown", handlePointerStart, passiveOptions);
-    element.addEventListener("pointermove", handlePointerMove, passiveOptions);
-    element.addEventListener("pointerup", handlePointerEnd, passiveOptions);
-    element.addEventListener("pointercancel", handlePointerEnd, passiveOptions);
+    const handleWheel = (event: WheelEvent) => {
+      if (containsTarget(event.target)) {
+        activateIntent();
+        scheduleRelease();
+      }
+    };
+
+    const options: AddEventListenerOptions = { passive: true };
+    document.addEventListener("pointerdown", handlePointerDown, options);
+    document.addEventListener("pointermove", handlePointerMove, options);
+    document.addEventListener("pointerup", handlePointerUp, options);
+    document.addEventListener("pointercancel", handlePointerUp, options);
+    document.addEventListener("wheel", handleWheel, options);
 
     return () => {
-      element.removeEventListener("wheel", handleWheel);
-      element.removeEventListener("pointerdown", handlePointerStart);
-      element.removeEventListener("pointermove", handlePointerMove);
-      element.removeEventListener("pointerup", handlePointerEnd);
-      element.removeEventListener("pointercancel", handlePointerEnd);
+      document.removeEventListener("pointerdown", handlePointerDown);
+      document.removeEventListener("pointermove", handlePointerMove);
+      document.removeEventListener("pointerup", handlePointerUp);
+      document.removeEventListener("pointercancel", handlePointerUp);
+      document.removeEventListener("wheel", handleWheel);
       if (releaseTimeout) {
         window.clearTimeout(releaseTimeout);
       }
