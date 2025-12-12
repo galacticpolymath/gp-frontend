@@ -93,6 +93,7 @@ body {
   from {
     opacity: 1;
   }
+
   to {
     opacity: 0;
   }
@@ -107,6 +108,7 @@ body {
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
@@ -121,6 +123,7 @@ body {
   from {
     opacity: 0;
   }
+
   to {
     opacity: 0.25;
   }
@@ -145,6 +148,7 @@ body {
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
@@ -164,6 +168,7 @@ body {
   0% {
     opacity: 1;
   }
+
   100% {
     opacity: 0;
     // visibility: hidden;
@@ -179,6 +184,7 @@ body {
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
@@ -191,7 +197,8 @@ body {
   top: 5px;
   background-color: #f4f9fa;
   background-repeat: repeat;
-  background-size: 70px 70px; /* closer spacing */
+  background-size: 70px 70px;
+  /* closer spacing */
   background-image: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='75' height='75'%3E%3Cg stroke='%23cccccc' stroke-width='1.2'%3E%3Cline x1='35' y1='32' x2='35' y2='38'/%3E%3Cline x1='32' y1='35' x2='38' y2='35'/%3E%3C/g%3E%3C/svg%3E");
 
   @media (min-width: 576px) {
@@ -234,6 +241,7 @@ body {
   from {
     opacity: 1;
   }
+
   to {
     opacity: 0;
   }
@@ -270,7 +278,7 @@ a {
   }
 }
 
-a > span {
+a>span {
   vertical-align: middle;
 }
 
@@ -398,6 +406,7 @@ ol li {
 
 .login-modal-input {
   width: 65%;
+
   @media (min-width: 578px) {
     width: 75%;
   }
@@ -465,6 +474,7 @@ ol li {
     border-right: none;
   }
 }
+
 .grades-or-years-non-usa-btn {
   border-bottom-right-radius: 0.5rem;
   border-bottom-left-radius: 0.5rem;
@@ -524,6 +534,7 @@ ol li {
   width: 100vw;
   height: 100vh;
   border-radius: 0px;
+  background-color: #E2F0FD;
 }
 
 .account-settings-modal,
@@ -605,6 +616,7 @@ ol li {
   input {
     background-color: white;
   }
+
   input::-webkit-outer-spin-button,
   input::-webkit-inner-spin-button {
     -webkit-appearance: none;
@@ -635,6 +647,7 @@ ol li {
   input {
     color: black;
   }
+
   textarea {
     color: black;
     outline: none;
@@ -780,6 +793,7 @@ ol li {
 }
 
 .quickPrep {
+
   //remove margin for ol
   ol {
     margin-bottom: 0;
@@ -852,12 +866,12 @@ ol li {
   color: #aaa;
 }
 
-.white-divider-lg > :not(:first-child) {
+.white-divider-lg> :not(:first-child) {
   border-top: 1px solid $white;
 }
 
 @media (min-width: 992px) {
-  .white-divider-lg > :not(:first-child) {
+  .white-divider-lg> :not(:first-child) {
     border-left: 1px solid $white;
     border-top: 0;
   }
@@ -1199,6 +1213,7 @@ img {
   0% {
     text-shadow: 0 5px 0 #ccc, 0 2px 3px rgba(0, 0, 0, 1);
   }
+
   100% {
     transform: translateY(-20px);
     text-shadow: 0 50px 0 rgba(0, 0, 0, 1) k, 0 0px 20px rgba(0, 0, 0, 0.8);
@@ -1215,6 +1230,7 @@ img {
 
 .google-sign-in-btn {
   max-width: 503px;
+
   @media (min-width: 576px) {
     max-width: none;
   }
@@ -1222,8 +1238,10 @@ img {
 
 .blur-text-bg {
   backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px); /* Safari support */
-  background: rgba(255, 255, 255, 0.2); /* Semi-transparent layer */
+  -webkit-backdrop-filter: blur(10px);
+  /* Safari support */
+  background: rgba(255, 255, 255, 0.2);
+  /* Semi-transparent layer */
   border-radius: 0.5rem;
   padding: 0.5rem 1rem;
   color: white;
