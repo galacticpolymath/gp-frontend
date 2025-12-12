@@ -60,7 +60,7 @@ $jobInfoStatCard: rgba(14, 21, 54, 0.85);
   }
 
   @media (max-width: 767px) {
-    margin: calc(var(--jobviz-assignment-offset, 0px) + 0.5rem)
+    margin: calc(var(--jobviz-assignment-offset, 0px) + 1rem)
       auto calc(var(--jobviz-assignment-offset, 0px) + 1rem) auto;
   }
 

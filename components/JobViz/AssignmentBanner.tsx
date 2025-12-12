@@ -41,7 +41,6 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
   );
   const bannerRef = React.useRef<HTMLDivElement | null>(null);
   const infoBlockRef = React.useRef<HTMLDivElement | null>(null);
-  const contentRef = React.useRef<HTMLDivElement | null>(null);
   const [activeJobIdx, setActiveJobIdx] = React.useState(0);
   const [slideDir, setSlideDir] = React.useState<"next" | "prev" | null>(null);
   const [flash, setFlash] = React.useState(false);
@@ -63,18 +62,15 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
   React.useEffect(() => {
     if (!isMobile) {
       infoBlockRef.current?.removeAttribute("inert");
-      contentRef.current?.removeAttribute("inert");
       return;
     }
-    const elements = [infoBlockRef.current, contentRef.current];
-    elements.forEach((element) => {
-      if (!element) return;
-      if (hideInfoSection) {
-        element.setAttribute("inert", "");
-      } else {
-        element.removeAttribute("inert");
-      }
-    });
+    const infoElement = infoBlockRef.current;
+    if (!infoElement) return;
+    if (hideInfoSection) {
+      infoElement.setAttribute("inert", "");
+    } else {
+      infoElement.removeAttribute("inert");
+    }
   }, [hideInfoSection, isMobile]);
 
   React.useEffect(() => {
@@ -166,6 +162,12 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
     });
   }, [jobs]);
 
+  const nextUnratedSoc = React.useMemo(() => {
+    if (!jobItems.length) return null;
+    const nextJob = jobItems.find(({ soc }) => !ratings[soc]);
+    return nextJob?.soc ?? null;
+  }, [jobItems, ratings]);
+
   const splitJobs = React.useMemo(() => {
     if (!jobItems.length) return [];
     const midpoint = Math.ceil(jobItems.length / 2);
@@ -213,42 +215,104 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
     return () => window.clearTimeout(timer);
   }, [jobs?.length, variant]);
 
-  if (!shouldRenderBanner) {
-    return null;
-  }
-
   const showAssignmentPanel = !isDesktopVariant || !isDockCollapsed;
+  const activeJob = jobItems[activeJobIdx] ?? null;
+  const isActiveJobUnrated =
+    Boolean(isMobile && activeJob && !ratings[activeJob.soc]);
 
   React.useEffect(() => {
     if (variant !== "mobile" || !shouldRenderBanner) return undefined;
+    if (typeof window === "undefined") return undefined;
     const element = bannerRef.current;
-    if (!element || typeof window === "undefined") return undefined;
-    if (typeof ResizeObserver === "undefined") return undefined;
+    if (!element || typeof ResizeObserver === "undefined") return undefined;
 
-    const updateOffset = () => {
+    let rafId: number | null = null;
+    const readNavOffset = () => {
+      const nav =
+        document.querySelector("nav.fixed-top") ||
+        document.querySelector("nav.navbar") ||
+        document.querySelector("nav");
+      if (!nav) {
+        const header = document.querySelector("header");
+        return header ? header.getBoundingClientRect().height : 64;
+      }
+      const rect = nav.getBoundingClientRect();
+      const visibleTop = Math.max(rect.top, 0);
+      const visibleBottom = Math.max(
+        Math.min(rect.bottom, window.innerHeight),
+        0
+      );
+      return Math.max(0, visibleBottom - visibleTop);
+    };
+
+    const updateOffsets = () => {
       const height = element.getBoundingClientRect().height;
       document.documentElement.style.setProperty(
         "--jobviz-assignment-offset",
         `${height}px`
       );
-      const header = document.querySelector("header");
-      const navHeight = header
-        ? header.getBoundingClientRect().height
-        : 64;
       document.documentElement.style.setProperty(
         "--jobviz-nav-offset",
-        `${navHeight}px`
+        `${readNavOffset()}px`
       );
     };
 
-    document.body.dataset.jobvizAssignment = "true";
-    updateOffset();
+    const handleScroll = () => {
+      if (rafId !== null) return;
+      rafId = window.requestAnimationFrame(() => {
+        rafId = null;
+        document.documentElement.style.setProperty(
+          "--jobviz-nav-offset",
+          `${readNavOffset()}px`
+        );
+      });
+    };
 
-    const observer = new ResizeObserver(updateOffset);
+    const handleResize = () => {
+      updateOffsets();
+    };
+
+    document.body.dataset.jobvizAssignment = "true";
+    updateOffsets();
+
+    const observer = new ResizeObserver(updateOffsets);
     observer.observe(element);
+
+    let navMutation: MutationObserver | null = null;
+    const navTarget =
+      document.querySelector("nav.fixed-top") ||
+      document.querySelector("nav.navbar");
+    const handleNavTransition = () => {
+      document.documentElement.style.setProperty(
+        "--jobviz-nav-offset",
+        `${readNavOffset()}px`
+      );
+    };
+
+    if (navTarget) {
+      navTarget.addEventListener("transitionend", handleNavTransition);
+      if (typeof MutationObserver !== "undefined") {
+        navMutation = new MutationObserver(handleNavTransition);
+        navMutation.observe(navTarget, { attributes: true, attributeFilter: ["style", "class"] });
+      }
+    }
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("resize", handleResize);
 
     return () => {
       observer.disconnect();
+      if (rafId !== null) {
+        window.cancelAnimationFrame(rafId);
+      }
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleResize);
+      if (navTarget) {
+        navTarget.removeEventListener("transitionend", handleNavTransition);
+      }
+      if (navMutation) {
+        navMutation.disconnect();
+      }
       document.documentElement.style.setProperty(
         "--jobviz-assignment-offset",
         "0px"
@@ -257,6 +321,10 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
       delete document.body.dataset.jobvizAssignment;
     };
   }, [variant, shouldRenderBanner, mobileCollapsed, showAssignmentPanel]);
+
+  if (!shouldRenderBanner) {
+    return null;
+  }
 
   return (
     <div
@@ -384,9 +452,6 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
               className={`${styles.assignmentContent} ${
                 variant === "mobile" ? styles.assignmentMobileContentSticky : ""
               }`}
-              ref={contentRef}
-              aria-hidden={hideInfoSection}
-              data-hidden={hideInfoSection ? "true" : "false"}
             >
               {variant === "desktop" && splitJobs.length > 0 && (
                 <div className={styles.assignmentListWrap}>
@@ -396,6 +461,8 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
                         const ratingValue = ratings[soc];
                         const isHighlighted = highlightedSoc === soc;
                         const isSuppressed = suppressedSocCodes.has(soc);
+                        const shouldPulseDesktopJob =
+                          isDesktopVariant && !ratingValue && nextUnratedSoc === soc;
                         const displayEmoji = ratingValue
                           ? ratingEmoji(ratingValue)
                           : "?";
@@ -430,6 +497,10 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
                                 <span className={styles.assignmentListRating}>
                                   <span
                                     className={`${styles.assignmentListRatingInner} ${
+                                      shouldPulseDesktopJob
+                                        ? styles.assignmentListRatingNudge
+                                        : ""
+                                    } ${
                                       isSuppressed
                                         ? styles.assignmentListRatingInnerHidden
                                         : ""
@@ -465,7 +536,7 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
                           ? styles.assignmentCarouselItemPrev
                           : ""
                     }`}
-                    key={jobItems[activeJobIdx].soc}
+                    key={activeJob ? activeJob.soc : "assignment-carousel"}
                   >
                     {showRatingHint &&
                       variant === "mobile" &&
@@ -487,48 +558,50 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
                     <button
                       type="button"
                       className={`${styles.assignmentCarouselLink} ${
-                        clickedSocCodes.has(jobItems[activeJobIdx].soc)
+                        activeJob && clickedSocCodes.has(activeJob.soc)
                           ? styles.assignmentLinkClicked
                           : ""
                       }`}
-                      onClick={() => handleJobClick(jobItems[activeJobIdx].soc)}
+                      onClick={() => activeJob && handleJobClick(activeJob.soc)}
                     >
                       <div className={styles.assignmentCarouselRow}>
                         <span className={styles.assignmentListRating}>
                           <span
                             className={`${styles.assignmentListRatingInner} ${
-                              suppressedSocCodes.has(jobItems[activeJobIdx].soc)
+                              isActiveJobUnrated ? styles.assignmentListRatingNudge : ""
+                            } ${
+                              activeJob && suppressedSocCodes.has(activeJob.soc)
                                 ? styles.assignmentListRatingInnerHidden
                                 : ""
                             } ${
-                              highlightedSoc === jobItems[activeJobIdx].soc
+                              activeJob && highlightedSoc === activeJob.soc
                                 ? styles.assignmentListRatingPulse
                                 : ""
                             }`}
                           >
-                            {suppressedSocCodes.has(jobItems[activeJobIdx].soc)
+                            {activeJob && suppressedSocCodes.has(activeJob.soc)
                               ? "\u00A0"
                               : isMounted
-                                ? ratingEmoji(ratings[jobItems[activeJobIdx].soc])
+                                ? ratingEmoji(activeJob ? ratings[activeJob.soc] : undefined)
                                 : "?"}
                           </span>
                         </span>
                         <span className={styles.assignmentListIconWrap}>
                           <LucideIcon
-                            name={jobItems[activeJobIdx].iconName}
+                            name={activeJob?.iconName ?? "CircleDot"}
                             className={styles.assignmentListIcon}
                           />
-                          {jobItems[activeJobIdx].jobIconName && (
+                          {activeJob?.jobIconName && (
                             <span className={styles.assignmentListNestedIcon}>
                               <LucideIcon
-                                name={jobItems[activeJobIdx].jobIconName!}
+                                name={activeJob.jobIconName!}
                               />
                             </span>
                           )}
                         </span>
                         <span className={styles.assignmentCarouselText}>
                           <span className={styles.assignmentCarouselTitle}>
-                            {formatAssignmentTitle(jobItems[activeJobIdx].title)}
+                            {activeJob ? formatAssignmentTitle(activeJob.title) : ""}
                           </span>
                         </span>
                       </div>

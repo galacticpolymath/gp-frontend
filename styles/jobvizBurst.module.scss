@@ -1010,16 +1010,14 @@
   margin: 0;
 }
 
-.assignmentBannerShell[data-mode="default"] .assignmentInfoBlock,
-.assignmentBannerShell[data-mode="default"] .assignmentContent {
+.assignmentBannerShell[data-mode="default"] .assignmentInfoBlock {
   transition: max-height 0.4s ease, opacity 0.4s ease;
   max-height: 2000px;
   opacity: 1;
   overflow: hidden;
 }
 
-.assignmentBannerShell[data-mode="default"] .assignmentInfoBlock[data-hidden="true"],
-.assignmentBannerShell[data-mode="default"] .assignmentContent[data-hidden="true"] {
+.assignmentBannerShell[data-mode="default"] .assignmentInfoBlock[data-hidden="true"] {
   max-height: 0;
   opacity: 0;
   pointer-events: none;
@@ -1051,11 +1049,11 @@
 .assignmentMobileWrapper {
   position: sticky;
   top: calc(var(--jobviz-nav-offset, 64px));
-  z-index: 1300;
+  z-index: 10000050;
   width: 100%;
   max-width: 100%;
   margin-left: 0;
-  padding: clamp(0.25rem, 2vw, 0.5rem) 0 0;
+  padding: 0;
   background: linear-gradient(
     175deg,
     rgba(12, 21, 66, 0.95),
@@ -1112,7 +1110,9 @@
 .assignmentMobileWrapper .assignmentBanner,
 .assignmentMobileWrapper .assignmentCarousel {
   width: 100%;
+  max-width: 100%;
   margin-left: 0;
+  margin-right: 0;
   margin-bottom: 0;
 }
 
@@ -1123,23 +1123,26 @@
 }
 
 .assignmentMobileWrapper .assignmentMarker {
-  margin-left: auto;
-  margin-right: auto;
-  max-width: min(520px, 92vw);
+  margin-left: 0;
+  margin-right: 0;
+  width: 100%;
+  max-width: 100%;
   align-self: stretch;
 }
 
 .assignmentMobileWrapper .assignmentInfoBlock {
-  width: min(520px, 92vw);
-  margin-left: auto;
-  margin-right: auto;
+  width: 100%;
+  max-width: 100%;
+  margin-left: 0;
+  margin-right: 0;
 }
 
 .assignmentMobileWrapper .assignmentProgressRow,
 .assignmentMobileWrapper .assignmentMobileControls {
-  width: min(520px, 92vw);
-  margin-left: auto;
-  margin-right: auto;
+  width: 100%;
+  max-width: 100%;
+  margin-left: 0;
+  margin-right: 0;
 }
 .assignmentMobileWrapper .assignmentMobileControls {
   margin-bottom: 0.35rem;
@@ -1309,6 +1312,8 @@
 .assignmentBannerDefault {
   margin: 0;
   width: 100%;
+  margin-left: 0;
+  margin-right: 0;
   background: rgba(9, 13, 30, 0.92);
   border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow:
@@ -1316,6 +1321,13 @@
     0 25px 45px rgba(4, 0, 9, 0.55);
   border-radius: 0;
   padding-bottom: 0;
+}
+
+@media (max-width: 1199px) {
+  .assignmentBannerDefault {
+    padding: clamp(0.35rem, 1.2vw, 0.6rem) clamp(0.75rem, 4vw, 1.15rem)
+      clamp(0.15rem, 1vw, 0.35rem);
+  }
 }
 
 .assignmentBannerDock {
@@ -1669,7 +1681,7 @@
 .assignmentCarousel {
   display: flex;
   align-items: stretch;
-  padding: 0 0.45rem;
+  padding: 0;
   scroll-snap-type: x mandatory;
   position: relative;
   width: 100%;
@@ -1891,6 +1903,18 @@
   color: #c08bff;
   margin-left: 0.45rem;
   overflow: hidden;
+}
+
+.assignmentListRatingNudge {
+  animation: assignmentRatingNudge 1.6s ease-in-out infinite;
+  transform-origin: center;
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .assignmentListRatingNudge {
+    animation: none;
+  }
 }
 
 .assignmentListRatingInner {
@@ -3272,5 +3296,15 @@
   100% {
     transform: scale(1);
     opacity: 1;
+  }
+}
+
+@keyframes assignmentRatingNudge {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.12);
   }
 }
