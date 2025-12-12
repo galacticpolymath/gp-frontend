@@ -1,4 +1,4 @@
-import React, { RefObject, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Button, Modal, CloseButton } from "react-bootstrap";
 import { ILessonItem, useModalContext } from "../../../providers/ModalProvider";
 import { TbDownload } from "react-icons/tb";
@@ -6,12 +6,6 @@ import { TbExternalLink } from "react-icons/tb";
 import { useUserContext } from "../../../providers/UserProvider";
 import { useLessonContext } from "../../../providers/LessonProvider";
 import { FaChevronRight, FaChevronLeft } from "react-icons/fa";
-import {
-  Carousel,
-  CarouselSlider,
-  CarouselCard,
-  CarouselButton,
-} from "@fluentui/react-carousel";
 import { CopyLessonBtnUI } from "../TeachIt/CopyLessonBtn";
 import useSiteSession from "../../../customHooks/useSiteSession";
 import Image from "next/image";
@@ -19,8 +13,6 @@ import { FcGoogle } from "react-icons/fc";
 import Dropdown from "react-bootstrap/Dropdown";
 import { GiFilmStrip } from "react-icons/gi";
 import { IoOpenOutline } from "react-icons/io5";
-import ReactMaterialCarousel from 'react-material-ui-carousel';
-import { Paper, Button as MaterialUIBtn } from '@mui/material';
 import { IItemV2 } from "../../../backend/models/Unit/types/teachingMaterials";
 import ItemsCarousel, { CarouselItem } from "../LessonItemsModalCarousel";
 import { getMediaComponent } from "../Preview/utils";

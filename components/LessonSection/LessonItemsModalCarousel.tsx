@@ -1,8 +1,4 @@
 import React, { PropsWithChildren } from 'react';
-import Slider from 'react-slick';
-import LessonSlide from './Preview/LessonSlide';
-import { getMediaComponent } from './Preview/utils';
-import { LESSON_ITEMS_MODAL_BG_COLOR } from './Modals/LessonItemsModal';
 
 interface ImageSliderProps extends PropsWithChildren {
     currentIndex: number

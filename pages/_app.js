@@ -5,7 +5,6 @@ import ModalsContainer from "../ModalsContainer";
 import { GoogleAnalytics } from "nextjs-google-analytics";
 import { SessionProvider } from "next-auth/react";
 import { Toaster } from "react-hot-toast";
-import 'pure-react-carousel/dist/react-carousel.es.css';
 import "../styles/pages/gpPlus.scss";
 import "./style.scss";
 import "../styles/pages/HireUs/hireUs.scss";
