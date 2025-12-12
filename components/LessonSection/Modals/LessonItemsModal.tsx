@@ -22,25 +22,11 @@ import { IoOpenOutline } from "react-icons/io5";
 import ReactMaterialCarousel from 'react-material-ui-carousel';
 import { Paper, Button as MaterialUIBtn } from '@mui/material';
 import { IItemV2 } from "../../../backend/models/Unit/types/teachingMaterials";
-import { Carousel as ReactCarousel } from '@trendyol-js/react-carousel';
 import ImageSlider from "../LessonItemsModalCarousel";
 
 const NAV_BTN_DIMENSION = '40px';
+
 export const EXTERNAL_LINK_HELPER_TXT = 'Open/Present';
-
-function CustomCarousel() {
-  const [activeSlide, setActiveSlide] = useState(0);
-
-  return (
-    <ReactCarousel show={1} slide={1}>
-      <div key={0}>I am the first div.</div>
-      <div key={1}>I am the second div.</div>
-      <div key={2}>I am the third div.</div>
-    </ReactCarousel>
-  );
-}
-
-
 export const LESSON_ITEMS_MODAL_BG_COLOR = "#E2F0FD";
 
 interface ILessonItemCard extends Pick<IItemV2, "itemCat"> {
@@ -49,90 +35,12 @@ interface ILessonItemCard extends Pick<IItemV2, "itemCat"> {
   index: number;
 }
 
-function Item(props: any) {
-  return (
-    <Paper>
-      <h2>{props.item.name}</h2>
-      <p>{props.item.description}</p>
-
-      <Button className="CheckButton">
-        Check it out!
-      </Button>
-    </Paper>
-  )
-}
-
 interface INavBtn {
   onClick: Function;
   className: string;
   style: React.CSSProperties;
   next: boolean;
   prev: boolean;
-}
-
-const NavBtn = ({ onClick, next, className, style, prev }: {
-  onClick: Function;
-  className: string;
-  style: React.CSSProperties;
-  next: boolean;
-  prev: boolean;
-}) => {
-  return (
-    <button
-      type="button"
-      className={className}
-      style={style}
-      onClick={() => onClick()}
-    >
-      {next ? "Next" : "Previous"}
-    </button>
-  )
-}
-
-function Example() {
-  var items = [
-    {
-      name: "Random Name #1",
-      description: "Probably the most random thing you have ever seen!"
-    },
-    {
-      name: "Random Name #2",
-      description: "Hello World!"
-    }
-  ];
-  const [activeIndex, setActiveIndex] = useState(0);
-
-  console.log(`Active index: ${activeIndex}`);
-
-  return (
-    <ReactMaterialCarousel
-      animation="slide"
-      index={activeIndex}
-      // NextIcon={<MdKeyboardArrowRight />}
-      // PrevIcon={<MdKeyboardArrowLeft />}
-      // onChange={ }
-      navButtonsAlwaysVisible
-      NavButton={(props: INavBtn) => {
-        return (
-          <button
-            onClick={() => {
-              if (props.next) {
-                setActiveIndex(activeIndex + 1);
-              } else {
-                setActiveIndex(activeIndex - 1);
-              }
-            }}
-          >
-            {props.next ? "Next" : "Previous"}
-          </button>
-        )
-      }}
-    >
-      {
-        items.map((item, i) => <Item key={i} item={item} />)
-      }
-    </ReactMaterialCarousel>
-  )
 }
 
 const LessonItemCard: React.FC<ILessonItemCard> = ({
@@ -752,43 +660,7 @@ const LessonItemsModal: React.FC = () => {
             </section>
           </div>
         </section>
-        {/* <ReactCarousel
-          show={1}
-          slide={1}
-          rightArrow={<button style={{ zIndex: -9999 }} className="position-fixed opacity-0" onClick={createOnNavLessonItemsClickHandler(1)} ref={rightArrownRef} />}
-          leftArrow={<button style={{ zIndex: -9999 }} className="position-fixed opacity-0" ref={leftArrownRef} onClick={createOnNavLessonItemsClickHandler(-1)} />}
-        >
-          {lessonItems.map((lessonItem, index) => {
-            const url =
-              lessonItem.itemCat === "web resource"
-                ? lessonItem.externalUrl
-                : lessonItem.docUrl;
-
-            if (lessonItem.itemType === "presentation") {
-              const viewUrl = `${lessonItem.gdriveRoot}/view`;
-              const previewUrl = `${lessonItem.gdriveRoot}/preview`;
-
-              return (
-                <LessonItemCard
-                  key={index}
-                  index={index}
-                  previewUrl={previewUrl}
-                  viewUrl={viewUrl}
-                  itemCat={lessonItem.itemCat}
-                />
-              );
-            }
-
-            return (
-              <div key={`image-${index}`} className="h-100 w-100">
-                <div className="w-100 h-100 position-relative">
-                  <iframe src={url} className="w-100 h-100" />
-                </div>
-              </div>
-            );
-          })}
-        </ReactCarousel> */}
-        <div style={{ height: '72%' }} className="">
+        <div style={{ height: '74%' }} className="">
           <ImageSlider items={lessonItems} currentIndex={currentIndex} />
         </div>
         <div
