@@ -25,6 +25,8 @@ interface AssignmentBannerProps {
 }
 
 const ASSIGNMENT_LOGO = "/plus/GP+ Submark.png";
+const formatAssignmentTitle = (value: string) =>
+  value.replace(/\sand\s/gi, " & ");
 
 export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
   unitName,
@@ -37,9 +39,16 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
   const [clickedSocCodes, setClickedSocCodes] = React.useState<Set<string>>(
     new Set()
   );
+  const bannerRef = React.useRef<HTMLDivElement | null>(null);
+  const infoBlockRef = React.useRef<HTMLDivElement | null>(null);
+  const contentRef = React.useRef<HTMLDivElement | null>(null);
   const [activeJobIdx, setActiveJobIdx] = React.useState(0);
   const [slideDir, setSlideDir] = React.useState<"next" | "prev" | null>(null);
   const [flash, setFlash] = React.useState(false);
+  const highlightTimeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [highlightedSoc, setHighlightedSoc] = React.useState<string | null>(null);
+  const [suppressedSocCodes, setSuppressedSocCodes] = React.useState<Set<string>>(new Set());
+  const carouselAutoOpenIdxRef = React.useRef<number | null>(null);
   const [mobileCollapsed, setMobileCollapsed] = React.useState(false);
   const shouldRenderBanner =
     Boolean(unitName) || Boolean(jobs?.length);
@@ -51,6 +60,70 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
   React.useEffect(() => {
     setIsMounted(true);
   }, []);
+
+  React.useEffect(() => {
+    if (!isMobile) {
+      infoBlockRef.current?.removeAttribute("inert");
+      contentRef.current?.removeAttribute("inert");
+      return;
+    }
+    const elements = [infoBlockRef.current, contentRef.current];
+    elements.forEach((element) => {
+      if (!element) return;
+      if (hideInfoSection) {
+        element.setAttribute("inert", "");
+      } else {
+        element.removeAttribute("inert");
+      }
+    });
+  }, [hideInfoSection, isMobile]);
+
+  React.useEffect(() => {
+    if (typeof window === "undefined") return undefined;
+    const handleHighlight = (event: Event) => {
+      const detail = (event as CustomEvent<{ socCode?: string; phase?: "start" | "finish" }>).detail;
+      const socCode = detail?.socCode;
+      const phase = detail?.phase ?? "finish";
+      if (!socCode) return;
+      if (phase === "start") {
+        setSuppressedSocCodes((prev) => {
+          const next = new Set(prev);
+          next.add(socCode);
+          return next;
+        });
+        if (highlightTimeoutRef.current) {
+          clearTimeout(highlightTimeoutRef.current);
+          highlightTimeoutRef.current = null;
+        }
+        setHighlightedSoc((current) => (current === socCode ? null : current));
+        return;
+      }
+
+      setSuppressedSocCodes((prev) => {
+        const next = new Set(prev);
+        next.delete(socCode);
+        return next;
+      });
+      setHighlightedSoc(socCode);
+      if (highlightTimeoutRef.current) {
+        clearTimeout(highlightTimeoutRef.current);
+      }
+      highlightTimeoutRef.current = window.setTimeout(() => {
+        setHighlightedSoc((current) => (current === socCode ? null : current));
+        highlightTimeoutRef.current = null;
+      }, 600);
+    };
+
+    window.addEventListener("jobviz-rating-highlight", handleHighlight);
+    return () => {
+      window.removeEventListener("jobviz-rating-highlight", handleHighlight);
+      if (highlightTimeoutRef.current) {
+        clearTimeout(highlightTimeoutRef.current);
+        highlightTimeoutRef.current = null;
+      }
+    };
+  }, []);
+
   const assignmentSocCodes = React.useMemo(
     () => (jobs?.map(([, soc]) => soc) ?? []).filter(Boolean),
     [jobs]
@@ -97,14 +170,41 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
     return [jobItems.slice(0, midpoint), jobItems.slice(midpoint)];
   }, [jobItems]);
 
+  const queueAutoOpen = (nextIdx: number) => {
+    if (variant === "mobile") {
+      carouselAutoOpenIdxRef.current = nextIdx;
+    }
+  };
+
+  React.useEffect(() => {
+    if (variant !== "mobile") return;
+    const targetIdx = carouselAutoOpenIdxRef.current;
+    if (targetIdx === null) return;
+    carouselAutoOpenIdxRef.current = null;
+    const targetJob = jobItems[targetIdx];
+    if (targetJob) {
+      handleJobClick(targetJob.soc);
+    }
+  }, [activeJobIdx, variant, jobItems, handleJobClick]);
+
   const handlePrev = () => {
+    if (!jobItems.length) return;
     setSlideDir("prev");
-    setActiveJobIdx((idx) => (idx - 1 + jobItems.length) % jobItems.length);
+    setActiveJobIdx((idx) => {
+      const next = (idx - 1 + jobItems.length) % jobItems.length;
+      queueAutoOpen(next);
+      return next;
+    });
   };
 
   const handleNext = () => {
+    if (!jobItems.length) return;
     setSlideDir("next");
-    setActiveJobIdx((idx) => (idx + 1) % jobItems.length);
+    setActiveJobIdx((idx) => {
+      const next = (idx + 1) % jobItems.length;
+      queueAutoOpen(next);
+      return next;
+    });
   };
 
   React.useEffect(() => {
@@ -134,12 +234,43 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
 
   const showAssignmentPanel = !isDesktopVariant || !isDockCollapsed;
 
+  React.useEffect(() => {
+    if (variant !== "mobile" || !shouldRenderBanner) return undefined;
+    const element = bannerRef.current;
+    if (!element || typeof window === "undefined") return undefined;
+    if (typeof ResizeObserver === "undefined") return undefined;
+
+    const updateOffset = () => {
+      const height = element.getBoundingClientRect().height;
+      document.documentElement.style.setProperty(
+        "--jobviz-assignment-offset",
+        `${height}px`
+      );
+    };
+
+    document.body.dataset.jobvizAssignment = "true";
+    updateOffset();
+
+    const observer = new ResizeObserver(updateOffset);
+    observer.observe(element);
+
+    return () => {
+      observer.disconnect();
+      document.documentElement.style.setProperty(
+        "--jobviz-assignment-offset",
+        "0px"
+      );
+      delete document.body.dataset.jobvizAssignment;
+    };
+  }, [variant, shouldRenderBanner, mobileCollapsed, showAssignmentPanel]);
+
   return (
     <div
       className={`${styles.assignmentBannerShell} ${wrapperClass}`}
       data-mode={variant === "desktop" ? "docked" : "default"}
       data-collapsed={isMobile && mobileCollapsed ? "true" : "false"}
       data-dock-collapsed={isDockCollapsed ? "true" : "false"}
+      ref={bannerRef}
     >
       {isDesktopVariant && (
         <button
@@ -208,8 +339,10 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
             )}
             <div
               id={infoSectionId}
-              hidden={hideInfoSection}
               className={styles.assignmentInfoBlock}
+              aria-hidden={hideInfoSection}
+              data-hidden={hideInfoSection ? "true" : "false"}
+              ref={infoBlockRef}
             >
               {unitName && (
                 <span className={styles.assignmentUnitLabelInline}>
@@ -257,6 +390,9 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
               className={`${styles.assignmentContent} ${
                 variant === "mobile" ? styles.assignmentMobileContentSticky : ""
               }`}
+              ref={contentRef}
+              aria-hidden={hideInfoSection}
+              data-hidden={hideInfoSection ? "true" : "false"}
             >
               {variant === "desktop" && splitJobs.length > 0 && (
                 <div className={styles.assignmentListWrap}>
@@ -264,6 +400,11 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
                     <ul key={idx} className={styles.assignmentList}>
                       {jobGroup.map(({ title, soc, iconName, jobIconName }, jobIdx) => {
                         const ratingValue = ratings[soc];
+                        const isHighlighted = highlightedSoc === soc;
+                        const isSuppressed = suppressedSocCodes.has(soc);
+                        const displayEmoji = ratingValue
+                          ? ratingEmoji(ratingValue)
+                          : "?";
                         return (
                           <li key={soc} className={styles.assignmentListItem}>
                             {showRatingHint && idx === 0 && jobIdx === 0 && (
@@ -293,7 +434,19 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
                               </span>
                               {isMounted ? (
                                 <span className={styles.assignmentListRating}>
-                                  {ratingEmoji(ratingValue)}
+                                  <span
+                                    className={`${styles.assignmentListRatingInner} ${
+                                      isSuppressed
+                                        ? styles.assignmentListRatingInnerHidden
+                                        : ""
+                                    } ${
+                                      isHighlighted
+                                        ? styles.assignmentListRatingPulse
+                                        : ""
+                                    }`}
+                                  >
+                                    {isSuppressed ? "\u00A0" : displayEmoji}
+                                  </span>
                                 </span>
                               ) : null}
                               {title}
@@ -348,9 +501,23 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
                     >
                       <div className={styles.assignmentCarouselRow}>
                         <span className={styles.assignmentListRating}>
-                          {isMounted
-                            ? ratingEmoji(ratings[jobItems[activeJobIdx].soc])
-                            : "?"}
+                          <span
+                            className={`${styles.assignmentListRatingInner} ${
+                              suppressedSocCodes.has(jobItems[activeJobIdx].soc)
+                                ? styles.assignmentListRatingInnerHidden
+                                : ""
+                            } ${
+                              highlightedSoc === jobItems[activeJobIdx].soc
+                                ? styles.assignmentListRatingPulse
+                                : ""
+                            }`}
+                          >
+                            {suppressedSocCodes.has(jobItems[activeJobIdx].soc)
+                              ? "\u00A0"
+                              : isMounted
+                                ? ratingEmoji(ratings[jobItems[activeJobIdx].soc])
+                                : "?"}
+                          </span>
                         </span>
                         <span className={styles.assignmentListIconWrap}>
                           <LucideIcon
@@ -367,10 +534,7 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
                         </span>
                         <span className={styles.assignmentCarouselText}>
                           <span className={styles.assignmentCarouselTitle}>
-                            {jobItems[activeJobIdx].title}
-                          </span>
-                          <span className={styles.assignmentCarouselMeta}>
-                            {activeJobIdx + 1}/{jobItems.length}
+                            {formatAssignmentTitle(jobItems[activeJobIdx].title)}
                           </span>
                         </span>
                       </div>

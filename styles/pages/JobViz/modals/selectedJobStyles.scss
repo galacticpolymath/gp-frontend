@@ -1,13 +1,19 @@
 $selectedJobTxtColor: #f6f8ff;
 $jobInfoStatCard: rgba(14, 21, 54, 0.85);
 
+:root {
+  --jobviz-assignment-offset: 0px;
+}
+
 .selectedJobBackdrop {
   background-color: rgba(2, 4, 12, 0.5) !important;
   opacity: 1 !important;
   backdrop-filter: blur(12px);
   border-radius: 0 !important;
-  z-index: 850 !important;
+  z-index: 1200 !important;
 }
+
+
 
 .selectedJobModal {
   * {
@@ -30,6 +36,7 @@ $jobInfoStatCard: rgba(14, 21, 54, 0.85);
     .modal-body {
       padding: 0.75rem !important;
     }
+    padding-bottom: calc(var(--jobviz-assignment-offset, 0px) + 1rem);
   }
 }
 
@@ -51,6 +58,11 @@ $jobInfoStatCard: rgba(14, 21, 54, 0.85);
     width: min(96vw, 960px) !important;
   }
 
+  @media (max-width: 767px) {
+    margin: calc(var(--jobviz-assignment-offset, 0px) + 0.5rem)
+      auto calc(var(--jobviz-assignment-offset, 0px) + 1rem) auto;
+  }
+
   @media (min-width: 1200px) {
     position: relative;
     left: calc(clamp(320px, 28vw, 360px) / -2);
@@ -70,6 +82,16 @@ $jobInfoStatCard: rgba(14, 21, 54, 0.85);
     background: transparent;
     border-radius: 28px;
     padding: clamp(1rem, 2vw, 1.5rem);
+  }
+}
+
+.selectedJobBody {
+  padding-bottom: 1.25rem;
+}
+
+@media (max-width: 767px) {
+  .selectedJobBody {
+    padding-bottom: calc(var(--jobviz-assignment-offset, 0px) + 1.75rem) !important;
   }
 }
 

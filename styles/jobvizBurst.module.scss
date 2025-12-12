@@ -1010,6 +1010,21 @@
   margin: 0;
 }
 
+.assignmentBannerShell[data-mode="default"] .assignmentInfoBlock,
+.assignmentBannerShell[data-mode="default"] .assignmentContent {
+  transition: max-height 0.4s ease, opacity 0.4s ease;
+  max-height: 2000px;
+  opacity: 1;
+  overflow: hidden;
+}
+
+.assignmentBannerShell[data-mode="default"] .assignmentInfoBlock[data-hidden="true"],
+.assignmentBannerShell[data-mode="default"] .assignmentContent[data-hidden="true"] {
+  max-height: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
 .assignmentDockCollapsedLabel {
   display: none;
   position: absolute;
@@ -1036,7 +1051,7 @@
 .assignmentMobileWrapper {
   position: sticky;
   top: -24px;
-  z-index: 15;
+  z-index: 1600;
   width: 100vw;
   max-width: 100vw;
   margin-left: calc(-50vw + 50%);
@@ -1333,6 +1348,7 @@
   animation: panelFade 0.3s ease;
 }
 
+@media (max-width: 1199px) {
 .assignmentCollapseToggle {
   align-self: flex-end;
   display: inline-flex;
@@ -1355,6 +1371,7 @@
   margin-bottom: -0.4rem;
 }
 
+}
 .assignmentCollapseToggle:hover,
 .assignmentCollapseToggle:focus-visible {
   color: #fff;
@@ -1418,10 +1435,6 @@
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
-}
-
-.assignmentInfoBlock[hidden] {
-  display: none;
 }
 
 .assignmentMarker {
@@ -1762,11 +1775,6 @@
   }
 }
 
-.assignmentCarouselMeta {
-  font-size: 0.7rem;
-  color: rgba(230, 240, 255, 0.65);
-}
-
 .assignmentCarouselLink {
   display: inline-flex;
   flex-direction: row;
@@ -1785,19 +1793,21 @@
 }
 
 .assignmentCarouselText {
-  display: inline-flex;
+  display: flex;
+  flex: 1 1 auto;
   align-items: center;
   justify-content: center;
-  gap: 0.35rem;
-  white-space: normal;
   text-align: center;
-  flex-wrap: wrap;
+  white-space: normal;
+  padding: 0 0.35rem;
 }
 
 .assignmentCarouselTitle {
   font-size: 0.9rem;
   font-weight: 400;
   color: #f9fbff;
+  width: 100%;
+  word-break: break-word;
 }
 
 .assignmentJob {
@@ -1879,6 +1889,27 @@
   font-size: 1.05rem;
   color: #c08bff;
   margin-left: 0.45rem;
+  overflow: hidden;
+}
+
+.assignmentListRatingInner {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.35s ease, opacity 0.35s ease;
+  opacity: 1;
+}
+
+.assignmentListRatingInnerHidden {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.assignmentListRatingPulse {
+  animation: assignmentRatingBeam 0.55s ease forwards;
+  transform-origin: center;
 }
 
 .assignmentEmoji {
@@ -1970,7 +2001,7 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
 }
 
 .modalIcon {
@@ -2093,8 +2124,9 @@
 }
 
 .modalRatingConfetti {
-  font-size: 1.3rem;
+  font-size: 1.9rem;
   animation: modalBurst 0.9s ease;
+  text-shadow: 0 0 12px rgba(255, 255, 255, 0.65);
 }
 
 .modalRatingConfetti-love {
@@ -2363,9 +2395,10 @@
 
 .categoryTitle {
   margin: 0;
-  font-size: clamp(1.4rem, 2vw, 1.9rem);
+  font-size: 1.2rem;
   color: #f6f8ff;
   line-height: 1.25;
+  overflow-wrap: anywhere;
 }
 
 .categoryMetaRow {
@@ -2487,12 +2520,21 @@
   margin-bottom: clamp(0.75rem, 2vw, 1.25rem);
 }
 
+.pathHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding-bottom: 0.6rem;
+  margin-bottom: 0.75rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
 .gridContextLabel {
   font-size: 0.72rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: rgba(230, 235, 255, 0.75);
-  margin-bottom: 0.3rem;
+  margin-bottom: 0.1rem;
 }
 
 .gridFilterActions {
@@ -3042,10 +3084,6 @@
     line-height: 1.2;
   }
 
-  .assignmentCarouselMeta {
-    font-size: 0.65rem;
-  }
-
   .assignmentListIconWrap {
     width: 38px;
     height: 38px;
@@ -3084,6 +3122,128 @@
   );
 }
 
+.navPreviewSection {
+  gap: 1.25rem;
+}
+
+.jobvizPreviewShell {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.jobvizPreviewShell .jobvizGridWrap {
+  margin: 0;
+}
+
+.viewingHeader {
+  margin-top: 0.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.viewingIdentity {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.viewingIcon {
+  width: 54px;
+  height: 54px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, rgba(103, 151, 255, 0.25), rgba(214, 132, 255, 0.25));
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #f7fbff;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+
+.viewingTitle {
+  margin: 0;
+  font-size: 1.35rem;
+  color: #f8fbff;
+}
+
+.viewingMeta {
+  margin: 0.2rem 0 0;
+  color: rgba(230, 235, 255, 0.75);
+}
+
+.viewingHeader + .gridFilterRow {
+  margin-top: 1.25rem;
+}
+
+.assignedScopeMessage {
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(230, 235, 255, 0.75);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-bottom: 0.4rem;
+}
+
+.assignedScopeMessage svg {
+  width: 16px;
+  height: 16px;
+}
+
+.assignedToggleButton {
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.04);
+  color: #f8fbff;
+  padding: 0.4rem 0.9rem;
+  font-size: 0.9rem;
+  letter-spacing: 0.02em;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+}
+
+.assignedToggleButton:hover,
+.assignedToggleButton:focus-visible {
+  border-color: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.08);
+  transform: translateY(-1px);
+}
+
+.assignedToggleIndicator {
+  width: 16px;
+  height: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 50%;
+  background: transparent;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.assignedToggleButtonActive {
+  border-color: rgba(118, 159, 255, 0.9);
+  background: rgba(118, 159, 255, 0.12);
+}
+
+.assignedToggleButtonActive .assignedToggleIndicator {
+  border-color: transparent;
+  background: linear-gradient(130deg, rgba(103, 151, 255, 0.95), rgba(214, 132, 255, 0.95));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.5),
+    0 0 12px rgba(118, 159, 255, 0.6);
+}
+
+@media (max-width: 640px) {
+  .viewingHeader {
+    flex-direction: column;
+  }
+}
+
 @keyframes modalBurst {
   0% {
     opacity: 0;
@@ -3096,5 +3256,20 @@
   100% {
     opacity: 0;
     transform: translateY(-18px) scale(0.8);
+  }
+}
+
+@keyframes assignmentRatingBeam {
+  0% {
+    transform: scale(1.6);
+    opacity: 0.2;
+  }
+  40% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
   }
 }
