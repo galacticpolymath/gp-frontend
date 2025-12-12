@@ -22,6 +22,7 @@ import ReactMaterialCarousel from 'react-material-ui-carousel';
 import { Paper, Button as MaterialUIBtn } from '@mui/material';
 import { IItemV2 } from "../../../backend/models/Unit/types/teachingMaterials";
 import { Carousel as ReactCarousel } from '@trendyol-js/react-carousel';
+import ImageSlider from "../LessonItemsModalCarousel";
 
 
 
@@ -142,7 +143,7 @@ const LessonItemCard: React.FC<ILessonItemCard> = ({
   const [isMsgHidden, setIsMsgHidden] = useState(false);
 
   return (
-    <CarouselCard key={`image-${index}`} className="h-100 position-relative">
+    <div key={`image-${index}`} className="h-100 position-relative w-100">
       <div
         style={{
           zIndex: 10000,
@@ -199,7 +200,7 @@ const LessonItemCard: React.FC<ILessonItemCard> = ({
           <iframe src={previewUrl} className="w-100 h-100" />
         </div>
       }
-    </CarouselCard>
+    </div>
   );
 };
 
@@ -750,7 +751,7 @@ const LessonItemsModal: React.FC = () => {
             </section>
           </div>
         </section>
-        <ReactCarousel
+        {/* <ReactCarousel
           show={1}
           slide={1}
           rightArrow={<button style={{ zIndex: -9999 }} className="position-fixed opacity-0" onClick={createOnNavLessonItemsClickHandler(1)} ref={rightArrownRef} />}
@@ -778,28 +779,27 @@ const LessonItemsModal: React.FC = () => {
             }
 
             return (
-              <CarouselCard key={`image-${index}`} className="h-100">
+              <div key={`image-${index}`} className="h-100 w-100">
                 <div className="w-100 h-100 position-relative">
                   <iframe src={url} className="w-100 h-100" />
                 </div>
-              </CarouselCard>
+              </div>
             );
           })}
-        </ReactCarousel>
+        </ReactCarousel> */}
+        <ImageSlider items={lessonItems} currentIndex={currentIndex} />
         <div
           style={{ backgroundColor: LESSON_ITEMS_MODAL_BG_COLOR }}
           className="px-2 px-sm-0 pt-2 d-flex justify-content-center align-items-center flex-row w-100"
         >
-          <CarouselButton
+          <button
             ref={leftBtnRef}
-            onClick={handleCarouselNavBtnClick('left')}
-            size="large"
-            shape="circular"
+            onClick={createOnNavLessonItemsClickHandler(-1)}
             className="ms-sm-0 ms-1"
-            appearance="primary"
-            navType="prev"
             name="prev"
-          />
+          >
+            {"<"}
+          </button>
           <div
             style={{
               minWidth: "60vw",
@@ -819,16 +819,15 @@ const LessonItemsModal: React.FC = () => {
               </div>
             </div>
           </div>
-          <CarouselButton
+          <button
             ref={rightBtnRef}
-            onClick={handleCarouselNavBtnClick('right')}
-            size="large"
-            shape="circular"
-            appearance="primary"
             className="me-sm-0 me-1"
-            navType="next"
+            onClick={createOnNavLessonItemsClickHandler(1)}
             name="next"
-          />
+          >
+            {">"}
+
+          </button>
         </div>
       </Modal>
     </>
