@@ -48,7 +48,6 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
   const highlightTimeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
   const [highlightedSoc, setHighlightedSoc] = React.useState<string | null>(null);
   const [suppressedSocCodes, setSuppressedSocCodes] = React.useState<Set<string>>(new Set());
-  const carouselAutoOpenIdxRef = React.useRef<number | null>(null);
   const [mobileCollapsed, setMobileCollapsed] = React.useState(false);
   const shouldRenderBanner =
     Boolean(unitName) || Boolean(jobs?.length);
@@ -135,24 +134,27 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
     ? clientProgress
     : { rated: 0, total: assignmentSocCodes.length };
 
-  const handleJobClick = (socCode: string) => {
-    setClickedSocCodes((prev) => {
-      const next = new Set(prev);
-      next.add(socCode);
-      return next;
-    });
+  const handleJobClick = React.useCallback(
+    (socCode: string) => {
+      setClickedSocCodes((prev) => {
+        const next = new Set(prev);
+        next.add(socCode);
+        return next;
+      });
 
-    if (onJobClick) {
-      onJobClick(socCode);
-      return;
-    }
+      if (onJobClick) {
+        onJobClick(socCode);
+        return;
+      }
 
-    const node = getNodeBySocCode(socCode);
-    if (!node) return;
+      const node = getNodeBySocCode(socCode);
+      if (!node) return;
 
-    const url = buildJobvizUrl({ fromNode: node }, assignmentParams);
-    router.push(url, undefined, { scroll: false });
-  };
+      const url = buildJobvizUrl({ fromNode: node }, assignmentParams);
+      router.push(url, undefined, { scroll: false });
+    },
+    [assignmentParams, onJobClick, router]
+  );
 
   const jobItems = React.useMemo(() => {
     if (!jobs?.length) return [];
@@ -170,41 +172,24 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
     return [jobItems.slice(0, midpoint), jobItems.slice(midpoint)];
   }, [jobItems]);
 
-  const queueAutoOpen = (nextIdx: number) => {
-    if (variant === "mobile") {
-      carouselAutoOpenIdxRef.current = nextIdx;
-    }
-  };
-
-  React.useEffect(() => {
-    if (variant !== "mobile") return;
-    const targetIdx = carouselAutoOpenIdxRef.current;
-    if (targetIdx === null) return;
-    carouselAutoOpenIdxRef.current = null;
-    const targetJob = jobItems[targetIdx];
-    if (targetJob) {
-      handleJobClick(targetJob.soc);
-    }
-  }, [activeJobIdx, variant, jobItems, handleJobClick]);
-
   const handlePrev = () => {
     if (!jobItems.length) return;
+    const next = (activeJobIdx - 1 + jobItems.length) % jobItems.length;
     setSlideDir("prev");
-    setActiveJobIdx((idx) => {
-      const next = (idx - 1 + jobItems.length) % jobItems.length;
-      queueAutoOpen(next);
-      return next;
-    });
+    setActiveJobIdx(next);
+    if (variant === "mobile") {
+      window.setTimeout(() => handleJobClick(jobItems[next].soc), 0);
+    }
   };
 
   const handleNext = () => {
     if (!jobItems.length) return;
+    const next = (activeJobIdx + 1) % jobItems.length;
     setSlideDir("next");
-    setActiveJobIdx((idx) => {
-      const next = (idx + 1) % jobItems.length;
-      queueAutoOpen(next);
-      return next;
-    });
+    setActiveJobIdx(next);
+    if (variant === "mobile") {
+      window.setTimeout(() => handleJobClick(jobItems[next].soc), 0);
+    }
   };
 
   React.useEffect(() => {
@@ -246,6 +231,14 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
         "--jobviz-assignment-offset",
         `${height}px`
       );
+      const header = document.querySelector("header");
+      const navHeight = header
+        ? header.getBoundingClientRect().height
+        : 64;
+      document.documentElement.style.setProperty(
+        "--jobviz-nav-offset",
+        `${navHeight}px`
+      );
     };
 
     document.body.dataset.jobvizAssignment = "true";
@@ -260,6 +253,7 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
         "--jobviz-assignment-offset",
         "0px"
       );
+      document.documentElement.style.setProperty("--jobviz-nav-offset", "0px");
       delete document.body.dataset.jobvizAssignment;
     };
   }, [variant, shouldRenderBanner, mobileCollapsed, showAssignmentPanel]);

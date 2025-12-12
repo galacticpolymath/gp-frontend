@@ -92,11 +92,23 @@ const SelectedJob: React.FC = () => {
     ? ratings[selectedJob.soc_code]
     : undefined;
 
+  const dispatchRatingEvent = (socCode: string, phase: "start" | "finish") => {
+    if (typeof window === "undefined") return;
+    window.dispatchEvent(
+      new CustomEvent("jobviz-rating-highlight", { detail: { socCode, phase } })
+    );
+  };
+
   const handleRatingSelect = (value: JobRatingValue) => {
     if (!selectedJob?.soc_code) return;
-    setRating(selectedJob.soc_code, value);
+    const socCode = selectedJob.soc_code;
+    dispatchRatingEvent(socCode, "start");
+    setRating(socCode, value);
     setRatingBurst(value);
-    window.setTimeout(() => setRatingBurst(null), 900);
+    window.setTimeout(() => {
+      setRatingBurst(null);
+      dispatchRatingEvent(socCode, "finish");
+    }, 900);
   };
 
   const triggerHaptic = (duration = 14) => {

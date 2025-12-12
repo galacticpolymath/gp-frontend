@@ -1,4 +1,5 @@
 export const categoryIconMap = {
+  "11-0000": "BriefcaseBusiness",
   "00-0000": "Grid2x2",
   "11-1000": "Crown",
   "11-2000": "Megaphone",

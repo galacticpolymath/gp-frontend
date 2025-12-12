@@ -2,6 +2,11 @@ import Head from "next/head";
 import React, { useEffect, useRef, useState } from "react";
 import { LucideIcon } from "../../components/JobViz/LucideIcon";
 import {
+  BreadcrumbSegment,
+  JobVizBreadcrumb,
+} from "../../components/JobViz/JobVizBreadcrumb";
+import { JobVizGrid, JobVizGridItem } from "../../components/JobViz/JobVizGrid";
+import {
   jobVizData,
   getIconNameForNode,
   JobVizNode,
@@ -105,6 +110,64 @@ const assignmentMeta = {
     "Skim each BLS occupation, grab the wage or growth stat, and justify your emoji reaction for our water systems discussion.",
 };
 
+const managementClusterNode =
+  jobVizData.find((node) => node.soc_code === "11-0000") ?? null;
+const managementClusterCount = managementClusterNode
+  ? getDescendantLineItems(managementClusterNode)
+  : 0;
+const managementClusterLabel =
+  managementClusterNode?.soc_title ??
+  managementClusterNode?.title ??
+  "Management occupations";
+const marketingSummaryNode =
+  jobVizData.find((node) => node.soc_code === "11-2020") ?? null;
+const marketingSummaryLabel =
+  marketingSummaryNode?.title ??
+  marketingSummaryNode?.soc_title ??
+  "Marketing and Sales Managers";
+
+const previewBreadcrumbSegments: BreadcrumbSegment[] = [
+  { label: "job-categories", iconName: "Grid2x2" },
+  { label: managementClusterLabel, iconName: "GitBranch" },
+  { label: marketingSummaryLabel, iconName: "Share2", isActive: true },
+];
+
+const managementPreviewSocCodes = [
+  "11-2011",
+  "11-2021",
+  "11-2022",
+  "11-2032",
+  "11-2033",
+  "11-1021",
+];
+
+const managementPreviewJobs = managementPreviewSocCodes
+  .map((code) => jobVizData.find((node) => node.soc_code === code))
+  .filter(isNode);
+
+const managementAssignedSocCodes = new Set(["11-2011", "11-2021", "11-2032"]);
+const managementAssignedCount = managementAssignedSocCodes.size;
+const marketingTitleIcon = marketingSummaryNode
+  ? getIconNameForNode(marketingSummaryNode)
+  : managementClusterNode
+    ? getIconNameForNode(managementClusterNode)
+    : "Sparkles";
+
+const previewGridItems: JobVizGridItem[] = managementPreviewJobs.map((node) => ({
+  id: node.soc_code ?? `${node.id}`,
+  title: node.soc_title ?? node.title,
+  iconName: getIconNameForNode(node),
+  level: 2,
+  wage:
+    typeof node.median_annual_wage === "string"
+      ? Number(node.median_annual_wage)
+      : node.median_annual_wage ?? null,
+  growthPercent: node.employment_change_percent ?? null,
+  education: humanize(node.typical_education_needed_for_entry),
+  socCode: node.soc_code ?? null,
+  isAssignmentJob: managementAssignedSocCodes.has(node.soc_code ?? ""),
+}));
+
 const emojiScale = [
   { label: "Love", icon: "🤩" },
   { label: "Like", icon: "😀" },
@@ -126,16 +189,35 @@ export default function JobVizDesignPreview() {
   const [infoModal, setInfoModal] = useState<InfoModalType | null>(null);
   const [modalHistory, setModalHistory] = useState<InfoModalType | null>(null);
   const [isModalClosing, setIsModalClosing] = useState(false);
+  const [showAssignedOnlyPreview, setShowAssignedOnlyPreview] = useState(false);
   const closeModalTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const activeInfoModal = modalHistory ? infoModalContent[modalHistory] : null;
 
   const shouldRenderInfoModal =
     (infoModal !== null || isModalClosing) && !!activeInfoModal;
+  const visiblePreviewItems = showAssignedOnlyPreview
+    ? previewGridItems.filter((item) => item.isAssignmentJob)
+    : previewGridItems;
+  const visibleGroupCount = visiblePreviewItems.filter((item) => item.level === 1).length;
+  const visibleJobCount = visiblePreviewItems.filter((item) => item.level === 2).length;
+  const previewMetaLine =
+    visibleGroupCount > 0
+      ? `Showing ${visibleGroupCount} job group${visibleGroupCount === 1 ? "" : "s"}${
+          visibleJobCount > 0
+            ? ` & ${visibleJobCount} job${visibleJobCount === 1 ? "" : "s"}`
+            : ""
+        }`
+      : `Showing ${visibleJobCount} job${visibleJobCount === 1 ? "" : "s"}`;
 
   const triggerHaptic = (duration = 14) => {
     if (typeof navigator !== "undefined" && "vibrate" in navigator) {
       navigator.vibrate(duration);
     }
+  };
+
+  const handleAssignedPreviewToggle = () => {
+    setShowAssignedOnlyPreview((prev) => !prev);
+    triggerHaptic();
   };
 
   const openInfoModal = (type: InfoModalType) => {
@@ -386,6 +468,67 @@ export default function JobVizDesignPreview() {
                   </article>
                 );
               })}
+            </div>
+          </div>
+        </section>
+
+        <section
+          className={`${styles.previewSection} ${styles.navPreviewSection}`}
+        >
+          <header>
+            <h2 className={styles.sectionHeading}>Path controls in situ</h2>
+            <p className={styles.sectionDescription}>
+              Same hierarchy stack as production—now with a plain-language view
+              title and a single assigned toggle that mirrors the live layout.
+            </p>
+          </header>
+          <div className={styles.jobvizPreviewShell}>
+            <div className={styles.jobvizGridWrap}>
+              <div className={styles.pathHeader}>
+                <div className={styles.gridContextLabel}>Current Path</div>
+                {showAssignedOnlyPreview ? (
+                  <div className={styles.assignedScopeMessage}>
+                    <LucideIcon name="Sparkles" />
+                    Showing assigned jobs across multiple categories
+                  </div>
+                ) : (
+                  <JobVizBreadcrumb segments={previewBreadcrumbSegments} />
+                )}
+              </div>
+              <div className={styles.viewingHeader}>
+                <div className={styles.viewingIdentity}>
+                  <span className={styles.viewingIcon}>
+                    <LucideIcon name={marketingTitleIcon} />
+                  </span>
+                  <div>
+                    <h3 className={styles.viewingTitle}>{marketingSummaryLabel}</h3>
+                    <p className={styles.viewingMeta}>{previewMetaLine}</p>
+                  </div>
+                </div>
+              </div>
+              <div className={styles.gridFilterRow}>
+                <div className={styles.gridFilterActions}>
+                  <button
+                    type="button"
+                    className={`${styles.assignedToggleButton} ${
+                      showAssignedOnlyPreview ? styles.assignedToggleButtonActive : ""
+                    }`}
+                    onClick={handleAssignedPreviewToggle}
+                    aria-pressed={showAssignedOnlyPreview}
+                  >
+                    <span className={styles.assignedToggleIndicator} aria-hidden="true" />
+                    Show only assigned jobs
+                  </button>
+                </div>
+                <div className={styles.sortControl}>
+                  <button type="button" className={styles.sortButton} aria-haspopup="listbox">
+                    <span className={styles.sortButtonLabel}>Sort by</span>
+                    <span className={styles.sortButtonValue}>Median Wage</span>
+                    <LucideIcon name="ChevronDown" className={styles.sortButtonDirectionIcon} />
+                  </button>
+                </div>
+              </div>
+              <JobVizGrid items={visiblePreviewItems} />
             </div>
           </div>
         </section>

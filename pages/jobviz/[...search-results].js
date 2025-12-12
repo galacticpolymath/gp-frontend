@@ -297,6 +297,15 @@ const JobVizSearchResults = ({
     hasAssignmentList,
   ]);
 
+  const visibleGroupCount = useMemo(
+    () => filteredGridItems.filter((item) => item.level === 1).length,
+    [filteredGridItems]
+  );
+  const visibleJobCount = useMemo(
+    () => filteredGridItems.filter((item) => item.level === 2).length,
+    [filteredGridItems]
+  );
+
   const showDetail = activeNode && activeNode.occupation_type === "Line item";
   const parentForHeading = useMemo(() => {
     if (selectedLevel) {
@@ -404,6 +413,28 @@ const JobVizSearchResults = ({
     return segments;
   }, [assignmentParams, chainNodes, parsed.targetLevel, router]);
 
+  const isShowingAssignmentScope = showAssignmentOnly && hasAssignmentList;
+  const activeBreadcrumb = breadcrumbs[breadcrumbs.length - 1];
+  const baseViewTitle = activeNode
+    ? getDisplayTitle(activeNode)
+    : activeBreadcrumb?.label?.replace(/-/g, " ") ?? "Job categories";
+  const viewingTitle = isShowingAssignmentScope
+    ? "Assigned jobs"
+    : baseViewTitle;
+  const viewingIconName = isShowingAssignmentScope
+    ? "Sparkles"
+    : activeNode
+      ? getIconNameForNode(activeNode)
+      : activeBreadcrumb?.iconName ?? "Grid2x2";
+  const viewingMetaLine =
+    visibleGroupCount > 0
+      ? `Showing ${visibleGroupCount} job group${visibleGroupCount === 1 ? "" : "s"}${
+          visibleJobCount > 0
+            ? ` & ${visibleJobCount} job${visibleJobCount === 1 ? "" : "s"}`
+            : ""
+        }`
+      : `Showing ${visibleJobCount} job${visibleJobCount === 1 ? "" : "s"}`;
+
   const heroSubtitle =
     "A tool for grades 6 to adult to explore career possibilities!";
   const isGpPlusHero = !!hasGpPlusMembership;
@@ -466,49 +497,54 @@ const JobVizSearchResults = ({
             <div id={JOBVIZ_BRACKET_SEARCH_ID} />
             <div className={styles.jobvizContextZone}>
               <div className={styles.jobvizGridWrap}>
-                {(!showAssignmentOnly || !hasAssignmentList) && (
-                  <>
-                    <div className={styles.gridContextLabel}>Current Path</div>
+                <div className={styles.pathHeader}>
+                  <div className={styles.gridContextLabel}>Current Path</div>
+                  {isShowingAssignmentScope ? (
+                    <div className={styles.assignedScopeMessage}>
+                      <LucideIcon name="Sparkles" />
+                      Showing assigned jobs across multiple categories
+                    </div>
+                  ) : (
                     <JobVizBreadcrumb segments={breadcrumbs} />
-                  </>
-                )}
+                  )}
+                </div>
+                <div className={styles.viewingHeader}>
+                  <div className={styles.viewingIdentity}>
+                    <span className={styles.viewingIcon}>
+                      <LucideIcon name={viewingIconName} />
+                    </span>
+                    <div>
+                      <h3 className={styles.viewingTitle}>{viewingTitle}</h3>
+                      <p className={styles.viewingMeta}>{viewingMetaLine}</p>
+                    </div>
+                  </div>
+                </div>
                 <div className={styles.gridFilterRow}>
                   {hasAssignmentList && (
                     <div className={styles.gridFilterActions}>
-                      <span className={styles.gridFilterLabel}>
-                        {showAssignmentOnly
-                          ? "Showing Only Assigned"
-                          : "Showing All Jobs"}
-                      </span>
                       <button
                         type="button"
-                        className={`${styles.gridFilterButton} ${
-                          !showAssignmentOnly
-                            ? styles.gridFilterButtonActive
+                        className={`${styles.assignedToggleButton} ${
+                          isShowingAssignmentScope
+                            ? styles.assignedToggleButtonActive
                             : ""
                         }`}
                         onClick={() => setShowAssignmentOnly((prev) => !prev)}
+                        aria-pressed={isShowingAssignmentScope}
                       >
-                        {showAssignmentOnly
-                          ? "Show All Jobs"
-                          : "Show Only Assigned"}
+                        <span
+                          className={styles.assignedToggleIndicator}
+                          aria-hidden="true"
+                        />
+                        Show only assigned jobs
                       </button>
                     </div>
                   )}
-                  {hasAssignmentList && (
-                    <JobVizSortControl
-                      activeOptionId={sortOptionId}
-                      onChange={handleSortControlChange}
-                      options={JOBVIZ_SORT_OPTIONS}
-                    />
-                  )}
-                  {!hasAssignmentList && (
-                    <JobVizSortControl
-                      activeOptionId={sortOptionId}
-                      onChange={handleSortControlChange}
-                      options={JOBVIZ_SORT_OPTIONS}
-                    />
-                  )}
+                  <JobVizSortControl
+                    activeOptionId={sortOptionId}
+                    onChange={handleSortControlChange}
+                    options={JOBVIZ_SORT_OPTIONS}
+                  />
                 </div>
                 <JobVizGrid
                   items={filteredGridItems}
