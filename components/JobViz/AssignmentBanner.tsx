@@ -322,6 +322,67 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
     };
   }, [variant, shouldRenderBanner, mobileCollapsed, showAssignmentPanel]);
 
+  React.useEffect(() => {
+    if (!isMobile || !shouldRenderBanner) return undefined;
+    if (typeof window === "undefined") return undefined;
+    const element = bannerRef.current;
+    if (!element) return undefined;
+
+    let releaseTimeout: ReturnType<typeof setTimeout> | null = null;
+    const activateIntent = () => {
+      document.body.dataset.jobvizAssignmentScrollIntent = "true";
+      if (releaseTimeout) {
+        window.clearTimeout(releaseTimeout);
+        releaseTimeout = null;
+      }
+    };
+    const scheduleRelease = (delay = 700) => {
+      if (releaseTimeout) {
+        window.clearTimeout(releaseTimeout);
+      }
+      releaseTimeout = window.setTimeout(() => {
+        delete document.body.dataset.jobvizAssignmentScrollIntent;
+        releaseTimeout = null;
+      }, delay);
+    };
+
+    const handlePointerStart = () => {
+      activateIntent();
+    };
+
+    const handlePointerMove = () => {
+      activateIntent();
+    };
+
+    const handlePointerEnd = () => {
+      scheduleRelease(350);
+    };
+
+    const handleWheel = () => {
+      activateIntent();
+      scheduleRelease();
+    };
+
+    const passiveOptions: AddEventListenerOptions = { passive: true };
+    element.addEventListener("wheel", handleWheel, passiveOptions);
+    element.addEventListener("pointerdown", handlePointerStart, passiveOptions);
+    element.addEventListener("pointermove", handlePointerMove, passiveOptions);
+    element.addEventListener("pointerup", handlePointerEnd, passiveOptions);
+    element.addEventListener("pointercancel", handlePointerEnd, passiveOptions);
+
+    return () => {
+      element.removeEventListener("wheel", handleWheel);
+      element.removeEventListener("pointerdown", handlePointerStart);
+      element.removeEventListener("pointermove", handlePointerMove);
+      element.removeEventListener("pointerup", handlePointerEnd);
+      element.removeEventListener("pointercancel", handlePointerEnd);
+      if (releaseTimeout) {
+        window.clearTimeout(releaseTimeout);
+      }
+      delete document.body.dataset.jobvizAssignmentScrollIntent;
+    };
+  }, [isMobile, shouldRenderBanner]);
+
   if (!shouldRenderBanner) {
     return null;
   }

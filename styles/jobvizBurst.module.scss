@@ -1325,8 +1325,7 @@
 
 @media (max-width: 1199px) {
   .assignmentBannerDefault {
-    padding: clamp(0.35rem, 1.2vw, 0.6rem) clamp(0.75rem, 4vw, 1.15rem)
-      clamp(0.15rem, 1vw, 0.35rem);
+    padding: clamp(0.35rem, 1.2vw, 0.6rem) clamp(0.75rem, 4vw, 1.15rem) 0;
   }
 }
 

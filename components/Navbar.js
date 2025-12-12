@@ -33,6 +33,13 @@ export default function Navbar() {
   useEffect(() => {
     if (typeof window === 'undefined' || disableNavbar) return;
 
+    const isMobileViewport = () =>
+      window.matchMedia('(max-width: 1024px)').matches;
+    const shouldGateReveal = () => {
+      if (!isMobileViewport()) return false;
+      return document.body?.dataset?.jobvizAssignment === 'true';
+    };
+
     const handleScroll = () => {
       if (ticking.current) return;
       ticking.current = true;
@@ -40,13 +47,18 @@ export default function Navbar() {
         const currentY = window.scrollY || 0;
         const previousY = lastScrollY.current;
         const delta = currentY - previousY;
+        const gatingReveal = shouldGateReveal();
+        const hasAssignmentIntent =
+          document.body?.dataset?.jobvizAssignmentScrollIntent === 'true';
 
         if (currentY < 80) {
           setIsNavHidden(false);
         } else if (delta > 5) {
           setIsNavHidden(true);
         } else if (delta < -5) {
-          setIsNavHidden(false);
+          if (!gatingReveal || hasAssignmentIntent) {
+            setIsNavHidden(false);
+          }
         }
 
         lastScrollY.current = currentY;
