@@ -5,6 +5,7 @@ import { TbDownload } from "react-icons/tb";
 import { TbExternalLink } from "react-icons/tb";
 import { useUserContext } from "../../../providers/UserProvider";
 import { useLessonContext } from "../../../providers/LessonProvider";
+import { FaChevronRight, FaChevronLeft } from "react-icons/fa";
 import {
   Carousel,
   CarouselSlider,
@@ -24,8 +25,8 @@ import { IItemV2 } from "../../../backend/models/Unit/types/teachingMaterials";
 import { Carousel as ReactCarousel } from '@trendyol-js/react-carousel';
 import ImageSlider from "../LessonItemsModalCarousel";
 
-
-
+const NAV_BTN_DIMENSION = '40px';
+export const EXTERNAL_LINK_HELPER_TXT = 'Open/Present';
 
 function CustomCarousel() {
   const [activeSlide, setActiveSlide] = useState(0);
@@ -605,7 +606,7 @@ const LessonItemsModal: React.FC = () => {
                           className="mb-0 text-black d-flex d-md-block justify-content-center align-items-center h-100 text-nowrap me-2"
                         >
                           <span className="d-none d-lg-block underline-on-hover">
-                            Open in New Tab:
+                            {EXTERNAL_LINK_HELPER_TXT}:
                           </span>
                           <span className="d-block d-lg-none">New Tab:</span>
                         </h6>
@@ -741,7 +742,7 @@ const LessonItemsModal: React.FC = () => {
                           />
                         </section>
                         <section className="justify-content-center align-items-center ms-sm-2 d-flex py-2 py-sm-0">
-                          <p className="mb-0 text-black">Open in New Tab</p>
+                          <p className="mb-0 text-black">{EXTERNAL_LINK_HELPER_TXT}</p>
                         </section>
                       </Button>
                     )}
@@ -787,18 +788,23 @@ const LessonItemsModal: React.FC = () => {
             );
           })}
         </ReactCarousel> */}
-        <ImageSlider items={lessonItems} currentIndex={currentIndex} />
+        <div style={{ height: '72%' }} className="">
+          <ImageSlider items={lessonItems} currentIndex={currentIndex} />
+        </div>
         <div
           style={{ backgroundColor: LESSON_ITEMS_MODAL_BG_COLOR }}
-          className="px-2 px-sm-0 d-flex justify-content-center align-items-center flex-row w-100"
+          className="px-2 pt-2 px-sm-0 d-flex justify-content-center align-items-center flex-row w-100"
         >
           <button
             ref={leftBtnRef}
             onClick={createOnNavLessonItemsClickHandler(-1)}
-            className="ms-sm-0 ms-1"
-            name="prev"
+            style={{
+              width: NAV_BTN_DIMENSION,
+              height: NAV_BTN_DIMENSION,
+            }}
+            className="nav-btn-lesson-items-modal nav-btn-lesson-items-modal me-1 no-btn-styles rounded-circle d-flex justify-content-center align-items-center" name="prev"
           >
-            {"<"}
+            <FaChevronLeft />
           </button>
           <div
             style={{
@@ -821,12 +827,15 @@ const LessonItemsModal: React.FC = () => {
           </div>
           <button
             ref={rightBtnRef}
-            className="me-sm-0 me-1"
+            style={{
+              width: NAV_BTN_DIMENSION,
+              height: NAV_BTN_DIMENSION,
+            }}
+            className="nav-btn-lesson-items-modal nav-btn-lesson-items-modal ms-1 no-btn-styles rounded-circle d-flex justify-content-center align-items-center"
             onClick={createOnNavLessonItemsClickHandler(1)}
             name="next"
           >
-            {">"}
-
+            <FaChevronRight />
           </button>
         </div>
       </Modal>

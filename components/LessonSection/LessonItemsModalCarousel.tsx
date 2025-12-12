@@ -16,7 +16,7 @@ const ImageSlider = ({ items, currentIndex }: IProps) => {
 
     return (
         <div
-            className="autoCarouselSlider mt-0"
+            className="autoCarouselSlider mt-0 w-100 h-100"
             style={{ transform: `translate3d(${-currentIndex * 100}%, 0, 0)`, backgroundColor: LESSON_ITEMS_MODAL_BG_COLOR }}
         >                        {items.map((item, index) => {
             const url =
@@ -34,14 +34,14 @@ const ImageSlider = ({ items, currentIndex }: IProps) => {
                     position: 'static',
                     width: '100%',
                     height: '100%',
-                    objectFit: 'contain'
+                    objectFit: 'contain',
                 }
             })
 
             return (
-                <div style={{ backgroundColor: LESSON_ITEMS_MODAL_BG_COLOR }} className='autoCarouselItem onLessonsPg justify-content-center align-items-center'>
+                <div style={{ backgroundColor: LESSON_ITEMS_MODAL_BG_COLOR }} className='autoCarouselItem onLessonsPg h-100'>
                     <div style={{ backgroundColor: LESSON_ITEMS_MODAL_BG_COLOR }} className='pb-0 w-100'>
-                        <div style={{ backgroundColor: LESSON_ITEMS_MODAL_BG_COLOR }} className='mediaItemContainer'>
+                        <div style={{ backgroundColor: LESSON_ITEMS_MODAL_BG_COLOR }} className='lesson-items-modal-container'>
                             {media}
                         </div>
                     </div>

@@ -48,6 +48,7 @@ import {
 import CopyLessonBtn, { ICopyLessonBtnProps } from "./CopyLessonBtn";
 import { INewUnitSchema } from "../../../backend/models/Unit/types/unit";
 import useSiteSession from "../../../customHooks/useSiteSession";
+import { EXTERNAL_LINK_HELPER_TXT } from "../Modals/LessonItemsModal";
 
 const LESSON_PART_BTN_COLOR = "#2C83C3";
 
@@ -854,7 +855,7 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                                             : ""
                                             }`}
                                         >
-                                          Open in New Tab
+                                          {EXTERNAL_LINK_HELPER_TXT}
                                         </a>
                                       </div>
                                     </li>

@@ -528,6 +528,20 @@ $toolTipColor: #f0f4ff;
   }
 }
 
+.nav-btn-lesson-items-modal {
+  @media (min-width: 576px) {
+    background-color: white;
+  }
+}
+
+.lesson-items-modal-container {
+  position: relative;
+  border: 1px solid lightgray;
+  width: 100%;
+  object-fit: contain;
+  height: 100%;
+}
+
 .selected-vid-container-iframe {
   height: 400px;
 
