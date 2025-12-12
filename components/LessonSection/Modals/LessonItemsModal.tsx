@@ -22,7 +22,8 @@ import { IoOpenOutline } from "react-icons/io5";
 import ReactMaterialCarousel from 'react-material-ui-carousel';
 import { Paper, Button as MaterialUIBtn } from '@mui/material';
 import { IItemV2 } from "../../../backend/models/Unit/types/teachingMaterials";
-import ImageSlider from "../LessonItemsModalCarousel";
+import ItemsCarousel, { CarouselItem } from "../LessonItemsModalCarousel";
+import { getMediaComponent } from "../Preview/utils";
 
 const NAV_BTN_DIMENSION = '40px';
 
@@ -661,7 +662,35 @@ const LessonItemsModal: React.FC = () => {
           </div>
         </section>
         <div style={{ height: '74%' }} className="">
-          <ImageSlider items={lessonItems} currentIndex={currentIndex} />
+          <ItemsCarousel currentIndex={currentIndex} backgroundColor={LESSON_ITEMS_MODAL_BG_COLOR}>
+            {lessonItems.map((item, index) => {
+              const url =
+                item.itemCat === "web resource"
+                  ? item.externalUrl
+                  : item.docUrl;
+              const media = getMediaComponent({
+                type: 'lesson-item-doc',
+                key: index,
+                mainLink: url,
+                webAppImgAlt: undefined,
+                webAppPreviewImg: undefined,
+                iframeStyle: {
+                  top: 0,
+                  left: 0,
+                  position: 'static',
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'contain',
+                }
+              })
+
+              return (
+                <CarouselItem backgroundColor={LESSON_ITEMS_MODAL_BG_COLOR}>
+                  {media}
+                </CarouselItem>
+              )
+            })}
+          </ItemsCarousel>
         </div>
         <div
           style={{ backgroundColor: LESSON_ITEMS_MODAL_BG_COLOR }}
