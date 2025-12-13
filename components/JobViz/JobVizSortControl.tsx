@@ -21,10 +21,33 @@ export const JobVizSortControl: React.FC<JobVizSortControlProps> = ({
 }) => {
   const [open, setOpen] = React.useState(false);
   const containerRef = React.useRef<HTMLDivElement | null>(null);
+  const focusIndicatorRef = React.useRef<HTMLButtonElement | null>(null);
+  const [pulseOptionId, setPulseOptionId] = React.useState<string | null>(null);
   const activeOption = React.useMemo(
     () => getSortOptionById(activeOptionId),
     [activeOptionId]
   );
+  React.useEffect(() => {
+    const handleSortFocus = (event: Event) => {
+      const detail = (event as CustomEvent<{ optionId?: string }>).detail;
+      const targetId = detail?.optionId ?? JOBVIZ_DEFAULT_SORT_OPTION.id;
+      onChange?.(targetId);
+      setOpen(true);
+      containerRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+      setPulseOptionId(targetId);
+      if (focusIndicatorRef.current) {
+        focusIndicatorRef.current.dataset.pulse = "true";
+        window.setTimeout(() => {
+          if (focusIndicatorRef.current) {
+            focusIndicatorRef.current.dataset.pulse = "false";
+          }
+        }, 1200);
+      }
+      window.setTimeout(() => setPulseOptionId(null), 1500);
+    };
+    window.addEventListener("jobviz-sort-focus", handleSortFocus);
+    return () => window.removeEventListener("jobviz-sort-focus", handleSortFocus);
+  }, [onChange]);
 
   React.useEffect(() => {
     if (!open) return;
@@ -60,13 +83,15 @@ export const JobVizSortControl: React.FC<JobVizSortControlProps> = ({
   };
 
   return (
-    <div className={styles.sortControl} ref={containerRef}>
+    <div className={styles.sortControl} id="jobviz-sort-control" ref={containerRef}>
       <button
         type="button"
         className={`${styles.sortButton} ${open ? styles.sortButtonOpen : ""}`}
         onClick={handleToggle}
         aria-haspopup="true"
         aria-expanded={open}
+        data-pulse="false"
+        ref={focusIndicatorRef}
       >
         <span className={styles.sortButtonLabel}>Sort by</span>
         <span className={styles.sortButtonValue}>{activeOption.label}</span>
@@ -85,6 +110,8 @@ export const JobVizSortControl: React.FC<JobVizSortControlProps> = ({
                 key={option.id}
                 className={`${styles.sortOption} ${
                   isActive ? styles.sortOptionActive : ""
+                } ${
+                  pulseOptionId === option.id ? styles.sortOptionPulse : ""
                 }`}
                 onClick={() => handleSelect(option.id)}
                 role="menuitemradio"

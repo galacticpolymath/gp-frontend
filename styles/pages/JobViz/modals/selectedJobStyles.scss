@@ -12,9 +12,16 @@ $jobInfoStatCard: rgba(14, 21, 54, 0.85);
   backdrop-filter: blur(12px);
   border-radius: 0 !important;
   z-index: 1200 !important;
+
+  &.fade {
+    opacity: 0 !important;
+    transition: opacity 0.35s ease;
+  }
+
+  &.show {
+    opacity: 1 !important;
+  }
 }
-
-
 
 .selectedJobModal {
   * {
@@ -91,6 +98,11 @@ $jobInfoStatCard: rgba(14, 21, 54, 0.85);
   transform-origin: center bottom;
 }
 
+.modal.fade:not(.show) .selectedJobModal {
+  animation: jobDetailSlideDown 0.35s cubic-bezier(0.4, 0.01, 0.22, 1) forwards;
+  transform-origin: center bottom;
+}
+
 @keyframes jobDetailSlideUp {
   0% {
     opacity: 0;
@@ -99,6 +111,17 @@ $jobInfoStatCard: rgba(14, 21, 54, 0.85);
   100% {
     opacity: 1;
     transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes jobDetailSlideDown {
+  0% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(24px) scale(0.98);
   }
 }
 

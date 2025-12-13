@@ -22,7 +22,7 @@ export const JobVizSearch: React.FC<JobVizSearchProps> = ({
   const router = useRouter();
   const [query, setQuery] = React.useState("");
   const [activeIndex, setActiveIndex] = React.useState(-1);
-  const inputId = React.useId();
+  const inputId = "jobviz-search-field";
   const listboxId = React.useId();
   const resultRefs = React.useRef<(HTMLButtonElement | null)[]>([]);
 

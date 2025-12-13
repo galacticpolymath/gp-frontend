@@ -7,6 +7,7 @@ import {
 
 interface IHeroForFreeUsersProps {
   className?: string;
+  onStatAction?: (id: string) => void;
 }
 
 const numberFormatter = new Intl.NumberFormat("en-US");
@@ -24,17 +25,21 @@ const formatPercentRangeValue = (value: number) => {
 
 const HeroForFreeUsers: React.FC<IHeroForFreeUsersProps> = ({
   className = "",
+  onStatAction,
 }) => {
 const heroStats = [
   {
+    id: "search",
     label: "Search details about",
     value: `${numberFormatter.format(totalLineItems)} jobs`,
   },
   {
+    id: "browse",
     label: "Browse",
     value: `${numberFormatter.format(totalTopLevelCategories)} job categories`,
   },
   {
+    id: "growth",
     label: "Learn which careers are heating up",
     range: [
       formatPercentRangeValue(growthRange.min),
@@ -60,7 +65,12 @@ const heroStats = [
         <div className={styles.heroStatsColumn}>
           <div className={styles.heroStats}>
             {heroStats.map((stat) => (
-              <div key={stat.label} className={styles.heroStat}>
+              <button
+                key={stat.label}
+                type="button"
+                className={styles.heroStat}
+                onClick={() => onStatAction?.(stat.id)}
+              >
                 <span className={styles.heroStatLabel}>{stat.label}</span>
                 <strong className={styles.heroStatValue}>
                   {stat.range ? (
@@ -80,8 +90,8 @@ const heroStats = [
                   ) : (
                     stat.value
                   )}
-                </strong>
-              </div>
+                    </strong>
+              </button>
             ))}
           </div>
         </div>

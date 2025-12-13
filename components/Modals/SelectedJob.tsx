@@ -59,6 +59,12 @@ const SelectedJob: React.FC = () => {
   const { ratings, setRating } = useJobRatings();
   const [ratingBurst, setRatingBurst] = useState<JobRatingValue | null>(null);
   const [isFocusAssignmentView, setIsFocusAssignmentView] = useState(false);
+  const CARD_TRANSITION_MS = 420;
+  const transitionTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [visibleJob, setVisibleJob] = useState(selectedJob);
+  const [cardPhase, setCardPhase] = useState<"enter" | "exit">(
+    selectedJob ? "enter" : "exit"
+  );
   const assignmentQueryParam = router.query?.[SOC_CODES_PARAM_NAME];
 
   const assignmentSocCodes = useMemo(() => {
@@ -85,11 +91,82 @@ const SelectedJob: React.FC = () => {
     };
   }, []);
 
+  useEffect(() => {
+    if (transitionTimeoutRef.current) {
+      clearTimeout(transitionTimeoutRef.current);
+      transitionTimeoutRef.current = null;
+    }
+
+    if (selectedJob && !visibleJob) {
+      setVisibleJob(selectedJob);
+      requestAnimationFrame(() => setCardPhase("enter"));
+      return;
+    }
+
+    if (!selectedJob && visibleJob) {
+      setCardPhase("exit");
+      transitionTimeoutRef.current = window.setTimeout(() => {
+        setVisibleJob(null);
+        window.dispatchEvent(
+          new CustomEvent("jobviz-modal-soc-change", { detail: { socCode: null } })
+        );
+        transitionTimeoutRef.current = null;
+      }, CARD_TRANSITION_MS);
+      return;
+    }
+
+    if (
+      selectedJob &&
+      visibleJob &&
+      selectedJob.soc_code !== visibleJob.soc_code
+    ) {
+      setCardPhase("exit");
+      transitionTimeoutRef.current = window.setTimeout(() => {
+        setVisibleJob(selectedJob);
+        window.dispatchEvent(
+          new CustomEvent("jobviz-modal-soc-change", {
+            detail: { socCode: selectedJob.soc_code ?? null },
+          })
+        );
+        transitionTimeoutRef.current = null;
+        requestAnimationFrame(() => setCardPhase("enter"));
+      }, CARD_TRANSITION_MS);
+      return;
+    }
+
+    if (selectedJob && visibleJob) {
+      requestAnimationFrame(() => setCardPhase("enter"));
+      window.dispatchEvent(
+        new CustomEvent("jobviz-modal-soc-change", {
+          detail: { socCode: selectedJob.soc_code ?? null },
+        })
+      );
+    }
+  }, [selectedJob, visibleJob, CARD_TRANSITION_MS]);
+
+  useEffect(() => {
+    return () => {
+      if (transitionTimeoutRef.current) {
+        clearTimeout(transitionTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!visibleJob) return;
+    const nextLink = createSelectedJobVizJobLink(visibleJob);
+    if (nextLink) {
+      setJobLink(nextLink);
+    } else {
+      console.error("selectedJob is falsy. Cannot create job link.");
+    }
+  }, [visibleJob]);
+
   const activeInfoModal = modalHistory ? infoModalContent[modalHistory] : null;
   const shouldRenderInfoModal =
     (infoModal !== null || isInfoClosing) && !!activeInfoModal;
-  const currentRating = selectedJob?.soc_code
-    ? ratings[selectedJob.soc_code]
+  const currentRating = visibleJob?.soc_code
+    ? ratings[visibleJob.soc_code]
     : undefined;
 
   const dispatchRatingEvent = (socCode: string, phase: "start" | "finish") => {
@@ -100,8 +177,8 @@ const SelectedJob: React.FC = () => {
   };
 
   const handleRatingSelect = (value: JobRatingValue) => {
-    if (!selectedJob?.soc_code) return;
-    const socCode = selectedJob.soc_code;
+    if (!visibleJob?.soc_code) return;
+    const socCode = visibleJob.soc_code;
     dispatchRatingEvent(socCode, "start");
     setRating(socCode, value);
     setRatingBurst(value);
@@ -206,13 +283,13 @@ const SelectedJob: React.FC = () => {
   };
 
   const handleExploreRelatedCareers = async () => {
-    if (!selectedJob) return;
+    if (!visibleJob) return;
 
     const socCodesStr = searchParams.get(SOC_CODES_PARAM_NAME);
     const unitNameParam = searchParams.get(UNIT_NAME_PARAM_NAME);
     const url = buildJobvizUrl(
       {
-        fromNode: selectedJob,
+        fromNode: visibleJob,
       },
       {
         socCodes: socCodesStr
@@ -249,48 +326,48 @@ const SelectedJob: React.FC = () => {
   };
 
   const jobTitle =
-    selectedJob?.soc_title ?? selectedJob?.title ?? "Job overview";
+    visibleJob?.soc_title ?? visibleJob?.title ?? "Job overview";
   const definition =
-    selectedJob?.def &&
-    selectedJob.def.toLowerCase() !==
+    visibleJob?.def &&
+    visibleJob.def.toLowerCase() !==
       "no definition found for this summary category."
-      ? selectedJob.def
+      ? visibleJob.def
       : null;
-  const categoryIcon = selectedJob
-    ? getIconNameForNode(selectedJob)
+  const categoryIcon = visibleJob
+    ? getIconNameForNode(visibleJob)
     : "Sparkles";
-  const jobIcon = selectedJob ? getJobSpecificIconName(selectedJob) : undefined;
+  const jobIcon = visibleJob ? getJobSpecificIconName(visibleJob) : undefined;
   const isAssignmentJob =
-    !!selectedJob?.soc_code &&
-    Boolean(assignmentSocCodes?.has(selectedJob.soc_code));
+    !!visibleJob?.soc_code &&
+    Boolean(assignmentSocCodes?.has(visibleJob.soc_code));
 
-  const stats = selectedJob
+  const stats = visibleJob
     ? [
         {
           id: "median",
           label: "Median wage",
-          value: formatCurrency(selectedJob.median_annual_wage),
+          value: formatCurrency(visibleJob.median_annual_wage),
           infoType: "wage" as InfoModalType,
           descriptor: null,
         },
         {
           id: "growth",
           label: "10-year change",
-          value: formatPercent(selectedJob.employment_change_percent),
+          value: formatPercent(visibleJob.employment_change_percent),
           infoType: "growth" as InfoModalType,
           descriptor: resolveTierLabel(
             "growth",
-            selectedJob.employment_change_percent ?? null
+            visibleJob.employment_change_percent ?? null
           ),
         },
         {
           id: "jobs",
           label: `Jobs by ${DATA_END_YR}`,
-          value: formatNumber(selectedJob.employment_end_yr),
+          value: formatNumber(visibleJob.employment_end_yr),
           infoType: "jobs" as InfoModalType,
           descriptor: resolveTierLabel(
             "jobs",
-            selectedJob.employment_end_yr ?? null
+            visibleJob.employment_end_yr ?? null
           ),
         },
       ]
@@ -300,18 +377,8 @@ const SelectedJob: React.FC = () => {
   return (
     <>
       <Modal
-        show={!!selectedJob}
+        show={!!visibleJob}
         onHide={handleOnHide}
-        onShow={() => {
-          const nextLink = selectedJob
-            ? createSelectedJobVizJobLink(selectedJob)
-            : null;
-          if (selectedJob && nextLink) {
-            setJobLink(nextLink);
-          } else {
-            console.error("selectedJob is falsy. Cannot create job link.");
-          }
-        }}
         contentClassName="selectedJobModal"
         dialogClassName="dialogJobVizModal py-2 d-sm-flex justify-content-center align-items-center"
         backdropClassName="selectedJobBackdrop"
@@ -321,12 +388,16 @@ const SelectedJob: React.FC = () => {
         }}
       >
         <Body className="selectedJobBody">
-          {selectedJob && (
-            <article className={styles.modalCard}>
+          {visibleJob && (
+            <article
+              className={styles.modalCard}
+              data-phase={cardPhase}
+              data-jobviz-active-soc={visibleJob.soc_code}
+            >
               <header className={styles.modalHeader}>
               <div className={styles.modalHeaderTop}>
                 <p className={styles.modalEyebrow}>
-                  Job detail <span className={styles.modalSocCodeInline}>(SOC {selectedJob.soc_code})</span>
+                  Job detail <span className={styles.modalSocCodeInline}>(SOC {visibleJob.soc_code})</span>
                 </p>
                 <button
                   type="button"
@@ -364,14 +435,6 @@ const SelectedJob: React.FC = () => {
               <section className={styles.modalRatingBlock}>
                 <div className={styles.modalRatingHeader}>
                   <span>Rate this job</span>
-                  {ratingBurst && (
-                    <span
-                      className={`${styles.modalRatingConfetti} ${styles[`modalRatingConfetti-${ratingBurst}`]}` }
-                      aria-hidden="true"
-                    >
-                      {ratingOptions.find((o) => o.value === ratingBurst)?.emoji ?? ""}
-                    </span>
-                  )}
                 </div>
                 <div className={styles.modalRatingButtons}>
                   {ratingOptions.map((option) => (
@@ -386,6 +449,14 @@ const SelectedJob: React.FC = () => {
                       onClick={() => handleRatingSelect(option.value)}
                       aria-pressed={currentRating === option.value}
                     >
+                      {ratingBurst === option.value && (
+                        <span
+                          className={`${styles.modalRatingConfetti} ${styles[`modalRatingConfetti-${ratingBurst}`]}`}
+                          aria-hidden="true"
+                        >
+                          {option.emoji}
+                        </span>
+                      )}
                       <span className={styles.modalRatingEmoji}>{option.emoji}</span>
                       <span>{option.label}</span>
                     </button>
@@ -422,16 +493,16 @@ const SelectedJob: React.FC = () => {
               <ul className={styles.modalList}>
                 <li>
                   Typical education:{" "}
-                  {describe(selectedJob.typical_education_needed_for_entry)}
+                  {describe(visibleJob.typical_education_needed_for_entry)}
                 </li>
                 <li>
                   Work experience:{" "}
-                  {describe(selectedJob.work_experience_in_a_related_occupation)}
+                  {describe(visibleJob.work_experience_in_a_related_occupation)}
                 </li>
                 <li>
                   On-the-job training:{" "}
                   {describe(
-                    selectedJob[
+                    visibleJob[
                       "typical_on-the-job_training_needed_to_attain_competency_in_the_occupation"
                     ]
                   )}
@@ -447,10 +518,10 @@ const SelectedJob: React.FC = () => {
                   <LucideIcon name="Route" />
                   Explore related careers
                 </button>
-                {selectedJob.BLS_link && (
+                {visibleJob.BLS_link && (
                   <a
                     className={styles.ghostButton}
-                    href={selectedJob.BLS_link}
+                    href={visibleJob.BLS_link}
                     target="_blank"
                     rel="noreferrer"
                   >

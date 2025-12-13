@@ -119,6 +119,7 @@ const JobViz = ({ unitName, jobTitleAndSocCodePairs, hasGpPlusMembership }) => {
     () => (sortQueryParam ? { sort: sortQueryParam } : undefined),
     [sortQueryParam]
   );
+
   const focusAssignedActive = Boolean(showAssignmentOnly && hasAssignmentList);
 
   useEffect(() => {
@@ -309,7 +310,40 @@ const JobViz = ({ unitName, jobTitleAndSocCodePairs, hasGpPlusMembership }) => {
   const heroSubtitle =
     "A tool for grades 6 to adult to explore career possibilities!";
   const isGpPlusHero = !!hasGpPlusMembership;
-  const heroSlot = isGpPlusHero ? null : <HeroForFreeUsers />;
+  const handleHeroStatAction = useCallback(
+    (statId) => {
+      if (typeof window === "undefined") return;
+      if (statId === "search") {
+        const field = document.getElementById("jobviz-search-field");
+        field?.scrollIntoView({ behavior: "smooth", block: "center" });
+        field?.focus({ preventScroll: true });
+        return;
+      }
+      if (statId === "browse") {
+        const path = document.getElementById("jobviz-breadcrumb");
+        const offset = Math.max(
+          (path?.getBoundingClientRect().top ?? 0) + window.scrollY - 80,
+          0
+        );
+        window.scrollTo({ top: offset, behavior: "smooth" });
+        return;
+      }
+      if (statId === "growth") {
+        handleSortControlChange("growth-desc");
+        window.dispatchEvent(
+          new CustomEvent("jobviz-sort-focus", {
+            detail: { optionId: "growth-desc" },
+          })
+        );
+        const dropdown = document.getElementById("jobviz-sort-control");
+        dropdown?.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+    },
+    [handleSortControlChange]
+  );
+  const heroSlot = isGpPlusHero ? null : (
+    <HeroForFreeUsers onStatAction={handleHeroStatAction} />
+  );
 
 
   const layoutProps = {
@@ -343,6 +377,7 @@ const JobViz = ({ unitName, jobTitleAndSocCodePairs, hasGpPlusMembership }) => {
             heroSubtitle={heroSubtitle}
             heroSlot={heroSlot}
             heroEyebrow={isGpPlusHero ? "Premium | GP+ Subscriber" : undefined}
+            onHeroStatAction={handleHeroStatAction}
           >
             <div id={JOBVIZ_BRACKET_SEARCH_ID} />
             <h2 className={styles.jobvizSectionHeading}>

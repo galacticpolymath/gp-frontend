@@ -33,23 +33,54 @@ export const JobVizLayout: React.FC<JobVizLayoutProps> = ({
     const colorClass = value > 0 ? styles.statValueHot : value < 0 ? styles.statValueCool : styles.statValueNeutral;
     return { label: `${formatted}%`, arrow, colorClass };
   };
-const heroStats = [
-    {
-      label: "Search details about",
-      value: `${totalLineItems.toLocaleString("en-US")} jobs`,
-    },
-    {
-      label: "Browse",
-      value: `${totalTopLevelCategories.toLocaleString("en-US")} categories of jobs`,
-    },
-    {
-      label: "Learn which careers are heating up",
-      range: [
-        formatPercentRangeValue(growthRange.min),
-        formatPercentRangeValue(growthRange.max),
-      ],
-    },
-  ];
+  const heroStats = React.useMemo(
+    () => [
+      {
+        id: "search",
+        label: "Search details about",
+        value: `${totalLineItems.toLocaleString("en-US")} jobs`,
+        action: () => {
+          if (typeof window === "undefined") return;
+          const field = document.getElementById("jobviz-search-field");
+          field?.scrollIntoView({ behavior: "smooth", block: "center" });
+          field?.focus({ preventScroll: true });
+        },
+      },
+      {
+        id: "browse",
+        label: "Browse",
+        value: `${totalTopLevelCategories.toLocaleString("en-US")} categories of jobs`,
+        action: () => {
+          if (typeof window === "undefined") return;
+          const path = document.getElementById("jobviz-breadcrumb");
+          const offset = Math.max(
+            (path?.getBoundingClientRect().top ?? 0) + window.scrollY - 80,
+            0
+          );
+          window.scrollTo({ top: offset, behavior: "smooth" });
+        },
+      },
+      {
+        id: "growth",
+        label: "Learn which careers are heating up",
+        range: [
+          formatPercentRangeValue(growthRange.min),
+          formatPercentRangeValue(growthRange.max),
+        ],
+        action: () => {
+          if (typeof window === "undefined") return;
+          window.dispatchEvent(
+            new CustomEvent("jobviz-sort-focus", {
+              detail: { optionId: "growth-desc" },
+            })
+          );
+          const dropdown = document.getElementById("jobviz-sort-control");
+          dropdown?.scrollIntoView({ behavior: "smooth", block: "center" });
+        },
+      },
+    ],
+    []
+  );
 
   React.useEffect(() => {
     if (typeof window === "undefined") return;
@@ -93,7 +124,12 @@ const heroStats = [
               <div className={styles.heroStatsColumn}>
                 <div className={styles.heroStats}>
                   {heroStats.map((stat) => (
-                    <div key={stat.label} className={styles.heroStat}>
+                    <button
+                      key={stat.label}
+                      type="button"
+                      className={styles.heroStat}
+                      onClick={stat.action}
+                    >
                       <span className={styles.heroStatLabel}>{stat.label}</span>
                       <strong className={styles.heroStatValue}>
                         {stat.range ? (
@@ -114,7 +150,7 @@ const heroStats = [
                           stat.value
                         )}
                       </strong>
-                    </div>
+                    </button>
                   ))}
                 </div>
               </div>

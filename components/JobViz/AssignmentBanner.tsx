@@ -174,14 +174,28 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
     return [jobItems.slice(0, midpoint), jobItems.slice(midpoint)];
   }, [jobItems]);
 
+  const [activeSocCode, setActiveSocCode] = React.useState<string | null>(null);
+  React.useEffect(() => {
+    const handler = (event: Event) => {
+      const detail = (event as CustomEvent<{ socCode?: string | null }>).detail;
+      setActiveSocCode(detail?.socCode ?? null);
+    };
+    if (typeof window !== "undefined") {
+      window.addEventListener("jobviz-modal-soc-change", handler);
+      handler(new CustomEvent("jobviz-modal-soc-change", { detail: { socCode: null } }));
+    }
+    return () => {
+      if (typeof window !== "undefined") {
+        window.removeEventListener("jobviz-modal-soc-change", handler);
+      }
+    };
+  }, []);
+
   const handlePrev = () => {
     if (!jobItems.length) return;
     const next = (activeJobIdx - 1 + jobItems.length) % jobItems.length;
     setSlideDir("prev");
     setActiveJobIdx(next);
-    if (variant === "mobile") {
-      window.setTimeout(() => handleJobClick(jobItems[next].soc), 0);
-    }
   };
 
   const handleNext = () => {
@@ -189,9 +203,6 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
     const next = (activeJobIdx + 1) % jobItems.length;
     setSlideDir("next");
     setActiveJobIdx(next);
-    if (variant === "mobile") {
-      window.setTimeout(() => handleJobClick(jobItems[next].soc), 0);
-    }
   };
 
   React.useEffect(() => {
@@ -556,6 +567,8 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
                                 clickedSocCodes.has(soc)
                                   ? styles.assignmentLinkClicked
                                   : ""
+                              } ${
+                                activeSocCode === soc ? styles.assignmentLinkActive : ""
                               }`}
                               onClick={() => handleJobClick(soc)}
                             >
@@ -632,11 +645,15 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
                     >
                       <LucideIcon name="ChevronLeft" />
                     </button>
-                    <button
+                        <button
                       type="button"
                       className={`${styles.assignmentCarouselLink} ${
                         activeJob && clickedSocCodes.has(activeJob.soc)
                           ? styles.assignmentLinkClicked
+                          : ""
+                      } ${
+                        activeJob && activeSocCode === activeJob.soc
+                          ? styles.assignmentLinkActive
                           : ""
                       }`}
                       onClick={() => activeJob && handleJobClick(activeJob.soc)}
