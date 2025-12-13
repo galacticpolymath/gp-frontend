@@ -2240,6 +2240,27 @@ $jobviz-nav-height: 64px;
   }
 }
 
+@keyframes sortOptionHighlightPulse {
+  0% {
+    border-width: 1px;
+    border-color: rgba(103, 151, 255, 0.45);
+    background: rgba(103, 151, 255, 0.22);
+    box-shadow: 0 0 0 0 rgba(99, 204, 255, 0.35);
+  }
+  50% {
+    border-width: 2px;
+    border-color: rgba(140, 198, 255, 0.9);
+    background: rgba(123, 211, 255, 0.35);
+    box-shadow: 0 0 0 6px rgba(102, 194, 255, 0.25);
+  }
+  100% {
+    border-width: 1px;
+    border-color: rgba(103, 151, 255, 0.45);
+    background: rgba(103, 151, 255, 0.22);
+    box-shadow: 0 0 0 0 rgba(99, 204, 255, 0);
+  }
+}
+
 .modalStat {
   border-radius: 18px;
   border: 1px solid rgba(204, 67, 255, 0.35);
@@ -2774,7 +2795,7 @@ $jobviz-nav-height: 64px;
 
 .sortOption {
   width: 100%;
-  border: none;
+  border: 1px solid transparent;
   background: none;
   color: rgba(240, 245, 255, 0.95);
   display: flex;
@@ -2799,7 +2820,8 @@ $jobviz-nav-height: 64px;
 }
 
 .sortOptionPulse {
-  animation: heroPulse 1s ease;
+  animation: sortOptionHighlightPulse 2.4s ease-in-out infinite;
+  will-change: border-color, border-width, background, box-shadow;
 }
 
 .sortOptionText {

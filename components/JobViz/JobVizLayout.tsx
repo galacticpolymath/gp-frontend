@@ -6,6 +6,7 @@ import {
   totalLineItems,
   totalTopLevelCategories,
 } from "./jobvizUtils";
+import { JOBVIZ_MAIN_ANCHOR_ID } from "./jobvizDomIds";
 
 interface JobVizLayoutProps {
   heroTitle: string;
@@ -14,7 +15,21 @@ interface JobVizLayoutProps {
   heroSlot?: React.ReactNode;
   suppressHero?: boolean;
   heroEyebrow?: string;
+  onStatAction?: (id: string) => void;
 }
+
+type HeroStatRange = {
+  label: string;
+  arrow: string;
+  colorClass: string;
+};
+
+type HeroStat = {
+  id: string;
+  label: string;
+  value?: string;
+  range?: HeroStatRange[];
+};
 
 export const JobVizLayout: React.FC<JobVizLayoutProps> = ({
   heroTitle,
@@ -23,6 +38,7 @@ export const JobVizLayout: React.FC<JobVizLayoutProps> = ({
   heroSlot,
   suppressHero = false,
   heroEyebrow = "JobViz Burst Edition",
+  onStatAction,
 }) => {
   const effectiveSubtitle =
     heroSubtitle ??
@@ -33,32 +49,17 @@ export const JobVizLayout: React.FC<JobVizLayoutProps> = ({
     const colorClass = value > 0 ? styles.statValueHot : value < 0 ? styles.statValueCool : styles.statValueNeutral;
     return { label: `${formatted}%`, arrow, colorClass };
   };
-  const heroStats = React.useMemo(
+  const heroStats = React.useMemo<HeroStat[]>(
     () => [
       {
         id: "search",
         label: "Search details about",
         value: `${totalLineItems.toLocaleString("en-US")} jobs`,
-        action: () => {
-          if (typeof window === "undefined") return;
-          const field = document.getElementById("jobviz-search-field");
-          field?.scrollIntoView({ behavior: "smooth", block: "center" });
-          field?.focus({ preventScroll: true });
-        },
       },
       {
         id: "browse",
         label: "Browse",
         value: `${totalTopLevelCategories.toLocaleString("en-US")} categories of jobs`,
-        action: () => {
-          if (typeof window === "undefined") return;
-          const path = document.getElementById("jobviz-breadcrumb");
-          const offset = Math.max(
-            (path?.getBoundingClientRect().top ?? 0) + window.scrollY - 80,
-            0
-          );
-          window.scrollTo({ top: offset, behavior: "smooth" });
-        },
       },
       {
         id: "growth",
@@ -67,16 +68,6 @@ export const JobVizLayout: React.FC<JobVizLayoutProps> = ({
           formatPercentRangeValue(growthRange.min),
           formatPercentRangeValue(growthRange.max),
         ],
-        action: () => {
-          if (typeof window === "undefined") return;
-          window.dispatchEvent(
-            new CustomEvent("jobviz-sort-focus", {
-              detail: { optionId: "growth-desc" },
-            })
-          );
-          const dropdown = document.getElementById("jobviz-sort-control");
-          dropdown?.scrollIntoView({ behavior: "smooth", block: "center" });
-        },
       },
     ],
     []
@@ -125,10 +116,10 @@ export const JobVizLayout: React.FC<JobVizLayoutProps> = ({
                 <div className={styles.heroStats}>
                   {heroStats.map((stat) => (
                     <button
-                      key={stat.label}
+                      key={stat.id}
                       type="button"
                       className={styles.heroStat}
-                      onClick={stat.action}
+                      onClick={() => onStatAction?.(stat.id)}
                     >
                       <span className={styles.heroStatLabel}>{stat.label}</span>
                       <strong className={styles.heroStatValue}>
@@ -158,6 +149,7 @@ export const JobVizLayout: React.FC<JobVizLayoutProps> = ({
           </section>
         ))}
 
+      <div id={JOBVIZ_MAIN_ANCHOR_ID} aria-hidden="true" />
       <section className={styles.jobvizSection}>
         <div className={styles.jobvizSectionBg} />
         <div className={styles.jobvizSectionPattern} />

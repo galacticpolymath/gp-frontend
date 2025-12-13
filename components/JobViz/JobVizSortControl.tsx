@@ -31,7 +31,6 @@ export const JobVizSortControl: React.FC<JobVizSortControlProps> = ({
     const handleSortFocus = (event: Event) => {
       const detail = (event as CustomEvent<{ optionId?: string }>).detail;
       const targetId = detail?.optionId ?? JOBVIZ_DEFAULT_SORT_OPTION.id;
-      onChange?.(targetId);
       setOpen(true);
       containerRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
       setPulseOptionId(targetId);
@@ -43,7 +42,7 @@ export const JobVizSortControl: React.FC<JobVizSortControlProps> = ({
           }
         }, 1200);
       }
-      window.setTimeout(() => setPulseOptionId(null), 1500);
+      window.setTimeout(() => setPulseOptionId(null), 5200);
     };
     window.addEventListener("jobviz-sort-focus", handleSortFocus);
     return () => window.removeEventListener("jobviz-sort-focus", handleSortFocus);

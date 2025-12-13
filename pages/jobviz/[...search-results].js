@@ -44,6 +44,11 @@ import {
 import { getUnitRelatedJobs } from "../../helperFns/filterUnitRelatedJobs";
 import { verifyJwt } from "../../backend/utils/security";
 import { useModalContext } from "../../providers/ModalProvider";
+import { useHeroStatAction } from "../../components/JobViz/useHeroStatAction";
+import {
+  JOBVIZ_CATEGORIES_ANCHOR_ID,
+  JOBVIZ_HIERARCHY_HEADING_ID,
+} from "../../components/JobViz/jobvizDomIds";
 
 const JOBVIZ_DATA_SOURCE =
   "https://www.bls.gov/emp/tables/occupational-projections-and-characteristics.htm";
@@ -438,7 +443,29 @@ const JobVizSearchResults = ({
   const heroSubtitle =
     "A tool for grades 6 to adult to explore career possibilities!";
   const isGpPlusHero = !!hasGpPlusMembership;
-  const heroSlot = isGpPlusHero ? null : <HeroForFreeUsers />;
+  const ensureJobCategoriesLevel = useCallback(() => {
+    if (parsed.targetLevel === 1 && chainNodes.length === 0) {
+      return;
+    }
+    const nextUrl = buildJobvizUrl(
+      { targetLevel: 1, selectedLevel: null, idPath: [] },
+      assignmentParams,
+      sortQueryParams
+    );
+    return router.push(nextUrl, undefined, { scroll: false });
+  }, [
+    assignmentParams,
+    chainNodes.length,
+    parsed.targetLevel,
+    router,
+    sortQueryParams,
+  ]);
+  const handleHeroStatAction = useHeroStatAction({
+    onBrowseNavigate: ensureJobCategoriesLevel,
+  });
+  const heroSlot = isGpPlusHero ? null : (
+    <HeroForFreeUsers onStatAction={handleHeroStatAction} />
+  );
 
 
   useEffect(() => {
@@ -482,6 +509,7 @@ const JobVizSearchResults = ({
             heroSubtitle={heroSubtitle}
             heroSlot={heroSlot}
             heroEyebrow={isGpPlusHero ? "Premium | GP+ Subscriber" : undefined}
+            onStatAction={handleHeroStatAction}
           >
             {showIntroHeading && (
               <h2 className={styles.jobvizSectionHeading}>{sectionHeading}</h2>
@@ -496,7 +524,10 @@ const JobVizSearchResults = ({
             />
             <div id={JOBVIZ_BRACKET_SEARCH_ID} />
             <div className={styles.jobvizContextZone}>
-              <div className={styles.jobvizGridWrap}>
+              <div
+                className={styles.jobvizGridWrap}
+                id={JOBVIZ_CATEGORIES_ANCHOR_ID}
+              >
                 <div className={styles.pathHeader}>
                   <div className={styles.gridContextLabel}>Current Path</div>
                   {isShowingAssignmentScope ? (
@@ -514,7 +545,12 @@ const JobVizSearchResults = ({
                       <LucideIcon name={viewingIconName} />
                     </span>
                     <div>
-                      <h3 className={styles.viewingTitle}>{viewingTitle}</h3>
+                      <h3
+                        id={JOBVIZ_HIERARCHY_HEADING_ID}
+                        className={styles.viewingTitle}
+                      >
+                        {viewingTitle}
+                      </h3>
                       <p className={styles.viewingMeta}>{viewingMetaLine}</p>
                     </div>
                   </div>

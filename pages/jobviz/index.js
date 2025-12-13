@@ -39,6 +39,11 @@ import {
 import { getUnitRelatedJobs } from "../../helperFns/filterUnitRelatedJobs";
 import { verifyJwt } from "../../nondependencyFns";
 import { useModalContext } from "../../providers/ModalProvider";
+import { useHeroStatAction } from "../../components/JobViz/useHeroStatAction";
+import {
+  JOBVIZ_CATEGORIES_ANCHOR_ID,
+  JOBVIZ_HIERARCHY_HEADING_ID,
+} from "../../components/JobViz/jobvizDomIds";
 
 export const JOBVIZ_BRACKET_SEARCH_ID = "jobviz-bracket-search";
 
@@ -310,37 +315,10 @@ const JobViz = ({ unitName, jobTitleAndSocCodePairs, hasGpPlusMembership }) => {
   const heroSubtitle =
     "A tool for grades 6 to adult to explore career possibilities!";
   const isGpPlusHero = !!hasGpPlusMembership;
-  const handleHeroStatAction = useCallback(
-    (statId) => {
-      if (typeof window === "undefined") return;
-      if (statId === "search") {
-        const field = document.getElementById("jobviz-search-field");
-        field?.scrollIntoView({ behavior: "smooth", block: "center" });
-        field?.focus({ preventScroll: true });
-        return;
-      }
-      if (statId === "browse") {
-        const path = document.getElementById("jobviz-breadcrumb");
-        const offset = Math.max(
-          (path?.getBoundingClientRect().top ?? 0) + window.scrollY - 80,
-          0
-        );
-        window.scrollTo({ top: offset, behavior: "smooth" });
-        return;
-      }
-      if (statId === "growth") {
-        handleSortControlChange("growth-desc");
-        window.dispatchEvent(
-          new CustomEvent("jobviz-sort-focus", {
-            detail: { optionId: "growth-desc" },
-          })
-        );
-        const dropdown = document.getElementById("jobviz-sort-control");
-        dropdown?.scrollIntoView({ behavior: "smooth", block: "center" });
-      }
-    },
-    [handleSortControlChange]
-  );
+  const ensureJobCategoriesLevel = useCallback(() => undefined, []);
+  const handleHeroStatAction = useHeroStatAction({
+    onBrowseNavigate: ensureJobCategoriesLevel,
+  });
   const heroSlot = isGpPlusHero ? null : (
     <HeroForFreeUsers onStatAction={handleHeroStatAction} />
   );
@@ -377,7 +355,7 @@ const JobViz = ({ unitName, jobTitleAndSocCodePairs, hasGpPlusMembership }) => {
             heroSubtitle={heroSubtitle}
             heroSlot={heroSlot}
             heroEyebrow={isGpPlusHero ? "Premium | GP+ Subscriber" : undefined}
-            onHeroStatAction={handleHeroStatAction}
+            onStatAction={handleHeroStatAction}
           >
             <div id={JOBVIZ_BRACKET_SEARCH_ID} />
             <h2 className={styles.jobvizSectionHeading}>
@@ -392,7 +370,10 @@ const JobViz = ({ unitName, jobTitleAndSocCodePairs, hasGpPlusMembership }) => {
               extraQueryParams={sortQueryParams}
             />
             <div className={styles.jobvizContextZone}>
-              <div className={styles.jobvizGridWrap}>
+              <div
+                className={styles.jobvizGridWrap}
+                id={JOBVIZ_CATEGORIES_ANCHOR_ID}
+              >
                 <div className={styles.pathHeader}>
                   <div className={styles.gridContextLabel}>Current Path</div>
                   {isShowingAssignmentScope ? (
@@ -410,7 +391,12 @@ const JobViz = ({ unitName, jobTitleAndSocCodePairs, hasGpPlusMembership }) => {
                       <LucideIcon name={viewingIconName} />
                     </span>
                     <div>
-                      <h3 className={styles.viewingTitle}>{viewingTitle}</h3>
+                      <h3
+                        id={JOBVIZ_HIERARCHY_HEADING_ID}
+                        className={styles.viewingTitle}
+                      >
+                        {viewingTitle}
+                      </h3>
                       <p className={styles.viewingMeta}>{viewingMetaLine}</p>
                     </div>
                   </div>

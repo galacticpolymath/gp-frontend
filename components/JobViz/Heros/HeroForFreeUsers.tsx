@@ -1,3 +1,4 @@
+import * as React from "react";
 import styles from "../../../styles/jobvizBurst.module.scss";
 import {
   growthRange,
@@ -27,26 +28,29 @@ const HeroForFreeUsers: React.FC<IHeroForFreeUsersProps> = ({
   className = "",
   onStatAction,
 }) => {
-const heroStats = [
-  {
-    id: "search",
-    label: "Search details about",
-    value: `${numberFormatter.format(totalLineItems)} jobs`,
-  },
-  {
-    id: "browse",
-    label: "Browse",
-    value: `${numberFormatter.format(totalTopLevelCategories)} job categories`,
-  },
-  {
-    id: "growth",
-    label: "Learn which careers are heating up",
-    range: [
-      formatPercentRangeValue(growthRange.min),
-      formatPercentRangeValue(growthRange.max),
+  const heroStats = React.useMemo(
+    () => [
+      {
+        id: "search",
+        label: "Search details about",
+        value: `${numberFormatter.format(totalLineItems)} jobs`,
+      },
+      {
+        id: "browse",
+        label: "Browse",
+        value: `${numberFormatter.format(totalTopLevelCategories)} job categories`,
+      },
+      {
+        id: "growth",
+        label: "Learn which careers are heating up",
+        range: [
+          formatPercentRangeValue(growthRange.min),
+          formatPercentRangeValue(growthRange.max),
+        ],
+      },
     ],
-  },
-];
+    []
+  );
 
   return (
     <section
@@ -66,7 +70,7 @@ const heroStats = [
           <div className={styles.heroStats}>
             {heroStats.map((stat) => (
               <button
-                key={stat.label}
+                key={stat.id}
                 type="button"
                 className={styles.heroStat}
                 onClick={() => onStatAction?.(stat.id)}
@@ -90,7 +94,7 @@ const heroStats = [
                   ) : (
                     stat.value
                   )}
-                    </strong>
+                </strong>
               </button>
             ))}
           </div>
