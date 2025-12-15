@@ -239,6 +239,15 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
   const activeJob = jobItems[activeJobIdx] ?? null;
   const isActiveJobUnrated =
     Boolean(isMobile && activeJob && !ratings[activeJob.soc]);
+  const isActiveJobSuppressed = Boolean(
+    activeJob && suppressedSocCodes.has(activeJob.soc)
+  );
+  const shouldGlowActiveJob = Boolean(
+    isActiveJobUnrated && !isActiveJobSuppressed
+  );
+  const shouldPulseNextArrow = Boolean(
+    isMobile && activeJob && !!ratings[activeJob.soc]
+  );
 
   React.useEffect(() => {
     if (variant !== "mobile" || !shouldRenderBanner) return undefined;
@@ -255,6 +264,12 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
       if (!nav) {
         const header = document.querySelector("header");
         return header ? header.getBoundingClientRect().height : 64;
+      }
+      if (
+        nav instanceof HTMLElement &&
+        nav.dataset.navHidden === "true"
+      ) {
+        return 0;
       }
       const rect = nav.getBoundingClientRect();
       const visibleTop = Math.max(rect.top, 0);
@@ -365,16 +380,10 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
         releaseTimeout = null;
       }, delay);
     };
-    const clearIntent = () => {
-      if (releaseTimeout) {
-        clearTimeout(releaseTimeout);
-        releaseTimeout = null;
-      }
-      delete document.body.dataset.jobvizAssignmentScrollIntent;
-    };
 
     const containsTarget = (target: EventTarget | null) =>
       target instanceof Node && element.contains(target);
+    const options: AddEventListenerOptions = { passive: true };
 
     const handlePointerDown = (event: PointerEvent) => {
       if (containsTarget(event.target)) {
@@ -399,12 +408,39 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
       }
     };
 
-    const options: AddEventListenerOptions = { passive: true };
     document.addEventListener("pointerdown", handlePointerDown, options);
     document.addEventListener("pointermove", handlePointerMove, options);
     document.addEventListener("pointerup", handlePointerUp, options);
     document.addEventListener("pointercancel", handlePointerUp, options);
     document.addEventListener("wheel", handleWheel, options);
+
+    let touchCleanup: (() => void) | null = null;
+    if (!("PointerEvent" in window)) {
+      const handleTouchStart = (event: TouchEvent) => {
+        if (containsTarget(event.target)) {
+          activateIntent();
+        }
+      };
+      const handleTouchMove = (event: TouchEvent) => {
+        if (containsTarget(event.target)) {
+          activateIntent();
+        }
+      };
+      const handleTouchEnd = () => {
+        scheduleRelease();
+      };
+
+      document.addEventListener("touchstart", handleTouchStart, options);
+      document.addEventListener("touchmove", handleTouchMove, options);
+      document.addEventListener("touchend", handleTouchEnd, options);
+      document.addEventListener("touchcancel", handleTouchEnd, options);
+      touchCleanup = () => {
+        document.removeEventListener("touchstart", handleTouchStart);
+        document.removeEventListener("touchmove", handleTouchMove);
+        document.removeEventListener("touchend", handleTouchEnd);
+        document.removeEventListener("touchcancel", handleTouchEnd);
+      };
+    }
 
     return () => {
       document.removeEventListener("pointerdown", handlePointerDown);
@@ -412,6 +448,7 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
       document.removeEventListener("pointerup", handlePointerUp);
       document.removeEventListener("pointercancel", handlePointerUp);
       document.removeEventListener("wheel", handleWheel);
+      touchCleanup?.();
       if (releaseTimeout) {
         window.clearTimeout(releaseTimeout);
       }
@@ -560,6 +597,8 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
                         const isSuppressed = suppressedSocCodes.has(soc);
                         const shouldPulseDesktopJob =
                           isDesktopVariant && !ratingValue && nextUnratedSoc === soc;
+                        const shouldGlowQuestion =
+                          !ratingValue && !isSuppressed;
                         const displayEmoji = ratingValue
                           ? ratingEmoji(ratingValue)
                           : "?";
@@ -593,7 +632,13 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
                                 )}
                               </span>
                               {isMounted ? (
-                                <span className={styles.assignmentListRating}>
+                                <span
+                                  className={`${styles.assignmentListRating} ${
+                                    shouldGlowQuestion
+                                      ? styles.assignmentListRatingGradient
+                                      : ""
+                                  }`}
+                                >
                                   <span
                                     className={`${styles.assignmentListRatingInner} ${
                                       shouldPulseDesktopJob
@@ -652,9 +697,12 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
                       onClick={handlePrev}
                       aria-label="Previous job"
                     >
-                      <LucideIcon name="ChevronLeft" />
+                      <LucideIcon
+                        name="ChevronLeft"
+                        className={styles.assignmentCarouselArrowIcon}
+                      />
                     </button>
-                        <button
+                    <button
                       type="button"
                       className={`${styles.assignmentCarouselLink} ${
                         activeJob && clickedSocCodes.has(activeJob.soc)
@@ -668,12 +716,18 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
                       onClick={() => activeJob && handleJobClick(activeJob.soc)}
                     >
                       <div className={styles.assignmentCarouselRow}>
-                        <span className={styles.assignmentListRating}>
+                        <span
+                          className={`${styles.assignmentListRating} ${
+                            shouldGlowActiveJob
+                              ? styles.assignmentListRatingGradient
+                              : ""
+                          }`}
+                        >
                           <span
                             className={`${styles.assignmentListRatingInner} ${
                               isActiveJobUnrated ? styles.assignmentListRatingNudge : ""
                             } ${
-                              activeJob && suppressedSocCodes.has(activeJob.soc)
+                              isActiveJobSuppressed
                                 ? styles.assignmentListRatingInnerHidden
                                 : ""
                             } ${
@@ -711,11 +765,18 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
                     </button>
                     <button
                       type="button"
-                      className={styles.assignmentCarouselArrow}
+                      className={`${styles.assignmentCarouselArrow} ${
+                        shouldPulseNextArrow ? styles.assignmentCarouselArrowHighlight : ""
+                      }`}
                       onClick={handleNext}
                       aria-label="Next job"
                     >
-                      <LucideIcon name="ChevronRight" />
+                      <LucideIcon
+                        name="ChevronRight"
+                        className={`${styles.assignmentCarouselArrowIcon} ${
+                          shouldPulseNextArrow ? styles.assignmentCarouselArrowNudge : ""
+                        }`}
+                      />
                     </button>
                   </div>
                 </div>

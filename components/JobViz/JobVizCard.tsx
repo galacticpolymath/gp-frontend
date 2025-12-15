@@ -109,7 +109,7 @@ export const JobVizCard: React.FC<JobVizCardProps> = ({
   const currentRating = socCode ? ratings[socCode] : undefined;
   const defaultRatingLabel = isAssignmentJob
     ? "Rate this assignment job"
-    : "Rate this unassigned job";
+    : "View job details";
   const ratingLabel = React.useMemo(() => {
     if (!isClient) {
       return defaultRatingLabel;
@@ -235,7 +235,7 @@ export const JobVizCard: React.FC<JobVizCardProps> = ({
             )}
           </div>
         </div>
-        {level === 2 && (
+        {level === 2 && isAssignmentJob && (
           <div
             className={`${styles.cardRatingRow} ${
               currentRating ? styles.cardRatingRowRated : styles.cardRatingRowIdle

@@ -1099,7 +1099,7 @@ $jobviz-nav-height: 64px;
 
 .assignmentMobileWrapper {
   position: sticky;
-  top: calc(var(--jobviz-nav-offset, 64px));
+  top: calc(var(--jobviz-nav-offset, 0px));
   z-index: $assignment-layer-z;
   width: 100%;
   max-width: 100%;
@@ -1125,7 +1125,10 @@ $jobviz-nav-height: 64px;
 .assignmentMobileWrapper::after {
   content: "";
   position: absolute;
-  inset: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: calc(-1 * var(--jobviz-nav-offset, 64px));
   pointer-events: none;
   z-index: 0;
 }
@@ -1395,8 +1398,12 @@ $jobviz-nav-height: 64px;
   scrollbar-width: thin;
 }
 
-.assignmentBannerSticky {
-  position: relative;
+@media (max-width: 1199px) {
+  .assignmentBannerSticky {
+    position: sticky;
+    top: calc(var(--jobviz-nav-offset, 0px));
+    z-index: 1;
+  }
 }
 
 .assignmentInner {
@@ -1785,13 +1792,39 @@ $jobviz-nav-height: 64px;
   display: grid;
   place-items: center;
   cursor: pointer;
-  transition: transform 0.2s ease, background 0.2s ease;
+  transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease,
+    border-color 0.2s ease;
 }
 
 .assignmentCarouselArrow:hover,
 .assignmentCarouselArrow:focus-visible {
   transform: translateY(-2px);
   background: rgba(255, 255, 255, 0.18);
+}
+
+.assignmentCarouselArrowHighlight {
+  background: linear-gradient(135deg, rgba(103, 151, 255, 0.95), rgba(214, 132, 255, 0.95));
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 0 12px rgba(103, 151, 255, 0.35);
+}
+
+.assignmentCarouselArrowIcon {
+  width: 18px;
+  height: 18px;
+  stroke-width: 1.8;
+  transition: transform 0.2s ease;
+}
+
+.assignmentCarouselArrowNudge {
+  animation: assignmentArrowNudge 1.4s ease-in-out infinite;
+  transform-origin: center;
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .assignmentCarouselArrowNudge {
+    animation: none;
+  }
 }
 
 .assignmentCarouselSlide.assignmentCarouselItemNext {
@@ -1971,6 +2004,12 @@ $jobviz-nav-height: 64px;
   flex-shrink: 0;
 }
 
+.assignmentListRatingGradient {
+  background: linear-gradient(135deg, rgba(103, 151, 255, 0.95), rgba(214, 132, 255, 0.95));
+  border-color: rgba(255, 255, 255, 0.25);
+  box-shadow: 0 0 12px rgba(103, 151, 255, 0.4);
+}
+
 .assignmentListRatingNudge {
   animation: assignmentRatingNudge 1.6s ease-in-out infinite;
   transform-origin: center;
@@ -1992,6 +2031,14 @@ $jobviz-nav-height: 64px;
   transition: transform 0.35s ease, opacity 0.35s ease;
   opacity: 1;
   color: #ffffff;
+}
+
+.assignmentListRatingGradient .assignmentListRatingInner {
+  color: transparent;
+  background: linear-gradient(135deg, #fefcff, #ffe1ff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  font-weight: 600;
 }
 
 .assignmentListRatingInnerHidden {
@@ -2081,6 +2128,52 @@ $jobviz-nav-height: 64px;
   .modalBrand {
     justify-content: center;
     padding-right: 0;
+  }
+}
+
+.modalMobileReminder {
+  position: fixed;
+  left: 50%;
+  bottom: clamp(0.75rem, 4vw, 1.25rem);
+  transform: translate(-50%, 40px);
+  background: rgba(6, 10, 32, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 999px;
+  padding: 0.45rem 1rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: rgba(244, 247, 255, 0.95);
+  font-size: 0.85rem;
+  letter-spacing: 0.01em;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.35);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  z-index: 10000020;
+}
+
+.modalMobileReminder[data-visible="true"] {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+.modalMobileReminderText {
+  background: linear-gradient(90deg, rgba(103, 151, 255, 0.95), rgba(214, 132, 255, 0.95));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-weight: 600;
+}
+
+.modalMobileReminderArrow {
+  font-size: 1.2rem;
+  animation: reminderArrowBounce 1.1s ease-in-out infinite;
+}
+
+@media (min-width: 768px) {
+  .modalMobileReminder {
+    display: none;
   }
 }
 .modalHeader {
@@ -2198,6 +2291,48 @@ $jobviz-nav-height: 64px;
   justify-content: space-between;
   font-size: 0.9rem;
   color: rgba(230, 240, 255, 0.8);
+  gap: 0.65rem;
+}
+
+.modalRatingLabel {
+  position: relative;
+  font-weight: 600;
+}
+
+.modalRatingLabel::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -2px;
+  height: 2px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(103, 151, 255, 0.95), rgba(214, 132, 255, 0.95));
+  opacity: 0;
+  transform: scaleX(0.6);
+  transform-origin: left;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.modalRatingLabel[data-glow="true"]::after {
+  opacity: 1;
+  transform: scaleX(1);
+  animation: modalRatingUnderline 1.1s ease-in-out infinite;
+}
+
+.modalRatingStatus {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(210, 216, 240, 0.8);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.modalRatingStatus svg {
+  width: 14px;
+  height: 14px;
 }
 
 .modalRatingButtons {
@@ -2226,6 +2361,20 @@ $jobviz-nav-height: 64px;
   transform: translateY(-2px);
   background: rgba(18, 26, 64, 0.75);
   box-shadow: 0 0 18px rgba(120, 164, 255, 0.35);
+}
+
+.modalRatingBlockDisabled {
+  opacity: 0.75;
+}
+
+.modalRatingBlockDisabled .modalRatingButtons {
+  display: none;
+}
+
+.modalRatingNotice {
+  margin: 0;
+  font-size: 0.85rem;
+  color: rgba(230, 235, 255, 0.6);
 }
 
 .modalRatingEmoji {
@@ -3563,5 +3712,35 @@ $jobviz-nav-height: 64px;
   }
   50% {
     transform: scale(1.3);
+  }
+}
+
+@keyframes assignmentArrowNudge {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.25);
+  }
+}
+
+@keyframes modalRatingUnderline {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes reminderArrowBounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(4px);
   }
 }

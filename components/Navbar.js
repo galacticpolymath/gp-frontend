@@ -73,13 +73,14 @@ export default function Navbar() {
   return (
     <nav
       style={{
-        zIndex: 1000,
+        zIndex: 10000100,
         transform: isNavHidden ? 'translateY(-115%)' : 'translateY(0)',
         opacity: isNavHidden ? 0.92 : 1,
         transition:
           'transform 0.5s cubic-bezier(0.19, 1, 0.22, 1), opacity 0.35s ease',
         willChange: 'transform, opacity',
       }}
+      data-nav-hidden={isNavHidden ? 'true' : 'false'}
       className={`fixed-top w-100 navbar-expand-lg py-0 ${disableNavbar ? 'pe-none' : ''}`}
     >
       <div

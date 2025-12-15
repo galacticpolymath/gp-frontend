@@ -61,11 +61,15 @@ const SelectedJob: React.FC = () => {
   const copyToastId = useRef<string | number | null>(null);
   const copyResetTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [didCopyLink, setDidCopyLink] = useState(false);
+  const [shouldGlowRatingLabel, setShouldGlowRatingLabel] = useState(false);
+  const [showMobileCue, setShowMobileCue] = useState(false);
+  const [isMobileViewport, setIsMobileViewport] = useState(false);
   const { ratings, setRating } = useJobRatings();
   const [ratingBurst, setRatingBurst] = useState<JobRatingValue | null>(null);
   const [isFocusAssignmentView, setIsFocusAssignmentView] = useState(false);
   const CARD_TRANSITION_MS = 420;
   const transitionTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const modalScrollRef = useRef<HTMLDivElement | null>(null);
   const [visibleJob, setVisibleJob] = useState(selectedJob);
   const [cardPhase, setCardPhase] = useState<"enter" | "exit">(
     selectedJob ? "enter" : "exit"
@@ -79,6 +83,21 @@ const SelectedJob: React.FC = () => {
     if (!value) return null;
     return new Set(value.split(",").filter(Boolean));
   }, [assignmentQueryParam]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const mq = window.matchMedia("(max-width: 768px)");
+    const handleChange = (event: MediaQueryListEvent | MediaQueryList) => {
+      setIsMobileViewport(event.matches);
+    };
+    handleChange(mq);
+    if (typeof mq.addEventListener === "function") {
+      mq.addEventListener("change", handleChange);
+      return () => mq.removeEventListener("change", handleChange);
+    }
+    mq.addListener(handleChange);
+    return () => mq.removeListener(handleChange);
+  }, []);
 
   useEffect(() => {
     if (typeof window === "undefined") return undefined;
@@ -165,6 +184,9 @@ const SelectedJob: React.FC = () => {
     } else {
       console.error("selectedJob is falsy. Cannot create job link.");
     }
+    if (modalScrollRef.current) {
+      modalScrollRef.current.scrollTop = 0;
+    }
   }, [visibleJob]);
 
   const activeInfoModal = modalHistory ? infoModalContent[modalHistory] : null;
@@ -173,6 +195,15 @@ const SelectedJob: React.FC = () => {
   const currentRating = visibleJob?.soc_code
     ? ratings[visibleJob.soc_code]
     : undefined;
+  const isAssignmentJob =
+    !!visibleJob?.soc_code &&
+    Boolean(assignmentSocCodes?.has(visibleJob.soc_code));
+
+  useEffect(() => {
+    const shouldGlow = Boolean(isAssignmentJob && !currentRating);
+    setShouldGlowRatingLabel(shouldGlow);
+    setShowMobileCue(Boolean(shouldGlow && isMobileViewport));
+  }, [isAssignmentJob, currentRating, isMobileViewport]);
 
   const dispatchRatingEvent = (socCode: string, phase: "start" | "finish") => {
     if (typeof window === "undefined") return;
@@ -182,11 +213,13 @@ const SelectedJob: React.FC = () => {
   };
 
   const handleRatingSelect = (value: JobRatingValue) => {
-    if (!visibleJob?.soc_code) return;
+    if (!isAssignmentJob || !visibleJob?.soc_code) return;
     const socCode = visibleJob.soc_code;
     dispatchRatingEvent(socCode, "start");
     setRating(socCode, value);
     setRatingBurst(value);
+    setShouldGlowRatingLabel(false);
+    setShowMobileCue(false);
     setTimeout(() => {
       setRatingBurst(null);
       dispatchRatingEvent(socCode, "finish");
@@ -358,9 +391,6 @@ const SelectedJob: React.FC = () => {
     ? getIconNameForNode(visibleJob)
     : "Sparkles";
   const jobIcon = visibleJob ? getJobSpecificIconName(visibleJob) : undefined;
-  const isAssignmentJob =
-    !!visibleJob?.soc_code &&
-    Boolean(assignmentSocCodes?.has(visibleJob.soc_code));
 
   const stats = visibleJob
     ? [
@@ -408,7 +438,7 @@ const SelectedJob: React.FC = () => {
           zIndex: 10000000,
         }}
       >
-        <Body className="selectedJobBody">
+        <Body className="selectedJobBody" ref={modalScrollRef}>
           {visibleJob && (
             <article
               className={styles.modalCard}
@@ -453,37 +483,62 @@ const SelectedJob: React.FC = () => {
               <p className={styles.modalSummary}>
                 {definition ?? "Definition unavailable from the BLS feed."}
               </p>
-              <section className={styles.modalRatingBlock}>
-                <div className={styles.modalRatingHeader}>
-                  <span>Rate this job</span>
-                </div>
-                <div className={styles.modalRatingButtons}>
-                  {ratingOptions.map((option) => (
-                    <button
-                      type="button"
-                      key={option.value}
-                      className={`${styles.modalRatingButton} ${
-                        currentRating === option.value
-                          ? styles.modalRatingButtonActive
-                          : ""
-                      }`}
-                      onClick={() => handleRatingSelect(option.value)}
-                      aria-pressed={currentRating === option.value}
+              {isAssignmentJob ? (
+                <section className={styles.modalRatingBlock}>
+                  <div className={styles.modalRatingHeader}>
+                    <span
+                      className={styles.modalRatingLabel}
+                      data-glow={shouldGlowRatingLabel ? "true" : "false"}
                     >
-                      {ratingBurst === option.value && (
-                        <span
-                          className={`${styles.modalRatingConfetti} ${styles[`modalRatingConfetti-${ratingBurst}`]}`}
-                          aria-hidden="true"
-                        >
-                          {option.emoji}
-                        </span>
-                      )}
-                      <span className={styles.modalRatingEmoji}>{option.emoji}</span>
-                      <span>{option.label}</span>
-                    </button>
-                  ))}
-                </div>
-              </section>
+                      Rate this job
+                    </span>
+                    {currentRating && (
+                      <span className={styles.modalRatingStatus}>
+                        <LucideIcon name="Check" />
+                        Rated
+                      </span>
+                    )}
+                  </div>
+                  <div className={styles.modalRatingButtons}>
+                    {ratingOptions.map((option) => (
+                      <button
+                        type="button"
+                        key={option.value}
+                        className={`${styles.modalRatingButton} ${
+                          currentRating === option.value
+                            ? styles.modalRatingButtonActive
+                            : ""
+                        }`}
+                        onClick={() => handleRatingSelect(option.value)}
+                        aria-pressed={currentRating === option.value}
+                      >
+                        {ratingBurst === option.value && (
+                          <span
+                            className={`${styles.modalRatingConfetti} ${styles[`modalRatingConfetti-${ratingBurst}`]}`}
+                            aria-hidden="true"
+                          >
+                            {option.emoji}
+                          </span>
+                        )}
+                        <span className={styles.modalRatingEmoji}>{option.emoji}</span>
+                        <span>{option.label}</span>
+                      </button>
+                    ))}
+                  </div>
+                </section>
+              ) : (
+                <section className={`${styles.modalRatingBlock} ${styles.modalRatingBlockDisabled}`}>
+                  <div className={styles.modalRatingHeader}>
+                    <span className={styles.modalRatingLabel}>Rate this job</span>
+                    <span className={styles.modalRatingStatus}>
+                      Assignment only
+                    </span>
+                  </div>
+                  <p className={styles.modalRatingNotice}>
+                    Ratings unlock when this job is part of one of your assignments.
+                  </p>
+                </section>
+              )}
               <dl className={styles.modalStats}>
                 {stats.map((stat) => (
                   <div key={stat.id} className={styles.modalStat}>
@@ -574,6 +629,17 @@ const SelectedJob: React.FC = () => {
               </div>
             </article>
           )}
+          <div
+            className={styles.modalMobileReminder}
+            data-visible={showMobileCue ? "true" : "false"}
+          >
+            <span className={styles.modalMobileReminderText}>
+              Consider details & stats, then rate
+            </span>
+            <span className={styles.modalMobileReminderArrow} aria-hidden="true">
+              ↓
+            </span>
+          </div>
         </Body>
       </Modal>
 
