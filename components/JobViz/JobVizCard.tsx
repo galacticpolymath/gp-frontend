@@ -4,6 +4,10 @@ import { LucideIcon } from "./LucideIcon";
 import { ratingEmoji, useJobRatings } from "./jobRatingsStore";
 import type { JobRatingValue } from "./jobRatingsStore";
 
+type CardAnimationStyle = React.CSSProperties & {
+  "--card-stagger-delay"?: string;
+};
+
 export interface JobVizCardProps {
   title: string;
   iconName: string;
@@ -19,6 +23,9 @@ export interface JobVizCardProps {
   jobIconName?: string;
   socCode?: string | null;
   isAssignmentJob?: boolean;
+  shouldAnimate?: boolean;
+  animationDelayMs?: number;
+  isExiting?: boolean;
 }
 
 const numberFormatter = new Intl.NumberFormat("en-US");
@@ -64,6 +71,9 @@ export const JobVizCard: React.FC<JobVizCardProps> = ({
   jobIconName,
   socCode,
   isAssignmentJob,
+  shouldAnimate = false,
+  animationDelayMs = 0,
+  isExiting = false,
 }) => {
   const [isHovered, setHover] = React.useState(false);
   const [isClient, setIsClient] = React.useState(false);
@@ -92,10 +102,17 @@ export const JobVizCard: React.FC<JobVizCardProps> = ({
     }
     return defaultRatingLabel;
   }, [isClient, currentRating, defaultRatingLabel]);
+  const isAnimating = shouldAnimate || isExiting;
+  const animationClass = shouldAnimate ? styles.cardEntrance : "";
+  const exitClass = isExiting ? styles.cardExit : "";
+  const animationStyle: CardAnimationStyle | undefined = isAnimating
+    ? { "--card-stagger-delay": `${animationDelayMs}ms` }
+    : undefined;
 
   return (
     <article
-      className={`${containerClass} ${highlightClass} ${visitedClass}`}
+      className={`${containerClass} ${highlightClass} ${visitedClass} ${animationClass} ${exitClass}`}
+      style={animationStyle}
       onClick={onClick}
       role={onClick ? "button" : undefined}
       tabIndex={onClick ? 0 : undefined}

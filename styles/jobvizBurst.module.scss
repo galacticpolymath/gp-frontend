@@ -744,6 +744,19 @@ $jobviz-nav-height: 64px;
   opacity: 1;
 }
 
+.cardEntrance {
+  animation: jobvizCardDeal 620ms cubic-bezier(0.2, 0.9, 0.2, 1) both;
+  animation-delay: var(--card-stagger-delay, 0ms);
+  will-change: opacity, transform;
+}
+
+.cardExit {
+  animation: jobvizCardSweep 520ms cubic-bezier(0.48, 0.01, 0.42, 1.13) both;
+  animation-delay: var(--card-stagger-delay, 0ms);
+  will-change: opacity, transform;
+  pointer-events: none;
+}
+
 .categoryCardHighlight {
   box-shadow:
     0 0 0 2px rgba(118, 159, 255, 0.5),
@@ -2258,6 +2271,36 @@ $jobviz-nav-height: 64px;
     border-color: rgba(103, 151, 255, 0.45);
     background: rgba(103, 151, 255, 0.22);
     box-shadow: 0 0 0 0 rgba(99, 204, 255, 0);
+  }
+}
+
+@keyframes jobvizCardDeal {
+  0% {
+    opacity: 0;
+    transform: translateY(36px) scale(0.92);
+  }
+  65% {
+    opacity: 1;
+    transform: translateY(-10px) scale(1.01);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes jobvizCardSweep {
+  0% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) rotate(0deg) scale(1);
+  }
+  35% {
+    opacity: 0.95;
+    transform: translate3d(12px, -6px, 0) rotate(-1.5deg) scale(1.01);
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(220px, -35px, 0) rotate(7deg) scale(0.94);
   }
 }
 
