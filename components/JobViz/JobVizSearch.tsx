@@ -83,6 +83,7 @@ export const JobVizSearch: React.FC<JobVizSearchProps> = ({
     const isGroup = node.occupation_type !== "Line item";
     const pushPromise = router.push(url, undefined, {
       scroll: !isGroup,
+      shallow: true,
     });
     if (isGroup) {
       pushPromise.then(() => {

@@ -6,12 +6,17 @@ import type { JobRatingValue } from "./jobRatingsStore";
 
 type CardAnimationStyle = React.CSSProperties & {
   "--card-stagger-delay"?: string;
+  "--card-pivot-dx"?: string;
+  "--card-pivot-dy"?: string;
 };
+
+type CardDirection = "down" | "up";
 
 export interface JobVizCardProps {
   title: string;
   iconName: string;
   level: 1 | 2;
+  cardId?: string;
   onClick?: () => void;
   highlight?: boolean;
   highlightClicked?: boolean;
@@ -26,6 +31,11 @@ export interface JobVizCardProps {
   shouldAnimate?: boolean;
   animationDelayMs?: number;
   isExiting?: boolean;
+  entranceDirection?: CardDirection;
+  exitDirection?: CardDirection | null;
+  isPivot?: boolean;
+  pivotShift?: { dx: number; dy: number };
+  onCardAction?: (meta: { cardRect?: { x: number; y: number; width: number; height: number } | null }) => void;
 }
 
 const numberFormatter = new Intl.NumberFormat("en-US");
@@ -74,10 +84,17 @@ export const JobVizCard: React.FC<JobVizCardProps> = ({
   shouldAnimate = false,
   animationDelayMs = 0,
   isExiting = false,
+  entranceDirection = "down",
+  exitDirection = null,
+  isPivot = false,
+  pivotShift,
+  onCardAction,
+  cardId,
 }) => {
   const [isHovered, setHover] = React.useState(false);
   const [isClient, setIsClient] = React.useState(false);
   React.useEffect(() => setIsClient(true), []);
+  const cardRef = React.useRef<HTMLElement | null>(null);
   const containerClass = level === 1 ? styles.categoryCard : styles.jobCard;
   const highlightClass =
     highlight && level === 1
@@ -103,30 +120,70 @@ export const JobVizCard: React.FC<JobVizCardProps> = ({
     return defaultRatingLabel;
   }, [isClient, currentRating, defaultRatingLabel]);
   const isAnimating = shouldAnimate || isExiting;
-  const animationClass = shouldAnimate ? styles.cardEntrance : "";
-  const exitClass = isExiting ? styles.cardExit : "";
+  const animationClass = shouldAnimate
+    ? entranceDirection === "up"
+      ? styles.cardEntranceUp
+      : styles.cardEntrance
+    : "";
+  const exitClass = isExiting
+    ? exitDirection === "up"
+      ? styles.cardExitUp
+      : isPivot
+        ? styles.cardExitDownPivot
+        : styles.cardExitDown
+    : "";
   const animationStyle: CardAnimationStyle | undefined = isAnimating
-    ? { "--card-stagger-delay": `${animationDelayMs}ms` }
+    ? {
+        "--card-stagger-delay": `${animationDelayMs}ms`,
+        "--card-pivot-dx": `${pivotShift?.dx ?? 0}px`,
+        "--card-pivot-dy": `${pivotShift?.dy ?? 0}px`,
+      }
     : undefined;
+  const isInteractive = Boolean(onClick || onCardAction);
+  const emitCardAction = React.useCallback(() => {
+    const rect = cardRef.current?.getBoundingClientRect() ?? null;
+    if (onCardAction) {
+      onCardAction({
+        cardRect: rect
+          ? {
+              x: rect.left,
+              y: rect.top,
+              width: rect.width,
+              height: rect.height,
+            }
+          : null,
+      });
+      onClick?.();
+      return;
+    }
+    onClick?.();
+  }, [onCardAction, onClick]);
+  const handleCardClick = () => {
+    if (!isInteractive) return;
+    emitCardAction();
+  };
+  const handleKeyActivate = (event: React.KeyboardEvent) => {
+    if (!isInteractive) return;
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      emitCardAction();
+    }
+  };
 
   return (
     <article
+      ref={cardRef}
       className={`${containerClass} ${highlightClass} ${visitedClass} ${animationClass} ${exitClass}`}
       style={animationStyle}
-      onClick={onClick}
-      role={onClick ? "button" : undefined}
-      tabIndex={onClick ? 0 : undefined}
+      data-jobviz-card-id={cardId}
+      onClick={isInteractive ? handleCardClick : undefined}
+      role={isInteractive ? "button" : undefined}
+      tabIndex={isInteractive ? 0 : undefined}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
       onFocus={() => setHover(true)}
       onBlur={() => setHover(false)}
-      onKeyDown={(e) => {
-        if (!onClick) return;
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          onClick();
-        }
-      }}
+      onKeyDown={handleKeyActivate}
       aria-label={level === 1 ? "Click to view jobs" : "Click for job details"}
       aria-describedby={isHovered ? tooltipId : undefined}
     >

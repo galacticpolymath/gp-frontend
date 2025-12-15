@@ -44,7 +44,7 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
   const [activeJobIdx, setActiveJobIdx] = React.useState(0);
   const [slideDir, setSlideDir] = React.useState<"next" | "prev" | null>(null);
   const [flash, setFlash] = React.useState(false);
-  const highlightTimeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+  const highlightTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
   const [highlightedSoc, setHighlightedSoc] = React.useState<string | null>(null);
   const [suppressedSocCodes, setSuppressedSocCodes] = React.useState<Set<string>>(new Set());
   const [mobileCollapsed, setMobileCollapsed] = React.useState(false);
@@ -103,7 +103,7 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
       if (highlightTimeoutRef.current) {
         clearTimeout(highlightTimeoutRef.current);
       }
-      highlightTimeoutRef.current = window.setTimeout(() => {
+      highlightTimeoutRef.current = setTimeout(() => {
         setHighlightedSoc((current) => (current === socCode ? null : current));
         highlightTimeoutRef.current = null;
       }, 600);
@@ -147,7 +147,7 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
       if (!node) return;
 
       const url = buildJobvizUrl({ fromNode: node }, assignmentParams);
-      router.push(url, undefined, { scroll: false });
+      router.push(url, undefined, { scroll: false, shallow: true });
     },
     [assignmentParams, onJobClick, router]
   );
@@ -191,18 +191,27 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
     };
   }, []);
 
+  const activateJobAtIndex = React.useCallback(
+    (index: number, direction: "next" | "prev") => {
+      if (!jobItems.length) return;
+      const normalized =
+        ((index % jobItems.length) + jobItems.length) % jobItems.length;
+      setSlideDir(direction);
+      setActiveJobIdx(normalized);
+      const job = jobItems[normalized];
+      if (job) {
+        handleJobClick(job.soc);
+      }
+    },
+    [jobItems, handleJobClick]
+  );
+
   const handlePrev = () => {
-    if (!jobItems.length) return;
-    const next = (activeJobIdx - 1 + jobItems.length) % jobItems.length;
-    setSlideDir("prev");
-    setActiveJobIdx(next);
+    activateJobAtIndex(activeJobIdx - 1, "prev");
   };
 
   const handleNext = () => {
-    if (!jobItems.length) return;
-    const next = (activeJobIdx + 1) % jobItems.length;
-    setSlideDir("next");
-    setActiveJobIdx(next);
+    activateJobAtIndex(activeJobIdx + 1, "next");
   };
 
   React.useEffect(() => {
@@ -222,8 +231,8 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
   const isDockCollapsed = isDesktopVariant && dockCollapsed;
   React.useEffect(() => {
     if (!jobs?.length) return;
-    const timer = window.setTimeout(() => setShowRatingHint(false), 4000);
-    return () => window.clearTimeout(timer);
+    const timer = setTimeout(() => setShowRatingHint(false), 4000);
+    return () => clearTimeout(timer);
   }, [jobs?.length, variant]);
 
   const showAssignmentPanel = !isDesktopVariant || !isDockCollapsed;
@@ -343,22 +352,22 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
     const activateIntent = () => {
       document.body.dataset.jobvizAssignmentScrollIntent = "true";
       if (releaseTimeout) {
-        window.clearTimeout(releaseTimeout);
+        clearTimeout(releaseTimeout);
         releaseTimeout = null;
       }
     };
     const scheduleRelease = (delay = 450) => {
       if (releaseTimeout) {
-        window.clearTimeout(releaseTimeout);
+        clearTimeout(releaseTimeout);
       }
-      releaseTimeout = window.setTimeout(() => {
+      releaseTimeout = setTimeout(() => {
         delete document.body.dataset.jobvizAssignmentScrollIntent;
         releaseTimeout = null;
       }, delay);
     };
     const clearIntent = () => {
       if (releaseTimeout) {
-        window.clearTimeout(releaseTimeout);
+        clearTimeout(releaseTimeout);
         releaseTimeout = null;
       }
       delete document.body.dataset.jobvizAssignmentScrollIntent;

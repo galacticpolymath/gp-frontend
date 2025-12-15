@@ -52,6 +52,7 @@ export interface ILessonItemsModal {
 type TEmailNewsletterSignUpModal = IEmailNewsletterSignUpModal;
 
 export interface IModalProviderValue {
+  _jobvizReturnPath: TUseStateReturnVal<string | null>;
   _customModalFooter: TUseStateReturnVal<null | ReactNode>;
   _isAccountModalMobileOn: TUseStateReturnVal<boolean>;
   _isPasswordResetModalOn: TUseStateReturnVal<boolean>;
@@ -185,7 +186,9 @@ export const ModalProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const [customModalFooter, setCustomModalFooter] = useState<null | ReactNode>(
     null
   );
+  const [jobvizReturnPath, setJobvizReturnPath] = useState<string | null>(null);
   const value: IModalProviderValue = {
+    _jobvizReturnPath: [jobvizReturnPath, setJobvizReturnPath],
     _jobToursModalCssProps: [jobToursModalCssProps, setJobToursModalCssProps],
     _emailNewsletterSignUpModal: [
       emailNewsletterSignUpModal,

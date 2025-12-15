@@ -7,9 +7,8 @@ import { useSearchParams } from "next/navigation";
 import { LucideIcon } from "../JobViz/LucideIcon";
 import { useModalContext } from "../../providers/ModalProvider";
 import jobVizDataObj from "../../data/Jobviz/jobVizDataObj.json";
-import getNewPathsWhenModalCloses from "../../helperFns/getNewPathsWhenModalCloses";
 import { createSelectedJobVizJobLink } from "../JobViz/JobTours/JobToursCard";
-import { JOBVIZ_BRACKET_SEARCH_ID } from "../../pages/jobviz/index";
+import { JOBVIZ_BRACKET_SEARCH_ID } from "../JobViz/jobvizConstants";
 import {
   buildJobvizUrl,
   getIconNameForNode,
@@ -41,13 +40,19 @@ const describe = (value?: string | null) =>
     : "Data unavailable";
 
 const SelectedJob: React.FC = () => {
-  const { _selectedJob, _isJobModalOn, _jobToursModalCssProps } =
+  const {
+    _selectedJob,
+    _isJobModalOn,
+    _jobToursModalCssProps,
+    _jobvizReturnPath,
+  } =
     useModalContext();
   const router = useRouter();
   const searchParams = useSearchParams();
   const [selectedJob, setSelectedJob] = _selectedJob;
   const [, setIsJobModal] = _isJobModalOn;
   const [, setJobToursModalCssProps] = _jobToursModalCssProps;
+  const [jobvizReturnPath, setJobvizReturnPath] = _jobvizReturnPath;
   const [jobLink, setJobLink] = useState("");
   const [infoModal, setInfoModal] = useState<InfoModalType | null>(null);
   const [modalHistory, setModalHistory] = useState<InfoModalType | null>(null);
@@ -105,7 +110,7 @@ const SelectedJob: React.FC = () => {
 
     if (!selectedJob && visibleJob) {
       setCardPhase("exit");
-      transitionTimeoutRef.current = window.setTimeout(() => {
+      transitionTimeoutRef.current = setTimeout(() => {
         setVisibleJob(null);
         window.dispatchEvent(
           new CustomEvent("jobviz-modal-soc-change", { detail: { socCode: null } })
@@ -121,7 +126,7 @@ const SelectedJob: React.FC = () => {
       selectedJob.soc_code !== visibleJob.soc_code
     ) {
       setCardPhase("exit");
-      transitionTimeoutRef.current = window.setTimeout(() => {
+      transitionTimeoutRef.current = setTimeout(() => {
         setVisibleJob(selectedJob);
         window.dispatchEvent(
           new CustomEvent("jobviz-modal-soc-change", {
@@ -182,7 +187,7 @@ const SelectedJob: React.FC = () => {
     dispatchRatingEvent(socCode, "start");
     setRating(socCode, value);
     setRatingBurst(value);
-    window.setTimeout(() => {
+    setTimeout(() => {
       setRatingBurst(null);
       dispatchRatingEvent(socCode, "finish");
     }, 900);
@@ -230,18 +235,34 @@ const SelectedJob: React.FC = () => {
   }, [setIsJobModal]);
 
   const handleOnHide = () => {
-    const searchResults = router.query["search-results"];
-
-    if (router.asPath.includes("jobviz") && Array.isArray(searchResults)) {
-      const newPaths = getNewPathsWhenModalCloses(searchResults);
-      const paramsStr = searchParams.toString();
-      const url = paramsStr.length
-        ? `${window.location.origin}/jobviz${newPaths}?${paramsStr}`
-        : `${window.location.origin}/jobviz${newPaths}`;
-
-      router.push(url, undefined, {
+    const paramsStr = searchParams.toString();
+    if (jobvizReturnPath) {
+      router.push(jobvizReturnPath, undefined, {
         scroll: false,
+        shallow: true,
       });
+      setJobvizReturnPath(null);
+    } else {
+      const segmentsSource = router.query?.["search-results"];
+      const segments = Array.isArray(segmentsSource)
+        ? [...segmentsSource]
+        : typeof segmentsSource === "string"
+          ? segmentsSource.split("/").filter(Boolean)
+          : [];
+      if (segments.length >= 2) {
+        const lastSegment = segments[segments.length - 1];
+        const shouldTrimLast =
+          visibleJob?.id && String(visibleJob.id) === lastSegment;
+        const normalizedSegments = shouldTrimLast
+          ? segments.slice(0, -1)
+          : segments;
+        const basePath = `/${["jobviz", ...normalizedSegments].join("/")}`;
+        const nextUrl = paramsStr.length ? `${basePath}?${paramsStr}` : basePath;
+        router.push(nextUrl, undefined, {
+          scroll: false,
+          shallow: true,
+        });
+      }
     }
 
     setSelectedJob(null);
@@ -314,7 +335,7 @@ const SelectedJob: React.FC = () => {
 
     try {
       if (!isSamePath) {
-        await router.push(url, undefined, { scroll: false });
+        await router.push(url, undefined, { scroll: false, shallow: true });
       }
     } catch (e) {
       console.error("Failed to navigate to related careers", e);

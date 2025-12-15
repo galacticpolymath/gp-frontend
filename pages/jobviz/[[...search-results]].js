@@ -1,4 +1,11 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { useRouter } from "next/router";
 import Layout from "../../components/Layout";
 import { AssignmentBanner } from "../../components/JobViz/AssignmentBanner";
@@ -11,7 +18,7 @@ import { JobVizLayout } from "../../components/JobViz/JobVizLayout";
 import { LucideIcon } from "../../components/JobViz/LucideIcon";
 import { JobVizSortControl } from "../../components/JobViz/JobVizSortControl";
 import HeroForFreeUsers from "../../components/JobViz/Heros/HeroForFreeUsers";
-import { JOBVIZ_BRACKET_SEARCH_ID } from "../../pages/jobviz/index";
+import { JOBVIZ_BRACKET_SEARCH_ID } from "../../components/JobViz/jobvizConstants";
 import styles from "../../styles/jobvizBurst.module.scss";
 import {
   buildIdPathForNode,
@@ -43,13 +50,15 @@ import {
 } from "../../components/LessonSection/JobVizConnections";
 import { getUnitRelatedJobs } from "../../helperFns/filterUnitRelatedJobs";
 import { verifyJwt } from "../../backend/utils/security";
-import { useModalContext } from "../../providers/ModalProvider";
+import { ModalContext } from "../../providers/ModalProvider";
 import { useHeroStatAction } from "../../components/JobViz/useHeroStatAction";
 import {
   JOBVIZ_CATEGORIES_ANCHOR_ID,
   JOBVIZ_HIERARCHY_HEADING_ID,
 } from "../../components/JobViz/jobvizDomIds";
 
+const JOBVIZ_DESCRIPTION =
+  "Explore the full BLS hierarchy with the JobViz glass UI—glass cards, glowing breadcrumbs, and animated explore links keyed to real SOC data.";
 const JOBVIZ_DATA_SOURCE =
   "https://www.bls.gov/emp/tables/occupational-projections-and-characteristics.htm";
 
@@ -60,9 +69,14 @@ const JobVizSearchResults = ({
   hasGpPlusMembership,
 }) => {
   const router = useRouter();
-  const { _selectedJob, _isJobModalOn } = useModalContext();
-  const [, setSelectedJob] = _selectedJob;
-  const [, setIsJobModalOn] = _isJobModalOn;
+  const modalContext = useContext(ModalContext);
+  if (!modalContext) {
+    throw new Error("ModalContext is required for JobViz");
+  }
+  const [, setSelectedJob] = modalContext._selectedJob;
+  const [, setIsJobModalOn] = modalContext._isJobModalOn;
+  const [jobvizReturnPath, setJobvizReturnPath] =
+    modalContext._jobvizReturnPath;
 
   const parsed = useMemo(
     () => parseJobvizPath(router.query?.["search-results"]),
@@ -88,6 +102,8 @@ const JobVizSearchResults = ({
     }),
     [assignmentSocCodes, preservedUnitName]
   );
+  const shouldRenderAssignment =
+    Boolean(preservedUnitName) || Boolean(jobTitleAndSocCodePairs?.length);
 
   const chainNodes = useMemo(
     () => getChainFromIds(parsed.idPath),
@@ -185,9 +201,29 @@ const JobVizSearchResults = ({
     };
   }, []);
 
-  const filteredSlice = useMemo(() => {
-    return hierarchySlice;
-  }, [hierarchySlice]);
+  const buildReturnUrlForNode = useCallback(
+    (node) => {
+      const targetLevel = getTargetLevelForNode(node);
+      const selectedLevel = getSelectedSocCodeForLevel(node, targetLevel);
+      const fullIdPath = buildIdPathForNode(node);
+      const parentPath = fullIdPath.slice(0, -1);
+
+      if (!parentPath.length) {
+        return buildJobvizUrl(
+          { targetLevel: 1, selectedLevel: null, idPath: [] },
+          assignmentParams,
+          sortQueryParams
+        );
+      }
+
+      return buildJobvizUrl(
+        { targetLevel, selectedLevel, idPath: parentPath },
+        assignmentParams,
+        sortQueryParams
+      );
+    },
+    [assignmentParams, sortQueryParams]
+  );
 
   const handleAssignmentJobClick = (socCode) => {
     const node = jobVizData.find((n) => n.soc_code === socCode);
@@ -195,16 +231,33 @@ const JobVizSearchResults = ({
 
     setSelectedJob({ ...node, wasSelectedFromJobToursCard: false });
     setIsJobModalOn(true);
+    setPersistedGridItems(filteredGridItems);
+    setJobvizReturnPath(buildReturnUrlForNode(node));
 
     const url = buildJobvizUrl(
       { fromNode: node },
       assignmentParams,
       sortQueryParams
     );
-    router.push(url, undefined, { scroll: false });
+    router.push(url, undefined, { scroll: false, shallow: true });
   };
 
+  const filteredSlice = useMemo(() => {
+    return hierarchySlice;
+  }, [hierarchySlice]);
   const activeNode = chainNodes[chainNodes.length - 1] ?? null;
+  const showDetail =
+    Boolean(activeNode && activeNode.occupation_type === "Line item");
+  const resolvedMetaDescription = activeNode
+    ? activeNode.def
+      ? `${getDisplayTitle(activeNode)}: ${activeNode.def}`
+      : getDisplayTitle(activeNode)
+    : metaDescription ?? JOBVIZ_DESCRIPTION;
+  const layoutTitleBase =
+    "JobViz Career Explorer | Connect Learning to 1,000+ Real-World Careers";
+  const resolvedPageTitle = activeNode
+    ? `${getDisplayTitle(activeNode)} | JobViz Career Explorer`
+    : layoutTitleBase;
 
   const scrollToBreadcrumb = () => {
     if (typeof window === "undefined") return;
@@ -301,17 +354,23 @@ const JobVizSearchResults = ({
     showAssignmentOnly,
     hasAssignmentList,
   ]);
+  const [persistedGridItems, setPersistedGridItems] = useState(filteredGridItems);
+  useEffect(() => {
+    if (!showDetail) {
+      setPersistedGridItems(filteredGridItems);
+    }
+  }, [filteredGridItems, showDetail]);
+  const displayGridItems = showDetail ? persistedGridItems : filteredGridItems;
 
   const visibleGroupCount = useMemo(
-    () => filteredGridItems.filter((item) => item.level === 1).length,
-    [filteredGridItems]
+    () => displayGridItems.filter((item) => item.level === 1).length,
+    [displayGridItems]
   );
   const visibleJobCount = useMemo(
-    () => filteredGridItems.filter((item) => item.level === 2).length,
-    [filteredGridItems]
+    () => displayGridItems.filter((item) => item.level === 2).length,
+    [displayGridItems]
   );
 
-  const showDetail = activeNode && activeNode.occupation_type === "Line item";
   const parentForHeading = useMemo(() => {
     if (selectedLevel) {
       return jobVizData.find((node) => node.soc_code === selectedLevel) ?? null;
@@ -347,10 +406,142 @@ const JobVizSearchResults = ({
       sortQueryParams
     );
 
-    router.push(nextUrl, undefined, { scroll: false }).finally(
-      scrollToBreadcrumb
-    );
+    if (node.occupation_type === "Line item") {
+      setPersistedGridItems(filteredGridItems);
+      setJobvizReturnPath(buildReturnUrlForNode(node));
+    }
+    router.push(nextUrl, undefined, { scroll: false, shallow: true });
   };
+  const [navigationHint, setNavigationHint] = useState(null);
+  const [viewingFadeActive, setViewingFadeActive] = useState(false);
+  const viewingFadeTimeoutRef = useRef(null);
+  const pendingNavigationRef = useRef(null);
+  const isPromiseLike = (value) =>
+    Boolean(value) &&
+    typeof value === "object" &&
+    typeof value.then === "function" &&
+    typeof value.finally === "function";
+  const normalizeRect = useCallback((rect) => {
+    if (!rect) return null;
+    if ("left" in rect) {
+      return {
+        x: rect.left,
+        y: rect.top,
+        width: rect.width,
+        height: rect.height,
+      };
+    }
+    return rect;
+  }, []);
+  const navigationWaveRef = useRef(0);
+  const triggerNavigationHint = useCallback(
+    (direction, rect, pivotId = null) => {
+      navigationWaveRef.current += 1;
+      setNavigationHint({
+        direction,
+        anchor: normalizeRect(rect),
+        wave: navigationWaveRef.current,
+        pivotId,
+      });
+    },
+    [normalizeRect]
+  );
+  const handleViewingFade = useCallback(() => {
+    if (typeof window === "undefined") return;
+    if (viewingFadeTimeoutRef.current) {
+      clearTimeout(viewingFadeTimeoutRef.current);
+      viewingFadeTimeoutRef.current = null;
+    }
+    setViewingFadeActive(true);
+    viewingFadeTimeoutRef.current = setTimeout(() => {
+      setViewingFadeActive(false);
+      viewingFadeTimeoutRef.current = null;
+    }, 360);
+  }, []);
+  useEffect(() => {
+    return () => {
+      if (viewingFadeTimeoutRef.current) {
+        clearTimeout(viewingFadeTimeoutRef.current);
+      }
+      pendingNavigationRef.current = null;
+    };
+  }, []);
+  const handleGridExitComplete = useCallback(() => {
+    if (pendingNavigationRef.current) {
+      pendingNavigationRef.current();
+      pendingNavigationRef.current = null;
+    }
+  }, []);
+  const scheduleNavigation = useCallback(
+    (direction, rect, action, pivotId = null) => {
+      triggerNavigationHint(direction, rect, pivotId);
+      if (!action) {
+        pendingNavigationRef.current = null;
+        return null;
+      }
+      let resolveNavigation;
+      const completion = new Promise((resolve) => {
+        resolveNavigation = resolve;
+      });
+      pendingNavigationRef.current = () => {
+        try {
+          const result = action();
+          if (isPromiseLike(result)) {
+            result.finally(() => resolveNavigation?.());
+            return;
+          }
+        } catch (error) {
+          resolveNavigation?.();
+          throw error;
+        }
+        resolveNavigation?.();
+      };
+      return completion;
+    },
+    [triggerNavigationHint]
+  );
+  const handleGridItemClick = useCallback(
+    (item, meta) => {
+      if (showAssignmentOnly && hasAssignmentList) {
+        handleAssignmentGridClick(item);
+        return;
+      }
+      const isTerminalCard =
+        item.level === 2 && item.socCode && item.level !== 1;
+      if (isTerminalCard) {
+        handleGridClick(item);
+        return;
+      }
+      const pivotId = meta?.itemId ?? item.id;
+      const fallbackRect = () => {
+        if (typeof document === "undefined") return null;
+        const el = document.querySelector(
+          `[data-jobviz-card-id="${pivotId}"]`
+        );
+        if (!(el instanceof HTMLElement)) return null;
+        const rect = el.getBoundingClientRect();
+        return { x: rect.left, y: rect.top, width: rect.width, height: rect.height };
+      };
+      const cardRect = meta?.cardRect ?? fallbackRect();
+      if (cardRect) {
+        scheduleNavigation(
+          "down",
+          cardRect,
+          () => handleGridClick(item),
+          pivotId
+        );
+        return;
+      }
+      handleGridClick(item);
+    },
+    [
+      showAssignmentOnly,
+      hasAssignmentList,
+      handleAssignmentGridClick,
+      scheduleNavigation,
+      handleGridClick,
+    ]
+  );
 
   const breadcrumbs = useMemo(() => {
     const segments = [
@@ -359,16 +550,22 @@ const JobVizSearchResults = ({
         iconName: "Grid2x2",
         onClick:
           chainNodes.length || parsed.targetLevel > 1
-            ? () =>
-                router.push(
-                  buildJobvizUrl(
-                    { targetLevel: 1, selectedLevel: null, idPath: [] },
-                    assignmentParams,
-                    sortQueryParams
-                  ),
-                  undefined,
-                  { scroll: false }
-                )
+            ? (event) => {
+                const rect = event?.currentTarget?.getBoundingClientRect();
+                scheduleNavigation("up", rect, () =>
+                  router
+                    .push(
+                      buildJobvizUrl(
+                        { targetLevel: 1, selectedLevel: null, idPath: [] },
+                        assignmentParams,
+                        sortQueryParams
+                      ),
+                      undefined,
+                      { scroll: false, shallow: true }
+                    )
+                    .finally(scrollToBreadcrumb)
+                );
+              }
             : undefined,
         isActive: !chainNodes.length,
       },
@@ -395,28 +592,42 @@ const JobVizSearchResults = ({
         isActive: isLast,
         onClick: isLast
           ? undefined
-          : () =>
-              router.push(
-                buildJobvizUrl(
-                  {
-                    targetLevel: targetLevelForNode,
-                    selectedLevel: getSelectedSocCodeForLevel(
-                      node,
-                      targetLevelForNode
+          : (event) => {
+              const rect = event?.currentTarget?.getBoundingClientRect();
+              scheduleNavigation("up", rect, () =>
+                router
+                  .push(
+                    buildJobvizUrl(
+                      {
+                        targetLevel: targetLevelForNode,
+                        selectedLevel: getSelectedSocCodeForLevel(
+                          node,
+                          targetLevelForNode
+                        ),
+                        idPath: buildIdPathForNode(node),
+                      },
+                      assignmentParams,
+                      sortQueryParams
                     ),
-                    idPath: buildIdPathForNode(node),
-                  },
-                  assignmentParams,
-                  sortQueryParams
-                ),
-                undefined,
-                { scroll: false }
-              ),
+                    undefined,
+                    { scroll: false, shallow: true }
+                  )
+                  .finally(scrollToBreadcrumb)
+              );
+            },
       });
     });
 
     return segments;
-  }, [assignmentParams, chainNodes, parsed.targetLevel, router]);
+  }, [
+    assignmentParams,
+    chainNodes,
+    parsed.targetLevel,
+    router,
+    scheduleNavigation,
+    scrollToBreadcrumb,
+    sortQueryParams,
+  ]);
 
   const isShowingAssignmentScope = showAssignmentOnly && hasAssignmentList;
   const activeBreadcrumb = breadcrumbs[breadcrumbs.length - 1];
@@ -452,12 +663,15 @@ const JobVizSearchResults = ({
       assignmentParams,
       sortQueryParams
     );
-    return router.push(nextUrl, undefined, { scroll: false });
+    return scheduleNavigation("up", null, () =>
+      router.push(nextUrl, undefined, { scroll: false, shallow: true })
+    );
   }, [
     assignmentParams,
     chainNodes.length,
     parsed.targetLevel,
     router,
+    scheduleNavigation,
     sortQueryParams,
   ]);
   const handleHeroStatAction = useHeroStatAction({
@@ -477,13 +691,12 @@ const JobVizSearchResults = ({
 
     setIsJobModalOn(false);
     setSelectedJob(null);
-  }, [activeNode, setIsJobModalOn, setSelectedJob]);
+    setJobvizReturnPath(null);
+  }, [activeNode, setIsJobModalOn, setSelectedJob, setJobvizReturnPath]);
 
   const layoutProps = {
-    title: "JobViz Career Explorer | Search results",
-    description:
-      metaDescription ??
-      "Navigate the SOC hierarchy, explore categories, and dig into job details.",
+    title: resolvedPageTitle,
+    description: resolvedMetaDescription,
     imgSrc: "https://teach.galacticpolymath.com/imgs/jobViz/jobviz_icon.png",
     url: "https://teach.galacticpolymath.com/jobviz",
     keywords:
@@ -492,16 +705,18 @@ const JobVizSearchResults = ({
 
   return (
     <Layout {...layoutProps}>
-      <AssignmentBanner
-        variant="mobile"
-        unitName={preservedUnitName}
-        jobs={jobTitleAndSocCodePairs}
-        assignmentParams={assignmentParams}
-        onJobClick={handleAssignmentJobClick}
-      />
+      {shouldRenderAssignment && (
+        <AssignmentBanner
+          variant="mobile"
+          unitName={preservedUnitName}
+          jobs={jobTitleAndSocCodePairs}
+          assignmentParams={assignmentParams}
+          onJobClick={handleAssignmentJobClick}
+        />
+      )}
       <div
         className={styles.jobvizPageShell}
-        data-has-assignment={Boolean(jobTitleAndSocCodePairs?.length)}
+        data-has-assignment={shouldRenderAssignment}
       >
         <div className={styles.jobvizMainColumn}>
           <JobVizLayout
@@ -539,7 +754,11 @@ const JobVizSearchResults = ({
                     <JobVizBreadcrumb segments={breadcrumbs} />
                   )}
                 </div>
-                <div className={styles.viewingHeader}>
+                <div
+                  className={`${styles.viewingHeader} ${
+                    viewingFadeActive ? styles.viewingHeaderFade : ""
+                  }`}
+                >
                   <div className={styles.viewingIdentity}>
                     <span className={styles.viewingIcon}>
                       <LucideIcon name={viewingIconName} />
@@ -583,12 +802,11 @@ const JobVizSearchResults = ({
                   />
                 </div>
                 <JobVizGrid
-                  items={filteredGridItems}
-                  onItemClick={
-                    showAssignmentOnly && hasAssignmentList
-                      ? handleAssignmentGridClick
-                      : handleGridClick
-                  }
+                  items={displayGridItems}
+                  onItemClick={handleGridItemClick}
+                  navigationHint={navigationHint}
+                  onWillEnterItems={handleViewingFade}
+                  onExitComplete={handleGridExitComplete}
                 />
               </div>
 
@@ -609,13 +827,15 @@ const JobVizSearchResults = ({
             </div>
           </JobVizLayout>
         </div>
-        <AssignmentBanner
-          variant="desktop"
-          unitName={preservedUnitName}
-          jobs={jobTitleAndSocCodePairs}
-          assignmentParams={assignmentParams}
-          onJobClick={handleAssignmentJobClick}
-        />
+        {shouldRenderAssignment && (
+          <AssignmentBanner
+            variant="desktop"
+            unitName={preservedUnitName}
+            jobs={jobTitleAndSocCodePairs}
+            assignmentParams={assignmentParams}
+            onJobClick={handleAssignmentJobClick}
+          />
+        )}
       </div>
     </Layout>
   );
