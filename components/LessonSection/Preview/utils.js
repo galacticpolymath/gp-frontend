@@ -10,8 +10,13 @@ export const getMediaComponent = ({
   handleIFrameOnClick = () => { },
   iframeStyle = { position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'contain' },
   iframeClassName = 'lesson-media',
+  key
 }) => {
-  if (type === 'video') {
+  if (type === "lesson-item-doc") {
+    return (
+      <iframe key={key} src={mainLink} className="w-100 h-100" />
+    )
+  } else if (type === 'video') {
     return (
       <iframe
         onClick={handleIFrameOnClick}
