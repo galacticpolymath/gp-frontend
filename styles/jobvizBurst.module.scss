@@ -1905,12 +1905,12 @@ $jobviz-nav-height: 64px;
 
 .assignmentCarouselText {
   display: flex;
-  flex: 1 1 auto;
+  flex: 0 1 auto;
   align-items: center;
   justify-content: center;
   text-align: center;
   white-space: normal;
-  padding: 0 0.35rem;
+  padding: 0 0.2rem;
 }
 
 .assignmentCarouselTitle {
@@ -2462,10 +2462,10 @@ $jobviz-nav-height: 64px;
   }
 }
 
-@keyframes viewingHeaderDissolveIn {
+@keyframes viewingHeaderPushIn {
   0% {
     opacity: 0;
-    transform: translateY(6px);
+    transform: translateY(-35%);
   }
   100% {
     opacity: 1;
@@ -2473,14 +2473,14 @@ $jobviz-nav-height: 64px;
   }
 }
 
-@keyframes viewingHeaderDissolveOut {
+@keyframes viewingHeaderPushOut {
   0% {
     opacity: 1;
     transform: translateY(0);
   }
   100% {
     opacity: 0;
-    transform: translateY(-6px);
+    transform: translateY(35%);
   }
 }
 
@@ -3596,12 +3596,12 @@ $jobviz-nav-height: 64px;
 .viewingHeaderLayerOutgoing {
   position: absolute;
   inset: 0;
-  animation: viewingHeaderDissolveOut 0.32s ease forwards;
+  animation: viewingHeaderPushOut 0.48s cubic-bezier(0.42, 0, 0.22, 1) forwards;
   pointer-events: none;
 }
 
 .viewingHeaderLayerIncoming {
-  animation: viewingHeaderDissolveIn 0.32s ease forwards;
+  animation: viewingHeaderPushIn 0.48s cubic-bezier(0.42, 0, 0.22, 1) forwards;
 }
 
 .viewingIdentity {

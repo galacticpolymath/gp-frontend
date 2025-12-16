@@ -61,7 +61,10 @@ const JOBVIZ_DESCRIPTION =
   "Explore the full BLS hierarchy with the JobViz glass UI—glass cards, glowing breadcrumbs, and animated explore links keyed to real SOC data.";
 const JOBVIZ_DATA_SOURCE =
   "https://www.bls.gov/emp/tables/occupational-projections-and-characteristics.htm";
-const VIEWING_HEADER_TRANSITION_MS = 320;
+const VIEWING_HEADER_TRANSITION_MS = 480;
+const GRID_CARD_EXTRA_PAUSE_MS = 250;
+const GRID_NAVIGATION_HEADER_DELAY_MS =
+  VIEWING_HEADER_TRANSITION_MS + GRID_CARD_EXTRA_PAUSE_MS;
 
 const JobVizSearchResults = ({
   metaDescription,
@@ -362,6 +365,38 @@ const JobVizSearchResults = ({
     }
   }, [filteredGridItems, showDetail]);
   const displayGridItems = showDetail ? persistedGridItems : filteredGridItems;
+  const [renderedGridItems, setRenderedGridItems] = useState(displayGridItems);
+  const gridItemsDelayRef = useRef(null);
+  const initialGridRenderRef = useRef(true);
+  useEffect(() => {
+    if (initialGridRenderRef.current) {
+      initialGridRenderRef.current = false;
+      setRenderedGridItems(displayGridItems);
+      return;
+    }
+    if (gridItemsDelayRef.current) {
+      clearTimeout(gridItemsDelayRef.current);
+      gridItemsDelayRef.current = null;
+    }
+    const applyItems = () => {
+      setRenderedGridItems(displayGridItems);
+      gridItemsDelayRef.current = null;
+    };
+    if (typeof window !== "undefined" && GRID_NAVIGATION_HEADER_DELAY_MS > 0) {
+      gridItemsDelayRef.current = window.setTimeout(
+        applyItems,
+        GRID_NAVIGATION_HEADER_DELAY_MS
+      );
+    } else {
+      applyItems();
+    }
+    return () => {
+      if (gridItemsDelayRef.current) {
+        clearTimeout(gridItemsDelayRef.current);
+        gridItemsDelayRef.current = null;
+      }
+    };
+  }, [displayGridItems]);
 
   const visibleGroupCount = useMemo(
     () => displayGridItems.filter((item) => item.level === 1).length,
@@ -441,6 +476,7 @@ const JobVizSearchResults = ({
     return rect;
   }, []);
   const navigationWaveRef = useRef(0);
+  const navigationHintDelayRef = useRef(null);
   const triggerNavigationHint = useCallback(
     (direction, rect, pivotId = null) => {
       navigationWaveRef.current += 1;
@@ -455,6 +491,12 @@ const JobVizSearchResults = ({
   );
   useEffect(() => {
     return () => {
+      if (navigationHintDelayRef.current) {
+        clearTimeout(navigationHintDelayRef.current);
+      }
+      if (gridItemsDelayRef.current) {
+        clearTimeout(gridItemsDelayRef.current);
+      }
       pendingNavigationRef.current = null;
     };
   }, []);
@@ -466,7 +508,22 @@ const JobVizSearchResults = ({
   }, []);
   const scheduleNavigation = useCallback(
     (direction, rect, action, pivotId = null) => {
-      triggerNavigationHint(direction, rect, pivotId);
+      if (navigationHintDelayRef.current) {
+        clearTimeout(navigationHintDelayRef.current);
+        navigationHintDelayRef.current = null;
+      }
+      const startNavigationHint = () => {
+        triggerNavigationHint(direction, rect, pivotId);
+        navigationHintDelayRef.current = null;
+      };
+      if (typeof window !== "undefined" && GRID_NAVIGATION_HEADER_DELAY_MS > 0) {
+        navigationHintDelayRef.current = window.setTimeout(
+          startNavigationHint,
+          GRID_NAVIGATION_HEADER_DELAY_MS
+        );
+      } else {
+        startNavigationHint();
+      }
       if (!action) {
         pendingNavigationRef.current = null;
         return null;
@@ -853,7 +910,7 @@ const JobVizSearchResults = ({
                   />
                 </div>
                 <JobVizGrid
-                  items={displayGridItems}
+                  items={renderedGridItems}
                   onItemClick={handleGridItemClick}
                   navigationHint={navigationHint}
                   onExitComplete={handleGridExitComplete}
