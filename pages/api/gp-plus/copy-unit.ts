@@ -31,6 +31,8 @@ import { insertCopyUnitJobResult } from "../../../backend/services/copyUnitJobRe
 import { nanoid } from "nanoid";
 import { deleteCacheVal, setCacheVal } from "../../../backend/helperFns";
 
+export const runtime = "nodejs";
+
 export const maxDuration = 300;
 const USER_GP_PLUS_PARENT_FOLDER_NAME = "My GP+ Units";
 

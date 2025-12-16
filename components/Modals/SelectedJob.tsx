@@ -70,7 +70,7 @@ const SelectedJob: React.FC = () => {
   const CARD_TRANSITION_MS = 420;
   const transitionTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const modalScrollRef = useRef<HTMLDivElement | null>(null);
-  const mobileCueDelayRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const mobileCueDelayRef = useRef<number | null>(null);
   const [visibleJob, setVisibleJob] = useState(selectedJob);
   const [cardPhase, setCardPhase] = useState<"enter" | "exit">(
     selectedJob ? "enter" : "exit"
