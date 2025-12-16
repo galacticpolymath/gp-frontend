@@ -61,6 +61,7 @@ const JOBVIZ_DESCRIPTION =
   "Explore the full BLS hierarchy with the JobViz glass UI—glass cards, glowing breadcrumbs, and animated explore links keyed to real SOC data.";
 const JOBVIZ_DATA_SOURCE =
   "https://www.bls.gov/emp/tables/occupational-projections-and-characteristics.htm";
+const VIEWING_HEADER_TRANSITION_MS = 320;
 
 const JobVizSearchResults = ({
   metaDescription,
@@ -413,8 +414,14 @@ const JobVizSearchResults = ({
     router.push(nextUrl, undefined, { scroll: false, shallow: true });
   };
   const [navigationHint, setNavigationHint] = useState(null);
-  const [viewingFadeActive, setViewingFadeActive] = useState(false);
-  const viewingFadeTimeoutRef = useRef(null);
+
+  useEffect(() => {
+    return () => {
+      if (viewingHeaderTimeoutRef.current) {
+        clearTimeout(viewingHeaderTimeoutRef.current);
+      }
+    };
+  }, []);
   const pendingNavigationRef = useRef(null);
   const isPromiseLike = (value) =>
     Boolean(value) &&
@@ -446,23 +453,8 @@ const JobVizSearchResults = ({
     },
     [normalizeRect]
   );
-  const handleViewingFade = useCallback(() => {
-    if (typeof window === "undefined") return;
-    if (viewingFadeTimeoutRef.current) {
-      clearTimeout(viewingFadeTimeoutRef.current);
-      viewingFadeTimeoutRef.current = null;
-    }
-    setViewingFadeActive(true);
-    viewingFadeTimeoutRef.current = setTimeout(() => {
-      setViewingFadeActive(false);
-      viewingFadeTimeoutRef.current = null;
-    }, 360);
-  }, []);
   useEffect(() => {
     return () => {
-      if (viewingFadeTimeoutRef.current) {
-        clearTimeout(viewingFadeTimeoutRef.current);
-      }
       pendingNavigationRef.current = null;
     };
   }, []);
@@ -628,7 +620,6 @@ const JobVizSearchResults = ({
     scrollToBreadcrumb,
     sortQueryParams,
   ]);
-
   const isShowingAssignmentScope = showAssignmentOnly && hasAssignmentList;
   const activeBreadcrumb = breadcrumbs[breadcrumbs.length - 1];
   const baseViewTitle = activeNode
@@ -650,6 +641,40 @@ const JobVizSearchResults = ({
             : ""
         }`
       : `Showing ${visibleJobCount} job${visibleJobCount === 1 ? "" : "s"}`;
+  const viewingHeaderData = useMemo(
+    () => ({
+      title: viewingTitle,
+      meta: viewingMetaLine,
+      iconName: viewingIconName,
+    }),
+    [viewingTitle, viewingMetaLine, viewingIconName]
+  );
+  const [activeViewingHeader, setActiveViewingHeader] = useState(
+    viewingHeaderData
+  );
+  const [outgoingViewingHeader, setOutgoingViewingHeader] = useState(null);
+  const [isViewingHeaderTransitioning, setIsViewingHeaderTransitioning] =
+    useState(false);
+  const viewingHeaderTimeoutRef = useRef(null);
+  useEffect(() => {
+    const prev = activeViewingHeader;
+    const changed =
+      prev.title !== viewingHeaderData.title ||
+      prev.meta !== viewingHeaderData.meta ||
+      prev.iconName !== viewingHeaderData.iconName;
+    if (!changed) return;
+    setOutgoingViewingHeader(prev);
+    setActiveViewingHeader(viewingHeaderData);
+    setIsViewingHeaderTransitioning(true);
+    if (viewingHeaderTimeoutRef.current) {
+      clearTimeout(viewingHeaderTimeoutRef.current);
+    }
+    viewingHeaderTimeoutRef.current = setTimeout(() => {
+      setOutgoingViewingHeader(null);
+      setIsViewingHeaderTransitioning(false);
+      viewingHeaderTimeoutRef.current = null;
+    }, VIEWING_HEADER_TRANSITION_MS);
+  }, [activeViewingHeader, viewingHeaderData]);
 
   const heroSubtitle =
     "A tool for grades 6 to adult to explore career possibilities!";
@@ -754,23 +779,49 @@ const JobVizSearchResults = ({
                     <JobVizBreadcrumb segments={breadcrumbs} />
                   )}
                 </div>
-                <div
-                  className={`${styles.viewingHeader} ${
-                    viewingFadeActive ? styles.viewingHeaderFade : ""
-                  }`}
-                >
-                  <div className={styles.viewingIdentity}>
-                    <span className={styles.viewingIcon}>
-                      <LucideIcon name={viewingIconName} />
-                    </span>
-                    <div>
-                      <h3
-                        id={JOBVIZ_HIERARCHY_HEADING_ID}
-                        className={styles.viewingTitle}
-                      >
-                        {viewingTitle}
-                      </h3>
-                      <p className={styles.viewingMeta}>{viewingMetaLine}</p>
+                <div className={styles.viewingHeader}>
+                  {outgoingViewingHeader && (
+                    <div
+                      className={`${styles.viewingHeaderLayer} ${styles.viewingHeaderLayerOutgoing}`}
+                      aria-hidden="true"
+                    >
+                      <div className={styles.viewingIdentity}>
+                        <span className={styles.viewingIcon}>
+                          <LucideIcon name={outgoingViewingHeader.iconName} />
+                        </span>
+                        <div>
+                          <h3 className={styles.viewingTitle}>
+                            {outgoingViewingHeader.title}
+                          </h3>
+                          <p className={styles.viewingMeta}>
+                            {outgoingViewingHeader.meta}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  <div
+                    className={`${styles.viewingHeaderLayer} ${
+                      isViewingHeaderTransitioning
+                        ? styles.viewingHeaderLayerIncoming
+                        : ""
+                    }`}
+                  >
+                    <div className={styles.viewingIdentity}>
+                      <span className={styles.viewingIcon}>
+                        <LucideIcon name={activeViewingHeader.iconName} />
+                      </span>
+                      <div>
+                        <h3
+                          id={JOBVIZ_HIERARCHY_HEADING_ID}
+                          className={styles.viewingTitle}
+                        >
+                          {activeViewingHeader.title}
+                        </h3>
+                        <p className={styles.viewingMeta}>
+                          {activeViewingHeader.meta}
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -805,7 +856,6 @@ const JobVizSearchResults = ({
                   items={displayGridItems}
                   onItemClick={handleGridItemClick}
                   navigationHint={navigationHint}
-                  onWillEnterItems={handleViewingFade}
                   onExitComplete={handleGridExitComplete}
                 />
               </div>

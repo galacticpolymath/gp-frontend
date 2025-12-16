@@ -42,21 +42,20 @@ export interface JobVizGridProps {
     meta?: { cardRect?: CardAnchor | null; itemId?: string }
   ) => void;
   navigationHint?: JobVizNavigationHint | null;
-  onWillEnterItems?: (direction: JobVizNavigationDirection) => void;
   onExitComplete?: () => void;
 }
 
-const STAGGER_INTERVAL_MS = 120;
-const CARD_ANIMATION_MS = 760;
-const ANIMATION_BUFFER_MS = 260;
-const SWAP_DELAY_DOWN = 720;
-const SWAP_DELAY_UP = 640;
+const STAGGER_INTERVAL_MS = 140;
+const CARD_ANIMATION_MS = 860;
+const ANIMATION_BUFFER_MS = 320;
+const SWAP_DELAY_DOWN = 820;
+const SWAP_DELAY_UP = 740;
+const GRID_ENTRANCE_HOLD_MS = 320;
 
 export const JobVizGrid: React.FC<JobVizGridProps> = ({
   items,
   onItemClick,
   navigationHint,
-  onWillEnterItems,
   onExitComplete,
 }) => {
   const [displayItems, setDisplayItems] = React.useState(items);
@@ -171,24 +170,16 @@ export const JobVizGrid: React.FC<JobVizGridProps> = ({
     setIsExiting(true);
     const swapDelay =
       navigationHint.direction === "down" ? SWAP_DELAY_DOWN : SWAP_DELAY_UP;
-    if (onWillEnterItems) {
-      const previewDelay = Math.max(swapDelay - 200, 0);
-      const previewId = setTimeout(
-        () => onWillEnterItems(navigationHint.direction),
-        previewDelay
-      );
-      timeoutsRef.current.push(previewId);
-    }
+    const totalDelay = swapDelay + GRID_ENTRANCE_HOLD_MS;
     const swapId = setTimeout(() => {
       exitTimerDoneRef.current = true;
       maybeEnterNextWave();
       onExitComplete?.();
-    }, swapDelay);
+    }, totalDelay);
     timeoutsRef.current.push(swapId);
   }, [
     navigationHint,
     handledWave,
-    onWillEnterItems,
     onExitComplete,
     maybeEnterNextWave,
   ]);

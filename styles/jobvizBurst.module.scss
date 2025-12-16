@@ -745,19 +745,19 @@ $jobviz-nav-height: 64px;
 }
 
 .cardEntrance {
-  animation: jobvizCardDeal 720ms cubic-bezier(0.22, 0.92, 0.26, 1) both;
+  animation: jobvizCardDeal 860ms cubic-bezier(0.22, 0.92, 0.26, 1) both;
   animation-delay: var(--card-stagger-delay, 0ms);
   will-change: opacity, transform;
 }
 
 .cardEntranceUp {
-  animation: jobvizCardRise 720ms cubic-bezier(0.22, 0.92, 0.26, 1) both;
+  animation: jobvizCardRise 860ms cubic-bezier(0.22, 0.92, 0.26, 1) both;
   animation-delay: var(--card-stagger-delay, 0ms);
   will-change: opacity, transform;
 }
 
 .cardExitDown {
-  animation: jobvizCardFade 420ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  animation: jobvizCardFade 520ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
   animation-delay: var(--card-stagger-delay, 0ms);
   transform-origin: center;
   will-change: opacity, transform;
@@ -765,7 +765,7 @@ $jobviz-nav-height: 64px;
 }
 
 .cardExitDownPivot {
-  animation: jobvizCardPortal 720ms cubic-bezier(0.24, 0.82, 0.28, 1) both;
+  animation: jobvizCardPortal 860ms cubic-bezier(0.24, 0.82, 0.28, 1) both;
   animation-delay: var(--card-stagger-delay, 0ms);
   transform-origin: center;
   will-change: opacity, transform;
@@ -774,7 +774,7 @@ $jobviz-nav-height: 64px;
 }
 
 .cardExitUp {
-  animation: jobvizCardCollapse 480ms cubic-bezier(0.67, 0.02, 0.42, 1) both;
+  animation: jobvizCardCollapse 560ms cubic-bezier(0.67, 0.02, 0.42, 1) both;
   animation-delay: var(--card-stagger-delay, 0ms);
   will-change: opacity, transform;
   pointer-events: none;
@@ -1104,6 +1104,7 @@ $jobviz-nav-height: 64px;
   width: 100%;
   max-width: 100%;
   margin-left: 0;
+  margin-bottom: clamp(0.85rem, 3vw, 1.35rem);
   padding: 0;
   background: linear-gradient(
     175deg,
@@ -1119,6 +1120,11 @@ $jobviz-nav-height: 64px;
   box-sizing: border-box;
   overflow: visible;
   isolation: isolate;
+  transition: margin-bottom 0.25s ease;
+}
+
+.assignmentMobileWrapper[data-collapsed="true"] {
+  margin-bottom: clamp(1.35rem, 5vw, 2.2rem);
 }
 
 .assignmentMobileWrapper::before,
@@ -2456,14 +2462,25 @@ $jobviz-nav-height: 64px;
   }
 }
 
-@keyframes viewingHeaderFadeIn {
+@keyframes viewingHeaderDissolveIn {
   0% {
     opacity: 0;
-    transform: translateY(12px);
+    transform: translateY(6px);
   }
   100% {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@keyframes viewingHeaderDissolveOut {
+  0% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-6px);
   }
 }
 
@@ -3564,16 +3581,27 @@ $jobviz-nav-height: 64px;
 
 .viewingHeader {
   margin-top: 0.5rem;
+  position: relative;
+  min-height: 72px;
+}
+
+.viewingHeaderLayer {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   gap: 1rem;
   flex-wrap: wrap;
-  transition: opacity 0.25s ease;
 }
 
-.viewingHeaderFade {
-  animation: viewingHeaderFadeIn 0.35s ease;
+.viewingHeaderLayerOutgoing {
+  position: absolute;
+  inset: 0;
+  animation: viewingHeaderDissolveOut 0.32s ease forwards;
+  pointer-events: none;
+}
+
+.viewingHeaderLayerIncoming {
+  animation: viewingHeaderDissolveIn 0.32s ease forwards;
 }
 
 .viewingIdentity {

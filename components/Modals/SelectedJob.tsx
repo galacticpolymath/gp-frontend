@@ -70,6 +70,7 @@ const SelectedJob: React.FC = () => {
   const CARD_TRANSITION_MS = 420;
   const transitionTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const modalScrollRef = useRef<HTMLDivElement | null>(null);
+  const mobileCueDelayRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [visibleJob, setVisibleJob] = useState(selectedJob);
   const [cardPhase, setCardPhase] = useState<"enter" | "exit">(
     selectedJob ? "enter" : "exit"
@@ -202,8 +203,41 @@ const SelectedJob: React.FC = () => {
   useEffect(() => {
     const shouldGlow = Boolean(isAssignmentJob && !currentRating);
     setShouldGlowRatingLabel(shouldGlow);
-    setShowMobileCue(Boolean(shouldGlow && isMobileViewport));
+    if (mobileCueDelayRef.current) {
+      clearTimeout(mobileCueDelayRef.current);
+      mobileCueDelayRef.current = null;
+    }
+    if (!shouldGlow || !isMobileViewport) {
+      setShowMobileCue(false);
+      return;
+    }
+    mobileCueDelayRef.current = window.setTimeout(() => {
+      setShowMobileCue(true);
+      mobileCueDelayRef.current = null;
+    }, 480);
+    return () => {
+      if (mobileCueDelayRef.current) {
+        clearTimeout(mobileCueDelayRef.current);
+        mobileCueDelayRef.current = null;
+      }
+    };
   }, [isAssignmentJob, currentRating, isMobileViewport]);
+
+  useEffect(() => {
+    if (!isMobileViewport) return;
+    const scrollElement = modalScrollRef.current;
+    if (!scrollElement) return;
+    const handleScroll = () => {
+      if (!showMobileCue) return;
+      if (scrollElement.scrollTop > 48) {
+        setShowMobileCue(false);
+      }
+    };
+    scrollElement.addEventListener("scroll", handleScroll, { passive: true });
+    return () => {
+      scrollElement.removeEventListener("scroll", handleScroll);
+    };
+  }, [isMobileViewport, showMobileCue, visibleJob]);
 
   const dispatchRatingEvent = (socCode: string, phase: "start" | "finish") => {
     if (typeof window === "undefined") return;
@@ -634,7 +668,7 @@ const SelectedJob: React.FC = () => {
             data-visible={showMobileCue ? "true" : "false"}
           >
             <span className={styles.modalMobileReminderText}>
-              Consider details & stats, then rate
+              Consider description & stats, then rate this job
             </span>
             <span className={styles.modalMobileReminderArrow} aria-hidden="true">
               ↓
