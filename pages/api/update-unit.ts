@@ -9,7 +9,7 @@ import {
 } from "../../backend/services/unitServices";
 import { INewUnitSchema } from "../../backend/models/Unit/types/unit";
 
-interface IReqBody{
+interface IReqBody {
   unitId: string;
   keysAndUpdatedValsObj: string;
   dbType?: Parameters<typeof connectToMongodb>[3];
@@ -36,9 +36,9 @@ export default async function handler(
 
     if (
       !customUpdate && (valsToUpdate &&
-      ((typeof valsToUpdate !== "object" && valsToUpdate === null) ||
-        Array.isArray(valsToUpdate) ||
-        typeof valsToUpdate !== "object"))
+        ((typeof valsToUpdate !== "object" && valsToUpdate === null) ||
+          Array.isArray(valsToUpdate) ||
+          typeof valsToUpdate !== "object"))
     ) {
       throw new CustomError(
         "`projectionsObj` must be an non-array object.",
@@ -46,7 +46,7 @@ export default async function handler(
       );
     }
 
-    if((typeof customUpdate !== "undefined") && ((typeof customUpdate === "object" && (customUpdate == null)) || typeof customUpdate !== "object")){
+    if ((typeof customUpdate !== "undefined") && ((typeof customUpdate === "object" && (customUpdate == null)) || typeof customUpdate !== "object")) {
       throw new CustomError("customUpdate must be an object", 400);
     }
 
@@ -62,7 +62,7 @@ export default async function handler(
     }
 
     const { wasSuccessful, errMsg } = await updateUnit(
-      { _id: unitId as unknown },
+      { _id: unitId },
       valsToUpdate,
       customUpdate
     );
@@ -88,9 +88,8 @@ export default async function handler(
     return response
       .status(code ?? 500)
       .json({
-        msg: `Error message: ${
-          message ?? `An error has occurred on the server. The error object: ${error}`
-        }`,
+        msg: `Error message: ${message ?? `An error has occurred on the server. The error object: ${error}`
+          }`,
       });
   }
 }
