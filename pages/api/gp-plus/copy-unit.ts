@@ -22,6 +22,7 @@ import { OAuth2Client } from "google-auth-library";
 import { insertCopyUnitJobResult } from "../../../backend/services/copyUnitJobResultServices";
 import { nanoid } from "nanoid";
 import { deleteCacheVal, setCacheVal } from "../../../backend/helperFns";
+import { GDriveItem } from "../../../backend/services/gdriveServices";
 
 export const maxDuration = 300;
 const USER_GP_PLUS_PARENT_FOLDER_NAME = "My GP+ Units";
@@ -104,7 +105,7 @@ export const createGoogleDriveFolderForUser = async (
   reqOriginForRefreshingToken?: string
 ): { wasSuccessful: boolean, folderId?: string, [key: string]: unknown } => {
   try {
-    const folderMetadata = new FileMetaData(folderName, parentFolderIds);
+    const folderMetadata = new GDriveItem(folderName, undefined, parentFolderIds);
     const response = await axios.post(
       "https://www.googleapis.com/drive/v3/files?fields=id",
       folderMetadata,
