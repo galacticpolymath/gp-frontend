@@ -15,6 +15,7 @@ import {
   ratingEmoji,
   useJobRatings,
 } from "./jobRatingsStore";
+import { useModalContext } from "../../providers/ModalProvider";
 
 interface AssignmentBannerProps {
   unitName?: string | null;
@@ -36,6 +37,8 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
   variant = "mobile",
 }) => {
   const router = useRouter();
+  const { _jobvizSummaryModal } = useModalContext();
+  const [, setJobvizSummaryModal] = _jobvizSummaryModal;
   const [clickedSocCodes, setClickedSocCodes] = React.useState<Set<string>>(
     new Set()
   );
@@ -48,6 +51,9 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
   const [highlightedSoc, setHighlightedSoc] = React.useState<string | null>(null);
   const [suppressedSocCodes, setSuppressedSocCodes] = React.useState<Set<string>>(new Set());
   const [mobileCollapsed, setMobileCollapsed] = React.useState(false);
+  const [celebrationWave, setCelebrationWave] = React.useState(0);
+  const [activeCelebrationWave, setActiveCelebrationWave] = React.useState<number | null>(null);
+  const [hasCelebratedCompletion, setHasCelebratedCompletion] = React.useState(false);
   const shouldRenderBanner =
     Boolean(unitName) || Boolean(jobs?.length);
   const isMobile = variant === "mobile";
@@ -129,6 +135,26 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
   const progress = isMounted
     ? clientProgress
     : { rated: 0, total: assignmentSocCodes.length };
+  const isAssignmentComplete = Boolean(
+    progress.total > 0 && progress.rated === progress.total
+  );
+
+  React.useEffect(() => {
+    if (isAssignmentComplete && !hasCelebratedCompletion) {
+      setHasCelebratedCompletion(true);
+      setCelebrationWave((prev) => prev + 1);
+    }
+    if (!isAssignmentComplete && hasCelebratedCompletion) {
+      setHasCelebratedCompletion(false);
+    }
+  }, [hasCelebratedCompletion, isAssignmentComplete]);
+
+  React.useEffect(() => {
+    if (!celebrationWave) return;
+    setActiveCelebrationWave(celebrationWave);
+    const timeout = setTimeout(() => setActiveCelebrationWave(null), 3200);
+    return () => clearTimeout(timeout);
+  }, [celebrationWave]);
 
   const handleJobClick = React.useCallback(
     (socCode: string) => {
@@ -161,6 +187,17 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
       return { title, soc, iconName, jobIconName };
     });
   }, [jobs]);
+
+  const handleOpenSummaryModal = React.useCallback(() => {
+    if (!jobItems.length) return;
+    setJobvizSummaryModal({
+      isDisplayed: true,
+      unitName,
+      jobs: jobItems.map(({ title, soc }) => ({ title, soc })),
+      payload: null,
+      allowEditing: true,
+    });
+  }, [jobItems, setJobvizSummaryModal, unitName]);
 
   const nextUnratedSoc = React.useMemo(() => {
     if (!jobItems.length) return null;
@@ -559,7 +596,7 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
                     width={26}
                     height={26}
                   />
-                  JobViz | Assignment
+                  Galactic Polymath | JobViz+
                 </span>
                 <p className={styles.assignmentCopy}>
                   Explore and rate each of these jobs. Be prepared to explain your
@@ -567,21 +604,47 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
                 </p>
               </div>
             </div>
-            {assignmentSocCodes.length > 0 && (
-              <div className={styles.assignmentProgressRow}>
-                <div className={styles.assignmentProgressLabel}>
-                  Rated {progress.rated}/{progress.total} jobs
-                </div>
-                <div className={styles.assignmentProgressTrack}>
-                  <div
-                    className={styles.assignmentProgressFill}
-                    style={{
-                      width: `${progress.total ? (progress.rated / progress.total) * 100 : 0}%`,
-                    }}
+            {activeCelebrationWave ? (
+              <div className={styles.assignmentConfettiBurst} aria-hidden="true">
+                {Array.from({ length: 18 }).map((_, idx) => (
+                  <span
+                    key={`assignment-confetti-${activeCelebrationWave}-${idx}`}
+                    className={styles.assignmentConfettiPiece}
+                    style={
+                      {
+                        ["--confetti-index" as string]: idx,
+                      } as React.CSSProperties
+                    }
                   />
-                </div>
+                ))}
               </div>
-            )}
+            ) : null}
+            {assignmentSocCodes.length > 0 &&
+              (isAssignmentComplete ? (
+                <button
+                  type="button"
+                  className={styles.assignmentSummaryButton}
+                  onClick={handleOpenSummaryModal}
+                  disabled={!jobItems.length}
+                >
+                  <span>Summarize &amp; Share Assignment</span>
+                  <LucideIcon name="Sparkles" />
+                </button>
+              ) : (
+                <div className={styles.assignmentProgressRow}>
+                  <div className={styles.assignmentProgressLabel}>
+                    Rated {progress.rated}/{progress.total} jobs
+                  </div>
+                  <div className={styles.assignmentProgressTrack}>
+                    <div
+                      className={styles.assignmentProgressFill}
+                      style={{
+                        width: `${progress.total ? (progress.rated / progress.total) * 100 : 0}%`,
+                      }}
+                    />
+                  </div>
+                </div>
+              ))}
             <div
               className={`${styles.assignmentContent} ${
                 variant === "mobile" ? styles.assignmentMobileContentSticky : ""

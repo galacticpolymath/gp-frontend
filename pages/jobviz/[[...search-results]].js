@@ -45,6 +45,10 @@ import {
   sortJobVizItems,
 } from "../../components/JobViz/jobvizSorting";
 import {
+  decodeJobvizSharePayload,
+  JOBVIZ_REPORT_PARAM_NAME,
+} from "../../components/JobViz/jobvizShareUtils";
+import {
   SOC_CODES_PARAM_NAME,
   UNIT_NAME_PARAM_NAME,
 } from "../../components/LessonSection/JobVizConnections";
@@ -81,6 +85,7 @@ const JobVizSearchResults = ({
   const [, setIsJobModalOn] = modalContext._isJobModalOn;
   const [jobvizReturnPath, setJobvizReturnPath] =
     modalContext._jobvizReturnPath;
+  const [, setJobvizSummaryModal] = modalContext._jobvizSummaryModal;
 
   const parsed = useMemo(
     () => parseJobvizPath(router.query?.["search-results"]),
@@ -108,6 +113,7 @@ const JobVizSearchResults = ({
   );
   const shouldRenderAssignment =
     Boolean(preservedUnitName) || Boolean(jobTitleAndSocCodePairs?.length);
+  const lastReportParamRef = useRef(null);
 
   const chainNodes = useMemo(
     () => getChainFromIds(parsed.idPath),
@@ -204,6 +210,27 @@ const JobVizSearchResults = ({
       }
     };
   }, []);
+
+  useEffect(() => {
+    if (!router.isReady) return;
+    const param = router.query?.[JOBVIZ_REPORT_PARAM_NAME];
+    const encoded = Array.isArray(param) ? param[0] : param;
+    if (!encoded || encoded === lastReportParamRef.current) return;
+    const payload = decodeJobvizSharePayload(encoded);
+    if (!payload) return;
+    lastReportParamRef.current = encoded;
+    setJobvizSummaryModal({
+      isDisplayed: true,
+      unitName: payload.unitName ?? preservedUnitName ?? null,
+      jobs:
+        payload.jobs?.map((job) => ({
+          title: job.title,
+          soc: job.soc,
+        })) ?? [],
+      payload,
+      allowEditing: false,
+    });
+  }, [preservedUnitName, router.isReady, router.query, setJobvizSummaryModal]);
 
   const buildReturnUrlForNode = useCallback(
     (node) => {

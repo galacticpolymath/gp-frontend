@@ -39,6 +39,12 @@ const describe = (value?: string | null) =>
     ? value
     : "Data unavailable";
 
+const ratingDescriptions: Record<JobRatingValue, string> = {
+  love: "Dream job alert! You’d be excited to study or try this path.",
+  like: "Interesting option—you might enjoy learning more about it.",
+  dislike: "Not your vibe right now, and that’s okay.",
+};
+
 const SelectedJob: React.FC = () => {
   const {
     _selectedJob,
@@ -66,6 +72,7 @@ const SelectedJob: React.FC = () => {
   const [isMobileViewport, setIsMobileViewport] = useState(false);
   const { ratings, setRating } = useJobRatings();
   const [ratingBurst, setRatingBurst] = useState<JobRatingValue | null>(null);
+  const [showRatingInfo, setShowRatingInfo] = useState(false);
   const [isFocusAssignmentView, setIsFocusAssignmentView] = useState(false);
   const CARD_TRANSITION_MS = 420;
   const transitionTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -84,6 +91,7 @@ const SelectedJob: React.FC = () => {
     if (!value) return null;
     return new Set(value.split(",").filter(Boolean));
   }, [assignmentQueryParam]);
+  const hasAssignmentParams = Boolean(assignmentSocCodes?.size);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -188,6 +196,7 @@ const SelectedJob: React.FC = () => {
     if (modalScrollRef.current) {
       modalScrollRef.current.scrollTop = 0;
     }
+    setShowRatingInfo(false);
   }, [visibleJob]);
 
   const activeInfoModal = modalHistory ? infoModalContent[modalHistory] : null;
@@ -465,7 +474,9 @@ const SelectedJob: React.FC = () => {
         show={!!visibleJob}
         onHide={handleOnHide}
         contentClassName="selectedJobModal"
-        dialogClassName="dialogJobVizModal py-2 d-sm-flex justify-content-center align-items-center"
+        dialogClassName={`dialogJobVizModal py-2 d-sm-flex justify-content-center align-items-center ${
+          hasAssignmentParams ? "" : "dialogJobVizModalCentered"
+        }`}
         backdropClassName="selectedJobBackdrop"
         fullscreen="md-down"
         style={{
@@ -526,12 +537,24 @@ const SelectedJob: React.FC = () => {
                     >
                       Rate this job
                     </span>
-                    {currentRating && (
-                      <span className={styles.modalRatingStatus}>
-                        <LucideIcon name="Check" />
-                        Rated
-                      </span>
-                    )}
+                    <div className={styles.modalRatingHeaderActions}>
+                      {currentRating && (
+                        <span className={styles.modalRatingStatus}>
+                          <LucideIcon name="Check" />
+                          Rated
+                        </span>
+                      )}
+                      <button
+                        type="button"
+                        className={styles.inlineInfoButton}
+                        aria-pressed={showRatingInfo ? "true" : "false"}
+                        aria-expanded={showRatingInfo ? "true" : "false"}
+                        aria-label="How JobViz+ ratings work"
+                        onClick={() => setShowRatingInfo((prev) => !prev)}
+                      >
+                        <LucideIcon name="Info" />
+                      </button>
+                    </div>
                   </div>
                   <div className={styles.modalRatingButtons}>
                     {ratingOptions.map((option) => (
@@ -559,6 +582,23 @@ const SelectedJob: React.FC = () => {
                       </button>
                     ))}
                   </div>
+                  {showRatingInfo && (
+                    <div className={styles.modalRatingInfo}>
+                      <p>How to use these ratings:</p>
+                      <ul className={styles.modalRatingInfoList}>
+                        {ratingOptions.map((option) => (
+                          <li key={`rating-info-${option.value}`}>
+                            <span className={styles.modalRatingInfoEmoji}>
+                              {option.emoji}
+                            </span>
+                            <span className={styles.modalRatingInfoText}>
+                              {ratingDescriptions[option.value]}
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
                 </section>
               ) : (
                 <section className={`${styles.modalRatingBlock} ${styles.modalRatingBlockDisabled}`}>

@@ -8,6 +8,7 @@ import React, {
   useState,
 } from "react";
 import { IItemForClient, TUseStateReturnVal } from "../types/global";
+import type { JobvizSharePayload } from "../components/JobViz/jobvizShareUtils";
 
 export const ModalContext = createContext<IModalProviderValue | null>(null);
 
@@ -73,6 +74,15 @@ export interface IModalProviderValue {
   _lessonItemModal: TUseStateReturnVal<ILessonItemsModal>;
   _jobToursModalCssProps: TUseStateReturnVal<CSSProperties>;
   _emailNewsletterSignUpModal: TUseStateReturnVal<TEmailNewsletterSignUpModal>;
+  _jobvizSummaryModal: TUseStateReturnVal<JobvizSummaryModalState>;
+}
+
+export interface JobvizSummaryModalState {
+  isDisplayed: boolean;
+  unitName?: string | null;
+  jobs?: Array<{ title: string; soc: string }>;
+  payload?: JobvizSharePayload | null;
+  allowEditing?: boolean;
 }
 
 type TSelectedJobModal = Partial<{
@@ -187,6 +197,12 @@ export const ModalProvider: React.FC<PropsWithChildren> = ({ children }) => {
     null
   );
   const [jobvizReturnPath, setJobvizReturnPath] = useState<string | null>(null);
+  const [jobvizSummaryModal, setJobvizSummaryModal] =
+    useState<JobvizSummaryModalState>({
+      isDisplayed: false,
+      jobs: [],
+      allowEditing: true,
+    });
   const value: IModalProviderValue = {
     _jobvizReturnPath: [jobvizReturnPath, setJobvizReturnPath],
     _jobToursModalCssProps: [jobToursModalCssProps, setJobToursModalCssProps],
@@ -194,6 +210,7 @@ export const ModalProvider: React.FC<PropsWithChildren> = ({ children }) => {
       emailNewsletterSignUpModal,
       setEmailNewsletterSignUpModal,
     ],
+    _jobvizSummaryModal: [jobvizSummaryModal, setJobvizSummaryModal],
     _isCopyLessonHelperModalDisplayed: [
       isCopyLessonHelperModalDisplayed,
       setIsCopyLessonHelperModalDisplayed,

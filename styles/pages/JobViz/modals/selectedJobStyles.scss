@@ -93,6 +93,12 @@ $jobInfoStatCard: rgba(14, 21, 54, 0.85);
   }
 }
 
+.dialogJobVizModalCentered {
+  @media (min-width: 1200px) {
+    left: 0 !important;
+  }
+}
+
 .modal.show .selectedJobModal {
   animation: jobDetailSlideUp 0.45s cubic-bezier(0.21, 1.02, 0.73, 1) forwards;
   transform-origin: center bottom;

@@ -1589,6 +1589,94 @@ $jobviz-nav-height: 64px;
   transition: width 0.25s ease;
 }
 
+.assignmentSummaryButton {
+  margin-top: 0.6rem;
+  align-self: stretch;
+  border: none;
+  border-radius: 999px;
+  padding: 0.85rem 1.5rem;
+  background: linear-gradient(120deg, #fcddec, #ffd369, #8ec5ff);
+  color: #0b142b;
+  font-weight: 700;
+  font-size: 0.95rem;
+  letter-spacing: 0.02em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+  box-shadow: 0 12px 28px rgba(9, 12, 34, 0.35);
+}
+
+.assignmentSummaryButton svg {
+  width: 1.15rem;
+  height: 1.15rem;
+  color: inherit;
+}
+
+.assignmentSummaryButton:hover:not(:disabled),
+.assignmentSummaryButton:focus-visible:not(:disabled) {
+  transform: translateY(-1px) scale(1.01);
+  box-shadow: 0 16px 32px rgba(9, 12, 34, 0.45);
+}
+
+.assignmentSummaryButton:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.assignmentConfettiBurst {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 2;
+}
+
+.assignmentConfettiPiece {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 8px;
+  height: 14px;
+  border-radius: 2px;
+  opacity: 0;
+  animation: assignmentConfettiFall 2.6s ease forwards;
+  animation-delay: calc(var(--confetti-index, 0) * 60ms);
+  transform-origin: center;
+  --confetti-x: calc((var(--confetti-index, 0) - 9) * 6%);
+  transform: translate3d(var(--confetti-x), -10%, 0) rotate(calc(var(--confetti-index, 0) * 12deg));
+  background: linear-gradient(180deg, #fbed96, #f9a1ff);
+}
+
+.assignmentConfettiPiece:nth-child(3n) {
+  background: linear-gradient(180deg, #8ec5ff, #a3ffe9);
+}
+
+.assignmentConfettiPiece:nth-child(4n) {
+  background: linear-gradient(180deg, #ff9a9e, #fad0c4);
+}
+
+.assignmentConfettiPiece:nth-child(5n) {
+  background: linear-gradient(180deg, #cfd9ff, #7de0ff);
+}
+
+@keyframes assignmentConfettiFall {
+  0% {
+    opacity: 0;
+    transform: translate3d(var(--confetti-x), -10%, 0) rotate(0deg);
+  }
+  25% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(var(--confetti-x), 140%, 0) rotate(420deg);
+  }
+}
+
 .assignmentMobileControls {
   display: flex;
   justify-content: space-between;
@@ -2300,6 +2388,12 @@ $jobviz-nav-height: 64px;
   gap: 0.65rem;
 }
 
+.modalRatingHeaderActions {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
 .modalRatingLabel {
   position: relative;
   font-weight: 600;
@@ -2345,6 +2439,46 @@ $jobviz-nav-height: 64px;
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
+}
+
+.modalRatingInfo {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 0.6rem 0.75rem;
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(240, 244, 255, 0.9);
+  font-size: 0.85rem;
+}
+
+.modalRatingInfo p {
+  margin: 0 0 0.35rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.modalRatingInfoList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.modalRatingInfoList li {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.modalRatingInfoEmoji {
+  font-size: 1rem;
+}
+
+.modalRatingInfoText {
+  flex: 1;
 }
 
 .modalRatingButton {
@@ -3770,5 +3904,409 @@ $jobviz-nav-height: 64px;
   }
   50% {
     transform: translateY(4px);
+  }
+}
+
+.summaryModalDialog {
+  max-width: min(860px, calc(100vw - 1rem));
+}
+
+.summaryModalRoot {
+  z-index: 11000000;
+}
+
+.summaryModalRoot :global(.modal-dialog) {
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.summaryModalBackdrop {
+  z-index: 10999990;
+  background: rgba(2, 5, 18, 0.7);
+  backdrop-filter: blur(7px);
+}
+
+.summaryModalContent {
+  background: linear-gradient(170deg, rgba(11, 16, 35, 0.96), rgba(10, 26, 55, 0.96));
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 28px;
+  color: #f6fbff;
+  box-shadow: 0 30px 70px rgba(3, 6, 23, 0.8);
+  overflow: hidden;
+}
+
+.summaryModalHeader {
+  border: none;
+  padding: 1.8rem 2rem 0.5rem;
+  background: transparent;
+}
+
+.summaryModalBody {
+  padding: 0 2rem 2.3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.summaryModalKicker {
+  margin: 0;
+  text-transform: uppercase;
+  font-size: 0.78rem;
+  letter-spacing: 0.2em;
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.summaryModalTitle {
+  margin: 0.25rem 0 0;
+  font-size: clamp(1.6rem, 3vw, 2.1rem);
+  color: #fef8ff;
+  text-shadow: 0 4px 18px rgba(0, 0, 0, 0.45);
+  letter-spacing: 0.01em;
+}
+
+.summaryAssignmentTitle {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.8);
+  letter-spacing: 0.02em;
+}
+
+.summarySentence {
+  margin: 0;
+  font-size: 1.05rem;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.summaryCounts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 0.85rem;
+}
+
+.summaryCountCard {
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 0.95rem 1.1rem;
+  background: rgba(255, 255, 255, 0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.summaryCountEmoji {
+  font-size: 1.45rem;
+}
+
+.summaryCountLabel {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.summaryCountValue {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #fefefe;
+}
+
+.summaryReflectionBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.summaryReflectionHeader {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.summaryReflectionInput {
+  min-height: 90px;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(5, 12, 28, 0.4);
+  color: #fefefe;
+  font-size: 0.95rem;
+  padding: 0.9rem 1rem;
+  resize: vertical;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.summaryReflectionInput:focus {
+  border-color: rgba(255, 255, 255, 0.4);
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.15);
+  outline: none;
+}
+
+.summaryReflectionInput:disabled {
+  opacity: 0.6;
+}
+
+.summaryReadOnlyNote {
+  margin: -0.35rem 0 0;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.summaryShareSection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.summaryShareHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.summaryShareHeader h3 {
+  color: #f6fbff;
+}
+
+.summaryShareButtons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.summaryShareButton,
+.summaryShareButtonPrimary {
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.05);
+  color: #f8fbff;
+  padding: 0.65rem 1.2rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.summaryShareButton svg,
+.summaryShareButtonPrimary svg {
+  width: 1.1rem;
+  height: 1.1rem;
+}
+
+.summaryShareButton:hover,
+.summaryShareButton:focus-visible,
+.summaryShareButtonPrimary:hover,
+.summaryShareButtonPrimary:focus-visible {
+  transform: translateY(-1px);
+  border-color: rgba(255, 255, 255, 0.4);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
+}
+
+.summaryShareButtonPrimary {
+  background: linear-gradient(120deg, #7b5bff, #ff7bb8);
+  border-color: transparent;
+}
+
+.summaryShareButtonGroup {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.summaryIncludeHeaderToggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.summaryIncludeHeaderToggle input {
+  width: 1rem;
+  height: 1rem;
+}
+
+.summaryStatus {
+  padding: 0.6rem 0.9rem;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.1);
+  font-size: 0.9rem;
+}
+
+.summaryJobGroups {
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.summaryJobGroup {
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.02);
+  padding: 0.9rem 1.1rem;
+}
+
+.summaryJobGroupHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+  color: #f6fbff;
+}
+
+.summaryJobGroupHeader h4 {
+  margin: 0;
+  font-size: 0.95rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.summaryJobGroupCount {
+  font-size: 0.85rem;
+  padding: 0.2rem 0.65rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.summaryJobGroupList {
+  list-style: none;
+  margin: 0.6rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.summaryJobItem {
+  display: flex;
+}
+
+.summaryJobItemLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  width: 100%;
+  border-radius: 12px;
+  padding: 0.45rem 0.65rem;
+  color: #fefefe;
+  text-decoration: none;
+  border: 1px solid transparent;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.summaryJobItemLink svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.summaryJobItemLink:hover,
+.summaryJobItemLink:focus-visible {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.25);
+  transform: translateY(-1px);
+  color: #fefefe;
+}
+
+.summaryJobItemEmoji {
+  font-size: 1rem;
+}
+
+.summaryJobItemTitle {
+  flex: 1;
+  font-weight: 600;
+}
+
+.summaryJobGroupEmpty {
+  margin: 0.8rem 0 0;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.9rem;
+}
+
+.summaryModalFooter {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.summaryCloseButton {
+  border: none;
+  border-radius: 999px;
+  padding: 0.65rem 1.5rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.15);
+  color: #0b142b;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
+}
+
+.summaryCloseButton:hover,
+.summaryCloseButton:focus-visible {
+  transform: translateY(-1px);
+  background: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.45);
+}
+
+.summaryInfoPanel {
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.03);
+  padding: 0.75rem 1rem;
+}
+
+.summaryInfoHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0 0 0.4rem;
+}
+
+.summaryInfoHeader svg {
+  width: 1.1rem;
+  height: 1.1rem;
+}
+
+.summaryInfoPanel h4 {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.summaryInfoPanel ul {
+  margin: 0;
+  padding-left: 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 640px) {
+  .summaryModalBody {
+    padding: 0 1.25rem 1.5rem;
+  }
+
+  .summaryShareButtons {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .summaryShareButton,
+  .summaryShareButtonPrimary {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .summaryShareButtonGroup {
+    flex-direction: column;
+    align-items: flex-start;
   }
 }
