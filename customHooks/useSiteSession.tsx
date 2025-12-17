@@ -1,5 +1,4 @@
 import { signOut, useSession } from "next-auth/react";
-import { useState, useEffect } from "react";
 import { IUserSession } from "../types/global";
 import { useCustomCookies } from "./useCustomCookies";
 
@@ -13,6 +12,7 @@ const useSiteSession = () => {
     "gdriveRefreshToken",
     "gdriveEmail",
     "gdriveAccessTokenExp",
+    "isGpPlusMember",
   ]);
 
   const logUserOut = () => {

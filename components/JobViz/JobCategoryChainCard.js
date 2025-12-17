@@ -7,7 +7,7 @@
 /* eslint-disable indent */
 /* eslint-disable react/jsx-indent-props */
 /* eslint-disable react/jsx-indent */
-/* eslint-disable react/jsx-no-undef */
+
 
 import { useContext } from 'react';
 import { Card } from 'react-bootstrap';
@@ -37,7 +37,7 @@ const jobsAllInfo = {
     "percent_employment_change_col": "#CF4C74FF",
 }
 
-const JobCategoryChainCard = ({ jobCategory, index, isSearchResultsChainPresent }) => {
+const JobCategoryChainCard = ({ jobCategory, index, isSearchResultsChainPresent, searchParams }) => {
     const { _selectedJob } = useContext(ModalContext);
     const [, setSelectedJob] = _selectedJob;
 
@@ -66,6 +66,7 @@ const JobCategoryChainCard = ({ jobCategory, index, isSearchResultsChainPresent 
                             <DetailsBtn
                                 jobToShowInModal={jobCategory ?? jobsAllInfo}
                                 setSelectedJob={setSelectedJob}
+                                searchParams={searchParams}
                             />
                             :
                             <span style={{ maxWidth: 230, wordWrap: 'break-word' }} className='mt-2 text-muted fst-italic text-center d-block w-100'>Click to explore a job category</span>

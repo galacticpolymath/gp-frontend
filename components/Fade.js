@@ -1,5 +1,3 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable object-curly-spacing */
 /* eslint-disable curly */
 /* eslint-disable quotes */
 import React, { useEffect, useState } from "react";

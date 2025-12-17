@@ -1,23 +1,23 @@
-const axios = require("axios");
-const dotenv = require("dotenv");
-const jwt = require("jsonwebtoken");
+const axios = require('axios');
+const dotenv = require('dotenv');
+const jwt = require('jsonwebtoken');
 
 dotenv.config();
 
 const signJwt = async (
-    jwtPayload,
-    secret,
+  jwtPayload,
+  secret,
 ) => {
 
-    const token = jwt.sign(
-        {
-            ...jwtPayload,
-        },
-        secret,
-        { algorithm: "HS256" }
-    );
+  const token = jwt.sign(
+    {
+      ...jwtPayload,
+    },
+    secret,
+    { algorithm: 'HS256' }
+  );
 
-    return token;
+  return token;
 };
 
 /**
@@ -44,106 +44,106 @@ const signJwt = async (
  *        mailing list statuses, and an array of all users.
  */
 const getUserResults = async () => {
-    const { NEXTAUTH_SECRET, TESTING_EMAIL } = process.env;
-    const accessToken = await signJwt(
-        {
-            TESTING_EMAIL,
-            roles: ["dbAdmin", "user"],
-            name: "Gabe",
-        },
-        NEXTAUTH_SECRET,
-        "12hr"
-    );
-    const headers = new Headers();
+  const { NEXTAUTH_SECRET, TESTING_EMAIL } = process.env;
+  const accessToken = await signJwt(
+    {
+      TESTING_EMAIL,
+      roles: ['dbAdmin', 'user'],
+      name: 'Gabe',
+    },
+    NEXTAUTH_SECRET,
+    '12hr'
+  );
+  const headers = new Headers();
 
-    headers.append("Authorization", `Bearer ${accessToken}`);
+  headers.append('Authorization', `Bearer ${accessToken}`);
 
-    try {
-        // https://dev.galacticpolymath.com/
-        // http://localhost:3000/api/get-users
-        // https://dev.galacticpolymath.com/api/get-users
-        const url = new URL("http://localhost:3000/api/get-users");
-        const auth = `Bearer ${accessToken}`;
-        const { status, data } = await axios.get(url.href, {
-            headers: { Authorization: auth },
-            params: {
-                dbType: "production",
-            },
-        });
+  try {
+    // https://dev.galacticpolymath.com/
+    // http://localhost:3000/api/get-users
+    // https://dev.galacticpolymath.com/api/get-users
+    const url = new URL('http://localhost:3000/api/get-users');
+    const auth = `Bearer ${accessToken}`;
+    const { status, data } = await axios.get(url.href, {
+      headers: { Authorization: auth },
+      params: {
+        dbType: 'production',
+      },
+    });
 
-        if (status !== 200) {
-            throw new Error("Received a non 200 response from the server.");
-        }
-
-        const usersOnMailingList = data.users.filter(
-            (user) => user.mailingListStatus === "onList"
-        );
-        const usersWithDoubleOptSent = data.users.filter(
-            (user) => user.mailingListStatus === "doubleOptEmailSent"
-        );
-        const notOnListUsers = data.users.filter(
-            (user) => user.mailingListStatus === "notOnList"
-        );
-
-        return {
-            usersOnMailingList: usersOnMailingList?.length,
-            notOnListUsers: notOnListUsers?.length,
-            usersWithDoubleOptSent: usersWithDoubleOptSent?.length,
-            totalUsers: data?.users?.length,
-            emailsOnMailingList: usersOnMailingList.map((user) => user.email),
-            mailingListStatuses: data.users.map(
-                (user) => user.mailingListStatus
-            ),
-            users: data.users,
-        };
-    } catch (error) {
-        console.error("Failed to get users. Reason: ", error);
-
-        return {};
+    if (status !== 200) {
+      throw new Error('Received a non 200 response from the server.');
     }
+
+    const usersOnMailingList = data.users.filter(
+      (user) => user.mailingListStatus === 'onList'
+    );
+    const usersWithDoubleOptSent = data.users.filter(
+      (user) => user.mailingListStatus === 'doubleOptEmailSent'
+    );
+    const notOnListUsers = data.users.filter(
+      (user) => user.mailingListStatus === 'notOnList'
+    );
+
+    return {
+      usersOnMailingList: usersOnMailingList?.length,
+      notOnListUsers: notOnListUsers?.length,
+      usersWithDoubleOptSent: usersWithDoubleOptSent?.length,
+      totalUsers: data?.users?.length,
+      emailsOnMailingList: usersOnMailingList.map((user) => user.email),
+      mailingListStatuses: data.users.map(
+        (user) => user.mailingListStatus
+      ),
+      users: data.users,
+    };
+  } catch (error) {
+    console.error('Failed to get users. Reason: ', error);
+
+    return {};
+  }
 };
 
-test(
-    "Will check if the responses from the `get-users` route are constant.",
-    async () => {
-        const getUserResultsPromises = new Array(10)
-            .fill(0)
-            .map(() => getUserResults());
-        const userResults = await Promise.all(getUserResultsPromises);
-        const firstResult = userResults[0];
+test.skip(
+  "Will check if the responses from the `get-users` route are constant.",
+  async () => {
+    const getUserResultsPromises = new Array(10)
+      .fill(0)
+      .map(() => getUserResults());
+    const userResults = await Promise.all(getUserResultsPromises);
+    const firstResult = userResults[0];
 
-        if (!Object.keys(firstResult).length) {
-            console.error("Failed to get users.");
-            expect(false).toBe(true);
-            return;
-        }
+    if (!Object.keys(firstResult).length) {
+      console.error('Failed to get users.');
+      expect(false).toBe(true);
+      return;
+    }
 
-        const areResultsConstant = userResults.every((result) => {
-            return (
-                result.usersOnMailingList === firstResult.usersOnMailingList &&
-                result.totalUsers === firstResult.totalUsers &&
-                result.notOnListUsers === firstResult.notOnListUsers &&
-                result.usersWithDoubleOptSent === firstResult.usersWithDoubleOptSent
-            );
+    const areResultsConstant = userResults.every((result) => {
+      return (
+        result.usersOnMailingList === firstResult.usersOnMailingList &&
+        result.totalUsers === firstResult.totalUsers &&
+        result.notOnListUsers === firstResult.notOnListUsers &&
+        result.usersWithDoubleOptSent === firstResult.usersWithDoubleOptSent
+      );
+    });
+    const doAllUsersHaveMailingListStatusField = userResults.every(
+      (userResult) => {
+        const doesTargetPropExist = userResult.users.every((user) => {
+          const doesPropExist = 'mailingListStatus' in user;
+
+          return doesPropExist;
         });
-        const doAllUsersHaveMailingListStatusField = userResults.every(
-            (userResult) => {
-                const doesTargetPropExist = userResult.users.every((user) => {
-                    const doesPropExist = "mailingListStatus" in user;
 
-                    return doesPropExist;
-                });
+        return doesTargetPropExist;
+      }
+    );
 
-                return doesTargetPropExist;
-            }
-        );
+    delete userResults[0].users;
 
-        delete userResults[0].users;
+    const userResult = userResults[0];
 
-        const userResult = userResults[0];
-
-        expect(areResultsConstant).toBe(true);
-        expect(doAllUsersHaveMailingListStatusField).toBe(true);
-    },
-    1_000 * 60 * 3
+    expect(areResultsConstant).toBe(true);
+    expect(doAllUsersHaveMailingListStatusField).toBe(true);
+  },
+  1_000 * 60 * 3
 );

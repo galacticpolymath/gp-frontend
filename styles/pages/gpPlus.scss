@@ -28,6 +28,20 @@ $gpGroup: #1ca9e5;
   }
 }
 
+.transparent-on-hover:hover {
+  background-color: transparent;
+}
+
+.lesson-item-modal-close-web-resource {
+  top: 5px;
+  right: 5px;
+
+  @media (min-width: 576px) {
+    right: 5px;
+    left: auto;
+  }
+}
+
 .gp-plus-btn-icons-lesson-item-modal {
   width: 30px;
   height: 30px;
@@ -44,22 +58,12 @@ $gpGroup: #1ca9e5;
   // max-width: 125px;
 
   @media (min-width: 576px) {
-    max-width: none;
+    max-width: 350px;
   }
 }
 
 .gp-plus-btn-lesson-item-modal {
   min-width: 200px;
-}
-
-.lesson-item-modal-btns-container {
-  button {
-    min-width: 80px;
-
-    @media (min-width: 576px) {
-      min-width: 120px;
-    }
-  }
 }
 
 .gp-plus-logo-lesson-item-modal {
@@ -595,4 +599,18 @@ $gpGroup: #1ca9e5;
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.lessons-item-modal-btns-text-container {
+  @media (min-width: 768px) {
+    width: 65px;
+  }
+}
+
+.lessons-item-modal-download {
+  button {
+    @media (min-width: 768px) {
+      width: 150px;
+    }
+  }
 }

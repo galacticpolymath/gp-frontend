@@ -1,7 +1,3 @@
-/* eslint-disable react/jsx-key */
-/* eslint-disable no-unused-vars */
-/* eslint-disable react/jsx-max-props-per-line */
-/* eslint-disable semi */
 /* eslint-disable no-console */
 /* eslint-disable quotes */
 /* eslint-disable indent */

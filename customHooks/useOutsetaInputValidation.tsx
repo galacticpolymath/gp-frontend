@@ -1,17 +1,14 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, } from 'react';
 import {
   defautlNotifyModalVal,
   useModalContext,
-} from "../providers/ModalProvider";
-import { useSession } from "next-auth/react";
-import { IUserSession } from "../types/global";
-import { CONTACT_SUPPORT_EMAIL } from "../globalVars";
-import CustomLink from "../components/CustomLink";
+} from '../providers/ModalProvider';
+import { CONTACT_SUPPORT_EMAIL } from '../globalVars';
+import CustomLink from '../components/CustomLink';
 import {
-  deleteUserOutsetaEmail,
   updateUser,
-} from "../apiServices/user/crudFns";
-import useSiteSession from "./useSiteSession";
+} from '../apiServices/user/crudFns';
+import useSiteSession from './useSiteSession';
 
 const useOutsetaInputValidation = () => {
   const { _notifyModal } = useModalContext();
@@ -29,7 +26,7 @@ const useOutsetaInputValidation = () => {
       if (element.childNodes.length) {
         for (const childNode of Array.from(element.childNodes)) {
           if (
-            (childNode as HTMLElement)?.classList?.contains("state-Register")
+            (childNode as HTMLElement)?.classList?.contains('state-Register')
           ) {
             isGpPlusSignUpModalDisplayed = true;
           }
@@ -42,14 +39,14 @@ const useOutsetaInputValidation = () => {
         'input[name="Person.Email"]'
       ) as HTMLInputElement | null;
       const _continueToCheckoutBtn = document.querySelector(
-        ".o--Register--nextButton"
+        '.o--Register--nextButton'
       ) as HTMLButtonElement | null;
 
       if (!_emailInput || !_continueToCheckoutBtn || !token || !user?.email) {
         setNotifyModal({
-          headerTxt: "An error has occurred",
+          headerTxt: 'An error has occurred',
           bodyTxt:
-            "Unable to perform validation. The page will now be reloaded. Please try again.",
+            'Unable to perform validation. The page will now be reloaded. Please try again.',
           isDisplayed: true,
           handleOnHide() {
             setNotifyModal(defautlNotifyModalVal);
@@ -62,11 +59,11 @@ const useOutsetaInputValidation = () => {
 
       if (!user?.email) {
         setNotifyModal({
-          headerTxt: "An error has occurred",
+          headerTxt: 'An error has occurred',
           bodyTxt: (
             <>
               Unable to perform validation. The page will now be reloaded.
-              Please try again. If this issue persists, please contact{" "}
+              Please try again. If this issue persists, please contact{' '}
               <CustomLink
                 hrefStr={CONTACT_SUPPORT_EMAIL}
                 className="ms-1 mt-2 text-break"
@@ -88,28 +85,28 @@ const useOutsetaInputValidation = () => {
 
       let userGpAccountEmail = user?.email;
 
-      _continueToCheckoutBtn.addEventListener("click", async (event) => {
-        console.log("The continue button was clicked...");
+      _continueToCheckoutBtn.addEventListener('click', async (event) => {
+        console.log('The continue button was clicked...');
 
         if ((event.target as HTMLButtonElement).disabled) {
-          console.log("The button is disabled.");
+          console.log('The button is disabled.');
           return;
         }
 
         const emailInput = document.querySelector('[name="Person.Email"]');
         const outsetaEmail = emailInput
           ? (emailInput as HTMLInputElement).value
-          : "";
+          : '';
 
-        console.log("outsetaEmail, sup there: ", outsetaEmail);
+        console.log('outsetaEmail, sup there: ', outsetaEmail);
 
         if (!outsetaEmail) {
           setNotifyModal({
-            headerTxt: "An error has occurred",
+            headerTxt: 'An error has occurred',
             bodyTxt: (
               <>
                 Unable to start your checkout session. If this error persists,
-                please contact{" "}
+                please contact{' '}
                 <CustomLink
                   hrefStr={CONTACT_SUPPORT_EMAIL}
                   className="ms-1 mt-2 text-break"
@@ -129,15 +126,6 @@ const useOutsetaInputValidation = () => {
           return;
         }
 
-        console.log("Will save the email the user inputted.");
-
-        // const deleteUserOutsetaEmailResult = await deleteUserOutsetaEmail(
-        //   userGpAccountEmail,
-        //   token
-        // );
-
-        // console.log("deleteUserOutsetaEmailResult: ", deleteUserOutsetaEmailResult);
-
         const updateUserResponse = await updateUser(
           { email: userGpAccountEmail },
           { outsetaAccountEmail: outsetaEmail },
@@ -145,15 +133,15 @@ const useOutsetaInputValidation = () => {
           token
         );
 
-        console.log("updateUserResponse: ", updateUserResponse);
+        console.log('updateUserResponse: ', updateUserResponse);
 
         if (!updateUserResponse?.wasSuccessful) {
           setNotifyModal({
-            headerTxt: "An error has occurred",
+            headerTxt: 'An error has occurred',
             bodyTxt: (
               <>
                 An error has occurred while trying to update the user's email.
-                If this error persists, please contact{" "}
+                If this error persists, please contact{' '}
                 <CustomLink
                   hrefStr={CONTACT_SUPPORT_EMAIL}
                   className="ms-1 mt-2 text-break"
@@ -178,9 +166,9 @@ const useOutsetaInputValidation = () => {
 
   useEffect(() => {
     let observer: MutationObserver | undefined;
-    console.log("The current status: ", status);
-    if (status === "authenticated") {
-      console.log("will watch the dom...");
+    console.log('The current status: ', status);
+    if (status === 'authenticated') {
+      console.log('will watch the dom...');
       observer = new MutationObserver(mututationCallback);
       observer.observe(document.body, {
         childList: true,

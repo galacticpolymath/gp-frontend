@@ -27,9 +27,7 @@ import {
 } from "../../../backend/models/User/types";
 import { INewUnitLesson } from "../../../backend/models/Unit/types/teachingMaterials";
 import { connectToMongodb } from "../../../backend/utils/connection";
-import {
-  TFileToCopy,
-} from "../../../backend/services/gdriveServices/types";
+import { TFileToCopy } from "../../../backend/services/gdriveServices/types";
 
 export const maxDuration = 240;
 export const VALID_WRITABLE_ROLES = new Set([
@@ -145,7 +143,8 @@ export default async function handler(
     typeof reqQueryParams.fileIds === "string"
       ? [reqQueryParams.fileIds]
       : reqQueryParams.fileIds;
-  let _fileNames = typeof reqQueryParams.fileNames === "string"
+  let _fileNames =
+    typeof reqQueryParams.fileNames === "string"
       ? [reqQueryParams.fileNames]
       : reqQueryParams.fileNames;
   const clientOrigin = new URL(request.headers.referer ?? "").origin;
@@ -183,7 +182,7 @@ export default async function handler(
           },
         });
 
-        console.log("fileUpdated: ", fileUpdated);
+        console.log("File was made readable.");
 
         response.end(`data: ${{ isJobDone: true }}\n\n`);
       }
@@ -216,8 +215,6 @@ export default async function handler(
         403
       );
     }
-
-    
 
     if (
       !reqQueryParams.unitId ||
@@ -293,8 +290,6 @@ export default async function handler(
     const { gpPlusDriveFolderId, unitGDriveLessons: unitGDriveLessonsObjs } =
       user;
 
-    console.log("User, software: ", user);
-
     let gpPlusFolderId = gpPlusDriveFolderId;
 
     // checking if the 'My GP+ Units' folder exist in user's google drive and is not trashed
@@ -310,11 +305,13 @@ export default async function handler(
         gDriveRefreshToken,
         clientOrigin
       );
+
       console.log("targetGDriveFolder: ", targetGDriveFolder);
 
+      // if the GP+ folder doesn't exist, then by setting gpPlusFolderId = undefined, the GP+ folder will be created again
       if (
-        "id" in targetGDriveFolder &&
-        (!targetGDriveFolder.id || targetGDriveFolder.labels.trashed)
+        ("id" in targetGDriveFolder &&
+        (!targetGDriveFolder.id || targetGDriveFolder.labels.trashed)) || targetGDriveFolder.errType
       ) {
         gpPlusFolderId = undefined;
       }
@@ -383,9 +380,9 @@ export default async function handler(
           clientOrigin
         );
         doesTargetGDriveUnitFolderExist =
-          "id" in targetUnitFolder &&
+          ("id" in targetUnitFolder &&
           !!targetUnitFolder.id &&
-          !targetUnitFolder.labels.trashed;
+          !targetUnitFolder.labels.trashed) || !targetUnitFolder.errType;
       }
 
       let doesTargetGDriveLessonFolderExist = !!targetLessonFolderInUserDrive;
@@ -398,7 +395,7 @@ export default async function handler(
           clientOrigin
         );
         doesTargetGDriveLessonFolderExist =
-          "id" in gdriveItem && !!gdriveItem.id && !gdriveItem.labels.trashed;
+          ("id" in gdriveItem && !!gdriveItem.id && !gdriveItem.labels.trashed) || !gdriveItem.errType;
       }
 
       console.log(
@@ -483,7 +480,7 @@ export default async function handler(
         !doesTargetGDriveLessonFolderExist
       ) {
         console.log(
-          `The target unit folder and its corresponding lesson folder do not exist, creating them...`
+          "The target unit folder and its corresponding lesson folder do not exist, creating them..."
         );
 
         if (!isStreamOpen) {
@@ -676,7 +673,7 @@ export default async function handler(
           );
           lessonsFolderId = targetLessonsFolderInUserDrive.id;
         } else {
-          console.log(`The lessons folder doesn't exist. Will create it.`);
+          console.log("The lessons folder doesn't exist. Will create it.");
 
           if (!isStreamOpen) {
             throw new CustomError("The stream has ended.", 500);
@@ -960,8 +957,7 @@ export default async function handler(
 
       if (!gpPlusFolderCreationResult.folderId) {
         throw new CustomError(
-          "Error creating the My GP+ Units folder. Reason: " +
-            gpPlusFolderCreationResult.errMsg,
+          `Error creating the My GP+ Units folder. Reason: ${gpPlusFolderCreationResult.errMsg}`,
           500
         );
       }
@@ -1292,7 +1288,10 @@ export default async function handler(
       );
     }
 
-    parentFolder = { id: parentFolderIdInSharedGDrive, permissionId: targetPermission.id };
+    parentFolder = {
+      id: parentFolderIdInSharedGDrive,
+      permissionId: targetPermission.id,
+    };
 
     console.log("Will update the permission of the target file.");
 
@@ -1306,7 +1305,7 @@ export default async function handler(
     for (const fileId of _fileIds) {
       console.log("Copying file: ", fileId);
       // @ts-ignore
-      const fileUpdated = await drive.files.update({
+      await drive.files.update({
         fileId,
         supportsAllDrives: true,
         requestBody: {
@@ -1316,7 +1315,7 @@ export default async function handler(
           },
         },
       });
-      console.log("fileUpdated: ", fileUpdated);
+      console.log("File was made read only.");
     }
 
     sendMessage(response, {
@@ -1410,14 +1409,7 @@ export default async function handler(
       const drive = await createDrive();
 
       for (const fileId of _fileIds) {
-        const shareFileResult = await shareFileWithUser(
-          fileId,
-          userEmail,
-          drive,
-          "reader"
-        );
-
-        console.log("shareFileResult: ", shareFileResult);
+        await shareFileWithUser(fileId, userEmail, drive, "reader");
       }
     }
 

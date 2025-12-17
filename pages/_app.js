@@ -1,6 +1,3 @@
-/* eslint-disable react/jsx-indent */
-/* eslint-disable quotes */
-
 import { useEffect } from "react";
 import { ModalProvider } from "../providers/ModalProvider";
 import { LessonsCarouselProvider } from "../providers/LessonsCarouselProvider";
@@ -19,11 +16,14 @@ import "../styles/comps/modal.scss";
 import "../styles/pages/home.scss";
 import "../styles/pages/About/about.scss";
 import "../styles/modals/signUp.scss";
+import "../styles/pages/JobViz/heros/gp-plus-user.scss";
+import "../styles/pages/JobViz/heros/free-user.scss";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import { UserProvider } from "../providers/UserProvider";
 import { LessonProvider } from "../providers/LessonProvider";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { GoogleDrivePickerProvider } from "@geniux/google-drive-picker-react";
+
 
 import { CookiesProvider } from "react-cookie";
 

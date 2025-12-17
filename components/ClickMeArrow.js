@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-wrap-multilines */
 /* eslint-disable react/jsx-indent-props */
 /* eslint-disable indent */
 /* eslint-disable quotes */

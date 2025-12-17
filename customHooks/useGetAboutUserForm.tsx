@@ -8,7 +8,14 @@ import {
   TUserSchemaForClient,
   TUserSchemaV2,
 } from "../backend/models/User/types";
-import { setLocalStorageItem } from "../shared/fns";
+import {
+  getSessionStorageItem,
+  setLocalStorageItem,
+  setSessionStorageItem,
+} from "../shared/fns";
+import { useCustomCookies } from "./useCustomCookies";
+import { useModalContext } from "../providers/ModalProvider";
+import { useRouter } from "next/router";
 
 export const getAboutUserFormForClient = (
   userAccount: TUserSchemaForClient<TUserSchemaV2 & IUserSchema>
@@ -250,10 +257,17 @@ const getUserAccountData = async (token: string) => {
   }
 };
 
-export const useGetAboutUserForm = (willGetData: boolean = true) => {
+export const useGetAboutUserForm = (
+  willGetData: boolean = true,
+  willSetEmailNewsletterSignUpModal?: boolean
+) => {
   const { status, data } = useSession();
   const { _aboutUserForm } = useUserContext();
   const [aboutUserForm, setAboutUserForm] = _aboutUserForm;
+  const { setAppCookie } = useCustomCookies();
+  const {
+    _emailNewsletterSignUpModal: [, setEmailNewsletterSignUpModal],
+  } = useModalContext();
   const [gpPlusSub, setGpPlusSub] = useState<
     TUserSchemaForClient["gpPlusSubscription"] | null
   >(null);
@@ -315,7 +329,40 @@ export const useGetAboutUserForm = (willGetData: boolean = true) => {
             isNotTeaching,
             gradesTaught,
             gradesType,
+            willNotShowEmailNewsLetterSignUpModal,
+            isOnMailingList,
+            mailingListConfirmationEmailId,
           } = userAccount;
+
+          console.log("userAccount: ", userAccount);
+
+          // if mailingListConfirmationEmailId is truthy, then mailing list status is: 'double-opt-sent' and
+          // -display the modal
+          // if isOnMailingList = false, then mailing list status is 'not-on-list' and display the modal
+
+          const didOptOutOfMailingList = getSessionStorageItem(
+            "didOptOutOfMailingList"
+          );
+
+          if (
+            !didOptOutOfMailingList &&
+            !willNotShowEmailNewsLetterSignUpModal &&
+            willSetEmailNewsletterSignUpModal &&
+            !isOnMailingList
+          ) {
+            const status = mailingListConfirmationEmailId
+              ? "double-opt-sent"
+              : "not-on-list";
+            setEmailNewsletterSignUpModal((state) => {
+              return {
+                ...state,
+                userEmailNewsLetterStatus: status,
+                isDisplayed: true,
+              };
+            });
+          } else if (isOnMailingList) {
+            console.log("The user is on mailing list");
+          }
 
           if (gpPlusSubscription) {
             setGpPlusSub(gpPlusSubscription);
@@ -342,6 +389,8 @@ export const useGetAboutUserForm = (willGetData: boolean = true) => {
           }
 
           if (typeof isGpPlusMember === "boolean") {
+            setSessionStorageItem("isGpPlusUser", isGpPlusMember);
+            setAppCookie("isGpPlusMember", isGpPlusMember);
             userAccountForClient = {
               ...userAccountForClient,
               isGpPlusMember,

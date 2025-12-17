@@ -1,31 +1,31 @@
-import { drive_v3, google } from "googleapis";
+import { drive_v3, google } from 'googleapis';
 import {
   GoogleServiceAccountAuthCreds,
   refreshAuthToken,
-} from "../googleDriveServices";
-import { GoogleAuthOptions, OAuth2Client } from "google-auth-library";
-import { CustomError } from "../../utils/errors";
-import axios from "axios";
-import { sleep, waitWithExponentialBackOff } from "../../../globalFns";
-import { ILessonGDriveId, IUnitGDriveLesson } from "../../models/User/types";
+} from '../googleDriveServices';
+import { GoogleAuthOptions, OAuth2Client } from 'google-auth-library';
+import { CustomError } from '../../utils/errors';
+import axios from 'axios';
+import { sleep, waitWithExponentialBackOff } from '../../../globalFns';
+import { ILessonGDriveId, IUnitGDriveLesson } from '../../models/User/types';
 import {
   addNewGDriveLessons,
   createDbArrFilter,
   getUserByEmail,
   updateUserCustom,
-} from "../userServices";
-import { INewUnitLesson } from "../../models/Unit/types/teachingMaterials";
+} from '../userServices';
+import { INewUnitLesson } from '../../models/Unit/types/teachingMaterials';
 import {
   sendMessage,
   TCopyFilesMsg,
   VALID_WRITABLE_ROLES,
-} from "../../../pages/api/gp-plus/copy-lesson";
-import * as ExcelJS from "exceljs";
-import * as fs from "fs";
-import * as path from "path";
-import { IFile, TFilesToRename, TFileToCopy, TRenameFilesResult } from "./types";
+} from '../../../pages/api/gp-plus/copy-lesson';
+import * as ExcelJS from 'exceljs';
+import * as fs from 'fs';
+import * as path from 'path';
+import { IFile, TFilesToRename, TFileToCopy, TRenameFilesResult } from './types';
 
-export const TEACHERS_GOOGLE_GROUP_EMAIL = "teachers@galacticpolymath.com";
+export const TEACHERS_GOOGLE_GROUP_EMAIL = 'teachers@galacticpolymath.com';
 
 type TUnitFolder = Partial<{
   name: string | null;
@@ -40,18 +40,18 @@ type TAppProperties = Record<
   null | number | string | boolean | { [key: string]: unknown } | unknown[]
 >;
 
-export const ORIGINAL_ITEM_ID_FIELD_NAME = "originalItemId";
+export const ORIGINAL_ITEM_ID_FIELD_NAME = 'originalItemId';
 
 export class GDriveItem {
   name: string;
   appProperties?: TAppProperties;
   parents: string[];
-  mimeType: "application/vnd.google-apps.folder" | string;
+  mimeType: 'application/vnd.google-apps.folder' | string;
 
   constructor(
     folderName: string,
     parents: string[],
-    mimeType = "application/vnd.google-apps.folder",
+    mimeType = 'application/vnd.google-apps.folder',
     appProperties?: TAppProperties
   ) {
     this.name = folderName;
@@ -64,20 +64,114 @@ export class GDriveItem {
   }
 }
 
+/**
+ * Create a folder in the user's Google Drive account.
+ * @param {string} folderName The name of the folder to create.
+ * @param {string} accessToken The client side user's access token.
+ * @param {string[]} parentFolderIds The ids of the folders to create the folder in.
+ * @param {number} tries The number of tries to make. Default is 3.
+ * @param {string} refreshToken The client side user's refresh token. If the user is not authenticated, it will be refreshed.
+ * @param {string} reqOriginForRefreshingToken The origin of the request that triggered the refresh of the access token.
+ * @return {Promise<{ wasSuccessful: boolean, folderId?: string, [key: string]: unknown }>} An object containing the results of the operation.
+ * The object will contain the keys of `wasSuccessful`, `folderId`, and `errMsg` and `status` if the operation failed.
+ * The `wasSuccessful` key will be set to `true` if the folder was successfully created. Otherwise, it will be set to `false`.
+ * The `folderId` key will be set to the id of the created folder if the operation was successful.
+ * The `errMsg` key will be set to the error message if the operation failed.
+ * The `status` key will be set to the error status if the operation failed.
+ * */
+export const createGDriveFolder = async (
+  folderName: string,
+  accessToken: string,
+  parentFolderIds: string[] = [],
+  tries: number = 3,
+  refreshToken?: string,
+  reqOriginForRefreshingToken?: string,
+  appProperties?: ConstructorParameters<typeof GDriveItem>['3']
+): Promise<{
+  wasSuccessful: boolean;
+  folderId?: string;
+  [key: string]: unknown;
+}> => {
+  try {
+    const folderMetadata = new GDriveItem(
+      folderName,
+      parentFolderIds,
+      'application/vnd.google-apps.folder',
+      appProperties
+    );
+    const response = await axios.post(
+      'https://www.googleapis.com/drive/v3/files?fields=id',
+      folderMetadata,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+
+    if (response.status !== 200) {
+      throw new CustomError(
+        response.data ?? 'Failed to create a lesson folder.',
+        response.status
+      );
+    }
+
+    return { wasSuccessful: true, folderId: response.data.id };
+  } catch (error: any) {
+    console.error('Error object: ', error?.response?.data?.error);
+    const errMsg = `Failed to create folder for the user. Reason: ${error?.response?.data?.error?.message}`;
+    console.log('errMsg: ', errMsg);
+    console.log('refreshToken: ', refreshToken);
+
+    if (error?.response?.data?.error?.status === 'UNAUTHENTICATED') {
+      console.log('Will refresh the auth token...');
+
+      tries -= 1;
+
+      console.log('the user is not authenticated: ', refreshToken);
+
+      const refreshTokenRes =
+        (await refreshAuthToken(refreshToken, reqOriginForRefreshingToken)) ??
+        {};
+      const { accessToken } = refreshTokenRes;
+
+      if (!accessToken) {
+        throw new Error('Failed to refresh access token');
+      }
+
+      return await createGDriveFolder(
+        folderName,
+        accessToken,
+        parentFolderIds,
+        tries,
+        refreshToken,
+        reqOriginForRefreshingToken
+      );
+    }
+
+    return {
+      wasSuccessful: false,
+      errMsg: errMsg,
+      status: error?.response?.data?.error?.status,
+    };
+  }
+};
+
 const getCanRetry = async (
   error: any,
   refreshToken: string,
   reqOriginForRefreshingToken: string
 ) => {
-  if (error?.response?.data?.error?.status === "UNAUTHENTICATED") {
-    console.log("Will refresh the auth token...");
+  if (error?.response?.data?.error?.status === 'UNAUTHENTICATED') {
+    console.log('Will refresh the auth token...');
 
     const refreshTokenRes =
       (await refreshAuthToken(refreshToken, reqOriginForRefreshingToken)) ?? {};
     const { accessToken } = refreshTokenRes;
 
     if (!accessToken) {
-      throw new Error("Failed to refresh access token");
+      throw new Error('Failed to refresh access token');
     }
 
     return {
@@ -86,7 +180,7 @@ const getCanRetry = async (
     };
   }
 
-  if (error?.code === "ECONNABORTED") {
+  if (error?.code === 'ECONNABORTED') {
     return {
       canRetry: true,
     };
@@ -98,28 +192,27 @@ const getCanRetry = async (
 };
 
 type TGoogleAuthScopes =
-  | "https://www.googleapis.com/auth/drive"
-  | "https://www.googleapis.com/auth/admin.directory.group"
-  | "https://www.googleapis.com/auth/admin.directory.user"
+  | 'https://www.googleapis.com/auth/drive'
+  | 'https://www.googleapis.com/auth/admin.directory.group'
+  | 'https://www.googleapis.com/auth/admin.directory.user'
   | 'https://www.googleapis.com/auth/gmail.send'
 
 export const getIsValidFileId = (id: unknown) =>
-  typeof id === "string" && /^[a-zA-Z0-9_-]{10,}$/.test(id);
+  typeof id === 'string' && /^[a-zA-Z0-9_-]{10,}$/.test(id);
 
 export const createDrive = async (
-  scopes: TGoogleAuthScopes[] = ["https://www.googleapis.com/auth/drive"],
-  clientOptions?: GoogleAuthOptions["clientOptions"]
+  scopes: TGoogleAuthScopes[] = ['https://www.googleapis.com/auth/drive'],
+  clientOptions?: GoogleAuthOptions['clientOptions']
 ) => {
-  const drive = google.drive("v3");
+  const drive = google.drive('v3');
   const creds = new GoogleServiceAccountAuthCreds();
   const auth = new google.auth.GoogleAuth({
     credentials: {
       client_email: creds.client_email,
       client_id: creds.client_id,
-      private_key: creds?.private_key?.replace(/\\n/g, "\n").replace(/"/g, ""),
+      private_key: creds?.private_key?.replace(/\\n/g, '\n').replace(/"/g, ''),
     },
     scopes: scopes,
-    clientOptions,
   });
   const authClient = (await auth.getClient()) as OAuth2Client;
 
@@ -129,26 +222,87 @@ export const createDrive = async (
 };
 
 export const createGoogleAdminService = async (
-  scopes: TGoogleAuthScopes[] = ["https://www.googleapis.com/auth/drive"],
-  clientOptions?: GoogleAuthOptions["clientOptions"],
+  scopes: TGoogleAuthScopes[] = ['https://www.googleapis.com/auth/drive'],
+  clientOptions?: GoogleAuthOptions['clientOptions'],
 ) => {
   const creds = new GoogleServiceAccountAuthCreds();
   const auth = new google.auth.GoogleAuth({
     credentials: {
       client_email: creds.client_email,
       client_id: creds.client_id,
-      private_key: creds?.private_key?.replace(/\\n/g, "\n").replace(/"/g, ""),
+      private_key: creds?.private_key?.replace(/\\n/g, '\n').replace(/"/g, ''),
     },
     scopes: scopes,
     clientOptions,
   });
   const authClient = (await auth.getClient()) as OAuth2Client;
   const adminService = google.admin({
-    version: "directory_v1",
+    version: 'directory_v1',
     auth: authClient,
   });
 
   return adminService;
+};
+
+const updateFile = async (
+  fileId: string,
+  reqBody: IFile,
+  accessToken: string
+) => {
+  try {
+    const { status, data } = await axios.put<{
+      id: string;
+      [key: string]: unknown;
+    }>(`https://www.googleapis.com/drive/v2/files/${fileId}`, reqBody, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (status !== 200) {
+      throw new CustomError(
+        `Failed to update the target file. Status code: ${status}`,
+        status
+      );
+    }
+
+    return data;
+  } catch (error: any) {
+    console.error(
+      'An error has occurred. Failed to update the target file. Reason: ',
+      error
+    );
+    console.log('updateFile, error?.response?.data: ', error?.response?.data);
+
+    if (error?.response?.data?.error?.code === 404) {
+      return {
+        errType: 'notFound',
+        fileId,
+        reqBody,
+      };
+    }
+
+    if (error?.code === 'ECONNABORTED') {
+      console.log(
+        'Timeout occurred while updating the target file. Returning timeout error type.'
+      );
+
+      return { errType: 'timeout', fileId, reqBody };
+    }
+
+    if (error?.response?.data?.error?.status === 'UNAUTHENTICATED') {
+      console.log(
+        'User is not authenticated. Returning unauthenticated error type.'
+      );
+
+      return {
+        errType: 'unauthenticated',
+      };
+    }
+
+    return { errType: 'generalErr', fileId, reqBody };
+  }
 };
 
 export const renameFiles = async (
@@ -165,12 +319,12 @@ export const renameFiles = async (
     const fileUpdatesResults = await Promise.all(fileUpdatesPromises);
     const filesUpdateFailedDueToTimeout = fileUpdatesResults.filter(
       (result) => {
-        return result.errType === "timeout";
+        return result.errType === 'timeout';
       }
     );
     const filesUpdateFailedDueInvalidAuthToken = fileUpdatesResults.filter(
       (result) => {
-        return result.errType === "unauthenticated";
+        return result.errType === 'unauthenticated';
       }
     );
 
@@ -178,7 +332,7 @@ export const renameFiles = async (
       !filesUpdateFailedDueInvalidAuthToken.length &&
       !filesUpdateFailedDueToTimeout.length
     ) {
-      console.log("All files have been successfully renamed.");
+      console.log('All files have been successfully renamed.');
 
       return {
         wasSuccessful: true,
@@ -196,18 +350,18 @@ export const renameFiles = async (
       if (!wasSuccessful) {
         return {
           wasSuccessful: false,
-          errType: "invalidAuthToken",
+          errType: 'invalidAuthToken',
         };
       }
 
       gdriveAccessToken = _accessToken as string;
 
       for (const fileUpdateResult of fileUpdatesResults) {
-        console.log("fileUpdateResult: ", fileUpdateResult);
+        console.log('fileUpdateResult: ', fileUpdateResult);
 
         if (
-          "errType" in fileUpdateResult &&
-            fileUpdateResult.errType === "unauthenticated"
+          'errType' in fileUpdateResult &&
+            fileUpdateResult.errType === 'unauthenticated'
         ) {
           filesToUpdateRetry.push({
             id: fileUpdateResult.fileId as string,
@@ -217,17 +371,15 @@ export const renameFiles = async (
       }
     }
 
-    
-
     if (filesUpdateFailedDueToTimeout.length && tries > 0) {
       const filesToUpdateRetry: Parameters<typeof renameFiles>[0] = [];
 
       for (const fileUpdateResult of filesUpdateFailedDueToTimeout) {
-        console.log("fileUpdateResult: ", fileUpdateResult);
+        console.log('fileUpdateResult: ', fileUpdateResult);
 
         if (
-          "errType" in fileUpdateResult &&
-          fileUpdateResult.errType === "timeout"
+          'errType' in fileUpdateResult &&
+          fileUpdateResult.errType === 'timeout'
         ) {
           filesToUpdateRetry.push({
             id: fileUpdateResult.fileId as string,
@@ -253,13 +405,13 @@ export const renameFiles = async (
     return {
       failedUpdatedFiles: filesToUpdateRetry,
       wasSuccessful: false,
-      errType: "fileUpdateErr",
+      errType: 'fileUpdateErr',
     };
   } catch (error) {
-    console.error("Error renaming files:", error);
+    console.error('Error renaming files:', error);
 
     return {
-      errType: "renameFilesFailed",
+      errType: 'renameFilesFailed',
       wasSuccessful: false,
     };
   }
@@ -274,17 +426,17 @@ export const getUserChildItemsOfFolder = async (
 ): Promise<drive_v3.Schema$FileList | null> => {
   try {
     const { status, data } = await axios.get<drive_v3.Schema$FileList>(
-      "https://www.googleapis.com/drive/v3/files",
+      'https://www.googleapis.com/drive/v3/files',
       {
         headers: {
           Authorization: `Bearer ${gdriveAccessToken}`,
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         params: {
-          orderBy: "name",
+          orderBy: 'name',
           q: `'${folderId}' in parents`,
           supportAllDrives: true,
-          fields: "*",
+          fields: '*',
         },
       }
     );
@@ -308,7 +460,7 @@ export const getUserChildItemsOfFolder = async (
       clientOrigin
     );
 
-    console.log("canRetryResult: ", canRetryResult);
+    console.log('canRetryResult: ', canRetryResult);
 
     console.log(`getUserChildItemsOfFolder tries: ${tries}`);
 
@@ -336,21 +488,21 @@ export const getFolderChildItems = async (
     name: folder.name,
     id: folder.id,
     mimeType: folder.mimeType,
-    pathToFile: "",
+    pathToFile: '',
   }));
 
   // get all of the folders of the target unit folder
   for (const unitFolder of unitFolders) {
     const parentFolderAlternativeName =
-      "alternativeName" in unitFolder ? unitFolder.alternativeName : "";
+      'alternativeName' in unitFolder ? unitFolder.alternativeName : '';
 
     if (
-      unitFolder?.mimeType?.includes("folder") &&
+      unitFolder?.mimeType?.includes('folder') &&
       unitFolder.pathToFile &&
-      unitFolder.pathToFile !== ""
+      unitFolder.pathToFile !== ''
     ) {
       const { data } = await drive.files.list({
-        corpora: "drive",
+        corpora: 'drive',
         includeItemsFromAllDrives: true,
         supportsAllDrives: true,
         driveId: process.env.GOOGLE_DRIVE_ID,
@@ -362,7 +514,7 @@ export const getFolderChildItems = async (
       }
 
       const folders = data?.files.filter((file) =>
-        file?.mimeType?.includes("folder")
+        file?.mimeType?.includes('folder')
       );
       let foldersOccurrenceObj:
         | (drive_v3.Schema$File & { [key: string]: any })
@@ -392,13 +544,13 @@ export const getFolderChildItems = async (
 
       const childFolderAndFilesOfFolder = data.files.map((file) => {
         if (
-          !file?.mimeType?.includes("folder") ||
+          !file?.mimeType?.includes('folder') ||
           !foldersOccurrenceObj ||
           (file.name &&
             (!foldersOccurrenceObj?.[file.name] ||
               foldersOccurrenceObj?.[file.name]?.length === 1))
         ) {
-          console.log("The file retrieved from the server: ", file);
+          console.log('The file retrieved from the server: ', file);
 
           return {
             ...file,
@@ -441,9 +593,9 @@ export const getFolderChildItems = async (
       continue;
     }
 
-    if (unitFolder?.mimeType?.includes("folder")) {
+    if (unitFolder?.mimeType?.includes('folder')) {
       const folderDataResponse = await drive.files.list({
-        corpora: "drive",
+        corpora: 'drive',
         includeItemsFromAllDrives: true,
         supportsAllDrives: true,
         driveId: process.env.GOOGLE_DRIVE_ID,
@@ -455,7 +607,7 @@ export const getFolderChildItems = async (
       }
 
       const folders = folderDataResponse?.data?.files.filter((file) =>
-        file?.mimeType?.includes("folder")
+        file?.mimeType?.includes('folder')
       );
       /** @type {{ [key: string]: any[] } | null} */
       let foldersOccurrenceObj = null;
@@ -569,17 +721,17 @@ export const getTargetFolderChildItems = async (
 ) => {
   try {
     const gdriveResponse = await drive.files.list({
-      corpora: "drive",
+      corpora: 'drive',
       includeItemsFromAllDrives: true,
       supportsAllDrives: true,
       driveId: process.env.GOOGLE_DRIVE_ID,
       q: `'${unitId}' in parents`,
-      fields: "*",
+      fields: '*',
     });
 
     if (!gdriveResponse.data?.files) {
       throw new CustomError(
-        "Failed to get the root items of the target unit folder.",
+        'Failed to get the root items of the target unit folder.',
         500
       );
     }
@@ -589,7 +741,7 @@ export const getTargetFolderChildItems = async (
     return allChildItems;
   } catch (error) {
     console.error(
-      "Failed to get the target folder child items. Reason: ",
+      'Failed to get the target folder child items. Reason: ',
       error
     );
 
@@ -605,7 +757,7 @@ export const createFolderStructure = async (
   clientOrigin: string
 ) => {
   const folderPaths = unitFolders
-    .filter((folder) => folder?.mimeType?.includes("folder"))
+    .filter((folder) => folder?.mimeType?.includes('folder'))
     .map((folder) => {
       return {
         name: folder.name,
@@ -620,10 +772,10 @@ export const createFolderStructure = async (
 
   // create the google sub folders
   for (const folderToCreate of folderPaths) {
-    console.log("folderToCreate: ", folderToCreate);
+    console.log('folderToCreate: ', folderToCreate);
 
     // if the folder is at the root of the parent folder
-    if (folderToCreate.pathToFile === "") {
+    if (folderToCreate.pathToFile === '') {
       const folderCreationResult = await createGDriveFolder(
         folderToCreate.name as string,
         gdriveAccessToken,
@@ -636,7 +788,7 @@ export const createFolderStructure = async (
         }
       );
 
-      console.log("folderCreationResult: ", folderCreationResult);
+      console.log('folderCreationResult: ', folderCreationResult);
 
       const { folderId, wasSuccessful } = folderCreationResult;
 
@@ -647,7 +799,7 @@ export const createFolderStructure = async (
           id: folderId,
           gpFolderId: folderToCreate.fileId,
           name: folderToCreate.name,
-          pathToFile: "",
+          pathToFile: '',
           parentFolderId: folderToCreate.parentFolderId,
           originalFileId: folderToCreate.fileId,
           mimeType: folderToCreate.mimeType,
@@ -662,7 +814,7 @@ export const createFolderStructure = async (
       (folder) => folder.gpFolderId === folderToCreate.parentFolderId
     )?.id;
 
-    console.log("parentFolderId: ", parentFolderId);
+    console.log('parentFolderId: ', parentFolderId);
 
     if (!parentFolderId) {
       foldersFailedToCreate.push(folderToCreate.name);
@@ -677,7 +829,7 @@ export const createFolderStructure = async (
       gdriveRefreshToken as string,
       clientOrigin
     );
-    console.log("nestedFolderCreationResult: ", nestedFolderCreationResult);
+    console.log('nestedFolderCreationResult: ', nestedFolderCreationResult);
     const { folderId, wasSuccessful } = nestedFolderCreationResult;
 
     if (!wasSuccessful) {
@@ -712,7 +864,7 @@ export const listPermissions = async (
   const filePermissions = await _drive!.permissions.list({
     fileId,
     supportsAllDrives: true,
-    fields: "*",
+    fields: '*',
   });
 
   return filePermissions.data;
@@ -732,11 +884,11 @@ export const getTargetUserPermission = async (
   const filePermissions = await _drive!.permissions.list({
     fileId,
     supportsAllDrives: true,
-    fields: "*",
+    fields: '*',
   });
 
   console.log(
-    "filePermissions.data.permissions: ",
+    'filePermissions.data.permissions: ',
     filePermissions.data.permissions
   );
 
@@ -769,7 +921,7 @@ export const getGDriveItemViaServiceAccount = async (
     return fileRetrievalResult.data;
   } catch (error) {
     console.error(
-      "Failed to get item in Google Drive via service account. Reason: ",
+      'Failed to get item in Google Drive via service account. Reason: ',
       error
     );
 
@@ -784,23 +936,23 @@ export const getUnitGDriveChildItems = async (unitId: string) => {
     console.log(`Getting the GDrive child items for the unit: ${unitId}`);
 
     const gdriveResponse = await drive.files.list({
-      corpora: "drive",
+      corpora: 'drive',
       includeItemsFromAllDrives: true,
       supportsAllDrives: true,
       driveId: process.env.GOOGLE_DRIVE_ID,
       q: `'${unitId}' in parents`,
-      fields: "*",
+      fields: '*',
     });
 
     if (!gdriveResponse.data?.files) {
       throw new CustomError(
-        "Failed to get the root items of the target unit folder.",
+        'Failed to get the root items of the target unit folder.',
         500
       );
     }
 
     console.log(
-      `gdriveResponse.data.files.length: `,
+      'gdriveResponse.data.files.length: ',
       gdriveResponse.data.files
     );
 
@@ -809,105 +961,11 @@ export const getUnitGDriveChildItems = async (unitId: string) => {
     return allChildItems;
   } catch (error) {
     console.error(
-      "Failed to get the root items of the target unit folder. Reason: ",
+      'Failed to get the root items of the target unit folder. Reason: ',
       error
     );
 
     return null;
-  }
-};
-
-/**
- * Create a folder in the user's Google Drive account.
- * @param {string} folderName The name of the folder to create.
- * @param {string} accessToken The client side user's access token.
- * @param {string[]} parentFolderIds The ids of the folders to create the folder in.
- * @param {number} tries The number of tries to make. Default is 3.
- * @param {string} refreshToken The client side user's refresh token. If the user is not authenticated, it will be refreshed.
- * @param {string} reqOriginForRefreshingToken The origin of the request that triggered the refresh of the access token.
- * @return {Promise<{ wasSuccessful: boolean, folderId?: string, [key: string]: unknown }>} An object containing the results of the operation.
- * The object will contain the keys of `wasSuccessful`, `folderId`, and `errMsg` and `status` if the operation failed.
- * The `wasSuccessful` key will be set to `true` if the folder was successfully created. Otherwise, it will be set to `false`.
- * The `folderId` key will be set to the id of the created folder if the operation was successful.
- * The `errMsg` key will be set to the error message if the operation failed.
- * The `status` key will be set to the error status if the operation failed.
- * */
-export const createGDriveFolder = async (
-  folderName: string,
-  accessToken: string,
-  parentFolderIds: string[] = [],
-  tries: number = 3,
-  refreshToken?: string,
-  reqOriginForRefreshingToken?: string,
-  appProperties?: ConstructorParameters<typeof GDriveItem>["3"]
-): Promise<{
-  wasSuccessful: boolean;
-  folderId?: string;
-  [key: string]: unknown;
-}> => {
-  try {
-    const folderMetadata = new GDriveItem(
-      folderName,
-      parentFolderIds,
-      "application/vnd.google-apps.folder",
-      appProperties
-    );
-    const response = await axios.post(
-      "https://www.googleapis.com/drive/v3/files?fields=id",
-      folderMetadata,
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
-
-    if (response.status !== 200) {
-      throw new CustomError(
-        response.data ?? "Failed to create a lesson folder.",
-        response.status
-      );
-    }
-
-    return { wasSuccessful: true, folderId: response.data.id };
-  } catch (error: any) {
-    console.error("Error object: ", error?.response?.data?.error);
-    const errMsg = `Failed to create folder for the user. Reason: ${error?.response?.data?.error?.message}`;
-    console.log("errMsg: ", errMsg);
-    console.log("refreshToken: ", refreshToken);
-
-    if (error?.response?.data?.error?.status === "UNAUTHENTICATED") {
-      console.log("Will refresh the auth token...");
-
-      tries -= 1;
-
-      console.log("the user is not authenticated: ", refreshToken);
-
-      const refreshTokenRes =
-        (await refreshAuthToken(refreshToken, reqOriginForRefreshingToken)) ??
-        {};
-      const { accessToken } = refreshTokenRes;
-
-      if (!accessToken) {
-        throw new Error("Failed to refresh access token");
-      }
-
-      return await createGDriveFolder(
-        folderName,
-        accessToken,
-        parentFolderIds,
-        tries,
-        refreshToken,
-        reqOriginForRefreshingToken
-      );
-    }
-
-    return {
-      wasSuccessful: false,
-      errMsg: errMsg,
-      status: error?.response?.data?.error?.status,
-    };
   }
 };
 
@@ -927,7 +985,7 @@ export const copyGDriveItem = async (
   const reqBody = parentFolderIds ? { parents: parentFolderIds } : {};
 
   try {
-    console.log("fileId, sup there: ", fileId);
+    console.log('fileId, sup there: ', fileId);
 
     const { status, data } = await axios.post<TCopiedFile>(
       `https://www.googleapis.com/drive/v3/files/${fileId}/copy`,
@@ -935,7 +993,7 @@ export const copyGDriveItem = async (
       {
         headers: {
           Authorization: `Bearer ${accessToken}`,
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         params: {
           supportsAllDrives: true,
@@ -951,26 +1009,26 @@ export const copyGDriveItem = async (
 
     return data;
   } catch (error: any) {
-    console.error("Failed to copy files with user. Reason: ", error);
+    console.error('Failed to copy files with user. Reason: ', error);
     console.error(
-      "Failed to copy files with user. Reason, keys: ",
+      'Failed to copy files with user. Reason, keys: ',
       Object.keys(error)
     );
     const response = error.response;
 
-    console.log("The response: ", response);
-    console.log("The response errors: ", response?.data?.error);
+    console.log('The response: ', response);
+    console.log('The response errors: ', response?.data?.error);
 
     const { canRetry } = await getCanRetry(error, refreshToken, clientOrigin);
 
     if (canRetry && tries <= 0) {
       return {
-        errType: "timeout",
+        errType: 'timeout',
       };
     }
 
     if (canRetry) {
-      console.log("Retrying to copy files with user...");
+      console.log('Retrying to copy files with user...');
 
       console.log(`The current tries are: ${tries}. Will pause...`);
 
@@ -990,11 +1048,11 @@ export const copyGDriveItem = async (
 
     if (response.status === 404) {
       return {
-        errType: "notFound",
+        errType: 'notFound',
       };
     }
 
-    return { errType: "generalErr", errorObj: error };
+    return { errType: 'generalErr', errorObj: error };
   }
 };
 
@@ -1028,7 +1086,7 @@ export const getGDriveItem = async (
     const { status, data } = await axios.get<TGDriveItem>(url.href, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       params: {
         supportsAllDrives: true,
@@ -1037,25 +1095,25 @@ export const getGDriveItem = async (
 
     if (status !== 200) {
       throw new CustomError(
-        data ?? "Failed to retrieve Google Drive item.",
+        data ?? 'Failed to retrieve Google Drive item.',
         status
       );
     }
 
     return data;
   } catch (error: any) {
-    console.error("Failed to retrieve Google Drive item. Error: ", error);
-    console.log("The response errors: ", error?.response);
+    console.error('Failed to retrieve Google Drive item. Error: ', error);
+    console.log('The response errors: ', error?.response);
 
     if (error?.response?.data?.error?.code === 404) {
       return {
-        errType: "notFound",
+        errType: 'notFound',
       };
     }
 
-    if (error?.response?.data?.error?.status === "UNAUTHENTICATED") {
+    if (error?.response?.data?.error?.status === 'UNAUTHENTICATED') {
       return {
-        errType: "unauthenticated",
+        errType: 'unauthenticated',
       };
     }
 
@@ -1074,12 +1132,12 @@ export const getGDriveItem = async (
       );
     } else if (canRetryResult.canRetry && willRetry) {
       return {
-        errType: "timeout",
+        errType: 'timeout',
       };
     }
 
     return {
-      errType: "generalErr",
+      errType: 'generalErr',
     };
   }
 };
@@ -1096,7 +1154,7 @@ export const createUnitFolder = async (
   clientOrigin: string,
   email: string,
   allUnitLessons: NonNullable<
-    Pick<INewUnitLesson, "allUnitLessons">["allUnitLessons"]
+    Pick<INewUnitLesson, 'allUnitLessons'>['allUnitLessons']
   >,
   gradesRange: string,
   userGmail: string
@@ -1110,7 +1168,7 @@ export const createUnitFolder = async (
     gDriveRefreshToken
   );
 
-  console.log("targetUnitFolderCreation: ", targetUnitFolderCreation);
+  console.log('targetUnitFolderCreation: ', targetUnitFolderCreation);
 
   if (!targetUnitFolderCreation.folderId) {
     throw new CustomError(
@@ -1135,32 +1193,32 @@ export const createUnitFolder = async (
 
   if (!userUpdatedWithNewUnitObjResult.wasSuccessful) {
     console.error(
-      "Failed to update user with new unit lessons object. Error message: ",
+      'Failed to update user with new unit lessons object. Error message: ',
       userUpdatedWithNewUnitObjResult.errMsg
     );
   } else {
     console.log(
-      "User was updated with new unit lessons object. New unit lessons object: "
+      'User was updated with new unit lessons object. New unit lessons object: '
     );
   }
 
-  console.log("Will get the target folder structure.");
+  console.log('Will get the target folder structure.');
 
   console.log(`reqQueryParams.unit.id: ${unit.sharedGDriveId}`);
 
   const drive = await createDrive();
   const gdriveResponse = await drive.files.list({
-    corpora: "drive",
+    corpora: 'drive',
     includeItemsFromAllDrives: true,
     supportsAllDrives: true,
     driveId: process.env.GOOGLE_DRIVE_ID,
     q: `'${unit.sharedGDriveId}' in parents`,
-    fields: "*",
+    fields: '*',
   });
 
   if (!gdriveResponse.data?.files) {
     throw new CustomError(
-      "Failed to get the root items of the target unit folder.",
+      'Failed to get the root items of the target unit folder.',
       500
     );
   }
@@ -1171,7 +1229,7 @@ export const createUnitFolder = async (
   });
 
   console.log(
-    "targetLessonFolderInSharedDrive: ",
+    'targetLessonFolderInSharedDrive: ',
     targetLessonFolderInSharedDrive
   );
 
@@ -1183,7 +1241,7 @@ export const createUnitFolder = async (
   }
 
   console.log(
-    "allChildItems, will get the all of the lesson folder ids before filter: ",
+    'allChildItems, will get the all of the lesson folder ids before filter: ',
     allChildItems.length
   );
 
@@ -1199,11 +1257,11 @@ export const createUnitFolder = async (
   });
 
   console.log(
-    "allChildItems, will get the all of the lesson folder ids after filter: ",
+    'allChildItems, will get the all of the lesson folder ids after filter: ',
     allChildItems.length
   );
 
-  console.log("allChildItems: ", allChildItems);
+  console.log('allChildItems: ', allChildItems);
 
   const selectedClientLessonName = unit.name.toLowerCase();
   const targetFolderStructureArr = await createFolderStructure(
@@ -1214,14 +1272,14 @@ export const createUnitFolder = async (
     clientOrigin
   );
 
-  console.log("lesson.sharedGDriveId: ", lesson.sharedGDriveId);
-  console.log("targetFolderStructureArr: ", targetFolderStructureArr);
+  console.log('lesson.sharedGDriveId: ', lesson.sharedGDriveId);
+  console.log('targetFolderStructureArr: ', targetFolderStructureArr);
 
   const targetLessonFolder = targetFolderStructureArr.find((folder) => {
     return folder.originalFileId === lesson.sharedGDriveId;
   });
 
-  console.log("targetLessonFolder, java: ", targetLessonFolder);
+  console.log('targetLessonFolder, java: ', targetLessonFolder);
 
   if (!targetLessonFolder?.id) {
     throw new CustomError(
@@ -1232,7 +1290,7 @@ export const createUnitFolder = async (
 
   const allUnitLessonFolders: ILessonGDriveId[] = [];
 
-  console.log("allUnitLessonFolders length: ", allUnitLessonFolders.length);
+  console.log('allUnitLessonFolders length: ', allUnitLessonFolders.length);
 
   for (const folderSubItem of targetFolderStructureArr) {
     const targetUnitLesson = allUnitLessons.find(
@@ -1245,7 +1303,7 @@ export const createUnitFolder = async (
       folderSubItem.originalFileId === targetLessonFolder.originalFileId
     ) {
       console.log(
-        "Found the target lesson folder. Will update the user with the new lesson drive id."
+        'Found the target lesson folder. Will update the user with the new lesson drive id.'
       );
       allUnitLessonFolders.push({
         lessonDriveId: folderSubItem.id,
@@ -1258,7 +1316,7 @@ export const createUnitFolder = async (
   }
 
   console.log(
-    "allUnitLessonFolders after updates: ",
+    'allUnitLessonFolders after updates: ',
     allUnitLessonFolders.length
   );
 
@@ -1266,25 +1324,25 @@ export const createUnitFolder = async (
     { email },
     {
       $push: {
-        "unitGDriveLessons.$[elem].lessonDriveIds": {
+        'unitGDriveLessons.$[elem].lessonDriveIds': {
           $each: allUnitLessonFolders,
         },
       },
     },
     {
       upsert: true,
-      arrayFilters: [{ "elem.unitDriveId": targetUnitFolderCreation.folderId }],
+      arrayFilters: [{ 'elem.unitDriveId': targetUnitFolderCreation.folderId }],
     }
   );
 
   if (!lessonDriveIdUpdatedResult.wasSuccessful) {
     console.log(
-      "Failed to update the target user with the new lesson drive id. Reason: ",
+      'Failed to update the target user with the new lesson drive id. Reason: ',
       lessonDriveIdUpdatedResult.errMsg
     );
   } else {
     console.log(
-      "Successfully updated the target user with the new lesson drive id."
+      'Successfully updated the target user with the new lesson drive id.'
     );
   }
 
@@ -1307,13 +1365,13 @@ export const shareFilesWithUser = async (
       // @ts-ignore
       return _drive!.permissions.create({
         requestBody: {
-          type: "user",
-          role: "fileOrganizer",
+          type: 'user',
+          role: 'fileOrganizer',
           emailAddress: userEmail,
         },
         fileId: fileId,
-        fields: "*",
-        corpora: "drive",
+        fields: '*',
+        corpora: 'drive',
         includeItemsFromAllDrives: true,
         supportsAllDrives: true,
         sendNotificationEmail: false,
@@ -1325,11 +1383,11 @@ export const shareFilesWithUser = async (
     return shareFileResults;
   } catch (error: any) {
     console.error(
-      "Failed to share files with the target user. Reason: ",
+      'Failed to share files with the target user. Reason: ',
       error
     );
     console.error(
-      "Failed to share files with the target user. Error response: ",
+      'Failed to share files with the target user. Error response: ',
       error.response?.data
     );
 
@@ -1341,7 +1399,7 @@ export const shareFileWithUser = async (
   fileId: string,
   userEmail: string,
   drive?: drive_v3.Drive,
-  role: "fileOrganizer" | "writer" | "viewer" | "reader" = "fileOrganizer"
+  role: 'fileOrganizer' | 'writer' | 'viewer' | 'reader' = 'fileOrganizer'
 ) => {
   try {
     let _drive = drive;
@@ -1353,13 +1411,13 @@ export const shareFileWithUser = async (
     // @ts-ignore
     const permissionUpdateResult = await _drive!.permissions.create({
       requestBody: {
-        type: "user",
+        type: 'user',
         role,
         emailAddress: userEmail,
       },
       fileId: fileId,
-      fields: "*",
-      corpora: "drive",
+      fields: '*',
+      corpora: 'drive',
       includeItemsFromAllDrives: true,
       supportsAllDrives: true,
       sendNotificationEmail: false,
@@ -1371,11 +1429,11 @@ export const shareFileWithUser = async (
     };
   } catch (error: any) {
     console.error(
-      "Failed to share files with the target user. Reason: ",
+      'Failed to share files with the target user. Reason: ',
       error
     );
     console.error(
-      "Failed to share files with the target user. Error response: ",
+      'Failed to share files with the target user. Error response: ',
       error.response?.data
     );
 
@@ -1392,15 +1450,15 @@ export const updatePermissionsForSharedFileItems = async (
   const parentFolderId = (
     await drive.files.get({
       fileId: fileIds[0],
-      fields: "*",
+      fields: '*',
       supportsAllDrives: true,
     })
   ).data?.parents?.[0];
 
-  console.log("parentFolderId: ", parentFolderId);
+  console.log('parentFolderId: ', parentFolderId);
 
   if (!parentFolderId) {
-    throw new CustomError("The file does not have a parent folder.", 500);
+    throw new CustomError('The file does not have a parent folder.', 500);
   }
 
   const shareParentFolderResult = await shareFileWithUser(
@@ -1409,13 +1467,13 @@ export const updatePermissionsForSharedFileItems = async (
     drive
   );
 
-  console.log("shareParentFolderResult: ", shareParentFolderResult);
+  console.log('shareParentFolderResult: ', shareParentFolderResult);
 
   await sleep(1_500);
 
   console.log(
     `Updating permissions for shared file items. Email: ${email}, File IDs: ${fileIds.join(
-      ", "
+      ', '
     )}`
   );
 
@@ -1425,14 +1483,14 @@ export const updatePermissionsForSharedFileItems = async (
     drive
   );
 
-  console.log("targetPermission: ", targetPermission);
+  console.log('targetPermission: ', targetPermission);
 
   let tries = 4;
   let didFailToGetTargetPermission = false;
 
   while (!targetPermission) {
     console.log(
-      "Checking if the parent folder was successfully shared with the target user. Tries left: ",
+      'Checking if the parent folder was successfully shared with the target user. Tries left: ',
       tries
     );
 
@@ -1451,49 +1509,48 @@ export const updatePermissionsForSharedFileItems = async (
     tries -= 1;
   }
 
-  console.log("targetPermission: ", targetPermission);
+  console.log('targetPermission: ', targetPermission);
 
   if (didFailToGetTargetPermission) {
     throw new CustomError(
-      "Failed to get target user permission after multiple attempts.",
+      'Failed to get target user permission after multiple attempts.',
       500
     );
   }
 
   if (!targetPermission?.id) {
     throw new CustomError(
-      "The target permission for the gp plus user was not found.",
+      'The target permission for the gp plus user was not found.',
       500
     );
   }
 
-  console.log("Will update the permission of the target file.");
+  console.log('Will update the permission of the target file.');
 
   const shareFilesResultPromises = fileIds.map((fileId) => {
-    return shareFileWithUser(fileId, email, drive, "writer");
+    return shareFileWithUser(fileId, email, drive, 'writer');
   });
   const shareFilesResults = await Promise.all(shareFilesResultPromises);
 
   shareFilesResults.forEach((result) => {
-    console.log("Share file result: ", result?.data?.role);
+    console.log('Share file result: ', result?.data?.role);
   });
 
   // make the target files read only
   for (const fileId of fileIds) {
     // @ts-ignore
-    const fileUpdated = await drive.files.update({
+    await drive.files.update({
       fileId: fileId,
       supportsAllDrives: true,
       requestBody: {
         contentRestrictions: {
           readOnly: true,
           reason:
-            "Making a copy for GP plus user. Making file readonly temporarily.",
+            'Making a copy for GP plus user. Making file readonly temporarily.',
         },
       },
     });
-
-    console.log("fileUpdated: ", fileUpdated);
+    console.log('File was made readonly.');
   }
 
   return { id: parentFolderId, permissionId: targetPermission.id };
@@ -1515,21 +1572,21 @@ export interface IFailedFileCopy {
 
 export const logFailedFileCopyToExcel = async (failedCopy: IFailedFileCopy) => {
   try {
-    const excelFilePath = path.join(process.cwd(), "failed-file-copies.xlsx");
+    const excelFilePath = path.join(process.cwd(), 'failed-file-copies.xlsx');
     const workbook = new ExcelJS.Workbook();
-    const sheetName = "Failed Copies";
+    const sheetName = 'Failed Copies';
     let worksheet: ExcelJS.Worksheet;
 
     const columns = [
-      { header: "Lesson Name", key: "lessonName", width: 30 },
-      { header: "Unit Name", key: "unitName", width: 30 },
-      { header: "Lesson Folder Link", key: "lessonFolderLink", width: 50 },
-      { header: "File Name", key: "fileName", width: 30 },
-      { header: "File Link", key: "fileLink", width: 50 },
-      { header: "Error Type", key: "errorType", width: 20 },
-      { header: "Error Message", key: "errorMessage", width: 40 },
-      { header: "Timestamp", key: "timestamp", width: 20 },
-      { header: "User Email", key: "userEmail", width: 30 },
+      { header: 'Lesson Name', key: 'lessonName', width: 30 },
+      { header: 'Unit Name', key: 'unitName', width: 30 },
+      { header: 'Lesson Folder Link', key: 'lessonFolderLink', width: 50 },
+      { header: 'File Name', key: 'fileName', width: 30 },
+      { header: 'File Link', key: 'fileLink', width: 50 },
+      { header: 'Error Type', key: 'errorType', width: 20 },
+      { header: 'Error Message', key: 'errorMessage', width: 40 },
+      { header: 'Timestamp', key: 'timestamp', width: 20 },
+      { header: 'User Email', key: 'userEmail', width: 30 },
     ];
 
     // Load or create workbook & worksheet
@@ -1545,9 +1602,9 @@ export const logFailedFileCopyToExcel = async (failedCopy: IFailedFileCopy) => {
       const headerRow = worksheet.getRow(1);
       headerRow.font = { bold: true };
       headerRow.fill = {
-        type: "pattern",
-        pattern: "solid",
-        fgColor: { argb: "FFE0E0E0" },
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: { argb: 'FFE0E0E0' },
       };
       headerRow.commit && headerRow.commit(); // safe for streaming writers
     }
@@ -1560,9 +1617,9 @@ export const logFailedFileCopyToExcel = async (failedCopy: IFailedFileCopy) => {
     if (worksheet.rowCount > 1) {
       for (let i = 2; i <= worksheet.rowCount; i++) {
         const row = worksheet.getRow(i);
-        const rowFileName = row.getCell("fileName").value;
-        const rowFileLink = row.getCell("fileLink").value;
-        const rowUserEmail = row.getCell("userEmail").value;
+        const rowFileName = row.getCell('fileName').value;
+        const rowFileLink = row.getCell('fileLink').value;
+        const rowUserEmail = row.getCell('userEmail').value;
         if (
           rowFileName === failedCopy.fileName &&
           rowFileLink === failedCopy.fileLink &&
@@ -1587,8 +1644,8 @@ export const logFailedFileCopyToExcel = async (failedCopy: IFailedFileCopy) => {
       lessonFolderLink: failedCopy.lessonFolderLink,
       fileName: failedCopy.fileName,
       fileLink: failedCopy.fileLink,
-      errorType: failedCopy.errorType || "",
-      errorMessage: failedCopy.errorMessage || "",
+      errorType: failedCopy.errorType || '',
+      errorMessage: failedCopy.errorMessage || '',
       timestamp: failedCopy.timestamp,
       userEmail: failedCopy.userEmail,
     });
@@ -1596,22 +1653,9 @@ export const logFailedFileCopyToExcel = async (failedCopy: IFailedFileCopy) => {
     await workbook.xlsx.writeFile(excelFilePath);
     console.log(`Failed file copy logged to Excel: ${failedCopy.fileName}`);
   } catch (error) {
-    console.error("Failed to log to Excel:", error);
+    console.error('Failed to log to Excel:', error);
   }
 };
-
-const checkIfAllFilesCanBeCopied = async (fileIds: string[], drive: drive_v3.Drive, email: string) => {
-  // this function will run recursively
-  try {
-    const permissionsRetrievalResultPromises = fileIds.map(fileId => {
-      return getTargetUserPermission(fileId, email, drive);
-    })
-    const permission = await Promise.all(permissionsRetrievalResultPromises);
-  } catch(error){
-
-  }
-}
-
 
 export const copyFiles = async (
   filesToCopy: TFileToCopy[],
@@ -1633,8 +1677,6 @@ export const copyFiles = async (
   let wasJobSuccessful = true;
   let copiedFiles: TFilesToRename = [];
 
-    
-
   // check if the permission were propagated to all of the files to copy
   for (const fileToCopy of filesToCopy) {
     const { id: fileId, name } = fileToCopy;
@@ -1653,7 +1695,7 @@ export const copyFiles = async (
     let tries = 7;
 
     if (!userUpdatedRole) {
-      console.log("role is not present");
+      console.log('role is not present');
       wasJobSuccessful = false;
       continue;
     }
@@ -1706,7 +1748,7 @@ export const copyFiles = async (
       clientOrigin
     );
 
-    console.log("gdriveItemMetaData: ", gdriveItemMetaData);
+    console.log('gdriveItemMetaData: ', gdriveItemMetaData);
 
     const fileCopyResult = await copyGDriveItem(
       gDriveAccessToken,
@@ -1716,81 +1758,81 @@ export const copyFiles = async (
       clientOrigin
     );
     
-    console.log("fileCopyResult: ", fileCopyResult.errType);
-    console.log("permission: ", permission);
+    console.log('fileCopyResult: ', fileCopyResult.errType);
+    console.log('permission: ', permission);
 
-    if (("id" in fileCopyResult && fileCopyResult.id)) {
+    if (('id' in fileCopyResult && fileCopyResult.id)) {
       console.log(`Successfully copied file ${name}`);
 
       const copiedFile = {
         id: fileCopyResult.id,
-        name: name
-      }
+        name: name,
+      };
 
-      copiedFiles.push(copiedFile)
+      copiedFiles.push(copiedFile);
+      
       sendMessageToClient({
         fileCopied: name,
       });
     } else if (fileCopyResult?.errType) {
-      console.log("fileCopyResult?.errType: ", fileCopyResult?.errType);
+      console.log('fileCopyResult?.errType: ', fileCopyResult?.errType);
 
       wasJobSuccessful = false;
       console.error(
-        "Failed to copy file for user.",
-        "Filename: ",
+        'Failed to copy file for user.',
+        'Filename: ',
         name,
-        "Email: ",
+        'Email: ',
         email,
-        "Reason: ",
+        'Reason: ',
         fileCopyResult
       );
 
       sendMessageToClient({
         failedCopiedFile: name,
-        fileId
+        fileId,
       });
 
       // Log failed copy to Excel
       const lessonFolderLink = `https://drive.google.com/drive/folders/${sharedGDriveLessonsFolderId}`;
       const fileLink = `https://drive.google.com/file/d/${fileId}/view`;
       const errorType =
-        "errType" in fileCopyResult &&
-        typeof fileCopyResult.errType === "string"
+        'errType' in fileCopyResult &&
+        typeof fileCopyResult.errType === 'string'
           ? fileCopyResult.errType
-          : "unknown";
+          : 'unknown';
       const errorMessage =
-        "errMsg" in fileCopyResult && typeof fileCopyResult.errMsg === "string"
+        'errMsg' in fileCopyResult && typeof fileCopyResult.errMsg === 'string'
           ? fileCopyResult.errMsg
           : JSON.stringify(fileCopyResult);
 
-      // if (process.env.NEXT_PUBLIC_HOST === "localhost") {
-      //   await logFailedFileCopyToExcel({
-      //     lessonName,
-      //     unitName,
-      //     lessonFolderLink,
-      //     fileName: name,
-      //     fileLink,
-      //     errorType,
-      //     errorMessage,
-      //     timestamp: new Date().toISOString(),
-      //     userEmail: email,
-      //   });
-      // }
+      if (process.env.NEXT_PUBLIC_HOST === 'localhost') {
+        await logFailedFileCopyToExcel({
+          lessonName,
+          unitName,
+          lessonFolderLink,
+          fileName: name,
+          fileLink,
+          errorType,
+          errorMessage,
+          timestamp: new Date().toISOString(),
+          userEmail: email,
+        });
+      }
     }
   }
 
   if(copiedFiles.length){
-    const renameFilesResult = await renameFiles(copiedFiles, gDriveAccessToken, refreshAuthToken, clientOrigin)
+    const renameFilesResult = await renameFiles(copiedFiles, gDriveAccessToken, refreshAuthToken, clientOrigin);
 
-    console.log("The file names update results: ", renameFilesResult);
+    console.log('The file names update results: ', renameFilesResult);
     
     if(!renameFilesResult.wasSuccessful){
-      console.error("Failed to rename copied files. Error type: ", renameFilesResult.errType);
+      console.error('Failed to rename copied files. Error type: ', renameFilesResult.errType);
     } else {
-      console.log("All files have been successfully renamed.");
+      console.log('All files have been successfully renamed.');
     }
   }
-
 
   return wasJobSuccessful;
 };
@@ -1798,7 +1840,7 @@ export const copyFiles = async (
 export const addNewGDriveLessonToTargetUser = async (
   email: string,
   lessonGDriveIds: ILessonGDriveId[],
-  unit: Omit<IUnitGDriveLesson, "lessonDriveIds">
+  unit: Omit<IUnitGDriveLesson, 'lessonDriveIds'>
 ) => {
   console.log(`Adding new gdrive lessons to target user: ${email}`);
 
@@ -1812,83 +1854,22 @@ export const addNewGDriveLessonToTargetUser = async (
       addNewGDriveLessons(lessonGDriveIds, isUnitPresent),
       isUnitPresent
         ? {
-            arrayFilters: [
-              createDbArrFilter("elem.unitDriveId", unit.unitDriveId),
-            ],
-            upsert: true,
-          }
+          arrayFilters: [
+            createDbArrFilter('elem.unitDriveId', unit.unitDriveId),
+          ],
+          upsert: true,
+        }
         : {
-            upsert: true,
-          }
+          upsert: true,
+        }
     );
 
     return lessonDriveIdUpdatedResult;
   } catch (error) {
-    console.error("Error in addNewGDriveLessonToTargetUser: ", error);
+    console.error('Error in addNewGDriveLessonToTargetUser: ', error);
 
     return {
       wasSuccessful: false,
     };
-  }
-};
-
-const updateFile = async (
-  fileId: string,
-  reqBody: IFile,
-  accessToken: string
-) => {
-  try {
-    const { status, data } = await axios.put<{
-      id: string;
-      [key: string]: unknown;
-    }>(`https://www.googleapis.com/drive/v2/files/${fileId}`, reqBody, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/json",
-      },
-    });
-
-    if (status !== 200) {
-      throw new CustomError(
-        `Failed to update the target file. Status code: ${status}`,
-        status
-      );
-    }
-
-    return data;
-  } catch (error: any) {
-    console.error(
-      "An error has occurred. Failed to update the target file. Reason: ",
-      error
-    );
-    console.log("updateFile, error?.response?.data: ", error?.response?.data);
-
-    if (error?.response?.data?.error?.code === 404) {
-      return {
-        errType: "notFound",
-        fileId,
-        reqBody,
-      };
-    }
-
-    if (error?.code === "ECONNABORTED") {
-      console.log(
-        "Timeout occurred while updating the target file. Returning timeout error type."
-      );
-
-      return { errType: "timeout", fileId, reqBody };
-    }
-
-    if (error?.response?.data?.error?.status === "UNAUTHENTICATED") {
-      console.log(
-        "User is not authenticated. Returning unauthenticated error type."
-      );
-
-      return {
-        errType: "unauthenticated",
-      };
-    }
-
-    return { errType: "generalErr", fileId, reqBody };
   }
 };

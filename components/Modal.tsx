@@ -1,5 +1,3 @@
-/* eslint-disable quotes */
-
 import React from "react";
 import { Button, Modal as BootstrapModal } from "react-bootstrap";
 
@@ -37,7 +35,9 @@ export const closeButtonStyles: React.CSSProperties = {
   cursor: "pointer",
 };
 
-export interface ModalProps {
+type TBootstrapModalProps = React.ComponentProps<typeof BootstrapModal>;
+
+export interface ModalProps extends TBootstrapModalProps {
   show: boolean;
   onHide: () => void;
   onShow: () => void;
@@ -55,16 +55,21 @@ const Modal = ({
   onShow,
   style,
   className,
+  backdrop = true,
+  dialogClassName = "vw-100",
+  contentClassName = "",
 }: ModalProps) => {
   return (
     <BootstrapModal
       show={show}
       style={style}
-      dialogClassName="vw-100"
+      dialogClassName={dialogClassName}
       onHide={onHide}
       onShow={onShow}
+      backdrop={backdrop}
       onBackdropClick={onBackdropClick}
       className={className}
+      contentClassName={contentClassName}
     >
       <Button
         variant="secondary"

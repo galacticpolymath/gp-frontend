@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-/* eslint-disable indent */
+ 
 /* eslint-disable quotes */
 import { NextApiRequest, NextApiResponse } from "next";
 import { cache } from "../../backend/authOpts/authOptions";
@@ -59,13 +59,25 @@ export default async function handler(request: NextApiRequest, response: NextApi
       willUpdateMailingListStatusOnly,
       willSendEmailListingSubConfirmationEmail,
     } = request.body as IUpdatedUserReqBody;
+
+    console.log("updatedUser, sup there: ", updatedUser);
+
     const { wasSuccessful: wasConnectionSuccessful } = await connectToMongodb(
       15_000,
       0,
       true
     );
 
+    if("_id" in updatedUser || "password" in updateUser){
+      throw new CustomError(
+        "The 'updatedUser' field contains either the '_id' or 'password' fields, which are not allowed to be updated.",
+        400
+      );
+    }
+
     console.log("request.body: ", request.body);
+
+    console.log("Will send email listing sub confirmation email: ", willSendEmailListingSubConfirmationEmail);
     
     if (!wasConnectionSuccessful) {
       throw new CustomError("Failed to connect to the database.", 500);

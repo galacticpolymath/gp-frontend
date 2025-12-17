@@ -1,7 +1,5 @@
 /* eslint-disable react/jsx-curly-brace-presence */
-/* eslint-disable no-debugger */
-/* eslint-disable no-console */
-/* eslint-disable no-useless-escape */
+ 
 /* eslint-disable quotes */
 /* eslint-disable react/jsx-indent-props */
 /* eslint-disable react/jsx-indent */

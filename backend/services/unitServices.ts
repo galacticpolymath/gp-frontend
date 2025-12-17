@@ -1,28 +1,28 @@
 /* eslint-disable no-console */
 
-import { DeleteResult, ProjectionType } from "mongoose";
-import { INewUnitSchema, IUnit } from "../models/Unit/types/unit";
-import Unit from "../models/Unit";
+import { DeleteResult, ProjectionType } from 'mongoose';
+import { INewUnitSchema, IUnit } from '../models/Unit/types/unit';
+import Unit from '../models/Unit';
 import {
   ILiveUnit,
   IMultiMediaItemForUI,
   IUnitLesson,
-} from "../../types/global";
-import { getVideoThumb } from "../../components/LessonSection/Preview/utils";
-import { STATUSES_OF_SHOWABLE_LESSONS, WEB_APP_PATHS } from "../../globalVars";
-import { getLinkPreviewObj } from "../../globalFns";
-import moment from "moment";
-import { nanoid } from "nanoid";
-import { getLiveUnits } from "../../shared/fns";
-import { UNITS_URL_PATH } from "../../shared/constants";
-import { TWebAppForUI } from "../models/WebApp";
-import dbWebApps from "../models/WebApp";
+} from '../../types/global';
+import { getVideoThumb } from '../../components/LessonSection/Preview/utils';
+import { STATUSES_OF_SHOWABLE_LESSONS, WEB_APP_PATHS } from '../../globalVars';
+import { getLinkPreviewObj } from '../../globalFns';
+import moment from 'moment';
+import { nanoid } from 'nanoid';
+import { getLiveUnits } from '../../shared/fns';
+import { UNITS_URL_PATH } from '../../shared/constants';
+import { TWebAppForUI } from '../models/WebApp';
+import dbWebApps from '../models/WebApp';
 
 const insertUnit = async (unit: INewUnitSchema) => {
   try {
     if (!Unit) {
       throw new Error(
-        "Failed to connect to the database. `Units` collections does not exist."
+        'Failed to connect to the database. `Units` collections does not exist.'
       );
     }
 
@@ -56,20 +56,20 @@ const deleteUnit = async (_id?: unknown, queryPair?: [string, unknown]) => {
 
     if (!Unit) {
       throw new Error(
-        "Failed to connect to the database. `Units` collections does not exist."
+        'Failed to connect to the database. `Units` collections does not exist.'
       );
     }
 
     if (!_id && !queryPair) {
       return {
         status: 500,
-        msg: "Both `unitId` and `queryPair` are falsy. At least one of them must have a value.",
+        msg: 'Both `unitId` and `queryPair` are falsy. At least one of them must have a value.',
       };
     }
 
-    if(_id && (typeof _id !== 'string')){
+    if (_id && (typeof _id !== 'string')) {
       throw new Error(
-        "`_id` must be a string."
+        '`_id` must be a string.'
       );
     }
 
@@ -79,24 +79,24 @@ const deleteUnit = async (_id?: unknown, queryPair?: [string, unknown]) => {
       const [key, val] = queryPair;
       deletionResult = await Unit.deleteOne({ [key]: val });
     } else {
-      deletionResult = await Unit.deleteOne({ _id: { $eq: _id } });
+      deletionResult = await Unit.deleteOne({ _id: { $eq: _id as string } });
     }
 
     if (deletionResult.deletedCount === 0) {
       return {
         status: 500,
-        msg: `Failed to delete unit`,
+        msg: 'Failed to delete unit',
       };
     }
 
-    console.log("deletionResult: ", deletionResult);
+    console.log('deletionResult: ', deletionResult);
 
     return {
       status: 200,
-      msg: `Unit was successfully deleted from the database!`,
+      msg: 'Unit was successfully deleted from the database!',
     };
   } catch (error) {
-    console.error("`deleteUnit` error: ", error);
+    console.error('`deleteUnit` error: ', error);
 
     return {
       status: 500,
@@ -113,7 +113,7 @@ const createDbFilter = (filterObjKeyAndValPairs: [string, unknown[]][]) => {
 
     if (!areFilterValuesValid) {
       throw new Error(
-        "The value for the querying must be an array. Example: { numID: [1,2,3,4] }"
+        'The value for the querying must be an array. Example: { numID: [1,2,3,4] }'
       );
     }
 
@@ -123,14 +123,14 @@ const createDbFilter = (filterObjKeyAndValPairs: [string, unknown[]][]) => {
           const [key, val] = keyAndVal;
           filterObj[key] = {
             $in:
-              key === "numID"
+              key === 'numID'
                 ? val
-                    .map((lessonNumIdStr) =>
-                      typeof lessonNumIdStr === "string"
-                        ? parseInt(lessonNumIdStr)
-                        : null
-                    )
-                    .filter(Boolean)
+                  .map((lessonNumIdStr) =>
+                    typeof lessonNumIdStr === 'string'
+                      ? parseInt(lessonNumIdStr)
+                      : null
+                  )
+                  .filter(Boolean)
                 : val,
           };
 
@@ -140,7 +140,7 @@ const createDbFilter = (filterObjKeyAndValPairs: [string, unknown[]][]) => {
 
           return {
             errMsg:
-              error && typeof error === "object" && "message" in error
+              error && typeof error === 'object' && 'message' in error
                 ? (error.message as string)
                 : errMsgStr,
           };
@@ -152,7 +152,7 @@ const createDbFilter = (filterObjKeyAndValPairs: [string, unknown[]][]) => {
 
     return {
       errMsg:
-        error && typeof error === "object" && "message" in error
+        error && typeof error === 'object' && 'message' in error
           ? error.message
           : errMsgStr,
     };
@@ -160,21 +160,50 @@ const createDbFilter = (filterObjKeyAndValPairs: [string, unknown[]][]) => {
 };
 
 type TSort = Partial<{
-  [key in keyof IUnit]: "asc" | "desc" | "ascending" | "descending" | 1 | -1;
+  [key in keyof IUnit]: 'asc' | 'desc' | 'ascending' | 'descending' | 1 | -1;
 }>;
-export type TProjections = { [key in keyof IUnit | "__v"]: 0 | 1 };
+export type TProjections = { [key in keyof IUnit | '__v']: 0 | 1 };
 
-const retrieveUnits = async (
-  filterObj: Partial<{ [key in keyof IUnit]: unknown }>,
+type TQueryPredicate = "$in" | "$eq"
+
+// "$in": { key, val[]}
+
+type TSearchQueryIn<TKey extends keyof IUnit = keyof IUnit> = {
+  key: TKey,
+  vals: (IUnit[TKey])[]
+}
+
+const retrieveUnits = async <TKey extends keyof IUnit = keyof IUnit, TVal extends IUnit[TKey] = IUnit[TKey]>(
+  filterObj: Partial<IUnit>,
   projectionObj: ProjectionType<Partial<TProjections>>,
   limit: number = 0,
-  sort?: TSort
+  sort?: TSort,
+  searchQueryWithPredicates?: {
+    "$in": {
+      key: TKey,
+      vals: TVal[]
+    }
+  }
 ) => {
   try {
     if (!Unit) {
       throw new Error(
-        "Failed to connect to the database. `Units` collections does not exist."
+        'Failed to connect to the database. `Units` collections does not exist.'
       );
+    }
+
+    if (searchQueryWithPredicates && "$in" in searchQueryWithPredicates) {
+      const { key, vals } = searchQueryWithPredicates["$in"]
+      const searchQuery = {
+        [key]: { $in: vals }
+      }
+
+      const units = await Unit.find(searchQuery, projectionObj)
+        .sort(sort ?? {})
+        .limit(limit)
+        .lean();
+
+      return { wasSuccessful: true, data: units as INewUnitSchema[] };
     }
 
     const units = await Unit.find(filterObj, projectionObj)
@@ -186,7 +215,7 @@ const retrieveUnits = async (
   } catch (error) {
     const errMsg = `Failed to get the lesson from the database. Error message: ${error}.`;
 
-    console.error("errMsg in the `retrieveUnits` function: ", errMsg);
+    console.error('errMsg in the `retrieveUnits` function: ', errMsg);
 
     return { wasSuccessful: false, errMsg: errMsg };
   }
@@ -198,27 +227,27 @@ export type TCustomUpdate = Record<
 >;
 
 const updateUnit = async (
-  filterObj: Partial<{ [key in keyof INewUnitSchema]: unknown }>,
+  filterObj: Partial<INewUnitSchema>,
   updatedProps: Partial<INewUnitSchema>,
   customUpdate?: TCustomUpdate
 ) => {
   try {
     if (!Unit) {
       throw new Error(
-        "Failed to connect to the database. `Units` collections does not exist."
+        'Failed to connect to the database. `Units` collections does not exist.'
       );
     }
 
     if (customUpdate) {
-      console.log("Making a custom update.");
+      console.log('Making a custom update.');
 
       const result = await Unit.updateMany(filterObj, customUpdate);
 
       if (result.matchedCount === 0) {
-        return { errMsg: "No matching units were found in the database." };
+        return { errMsg: 'No matching units were found in the database.' };
       }
 
-      console.log("result: ", result);
+      console.log('result: ', result);
 
       return { wasSuccessful: result.modifiedCount >= 1 };
     }
@@ -228,7 +257,7 @@ const updateUnit = async (
     });
 
     if (matchedCount === 0) {
-      return { errMsg: "No matching units were found in the database." };
+      return { errMsg: 'No matching units were found in the database.' };
     }
 
     return { wasSuccessful: modifiedCount >= 1 };
@@ -254,17 +283,17 @@ const getGpMultiMedia = (units: INewUnitSchema[]) => {
     for (const mediaItem of unit.FeaturedMultimedia) {
       const isTargetGpVidPresent = gpVideos?.length
         ? gpVideos.some(
-            ({ mainLink: gpVidMainLink }) =>
-              gpVidMainLink === mediaItem.mainLink
-          )
+          ({ mainLink: gpVidMainLink }) =>
+            gpVidMainLink === mediaItem.mainLink
+        )
         : false;
 
       if (
         !isTargetGpVidPresent &&
-        mediaItem.by === "Galactic Polymath" &&
-        mediaItem.type === "video" &&
-        typeof mediaItem.mainLink === "string" &&
-        mediaItem.mainLink.includes("youtube")
+        mediaItem.by === 'Galactic Polymath' &&
+        mediaItem.type === 'video' &&
+        typeof mediaItem.mainLink === 'string' &&
+        mediaItem.mainLink.includes('youtube')
       ) {
         gpVideos.push({
           id: nanoid(),
@@ -284,7 +313,7 @@ const getGpMultiMedia = (units: INewUnitSchema[]) => {
     }
   }
 
-  const testUnits = units.filter(({ Title }) => Title === "TEST");
+  const testUnits = units.filter(({ Title }) => Title === 'TEST');
 
   console.log(`Length of testUnits: ${testUnits.length}`);
 
@@ -296,29 +325,29 @@ type TWebAppImg = {
   webAppImgAlt: string | null
 }
 
-const handleGetLinkPreviewObj = async (link: string): Promise<Partial<TWebAppImg>>  => {
+const handleGetLinkPreviewObj = async (link: string): Promise<Partial<TWebAppImg>> => {
   const linkPreviewObj = await getLinkPreviewObj(link);
 
   if (
-    "errMsg" in linkPreviewObj &&
+    'errMsg' in linkPreviewObj &&
     linkPreviewObj.errMsg &&
-    "images" in linkPreviewObj &&
+    'images' in linkPreviewObj &&
     Array.isArray(linkPreviewObj.images) &&
     linkPreviewObj.images.length
   ) {
     console.error(
-      "Failed to get the image preview of web app. Error message: ",
+      'Failed to get the image preview of web app. Error message: ',
       linkPreviewObj.errMsg
     );
     return {};
   }
 
   const images =
-    "images" in linkPreviewObj && Array.isArray(linkPreviewObj.images)
+    'images' in linkPreviewObj && Array.isArray(linkPreviewObj.images)
       ? linkPreviewObj.images
       : [];
-  const errMsg = "errMsg" in linkPreviewObj ? linkPreviewObj.errMsg : "";
-  const title = "title" in linkPreviewObj ? linkPreviewObj.title : "";
+  const errMsg = 'errMsg' in linkPreviewObj ? linkPreviewObj.errMsg : '';
+  const title = 'title' in linkPreviewObj ? linkPreviewObj.title : '';
 
   const webApp = {
     webAppPreviewImg: errMsg || !images?.length ? null : images[0],
@@ -327,6 +356,8 @@ const handleGetLinkPreviewObj = async (link: string): Promise<Partial<TWebAppImg
 
   return webApp;
 };
+
+
 
 const getGpWebApps = async (units: INewUnitSchema[]) => {
   const webApps: TWebAppForUI[] = [];
@@ -344,7 +375,7 @@ const getGpWebApps = async (units: INewUnitSchema[]) => {
       if (
         isPresentInWebApps ||
         !multiMediaItem.mainLink ||
-        multiMediaItem.type !== "web-app"
+        multiMediaItem.type !== 'web-app'
       ) {
         continue;
       }
@@ -352,28 +383,28 @@ const getGpWebApps = async (units: INewUnitSchema[]) => {
       const linkPreviewObj = await getLinkPreviewObj(multiMediaItem.mainLink);
 
       if (
-        "errMsg" in linkPreviewObj &&
+        'errMsg' in linkPreviewObj &&
         linkPreviewObj.errMsg &&
-        "images" in linkPreviewObj &&
+        'images' in linkPreviewObj &&
         Array.isArray(linkPreviewObj.images) &&
         linkPreviewObj.images.length
       ) {
         console.error(
-          "Failed to get the image preview of web app. Error message: ",
+          'Failed to get the image preview of web app. Error message: ',
           linkPreviewObj.errMsg
         );
         continue;
       }
 
       const images =
-        "images" in linkPreviewObj && Array.isArray(linkPreviewObj.images)
+        'images' in linkPreviewObj && Array.isArray(linkPreviewObj.images)
           ? linkPreviewObj.images
           : [];
-      const errMsg = "errMsg" in linkPreviewObj ? linkPreviewObj.errMsg : "";
-      const title = "title" in linkPreviewObj ? linkPreviewObj.title : "";
+      const errMsg = 'errMsg' in linkPreviewObj ? linkPreviewObj.errMsg : '';
+      const title = 'title' in linkPreviewObj ? linkPreviewObj.title : '';
       let pathToFile = null;
 
-      if (typeof multiMediaItem?.title === "string") {
+      if (typeof multiMediaItem?.title === 'string') {
         pathToFile =
           WEB_APP_PATHS.find(({ name }) =>
             (multiMediaItem.title as string).toLowerCase().includes(name)
@@ -389,10 +420,10 @@ const getGpWebApps = async (units: INewUnitSchema[]) => {
         description: multiMediaItem.lessonRelevance,
         webAppPreviewImg: errMsg || !images?.length ? null : images[0],
         webAppImgAlt:
-          errMsg || !images?.length ? null : `${title}'s preview image`,        
+          errMsg || !images?.length ? null : `${title}'s preview image`,
         aboutWebAppLink: null,
-        aboutWebAppLinkType: "unit",
-        pathToFile
+        aboutWebAppLinkType: 'unit',
+        pathToFile,
       };
 
       webApps.push(webApp);
@@ -402,11 +433,11 @@ const getGpWebApps = async (units: INewUnitSchema[]) => {
   const allDbWebApps = await dbWebApps.find({}, { _id: 0, __v: 0 }).lean();
   const unitNumIds = allDbWebApps
     .map((webApp) => webApp.unitNumID)
-    .filter(Boolean);
+    .filter(Boolean) as number[];
   let dbUnits: INewUnitSchema[] | undefined = undefined;
 
   if (unitNumIds.length) {
-    dbUnits = (await retrieveUnits({ numID: { $in: unitNumIds } }, {})).data;
+    dbUnits = (await retrieveUnits({}, {}, 0, undefined, { $in: { key: "numID", vals: unitNumIds } })).data;
   }
 
   for (const dbWebApp of allDbWebApps) {
@@ -421,7 +452,7 @@ const getGpWebApps = async (units: INewUnitSchema[]) => {
       webAppPreviewImg: null,
       webAppImgAlt: null,
       aboutWebAppLinkType: dbWebApp.aboutWebAppLinkType,
-      aboutWebAppLink: dbWebApp.aboutWebAppLink
+      aboutWebAppLink: dbWebApp.aboutWebAppLink,
     };
 
     if (dbUnits?.length) {
@@ -437,15 +468,15 @@ const getGpWebApps = async (units: INewUnitSchema[]) => {
 
     webApp = {
       ...webApp,
-      ...webAppImg
-    }
+      ...webAppImg,
+    };
 
-    if(dbWebApp.aboutWebAppLinkType === "blog" && dbWebApp.aboutWebAppLink){
-      const resBody = await getLinkPreviewObj(dbWebApp.aboutWebAppLink)
+    if (dbWebApp.aboutWebAppLinkType === 'blog' && dbWebApp.aboutWebAppLink) {
+      const resBody = await getLinkPreviewObj(dbWebApp.aboutWebAppLink);
       webApp = {
         ...webApp,
-        blogPostTitle: "title" in resBody ? resBody.title : null 
-      }
+        blogPostTitle: 'title' in resBody ? resBody.title : null,
+      };
     }
 
     webApps.push(webApp as TWebAppForUI);
@@ -460,8 +491,8 @@ const getUnitLessons = (retrievedUnits: INewUnitSchema[]) => {
 
   for (const unit of retrievedUnits) {
     const wasUnitReleased =
-      moment(todaysDate).format("YYYY-MM-DD") >
-      moment(unit.ReleaseDate).format("YYYY-MM-DD");
+      moment(todaysDate).format('YYYY-MM-DD') >
+      moment(unit.ReleaseDate).format('YYYY-MM-DD');
 
     if (!wasUnitReleased) {
       continue;
@@ -484,8 +515,8 @@ const getUnitLessons = (retrievedUnits: INewUnitSchema[]) => {
           continue;
         }
 
-        if (lesson?.status?.toLowerCase() === "upcoming") {
-          console.log("The lesson is upcoming. Skipping...");
+        if (lesson?.status?.toLowerCase() === 'upcoming') {
+          console.log('The lesson is upcoming. Skipping...');
           continue;
         }
 
@@ -502,7 +533,7 @@ const getUnitLessons = (retrievedUnits: INewUnitSchema[]) => {
           lessonPartPath: `/${UNITS_URL_PATH}/${unit.locale}/${unit.numID}#lesson_part_${lesson.lsn}`,
           tile:
             lesson?.tile ??
-            "https://storage.googleapis.com/gp-cloud/icons/Missing_Lesson_Tile_Icon.png",
+            'https://storage.googleapis.com/gp-cloud/icons/Missing_Lesson_Tile_Icon.png',
           lessonPartTitle: lesson.title,
           dur: lesson.lsnDur,
           preface: lesson.lsnPreface,
@@ -535,7 +566,7 @@ const getIsUnitNew = (releaseDate: Date, now: number) => {
 const filterInShowableUnits = (units: INewUnitSchema[], nowMs: number, willGetUnitMetaData = true) => {
   const liveUnits = getLiveUnits(units).filter((unit) => unit?.ReleaseDate);
 
-  if(!willGetUnitMetaData){
+  if (!willGetUnitMetaData) {
     return liveUnits as ILiveUnit[];
   }
 
@@ -559,7 +590,7 @@ const filterInShowableUnits = (units: INewUnitSchema[], nowMs: number, willGetUn
     const lessonObj = {
       ...unit,
       individualLessonsNum,
-      ReleaseDate: moment(unit.ReleaseDate).format("YYYY-MM-DD"),
+      ReleaseDate: moment(unit.ReleaseDate).format('YYYY-MM-DD'),
       isNew: getIsUnitNew(new Date(unit.ReleaseDate as string), nowMs),
     };
 

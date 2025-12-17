@@ -1,11 +1,3 @@
-/* eslint-disable react/jsx-closing-tag-location */
-/* eslint-disable semi */
-/* eslint-disable no-debugger */
-/* eslint-disable no-console */
-/* eslint-disable quotes */
-/* eslint-disable react/jsx-indent-props */
-/* eslint-disable react/jsx-curly-brace-presence */
-
 import Layout from "../components/Layout";
 import LoginUI from "../components/User/Login/LoginUI";
 import Button from "../components/General/Button";
@@ -36,6 +28,8 @@ import { SELECTED_GP_PLUS_BILLING_TYPE } from "./gp-plus";
 import { ILocalStorage } from "../types/global";
 import useOutsetaInputValidation from "../customHooks/useOutsetaInputValidation";
 import { useHandleGpPlusCheckoutSessionModal } from "../customHooks/useHandleGpPlusCheckoutSessionModal";
+import EmailNewsletterSignUp from "../components/User/Modals/EmailNewsletterSignUp";
+import { ToastContainer } from "react-toastify";
 
 export const getUserAccountData = async (
   token: string,
@@ -70,6 +64,64 @@ export const getUserAccountData = async (
   }
 };
 
+interface IUserSubscriptionProps {
+  gpPlusAnchorElementRef: React.RefObject<HTMLAnchorElement | null>;
+  handleGpPlusAccountBtnClick: () => void;
+  wasGpPlusBtnClicked: boolean;
+}
+
+const UserSubscription: React.FC<IUserSubscriptionProps> = ({
+  gpPlusAnchorElementRef,
+  handleGpPlusAccountBtnClick,
+  wasGpPlusBtnClicked,
+}) => {
+  return (
+    <>
+      <BootstrapBtn
+        onClick={handleGpPlusAccountBtnClick}
+        variant="secondary"
+        className="d-flex justify-content-center align-items-center border-0 rounded px-2 py-1"
+        disabled={false}
+        style={{
+          backgroundColor: "#1C28BD",
+          minWidth: "260px",
+          height: "64px",
+        }}
+      >
+        {wasGpPlusBtnClicked ? (
+          <Spinner className="text-dark" />
+        ) : (
+          <>
+            <Image
+              src="/plus/plus.png"
+              alt="gp_plus_logo"
+              width={40}
+              height={40}
+              style={{
+                width: "40px",
+                height: "40px",
+                objectFit: "contain",
+              }}
+              className="mx-1"
+            />
+            <span className="text-white ms-1">My subscription</span>
+          </>
+        )}
+      </BootstrapBtn>
+      <a
+        ref={gpPlusAnchorElementRef}
+        style={{
+          zIndex: -10,
+          opacity: 0,
+        }}
+        id="gpPlusBtn"
+        className="no-underline"
+        href="https://galactic-polymath.outseta.com/profile?tab=account#o-authenticated"
+      ></a>
+    </>
+  );
+};
+
 const AccountPg: React.FC = () => {
   const router = useRouter();
   const {
@@ -96,7 +148,7 @@ const AccountPg: React.FC = () => {
     user,
     _isRetrievingUserData,
     _gpPlusSub,
-  } = useGetAboutUserForm();
+  } = useGetAboutUserForm(true, true);
   const { email, image } = user ?? {};
   const [isRetrievingUserData] = _isRetrievingUserData;
   const [aboutUserForm] = _aboutUserForm;
@@ -478,11 +530,11 @@ const AccountPg: React.FC = () => {
         langLinks={[]}
       >
         <div
-          style={{ minHeight: "100vh", paddingTop: "10px" }}
-          className="container pt-4"
+          style={{ minHeight: "100vh" }}
+          className="container pt-4 pt-sm-5 pb-2 pt-md-4"
         >
           <LoginUI
-            className="pt-5"
+            className="pt-3 pt-sm-5 pt-md-3"
             headingTitleClassName="text-center text-black my-2"
           />
         </div>
@@ -513,6 +565,7 @@ const AccountPg: React.FC = () => {
         style={{ minHeight: "90vh", paddingTop: "10px" }}
         className="container pt-5 pt-sm-4"
       >
+        <ToastContainer stacked position="top-center" />
         <section className="row border-bottom pb-4">
           <section className="col-12 d-flex justify-content-center align-items-center pt-4">
             {image ? (
@@ -537,49 +590,11 @@ const AccountPg: React.FC = () => {
           <section className="col-12 d-flex justify-content-center align-items-center flex-column mt-1 pt-2">
             {gpPlusSub?.AccountStageLabel &&
             !["Expired", "NonMember"].includes(gpPlusSub.AccountStageLabel) ? (
-              <>
-                <BootstrapBtn
-                  onClick={handleGpPlusAccountBtnClick}
-                  variant="secondary"
-                  className="d-flex justify-content-center align-items-center border-0 rounded px-2 py-1"
-                  disabled={false}
-                  style={{
-                    backgroundColor: "#1C28BD",
-                    minWidth: "260px",
-                    height: "64px",
-                  }}
-                >
-                  {wasGpPlusBtnClicked ? (
-                    <Spinner className="text-dark" />
-                  ) : (
-                    <>
-                      <Image
-                        src="/plus/plus.png"
-                        alt="gp_plus_logo"
-                        width={40}
-                        height={40}
-                        style={{
-                          width: "40px",
-                          height: "40px",
-                          objectFit: "contain",
-                        }}
-                        className="mx-1"
-                      />
-                      <span className="text-white ms-1">My subscription</span>
-                    </>
-                  )}
-                </BootstrapBtn>
-                <a
-                  ref={gpPlusAnchorElementRef}
-                  style={{
-                    zIndex: -10,
-                    opacity: 0,
-                  }}
-                  id="gpPlusBtn"
-                  className="no-underline"
-                  href="https://galactic-polymath.outseta.com/profile?tab=account#o-authenticated"
-                ></a>
-              </>
+              <UserSubscription
+                gpPlusAnchorElementRef={gpPlusAnchorElementRef}
+                handleGpPlusAccountBtnClick={handleGpPlusAccountBtnClick}
+                wasGpPlusBtnClicked={wasGpPlusBtnClicked}
+              />
             ) : (
               <BootstrapBtn
                 onClick={() => {
@@ -615,7 +630,7 @@ const AccountPg: React.FC = () => {
               classNameStr="rounded border shadow mt-2"
             >
               <span style={{ fontWeight: 410 }} className="text-black">
-                View {"'"}About Me{"'"} form
+                View 'About Me' form
               </span>
             </Button>
             <Button
@@ -650,6 +665,7 @@ const AccountPg: React.FC = () => {
       </div>
       <AboutUserModal />
       <ThankYouModal />
+      <EmailNewsletterSignUp />
       <Modal
         show={isGpPlusSignUpModalDisplayed}
         onShow={() => {

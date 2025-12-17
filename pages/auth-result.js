@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { useEffect, useState } from 'react';
 import Layout from '../components/Layout';
 import { useSession } from 'next-auth/react';

@@ -1,7 +1,3 @@
-/* eslint-disable indent */
-/* eslint-disable react/jsx-indent-props */
-/* eslint-disable react/jsx-indent */
-
 import React from 'react';
 import Button from '../../../General/Button';
 import {

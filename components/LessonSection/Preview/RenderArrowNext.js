@@ -2,13 +2,6 @@
 /* eslint-disable react/jsx-indent-props */
 /* eslint-disable indent */
 /* eslint-disable quotes */
-/* eslint-disable brace-style */
-/* eslint-disable react/jsx-wrap-multilines */
-/* eslint-disable react/jsx-closing-bracket-location */
-/* eslint-disable react/jsx-closing-tag-location */
-/* eslint-disable no-multiple-empty-lines */
-/* eslint-disable no-unused-vars */
-/* eslint-disable no-console */
 
 import { useEffect, useState } from "react";
 import { useContext } from "react";

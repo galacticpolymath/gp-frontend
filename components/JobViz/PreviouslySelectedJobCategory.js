@@ -1,30 +1,33 @@
-/* eslint-disable no-console */
-/* eslint-disable no-unused-vars */
 /* eslint-disable semi */
 /* eslint-disable react/jsx-max-props-per-line */
 /* eslint-disable react/jsx-indent-props */
 /* eslint-disable quotes */
 /* eslint-disable react/jsx-indent */
 /* eslint-disable indent */
-/* eslint-disable no-multiple-empty-lines */
 
 import { useRouter } from "next/router";
 import getNewUrl from "../../helperFns/getNewUrl";
 import Image from 'next/image'
 
-const PreviouslySelectedJobCategory = ({ index, isBrick, jobCategory }) => {
+const PreviouslySelectedJobCategory = ({ index, isBrick, jobCategory, searchParamsStr }) => {
     const src = isBrick ? '/imgs/jobViz/jobVizBrick.jpg' : '/imgs/jobViz/branch-job-categories-search.jpg';
     const router = useRouter();
     const params = router.query?.['search-results'] ?? null;
 
     const handleBtnClick = () => {
         if(jobCategory.categoryName === "Job Categories"){
-            router.push({ pathname: '/jobviz' }, null, { scroll: false })
+            const url = `${window.location.origin}/jobviz?${searchParamsStr}`
+            router.push(url, null, { scroll: false })
             return;
         }
-        
+
+        const path = getNewUrl(jobCategory, params)
+        const baseUrl = `${window.location.origin}${path}`
+        const urlUpdated = searchParamsStr.length ? `${baseUrl}?${searchParamsStr}` : baseUrl;
+
         params.splice(0, 2)
-        router.push({ pathname: getNewUrl(jobCategory, params) }, null, { scroll: false })
+
+        router.push(urlUpdated, null, { scroll: false })
     }
 
     return (

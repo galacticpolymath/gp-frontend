@@ -1,6 +1,6 @@
-import { IAgeGroupsSelection } from "./types";
+import { IAgeGroupsSelection } from './types';
 
-export type  TAboutUserFormDeprecated<TMutableObj extends object = Record<string, unknown>> = Partial<{
+export type TAboutUserFormDeprecated<TMutableObj extends object = Record<string, unknown>> = Partial<{
   /**
    * @deprecated
    * Use `gradesType` and `gradesTaught` instead
@@ -32,4 +32,3 @@ export type  TAboutUserFormDeprecated<TMutableObj extends object = Record<string
     isNotTeaching: boolean;
   };
 }>
-

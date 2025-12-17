@@ -6,6 +6,7 @@ import Navbar from "./Navbar";
 import { Noto_Sans } from "next/font/google";
 import { useEffect } from "react";
 import { removeLocalStorageItem } from "../shared/fns";
+import { JobToursCardWithRocket } from "./JobViz/Heros/HeroForGpPlusUsers";
 
 const notoSansLight = Noto_Sans({
   subsets: ["latin"],
@@ -58,7 +59,11 @@ export default function Layout({
         {imgAlt && <meta property="og:image:alt" content={imgAlt} />}
         <meta property="og:url" content={url} />
         {keywords && (
-          <meta property="og:keywords" name="keywords" content={keywords} />
+          <meta
+            property="og:keywords"
+            name="keywords"
+            content={keywords}
+          />
         )}
         <meta
           property="og:viewport"
@@ -90,16 +95,31 @@ export default function Layout({
         {isOnProd &&
           langLinks?.length &&
           langLinks.map(([href, hrefLang], index) => (
-            <link key={index} rel="alternate" hrefLang={hrefLang} href={href} />
+            <link
+              key={index}
+              rel="alternate"
+              hrefLang={hrefLang}
+              href={href}
+            />
           ))}
         {isOnProd && !!defaultLink && (
-          <link rel="alternate" hrefLang="x-default" href={defaultLink} />
+          <link
+            rel="alternate"
+            hrefLang="x-default"
+            href={defaultLink}
+          />
         )}
       </Head>
       <div style={{ height: "50px" }}>
         <Navbar />
       </div>
-      {imgSrc && <img src={imgSrc} alt="" style={{ display: "none" }} />}
+      {imgSrc && (
+        <img
+          src={imgSrc}
+          alt=""
+          style={{ display: "none" }}
+        />
+      )}
       {children}
       <Footer />
     </div>

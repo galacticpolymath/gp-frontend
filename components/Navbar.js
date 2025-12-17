@@ -1,6 +1,3 @@
-/* eslint-disable react/jsx-indent */
-/* eslint-disable indent */
-
 import { useRouter } from 'next/router';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -9,8 +6,14 @@ import mobileLogo from '../assets/img/mobile_logo.png';
 import { useState } from 'react';
 import { useSession } from 'next-auth/react';
 import LoginContainerForNavbar from './User/Login/LoginContainerForNavbar';
+import { useSearchParams } from 'next/navigation';
+import { JobToursCardTopSticky } from './JobViz/JobTours/JobToursCard';
+
+export const DISABLE_NAVBAR_PARAM_NAME = 'disableNavbar';
 
 export default function Navbar() {
+  const searchParams = useSearchParams();
+  const disableNavbar = searchParams.get(DISABLE_NAVBAR_PARAM_NAME) === 'true';
   const router = useRouter();
   const session = useSession();
   const [modalAnimation, setModalAnimation] = useState('d-none');
@@ -18,7 +21,7 @@ export default function Navbar() {
   return (
     <nav
       style={{ zIndex: 1000 }}
-      className="position-fixed w-100 navbar-expand-lg py-0"
+      className={`fixed-top w-100 navbar-expand-lg py-0 ${disableNavbar ? 'pe-none' : ''}`}
     >
       <div className='navbar navbar-expand-lg w-100 navbar-dark bg-dark position-relative'>
         <div className='w-100 container'>
@@ -88,6 +91,7 @@ export default function Navbar() {
           </div>
         </div>
       </div>
+      {router.pathname.includes('jobviz') && <JobToursCardTopSticky />}
     </nav>
   );
 }

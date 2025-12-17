@@ -1,11 +1,7 @@
-/* eslint-disable no-debugger */
 /* eslint-disable semi */
-/* eslint-disable comma-dangle */
-/* eslint-disable no-console */
-/* eslint-disable quotes */
+ 
 /* eslint-disable indent */
-/* eslint-disable no-unused-vars */
-/* eslint-disable no-undef */
+ 
 /* eslint-disable no-multiple-empty-lines */
 import { useEffect, useState } from 'react';
 import filterResults from '../helperFns/filterResults';

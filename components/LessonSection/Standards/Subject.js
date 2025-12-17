@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 /* eslint-disable quotes */
 /* eslint-disable no-console */
 import PropTypes from "prop-types";

@@ -1,7 +1,7 @@
 /* eslint-disable quotes */
-/* eslint-disable no-debugger */
+ 
 /* eslint-disable no-console */
-/* eslint-disable indent */
+ 
 import axios, { AxiosError, AxiosHeaders } from "axios";
 import cookies from "js-cookie";
 import {
@@ -12,10 +12,6 @@ import { IErr, IUpdatedUserReqBody } from "../../types/global";
 import { IGoogleDriveAuthResBody } from "../../pages/api/gp-plus/auth";
 import { IPlan } from "../../backend/services/outsetaServices";
 import Cookies from "js-cookie";
-import {
-  TReqQueryResetOutsetaEmail,
-  TSuccessType,
-} from "../../pages/api/gp-plus/outseta/reset-outseta-email";
 
 export const updateUser = async (
   query?: Omit<Partial<TUserSchemaV2>, "password">,
@@ -28,7 +24,6 @@ export const updateUser = async (
     if (!token) {
       throw new Error('The "token" parameter is required and cannot be empty.');
     }
-
 
     if (query &&
       Object.keys(query).length <= 0 ||
@@ -301,40 +296,5 @@ export const getUserPlanDetails = async (
     console.error("An error has ocurrred. Failed to get subscription: ", error);
 
     return null;
-  }
-};
-
-export const deleteUserOutsetaEmail = async (
-  email: string,
-  appAuthToken: string
-) => {
-  try {
-    const params: TReqQueryResetOutsetaEmail = {
-      userInputEmail: email,
-    };
-    const response = await axios.delete<TSuccessType>(
-      `${window.location.origin}/api/gp-plus/outseta/reset-outseta-email`,
-      {
-        headers: {
-          Authorization: `Bearer ${appAuthToken}`,
-        },
-        params,
-      }
-    );
-
-    console.log("Response, outseta account deletion: ", response.data);
-    console.log("Response status: ", response.status);
-
-    if (response.status !== 200) {
-      throw new Error(
-        `Failed to delete the Outseta email. Status code: ${response.status}`
-      );
-    }
-
-    return response.data;
-  } catch (error) {
-    console.error("Failed to delete the Outseta email: ", error);
-
-    return { wasSuccessful: false };
   }
 };

@@ -1,17 +1,16 @@
-/* eslint-disable no-console */
 /* eslint-disable indent */
 /* eslint-disable semi */
 /* eslint-disable no-undef */
 /* eslint-disable quotes */
 /* eslint-disable no-multiple-empty-lines */
-const filterResults = require('../../helperFns/filterResults');
+const filterResults = require('../../../helperFns/filterResults');
 
 const level2IdResults = [149, 128, 121]
 const level3IdResults = [129, 130, 131, 132, 133, 134, 135, 138, 139, 142, 143, 145, 144, 146, 147, 148]
 const level4IdResultsElectronics = [136, 137]
 const level4IdResultsIndustrial = [141, 140]
 
-test.skip("Testing filter for job categories engineering. Results should match with one of the arrays above.", () => {
+test("Testing filter for job categories engineering. Results should match with one of the arrays above.", () => {
     const targetJobCategoriesLvl2 = filterResults(2, "17-0000");
     const targetJobCategoriesIdsLvl2 = targetJobCategoriesLvl2.map(job => job.id);
     const areJobCategoriesIdsLevel2Correct = targetJobCategoriesIdsLvl2.every(id => level2IdResults.includes(id));

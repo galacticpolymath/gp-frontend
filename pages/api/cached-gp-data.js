@@ -1,5 +1,5 @@
 /* eslint-disable quotes */
-/* eslint-disable for-direction */
+ 
 /* eslint-disable semi */
 /* eslint-disable no-console */
 /* eslint-disable indent */

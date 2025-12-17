@@ -1,12 +1,9 @@
-/* eslint-disable no-empty */
-/* eslint-disable no-unused-vars */
-/* eslint-disable no-debugger */
 /* eslint-disable no-multiple-empty-lines */
-/* eslint-disable curly */
-/* eslint-disable no-console */
+
+
 /* eslint-disable quotes */
 /* eslint-disable semi */
-/* eslint-disable comma-dangle */
+
 /* eslint-disable indent */
 
 const jobVizData = require("../data/Jobviz/jobVizData.json");
@@ -32,8 +29,6 @@ const getAllParentJobCategories = (jobCategory, _num) => {
         const levelFieldName = `level${num}`
         let levelN = jobCategory[levelFieldName];
         let parentJobCategoryAtNLvl = jobCategory;
-
-        // after doing the string manipulation above, find the object below. If the object doesn't exist. Then use the default string first (jobCategory[levelFieldName]) instead of the manipulated string. Insert that for the levelN and find the target parent job category. Do this first. 
 
         if (jobCategory.soc_code !== levelN) {
             // if on level 2 and "level2": "15-1200", then insert "15-1200" into levelN 
@@ -70,9 +65,9 @@ const getAllParentJobCategories = (jobCategory, _num) => {
 
 
 const getPathsOfSearchResult = jobCategory => {
+    console.log('getPathsOfSearchResult: jobCategory = ', jobCategory);
     const { hierarchy, occupation_type } = jobCategory;
-    const isLineItem = occupation_type === "Line item"
-    const numForWhileLoop = ((hierarchy === 1) || (hierarchy === 2) || ((hierarchy === 3) && !isLineItem)) ? hierarchy : (hierarchy - 1)
+    const numForWhileLoop = ((hierarchy === 1) || (hierarchy === 2) || ((hierarchy === 3) && !(occupation_type === "Line item"))) ? hierarchy : (hierarchy - 1)
     let { targetLevels, didErr } = getAllParentJobCategories(jobCategory, numForWhileLoop);
 
     if (didErr) {

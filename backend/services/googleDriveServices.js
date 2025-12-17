@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-/* eslint-disable indent */
+ 
 /* eslint-disable comma-dangle */
 /* eslint-disable quotes */
 /* eslint-disable semi */
@@ -187,7 +187,6 @@ export const shareFilesWithRetries = async (
       console.log("The target file: ", targetFile);
       console.log("Shared file: ", targetFile.name);
 
-
       if (
         result.status == "rejected" &&
         result?.reason?.response?.data?.error?.code === 400
@@ -294,13 +293,11 @@ export const copyFile = async (accessToken, parentFolderIds, fileId, tries = 3) 
       return await copyFile(accessToken, parentFolderIds, fileId, tries - 1);
     }
     
-    
     if (response.status) {
       return {
         errType: "notFound"
       }
     }
-
 
     return { errType: "generalErr" }
   }
@@ -321,7 +318,6 @@ export const copyFiles = async (
   const jobStatus = await getCacheVal(`copyUnitJobStatus-${copyUnitJobId}`)
 
   console.log("copyFiles, jobStatus: ", jobStatus);
-  
 
   if (!jobStatus || jobStatus === "stopped") {
     return {

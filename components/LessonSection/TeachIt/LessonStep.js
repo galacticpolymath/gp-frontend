@@ -1,5 +1,5 @@
 /* eslint-disable quotes */
-/* eslint-disable no-console */
+ 
 import RichText from "../../RichText";
 import { TbArrowsSplit2 } from "react-icons/tb";
 import { HiLightBulb } from "react-icons/hi2";

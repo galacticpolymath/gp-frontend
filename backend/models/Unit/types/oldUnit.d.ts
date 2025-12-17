@@ -103,7 +103,7 @@ export interface IOldUnit {
             }[];
             InitiallyExpanded: boolean;
         };
-        "teaching-materials": {
+        'teaching-materials': {
             __component?: string;
             SectionTitle: string;
             Data: {
@@ -192,11 +192,11 @@ export interface IOldUnit {
             Content: string;
             InitiallyExpanded: boolean;
         };
-        "standards-header": {
+        'standards-header': {
             __component?: string;
             SectionTitle: string;
         };
-        "learning-chart": {
+        'learning-chart': {
             __component?: string;
             Title: string;
             Description: string;

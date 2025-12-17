@@ -1,8 +1,6 @@
-/* eslint-disable no-debugger */
 /* eslint-disable no-console */
 /* eslint-disable quotes */
-/* eslint-disable react/jsx-indent-props */
-/* eslint-disable react/jsx-indent */
+ 
 /* eslint-disable indent */
 
 import React from "react";
@@ -204,7 +202,6 @@ const SubmitAboutUserFormBtn: React.FC<IProps> = ({
       if (!occupation || occupation?.length <= 0) {
         errors.set("occupation", "*This field is required.");
       }
-
 
       if (isTeacher && !isNotTeaching && !classSize) {
         errors.set(

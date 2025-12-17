@@ -1,23 +1,37 @@
 /* eslint-disable quotes */
-/* eslint-disable no-unused-vars */
-/* eslint-disable no-console */
-import GoogleProvider from 'next-auth/providers/google';
-import CredentialsProvider from 'next-auth/providers/credentials';
-import getCanUserWriteToDb from '../services/dbAuthService';
-import { jwtVerify } from 'jose';
-import JwtModel from '../models/Jwt';
-import { connectToMongodb } from '../utils/connection';
-import { signJwt } from '../utils/auth';
-import { createIterations, createSalt, getIsPasswordCorrect, hashPassword } from '../utils/security';
-import { createDocument } from '../db/utils';
-import { AuthError, CustomError, SignInError } from '../utils/errors';
-import { v4 as uuidv4 } from 'uuid';
-import { createUser, deleteUser, getUser, getUserByEmail, getUserWithRetries, updateUser } from '../services/userServices';
-import NodeCache from 'node-cache';
-import { addUserToEmailList } from '../services/emailServices';
-import User from '../models/User/index';
 
-const VALID_FORMS = ['createAccount', 'login'];
+/* eslint-disable no-console */
+import GoogleProvider from "next-auth/providers/google";
+import CredentialsProvider from "next-auth/providers/credentials";
+import getCanUserWriteToDb from "../services/dbAuthService";
+import { jwtVerify } from "jose";
+import JwtModel from "../models/Jwt";
+import { connectToMongodb } from "../utils/connection";
+import { signJwt } from "../utils/auth";
+import {
+  createIterations,
+  createSalt,
+  getIsPasswordCorrect,
+  hashPassword,
+} from "../utils/security";
+import { createDocument } from "../db/utils";
+import { AuthError, CustomError, SignInError } from "../utils/errors";
+import { v4 as uuidv4 } from "uuid";
+import {
+  createUser,
+  deleteUser,
+  getUser,
+  getUserByEmail,
+  getUserWithRetries,
+  updateUser,
+} from "../services/userServices";
+import NodeCache from "node-cache";
+import { addUserToEmailList } from "../services/emailServices";
+import User from "../models/User/index";
+import { getGpPlusMembership } from "../services/outsetaServices";
+import { HAS_MEMBERSHIP_STATUSES } from "../../pages/api/get-user-account-data";
+
+const VALID_FORMS = ["createAccount", "login"];
 export const cache = new NodeCache({ stdTTL: 60 * 60 * 3 });
 
 /** @return { import("next-auth/adapters").Adapter } */
@@ -30,7 +44,7 @@ export default function MyAdapter() {
       return;
     },
     async getUserByEmail(email) {
-      console.log('getUserByEmail: ', email);
+      console.log("getUserByEmail: ", email);
       return;
     },
     async getUserByAccount(param) {
@@ -43,47 +57,63 @@ export default function MyAdapter() {
         if (!wasSuccessful) {
           return {
             errType: "timeout",
-            code: 504
+            code: 504,
           };
         }
 
-        const { user, errType } = await getUserWithRetries({ providerAccountId: providerAccountId }, {});
+        const { user, errType } = await getUserWithRetries(
+          { providerAccountId: providerAccountId },
+          {}
+        );
 
         if (errType === "timeout") {
           return {
             errType,
-            code: 504
+            code: 504,
           };
         }
-
 
         if (!user) {
           isCreatingUser = true;
           const { wasSuccessful, msg } = await createUser(
-            'PLACEHOLDER',
+            "PLACEHOLDER",
             null,
             provider,
-            ['user'],
+            ["user"],
             providerAccountId,
-            null,
+            null
           );
 
           if (!wasSuccessful) {
-            console.error('Failed to create the target user...');
-            throw new CustomError(`Failed to create the document for the target user in the db. Reason: ${msg}`, 500, 'userCreationFailure', 'user-creation-err', true);
+            console.error("Failed to create the target user...");
+            throw new CustomError(
+              `Failed to create the document for the target user in the db. Reason: ${msg}`,
+              500,
+              "userCreationFailure",
+              "user-creation-err",
+              true
+            );
           }
 
-          console.log('the google user was created...');
+          console.log("the google user was created...");
 
           return { providerAccountId, provider, wasUserCreated: true };
         }
 
-        return { providerAccountId, provider, email: user.email, id: user._id, image: user.picture, name: user.name };
+        return {
+          providerAccountId,
+          provider,
+          email: user.email,
+          id: user._id,
+          image: user.picture,
+          name: user.name,
+        };
       } catch (error) {
-        const { message, code, type, urlErrorParamKey, urlErrorParamVal } = error ?? {};
+        const { message, code, type, urlErrorParamKey, urlErrorParamVal } =
+          error ?? {};
 
         if (isCreatingUser) {
-          console.log('will delete user...');
+          console.log("will delete user...");
 
           await deleteUser({ providerAccountId: providerAccountId });
         }
@@ -91,14 +121,14 @@ export default function MyAdapter() {
         return {
           errType: type,
           code,
-          msg: message ?? 'Failed to retrieve the target user from google.',
+          msg: message ?? "Failed to retrieve the target user from google.",
           urlErrorParamKey,
           urlErrorParamVal,
         };
       }
     },
     async updateUser(user) {
-      console.log('updateUser: ', user);
+      console.log("updateUser: ", user);
       return;
     },
     async deleteUser(userId) {
@@ -106,36 +136,36 @@ export default function MyAdapter() {
       return;
     },
     async linkAccount(account) {
-      console.log('linkAccount: ', account);
+      console.log("linkAccount: ", account);
       return;
     },
     async unlinkAccount({ providerAccountId, provider }) {
-      console.log('unlinkAccount, params: ', { providerAccountId, provider });
+      console.log("unlinkAccount, params: ", { providerAccountId, provider });
       return;
     },
     async createSession(params) {
-      console.log('createSession: ', params);
+      console.log("createSession: ", params);
       return;
     },
     async getSessionAndUser(sessionToken) {
-      console.log('getSessionAndUser: ', sessionToken);
+      console.log("getSessionAndUser: ", sessionToken);
       return;
     },
     async updateSession(params) {
-      console.log('updateSession: ', params);
+      console.log("updateSession: ", params);
       return;
     },
     async deleteSession(sessionToken) {
-      console.log('deleteSession: ', sessionToken);
+      console.log("deleteSession: ", sessionToken);
 
       return;
     },
     async createVerificationToken(params) {
-      console.log('createVerificationToken: ', params);
+      console.log("createVerificationToken: ", params);
       return;
     },
     async useVerificationToken(params) {
-      console.log('useVerificationToken: ', params);
+      console.log("useVerificationToken: ", params);
       return;
     },
   };
@@ -152,7 +182,7 @@ export const authOptions = {
         params: {
           prompt: "select_account",
         },
-      }
+      },
     }),
     CredentialsProvider({
       async authorize(credentials) {
@@ -163,14 +193,10 @@ export const authOptions = {
             !credentials.password ||
             !VALID_FORMS.includes(credentials.formType)
           ) {
-            throw new AuthError('invalidForm', 500);
+            throw new AuthError("invalidForm", 500);
           }
 
-          await connectToMongodb(
-            15_000,
-            0,
-            true,
-          );
+          await connectToMongodb(15_000, 0, true);
 
           const {
             email,
@@ -183,48 +209,85 @@ export const authOptions = {
           } = credentials;
           /** @type { import('../models/User').TUserSchema } */
           const dbUser = await getUserByEmail(email);
-          console.log('Credentials received: ', credentials);
-          const callbackUrl = credentials.callbackUrl.includes('?') ? credentials.callbackUrl.split('?')[0] : credentials.callbackUrl;
+          console.log("Credentials received: ", credentials);
+          const callbackUrl = credentials.callbackUrl.includes("?")
+            ? credentials.callbackUrl.split("?")[0]
+            : credentials.callbackUrl;
 
-          console.log('callbackUrl, client: ', callbackUrl);
+          console.log("callbackUrl, client: ", callbackUrl);
 
-          if (!dbUser && (formType === 'login')) {
-            console.log('The user was not found.');
+          if (!dbUser && formType === "login") {
+            console.log("The user was not found.");
 
-            throw new AuthError('userNotFound', 404, callbackUrl ?? '');
+            throw new AuthError("userNotFound", 404, callbackUrl ?? "");
           }
 
-          if (dbUser && !dbUser?.password && (formType === 'login')) {
+          if (dbUser && !dbUser?.password && formType === "login") {
             console.log('The user has "google" for their credentials.');
 
-            throw new AuthError('dbUserDoesNotHaveCredentialsProvider', 401, callbackUrl ?? '');
+            throw new AuthError(
+              "dbUserDoesNotHaveCredentialsProvider",
+              401,
+              callbackUrl ?? ""
+            );
           }
 
-          if (dbUser && (formType === 'createAccount')) {
-            const urlErrParamVal = dbUser.provider === 'google' ? 'duplicate-user-with-google' : 'duplicate-user-with-creds';
+          if (dbUser && formType === "createAccount") {
+            const urlErrParamVal =
+              dbUser.provider === "google"
+                ? "duplicate-user-with-google"
+                : "duplicate-user-with-creds";
 
-            throw new AuthError('userAlreadyExist', 409, callbackUrl ?? '', 'user-account-creation-err-type', urlErrParamVal);
+            throw new AuthError(
+              "userAlreadyExist",
+              409,
+              callbackUrl ?? "",
+              "user-account-creation-err-type",
+              urlErrParamVal
+            );
           }
 
-          console.log('If user is logging in, will check if the password is correct.');
+          console.log(
+            "If user is logging in, will check if the password is correct."
+          );
 
-          const { iterations, salt, hash: hashedPasswordFromDb } = dbUser?.password ?? {};
+          const {
+            iterations,
+            salt,
+            hash: hashedPasswordFromDb,
+          } = dbUser?.password ?? {};
 
-          if ((formType === 'login') && !getIsPasswordCorrect({ iterations, salt, password }, hashedPasswordFromDb)) {
-            console.log('Invalid credentials.');
+          if (
+            formType === "login" &&
+            !getIsPasswordCorrect(
+              { iterations, salt, password },
+              hashedPasswordFromDb
+            )
+          ) {
+            console.log("Invalid credentials.");
 
-            throw new AuthError('invalidCredentials', 404, callbackUrl ?? '');
+            throw new AuthError("invalidCredentials", 404, callbackUrl ?? "");
           }
 
-          if ((formType === 'login') && getIsPasswordCorrect({ iterations, salt, password: password }, hashedPasswordFromDb)) {
-            console.log('Password is correct, will log the user in.');
+          if (
+            formType === "login" &&
+            getIsPasswordCorrect(
+              { iterations, salt, password: password },
+              hashedPasswordFromDb
+            )
+          ) {
+            console.log("Password is correct, will log the user in.");
 
             return dbUser;
           }
 
-          console.log('Creating the new user...');
+          console.log("Creating the new user...");
 
-          const hashedPassword = hashPassword(password, createSalt(), createIterations());
+          const hashedPassword = hashPassword(
+            password,
+            createSalt(),
+            createIterations()
+          );
           // TODO: using the firstName and lastName fields instead of the name field
           const userDocumentToCreate = {
             _id: uuidv4(),
@@ -232,21 +295,21 @@ export const authOptions = {
             password: hashedPassword,
             firstName,
             lastName,
-            provider: 'credentials',
-            roles: ['user'],
+            provider: "credentials",
+            roles: ["user"],
             totalSignIns: 1,
             lastSignIn: new Date(),
           };
           const newUserDoc = createDocument(userDocumentToCreate, User);
 
           if (!newUserDoc) {
-            throw new AuthError('userCreationFailure', 500, callbackUrl ?? '');
+            throw new AuthError("userCreationFailure", 500, callbackUrl ?? "");
           }
 
           const newUser = await newUserDoc.save();
 
           if (!newUser) {
-            throw new AuthError('userCreationFailure', 500, callbackUrl ?? '');
+            throw new AuthError("userCreationFailure", 500, callbackUrl ?? "");
           }
 
           let emailingListingConfrimationEmailMsg = null;
@@ -256,17 +319,26 @@ export const authOptions = {
           }
 
           if (emailingListingConfrimationEmailMsg) {
-            console.error('Failed to send mailing list confirmation email. Reason: ', emailingListingConfrimationEmailMsg);
+            console.error(
+              "Failed to send mailing list confirmation email. Reason: ",
+              emailingListingConfrimationEmailMsg
+            );
           }
 
           return { ...userDocumentToCreate, wasUserCreated: true };
         } catch (error) {
-          console.log('error object: ', error);
-          const { errType, code, redirectUrl, urlErrorParamKey, urlErrorParamVal } = error ?? {};
+          console.log("error object: ", error);
+          const {
+            errType,
+            code,
+            redirectUrl,
+            urlErrorParamKey,
+            urlErrorParamVal,
+          } = error ?? {};
 
           if (!errType || !code) {
             return {
-              errType: 'userAuthFailure',
+              errType: "userAuthFailure",
               code: 500,
               urlErrorParamKey,
               urlErrorParamVal,
@@ -286,7 +358,7 @@ export const authOptions = {
   ],
   secret: process.env.NEXTAUTH_SECRET,
   session: {
-    strategy: 'jwt',
+    strategy: "jwt",
   },
   jwt: {
     secret: process.env.NEXTAUTH_SECRET,
@@ -302,40 +374,73 @@ export const authOptions = {
         }
 
         const canUserWriteToDb = await getCanUserWriteToDb(email);
+        const gpPlusMembership = await getGpPlusMembership(
+          targetUser.outsetaAccountEmail
+        );
+        const hasGpPlusMembership = HAS_MEMBERSHIP_STATUSES.has(
+          gpPlusMembership.AccountStageLabel
+        );
+
+        console.log("hasGpPlusMembership: ", hasGpPlusMembership);
 
         // get the user from the db, to get their first name last name, image
-        const allowedRoles = canUserWriteToDb ? ['user', 'dbAdmin'] : ['user'];
-        const refreshToken = await signJwt({ email, roles: allowedRoles, name, picture, userId: targetUser._id }, secret, '1 day');
-        const accessToken = await signJwt({ email, roles: allowedRoles, name, picture, userId: targetUser._id }, secret, '12hr');
+        const allowedRoles = canUserWriteToDb ? ["user", "dbAdmin"] : ["user"];
+        const refreshToken = await signJwt(
+          {
+            email,
+            hasGpPlusMembership,
+            roles: allowedRoles,
+            name,
+            picture,
+            userId: targetUser._id,
+          },
+          secret,
+          "1 day"
+        );
+        const accessToken = await signJwt(
+          {
+            email,
+            hasGpPlusMembership,
+            roles: allowedRoles,
+            name,
+            picture,
+            userId: targetUser._id,
+          },
+          secret,
+          "12hr"
+        );
 
         if (!token?.payload && canUserWriteToDb) {
           console.log("will save jwt to db.");
-          await connectToMongodb(
-            15_000,
-            0,
-            true,
-          );
-          const jwt = new JwtModel({ _id: email, access: accessToken, refresh: refreshToken });
+          await connectToMongodb(15_000, 0, true);
+          const jwt = new JwtModel({
+            _id: email,
+            access: accessToken,
+            refresh: refreshToken,
+          });
 
           jwt.save();
         }
 
         return accessToken;
       } catch (error) {
-        throw new Error('Unable to generate JWT. Error message: ', error);
+        throw new Error("Unable to generate JWT. Error message: ", error);
       }
     },
     decode: async ({ secret, token }) => {
-      const decodedToken = await jwtVerify(token, new TextEncoder().encode(secret));
+      const decodedToken = await jwtVerify(
+        token,
+        new TextEncoder().encode(secret)
+      );
 
       return decodedToken;
     },
   },
   events: {
     signOut: async (param) => {
-      console.log('param.session, signout: ', param)
+      console.log("param.session, signout: ", param);
       cache.del(param.token.email);
-    }
+    },
   },
   callbacks: {
     async signIn(param) {
@@ -353,82 +458,91 @@ export const authOptions = {
       const { wasSuccessful: isDbConnected } = await connectToMongodb(
         15_000,
         0,
-        true,
+        true
       );
 
-      console.log("Error type: ", errType)
+      console.log("Error type: ", errType);
 
       try {
-
         if (credentials && !userEmail) {
           userEmail = credentials.email;
         }
 
         if (errType === "timeout") {
-          console.error('The server timed out.');
+          console.error("The server timed out.");
           throw new SignInError(
-            'timeout-error',
-            'The server timed out. Please try again.',
+            "timeout-error",
+            "The server timed out. Please try again.",
             code ?? 504,
-            'timeout-error',
+            "timeout-error",
             true
           );
         }
 
-        if (errType === 'dbUserDoesNotHaveCredentialsProvider') {
+        if (errType === "dbUserDoesNotHaveCredentialsProvider") {
           throw new SignInError(
-            'provider-mismatch-error',
-            'The provider of the sign in method does not match with the provider stored in the database for the user.',
+            "provider-mismatch-error",
+            "The provider of the sign in method does not match with the provider stored in the database for the user.",
             code ?? 422
           );
         }
 
-        if (errType === 'userCreationFailure') {
+        if (errType === "userCreationFailure") {
           throw new SignInError(
-            'user-creation-error',
-            'Failed to create the user in the DB.',
+            "user-creation-error",
+            "Failed to create the user in the DB.",
             code ?? 500,
-            urlErrorParamKey ?? '',
-            urlErrorParamVal ?? ''
+            urlErrorParamKey ?? "",
+            urlErrorParamVal ?? ""
           );
         }
-
 
         if (!isDbConnected) {
           throw new CustomError("Failed to connect to the database.", 500);
         }
 
         if (errType === "timeout") {
-          console.error('The server timed out.');
+          console.error("The server timed out.");
           throw new SignInError(
-            'timeout-error',
-            'The server timed out. Please try again.',
+            "timeout-error",
+            "The server timed out. Please try again.",
             code ?? 504,
-            'timeout-error',
+            "timeout-error",
             true
           );
         }
 
         const dbUser = userEmail ? await getUserByEmail(userEmail) : null;
 
-        if ((errType === 'userAlreadyExist') || (dbUser && (typeof dbUser === "object") && wasUserCreated && (typeof providerAccountId === 'string'))) {
-          console.log('creating an account with google, the user with the specific email  already exists, deleting the mongodb doc...');
-          const urlErrorParamVal = dbUser.provider === 'google' ? 'duplicate-user-with-google' : 'duplicate-user-with-creds';
+        if (
+          errType === "userAlreadyExist" ||
+          (dbUser &&
+            typeof dbUser === "object" &&
+            wasUserCreated &&
+            typeof providerAccountId === "string")
+        ) {
+          console.log(
+            "creating an account with google, the user with the specific email  already exists, deleting the mongodb doc..."
+          );
+          const urlErrorParamVal =
+            dbUser.provider === "google"
+              ? "duplicate-user-with-google"
+              : "duplicate-user-with-creds";
 
           await deleteUser({ providerAccountId });
 
           throw new SignInError(
-            'duplicate-user',
-            'This email has already been taken.',
+            "duplicate-user",
+            "This email has already been taken.",
             code ?? 422,
-            'user-account-creation-err-type',
+            "user-account-creation-err-type",
             urlErrorParamVal
           );
         }
 
         // Finish creating the google user account in the db.
-        if (wasUserCreated && (account.provider === 'google') && !dbUser) {
-          console.log('creating the target google user...');
+        if (wasUserCreated && account.provider === "google" && !dbUser) {
+          console.log("creating the target google user...");
           const { picture, given_name, family_name } = profile ?? {};
           const { wasSuccessful } = await updateUser(
             {
@@ -436,7 +550,7 @@ export const authOptions = {
             },
             {
               email: userEmail,
-              picture: picture ?? '',
+              picture: picture ?? "",
               firstName: given_name,
               lastName: family_name,
               totalSignIns: 1,
@@ -448,8 +562,8 @@ export const authOptions = {
             await deleteUser({ providerAccountId: providerAccountId });
 
             throw new SignInError(
-              'user-account-creation-with-google-err',
-              'Failed to create the user who signed in with google.',
+              "user-account-creation-with-google-err",
+              "Failed to create the user who signed in with google.",
               500
             );
           }
@@ -458,25 +572,25 @@ export const authOptions = {
         }
 
         // sign the credentials based user in.
-        if (wasUserCreated && (account.provider === 'credentials')) {
+        if (wasUserCreated && account.provider === "credentials") {
           return true;
         }
 
         if (!dbUser) {
-          console.log('the user is not found in the db...');
+          console.log("the user is not found in the db...");
 
           throw new SignInError(
-            'user-not-found',
-            'The target user is not found in the db.',
+            "user-not-found",
+            "The target user is not found in the db.",
             404
           );
         }
 
-        console.log('the user is found in the db...');
+        console.log("the user is found in the db...");
 
         return true;
       } catch (error) {
-        console.error('An error occurred while signing in: ', error);
+        console.error("An error occurred while signing in: ", error);
 
         const { type, urlErrorParamKey, urlErrorParamVal } = error ?? {};
 
@@ -488,7 +602,11 @@ export const authOptions = {
           return `${param.user.redirectUrl}/?signin-err-type=${type}`;
         }
 
-        return param?.user?.redirectUrl ? `${param.user.redirectUrl}/?signin-err-type=${type ?? 'sign-in-error'}` : `/?signin-err-type=${type ?? 'sign-in-error'}`;
+        return param?.user?.redirectUrl
+          ? `${param.user.redirectUrl}/?signin-err-type=${
+              type ?? "sign-in-error"
+            }`
+          : `/?signin-err-type=${type ?? "sign-in-error"}`;
       } finally {
         if (!wasUserCreated && isDbConnected) {
           const dbUser = userEmail ? await getUserByEmail(userEmail) : null;
@@ -496,11 +614,19 @@ export const authOptions = {
           if (!dbUser) {
             console.error("Unable to retrieve the target user from the db.");
           } else {
-            const totalSignIns = typeof dbUser?.totalSignIns === 'number' ? dbUser.totalSignIns + 1 : 1;
-            const { wasSuccessful } = await updateUser({ email: userEmail }, { totalSignIns, lastSignIn: new Date() });
+            const totalSignIns =
+              typeof dbUser?.totalSignIns === "number"
+                ? dbUser.totalSignIns + 1
+                : 1;
+            const { wasSuccessful } = await updateUser(
+              { email: userEmail },
+              { totalSignIns, lastSignIn: new Date() }
+            );
 
             if (!wasSuccessful) {
-              console.error('Failed to update the total sign ins for the user.');
+              console.error(
+                "Failed to update the total sign ins for the user."
+              );
             }
           }
         }
@@ -535,11 +661,7 @@ export const authOptions = {
         };
         isTeacher = targetUser.isTeacher;
       } else {
-        await connectToMongodb(
-          15_000,
-          0,
-          true,
-        );
+        await connectToMongodb(15_000, 0, true);
 
         const dbUser = await getUserByEmail(email);
 
@@ -548,7 +670,11 @@ export const authOptions = {
         }
 
         occupation = dbUser.occupation ?? null;
-        name = { first: dbUser.firstName ?? dbUser?.name?.first, last: dbUser.lastName ?? dbUser?.name?.last } ?? name;
+        name =
+          {
+            first: dbUser.firstName ?? dbUser?.name?.first,
+            last: dbUser.lastName ?? dbUser?.name?.last,
+          } ?? name;
         isTeacher = dbUser.isTeacher;
         userId = dbUser._id;
 
@@ -563,10 +689,17 @@ export const authOptions = {
           name: name,
         },
         process.env.NEXTAUTH_SECRET,
-        '12hours'
+        "12hours"
       );
-      const refreshTokenPromise = signJwt({ email: email, roles: roles, name: name }, process.env.NEXTAUTH_SECRET, '1 day');
-      const [accessToken, refreshToken] = await Promise.all([accessTokenPromise, refreshTokenPromise]);
+      const refreshTokenPromise = signJwt(
+        { email: email, roles: roles, name: name },
+        process.env.NEXTAUTH_SECRET,
+        "1 day"
+      );
+      const [accessToken, refreshToken] = await Promise.all([
+        accessTokenPromise,
+        refreshTokenPromise,
+      ]);
 
       session.id = token.id;
       session.token = accessToken;
@@ -583,7 +716,7 @@ export const authOptions = {
       return Promise.resolve(session);
     },
     async redirect(param) {
-      console.log('will redirect user to the following: ', param);
+      console.log("will redirect user to the following: ", param);
 
       const { url } = param;
 

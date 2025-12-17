@@ -1,19 +1,20 @@
-import { Model, Schema, model, models } from "mongoose";
-import { UnitOverview } from "./Overview";
-import { UnitPreview } from "./Preview";
-import { TeachingMaterialsSchema } from "./TeachingMaterials";
-import { GeneralSection } from "./Section";
-import { Acknowledgments } from "./Acknowledgments";
-import { VersionNotes } from "./VersionNotes";
+import { Model, Schema, model, models } from 'mongoose';
+import { UnitOverview } from './Overview';
+import { UnitPreview } from './Preview';
+import { TeachingMaterialsSchema } from './TeachingMaterials';
+import { GeneralSection } from './Section';
+import { Acknowledgments } from './Acknowledgments';
+import { VersionNotes } from './VersionNotes';
 import {
   IFeaturedMultimedia,
   IFeatureLocation,
   IFeatureName,
   IFeaturing,
   INewUnitSchema,
-} from "./types/unit";
-import { StandardsSchema } from "./Standards";
-import { ITargetStandardsCode } from "./types/standards";
+} from './types/unit';
+import { StandardsSchema } from './Standards';
+import { ITargetStandardsCode } from './types/standards';
+import { JobViz } from './JobViz';
 
 type TUnitSections = {
   overview: typeof UnitOverview;
@@ -27,6 +28,7 @@ type TUnitSections = {
   extensions: typeof GeneralSection;
   bonus: typeof GeneralSection;
   versions: typeof VersionNotes;
+  jobvizConnections: typeof JobViz
 };
 
 let Units = models.units as Model<INewUnitSchema, {}, {}, {}, any, any>;
@@ -96,6 +98,7 @@ if (!Units) {
     extensions: GeneralSection,
     bonus: GeneralSection,
     versions: VersionNotes,
+    jobvizConnections: JobViz,
   };
   const Unit = new Schema<INewUnitSchema>({
     _id: { type: String, required: true },
@@ -152,7 +155,7 @@ if (!Units) {
     ShortURL: String,
   });
 
-  Units = model("units", Unit);
+  Units = model('units', Unit);
 }
 
 export default Units;

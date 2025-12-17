@@ -1,6 +1,5 @@
 /* eslint-disable quotes */
 /* eslint-disable no-console */
-/* eslint-disable indent */
 
 import { getMailingListContact } from "../../backend/services/emailServices";
 import {
@@ -20,12 +19,12 @@ import {
   getGpPlusMembership,
   TAccountStageLabel,
 } from "../../backend/services/outsetaServices";
+import { findMailingListConfirmationByEmail, findMailingListConfirmationsByEmails } from "../../backend/services/mailingListConfirmationServices";
+import { TMailingListConfirmation } from "../../backend/models/MailingListConfirmation/types";
 
-const HAS_MEMBERSHIP_STATUSES: Set<TAccountStageLabel> = new Set([
+export const HAS_MEMBERSHIP_STATUSES: Set<TAccountStageLabel> = new Set([
   "Cancelling",
   "Subscribing",
-  "Expired",
-  "Past due",
 ] as TAccountStageLabel[]);
 const PROJECTIONS: Partial<
   Record<keyof (TUserSchemaV2 & IUserSchema), 0 | 1 | undefined>
@@ -42,6 +41,8 @@ const PROJECTIONS: Partial<
   isTeacher: 1,
   firstName: 1,
   lastName: 1,
+  willNotShowEmailNewsLetterSignUpModal: 1,
+  mailingListConfirmationEmailId: 1,
   name: 1,
   referredByDefault: 1,
   referredByOther: 1,
@@ -110,6 +111,17 @@ export default async function handler(
         ),
         gpPlusSubscription: gpPlusMembership,
       };
+    }
+
+    const mailingListConfirmation = (await findMailingListConfirmationByEmail(email) as (TMailingListConfirmation | null));
+
+    console.log("mailingListConfirmation: ", mailingListConfirmation);
+
+    if(mailingListConfirmation?._id){
+      userAccount = {
+        ...userAccount,
+        mailingListConfirmationEmailId: mailingListConfirmation._id
+      }
     }
 
     if (!request.query.willNotRetrieveMailingListStatus) {

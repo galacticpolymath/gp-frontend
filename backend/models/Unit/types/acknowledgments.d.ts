@@ -1,4 +1,4 @@
-import { IUnitSectionObj } from "../Section";
+import { IUnitSectionObj } from '../Section';
 
 interface IRecord {
     name: string;
@@ -14,6 +14,6 @@ interface IAcknowledgementsData {
     records: IRecord[];
 }
 
-type TAcknowledgments = {
+export type TAcknowledgments = {
     Data: IAcknowledgementsData[]
 } & IUnitSectionObj

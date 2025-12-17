@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-indent */
 /* eslint-disable indent */
-/* eslint-disable no-multiple-empty-lines */
+ 
 import { IoIosLink } from 'react-icons/io';
 
 const ForLessonTxtWrapper = ({

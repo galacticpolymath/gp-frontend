@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 /* eslint-disable react/jsx-indent */
 /* eslint-disable quotes */
 /* eslint-disable react/jsx-indent-props */
@@ -10,15 +9,15 @@ import { ERROR_INPUT_BORDER_COLOR } from "../../globalVars";
 
 export const CustomInput = ({
     onChange,
-    placeholder = '',
+    placeholder = "",
     handleShowPasswordTxtBtnClick,
     inputId,
     inputName,
     autoFocus = false,
     inputContainerCss,
-    inputType = 'text',
-    inputClassName = 'px-1 py-2 position-relative no-outline border-0 rounded',
-    iconContainerClassName = 'h-100 end-0 position-absolute top-0 transparent d-flex justify-content-center align-items-center',
+    inputType = "text",
+    inputClassName = "px-1 py-2 position-relative no-outline border-0 rounded",
+    iconContainerClassName = "h-100 end-0 position-absolute top-0 transparent d-flex justify-content-center align-items-center",
     isPasswordInput = false,
     inputStyle = {},
     iconContainerStyle = {},
@@ -30,28 +29,35 @@ export const CustomInput = ({
     noInputBorderColorOnBlur = false,
 }) => {
     /**
-    * @type {[TFocusCss, import('react').Dispatch<import('react').SetStateAction<TFocusCss>>]}
-    */
-    const [focusCssInput, setFocusCssInput] = useState(noInputBorderColorOnBlur ? '' : "border-grey-dark");
+     * @type {[TFocusCss, import('react').Dispatch<import('react').SetStateAction<TFocusCss>>]}
+     */
+    const [focusCssInput, setFocusCssInput] = useState(
+        noInputBorderColorOnBlur ? "" : "border-grey-dark"
+    );
     const [isPasswordTxtShown, setIsPasswordTxtShown] = useState(false);
 
     /**
-     * 
-     * @param {TFocusCss} focusCssInput 
+     *
+     * @param {TFocusCss} focusCssInput
      */
-    const handleFocusabilityCss = focusCssInput => () => {
+    const handleFocusabilityCss = (focusCssInput) => () => {
         setFocusCssInput(focusCssInput);
     };
 
     return (
-        <div style={inputContainerStyle} className={`${inputContainerCss} ${focusCssInput}`}>
+        <div
+            style={inputContainerStyle}
+            className={`${inputContainerCss} ${focusCssInput}`}
+        >
             <input
                 style={inputStyle}
                 id={inputId}
                 name={inputName}
                 autoFocus={autoFocus}
-                onFocus={handleFocusabilityCss('input-focus-blue')}
-                onBlur={handleFocusabilityCss(noInputBorderColorOnBlur ? '' : 'border-grey-dark')}
+                onFocus={handleFocusabilityCss("input-focus-blue")}
+                onBlur={handleFocusabilityCss(
+                    noInputBorderColorOnBlur ? "" : "border-grey-dark"
+                )}
                 type={inputType}
                 onChange={onChange}
                 placeholder={placeholder}
@@ -62,32 +68,27 @@ export const CustomInput = ({
                 onKeyDownCapture={onKeyDownCapture}
             />
             {isPasswordInput && (
-                <div
-                    style={iconContainerStyle}
-                    className={iconContainerClassName}
-                >
-                    <div style={{ height: '95%' }} className='ps-1 d-flex justify-content-center align-items-center'>
-                        {inputType === "text" ?
-                            (
-                                <IoMdEye
-                                    fontSize="25px"
-                                    className='pointer'
-                                    onClick={handleShowPasswordTxtBtnClick}
-                                />
-                            )
-                            :
-                            (
-                                <IoMdEyeOff
-                                    fontSize="25px"
-                                    className='pointer'
-                                    onClick={handleShowPasswordTxtBtnClick}
-                                />
-                            )
-                        }
+                <div style={iconContainerStyle} className={iconContainerClassName}>
+                    <div
+                        style={{ height: "95%" }}
+                        className="ps-1 d-flex justify-content-center align-items-center"
+                    >
+                        {inputType === "text" ? (
+                            <IoMdEye
+                                fontSize="25px"
+                                className="pointer"
+                                onClick={handleShowPasswordTxtBtnClick}
+                            />
+                        ) : (
+                            <IoMdEyeOff
+                                fontSize="25px"
+                                className="pointer"
+                                onClick={handleShowPasswordTxtBtnClick}
+                            />
+                        )}
                     </div>
                 </div>
-            )
-            }
+            )}
         </div>
     );
 };
@@ -102,7 +103,7 @@ export const InputSection = ({
     containerClassName = "d-flex flex-column col-sm-6 position-relative",
     labelClassName = "",
     inputClassName = "border-0 p-1 w-100 py-2",
-    inputStyle = { borderRadius: '5px', fontSize: '18px', background: '#D6D6D6' },
+    inputStyle = { borderRadius: "5px", fontSize: "18px", background: "#D6D6D6" },
     inputElement = null,
     handleOnInputChange,
     onKeyUp = () => { },
@@ -111,13 +112,15 @@ export const InputSection = ({
     onKeyUpCapture = () => { },
     onFocus,
     onBlur,
+    errorSectionStyle = {},
 }) => {
+    if (!Object.keys(errorSectionStyle).length) {
+        errorSectionStyle = { height: "29px" };
+    }
+
     return (
         <div className={containerClassName}>
-            <label
-                className={labelClassName}
-                htmlFor={inputId}
-            >
+            <label className={labelClassName} htmlFor={inputId}>
                 {label}
             </label>
             {inputElement ?? (
@@ -126,7 +129,7 @@ export const InputSection = ({
                     placeholder={inputPlaceholder}
                     style={{
                         ...inputStyle,
-                        border: errors.has(inputName) ? ERROR_INPUT_BORDER_COLOR : '',
+                        border: errors.has(inputName) ? ERROR_INPUT_BORDER_COLOR : "",
                     }}
                     onKeyDown={onKeyDown}
                     onKeyUp={onKeyUp}
@@ -134,15 +137,17 @@ export const InputSection = ({
                     onKeyUpCapture={onKeyUpCapture}
                     className={inputClassName}
                     name={inputName}
-                    onChange={event => {
+                    onChange={(event) => {
                         handleOnInputChange(event);
                     }}
                     onFocus={onFocus}
                     onBlur={onBlur}
                 />
             )}
-            <section style={{ height: '29px' }}>
-                {errors.has(errorsFieldName) && <ErrorTxt>{errors.get(errorsFieldName)}</ErrorTxt>}
+            <section style={errorSectionStyle}>
+                {errors.has(errorsFieldName) && (
+                    <ErrorTxt>{errors.get(errorsFieldName)}</ErrorTxt>
+                )}
             </section>
         </div>
     );
@@ -150,8 +155,8 @@ export const InputSection = ({
 
 export const ErrorTxt = ({
     children,
-    style = { fontSize: '16px' },
-    className = 'text-danger',
+    style = { fontSize: "16px" },
+    className = "text-danger",
 }) => {
     return (
         <span style={style} className={className}>

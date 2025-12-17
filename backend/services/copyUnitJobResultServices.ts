@@ -1,47 +1,27 @@
-import { waitWithExponentialBackOff } from "../../globalFns";
+import { waitWithExponentialBackOff } from '../../globalFns';
 import {
   getGDriveItem,
-} from "../../pages/api/gp-plus/copy-unit";
-import CopyUnitResults from "../models/copyUnitResults";
-import { ICopyUnitResult } from "../models/copyUnitResults/types";
-import { TUserSchemaV2 } from "../models/User/types";
-import { refreshAuthToken } from "./googleDriveServices";
+} from '../../pages/api/gp-plus/copy-unit';
+import CopyUnitResults from '../models/copyUnitResults';
+import { ICopyUnitResult } from '../models/copyUnitResults/types';
+import { TUserSchemaV2 } from '../models/User/types';
+import { refreshAuthToken } from './googleDriveServices';
 
 export const insertCopyUnitJobResult = async (
-  copyUnitResult: Omit<ICopyUnitResult, "_id">
+  copyUnitResult: Omit<ICopyUnitResult, '_id'>
 ) => {
   try {
     const insertionResult = await CopyUnitResults.insertOne(copyUnitResult, {
       validateBeforeSave: true,
     });
 
-    console.log("insertionResult: ", insertionResult);
+    console.log('insertionResult: ', insertionResult);
 
     return { wasSuccessful: true, insertionResult };
   } catch (error) {
-    console.error("Failed to insert copy unit job result. Error: ", error);
+    console.error('Failed to insert copy unit job result. Error: ', error);
 
     return { wasSuccessful: false, errorObj: error };
-  }
-};
-
-export const updateCopyUnitJobs = async (
-  filter: Partial<Record<keyof ICopyUnitResult, unknown>>,
-  update: Partial<ICopyUnitResult>
-) => {
-  try {
-    console.log(
-      "Attempting to update copy unit jobs with filter: ",
-      filter,
-      " and update: ",
-      update
-    );
-
-    return await CopyUnitResults.updateMany(filter, update);
-  } catch (error) {
-    console.error("Failed to update copy unit jobs. Error: ", error);
-
-    return null;
   }
 };
 
@@ -60,8 +40,8 @@ const getDoesGDriveItemExist = async (
     );
 
     if (
-      gdriveFolderMetaData.errType === "unauthenticated" ||
-      gdriveFolderMetaData.errType === "timeout"
+      gdriveFolderMetaData.errType === 'unauthenticated' ||
+      gdriveFolderMetaData.errType === 'timeout'
     ) {
       return {
         errType: gdriveFolderMetaData.errType,
@@ -80,33 +60,45 @@ const getDoesGDriveItemExist = async (
       copyJob,
     };
   } catch (error: any) {
-    console.error("Failed to get Google Drive folder metadata. Error: ", error);
+    console.error('Failed to get Google Drive folder metadata. Error: ', error);
 
     return {
       doesExist: false,
       copyJob,
-      errType: "notFound",
+      errType: 'notFound',
     };
   }
 };
 
 export const getCopyUnitFolderJobs = async (
-  filter:
-    | Partial<Record<keyof ICopyUnitResult, unknown>>
-    | { $or: Partial<Record<keyof ICopyUnitResult, unknown>>[] },
-  tries = 5
+  filter: Partial<ICopyUnitResult>,
+  tries = 5,
+  fieldsToCheckForExistences?: ([keyof ICopyUnitResult, boolean])[]
 ): Promise<Partial<{ jobs: ICopyUnitResult[]; errType: string }>> => {
   try {
-    const jobs = await CopyUnitResults.find<ICopyUnitResult>(filter);
+    let _filter = filter;
+
+    if (fieldsToCheckForExistences?.length) {
+      fieldsToCheckForExistences.forEach(([field, doesExist]) => {
+        _filter = {
+          ..._filter,
+          [field]: {
+            $exist: doesExist
+          }
+        }
+      })
+    }
+
+    const jobs = await CopyUnitResults.find<ICopyUnitResult>(_filter);
 
     return { jobs };
   } catch (error: any) {
-    console.error("Failed to insert copy unit job result. Error: ", error);
+    console.error('Failed to insert copy unit job result. Error: ', error);
 
-    const didTimeoutOccur = error?.error?.codeName === "MaxTimeMSExpired";
+    const didTimeoutOccur = error?.error?.codeName === 'MaxTimeMSExpired';
 
     if (tries > 0 && didTimeoutOccur) {
-      console.log("Will try again.");
+      console.log('Will try again.');
       tries -= 1;
       const randomNumMs = Math.floor(Math.random() * (5_500 - 1000 + 1)) + 1000;
       const waitTime = randomNumMs + tries * 1_000;
@@ -118,12 +110,12 @@ export const getCopyUnitFolderJobs = async (
 
     if (didTimeoutOccur) {
       return {
-        errType: "timeout",
+        errType: 'timeout',
       };
     }
 
     return {
-      errType: "generalErr",
+      errType: 'generalErr',
     };
   }
 };
@@ -134,23 +126,23 @@ export const getCopyUnitFolderJobsByUserId = async (
   try {
     const retrievalResult = await getCopyUnitFolderJobs({ userId });
 
-    if(retrievalResult.errType){
+    if (retrievalResult.errType) {
       return {
-        errType: retrievalResult.errType
-      }
+        errType: retrievalResult.errType,
+      };
     }
 
     return retrievalResult;
   } catch (error: any) {
-    console.error("Failed to insert copy unit job result. Error: ", error);
+    console.error('Failed to insert copy unit job result. Error: ', error);
 
     return {
-      errType: "generalErr",
+      errType: 'generalErr',
     };
   }
 };
 
-interface IUserWithSiteStats extends TUserSchemaV2{
+interface IUserWithSiteStats extends TUserSchemaV2 {
   copyUnitJobResults?: ICopyUnitResult[]
 }
 
@@ -159,40 +151,38 @@ export const getCopyFolderJobsOfUsers = async (users: TUserSchemaV2[], tries = 3
     const userIds = users.map(user => user._id);
     const copyUnitResults = await CopyUnitResults.find<ICopyUnitResult>({
       userId: {
-        $in: userIds
-      }
-    })
+        $in: userIds,
+      },
+    });
     const usersWithCopyUnitJobResults = users.map(user => {
       const copyUnitJobResults = copyUnitResults.filter(copyUnitResult => {
-        return copyUnitResult.userId === user._id
-      }); 
-      
+        return copyUnitResult.userId === user._id;
+      });
 
       return {
         ...user,
-        copyUnitJobResults
+        copyUnitJobResults,
       };
     });
-    
-  
+
     return usersWithCopyUnitJobResults;
-  } catch(error: any){
-    console.error("Failed to get copy unit folder jobs for users. Error: ", error);
+  } catch (error: any) {
+    console.error('Failed to get copy unit folder jobs for users. Error: ', error);
 
-    const didTimeoutOccur = error?.error?.codeName === "MaxTimeMSExpired";
+    const didTimeoutOccur = error?.error?.codeName === 'MaxTimeMSExpired';
 
-    if(didTimeoutOccur){
-      await waitWithExponentialBackOff(tries)
+    if (didTimeoutOccur) {
+      await waitWithExponentialBackOff(tries);
 
       return getCopyFolderJobsOfUsers(users);
     }
 
     return null;
   }
-}
+};
 
 type TFoldersRetrieved = Record<
-  "existingFolders" | "nonexistingFolders",
+  'existingFolders' | 'nonexistingFolders',
   ICopyUnitResult[]
 >;
 
@@ -220,12 +210,12 @@ export const getAllExistingGDriveFolders = async (
     for (const doesFolderExistResult of doGDriveItemsExistArr) {
       const { copyJob, doesExist, errType } = doesFolderExistResult;
 
-      if (errType === "notFound") {
+      if (errType === 'notFound') {
         nonexistingFolders.push(copyJob);
         continue;
       }
 
-      if (errType === "unauthenticated" && !didRefreshAccessToken) {
+      if (errType === 'unauthenticated' && !didRefreshAccessToken) {
         foldersToQueryAgain.push(copyJob);
         const { accessToken, wasSuccessful } = await refreshAuthToken(
           refreshToken,
@@ -234,7 +224,7 @@ export const getAllExistingGDriveFolders = async (
 
         if (!wasSuccessful) {
           return {
-            errType: "refreshGDriveTokenFailed",
+            errType: 'refreshGDriveTokenFailed',
           };
         }
 
@@ -244,8 +234,8 @@ export const getAllExistingGDriveFolders = async (
       }
 
       if (
-        (errType === "unauthenticated" && didRefreshAccessToken) ||
-        errType === "timeout"
+        (errType === 'unauthenticated' && didRefreshAccessToken) ||
+        errType === 'timeout'
       ) {
         foldersToQueryAgain.push(copyJob);
         continue;
@@ -273,7 +263,7 @@ export const getAllExistingGDriveFolders = async (
       await waitWithExponentialBackOff(2);
 
       return {
-        errType: "maxRetriesReached",
+        errType: 'maxRetriesReached',
       };
     }
 
@@ -283,7 +273,7 @@ export const getAllExistingGDriveFolders = async (
     };
   } catch (error) {
     return {
-      errType: "retrievalErr",
+      errType: 'retrievalErr',
     };
   }
 };
@@ -298,23 +288,20 @@ export const getLatestValidUnitCopyFolderJob = async (
 ) => {
   try {
     console.log(`getLatestValidUnitCopyFolderJob unitId: ${unitId}`);
-    
-    const filter: Partial<Record<keyof ICopyUnitResult, unknown>> = {
+
+    const filter: Parameters<typeof getCopyUnitFolderJobs>[0] = {
       unitId,
-      errMsg: {
-        $exists: false,
-      },
       gdriveEmail,
       doesFolderCopyExistInUserGDrive: true,
-      result: "success",
+      result: 'success',
       userId: userId,
     };
-    const targetCopyUnitFolderJobs = await getCopyUnitFolderJobs(filter, 3);
+    const targetCopyUnitFolderJobs = await getCopyUnitFolderJobs(filter, 3, [["errMsg", false]]);
 
-    console.log("targetCopyUnitFolderJobs: ", targetCopyUnitFolderJobs);
+    console.log('targetCopyUnitFolderJobs: ', targetCopyUnitFolderJobs);
 
     if (!targetCopyUnitFolderJobs?.jobs?.length) {
-      console.error("No jobs are present for this unit.");
+      console.error('No jobs are present for this unit.');
 
       return {
         latestUnitFolderCopy: null,
@@ -324,11 +311,11 @@ export const getLatestValidUnitCopyFolderJob = async (
 
     if (targetCopyUnitFolderJobs.errType) {
       console.error(
-        "Failed to retrieve copy unit folder jobs. Error type: ",
+        'Failed to retrieve copy unit folder jobs. Error type: ',
         targetCopyUnitFolderJobs.errType
       );
 
-      throw new Error("copyUnitJobsRetrievalErr");
+      throw new Error('copyUnitJobsRetrievalErr');
     }
 
     const { errType, existingFolders, nonexistingFolders } =
@@ -343,14 +330,14 @@ export const getLatestValidUnitCopyFolderJob = async (
 
     if (errType) {
       console.error(
-        "Failed to check if copy unit folders exist. Error type: ",
+        'Failed to check if copy unit folders exist. Error type: ',
         errType
       );
-      throw new Error("copyUnitFoldersExistenceCheckErr");
+      throw new Error('copyUnitFoldersExistenceCheckErr');
     }
 
     if (!existingFolders?.length) {
-      console.error("No existing copy unit folders found.");
+      console.error('No existing copy unit folders found.');
       return {
         latestUnitFolderCopy: null,
         nonexistingFolders,
@@ -366,10 +353,10 @@ export const getLatestValidUnitCopyFolderJob = async (
       nonexistingFolders,
     };
   } catch (error) {
-    console.error("Failed to get latest copy unit folder job. Error: ", error);
+    console.error('Failed to get latest copy unit folder job. Error: ', error);
 
     return {
-      errType: "latestUnitCopyFolderJobRetrievalErr",
+      errType: 'latestUnitCopyFolderJobRetrievalErr',
     };
   }
 };

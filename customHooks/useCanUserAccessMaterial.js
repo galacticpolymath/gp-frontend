@@ -1,10 +1,9 @@
 /* eslint-disable react/jsx-indent */
-/* eslint-disable react/jsx-closing-bracket-location */
+ 
 /* eslint-disable react/jsx-indent-props */
 /* eslint-disable no-console */
 /* eslint-disable indent */
 /* eslint-disable quotes */
-/* eslint-disable no-multiple-empty-lines */
 
 import { useContext, useEffect, useRef } from "react";
 import {
@@ -137,7 +136,7 @@ const useCanUserAccessMaterial = (willListenForRestrictedItemClick) => {
     return {
         handleRestrictedItemBtnClick,
         session,
-        openCanAccessContentModal
+        openCanAccessContentModal,
     };
 };
 

@@ -1,15 +1,9 @@
-/* eslint-disable react/jsx-indent-props */
-/* eslint-disable indent */
-/* eslint-disable react/jsx-indent */
-/* eslint-disable quotes */
-import { createContext, useContext, useState } from "react";
-import { TUseStateReturnVal } from "../types/global";
+import React, { createContext, PropsWithChildren, useContext, useState } from 'react';
+import { TUseStateReturnVal } from '../types/global';
 import {
-  IAgeGroupsSelection,
   TAboutUserForm,
   TUserSchemaForClient,
-  TUserSchemaV2,
-} from "../backend/models/User/types";
+} from '../backend/models/User/types';
 
 /**
  * @typedef {Object} TGradesOrYears
@@ -30,10 +24,10 @@ import {
  */
 
 export const SCHOOL_TYPES = [
-  "public",
-  "private",
-  "homeschool",
-  "afterschool",
+  'public',
+  'private',
+  'homeschool',
+  'afterschool',
 ] as const;
 export const SCHOOL_TYPES_SET = new Set(SCHOOL_TYPES);
 
@@ -41,7 +35,7 @@ export type TSchoolType = (typeof SCHOOL_TYPES)[number];
 
 export type TUserAccount = Omit<
   TAboutUserForm<Map<string, string>>,
-  "isTeacherConfirmed"
+  'isTeacherConfirmed'
 > & {
   isTeacher: boolean;
   isOnMailingList: boolean;
@@ -49,23 +43,23 @@ export type TUserAccount = Omit<
 export type TAboutUserFormForUI = {
   isTeacherConfirmed: boolean;
 } & TAboutUserForm<Map<string, string>> &
-  Pick<TUserSchemaForClient, "isGpPlusMember">;
+  Pick<TUserSchemaForClient, 'isGpPlusMember'>;
 
 export const userAccountDefault: TAboutUserFormForUI = {
   schoolTypeDefaultSelection: null,
-  outsetaAccountEmail: "",
+  outsetaAccountEmail: '',
   isGpPlusMember: false,
   schoolTypeOther: null,
   siteVisitReasonsCustom: null,
   subjectsTaughtCustom: undefined,
   institution: null,
   gradesOrYears: {
-    selection: "U.S.",
+    selection: 'U.S.',
     ageGroupsTaught: [],
   },
-  country: "",
-  gradesType: "U.S.",
-  occupation: "",
+  country: '',
+  gradesType: 'U.S.',
+  occupation: '',
   isTeacherConfirmed: false,
   zipCode: null,
   subjects: new Map(),
@@ -90,12 +84,12 @@ export interface TAccountForm {
 
 export const UserContext = createContext<TUserProviderValue | null>(null);
 
-export const UserProvider = ({ children }: { children: React.ReactNode }) => {
+export const UserProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const [aboutUserForm, setAboutUserForm] = useState(userAccountDefault);
   const [isCopyUnitBtnDisabled, setIsCopyUnitBtnDisabled] = useState(true);
   const [accountForm, setAccountForm] = useState({
-    firstName: "",
-    lastName: "",
+    firstName: '',
+    lastName: '',
     isOnMailingList: true,
   });
   const [userLatestCopyUnitFolderId, setUserLatestCopyUnitFolderId] = useState<
@@ -136,7 +130,7 @@ export const useUserContext = () => {
   const context = useContext(UserContext);
 
   if (!context) {
-    throw new Error("Unable to use ModalContext.");
+    throw new Error('Unable to use ModalContext.');
   }
 
   return context;
