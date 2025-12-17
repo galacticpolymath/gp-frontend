@@ -1,10 +1,11 @@
-@import 'pages/colors';
+@import '../../../pages/colors.scss';
 
 
-.test{
+.test {
   border: 1px solid red;
 }
-.Carousel {  
+
+.Carousel {
   > :global(.carousel-slider) {
     display: flex;
     flex-direction: row;
@@ -14,24 +15,30 @@
     :global(.slider-wrapper) {
       order: -1;
     }
-    > button {
+
+    >button {
       background: $galactic-black;
       color: $white;
       align-self: center;
       margin: .75rem;
       padding: .5rem;
+
       svg {
         width: 2rem;
         height: 2rem;
       }
+
       font-size: 1.6rem;
+
       &:disabled {
         opacity: 0.25;
       }
+
       &:hover {
         opacity: 0.8;
       }
     }
+
     :global(ul.control-dots) {
       :global(li.dot) {
         opacity: 1;
@@ -40,40 +47,43 @@
         background: #eee;
         padding: 4px;
       }
+
       :global(li.dot.selected) {
         background: rgba($hydrogen-blue, .6);
         border-color: $hydrogen-blue;
       }
     }
 
-  // TODO: responsive carousel
-  //  @media (min-width: map-get($grid-breakpoints, "md")) {
-  //    flex-wrap: nowrap;
-  //    justify-content: center;
-  //
-  //    > button {
-  //      margin: .5rem 0;
-  //    }
-  //    .slider-wrapper {
-  //      order: 0;
-  //    }
-  //    ul.control-dots {
-  //      margin-top: 0;
-  //    }
-  //  }
+    // TODO: responsive carousel
+    //  @media (min-width: map-get($grid-breakpoints, "md")) {
+    //    flex-wrap: nowrap;
+    //    justify-content: center;
+    //
+    //    > button {
+    //      margin: .5rem 0;
+    //    }
+    //    .slider-wrapper {
+    //      order: 0;
+    //    }
+    //    ul.control-dots {
+    //      margin-top: 0;
+    //    }
+    //  }
   }
-  
+
   :global(li.slide) {
     padding: .75rem;
+
     iframe {
       margin: 0 0 10px !important;
     }
+
     .SlideBody {
       text-align: left;
       padding: .75rem;
       margin: 0;
-      
-      
+
+
       // TODO: responsive carousel
       //@media (min-width: 430px) {
       //  iframe {
@@ -99,31 +109,36 @@
       //}
     }
   }
+
   :global(.thumbs-wrapper) {
     margin: 0;
+
     :global(ul.thumbs) {
       padding: 0;
       margin: 0;
+
       :global(li.thumb) {
         background: $white;
         width: auto;
         text-align: center;
         padding: 0;
         border: .5rem solid $white;
+
         img {
           margin: auto;
           max-width: 100%;
           max-height: 50px;
           width: auto;
+
           :global(&.pdf) {
             padding: 5px;
           }
         }
       }
+
       :global(li.thumb.selected) {
         border: .5rem solid lighten($burst-purple, 40);
       }
     }
   }
 }
-
