@@ -1,11 +1,4 @@
 // @ts-nocheck
-/* eslint-disable quotes */
-/* eslint-disable comma-dangle */
-/* eslint-disable semi */
- 
-/* eslint-disable no-console */
-/* eslint-disable indent */
-/* eslint-disable no-multiple-empty-lines */
 
 import { google, drive_v3 } from "googleapis";
 import { CustomError } from "../../../backend/utils/errors";
@@ -13,7 +6,6 @@ import axios from "axios";
 import {
   copyFiles,
   deleteGoogleDriveItem,
-  FileMetaData,
   GoogleServiceAccountAuthCreds,
   refreshAuthToken,
   shareFilesWithRetries,
@@ -30,6 +22,7 @@ import { OAuth2Client } from "google-auth-library";
 import { insertCopyUnitJobResult } from "../../../backend/services/copyUnitJobResultServices";
 import { nanoid } from "nanoid";
 import { deleteCacheVal, setCacheVal } from "../../../backend/helperFns";
+import { GDriveItem } from "../../../backend/services/gdriveServices";
 
 export const maxDuration = 300;
 const USER_GP_PLUS_PARENT_FOLDER_NAME = "My GP+ Units";
@@ -40,17 +33,17 @@ export const getGDriveItem = async (
   tries = 3,
   willRetry = true,
   urlParams?: [string, string][]
-): Promise<{ id: string; [key: string]: unknown } | { errType: string }> => {
+): Promise<{ id: string;[key: string]: unknown } | { errType: string }> => {
   try {
-    const url = new URL(`https://www.googleapis.com/drive/v2/files/${fileId}` );
+    const url = new URL(`https://www.googleapis.com/drive/v2/files/${fileId}`);
 
-    if(urlParams?.length){
-      for (const [key, val] of urlParams){
+    if (urlParams?.length) {
+      for (const [key, val] of urlParams) {
         url.searchParams.append(key, val)
       }
     }
 
-    const { status, data } = await axios.get<{ id: string; [key: string]: unknown }>(
+    const { status, data } = await axios.get<{ id: string;[key: string]: unknown }>(
       url.href,
       {
         headers: {
@@ -73,7 +66,7 @@ export const getGDriveItem = async (
     return data;
   } catch (error: any) {
     console.error("Failed to retrieve Google Drive item. Error: ", error);
-    
+
 
     if (error?.response?.data?.error?.code === 404) {
       return {
@@ -81,7 +74,7 @@ export const getGDriveItem = async (
       };
     }
 
-    if(error?.response?.data?.error?.status === "UNAUTHENTICATED"){
+    if (error?.response?.data?.error?.status === "UNAUTHENTICATED") {
       return {
         errType: "unauthenticated"
       }
@@ -91,7 +84,7 @@ export const getGDriveItem = async (
       await waitWithExponentialBackOff(tries, [2_000, 5_000]);
 
       return await getGDriveItem(fileId, accessToken, tries - 1);
-    } else if (error?.code === "ECONNABORTED" && willRetry){
+    } else if (error?.code === "ECONNABORTED" && willRetry) {
       return {
         errType: "timeout"
       }
@@ -112,7 +105,7 @@ export const createGoogleDriveFolderForUser = async (
   reqOriginForRefreshingToken?: string
 ): { wasSuccessful: boolean, folderId?: string, [key: string]: unknown } => {
   try {
-    const folderMetadata = new FileMetaData(folderName, parentFolderIds);
+    const folderMetadata = new GDriveItem(folderName, undefined, parentFolderIds);
     const response = await axios.post(
       "https://www.googleapis.com/drive/v3/files?fields=id",
       folderMetadata,
@@ -481,7 +474,7 @@ export default async function handler(
   let gdriveEmail: string | null = null;
   let userIdFromClient = "";
   const copyUnitJobDate = new Date();
-  const jobId = nanoid(); 
+  const jobId = nanoid();
 
   try {
     const origin = new URL(request.headers.referer ?? "").origin;
@@ -1115,7 +1108,7 @@ export default async function handler(
     }
 
     console.log("Will copy files...");
-    
+
     setCacheVal(`copyUnitJobStatus-${jobId}`, "ongoing")
 
     const copyFilesRes = (await copyFiles(
@@ -1138,7 +1131,7 @@ export default async function handler(
 
     const { wasSuccessful: wasCopiesSuccessful, fileCopies, errType } = copyFilesRes;
 
-    if(errType === "clientCanceled") {
+    if (errType === "clientCanceled") {
       throw new Error("The client has canceled the job.");
     }
 
@@ -1154,7 +1147,7 @@ export default async function handler(
 
     if (!wasCopiesSuccessful) {
       console.error("Failed to copy at least one file.");
-      
+
       throw new Error("Failed to copy at least one file.");
     }
 
@@ -1166,7 +1159,7 @@ export default async function handler(
       });
       const renameFilesResult = await renameFiles(fileCopies, gdriveAccessToken, gdriveRefreshToken, origin);
 
-      if(!renameFilesResult.wasSuccessful){
+      if (!renameFilesResult.wasSuccessful) {
         console.log("Failed to rename files.");
       } else {
         console.log("Renamed all files successfully.");
@@ -1184,14 +1177,14 @@ export default async function handler(
     );
 
     const copyUnitJobInsertionResult = await insertCopyUnitJobResult({
-        datetime: copyUnitJobDate,
-        result: "success",
-        userId: userIdFromClient,
-        unitId,
-        gdriveFolderId: copyDestinationFolderId,
-        doesFolderCopyExistInUserGDrive: true,
-        gdriveEmail
-      });
+      datetime: copyUnitJobDate,
+      result: "success",
+      userId: userIdFromClient,
+      unitId,
+      gdriveFolderId: copyDestinationFolderId,
+      doesFolderCopyExistInUserGDrive: true,
+      gdriveEmail
+    });
 
     if (!copyUnitJobInsertionResult.wasSuccessful) {
       console.error("Failed to insert the successful copy unit result into the database. Reason: ", copyUnitJobInsertionResult?.errorObj);
@@ -1218,7 +1211,7 @@ export default async function handler(
       console.log("Google drive item deletion result: ", result);
     }
 
-    if(unitId && copyDestinationFolderId){
+    if (unitId && copyDestinationFolderId) {
       const errMsg = JSON.stringify(error);
       const copyUnitJobInsertionResult = await insertCopyUnitJobResult({
         datetime: copyUnitJobDate,
@@ -1230,8 +1223,8 @@ export default async function handler(
         // if copyDestinationFolderId is truthy, then gdriveEmail must be a string email
         gdriveEmail: gdriveEmail!,
       });
-      
-      if(!copyUnitJobInsertionResult.wasSuccessful){
+
+      if (!copyUnitJobInsertionResult.wasSuccessful) {
         console.error("Failed to insert the failed copy unit result into the database. Reason: ", copyUnitJobInsertionResult?.errorObj)
       } else {
         console.log("Copy unit insertion result: ", copyUnitJobInsertionResult)
