@@ -67,7 +67,7 @@ const deleteUnit = async (_id?: unknown, queryPair?: [string, unknown]) => {
       };
     }
 
-    if(_id && (typeof _id !== 'string')){
+    if (_id && (typeof _id !== 'string')) {
       throw new Error(
         '`_id` must be a string.'
       );
@@ -79,7 +79,7 @@ const deleteUnit = async (_id?: unknown, queryPair?: [string, unknown]) => {
       const [key, val] = queryPair;
       deletionResult = await Unit.deleteOne({ [key]: val });
     } else {
-      deletionResult = await Unit.deleteOne({ _id: { $eq: _id } });
+      deletionResult = await Unit.deleteOne({ _id: { $eq: _id as string } });
     }
 
     if (deletionResult.deletedCount === 0) {
@@ -389,7 +389,7 @@ const getGpWebApps = async (units: INewUnitSchema[]) => {
         description: multiMediaItem.lessonRelevance,
         webAppPreviewImg: errMsg || !images?.length ? null : images[0],
         webAppImgAlt:
-          errMsg || !images?.length ? null : `${title}'s preview image`,        
+          errMsg || !images?.length ? null : `${title}'s preview image`,
         aboutWebAppLink: null,
         aboutWebAppLinkType: 'unit',
         pathToFile,
@@ -440,11 +440,11 @@ const getGpWebApps = async (units: INewUnitSchema[]) => {
       ...webAppImg,
     };
 
-    if(dbWebApp.aboutWebAppLinkType === 'blog' && dbWebApp.aboutWebAppLink){
+    if (dbWebApp.aboutWebAppLinkType === 'blog' && dbWebApp.aboutWebAppLink) {
       const resBody = await getLinkPreviewObj(dbWebApp.aboutWebAppLink);
       webApp = {
         ...webApp,
-        blogPostTitle: 'title' in resBody ? resBody.title : null, 
+        blogPostTitle: 'title' in resBody ? resBody.title : null,
       };
     }
 
@@ -535,7 +535,7 @@ const getIsUnitNew = (releaseDate: Date, now: number) => {
 const filterInShowableUnits = (units: INewUnitSchema[], nowMs: number, willGetUnitMetaData = true) => {
   const liveUnits = getLiveUnits(units).filter((unit) => unit?.ReleaseDate);
 
-  if(!willGetUnitMetaData){
+  if (!willGetUnitMetaData) {
     return liveUnits as ILiveUnit[];
   }
 

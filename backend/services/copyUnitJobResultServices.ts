@@ -88,6 +88,7 @@ export const getCopyUnitFolderJobs = async (
         }
       })
     }
+
     const jobs = await CopyUnitResults.find<ICopyUnitResult>(_filter);
 
     return { jobs };
@@ -295,7 +296,7 @@ export const getLatestValidUnitCopyFolderJob = async (
       result: 'success',
       userId: userId,
     };
-    const targetCopyUnitFolderJobs = await getCopyUnitFolderJobs(filter, 3);
+    const targetCopyUnitFolderJobs = await getCopyUnitFolderJobs(filter, 3, [["errMsg", false]]);
 
     console.log('targetCopyUnitFolderJobs: ', targetCopyUnitFolderJobs);
 
