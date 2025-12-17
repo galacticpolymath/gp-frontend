@@ -164,17 +164,46 @@ type TSort = Partial<{
 }>;
 export type TProjections = { [key in keyof IUnit | '__v']: 0 | 1 };
 
-const retrieveUnits = async (
-  filterObj: Partial<{ [key in keyof IUnit]: unknown }>,
+type TQueryPredicate = "$in" | "$eq"
+
+// "$in": { key, val[]}
+
+type TSearchQueryIn<TKey extends keyof IUnit = keyof IUnit> = {
+  key: TKey,
+  vals: (IUnit[TKey])[]
+}
+
+const retrieveUnits = async <TKey extends keyof IUnit = keyof IUnit, TVal extends IUnit[TKey] = IUnit[TKey]>(
+  filterObj: Partial<IUnit>,
   projectionObj: ProjectionType<Partial<TProjections>>,
   limit: number = 0,
-  sort?: TSort
+  sort?: TSort,
+  searchQueryWithPredicates?: {
+    "$in": {
+      key: TKey,
+      vals: TVal[]
+    }
+  }
 ) => {
   try {
     if (!Unit) {
       throw new Error(
         'Failed to connect to the database. `Units` collections does not exist.'
       );
+    }
+
+    if (searchQueryWithPredicates && "$in" in searchQueryWithPredicates) {
+      const { key, vals } = searchQueryWithPredicates["$in"]
+      const searchQuery = {
+        [key]: { $in: vals }
+      }
+
+      const units = await Unit.find(searchQuery, projectionObj)
+        .sort(sort ?? {})
+        .limit(limit)
+        .lean();
+
+      return { wasSuccessful: true, data: units as INewUnitSchema[] };
     }
 
     const units = await Unit.find(filterObj, projectionObj)
@@ -198,7 +227,7 @@ export type TCustomUpdate = Record<
 >;
 
 const updateUnit = async (
-  filterObj: Partial<{ [key in keyof INewUnitSchema]: unknown }>,
+  filterObj: Partial<INewUnitSchema>,
   updatedProps: Partial<INewUnitSchema>,
   customUpdate?: TCustomUpdate
 ) => {
@@ -328,6 +357,8 @@ const handleGetLinkPreviewObj = async (link: string): Promise<Partial<TWebAppImg
   return webApp;
 };
 
+
+
 const getGpWebApps = async (units: INewUnitSchema[]) => {
   const webApps: TWebAppForUI[] = [];
 
@@ -402,11 +433,11 @@ const getGpWebApps = async (units: INewUnitSchema[]) => {
   const allDbWebApps = await dbWebApps.find({}, { _id: 0, __v: 0 }).lean();
   const unitNumIds = allDbWebApps
     .map((webApp) => webApp.unitNumID)
-    .filter(Boolean);
+    .filter(Boolean) as number[];
   let dbUnits: INewUnitSchema[] | undefined = undefined;
 
   if (unitNumIds.length) {
-    dbUnits = (await retrieveUnits({ numID: { $in: unitNumIds } }, {})).data;
+    dbUnits = (await retrieveUnits({}, {}, 0, undefined, { $in: { key: "numID", vals: unitNumIds } })).data;
   }
 
   for (const dbWebApp of allDbWebApps) {
