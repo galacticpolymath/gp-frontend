@@ -2,7 +2,6 @@ import { useRef } from 'react';
 import useLessonElementInView from '../../customHooks/useLessonElementInView';
 import CollapsibleLessonSection from '../CollapsibleLessonSection';
 import RichText from '../RichText';
-import { SECTION_SORT_ORDER_REVERSE } from '../../pages/units/[loc]/[id]';
 import JobVizConnections from './JobVizConnections';
 
 const CollapsibleRichTextSection = ({
