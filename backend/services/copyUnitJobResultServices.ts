@@ -25,26 +25,6 @@ export const insertCopyUnitJobResult = async (
   }
 };
 
-export const updateCopyUnitJobs = async (
-  filter: Partial<Record<keyof ICopyUnitResult, unknown>>,
-  update: Partial<ICopyUnitResult>
-) => {
-  try {
-    console.log(
-      'Attempting to update copy unit jobs with filter: ',
-      filter,
-      ' and update: ',
-      update
-    );
-
-    return await CopyUnitResults.updateMany(filter, update);
-  } catch (error) {
-    console.error('Failed to update copy unit jobs. Error: ', error);
-
-    return null;
-  }
-};
-
 const getDoesGDriveItemExist = async (
   copyJob: ICopyUnitResult,
   gDriveAccessToken: string
@@ -91,13 +71,24 @@ const getDoesGDriveItemExist = async (
 };
 
 export const getCopyUnitFolderJobs = async (
-  filter:
-    | Partial<Record<keyof ICopyUnitResult, unknown>>
-    | { $or: Partial<Record<keyof ICopyUnitResult, unknown>>[] },
-  tries = 5
+  filter: Partial<ICopyUnitResult>,
+  tries = 5,
+  fieldsToCheckForExistences?: ([keyof ICopyUnitResult, boolean])[]
 ): Promise<Partial<{ jobs: ICopyUnitResult[]; errType: string }>> => {
   try {
-    const jobs = await CopyUnitResults.find<ICopyUnitResult>(filter);
+    let _filter = filter;
+
+    if (fieldsToCheckForExistences?.length) {
+      fieldsToCheckForExistences.forEach(([field, doesExist]) => {
+        _filter = {
+          ..._filter,
+          [field]: {
+            $exist: doesExist
+          }
+        }
+      })
+    }
+    const jobs = await CopyUnitResults.find<ICopyUnitResult>(_filter);
 
     return { jobs };
   } catch (error: any) {
@@ -134,7 +125,7 @@ export const getCopyUnitFolderJobsByUserId = async (
   try {
     const retrievalResult = await getCopyUnitFolderJobs({ userId });
 
-    if(retrievalResult.errType){
+    if (retrievalResult.errType) {
       return {
         errType: retrievalResult.errType,
       };
@@ -150,7 +141,7 @@ export const getCopyUnitFolderJobsByUserId = async (
   }
 };
 
-interface IUserWithSiteStats extends TUserSchemaV2{
+interface IUserWithSiteStats extends TUserSchemaV2 {
   copyUnitJobResults?: ICopyUnitResult[]
 }
 
@@ -165,21 +156,21 @@ export const getCopyFolderJobsOfUsers = async (users: TUserSchemaV2[], tries = 3
     const usersWithCopyUnitJobResults = users.map(user => {
       const copyUnitJobResults = copyUnitResults.filter(copyUnitResult => {
         return copyUnitResult.userId === user._id;
-      }); 
+      });
 
       return {
         ...user,
         copyUnitJobResults,
       };
     });
-  
+
     return usersWithCopyUnitJobResults;
-  } catch(error: any){
+  } catch (error: any) {
     console.error('Failed to get copy unit folder jobs for users. Error: ', error);
 
     const didTimeoutOccur = error?.error?.codeName === 'MaxTimeMSExpired';
 
-    if(didTimeoutOccur){
+    if (didTimeoutOccur) {
       await waitWithExponentialBackOff(tries);
 
       return getCopyFolderJobsOfUsers(users);
@@ -296,12 +287,9 @@ export const getLatestValidUnitCopyFolderJob = async (
 ) => {
   try {
     console.log(`getLatestValidUnitCopyFolderJob unitId: ${unitId}`);
-    
-    const filter: Partial<Record<keyof ICopyUnitResult, unknown>> = {
+
+    const filter: Parameters<typeof getCopyUnitFolderJobs>[0] = {
       unitId,
-      errMsg: {
-        $exists: false,
-      },
       gdriveEmail,
       doesFolderCopyExistInUserGDrive: true,
       result: 'success',
