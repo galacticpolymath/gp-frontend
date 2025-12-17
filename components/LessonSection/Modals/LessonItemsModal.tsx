@@ -18,6 +18,7 @@ import { FcGoogle } from "react-icons/fc";
 import Dropdown from "react-bootstrap/Dropdown";
 import { LuMonitorPlay } from "react-icons/lu";
 import { GiFilmStrip } from "react-icons/gi";
+import { IoOpenOutline } from "react-icons/io5";
 
 const LESSON_ITEMS_MODAL_BG_COLOR = "#E2F0FD";
 
@@ -221,6 +222,7 @@ const LessonItemsModal: React.FC = () => {
     docUrl: currentLessonItemDocUrl,
     itemTitle: currentLessonItemName,
     itemCat,
+    itemType,
     externalUrl,
   } = currentLessonItem;
 
@@ -378,8 +380,6 @@ const LessonItemsModal: React.FC = () => {
                   childrenClassName="d-flex flex-row flex-md-row align-items-center justify-content-center gap-2"
                   btnStyles={{
                     minHeight: "51px",
-                    // minWidth: "300px",
-                    // width: "fit-content",
                     backgroundColor: "white",
                     border: "solid 3px #2339C4",
                     borderRadius: "2em",
@@ -448,37 +448,42 @@ const LessonItemsModal: React.FC = () => {
                   : "col-6 col-sm-6 col-md-9 col-xxl-6 p-0"
               } d-flex flex-column flex-md-row justify-content-md-end align-items-sm-center p-sm-0`}
             >
-              <section className="d-none d-sm-flex h-100 justify-content-end pe-sm-3">
-                <Button
-                  style={{
-                    backgroundColor: "transparent",
-                    transition: "background-color inifinte",
-                    width: "fit-content",
-                  }}
-                  className="mb-1 mb-md-0 d-flex no-btn-styles justify-content-center align-items-center underline-on-hover text-black pointer"
-                  onClick={handlePlayBtnClick}
-                >
-                  <section className="w-100 d-none d-sm-flex h-100 pt-1">
-                    <h6
-                      style={{
-                        height: "fit-content",
-                        textTransform: "none",
-                      }}
-                      className="mb-0 text-black d-flex d-md-block justify-content-center align-items-center h-100 text-nowrap me-2"
-                    >
-                      Play Now:
-                    </h6>
-                  </section>
-                  <section className="w-100 d-none d-sm-flex h-100">
-                    <div
-                      style={{ width: 44, height: 44 }}
-                      className="bg-white p-1 rounded"
-                    >
-                      <LuMonitorPlay color="black" size={35} />
-                    </div>
-                  </section>
-                </Button>
-              </section>
+              {itemType === "presentation" && (
+                <section className="d-none d-sm-flex h-100 justify-content-end pe-sm-3">
+                  <Button
+                    style={{
+                      backgroundColor: "transparent",
+                      transition: "background-color inifinte",
+                      width: "fit-content",
+                    }}
+                    className="mb-1 mb-md-0 d-flex no-btn-styles justify-content-center align-items-center text-black pointer"
+                    onClick={handleOpenInNewTabBtnClick}
+                  >
+                    <section className="w-100 d-none d-sm-flex h-100 pt-1">
+                      <h6
+                        style={{
+                          height: "fit-content",
+                          textTransform: "none",
+                        }}
+                        className="mb-0 text-black d-flex d-md-block justify-content-center align-items-center h-100 text-nowrap me-2"
+                      >
+                        <span className="d-none d-lg-block underline-on-hover">
+                          Open in New Tab:
+                        </span>
+                        <span className="d-block d-lg-none">New Tab:</span>
+                      </h6>
+                    </section>
+                    <section className="w-100 d-none d-sm-flex h-100">
+                      <div
+                        style={{ width: 44, height: 44 }}
+                        className="bg-white p-1 rounded"
+                      >
+                        <IoOpenOutline color="black" size={35} />
+                      </div>
+                    </section>
+                  </Button>
+                </section>
+              )}
               <section className="d-flex flex-column flex-md-row justify-content-end align-items-stretch">
                 {currentLessonItem.itemCat !== "web resource" &&
                   currentLessonItem.isExportable && (
@@ -499,10 +504,10 @@ const LessonItemsModal: React.FC = () => {
                         <section className="d-flex justify-content-center align-items-center">
                           <button
                             style={{ height: "60px" }}
-                            onClick={handlePlayBtnClick}
+                            onClick={handleOpenInNewTabBtnClick}
                             className="py-2 px-3 bg-white rounded-2 no-btn-styles me-2"
                           >
-                            <LuMonitorPlay size={35} />
+                            <TbExternalLink size={35} />
                           </button>
                         </section>
                       )}

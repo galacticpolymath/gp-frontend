@@ -1,15 +1,21 @@
-import { useSession } from 'next-auth/react';
-import { useEffect, useState } from 'react';
-import { IUserSession } from '../types/global';
-import axios from 'axios';
-import { userAccountDefault, useUserContext } from '../providers/UserProvider';
+import { useSession } from "next-auth/react";
+import { useEffect, useState } from "react";
+import { IUserSession } from "../types/global";
+import axios from "axios";
+import { userAccountDefault, useUserContext } from "../providers/UserProvider";
 import {
   IUserSchema,
   TUserSchemaForClient,
   TUserSchemaV2,
-} from '../backend/models/User/types';
-import { setLocalStorageItem, setSessionStorageItem } from '../shared/fns';
-import { useCustomCookies } from './useCustomCookies';
+} from "../backend/models/User/types";
+import {
+  getSessionStorageItem,
+  setLocalStorageItem,
+  setSessionStorageItem,
+} from "../shared/fns";
+import { useCustomCookies } from "./useCustomCookies";
+import { useModalContext } from "../providers/ModalProvider";
+import { useRouter } from "next/router";
 
 export const getAboutUserFormForClient = (
   userAccount: TUserSchemaForClient<TUserSchemaV2 & IUserSchema>
@@ -61,7 +67,7 @@ export const getAboutUserFormForClient = (
     };
   }
 
-  if (typeof isGpPlusMember === 'boolean') {
+  if (typeof isGpPlusMember === "boolean") {
     userAccountForClient = {
       ...userAccountForClient,
       isGpPlusMember,
@@ -87,7 +93,7 @@ export const getAboutUserFormForClient = (
     isNotTeaching: !!isNotTeaching,
   };
 
-  if (typeof classSize === 'number') {
+  if (typeof classSize === "number") {
     userAccountForClient = {
       ...userAccountForClient,
       classSize,
@@ -95,9 +101,9 @@ export const getAboutUserFormForClient = (
   }
 
   if (
-    typeof classSize === 'number' &&
-    typeof isNotTeaching === 'undefined' &&
-    typeof classroomSize === 'object' &&
+    typeof classSize === "number" &&
+    typeof isNotTeaching === "undefined" &&
+    typeof classroomSize === "object" &&
     classroomSize
   ) {
     userAccountForClient.classroomSize = classroomSize;
@@ -110,7 +116,7 @@ export const getAboutUserFormForClient = (
     };
   }
 
-  console.log('institution, sup there: ', institution);
+  console.log("institution, sup there: ", institution);
 
   if (institution || institution == null) {
     userAccountForClient = {
@@ -184,7 +190,7 @@ export const getAboutUserFormForClient = (
       !gradesOrYears?.ageGroupsTaught?.length)
   ) {
     userAccountForClient.gradesOrYears = {
-      selection: 'U.S.',
+      selection: "U.S.",
       ageGroupsTaught: [],
     };
   }
@@ -196,7 +202,7 @@ export const getAboutUserFormForClient = (
       !gradesOrYears?.ageGroupsTaught?.length)
   ) {
     userAccount.gradesOrYears = {
-      selection: 'U.S.',
+      selection: "U.S.",
       ageGroupsTaught: [],
     };
   }
@@ -221,7 +227,7 @@ export const getAboutUserFormForClient = (
     };
   }
 
-  console.log('userAccountForClient: ', userAccountForClient);
+  console.log("userAccountForClient: ", userAccountForClient);
 
   userAccountForClient.isTeacher = isTeacher ?? false;
 
@@ -237,9 +243,9 @@ const getUserAccountData = async (token: string) => {
     };
     const response = await axios.get<
       TUserSchemaForClient<TUserSchemaV2 & IUserSchema>
-    >('/api/get-user-account-data', paramsAndHeaders);
+    >("/api/get-user-account-data", paramsAndHeaders);
 
-    console.log('userAccount data: ', response.data);
+    console.log("userAccount data: ", response.data);
 
     if (response.status !== 200) {
       throw new Error("Failed to get 'AboutUser' form for the target user.");
@@ -247,17 +253,23 @@ const getUserAccountData = async (token: string) => {
 
     return response.data;
   } catch (error) {
-    console.error('Error in getUserAccountData: ', error);
+    console.error("Error in getUserAccountData: ", error);
   }
 };
 
-export const useGetAboutUserForm = (willGetData: boolean = true) => {
+export const useGetAboutUserForm = (
+  willGetData: boolean = true,
+  willSetEmailNewsletterSignUpModal?: boolean
+) => {
   const { status, data } = useSession();
   const { _aboutUserForm } = useUserContext();
   const [aboutUserForm, setAboutUserForm] = _aboutUserForm;
   const { setAppCookie } = useCustomCookies();
+  const {
+    _emailNewsletterSignUpModal: [, setEmailNewsletterSignUpModal],
+  } = useModalContext();
   const [gpPlusSub, setGpPlusSub] = useState<
-    TUserSchemaForClient['gpPlusSubscription'] | null
+    TUserSchemaForClient["gpPlusSubscription"] | null
   >(null);
   const { user, token } = (data ?? {}) as IUserSession;
   const [isRetrievingUserData, setIsRetrievingUserData] = useState(true);
@@ -267,7 +279,7 @@ export const useGetAboutUserForm = (willGetData: boolean = true) => {
       return;
     }
 
-    if (status === 'authenticated') {
+    if (status === "authenticated") {
       (async () => {
         try {
           const paramsAndHeaders = {
@@ -278,9 +290,9 @@ export const useGetAboutUserForm = (willGetData: boolean = true) => {
 
           const response = await axios.get<
             TUserSchemaForClient<TUserSchemaV2 & IUserSchema>
-          >('/api/get-user-account-data', paramsAndHeaders);
+          >("/api/get-user-account-data", paramsAndHeaders);
 
-          console.log('userAccount data: ', response.data);
+          console.log("userAccount data: ", response.data);
 
           if (response.status !== 200) {
             throw new Error(
@@ -317,7 +329,40 @@ export const useGetAboutUserForm = (willGetData: boolean = true) => {
             isNotTeaching,
             gradesTaught,
             gradesType,
+            willNotShowEmailNewsLetterSignUpModal,
+            isOnMailingList,
+            mailingListConfirmationEmailId,
           } = userAccount;
+
+          console.log("userAccount: ", userAccount);
+
+          // if mailingListConfirmationEmailId is truthy, then mailing list status is: 'double-opt-sent' and
+          // -display the modal
+          // if isOnMailingList = false, then mailing list status is 'not-on-list' and display the modal
+
+          const didOptOutOfMailingList = getSessionStorageItem(
+            "didOptOutOfMailingList"
+          );
+
+          if (
+            !didOptOutOfMailingList &&
+            !willNotShowEmailNewsLetterSignUpModal &&
+            willSetEmailNewsletterSignUpModal &&
+            !isOnMailingList
+          ) {
+            const status = mailingListConfirmationEmailId
+              ? "double-opt-sent"
+              : "not-on-list";
+            setEmailNewsletterSignUpModal((state) => {
+              return {
+                ...state,
+                userEmailNewsLetterStatus: status,
+                isDisplayed: true,
+              };
+            });
+          } else if (isOnMailingList) {
+            console.log("The user is on mailing list");
+          }
 
           if (gpPlusSubscription) {
             setGpPlusSub(gpPlusSubscription);
@@ -343,8 +388,8 @@ export const useGetAboutUserForm = (willGetData: boolean = true) => {
             };
           }
 
-          if (typeof isGpPlusMember === 'boolean') {
-            setSessionStorageItem('isGpPlusUser', isGpPlusMember);
+          if (typeof isGpPlusMember === "boolean") {
+            setSessionStorageItem("isGpPlusUser", isGpPlusMember);
             setAppCookie("isGpPlusMember", isGpPlusMember);
             userAccountForClient = {
               ...userAccountForClient,
@@ -371,7 +416,7 @@ export const useGetAboutUserForm = (willGetData: boolean = true) => {
             isNotTeaching: !!isNotTeaching,
           };
 
-          if (typeof classSize === 'number') {
+          if (typeof classSize === "number") {
             userAccountForClient = {
               ...userAccountForClient,
               classSize,
@@ -379,9 +424,9 @@ export const useGetAboutUserForm = (willGetData: boolean = true) => {
           }
 
           if (
-            typeof classSize === 'number' &&
-            typeof isNotTeaching === 'undefined' &&
-            typeof classroomSize === 'object' &&
+            typeof classSize === "number" &&
+            typeof isNotTeaching === "undefined" &&
+            typeof classroomSize === "object" &&
             classroomSize
           ) {
             userAccountForClient.classroomSize = classroomSize;
@@ -394,7 +439,7 @@ export const useGetAboutUserForm = (willGetData: boolean = true) => {
             };
           }
 
-          console.log('institution, sup there: ', institution);
+          console.log("institution, sup there: ", institution);
 
           if (institution || institution == null) {
             userAccountForClient = {
@@ -468,7 +513,7 @@ export const useGetAboutUserForm = (willGetData: boolean = true) => {
               !gradesOrYears?.ageGroupsTaught?.length)
           ) {
             userAccountForClient.gradesOrYears = {
-              selection: 'U.S.',
+              selection: "U.S.",
               ageGroupsTaught: [],
             };
           }
@@ -480,7 +525,7 @@ export const useGetAboutUserForm = (willGetData: boolean = true) => {
               !gradesOrYears?.ageGroupsTaught?.length)
           ) {
             userAccount.gradesOrYears = {
-              selection: 'U.S.',
+              selection: "U.S.",
               ageGroupsTaught: [],
             };
           }
@@ -505,13 +550,13 @@ export const useGetAboutUserForm = (willGetData: boolean = true) => {
             };
           }
 
-          console.log('userAccountForClient: ', userAccountForClient);
+          console.log("userAccountForClient: ", userAccountForClient);
 
           userAccountForClient.isTeacher = isTeacher ?? false;
 
           // localStorage.setItem("userAccount", JSON.stringify(userAccount));
 
-          setLocalStorageItem('userAccount', userAccount);
+          setLocalStorageItem("userAccount", userAccount);
 
           setAboutUserForm(userAccountForClient);
         } catch (error) {
@@ -523,7 +568,7 @@ export const useGetAboutUserForm = (willGetData: boolean = true) => {
         }
       })();
       return;
-    } else if (status === 'unauthenticated') {
+    } else if (status === "unauthenticated") {
       setIsRetrievingUserData(false);
     }
   }, [status]);

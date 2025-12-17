@@ -1,8 +1,5 @@
-/* eslint-disable quotes */
-/* eslint-disable indent */
-
 import { format } from "date-fns";
-import { useMemo } from "react";
+import React, { useMemo } from "react";
 import RichText from "../RichText";
 import Image from "next/image";
 import { useRouter } from "next/router";
@@ -34,7 +31,7 @@ export interface ITitleProps extends Partial<TUnitOverviewPropsForUI> {
   lessonUrl: string;
 }
 
-const Title = (props: ITitleProps) => {
+const Title: React.FC<ITitleProps> = (props) => {
   const {
     availLocs,
     locale,
@@ -50,38 +47,6 @@ const Title = (props: ITitleProps) => {
     lessonUrl,
   } = props;
   const router = useRouter();
-  let sponsors = useMemo(() => {
-    let sponsorsLinkTxts = [];
-
-    if (SponsoredBy && typeof SponsoredBy === "string") {
-      let urls = SponsoredBy.match(/\((.*?)\)/g);
-      const urlStrs = urls?.length
-        ? urls.map((txt) => txt.replace(/\(|\)/g, ""))
-        : urls;
-      let sponsorByTxtArr = SponsoredBy.match(/\[(.*?)\]/g);
-      const sponsorByTxtStrsArr = sponsorByTxtArr?.length
-        ? sponsorByTxtArr.map((txt) => txt.replace(/\[|\]/g, ""))
-        : [];
-
-      for (let index = 0; index < sponsorByTxtStrsArr.length; index++) {
-        let url = urlStrs?.[index];
-
-        if (!url) {
-          continue;
-        }
-
-        let sponsorByTxt = sponsorByTxtStrsArr[index];
-
-        sponsorsLinkTxts.push(`[${sponsorByTxt}](${url})`);
-      }
-    }
-
-    if (!sponsorsLinkTxts.length) {
-      return [SponsoredBy];
-    }
-
-    return sponsorsLinkTxts;
-  }, []);
 
   const handleBtnClick = () => {
     if (!document.getElementById("versions-container")?.offsetParent) {
@@ -163,11 +128,7 @@ const Title = (props: ITitleProps) => {
                 </button>
               )}
             {availLocs && (
-              <LocDropdown 
-                availLocs={availLocs} 
-                loc={locale} 
-                id={numID} 
-              />
+              <LocDropdown availLocs={availLocs} loc={locale} id={numID} />
             )}
           </div>
           <div className="d-flex flex-column flex-xxl-row">
@@ -201,15 +162,12 @@ const Title = (props: ITitleProps) => {
             </div>
             <div className="ms-xxl-3 mb-4 mb-md-3 mb-lg-0 mt-4 mt-md-0 col-xxl-3 row my-0 py-0 d-xxl-flex flex-xxl-column-reverse justify-content-xxl-center align-items-xxl-center">
               <div className="col-12 col-sm-8 col-md-8 col-lg-9 col-xxl-12 d-grid align-content-center d-xxl-flex flex-xxl-column p-0">
-                <h5 className="text-xxl-center">Sponsored by:</h5>
-                <ul className="ps-xxl-4 d-xxl-flex flex-xxl-column justify-content-xxl-center align-items-xxl-center m-xxl-0">
-                  {!!sponsors?.length &&
-                    sponsors.map((sponsor, index) => (
-                      <li className="text-xxl-center" key={index}>
-                        <RichText content={sponsor} />
-                      </li>
-                    ))}
-                </ul>
+                <h5 className="text-center">Sponsored by:</h5>
+                <div className="text-center">
+                  {SponsoredBy && typeof SponsoredBy === "string" && (
+                    <RichText content={SponsoredBy} />
+                  )}
+                </div>
               </div>
               <div className="col-5 col-sm-4  col-md-3 col-lg-3 col-xxl-12 m-auto d-grid m-xxl-0">
                 {sponsorLogoImgUrl && (

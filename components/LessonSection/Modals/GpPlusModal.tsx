@@ -1,5 +1,3 @@
-/* eslint-disable quotes */
-
 import React, { useState } from "react";
 import { Button, Modal } from "react-bootstrap";
 import Image from "next/image";
