@@ -76,7 +76,7 @@
     "react": "^19.2.3",
     "react-bootstrap": "^2.10.10",
     "react-cookie": "^7.2.2",
-    "react-dom": "^19.2.1",
+    "react-dom": "^19.2.3",
     "react-flags-select": "^2.5.0",
     "react-google-drive-picker": "^1.2.2",
     "react-highlight-words": "^0.21.0",
