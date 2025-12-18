@@ -34,7 +34,7 @@ interface IProps {
   >;
 }
 
-const LessonPreview = ({ lesson, unit }: IProps) => {
+const LessonPreview: React.FC<IProps> = ({ lesson, unit }) => {
   const latestSubRelease = lesson?.Section
     ? getLatestSubRelease(lesson?.Section)
     : {};

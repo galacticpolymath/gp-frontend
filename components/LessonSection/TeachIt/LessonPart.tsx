@@ -59,12 +59,12 @@ interface ISignInSuggestionProps extends PropsWithChildren {
   style?: React.CSSProperties;
 }
 
-const SignInSuggestion: React.FC<ISignInSuggestionProps> = ({
+export const SignInSuggestion: React.FC<ISignInSuggestionProps> = ({
   children,
   txt,
   style = { zIndex: 100 },
-  className = "center-absolutely d-flex flex-column justify-content-center col-12 mt-4",
-  txtClassName = "text-center fw-bold",
+  className = "center-absolutely d-flex flex-column justify-content-center col-12 mt-3 mt-md-4 px-3 px-sm-2 px-md-3",
+  txtClassName = "text-center fw-bold fs-6 fs-md-5",
 }) => {
   if (!txt) {
     txt = "For teachers guides, sign in with a free account!";
@@ -72,8 +72,10 @@ const SignInSuggestion: React.FC<ISignInSuggestionProps> = ({
 
   return (
     <div style={style} className={className}>
-      <span className={txtClassName}>{txt}</span>
-      {children}
+      <span style={{ wordWrap: "break-word", maxWidth: "100%" }} className={txtClassName}>{txt}</span>
+      <div className="w-100 d-flex justify-content-center">
+        {children}
+      </div>
     </div>
   );
 };
@@ -117,6 +119,8 @@ export interface ILessonPartProps
   unitTitle?: string | null;
   setParts: TSetter<(INewUnitLesson<IItemV2> | ILessonForUI)[]>;
 }
+
+
 
 const LessonPart: React.FC<ILessonPartProps> = (props) => {
   const {
@@ -842,7 +846,7 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                                       </div>
                                       <div className="d-flex justify-content-center align-items-center ps-2">
                                         <a
-                                          href={`${gdriveRoot}/present`}
+                                          href={`${gdriveRoot}/view`}
                                           target="_blank"
                                           rel="noopener noreferrer"
                                           style={{

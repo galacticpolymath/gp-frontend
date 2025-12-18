@@ -103,7 +103,7 @@ const getUserResults = async () => {
   }
 };
 
-test.skip(
+test(
   "Will check if the responses from the `get-users` route are constant.",
   async () => {
     const getUserResultsPromises = new Array(10)
@@ -139,8 +139,6 @@ test.skip(
     );
 
     delete userResults[0].users;
-
-    const userResult = userResults[0];
 
     expect(areResultsConstant).toBe(true);
     expect(doAllUsersHaveMailingListStatusField).toBe(true);

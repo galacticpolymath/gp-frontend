@@ -2,7 +2,6 @@ import { useRef } from 'react';
 import useLessonElementInView from '../../customHooks/useLessonElementInView';
 import CollapsibleLessonSection from '../CollapsibleLessonSection';
 import RichText from '../RichText';
-import { SECTION_SORT_ORDER_REVERSE } from '../../pages/units/[loc]/[id]';
 import JobVizConnections from './JobVizConnections';
 
 const CollapsibleRichTextSection = ({
@@ -10,21 +9,19 @@ const CollapsibleRichTextSection = ({
   InitiallyExpanded,
   ...props
 }) => {
-  const { _sectionDots, SectionTitle, sectionClassNameForTesting, index } = props;
-  const sectionName = typeof index === 'number' ? SECTION_SORT_ORDER_REVERSE[index - 1] : null;
+  const { _sectionDots, SectionTitle, sectionClassNameForTesting, sectionTitleFromDb } = props;
 
   console.log('CollapsibleRichTextSection props: ', props);
 
-  console.log('SectionTitle:', SectionTitle);
+  console.log('sectionTitleFromDb: ', sectionTitleFromDb);
 
-  console.log('sectionName: ', sectionName);
 
   const ref = useRef();
   const sectionTitle = SectionTitle.split(' ').slice(1).join('_');
 
   useLessonElementInView(_sectionDots, SectionTitle, ref);
 
-  if (sectionName === 'jobvizConnections') {
+  if (sectionTitleFromDb === 'JobViz Career Connections') {
     console.log('jobvizConnections Content: ', Content);
     console.log('jobviz props: ', props);
 

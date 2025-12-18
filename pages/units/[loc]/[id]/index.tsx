@@ -67,40 +67,40 @@ const NAV_CLASSNAMES_SET = new Set(NAV_CLASSNAMES);
 const getSectionDotsDefaultVal = <T extends TSectionsForUI>(
   sectionComps: (T | null)[]
 ) =>
-    sectionComps.map((section, index: number) => {
-      const _sectionTitle = `${index}. ${
-        section && 'SectionTitle' in section ? section.SectionTitle : 'Overview'
+  sectionComps.map((section, index: number) => {
+    console.log('section, sup there: ', section);
+    const _sectionTitle = `${index}. ${section && 'SectionTitle' in section ? section.SectionTitle : 'Overview'
       }`;
-      const sectionId = _sectionTitle.replace(/[\s!]/gi, '_').toLowerCase();
+    const sectionId = _sectionTitle.replace(/[\s!]/gi, '_').toLowerCase();
 
-      return {
-        isInView: index === 0,
-        sectionTitleForDot:
+    return {
+      isInView: index === 0,
+      sectionTitleForDot:
         section && 'SectionTitle' in section
           ? section.SectionTitle
           : 'Overview',
-        sectionId: sectionId,
-        willShowTitle: false,
-        sectionDotId: `sectionDot-${sectionId}`,
-      };
-    });
+      sectionId: sectionId,
+      willShowTitle: false,
+      sectionDotId: `sectionDot-${sectionId}`,
+    };
+  });
 
 const getLessonSections = <T extends TSectionsForUI>(
   sectionComps: (T | null)[]
 ): any[] =>
-    sectionComps.map((section: TSectionsForUI | null, index: number) => {
-      const sectionClassNameForTesting = 'section-testing';
+  sectionComps.map((section: TSectionsForUI | null, index: number) => {
+    const sectionClassNameForTesting = 'section-testing';
 
-      console.log('section, sup there: ', section);
+    console.log('section, sup there: ', section);
 
-      return {
-        ...section,
-        sectionClassNameForTesting,
-        SectionTitle: `${index}. ${
-          section && 'SectionTitle' in section ? section.SectionTitle : 'Overview'
+    return {
+      ...section,
+      sectionClassNameForTesting,
+      sectionTitleFromDb: section && 'SectionTitle' in section ? section.SectionTitle : 'n/a',
+      SectionTitle: `${index}. ${section && 'SectionTitle' in section ? section.SectionTitle : 'Overview'
         }`,
-      };
-    });
+    };
+  });
 const addGradesOrYearsProperty = (
   sectionComps: any,
   ForGrades: string,
@@ -169,6 +169,41 @@ const UNIT_DOCUMENT_ORIGINS = new Set([
 
 type TUpdateSection = (sectionVal: object, unit: TUnitForUI) => object;
 
+export const updateOverviewSection = (sectionVal: object, unit: TUnitForUI) => {
+  const jobVizConnectionsSec = unit.Sections?.jobvizConnections;
+
+  if (!jobVizConnectionsSec) {
+    return sectionVal;
+  }
+
+  const previewJobsSliced = jobVizConnectionsSec.Content.slice(0, 3);
+  const jobTitleAndSocCodePairs: [string, string][] = [];
+
+  for (const previewJob of previewJobsSliced) {
+    let jobTitle = Array.isArray(previewJob.job_title) ? previewJob.job_title.at(0) : previewJob.job_title;
+    let socCode = Array.isArray(previewJob.job_title) ? previewJob.job_title.at(0) : previewJob.job_title;
+
+    if (!socCode || !jobTitle) {
+      console.error('Developer Error: Missing job title or SOC code in JobViz preview jobs.', { previewJob });
+      continue;
+    }
+
+    jobTitleAndSocCodePairs.push([jobTitle, socCode]);
+  }
+
+  const additionalJobsNum =
+    jobVizConnectionsSec.Content.length - jobTitleAndSocCodePairs.length;
+  const overviewSecProps: IOverviewProps = {
+    ...(sectionVal as IOverviewProps),
+    jobVizCareerConnections: {
+      additionalJobsNum,
+      jobTitleAndSocCodePairs,
+    },
+  };
+
+  return overviewSecProps;
+}
+
 const SECTION_UPDATERS: Partial<Record<keyof TSectionsForUI, TUpdateSection>> = {
   jobvizConnections: (sectionVal: object, unit: TUnitForUI) => {
     return {
@@ -176,47 +211,14 @@ const SECTION_UPDATERS: Partial<Record<keyof TSectionsForUI, TUpdateSection>> = 
       unitName: unit.Title,
     };
   },
-  overview: (sectionVal: object, unit: TUnitForUI) => {
-    const jobVizConnectionsSec = unit.Sections?.jobvizConnections;
-
-    if (!jobVizConnectionsSec){
-      return sectionVal;
-    }
-
-    const previewJobsSliced = jobVizConnectionsSec.Content.slice(0, 3);
-    const jobTitleAndSocCodePairs: [string, string][] = [];
-
-    for (const previewJob of previewJobsSliced){
-      let jobTitle = Array.isArray(previewJob.job_title) ? previewJob.job_title.at(0) : previewJob.job_title;
-      let socCode = Array.isArray(previewJob.job_title) ? previewJob.job_title.at(0) : previewJob.job_title;
-
-      if(!socCode || !jobTitle){
-        console.error('Developer Error: Missing job title or SOC code in JobViz preview jobs.', { previewJob });
-        continue;
-      }
-
-      jobTitleAndSocCodePairs.push([jobTitle, socCode]);
-    }
-
-    const additionalJobsNum =
-      jobVizConnectionsSec.Content.length - jobTitleAndSocCodePairs.length;
-    const overviewSecProps: IOverviewProps = {
-      ...(sectionVal as IOverviewProps),
-      jobVizCareerConnections: {
-        additionalJobsNum,
-        jobTitleAndSocCodePairs,
-      },
-    };
-
-    return overviewSecProps;
-  },
+  overview: updateOverviewSection,
 };
 
 const LessonDetails: React.FC<IProps> = ({ lesson, unit }) => {
-  console.log('UNIT OBJECT: ', unit);
 
   useMemo(() => {
     if (unit?.Sections) {
+      console.log('unit.Sections: ', unit.Sections);
       const unitSections = Object.entries(unit.Sections).reduce(
         (
           sections: TSectionsForUI,
@@ -227,6 +229,8 @@ const LessonDetails: React.FC<IProps> = ({ lesson, unit }) => {
             object
           ];
 
+          console.log('sectionKey: ', sectionKey);
+
           if (
             SECTIONS_TO_FILTER_OUT.size &&
             SECTIONS_TO_FILTER_OUT.has(sectionKey)
@@ -236,7 +240,10 @@ const LessonDetails: React.FC<IProps> = ({ lesson, unit }) => {
 
           const updateSectionFn = SECTION_UPDATERS[sectionKey];
 
-          if(updateSectionFn){
+
+          if (updateSectionFn) {
+            console.log(`Will update '${sectionKey}' section.`);
+
             sectionVal = updateSectionFn(sectionVal, unit);
 
             return {
@@ -329,8 +336,8 @@ const LessonDetails: React.FC<IProps> = ({ lesson, unit }) => {
     : false;
   let sectionComps = (
     lesson?.Section &&
-    typeof lesson?.Section === 'object' &&
-    lesson?.Section !== null
+      typeof lesson?.Section === 'object' &&
+      lesson?.Section !== null
       ? Object.values(lesson.Section).filter((section) => {
         return (section as any).SectionTitle !== 'Procedure';
       })
@@ -771,6 +778,10 @@ const LessonDetails: React.FC<IProps> = ({ lesson, unit }) => {
     }
   }, []);
 
+  useEffect(() => {
+    console.log('_unitSections: ', _unitSections);
+  });
+
   if (!unit && !lesson && typeof window === 'undefined') {
     return null;
   }
@@ -795,7 +806,7 @@ const LessonDetails: React.FC<IProps> = ({ lesson, unit }) => {
         borderTopRightRadius: '1rem',
         borderBottomRightRadius: '1rem',
         boxShadow:
-            '0 4px 6px 0 rgba(0,0,0,.4), 0 7px 5px -5px rgba(0,0,0,.2)',
+          '0 4px 6px 0 rgba(0,0,0,.4), 0 7px 5px -5px rgba(0,0,0,.2)',
         top: 150,
         width: '60px',
       },
@@ -807,7 +818,7 @@ const LessonDetails: React.FC<IProps> = ({ lesson, unit }) => {
         borderTopRightRadius: '1rem',
         borderBottomRightRadius: '1rem',
         boxShadow:
-            '0 4px 6px 0 rgba(0,0,0,.4), 0 7px 5px -5px rgba(0,0,0,.2)',
+          '0 4px 6px 0 rgba(0,0,0,.4), 0 7px 5px -5px rgba(0,0,0,.2)',
         top: 150,
         width: '60px',
       },
@@ -945,7 +956,7 @@ export const getStaticProps = async (arg: {
     }
 
     const targetUnits = (await Units.find<INewUnitSchema>(
-      { numID: id },
+      { numID: parseInt(id) },
       { __v: 0 }
     ).lean()) as INewUnitSchema[];
     const availUnitLocales = targetUnits
@@ -1177,8 +1188,8 @@ export const getStaticProps = async (arg: {
 
                     return (
                       lessonName &&
-                    lesson.title &&
-                    lessonName.toLowerCase() === lesson.title.toLowerCase()
+                      lesson.title &&
+                      lessonName.toLowerCase() === lesson.title.toLowerCase()
                     );
                   })
                   ?.map((itemA) => {
@@ -1338,12 +1349,12 @@ export const getStaticProps = async (arg: {
                 rootFieldToRetrieveForUI?.as &&
                 typeof rootFieldToRetrieveForUI.as === 'string' &&
                 targetUnitForUI[
-                  rootFieldToRetrieveForUI?.name as keyof TUnitForUI
+                rootFieldToRetrieveForUI?.name as keyof TUnitForUI
                 ]
               ) {
                 const val =
                   targetUnitForUI[
-                    rootFieldToRetrieveForUI.name as keyof TUnitForUI
+                  rootFieldToRetrieveForUI.name as keyof TUnitForUI
                   ];
 
                 if (!val) {

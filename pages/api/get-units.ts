@@ -78,7 +78,7 @@ export default async function handler(
     }
 
     const { data, errMsg } = await retrieveUnits(
-      (dbFilter ?? {}) as Record<keyof IUnit, unknown>,
+      (dbFilter ?? {}) as Parameters<typeof retrieveUnits>[0],
       dbProjections ?? {}
     );
 
@@ -102,9 +102,8 @@ export default async function handler(
     console.error("Error in the `getUnits` API route:", error);
 
     return response.status(code ?? 500).json({
-      msg: `Error message: ${
-        message ?? "An error has occurred on the server."
-      }`,
+      msg: `Error message: ${message ?? "An error has occurred on the server."
+        }`,
     });
   }
 }

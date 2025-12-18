@@ -16,6 +16,8 @@ import { IoOpenOutline } from "react-icons/io5";
 import { IItemV2 } from "../../../backend/models/Unit/types/teachingMaterials";
 import ItemsCarousel, { CarouselItem } from "../LessonItemsModalCarousel";
 import { getMediaComponent } from "../Preview/utils";
+import { SignInSuggestion } from "../TeachIt/LessonPart";
+import { useRouter } from "next/router";
 
 const NAV_BTN_DIMENSION = '40px';
 
@@ -217,10 +219,12 @@ const LessonItemDownloadBtnsDropDown: React.FC<{
 
 const LessonItemsModal: React.FC = () => {
   const { _lessonItemModal, _isGpPlusModalDisplayed } = useModalContext();
-  const { _isGpPlusMember } = useUserContext();
+  const { _isGpPlusMember, _isUserTeacher: [isUserTeacher] } = useUserContext();
+  const [canShowTeacherItems, setCanShowTeacherItems] = useState(false);
   const { _idsOfLessonsBeingCopied } = useLessonContext();
   const { gdriveAccessToken } = useSiteSession();
   const [idsOfLessonsBeingCopied] = _idsOfLessonsBeingCopied;
+  const router = useRouter();
   const [lessonItemModal, setLessonItemModal] = _lessonItemModal;
   const rightArrownRef = useRef<HTMLButtonElement>(null);
   const leftArrownRef = useRef<HTMLButtonElement>(null);
@@ -278,6 +282,7 @@ const LessonItemsModal: React.FC = () => {
     itemType,
     externalUrl,
   } = currentLessonItem;
+  const isTeacherItem = currentLessonItemName ? currentLessonItemName.toLowerCase().includes('teacher') : false;
 
   const handleDownloadPdfBtnClick = () => {
     if (currentLessonItem.mimeType === "pdf") {
@@ -356,6 +361,10 @@ const LessonItemsModal: React.FC = () => {
     }
   };
 
+  const handleUpdateProfileBtnClick = () => {
+    router.push("/account?show_about_user_form=true");
+  }
+
   useEffect(() => {
     document.addEventListener("keydown", handleKeyDown);
 
@@ -380,6 +389,13 @@ const LessonItemsModal: React.FC = () => {
           margin: "0px",
           padding: "0px",
           zIndex: 1000,
+        }}
+        onShow={() => {
+          if (isUserTeacher) {
+            setCanShowTeacherItems(true);
+            return;
+          }
+          setCanShowTeacherItems(false);
         }}
       >
         <CloseButton
@@ -678,7 +694,38 @@ const LessonItemsModal: React.FC = () => {
 
               return (
                 <CarouselItem backgroundColor={LESSON_ITEMS_MODAL_BG_COLOR}>
-                  {media}
+                  <div className="position-relative h-100 w-100">
+                    {!canShowTeacherItems && isTeacherItem && (
+                      <div className="w-100 h-100 position-absolute d-flex justify-content-center align-items-center">
+                        <div className="position-relative w-100 h-100">
+                          <SignInSuggestion
+                            txt="You must be a teacher to view this item."
+                            className="position-absolute start-50 translate-middle px-3 px-sm-4 w-100"
+                            txtClassName="text-center fw-bold fs-6 fs-sm-5"
+                            style={{
+                              top: "40%",
+                              zIndex: 1000,
+                              wordBreak: "break-word",
+                              whiteSpace: "normal",
+                              overflowWrap: "break-word",
+                              textAlign: "center",
+                            }}
+                          >
+                            <Button
+                              onClick={handleUpdateProfileBtnClick}
+                              className="mt-2 sign-in-teacher-materials-btn d-flex justify-content-center align-items-center underline-on-hover px-3 py-2"
+                              style={{ maxWidth: "200px", fontSize: "14px" }}
+                            >
+                              Update Profile
+                            </Button>
+                          </SignInSuggestion>
+                          <div className="w-100 h-100 d-none d-sm-block" style={{ filter: "blur(2.5rem)", backgroundColor: "white" }} />
+                          <div className="w-100 h-100 d-block d-sm-none" style={{ backgroundColor: "white", opacity: .96 }} />
+                        </div>
+                      </div>
+                    )}
+                    {media}
+                  </div>
                 </CarouselItem>
               )
             })}
