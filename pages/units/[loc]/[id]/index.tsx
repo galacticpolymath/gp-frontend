@@ -173,7 +173,10 @@ export const updateOverviewSection = (sectionVal: object, unit: TUnitForUI) => {
   const jobVizConnectionsSec = unit.Sections?.jobvizConnections;
 
   if (!jobVizConnectionsSec) {
-    return sectionVal;
+    return {
+      ...sectionVal,
+      TargetStandardsCodes: unit.TargetStandardsCodes
+    };
   }
 
   const previewJobsSliced = jobVizConnectionsSec.Content.slice(0, 3);
@@ -199,6 +202,8 @@ export const updateOverviewSection = (sectionVal: object, unit: TUnitForUI) => {
       additionalJobsNum,
       jobTitleAndSocCodePairs,
     },
+    TargetStandardsCodes: unit.TargetStandardsCodes
+
   };
 
   return overviewSecProps;

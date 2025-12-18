@@ -7,14 +7,16 @@ import CustomLink from '../CustomLink';
 import QRCode from 'react-qr-code';
 import { FiExternalLink } from 'react-icons/fi';
 import Logo from '../../assets/img/galactic_polymath_white.png';
-import GistCard from '../LessonSection/GistCard';
+import GistCard, { IGistCard } from '../LessonSection/GistCard';
 import { ISubRelease } from '../../backend/models/Unit/Overview';
 import { useRouter } from 'next/router';
 import { INewUnitLesson } from '../../backend/models/Unit/types/teachingMaterials';
 import { UNITS_URL_PATH } from '../../shared/constants';
 import { ITargetStandardsCode } from '../../backend/models/Unit/types/standards';
+import React from 'react';
+import { getStandards } from '../LessonSection/Overview';
 
-interface ILessonPreviewUIProps {
+interface ILessonPreviewUIProps extends Pick<IGistCard, 'jobVizCareerConnections'> {
   areTargetStandardsValid: boolean;
   TargetStandardsCodes: ITargetStandardsCode[];
   standards: Record<string, Omit<ITargetStandardsCode, 'set'>[]>;
@@ -37,9 +39,10 @@ interface ILessonPreviewUIProps {
   lessonParts: (INewUnitLesson | null)[] | null;
 }
 
-const UnitPreviewUI = ({
+const UnitPreviewUI: React.FC<Partial<ILessonPreviewUIProps>> = ({
   latestSubRelease,
   Title,
+  jobVizCareerConnections,
   Subtitle,
   lessonBannerUrl,
   EstLessonTime,
@@ -57,10 +60,13 @@ const UnitPreviewUI = ({
   isLesson4,
   SponsoredBy,
   lessonParts,
-}: Partial<ILessonPreviewUIProps>) => {
+}) => {
   const linkUrlDomain =
     typeof window === 'undefined' ? '' : window.location.origin;
   const router = useRouter();
+  const targetStandardsCodes = TargetStandardsCodes ? getStandards(TargetStandardsCodes) : {};
+
+  console.log('TargetStandardsCodes, UnitPreviewUI: ', TargetStandardsCodes);
 
   return (
     <div>
@@ -123,9 +129,8 @@ const UnitPreviewUI = ({
               SteamEpaulette_vert={SteamEpaulette_vert}
               areTargetStandardsValid={!!areTargetStandardsValid}
               TargetStandardsCodes={TargetStandardsCodes ?? null}
-              standards={
-                standards as Record<string, Omit<ITargetStandardsCode, 'set'>[]>
-              }
+              jobVizCareerConnections={jobVizCareerConnections}
+              standards={targetStandardsCodes}
             />
           </div>
         </div>
