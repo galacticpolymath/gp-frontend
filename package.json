@@ -9,7 +9,7 @@
     "lint": "next lint",
     "lint_fix": "eslint --fix --ext .js,.jsx .",
     "ci": "start-server-and-test 'npm run start-server' http://localhost:3000 'npm run test:integration'",
-    "start-server": "next dev -p 3000",
+    "start-server": "next dev -p 3000 --turbopack",
     "test:integration": "jest --roots testing/integration",
     "test": "jest"
   },
