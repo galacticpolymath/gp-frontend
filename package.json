@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@as-integrations/next": "^4.1.0",
-    "@fluentui/react-carousel": "^9.8.13",
+    "@fluentui/react-carousel": "^9.9.0",
     "@fortawesome/fontawesome-free": "^7.1.0",
     "@fortawesome/react-fontawesome": "^3.1.1",
     "@geniux/google-drive-picker-react": "^1.0.0",
@@ -24,9 +24,9 @@
     "@google-cloud/local-auth": "^3.0.1",
     "@google-cloud/resource-manager": "^6.2.1",
     "@google-cloud/storage": "^7.18.0",
-    "@googleworkspace/drive-picker-element": "^0.7.2",
+    "@googleworkspace/drive-picker-element": "^0.7.3",
     "@headlessui/react": "^2.2.9",
-    "@ionic/react": "^8.7.11",
+    "@ionic/react": "^8.7.14",
     "@magic-ext/oauth": "^24.0.0",
     "@mui/icons-material": "^7.3.6",
     "@mui/material": "^7.3.6",
@@ -112,7 +112,7 @@
     "uuid": "^13.0.0",
     "validator": "^13.15.23",
     "wait-on": "^9.0.3",
-    "zod": "^4.1.13"
+    "zod": "^4.2.1"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.3",
