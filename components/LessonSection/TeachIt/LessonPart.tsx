@@ -842,7 +842,7 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                                       </div>
                                       <div className="d-flex justify-content-center align-items-center ps-2">
                                         <a
-                                          href={`${gdriveRoot}/present`}
+                                          href={`${gdriveRoot}/view`}
                                           target="_blank"
                                           rel="noopener noreferrer"
                                           style={{
