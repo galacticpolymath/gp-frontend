@@ -949,7 +949,7 @@ export const getStaticProps = async (arg: {
     }
 
     const targetUnits = (await Units.find<INewUnitSchema>(
-      { numID: id },
+      { numID: parseInt(id) },
       { __v: 0 }
     ).lean()) as INewUnitSchema[];
     const availUnitLocales = targetUnits
