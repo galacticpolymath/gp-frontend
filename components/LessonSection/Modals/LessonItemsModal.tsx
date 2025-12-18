@@ -686,21 +686,31 @@ const LessonItemsModal: React.FC = () => {
 
               return (
                 <CarouselItem backgroundColor={LESSON_ITEMS_MODAL_BG_COLOR}>
-                  {true && isTeacherItem && (
-                    <SignInSuggestion
-                      txt="You must be a teacher to view this item."
-                    >
-                      <div className="d-flex justify-content-center align-items-center">
-                        <Button
-                          onClick={handleUpdateProfileBtnClick}
-                          className="mt-2 sign-in-teacher-materials-btn d-flex justify-content-center align-items-center underline-on-hover"
-                        >
-                          Update Profile
-                        </Button>
+                  <div className="position-relative h-100 w-100">
+                    {true && isTeacherItem && (
+                      <div className="w-100 h-100 position-absolute d-flex justify-content-center align-items-center">
+                        <div className="position-relative w-100 h-100">
+                          <SignInSuggestion
+                            txt="You must be a teacher to view this item."
+                            className="position-absolute start-50 translate-middle"
+                            style={{
+                              top: "40%",
+                              zIndex: 1000,
+                            }}
+                          >
+                            <Button
+                              onClick={handleUpdateProfileBtnClick}
+                              className="mt-2 sign-in-teacher-materials-btn d-flex justify-content-center align-items-center underline-on-hover w-100"
+                            >
+                              Update Profile
+                            </Button>
+                          </SignInSuggestion>
+                          <div className="w-100 h-100" style={{ filter: "blur(5.5rem)", backgroundColor: "white", opacity: .9999 }} />
+                        </div>
                       </div>
-                    </SignInSuggestion>
-                  )}
-                  {media}
+                    )}
+                    {media}
+                  </div>
                 </CarouselItem>
               )
             })}
