@@ -169,6 +169,41 @@ const UNIT_DOCUMENT_ORIGINS = new Set([
 
 type TUpdateSection = (sectionVal: object, unit: TUnitForUI) => object;
 
+export const updateOverviewSection = (sectionVal: object, unit: TUnitForUI) => {
+  const jobVizConnectionsSec = unit.Sections?.jobvizConnections;
+
+  if (!jobVizConnectionsSec) {
+    return sectionVal;
+  }
+
+  const previewJobsSliced = jobVizConnectionsSec.Content.slice(0, 3);
+  const jobTitleAndSocCodePairs: [string, string][] = [];
+
+  for (const previewJob of previewJobsSliced) {
+    let jobTitle = Array.isArray(previewJob.job_title) ? previewJob.job_title.at(0) : previewJob.job_title;
+    let socCode = Array.isArray(previewJob.job_title) ? previewJob.job_title.at(0) : previewJob.job_title;
+
+    if (!socCode || !jobTitle) {
+      console.error('Developer Error: Missing job title or SOC code in JobViz preview jobs.', { previewJob });
+      continue;
+    }
+
+    jobTitleAndSocCodePairs.push([jobTitle, socCode]);
+  }
+
+  const additionalJobsNum =
+    jobVizConnectionsSec.Content.length - jobTitleAndSocCodePairs.length;
+  const overviewSecProps: IOverviewProps = {
+    ...(sectionVal as IOverviewProps),
+    jobVizCareerConnections: {
+      additionalJobsNum,
+      jobTitleAndSocCodePairs,
+    },
+  };
+
+  return overviewSecProps;
+}
+
 const SECTION_UPDATERS: Partial<Record<keyof TSectionsForUI, TUpdateSection>> = {
   jobvizConnections: (sectionVal: object, unit: TUnitForUI) => {
     return {
@@ -176,40 +211,7 @@ const SECTION_UPDATERS: Partial<Record<keyof TSectionsForUI, TUpdateSection>> = 
       unitName: unit.Title,
     };
   },
-  overview: (sectionVal: object, unit: TUnitForUI) => {
-    const jobVizConnectionsSec = unit.Sections?.jobvizConnections;
-
-    if (!jobVizConnectionsSec) {
-      return sectionVal;
-    }
-
-    const previewJobsSliced = jobVizConnectionsSec.Content.slice(0, 3);
-    const jobTitleAndSocCodePairs: [string, string][] = [];
-
-    for (const previewJob of previewJobsSliced) {
-      let jobTitle = Array.isArray(previewJob.job_title) ? previewJob.job_title.at(0) : previewJob.job_title;
-      let socCode = Array.isArray(previewJob.job_title) ? previewJob.job_title.at(0) : previewJob.job_title;
-
-      if (!socCode || !jobTitle) {
-        console.error('Developer Error: Missing job title or SOC code in JobViz preview jobs.', { previewJob });
-        continue;
-      }
-
-      jobTitleAndSocCodePairs.push([jobTitle, socCode]);
-    }
-
-    const additionalJobsNum =
-      jobVizConnectionsSec.Content.length - jobTitleAndSocCodePairs.length;
-    const overviewSecProps: IOverviewProps = {
-      ...(sectionVal as IOverviewProps),
-      jobVizCareerConnections: {
-        additionalJobsNum,
-        jobTitleAndSocCodePairs,
-      },
-    };
-
-    return overviewSecProps;
-  },
+  overview: updateOverviewSection,
 };
 
 const LessonDetails: React.FC<IProps> = ({ lesson, unit }) => {
