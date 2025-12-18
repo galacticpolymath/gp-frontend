@@ -692,20 +692,27 @@ const LessonItemsModal: React.FC = () => {
                         <div className="position-relative w-100 h-100">
                           <SignInSuggestion
                             txt="You must be a teacher to view this item."
-                            className="position-absolute start-50 translate-middle"
+                            className="position-absolute start-50 translate-middle px-3 px-sm-4 w-100"
+                            txtClassName="text-center fw-bold fs-6 fs-sm-5"
                             style={{
                               top: "40%",
                               zIndex: 1000,
+                              wordBreak: "break-word",
+                              whiteSpace: "normal",
+                              overflowWrap: "break-word",
+                              textAlign: "center",
                             }}
                           >
                             <Button
                               onClick={handleUpdateProfileBtnClick}
-                              className="mt-2 sign-in-teacher-materials-btn d-flex justify-content-center align-items-center underline-on-hover w-100"
+                              className="mt-2 sign-in-teacher-materials-btn d-flex justify-content-center align-items-center underline-on-hover px-3 py-2"
+                              style={{ maxWidth: "200px", fontSize: "14px" }}
                             >
                               Update Profile
                             </Button>
                           </SignInSuggestion>
-                          <div className="w-100 h-100" style={{ filter: "blur(5.5rem)", backgroundColor: "white", opacity: .9999 }} />
+                          <div className="w-100 h-100 d-none d-sm-block" style={{ filter: "blur(5.5rem)", backgroundColor: "white" }} />
+                          <div className="w-100 h-100 d-block d-sm-none" style={{ backgroundColor: "white", opacity: .96 }} />
                         </div>
                       </div>
                     )}

@@ -63,8 +63,8 @@ export const SignInSuggestion: React.FC<ISignInSuggestionProps> = ({
   children,
   txt,
   style = { zIndex: 100 },
-  className = "center-absolutely d-flex flex-column justify-content-center col-12 mt-4",
-  txtClassName = "text-center fw-bold",
+  className = "center-absolutely d-flex flex-column justify-content-center col-12 mt-3 mt-md-4 px-3 px-sm-2 px-md-3",
+  txtClassName = "text-center fw-bold fs-6 fs-md-5",
 }) => {
   if (!txt) {
     txt = "For teachers guides, sign in with a free account!";
@@ -72,8 +72,10 @@ export const SignInSuggestion: React.FC<ISignInSuggestionProps> = ({
 
   return (
     <div style={style} className={className}>
-      <span className={txtClassName}>{txt}</span>
-      {children}
+      <span style={{ wordWrap: "break-word", maxWidth: "100%" }} className={txtClassName}>{txt}</span>
+      <div className="w-100 d-flex justify-content-center">
+        {children}
+      </div>
     </div>
   );
 };
