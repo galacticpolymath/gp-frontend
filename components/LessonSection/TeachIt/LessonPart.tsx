@@ -746,22 +746,10 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                     const {
                       itemTitle,
                       itemDescription,
-                      links,
                       filePreviewImg,
-                      itemCat,
                       gdriveRoot,
                       itemType,
                     } = item;
-                    const openInNewTabLink = itemType === "presentation"
-                    const _links = links
-                      ? Array.isArray(links)
-                        ? links
-                        : [links]
-                      : null;
-                    const imgLink =
-                      itemCat === "web resource"
-                        ? _links?.[0]?.url ?? ""
-                        : _links?.[1]?.url ?? "";
                     const isTeacherItem = itemTitle
                       ? itemTitle.toLowerCase().includes("teacher")
                       : false;

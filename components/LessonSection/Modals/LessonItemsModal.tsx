@@ -373,10 +373,6 @@ const LessonItemsModal: React.FC = () => {
     };
   }, []);
 
-  useEffect(() => {
-    console.log("current lesson item: ", currentLessonItem);
-  });
-
   return (
     <>
       <Modal

@@ -127,6 +127,7 @@ const addGradesOrYearsProperty = (
 };
 
 interface IProps {
+  /** @deprecated Use `unit` property instead. */
   lesson?: any;
   unit?: TUnitForUI;
   unitGDriveChildItems: Awaited<ReturnType<typeof getUnitGDriveChildItems>>;
@@ -988,6 +989,10 @@ export const getStaticProps = async (arg: {
 
       console.log('unitGDriveChildItems first: ', unitGDriveChildItems);
 
+      // GOAL: get all of the items for each of the lesson folders
+
+      // throw new Error("yo there!");
+
       const headLinks = targetUnits
         .filter(({ locale, numID }) => locale && numID)
         .map(({ locale, numID }) => [
@@ -1105,6 +1110,15 @@ export const getStaticProps = async (arg: {
               });
 
               if (targetUnitGDriveItem?.id && lesson.lsn) {
+                // TODO: make a query to the database to get all of the documents for the target folder
+
+                // NOTES:
+                // -get all of the ids of the gp's version of the documents 
+
+                // -the latest copy is retrieved and sent back to the client for the getUserLessonsGDriveFolderIds
+                // -
+                // END GOAL: for each lesson that is displayed in the lesson items modal, display the link of the user's latest copy to it
+
                 allUnitLessons.push({
                   id: lesson.lsn.toString(),
                   sharedGDriveId: targetUnitGDriveItem.id,

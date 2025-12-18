@@ -56,7 +56,7 @@ export type IUserGDriveLessonId = Required<
     >[number],
     "sharedGDriveId"
   > &
-    Pick<INewUnitLesson, "userGDriveLessonFolderId">
+  Pick<INewUnitLesson, "userGDriveLessonFolderId">
 >;
 
 export type THandleOnChange<TResourceVal extends object = ILesson> = (
@@ -69,16 +69,16 @@ export interface TeachItUIProps<
   TResourceVal extends object = ILesson,
   TSelectedGrade extends object = IResource<ILessonForUI>
 > extends TUnitPropsForTeachItSec,
-    ITeachItServerProps {
+  ITeachItServerProps {
   SectionTitle: string;
   _sectionDots: TUseStateReturnVal<ISectionDots>;
   ref: RefObject<null>;
   lessonDur: string | null;
   lessonPreface: string | null;
   gradeVariations?:
-    | IResource<TResourceVal>[]
-    | IResource<INewUnitLesson<IItem>>[]
-    | null;
+  | IResource<TResourceVal>[]
+  | IResource<INewUnitLesson<IItem>>[]
+  | null;
   resources?: IResource<ILesson>;
   selectedGrade: TSelectedGrade;
   setSelectedGrade: Dispatch<
@@ -214,11 +214,6 @@ const TeachItUI = <
   const ensureValidToken = async () =>
     await _ensureValidToken(gdriveAccessTokenExp!, setAppCookie);
 
-  useEffect(() => {
-    console.log("parts, sup there: ", parts);
-    console.log("parts, sup there, selectedGrade: ", selectedGrade);
-  });
-
   const { isFetching } = useQuery({
     refetchOnWindowFocus: false,
     queryKey: [status, isGpPlusMember, selectedGrade],
@@ -226,10 +221,10 @@ const TeachItUI = <
       const lessonNumIds =
         status === "authenticated" && isGpPlusMember
           ? _parts.filter(Boolean).map((part) => {
-              return typeof part.lsn === "number"
-                ? part.lsn.toString()
-                : part.lsn!;
-            })
+            return typeof part.lsn === "number"
+              ? part.lsn.toString()
+              : part.lsn!;
+          })
           : [];
 
       if (
@@ -312,8 +307,6 @@ const TeachItUI = <
       return 1;
     },
   });
-  const [isCopyingUnitBtnDisabled, setIsCopyingUnitBtnDisabled] =
-    _isCopyUnitBtnDisabled;
   const router = useRouter();
 
   useEffect(() => {
@@ -371,8 +364,8 @@ const TeachItUI = <
         _sectionDots={_sectionDots}
         sectionBanner={
           !isGpPlusMember &&
-          status !== "loading" &&
-          didAttemptRetrieveUserData ? (
+            status !== "loading" &&
+            didAttemptRetrieveUserData ? (
             <GpPlusBanner />
           ) : null
         }
@@ -449,11 +442,11 @@ const TeachItUI = <
                     !isGpPlusMember || status === "unauthenticated"
                       ? takeUserToSignUpPg
                       : () => {
-                          window.open(
-                            `https://drive.google.com/drive/folders/${GdrivePublicID}`,
-                            "_"
-                          );
-                  }
+                        window.open(
+                          `https://drive.google.com/drive/folders/${GdrivePublicID}`,
+                          "_"
+                        );
+                      }
                   }
                   style={{
                     minHeight: "51px",
@@ -607,7 +600,7 @@ const TeachItUI = <
                     isRetrievingLessonFolderIds={isFetching}
                     userGDriveLessonFolderId={
                       "userGDriveLessonFolderId" in part &&
-                      part.userGDriveLessonFolderId
+                        part.userGDriveLessonFolderId
                         ? part.userGDriveLessonFolderId
                         : undefined
                     }

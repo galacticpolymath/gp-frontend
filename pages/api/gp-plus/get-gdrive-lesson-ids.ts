@@ -23,6 +23,13 @@ export default async function handler(
   let userEmail: string | null = null;
 
   console.log('request.query, get-gdrive-lessons-ids: ', request.query);
+
+  // NOTES: 
+  // -able to get all of the ids of the original lesson items 
+  // -get the target lesson folder in the user's drive
+  // -filter in the documents of the target lesson folder, by using the meta data of the documents that contains the original document id 
+  // -filter in those documents by retrieving all of the document ids of all materials for the target lesson
+
   const { lessonNumIds, unitId, grades } =
     request.query as unknown as IQueryParams;
   try {
@@ -172,7 +179,7 @@ export default async function handler(
 
     if (nonExistingLessonFolderIds?.length && userEmail && unitId) {
       console.log('will delete lesson folders from the database...');
-      
+
       const targetLessonDeletionResult = await updateUserCustom(
         {
           email: userEmail,
