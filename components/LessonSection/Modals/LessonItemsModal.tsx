@@ -16,6 +16,8 @@ import { IoOpenOutline } from "react-icons/io5";
 import { IItemV2 } from "../../../backend/models/Unit/types/teachingMaterials";
 import ItemsCarousel, { CarouselItem } from "../LessonItemsModalCarousel";
 import { getMediaComponent } from "../Preview/utils";
+import { SignInSuggestion } from "../TeachIt/LessonPart";
+import { useRouter } from "next/router";
 
 const NAV_BTN_DIMENSION = '40px';
 
@@ -217,10 +219,11 @@ const LessonItemDownloadBtnsDropDown: React.FC<{
 
 const LessonItemsModal: React.FC = () => {
   const { _lessonItemModal, _isGpPlusModalDisplayed } = useModalContext();
-  const { _isGpPlusMember } = useUserContext();
+  const { _isGpPlusMember, _isUserTeacher: [isUserTeacher] } = useUserContext();
   const { _idsOfLessonsBeingCopied } = useLessonContext();
   const { gdriveAccessToken } = useSiteSession();
   const [idsOfLessonsBeingCopied] = _idsOfLessonsBeingCopied;
+  const router = useRouter();
   const [lessonItemModal, setLessonItemModal] = _lessonItemModal;
   const rightArrownRef = useRef<HTMLButtonElement>(null);
   const leftArrownRef = useRef<HTMLButtonElement>(null);
@@ -278,6 +281,7 @@ const LessonItemsModal: React.FC = () => {
     itemType,
     externalUrl,
   } = currentLessonItem;
+  const isTeacherItem = currentLessonItemName ? currentLessonItemName.toLowerCase().includes('teacher') : false;
 
   const handleDownloadPdfBtnClick = () => {
     if (currentLessonItem.mimeType === "pdf") {
@@ -355,6 +359,10 @@ const LessonItemsModal: React.FC = () => {
       leftBtnRef?.current?.click();
     }
   };
+
+  const handleUpdateProfileBtnClick = () => {
+    router.push("/account?show_about_user_form=true");
+  }
 
   useEffect(() => {
     document.addEventListener("keydown", handleKeyDown);
@@ -678,6 +686,20 @@ const LessonItemsModal: React.FC = () => {
 
               return (
                 <CarouselItem backgroundColor={LESSON_ITEMS_MODAL_BG_COLOR}>
+                  {true && isTeacherItem && (
+                    <SignInSuggestion
+                      txt="You must be a teacher to view this item."
+                    >
+                      <div className="d-flex justify-content-center align-items-center">
+                        <Button
+                          onClick={handleUpdateProfileBtnClick}
+                          className="mt-2 sign-in-teacher-materials-btn d-flex justify-content-center align-items-center underline-on-hover"
+                        >
+                          Update Profile
+                        </Button>
+                      </div>
+                    </SignInSuggestion>
+                  )}
                   {media}
                 </CarouselItem>
               )

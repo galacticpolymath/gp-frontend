@@ -59,7 +59,7 @@ interface ISignInSuggestionProps extends PropsWithChildren {
   style?: React.CSSProperties;
 }
 
-const SignInSuggestion: React.FC<ISignInSuggestionProps> = ({
+export const SignInSuggestion: React.FC<ISignInSuggestionProps> = ({
   children,
   txt,
   style = { zIndex: 100 },
@@ -117,6 +117,8 @@ export interface ILessonPartProps
   unitTitle?: string | null;
   setParts: TSetter<(INewUnitLesson<IItemV2> | ILessonForUI)[]>;
 }
+
+
 
 const LessonPart: React.FC<ILessonPartProps> = (props) => {
   const {
