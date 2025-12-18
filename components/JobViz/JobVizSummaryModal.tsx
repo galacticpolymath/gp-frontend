@@ -45,6 +45,34 @@ const describeSegment = (verb: string, count: number, fallback: string) => {
   return `${verb} ${count} ${count === 1 ? "job" : "jobs"}`;
 };
 
+type SummaryPronoun = "you" | "i";
+
+const buildSummarySentence = (
+  counts: { love: number; like: number; dislike: number; total: number },
+  pronoun: SummaryPronoun
+) => {
+  if (!counts.total) {
+    return pronoun === "you"
+      ? "Rate each assignment job to unlock a shareable summary."
+      : "I need to rate each assignment job to unlock a shareable summary.";
+  }
+
+  const subject = pronoun === "you" ? "You" : "I";
+  const object = pronoun === "you" ? "you" : "me";
+
+  return `${subject} ${describeSegment(
+    "loved",
+    counts.love,
+    "didn't love any"
+  )} , ${describeSegment("liked", counts.like, "didn't like any")} , and ${describeSegment(
+    "marked",
+    counts.dislike,
+    "didn't mark any"
+  )} as not for ${object} out of ${counts.total} ${
+    counts.total === 1 ? "job" : "jobs"
+  }.`;
+};
+
 const sanitizePlainText = (value: string) =>
   sanitizeHtml(value, { allowedTags: [], allowedAttributes: {} }).trim();
 
@@ -170,16 +198,10 @@ const JobVizSummaryModal: React.FC = () => {
     );
   }, [jobRows]);
 
-  const summarySentence = useMemo(() => {
-    if (!counts.total) {
-      return "Rate each assignment job to unlock a shareable summary.";
-    }
-    return `You ${describeSegment("loved", counts.love, "didn't love any")} , ${describeSegment("liked", counts.like, "didn't like any")} , and ${describeSegment(
-      "marked",
-      counts.dislike,
-      "didn't mark any"
-    )} as not for you out of ${counts.total} ${counts.total === 1 ? "job" : "jobs"}.`;
-  }, [counts]);
+  const summarySentence = useMemo(
+    () => buildSummarySentence(counts, "you"),
+    [counts]
+  );
 
   const safeReflection = useMemo(() => sanitizePlainText(reflection), [reflection]);
   const reflectionLimit = 200;
@@ -213,12 +235,13 @@ const JobVizSummaryModal: React.FC = () => {
     }, 4000);
   };
 
-  const buildReportText = () => {
+  const buildReportText = (pronoun: SummaryPronoun = "you") => {
+    const summaryLine = buildSummarySentence(counts, pronoun);
     const lines = [
       `Galactic Polymath | JobViz+ Assignment Report`,
       unitLabel,
       "",
-      summarySentence,
+      summaryLine,
       "",
       "Ratings:",
       ...jobRows.map((job, index) => `${index + 1}. ${job.title} — ${job.rating ? job.rating.toUpperCase() : "Not rated"}`),
@@ -312,6 +335,27 @@ const JobVizSummaryModal: React.FC = () => {
     }
   };
 
+  const handleEmailReport = async () => {
+    if (!showActions) return;
+    try {
+      const reportText = buildReportText("i");
+      const shareUrl = await buildShareUrl();
+      const body = encodeURIComponent(`${reportText}\n\nReport link: ${shareUrl}`);
+      const subject = encodeURIComponent(
+        summaryState.unitName
+          ? `JobViz+ report – ${summaryState.unitName}`
+          : "JobViz+ assignment report"
+      );
+      if (typeof window !== "undefined") {
+        window.open(`mailto:?subject=${subject}&body=${body}`, "_blank", "noopener,noreferrer");
+      } else {
+        announceStatus("Email is only available in the browser");
+      }
+    } catch (error) {
+      announceStatus("Unable to start email");
+    }
+  };
+
   const handleReflectionChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     if (!allowEditing) return;
     const next = event.target.value.slice(0, reflectionLimit);
@@ -328,14 +372,27 @@ const JobVizSummaryModal: React.FC = () => {
       backdropClassName={styles.summaryModalBackdrop}
       centered
       size="lg"
+      style={{ zIndex: 12000080 }}
     >
-      <Modal.Header closeButton className={styles.summaryModalHeader}>
-        <div>
+      <Modal.Header className={styles.summaryModalHeader}>
+        <div className={styles.summaryHeaderGroup}>
+          <span className={styles.summaryHeaderBadge}>
+            <LucideIcon name="Sparkles" aria-hidden="true" />
+            Report ready
+          </span>
           <p className={styles.summaryModalKicker}>
             Galactic Polymath | JobViz+
           </p>
           <h2 className={styles.summaryModalTitle}>Summarize & Share</h2>
         </div>
+        <button
+          type="button"
+          className={styles.summaryModalCloseIcon}
+          onClick={closeModal}
+          aria-label="Close report"
+        >
+          <LucideIcon name="X" />
+        </button>
       </Modal.Header>
       <Modal.Body className={styles.summaryModalBody}>
         <div className={styles.summaryAssignmentTitle}>{unitLabel}</div>
@@ -383,18 +440,17 @@ const JobVizSummaryModal: React.FC = () => {
           )}
         </div>
         {showActions && (
-          <div className={styles.summaryShareSection}>
-            <div className={styles.summaryShareHeader}>
-              <h3>Share this assignment</h3>
-              <button
-                type="button"
-                className={styles.infoButton}
-                onClick={() => setInfoOpen((prev) => !prev)}
-              >
-                <LucideIcon name="Info" />
-                {infoOpen ? "Hide info" : "About your job ratings"}
-              </button>
-            </div>
+        <div className={styles.summaryShareSection}>
+              <div className={styles.summaryShareHeader}>
+                <h3>Share this assignment</h3>
+                <button
+                  type="button"
+                  className={styles.summaryInfoToggle}
+                  onClick={() => setInfoOpen((prev) => !prev)}
+                >
+                  {infoOpen ? "Hide info" : "About your job ratings"}
+                </button>
+              </div>
             {infoOpen && (
               <div className={styles.summaryInfoPanel}>
                 <div className={styles.summaryInfoHeader}>
@@ -425,6 +481,9 @@ const JobVizSummaryModal: React.FC = () => {
                   Include header row
                 </label>
               </div>
+              <button type="button" className={styles.summaryShareButton} onClick={handleEmailReport}>
+                <LucideIcon name="Mail" /> Email this report
+              </button>
               <button type="button" className={styles.summaryShareButtonPrimary} onClick={handleCopyShareLink}>
                 <LucideIcon name="Share2" /> Copy share link
               </button>

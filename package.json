@@ -39,6 +39,7 @@
     "axios": "^1.13.2",
     "bootstrap": "^5.3.8",
     "bootstrap-icons": "^1.13.1",
+    "canvas-confetti": "^1.9.4",
     "chalk": "^5.6.2",
     "crypto-js": "^4.2.0",
     "d3": "^7.9.0",

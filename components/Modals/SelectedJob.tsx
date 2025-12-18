@@ -531,19 +531,13 @@ const SelectedJob: React.FC = () => {
               {isAssignmentJob ? (
                 <section className={styles.modalRatingBlock}>
                   <div className={styles.modalRatingHeader}>
-                    <span
-                      className={styles.modalRatingLabel}
-                      data-glow={shouldGlowRatingLabel ? "true" : "false"}
-                    >
-                      Rate this job
-                    </span>
-                    <div className={styles.modalRatingHeaderActions}>
-                      {currentRating && (
-                        <span className={styles.modalRatingStatus}>
-                          <LucideIcon name="Check" />
-                          Rated
-                        </span>
-                      )}
+                    <div className={styles.modalRatingLabelGroup}>
+                      <span
+                        className={styles.modalRatingLabel}
+                        data-glow={shouldGlowRatingLabel ? "true" : "false"}
+                      >
+                        Rate this job
+                      </span>
                       <button
                         type="button"
                         className={styles.inlineInfoButton}
@@ -555,6 +549,12 @@ const SelectedJob: React.FC = () => {
                         <LucideIcon name="Info" />
                       </button>
                     </div>
+                    {currentRating && (
+                      <span className={styles.modalRatingStatus}>
+                        <LucideIcon name="Check" />
+                        Rated
+                      </span>
+                    )}
                   </div>
                   <div className={styles.modalRatingButtons}>
                     {ratingOptions.map((option) => (
@@ -603,7 +603,17 @@ const SelectedJob: React.FC = () => {
               ) : (
                 <section className={`${styles.modalRatingBlock} ${styles.modalRatingBlockDisabled}`}>
                   <div className={styles.modalRatingHeader}>
-                    <span className={styles.modalRatingLabel}>Rate this job</span>
+                    <div className={styles.modalRatingLabelGroup}>
+                      <span className={styles.modalRatingLabel}>Rate this job</span>
+                      <button
+                        type="button"
+                        className={styles.inlineInfoButton}
+                        aria-label="How JobViz+ ratings work"
+                        onClick={() => setShowRatingInfo((prev) => !prev)}
+                      >
+                        <LucideIcon name="Info" />
+                      </button>
+                    </div>
                     <span className={styles.modalRatingStatus}>
                       Assignment only
                     </span>

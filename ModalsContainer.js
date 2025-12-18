@@ -17,6 +17,7 @@ import SignUpModal from "./components/User/Create/SignUpModal";
 import PasswordResetModal from "./components/User/Password/PasswordResetModal";
 import AccountSettings from "./components/User/Settings/AccountSettings";
 import JobVizSummaryModal from "./components/JobViz/JobVizSummaryModal";
+import JobVizCompletionModal from "./components/JobViz/JobVizCompletionModal";
 
 export const CustomCloseButton = ({
     children = <IoMdClose color="white" size={28} />,
@@ -47,6 +48,7 @@ const ModalContainers = () => {
             <PasswordResetModal />
             <AccountSettings />
             <JobVizSummaryModal />
+            <JobVizCompletionModal />
         </>
     );
 };

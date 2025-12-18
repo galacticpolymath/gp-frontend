@@ -1,6 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import * as React from "react";
 import { useRouter } from "next/router";
+import confetti from "canvas-confetti";
 import styles from "../../styles/jobvizBurst.module.scss";
 import { LucideIcon } from "./LucideIcon";
 import {
@@ -26,6 +27,7 @@ interface AssignmentBannerProps {
 }
 
 const ASSIGNMENT_LOGO = "/plus/GP+ Submark.png";
+const COMPLETION_MODAL_DELAY_MS = 900;
 const formatAssignmentTitle = (value: string) =>
   value.replace(/\sand\s/gi, " & ");
 
@@ -37,8 +39,11 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
   variant = "mobile",
 }) => {
   const router = useRouter();
-  const { _jobvizSummaryModal } = useModalContext();
-  const [, setJobvizSummaryModal] = _jobvizSummaryModal;
+  const modalContext = useModalContext();
+  const [, setJobvizSummaryModal] = modalContext._jobvizSummaryModal;
+  const [, setJobvizCompletionModal] = modalContext._jobvizCompletionModal;
+  const [, setIsJobModalOn] = modalContext._isJobModalOn;
+  const [, setSelectedJob] = modalContext._selectedJob;
   const [clickedSocCodes, setClickedSocCodes] = React.useState<Set<string>>(
     new Set()
   );
@@ -48,17 +53,18 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
   const [slideDir, setSlideDir] = React.useState<"next" | "prev" | null>(null);
   const [flash, setFlash] = React.useState(false);
   const highlightTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
+  const completionModalTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
   const [highlightedSoc, setHighlightedSoc] = React.useState<string | null>(null);
   const [suppressedSocCodes, setSuppressedSocCodes] = React.useState<Set<string>>(new Set());
   const [mobileCollapsed, setMobileCollapsed] = React.useState(false);
-  const [celebrationWave, setCelebrationWave] = React.useState(0);
-  const [activeCelebrationWave, setActiveCelebrationWave] = React.useState<number | null>(null);
   const [hasCelebratedCompletion, setHasCelebratedCompletion] = React.useState(false);
   const shouldRenderBanner =
     Boolean(unitName) || Boolean(jobs?.length);
   const isMobile = variant === "mobile";
   const infoSectionId = isMobile ? "assignmentInfoBlock" : undefined;
   const hideInfoSection = isMobile && mobileCollapsed;
+  const shouldShowAssignmentBody = !isMobile || !mobileCollapsed;
+  const shouldShowCollapsedMobileContent = isMobile;
   const { ratings, clearRatings } = useJobRatings();
   const [isMounted, setIsMounted] = React.useState(false);
   React.useEffect(() => {
@@ -78,6 +84,7 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
       infoElement.removeAttribute("inert");
     }
   }, [hideInfoSection, isMobile]);
+
 
   React.useEffect(() => {
     if (typeof window === "undefined") return undefined;
@@ -125,6 +132,15 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
     };
   }, []);
 
+  React.useEffect(() => {
+    return () => {
+      if (completionModalTimeoutRef.current) {
+        clearTimeout(completionModalTimeoutRef.current);
+        completionModalTimeoutRef.current = null;
+      }
+    };
+  }, []);
+
   const assignmentSocCodes = React.useMemo(
     () => (jobs?.map(([, soc]) => soc) ?? []).filter(Boolean),
     [jobs]
@@ -138,23 +154,6 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
   const isAssignmentComplete = Boolean(
     progress.total > 0 && progress.rated === progress.total
   );
-
-  React.useEffect(() => {
-    if (isAssignmentComplete && !hasCelebratedCompletion) {
-      setHasCelebratedCompletion(true);
-      setCelebrationWave((prev) => prev + 1);
-    }
-    if (!isAssignmentComplete && hasCelebratedCompletion) {
-      setHasCelebratedCompletion(false);
-    }
-  }, [hasCelebratedCompletion, isAssignmentComplete]);
-
-  React.useEffect(() => {
-    if (!celebrationWave) return;
-    setActiveCelebrationWave(celebrationWave);
-    const timeout = setTimeout(() => setActiveCelebrationWave(null), 3200);
-    return () => clearTimeout(timeout);
-  }, [celebrationWave]);
 
   const handleJobClick = React.useCallback(
     (socCode: string) => {
@@ -198,6 +197,75 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
       allowEditing: true,
     });
   }, [jobItems, setJobvizSummaryModal, unitName]);
+
+  const closeJobModal = React.useCallback(() => {
+    setSelectedJob(null);
+    setIsJobModalOn(false);
+  }, [setIsJobModalOn, setSelectedJob]);
+
+  const triggerAssignmentConfetti = React.useCallback(() => {
+    if (typeof window === "undefined") return;
+    const duration = 1000;
+    const end = Date.now() + duration;
+    const frame = () => {
+      confetti({
+        particleCount: 4,
+        startVelocity: 35,
+        spread: 90,
+        ticks: 60,
+        origin: { x: Math.random(), y: Math.random() * 0.5 + 0.2 },
+      });
+      if (Date.now() < end) {
+        window.requestAnimationFrame(frame);
+      }
+    };
+    window.requestAnimationFrame(frame);
+  }, []);
+
+  React.useEffect(() => {
+    if (!isAssignmentComplete && hasCelebratedCompletion) {
+      setHasCelebratedCompletion(false);
+      if (completionModalTimeoutRef.current) {
+        clearTimeout(completionModalTimeoutRef.current);
+        completionModalTimeoutRef.current = null;
+      }
+      setJobvizCompletionModal((prev) => ({
+        ...prev,
+        isDisplayed: false,
+        onShare: null,
+      }));
+      return;
+    }
+
+    if (!isAssignmentComplete || hasCelebratedCompletion) {
+      return;
+    }
+
+    setHasCelebratedCompletion(true);
+    setMobileCollapsed(true);
+    setDockCollapsed(true);
+    triggerAssignmentConfetti();
+    closeJobModal();
+    if (completionModalTimeoutRef.current) {
+      clearTimeout(completionModalTimeoutRef.current);
+    }
+    completionModalTimeoutRef.current = setTimeout(() => {
+      setJobvizCompletionModal({
+        isDisplayed: true,
+        unitName,
+        onShare: handleOpenSummaryModal,
+      });
+      completionModalTimeoutRef.current = null;
+    }, COMPLETION_MODAL_DELAY_MS);
+  }, [
+    closeJobModal,
+    handleOpenSummaryModal,
+    hasCelebratedCompletion,
+    isAssignmentComplete,
+    setJobvizCompletionModal,
+    triggerAssignmentConfetti,
+    unitName,
+  ]);
 
   const nextUnratedSoc = React.useMemo(() => {
     if (!jobItems.length) return null;
@@ -273,6 +341,32 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
   }, [jobs?.length, variant]);
 
   const showAssignmentPanel = !isDesktopVariant || !isDockCollapsed;
+  React.useEffect(() => {
+    if (typeof window === "undefined") return undefined;
+    if (variant !== "desktop" || !showAssignmentPanel) {
+      document.documentElement.style.setProperty("--jobviz-desktop-dock-width", "0px");
+      return undefined;
+    }
+    const element = bannerRef.current;
+    if (!element) {
+      document.documentElement.style.setProperty("--jobviz-desktop-dock-width", "0px");
+      return undefined;
+    }
+    const updateWidth = () => {
+      const width = element.getBoundingClientRect().width;
+      document.documentElement.style.setProperty(
+        "--jobviz-desktop-dock-width",
+        `${width}px`
+      );
+    };
+    updateWidth();
+    const observer = new ResizeObserver(updateWidth);
+    observer.observe(element);
+    return () => {
+      observer.disconnect();
+      document.documentElement.style.setProperty("--jobviz-desktop-dock-width", "0px");
+    };
+  }, [variant, showAssignmentPanel, isDockCollapsed]);
   const activeJob = jobItems[activeJobIdx] ?? null;
   const isActiveJobUnrated =
     Boolean(isMobile && activeJob && !ratings[activeJob.soc]);
@@ -561,33 +655,36 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
                     />
                   </span>
                 </button>
-                <button
-                  type="button"
-                  className={`${styles.assignmentClearButton} ${styles.assignmentClearButtonInline}`}
-                  onClick={clearRatings}
-                >
-                  Clear ratings
-                </button>
+                {!mobileCollapsed && (
+                  <button
+                    type="button"
+                    className={`${styles.assignmentClearButton} ${styles.assignmentClearButtonInline}`}
+                    onClick={clearRatings}
+                  >
+                    Clear ratings
+                  </button>
+                )}
               </div>
             )}
-            <div
-              id={infoSectionId}
-              className={styles.assignmentInfoBlock}
-              aria-hidden={hideInfoSection}
-              data-hidden={hideInfoSection ? "true" : "false"}
-              ref={infoBlockRef}
-            >
-              {unitName && (
-                <span className={styles.assignmentUnitLabelInline}>
-                  <span>
-                    {" "}
-                    Jobs related to the{" "}
-                    <span className={styles.assignmentUnitName}>{unitName}</span>{" "}
-                    unit
+            {shouldShowAssignmentBody && (
+              <div
+                id={infoSectionId}
+                className={styles.assignmentInfoBlock}
+                aria-hidden={hideInfoSection}
+                data-hidden={hideInfoSection ? "true" : "false"}
+                ref={infoBlockRef}
+              >
+                {unitName && (
+                  <span className={styles.assignmentUnitLabelInline}>
+                    <span>
+                      {" "}
+                      Jobs related to the{" "}
+                      <span className={styles.assignmentUnitName}>{unitName}</span>{" "}
+                      unit
+                    </span>
                   </span>
-                </span>
-              )}
-              <div className={styles.assignmentMarker}>
+                )}
+                <div className={styles.assignmentMarker}>
                 <span className={styles.assignmentMarkerLabel}>
                   <img
                     src={ASSIGNMENT_LOGO}
@@ -596,40 +693,38 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
                     width={26}
                     height={26}
                   />
-                  Galactic Polymath | JobViz+
+                  JobViz+ | ASSIGNMENT
                 </span>
-                <p className={styles.assignmentCopy}>
-                  Explore and rate each of these jobs. Be prepared to explain your
-                  ratings <em>with data</em>.
-                </p>
+                  <p className={styles.assignmentCopy}>
+                    Explore and rate each of these jobs. Be prepared to explain your
+                    ratings <em>with data</em>.
+                  </p>
+                </div>
               </div>
-            </div>
-            {activeCelebrationWave ? (
-              <div className={styles.assignmentConfettiBurst} aria-hidden="true">
-                {Array.from({ length: 18 }).map((_, idx) => (
-                  <span
-                    key={`assignment-confetti-${activeCelebrationWave}-${idx}`}
-                    className={styles.assignmentConfettiPiece}
-                    style={
-                      {
-                        ["--confetti-index" as string]: idx,
-                      } as React.CSSProperties
-                    }
-                  />
-                ))}
-              </div>
-            ) : null}
+            )}
             {assignmentSocCodes.length > 0 &&
+              (shouldShowAssignmentBody || isMobile) &&
               (isAssignmentComplete ? (
-                <button
-                  type="button"
-                  className={styles.assignmentSummaryButton}
-                  onClick={handleOpenSummaryModal}
-                  disabled={!jobItems.length}
-                >
-                  <span>Summarize &amp; Share Assignment</span>
-                  <LucideIcon name="Sparkles" />
-                </button>
+                variant === "mobile" ? (
+                  <button
+                    type="button"
+                    className={`${styles.assignmentSummaryLink} ${styles.assignmentSummaryLinkMobile}`}
+                    onClick={handleOpenSummaryModal}
+                    disabled={!jobItems.length}
+                  >
+                    Finalize &amp; Share
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    className={styles.assignmentSummaryButton}
+                    onClick={handleOpenSummaryModal}
+                    disabled={!jobItems.length}
+                  >
+                    <span>Finalize &amp; Share</span>
+                    <LucideIcon name="Sparkles" />
+                  </button>
+                )
               ) : (
                 <div className={styles.assignmentProgressRow}>
                   <div className={styles.assignmentProgressLabel}>
@@ -645,11 +740,12 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
                   </div>
                 </div>
               ))}
-            <div
-              className={`${styles.assignmentContent} ${
-                variant === "mobile" ? styles.assignmentMobileContentSticky : ""
-              }`}
-            >
+            {(shouldShowAssignmentBody || shouldShowCollapsedMobileContent) && (
+              <div
+                className={`${styles.assignmentContent} ${
+                  variant === "mobile" ? styles.assignmentMobileContentSticky : ""
+                }`}
+              >
               {variant === "desktop" && splitJobs.length > 0 && (
                 <div className={styles.assignmentListWrap}>
                   {splitJobs.map((jobGroup, idx) => (
@@ -844,7 +940,8 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
                   </div>
                 </div>
               )}
-            </div>
+              </div>
+            )}
           </div>
         </div>
       )}
