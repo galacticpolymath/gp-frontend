@@ -220,6 +220,7 @@ const LessonItemDownloadBtnsDropDown: React.FC<{
 const LessonItemsModal: React.FC = () => {
   const { _lessonItemModal, _isGpPlusModalDisplayed } = useModalContext();
   const { _isGpPlusMember, _isUserTeacher: [isUserTeacher] } = useUserContext();
+  const [canShowTeacherItems, setCanShowTeacherItems] = useState(false);
   const { _idsOfLessonsBeingCopied } = useLessonContext();
   const { gdriveAccessToken } = useSiteSession();
   const [idsOfLessonsBeingCopied] = _idsOfLessonsBeingCopied;
@@ -388,6 +389,13 @@ const LessonItemsModal: React.FC = () => {
           margin: "0px",
           padding: "0px",
           zIndex: 1000,
+        }}
+        onShow={() => {
+          if (isUserTeacher) {
+            setCanShowTeacherItems(true);
+            return;
+          }
+          setCanShowTeacherItems(false);
         }}
       >
         <CloseButton
@@ -687,7 +695,7 @@ const LessonItemsModal: React.FC = () => {
               return (
                 <CarouselItem backgroundColor={LESSON_ITEMS_MODAL_BG_COLOR}>
                   <div className="position-relative h-100 w-100">
-                    {true && isTeacherItem && (
+                    {!canShowTeacherItems && isTeacherItem && (
                       <div className="w-100 h-100 position-absolute d-flex justify-content-center align-items-center">
                         <div className="position-relative w-100 h-100">
                           <SignInSuggestion
@@ -711,7 +719,7 @@ const LessonItemsModal: React.FC = () => {
                               Update Profile
                             </Button>
                           </SignInSuggestion>
-                          <div className="w-100 h-100 d-none d-sm-block" style={{ filter: "blur(5.5rem)", backgroundColor: "white" }} />
+                          <div className="w-100 h-100 d-none d-sm-block" style={{ filter: "blur(2.5rem)", backgroundColor: "white" }} />
                           <div className="w-100 h-100 d-block d-sm-none" style={{ backgroundColor: "white", opacity: .96 }} />
                         </div>
                       </div>
