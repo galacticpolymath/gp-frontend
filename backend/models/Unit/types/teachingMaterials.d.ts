@@ -2,7 +2,7 @@ import { ILessonForUI } from '../../../../types/global';
 import { IUnitSectionObj } from '../Section';
 import { IOverview, IUnitOverview, TUnitOverviewPropsForUI } from './overview';
 
-export interface ILink{
+export interface ILink {
   linkText: string | null;
   url: string[] | null;
 }
@@ -13,7 +13,7 @@ export interface IItem {
   links: ILink[] | null;
 }
 
-export interface IItemV2Props{
+export interface IItemV2Props {
   mimeType: string;
   gdriveRoot: string;
   isExportable: boolean;
@@ -28,13 +28,15 @@ export interface IItemV2 extends IItemV2Props {
   links: ILink[] | null;
 }
 
-export interface IGoingFurtherVal extends Omit<IItem, 'links' | 'itemCat'>{
+export interface IGoingFurtherVal extends Omit<IItem, 'links' | 'itemCat'> {
   item: number
   itemLink: string
 }
 
-export interface IItemForUI extends IItem{
+export interface IItemForUI extends IItem {
   filePreviewImg?: string
+  userCopiedGoogleDriveVersionId?: string,
+  gpGoogleDriveVerionsId?: string
 }
 
 // contains the props of the old database schema
@@ -61,7 +63,7 @@ export interface ILesson<TItem extends IItem = IItem> {
   ext: ILsnExt[] | null;
 }
 
-export interface IOldLesson{
+export interface IOldLesson {
   lsn: string | null;
   title: string | null;
   tags: string[][] | null;
@@ -179,17 +181,17 @@ interface IChunkStep {
   StepQuickDescription: string | null;
   StepDetails: string | null;
   Vocab: string | null;
-  VariantNotes: string |null;
+  VariantNotes: string | null;
   TeachingTips: string | null;
-  
+
 }
 
-export interface IGDriveItem{
+export interface IGDriveItem {
   id: string;
   name: string
 }
 
-export interface ISharedGDriveLessonFolder{
+export interface ISharedGDriveLessonFolder {
   id: string,
   name: string,
   parentFolder: {
@@ -198,10 +200,14 @@ export interface ISharedGDriveLessonFolder{
   }
 }
 
+interface ILessonItemInGpDrive extends Pick<IItemV2, "itemTitle"> {
+  gdriveId: string
+}
+
 interface INewUnitLesson<TItem extends IItem = IItemV2> {
   userGDriveLessonFolderId?: string;
-  sharedGDriveLessonFolders?: ISharedGDriveLessonFolder[] 
-  allUnitLessons?: { id: string, sharedGDriveId: string }[]
+  sharedGDriveLessonFolders?: ISharedGDriveLessonFolder[]
+  allUnitLessons?: { id: string, sharedGDriveId: string, lessonItemsInGpDrive?: ILessonItemInGpDrive[] }[]
   lessonsFolder?: Partial<{
     name: string;
     sharedGDriveId: string;
@@ -239,13 +245,13 @@ export interface IVocab {
   definition: string;
 }
 
-interface ITeachingMaterialsPreviewInfo{
+interface ITeachingMaterialsPreviewInfo {
   unitDur: string;
   unitPreface: string;
   gatheredVocab: IVocab[];
 }
 
-interface IResourceObj<TLesson extends INewUnitLesson = INewUnitLesson>{
+interface IResourceObj<TLesson extends INewUnitLesson = INewUnitLesson> {
   resources: IResource<INewUnitLesson>[]
 }
 

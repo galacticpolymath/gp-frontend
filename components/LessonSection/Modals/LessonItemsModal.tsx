@@ -226,8 +226,6 @@ const LessonItemsModal: React.FC = () => {
   const [idsOfLessonsBeingCopied] = _idsOfLessonsBeingCopied;
   const router = useRouter();
   const [lessonItemModal, setLessonItemModal] = _lessonItemModal;
-  const rightArrownRef = useRef<HTMLButtonElement>(null);
-  const leftArrownRef = useRef<HTMLButtonElement>(null);
   const [isGpPlusModalDisplayed, setIsGpPlusModalDisplayed] =
     _isGpPlusModalDisplayed;
   const [isGpPlusMember] = _isGpPlusMember;
@@ -329,15 +327,6 @@ const LessonItemsModal: React.FC = () => {
         isDisplayed: false,
       };
     });
-  };
-
-  const handleCarouselNavBtnClick = (navDirection: "left" | "right") => () => {
-    if (navDirection === "right") {
-      rightArrownRef.current?.click();
-      return;
-    }
-
-    leftArrownRef.current?.click();
   };
 
   const handleCopyLessonBtnClick = () => {

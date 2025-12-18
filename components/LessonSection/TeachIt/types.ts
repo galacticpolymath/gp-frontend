@@ -19,9 +19,10 @@ type TTargetUnitProps<TKey extends TTargetUnitKeys = TTargetUnitKeys> = {
 };
 export interface TeachItProps
   extends Pick<IComponent, "index">,
-    TTargetUnitProps,
-    IUnitTeachingMaterials, TUnitPropsForTeachItSec, ITeachItServerProps {
+  TTargetUnitProps,
+  IUnitTeachingMaterials, TUnitPropsForTeachItSec, ITeachItServerProps {
   Data: ITeachingMaterialsDataForUI<ILessonForUI> | null;
   _sectionDots: TUseStateReturnVal<ISectionDots>;
   SectionTitle: string;
+  supThere: string
 }

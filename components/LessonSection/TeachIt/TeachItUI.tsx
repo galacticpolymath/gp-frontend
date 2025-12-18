@@ -18,6 +18,7 @@ import RichText from "../../RichText";
 import { DisplayLessonTile, GRADE_VARIATION_ID } from ".";
 import {
   IItem,
+  IItemV2,
   ILesson,
   ILessonDetail,
   ILink,
@@ -60,7 +61,7 @@ export type IUserGDriveLessonId = Required<
 >;
 
 export type THandleOnChange<TResourceVal extends object = ILesson> = (
-  selectedGrade: IResource<TResourceVal> | IResource<INewUnitLesson<IItem>>
+  selectedGrade: IResource<TResourceVal> | IResource<INewUnitLesson<IItemV2>>
 ) => void;
 export interface ITeachItServerProps {
   unitId?: Pick<INewUnitSchema, "_id">["_id"];
@@ -77,12 +78,12 @@ export interface TeachItUIProps<
   lessonPreface: string | null;
   gradeVariations?:
   | IResource<TResourceVal>[]
-  | IResource<INewUnitLesson<IItem>>[]
+  | IResource<INewUnitLesson<IItemV2>>[]
   | null;
   resources?: IResource<ILesson>;
   selectedGrade: TSelectedGrade;
   setSelectedGrade: Dispatch<
-    SetStateAction<IResource<INewUnitLesson<IItem>> | IResource<ILessonForUI>>
+    SetStateAction<IResource<INewUnitLesson<IItemV2>> | IResource<ILessonForUI>>
   >;
   setSelectedGradeResources: Dispatch<SetStateAction<ILink | null>>;
   handleOnChange: (selectedGrade: unknown) => void;
@@ -90,7 +91,7 @@ export interface TeachItUIProps<
   selectedEnvironment: "classroom" | "remote";
   setSelectedEnvironment: Dispatch<SetStateAction<"classroom" | "remote">>;
   selectedGradeResources: ILink | null;
-  parts: (ILessonForUI | INewUnitLesson)[];
+  parts: (ILessonForUI | INewUnitLesson<IItemV2 & { userCopiedGoogleDriveVersionId?: string, gpGoogleDriveVerionsI: string }>)[];
   dataLesson: ILessonDetail[];
   GradesOrYears: string | null;
   ForGrades: string | null;
@@ -182,6 +183,8 @@ const TeachItUI = <
     unitId,
     handleOnChange,
   } = props;
+  // { lessonItems: { lessonId: string, items: { itemTitle: string, gpGDriveItemId: string }[] }[]}
+
   const didInitialRenderOccur = useRef(false);
   const copyUnitBtnRef = useRef<HTMLButtonElement | null>(null);
   const {
