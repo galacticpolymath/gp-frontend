@@ -72,6 +72,9 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
   jobVizConnections,
   unitName,
 }) => {
+  useEffect(() => {
+    console.log("jobVizConnections: ", jobVizConnections);
+  })
   const pathname = usePathname();
   const {
     _selectedJob: [, setSelectedJob],

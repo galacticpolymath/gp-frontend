@@ -68,6 +68,7 @@ const getSectionDotsDefaultVal = <T extends TSectionsForUI>(
   sectionComps: (T | null)[]
 ) =>
   sectionComps.map((section, index: number) => {
+    console.log('section, sup there: ', section);
     const _sectionTitle = `${index}. ${section && 'SectionTitle' in section ? section.SectionTitle : 'Overview'
       }`;
     const sectionId = _sectionTitle.replace(/[\s!]/gi, '_').toLowerCase();
@@ -95,6 +96,7 @@ const getLessonSections = <T extends TSectionsForUI>(
     return {
       ...section,
       sectionClassNameForTesting,
+      sectionTitleFromDb: section && 'SectionTitle' in section ? section.SectionTitle : 'n/a',
       SectionTitle: `${index}. ${section && 'SectionTitle' in section ? section.SectionTitle : 'Overview'
         }`,
     };
@@ -211,10 +213,10 @@ const SECTION_UPDATERS: Partial<Record<keyof TSectionsForUI, TUpdateSection>> = 
 };
 
 const LessonDetails: React.FC<IProps> = ({ lesson, unit }) => {
-  console.log('UNIT OBJECT: ', unit);
 
   useMemo(() => {
     if (unit?.Sections) {
+      console.log('unit.Sections: ', unit.Sections);
       const unitSections = Object.entries(unit.Sections).reduce(
         (
           sections: TSectionsForUI,
@@ -225,6 +227,8 @@ const LessonDetails: React.FC<IProps> = ({ lesson, unit }) => {
             object
           ];
 
+          console.log('sectionKey: ', sectionKey);
+
           if (
             SECTIONS_TO_FILTER_OUT.size &&
             SECTIONS_TO_FILTER_OUT.has(sectionKey)
@@ -234,7 +238,10 @@ const LessonDetails: React.FC<IProps> = ({ lesson, unit }) => {
 
           const updateSectionFn = SECTION_UPDATERS[sectionKey];
 
+
           if (updateSectionFn) {
+            console.log(`Will update '${sectionKey}' section.`);
+
             sectionVal = updateSectionFn(sectionVal, unit);
 
             return {
@@ -768,6 +775,10 @@ const LessonDetails: React.FC<IProps> = ({ lesson, unit }) => {
       removeLocalStorageItem('lessonIdToViewAfterRedirect');
     }
   }, []);
+
+  useEffect(() => {
+    console.log('_unitSections: ', _unitSections);
+  });
 
   if (!unit && !lesson && typeof window === 'undefined') {
     return null;
