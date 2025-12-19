@@ -1,6 +1,11 @@
 $assignment-layer-z: 10000050; // keep assignment UI above modals/blur layers
 $jobviz-nav-height: 64px;
 
+:root {
+  --jobviz-horizontal-gutter: clamp(1rem, 3vw, 2.75rem);
+  --jobviz-desktop-gap: clamp(0.75rem, 2vw, 2rem);
+}
+
 .previewPage {
   --preview-blue-950: #020812;
   --preview-blue-900: #061327;
@@ -340,7 +345,7 @@ $jobviz-nav-height: 64px;
 
 .hero,
 .jobvizHero {
-  padding: clamp(2rem, 4vw, 4rem);
+  padding: clamp(2rem, 4vw, 4rem) var(--jobviz-horizontal-gutter, clamp(1rem, 3vw, 2.75rem));
   border-radius: 0;
   background: linear-gradient(135deg, rgba(5, 12, 32, 0.92), rgba(15, 67, 116, 0.82));
   border: 1px solid var(--preview-border);
@@ -348,12 +353,17 @@ $jobviz-nav-height: 64px;
   position: relative;
   overflow: hidden;
   transform-style: preserve-3d;
+  box-sizing: border-box;
+  width: 100%;
 }
 
 .jobvizHeroContent {
   display: flex;
   flex-direction: column;
   gap: clamp(1.5rem, 3vw, 3rem);
+  width: min(1200px, 100%);
+  margin: 0 auto;
+  box-sizing: border-box;
 }
 
 @media (min-width: 900px) {
@@ -665,6 +675,10 @@ $jobviz-nav-height: 64px;
     inset 0 1px 0 rgba(255, 255, 255, 0.2),
     inset 0 0 30px rgba(137, 82, 255, 0.15);
   transition: box-shadow 0.4s ease;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
 }
 
 .jobCard::after {
@@ -765,7 +779,7 @@ $jobviz-nav-height: 64px;
 }
 
 .cardExitDownPivot {
-  animation: jobvizCardPortal 860ms cubic-bezier(0.24, 0.82, 0.28, 1) both;
+  animation: jobvizCardPortal 760ms cubic-bezier(0.33, 0.85, 0.45, 1) both;
   animation-delay: var(--card-stagger-delay, 0ms);
   transform-origin: center;
   will-change: opacity, transform;
@@ -846,7 +860,10 @@ $jobviz-nav-height: 64px;
   border: 1px solid rgba(255, 255, 255, 0.55);
   box-shadow: 0 0 16px rgba(144, 158, 255, 0.45);
   flex-shrink: 0;
-  position: relative;
+  position: absolute;
+  top: 0.65rem;
+  right: 0.8rem;
+  z-index: 2;
 }
 
 
@@ -857,12 +874,9 @@ $jobviz-nav-height: 64px;
   margin: 0.4rem 0;
 }
 
-.jobCard .cardRatingRow {
-  margin-top: auto;
-}
-
 .jobCard .statRow {
-  margin-top: 0.4rem;
+  margin-top: auto;
+  padding-top: 0.4rem;
 }
 
 .cardRatingRowAssignment .cardRatingBadge {
@@ -980,6 +994,7 @@ $jobviz-nav-height: 64px;
   flex-wrap: wrap;
   gap: 0.6rem;
 }
+
 
 .statChip {
   flex: 1 1 110px;
@@ -2318,6 +2333,12 @@ $jobviz-nav-height: 64px;
   flex-wrap: nowrap;
 }
 
+.modalTitleGroup .assignmentBadgeDot {
+  position: static;
+  margin-top: 0.15rem;
+  margin-left: 0.35rem;
+}
+
 .modalIcon {
   width: 56px;
   height: 56px;
@@ -2675,23 +2696,14 @@ $jobviz-nav-height: 64px;
     opacity: 1;
     transform: translate3d(0, 0, 0) scale(1);
   }
-  45% {
+  55% {
     opacity: 1;
     transform: translate3d(
-        calc(var(--card-pivot-dx, 0px) * 0.45),
-        calc(var(--card-pivot-dy, 0px) * 0.45),
+        calc(var(--card-pivot-dx, 0px) * 0.7),
+        calc(var(--card-pivot-dy, 0px) * 0.7),
         0
       )
-      scale(1.1);
-  }
-  70% {
-    opacity: 0.85;
-    transform: translate3d(
-        calc(var(--card-pivot-dx, 0px)),
-        calc(var(--card-pivot-dy, 0px)),
-        0
-      )
-      scale(1.35);
+      scale(1.08);
   }
   100% {
     opacity: 0;
@@ -2700,7 +2712,7 @@ $jobviz-nav-height: 64px;
         calc(var(--card-pivot-dy, 0px)),
         0
       )
-      scale(1.6);
+      scale(1.2);
   }
 }
 
@@ -3066,6 +3078,28 @@ $jobviz-nav-height: 64px;
   z-index: 1;
   padding-bottom: clamp(2rem, 5vw, 4rem);
   margin-top: calc(var(--jobviz-hero-offset, 0px) * -1);
+  width: min(1200px, 100%);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--jobviz-horizontal-gutter, clamp(1rem, 3vw, 2.75rem));
+  padding-right: var(--jobviz-horizontal-gutter, clamp(1rem, 3vw, 2.75rem));
+  box-sizing: border-box;
+}
+
+@media (min-width: 1200px) {
+  .jobvizPageShell[data-has-assignment="true"] .jobvizSectionInner {
+    --jobviz-horizontal-gutter: clamp(0.65rem, 1.8vw, 1.5rem);
+    max-width: min(
+      1200px,
+      calc(100vw - var(--jobviz-desktop-dock-width, 0px) - var(--jobviz-desktop-gap, 1.5rem))
+    );
+  }
+}
+
+@media (min-width: 1400px) {
+  .jobvizPageShell[data-has-assignment="true"] .jobvizSectionInner {
+    --jobviz-horizontal-gutter: clamp(0.85rem, 2vw, 2.5rem);
+  }
 }
 
 .jobvizSectionHeading {
@@ -3092,10 +3126,11 @@ $jobviz-nav-height: 64px;
   border-radius: 32px;
   border: 1px solid rgba(255, 255, 255, 0.06);
   background: rgba(5, 10, 24, 0.9);
-  padding: clamp(1rem, 3vw, 1.75rem);
+  padding: clamp(0.85rem, 2.5vw, 1.5rem);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.08),
     0 35px 60px rgba(0, 0, 0, 0.55);
+  box-sizing: border-box;
 }
 
 .jobvizGridWrap > .jobvizBreadcrumb {
@@ -3325,7 +3360,12 @@ $jobviz-nav-height: 64px;
 }
 
 .jobvizSource a {
-  color: #64c8ff;
+  color: #9fe0ff;
+}
+
+.jobvizSource a:hover,
+.jobvizSource a:focus-visible {
+  color: #ffe0ff;
 }
 
 .jobvizSourceFixed {
@@ -3631,6 +3671,20 @@ $jobviz-nav-height: 64px;
   flex-direction: column;
   gap: 2rem;
   position: relative;
+}
+
+.jobvizPageShell a {
+  color: #8fd4ff;
+  text-decoration-color: rgba(143, 212, 255, 0.65);
+  transition: color 0.2s ease, text-shadow 0.2s ease,
+    text-decoration-color 0.2s ease;
+}
+
+.jobvizPageShell a:hover,
+.jobvizPageShell a:focus-visible {
+  color: #ffd5ff;
+  text-decoration-color: rgba(255, 213, 255, 0.9);
+  text-shadow: 0 0 14px rgba(255, 133, 255, 0.35);
 }
 
 .jobvizMainColumn {

@@ -66,9 +66,7 @@ const JOBVIZ_DESCRIPTION =
 const JOBVIZ_DATA_SOURCE =
   "https://www.bls.gov/emp/tables/occupational-projections-and-characteristics.htm";
 const VIEWING_HEADER_TRANSITION_MS = 480;
-const GRID_CARD_EXTRA_PAUSE_MS = 250;
-const GRID_NAVIGATION_HEADER_DELAY_MS =
-  VIEWING_HEADER_TRANSITION_MS + GRID_CARD_EXTRA_PAUSE_MS;
+const GRID_NAVIGATION_HEADER_DELAY_MS = VIEWING_HEADER_TRANSITION_MS;
 
 const JobVizSearchResults = ({
   metaDescription,

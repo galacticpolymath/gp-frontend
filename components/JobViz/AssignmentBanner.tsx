@@ -26,7 +26,7 @@ interface AssignmentBannerProps {
   variant?: "mobile" | "desktop";
 }
 
-const ASSIGNMENT_LOGO = "/plus/GP+ Submark.png";
+const ASSIGNMENT_LOGO = "/plus/gp-plus-submark.png";
 const COMPLETION_MODAL_DELAY_MS = 900;
 const formatAssignmentTitle = (value: string) =>
   value.replace(/\sand\s/gi, " & ");
@@ -206,17 +206,27 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
 
   const triggerAssignmentConfetti = React.useCallback(() => {
     if (typeof window === "undefined") return;
-    const duration = 1000;
-    const end = Date.now() + duration;
+    const duration = 2400;
+    const animationEnd = Date.now() + duration;
+    const defaults = {
+      startVelocity: 42,
+      spread: 95,
+      ticks: 120,
+      gravity: 1,
+      decay: 0.92,
+      colors: ["#ffd966", "#9ff2c1", "#6ec8ff", "#f6a6ff"],
+      disableForReducedMotion: true,
+    };
     const frame = () => {
-      confetti({
-        particleCount: 4,
-        startVelocity: 35,
-        spread: 90,
-        ticks: 60,
-        origin: { x: Math.random(), y: Math.random() * 0.5 + 0.2 },
-      });
-      if (Date.now() < end) {
+      const timeLeft = animationEnd - Date.now();
+      const progress = Math.max(timeLeft / duration, 0);
+      const particleCount = Math.round(12 * progress);
+      if (particleCount > 0) {
+        confetti({
+          ...defaults,
+          particleCount,
+          origin: { x: Math.random(), y: Math.random() * 0.4 + 0.2 },
+        });
         window.requestAnimationFrame(frame);
       }
     };

@@ -153,7 +153,7 @@ export const JobVizLayout: React.FC<JobVizLayoutProps> = ({
       <section className={styles.jobvizSection}>
         <div className={styles.jobvizSectionBg} />
         <div className={styles.jobvizSectionPattern} />
-        <div className={`${styles.jobvizSectionInner} container`}>
+        <div className={styles.jobvizSectionInner}>
           {children}
         </div>
       </section>
