@@ -17,7 +17,7 @@ const PreviouslySelectedJobCategory = ({ index, isBrick, jobCategory, searchPara
     const handleBtnClick = () => {
         if(jobCategory.categoryName === "Job Categories"){
             const url = `${window.location.origin}/jobviz?${searchParamsStr}`
-            router.push(url, null, { scroll: false })
+            router.push(url, null, { scroll: false, shallow: true })
             return;
         }
 
@@ -27,7 +27,7 @@ const PreviouslySelectedJobCategory = ({ index, isBrick, jobCategory, searchPara
 
         params.splice(0, 2)
 
-        router.push(urlUpdated, null, { scroll: false })
+        router.push(urlUpdated, null, { scroll: false, shallow: true })
     }
 
     return (

@@ -19,7 +19,7 @@ const Details = ({ jobToShowInModal, setSelectedJob, id, searchParams }) => {
         const baseUrl = `${window.location.origin}/jobviz/${currentHierarchyNum}/${currentLevel}/${jobCategoryIdPaths.join('/')}`
         const urlUpdated = searchParams?.length ? `${baseUrl}?${searchParams}` : baseUrl;
 
-        router.push(urlUpdated, null, { scroll: false })
+        router.push(urlUpdated, null, { scroll: false, shallow: true })
 
         setSelectedJob(jobToShowInModal)
     }

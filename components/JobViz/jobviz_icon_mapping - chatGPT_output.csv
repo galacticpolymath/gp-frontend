@@ -1,0 +1,119 @@
+soc_code,job_title,family,import_call,component,Check for duplicates
+29-0000,Healthcare practitioners & technical,medical,"import { Capsules } from ""lucide-react"";",<Capsules />,1
+51-0000,Production,industry,"import { Warehouse } from ""lucide-react"";",<Warehouse />,1
+13-1000,Business operations specialists,business,"import { ClipboardType } from ""lucide-react"";",<ClipboardType />,1
+29-1000,Diagnosing practitioners,medical,"import { Activity } from ""lucide-react"";",<Activity />,1
+43-1000,"Supervisors, office support",office,"import { ClipboardSignature } from ""lucide-react"";",<ClipboardSignature />,1
+51-1000,Supervisors of production,industry,"import { Workflow } from ""lucide-react"";",<Workflow />,1
+00-0000,"Total, all jobs",Grid2x2,"import { Grid2x2 } from ""lucide-react"";",<Grid2x2 />,1
+11-2000,Management jobs,BriefcaseBusiness,"import { BriefcaseBusiness } from ""lucide-react"";",<BriefcaseBusiness />,1
+13-0000,Business & financial operations jobs,ChartLine,"import { ChartLine } from ""lucide-react"";",<ChartLine />,1
+15-0000,Computer & mathematical jobs,Code2,"import { Code2 } from ""lucide-react"";",<Code2 />,1
+17-0000,Architecture & engineering jobs,Cog,"import { Cog } from ""lucide-react"";",<Cog />,1
+19-0000,"Life, physical, etc",FlaskConical,"import { FlaskConical } from ""lucide-react"";",<FlaskConical />,1
+21-0000,Community and social service jobs,Users,"import { Users } from ""lucide-react"";",<Users />,1
+23-0000,Legal jobs,Scale,"import { Scale } from ""lucide-react"";",<Scale />,1
+25-0000,Educational instruction & library jobs,BookOpen,"import { BookOpen } from ""lucide-react"";",<BookOpen />,1
+27-0000,"Arts, design, etc",Palette,"import { Palette } from ""lucide-react"";",<Palette />,1
+31-0000,Healthcare support,HeartHands,"import { HeartHands } from ""lucide-react"";",<HeartHands />,1
+33-0000,Protective service jobs,Shield,"import { Shield } from ""lucide-react"";",<Shield />,1
+35-0000,Food preparation & serving,UtensilsCrossed,"import { UtensilsCrossed } from ""lucide-react"";",<UtensilsCrossed />,1
+37-0000,Building & grounds cleaning,Broom,"import { Broom } from ""lucide-react"";",<Broom />,1
+39-0000,Personal care & service,Smile,"import { Smile } from ""lucide-react"";",<Smile />,1
+41-0000,Sales,ShoppingCart,"import { ShoppingCart } from ""lucide-react"";",<ShoppingCart />,1
+43-0000,Office & administrative support,ClipboardList,"import { ClipboardList } from ""lucide-react"";",<ClipboardList />,1
+45-0000,"Farming, fishing, etc",Tractor,"import { Tractor } from ""lucide-react"";",<Tractor />,1
+47-0000,Construction & extraction,Hammer,"import { Hammer } from ""lucide-react"";",<Hammer />,1
+49-0000,"Installation, maintenance, etc",Wrench,"import { Wrench } from ""lucide-react"";",<Wrench />,1
+53-0000,Transportation & material moving,Truck,"import { Truck } from ""lucide-react"";",<Truck />,1
+11-1000,Top executives,Crown,"import { Crown } from ""lucide-react"";",<Crown />,1
+11-2000,"Advertising, marketing, etc",Megaphone,"import { Megaphone } from ""lucide-react"";",<Megaphone />,1
+11-3000,Operations specialties managers,Settings,"import { Settings } from ""lucide-react"";",<Settings />,1
+11-9000,Other management jobs,Briefcase,"import { Briefcase } from ""lucide-react"";",<Briefcase />,1
+13-2000,Financial specialists,Calculator,"import { Calculator } from ""lucide-react"";",<Calculator />,1
+15-1200,Computer jobs,Cpu,"import { Cpu } from ""lucide-react"";",<Cpu />,1
+15-2000,Mathematical science jobs,Sigma,"import { Sigma } from ""lucide-react"";",<Sigma />,1
+17-1000,"Architects, surveyors, etc",Ruler,"import { Ruler } from ""lucide-react"";",<Ruler />,1
+17-2000,Engineers,Construction,"import { Construction } from ""lucide-react"";",<Construction />,1
+17-3000,"Drafters, engineering technicians, etc",PenTool,"import { PenTool } from ""lucide-react"";",<PenTool />,1
+19-1000,Life scientists,Leaf,"import { Leaf } from ""lucide-react"";",<Leaf />,1
+19-2000,Physical scientists,Atom,"import { Atom } from ""lucide-react"";",<Atom />,1
+19-3000,Social scientists,Brain,"import { Brain } from ""lucide-react"";",<Brain />,1
+19-4000,"Life, physical, etc",Beaker,"import { Beaker } from ""lucide-react"";",<Beaker />,1
+19-5000,Occupational health & safety,TestTubeDiagonal,"import { TestTubeDiagonal } from ""lucide-react"";",<TestTubeDiagonal />,1
+21-1000,"Counselors, social workers, etc",HandHelping,"import { HandHelping } from ""lucide-react"";",<HandHelping />,1
+21-2000,Religious workers,Church,"import { Church } from ""lucide-react"";",<Church />,1
+23-1000,"Lawyers, judges, etc",Gavel,"import { Gavel } from ""lucide-react"";",<Gavel />,1
+23-2000,Legal support workers,Stamp,"import { Stamp } from ""lucide-react"";",<Stamp />,1
+25-1000,Postsecondary teachers,Mortarboard,"import { Mortarboard } from ""lucide-react"";",<Mortarboard />,1
+25-2000,"Preschool, elementary, etc",School,"import { School } from ""lucide-react"";",<School />,1
+25-3000,Other teachers & instructors,Presentation,"import { Presentation } from ""lucide-react"";",<Presentation />,1
+25-4000,"Librarians, curators, etc",Library,"import { Library } from ""lucide-react"";",<Library />,1
+25-9000,Other educational jobs,Book,"import { Book } from ""lucide-react"";",<Book />,1
+27-1000,Art & design workers,PencilRuler,"import { PencilRuler } from ""lucide-react"";",<PencilRuler />,1
+27-2000,Entertainers & performers,Music,"import { Music } from ""lucide-react"";",<Music />,1
+27-3000,Media & communication workers,Camera,"import { Camera } from ""lucide-react"";",<Camera />,1
+27-4000,Media equipment workers,Video,"import { Video } from ""lucide-react"";",<Video />,1
+29-2000,Health technologists & technicians,Microscope,"import { Microscope } from ""lucide-react"";",<Microscope />,1
+29-9000,Other healthcare practitioners,HeartPulse,"import { HeartPulse } from ""lucide-react"";",<HeartPulse />,1
+31-1100,Home health & personal care,Nurse,"import { Nurse } from ""lucide-react"";",<Nurse />,1
+31-2000,"OT/PT assistants, aides",HandHeart,"import { HandHeart } from ""lucide-react"";",<HandHeart />,1
+31-9000,Other healthcare support,Bandage,"import { Bandage } from ""lucide-react"";",<Bandage />,1
+33-1000,"Supervisors, protective service",BadgeCheck,"import { BadgeCheck } from ""lucide-react"";",<BadgeCheck />,1
+33-2000,Firefighting & prevention,Flame,"import { Flame } from ""lucide-react"";",<Flame />,1
+33-3000,Law enforcement workers,Badge,"import { Badge } from ""lucide-react"";",<Badge />,1
+33-9000,Other protective service,LifeBuoy,"import { LifeBuoy } from ""lucide-react"";",<LifeBuoy />,1
+35-1000,Supervisors of food service,ChefHat,"import { ChefHat } from ""lucide-react"";",<ChefHat />,1
+35-2000,Cooks & food prep,CookingPot,"import { CookingPot } from ""lucide-react"";",<CookingPot />,1
+35-3000,Food & beverage serving,CupSoda,"import { CupSoda } from ""lucide-react"";",<CupSoda />,1
+35-9000,Other food service,Salad,"import { Salad } from ""lucide-react"";",<Salad />,1
+37-1000,"Supervisors, cleaning & maintenance",SquareGantt,"import { SquareGantt } from ""lucide-react"";",<SquareGantt />,1
+37-2000,Cleaning & pest control,SprayCan,"import { SprayCan } from ""lucide-react"";",<SprayCan />,1
+37-3000,Grounds maintenance,TreeDeciduous,"import { TreeDeciduous } from ""lucide-react"";",<TreeDeciduous />,1
+39-1000,"Supervisors, personal care",UserCheck,"import { UserCheck } from ""lucide-react"";",<UserCheck />,1
+39-2000,Animal care workers,PawPrint,"import { PawPrint } from ""lucide-react"";",<PawPrint />,1
+39-3000,Entertainment attendants,Tickets,"import { Tickets } from ""lucide-react"";",<Tickets />,1
+39-4000,Funeral service workers,Cross,"import { Cross } from ""lucide-react"";",<Cross />,1
+39-5000,Personal appearance workers,Sparkles,"import { Sparkles } from ""lucide-react"";",<Sparkles />,1
+39-6000,"Baggage porters, bellhops",Luggage,"import { Luggage } from ""lucide-react"";",<Luggage />,1
+39-7000,Tour & travel guides,Map,"import { Map } from ""lucide-react"";",<Map />,1
+39-9000,Other personal care,Heart,"import { Heart } from ""lucide-react"";",<Heart />,1
+41-1000,Supervisors of sales workers,Store,"import { Store } from ""lucide-react"";",<Store />,1
+41-2000,Retail sales workers,ShoppingBag,"import { ShoppingBag } from ""lucide-react"";",<ShoppingBag />,1
+41-3000,"Sales reps, services",Handshake,"import { Handshake } from ""lucide-react"";",<Handshake />,1
+41-4000,Wholesale & manufacturing sales,PackageSearch,"import { PackageSearch } from ""lucide-react"";",<PackageSearch />,1
+41-9000,Other sales workers,Tag,"import { Tag } from ""lucide-react"";",<Tag />,1
+43-2000,Communications equipment operators,Phone,"import { Phone } from ""lucide-react"";",<Phone />,1
+43-3000,Financial clerks,Receipt,"import { Receipt } from ""lucide-react"";",<Receipt />,1
+43-4000,Information & record clerks,FileText,"import { FileText } from ""lucide-react"";",<FileText />,1
+43-5000,Material recording & scheduling,CalendarCheck,"import { CalendarCheck } from ""lucide-react"";",<CalendarCheck />,1
+43-6000,Secretaries & administrative assistants,Inbox,"import { Inbox } from ""lucide-react"";",<Inbox />,1
+43-9000,Other office support,FolderDot,"import { FolderDot } from ""lucide-react"";",<FolderDot />,1
+45-1000,"Supervisors of farming, fishing, etc",HardHat,"import { HardHat } from ""lucide-react"";",<HardHat />,1
+45-2000,Agricultural workers,Wheat,"import { Wheat } from ""lucide-react"";",<Wheat />,1
+45-3000,Fishing & hunting workers,Fish,"import { Fish } from ""lucide-react"";",<Fish />,1
+45-4000,"Forest, conservation, etc",TreePine,"import { TreePine } from ""lucide-react"";",<TreePine />,1
+47-1000,"Supervisors, construction",CircleChevronUp,"import { CircleChevronUp } from ""lucide-react"";",<CircleChevronUp />,1
+47-2000,Construction trades workers,Shovel,"import { Shovel } from ""lucide-react"";",<Shovel />,1
+47-3000,"Helpers, construction trades",Toolbox,"import { Toolbox } from ""lucide-react"";",<Toolbox />,1
+47-4000,Other construction workers,Bricks,"import { Bricks } from ""lucide-react"";",<Bricks />,1
+47-5000,Extraction workers,Pickaxe,"import { Pickaxe } from ""lucide-react"";",<Pickaxe />,1
+49-1000,"Supervisors, installation/maintenance",WrenchCheck,"import { WrenchCheck } from ""lucide-react"";",<WrenchCheck />,1
+49-2000,Electrical & electronic repair,PlugZap,"import { PlugZap } from ""lucide-react"";",<PlugZap />,1
+49-3000,Vehicle & mobile equipment mechanics,Gauge,"import { Gauge } from ""lucide-react"";",<Gauge />,1
+49-9000,Other installation & maintenance,Gear,"import { Gear } from ""lucide-react"";",<Gear />,1
+51-2000,Assemblers & fabricators,Boxes,"import { Boxes } from ""lucide-react"";",<Boxes />,1
+51-3000,Food processing workers,Sausage,"import { Sausage } from ""lucide-react"";",<Sausage />,1
+51-4000,Metal & plastic workers,Anvil,"import { Anvil } from ""lucide-react"";",<Anvil />,1
+51-5100,Printing workers,Printer,"import { Printer } from ""lucide-react"";",<Printer />,1
+51-6000,"Textile, apparel",Scissors,"import { Scissors } from ""lucide-react"";",<Scissors />,1
+51-7000,Woodworkers,Saw,"import { Saw } from ""lucide-react"";",<Saw />,1
+51-8000,Plant & system operators,SwitchCamera,"import { SwitchCamera } from ""lucide-react"";",<SwitchCamera />,1
+51-9000,Other production jobs,Package,"import { Package } from ""lucide-react"";",<Package />,1
+53-1000,Supervisors of transportation,SteeringWheel,"import { SteeringWheel } from ""lucide-react"";",<SteeringWheel />,1
+53-2000,Air transportation workers,Plane,"import { Plane } from ""lucide-react"";",<Plane />,1
+53-3000,Motor vehicle operators,CarFront,"import { CarFront } from ""lucide-react"";",<CarFront />,1
+53-4000,Rail transportation workers,TrainFront,"import { TrainFront } from ""lucide-react"";",<TrainFront />,1
+53-5000,Water transportation workers,Ship,"import { Ship } from ""lucide-react"";",<Ship />,1
+53-6000,Other transportation workers,Navigation,"import { Navigation } from ""lucide-react"";",<Navigation />,1
+53-7000,Material moving workers,Dolly,"import { Dolly } from ""lucide-react"";",<Dolly />,1
