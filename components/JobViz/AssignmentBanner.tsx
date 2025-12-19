@@ -24,6 +24,9 @@ interface AssignmentBannerProps {
   assignmentParams?: AssignmentParams;
   onJobClick?: (socCode: string) => void;
   variant?: "mobile" | "desktop";
+  assignmentUnitLabelOverride?: string | null;
+  assignmentCopyOverride?: string | null;
+  teacherCtaCopy?: string | null;
 }
 
 const ASSIGNMENT_LOGO = "/plus/gp-plus-submark.png";
@@ -37,6 +40,9 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
   assignmentParams,
   onJobClick,
   variant = "mobile",
+  assignmentUnitLabelOverride,
+  assignmentCopyOverride,
+  teacherCtaCopy,
 }) => {
   const router = useRouter();
   const modalContext = useModalContext();
@@ -65,6 +71,24 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
   const hideInfoSection = isMobile && mobileCollapsed;
   const shouldShowAssignmentBody = !isMobile || !mobileCollapsed;
   const shouldShowCollapsedMobileContent = isMobile;
+  const assignmentUnitLabelValue = assignmentUnitLabelOverride?.trim();
+  const resolvedUnitLabel = assignmentUnitLabelValue
+    ? assignmentUnitLabelValue
+    : unitName
+      ? `Jobs related to the ${unitName} unit`
+      : null;
+  const defaultAssignmentCopyNode = (
+    <>
+      Explore and rate each of these jobs. Be prepared to explain your ratings{" "}
+      <em>with data</em> and other reasoning.
+    </>
+  );
+  const assignmentCopyOverrideValue = assignmentCopyOverride?.trim();
+  const hasAssignmentCopyOverride = Boolean(assignmentCopyOverrideValue);
+  const resolvedAssignmentCopy = hasAssignmentCopyOverride
+    ? assignmentCopyOverrideValue
+    : defaultAssignmentCopyNode;
+  const resolvedTeacherCtaCopy = teacherCtaCopy?.trim() || null;
   const { ratings, clearRatings } = useJobRatings();
   const [isMounted, setIsMounted] = React.useState(false);
   React.useEffect(() => {
@@ -404,8 +428,7 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
         document.querySelector("nav.navbar") ||
         document.querySelector("nav");
       if (!nav) {
-        const header = document.querySelector("header");
-        return header ? header.getBoundingClientRect().height : 64;
+        return 0;
       }
       if (
         nav instanceof HTMLElement &&
@@ -685,14 +708,9 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
                 data-hidden={hideInfoSection ? "true" : "false"}
                 ref={infoBlockRef}
               >
-                {unitName && (
+                {resolvedUnitLabel && (
                   <span className={styles.assignmentUnitLabelInline}>
-                    <span>
-                      {" "}
-                      Jobs related to the{" "}
-                      <span className={styles.assignmentUnitName}>{unitName}</span>{" "}
-                      unit
-                    </span>
+                    <span>{resolvedUnitLabel}</span>
                   </span>
                 )}
                 <div className={styles.assignmentMarker}>
@@ -706,10 +724,10 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
                   />
                   JobViz+ | ASSIGNMENT
                 </span>
-                  <p className={styles.assignmentCopy}>
-                    Explore and rate each of these jobs. Be prepared to explain your
-                    ratings <em>with data</em>.
-                  </p>
+                  <p className={styles.assignmentCopy}>{resolvedAssignmentCopy}</p>
+                  {resolvedTeacherCtaCopy && (
+                    <p className={styles.assignmentCopy}>{resolvedTeacherCtaCopy}</p>
+                  )}
                 </div>
               </div>
             )}

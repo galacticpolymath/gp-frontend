@@ -268,7 +268,7 @@ const JobVizCompletionModal: React.FC = () => {
             disabled={!ctaVisible}
             onClick={handleShare}
           >
-            <LucideIcon name="Sparkles" /> Summarize &amp; Share Assignment
+            <LucideIcon name="Sparkles" /> Finalize &amp; Share Assignment
           </button>
         </div>
       </Modal.Body>

@@ -21,6 +21,8 @@ export default function Layout({
   canonicalLink = "",
   defaultLink = "",
   langLinks,
+  showNav = true,
+  showFooter = true,
 }) {
   const isOnProd = process.env.NEXT_PUBLIC_VERCEL_ENV === "production";
 
@@ -104,9 +106,11 @@ export default function Layout({
           />
         )}
       </Head>
-      <div style={{ height: "50px" }}>
-        <Navbar />
-      </div>
+      {showNav && (
+        <div style={{ height: "50px" }}>
+          <Navbar />
+        </div>
+      )}
       {imgSrc && (
         <img
           src={imgSrc}
@@ -115,7 +119,7 @@ export default function Layout({
         />
       )}
       {children}
-      <Footer />
+      {showFooter && <Footer />}
     </div>
   );
 }
