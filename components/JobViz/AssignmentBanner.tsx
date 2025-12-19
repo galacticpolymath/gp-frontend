@@ -187,8 +187,14 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
     });
   }, [jobs]);
 
+  const closeJobModal = React.useCallback(() => {
+    setSelectedJob(null);
+    setIsJobModalOn(false);
+  }, [setIsJobModalOn, setSelectedJob]);
+
   const handleOpenSummaryModal = React.useCallback(() => {
     if (!jobItems.length) return;
+    closeJobModal();
     setJobvizSummaryModal({
       isDisplayed: true,
       unitName,
@@ -196,12 +202,7 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
       payload: null,
       allowEditing: true,
     });
-  }, [jobItems, setJobvizSummaryModal, unitName]);
-
-  const closeJobModal = React.useCallback(() => {
-    setSelectedJob(null);
-    setIsJobModalOn(false);
-  }, [setIsJobModalOn, setSelectedJob]);
+  }, [closeJobModal, jobItems, setJobvizSummaryModal, unitName]);
 
   const triggerAssignmentConfetti = React.useCallback(() => {
     if (typeof window === "undefined") return;

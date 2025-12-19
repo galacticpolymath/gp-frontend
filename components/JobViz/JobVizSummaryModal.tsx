@@ -5,6 +5,7 @@ import sanitizeHtml from "sanitize-html";
 import styles from "../../styles/jobvizBurst.module.scss";
 import { useModalContext } from "../../providers/ModalProvider";
 import { LucideIcon } from "./LucideIcon";
+import QRCode from "react-qr-code";
 import {
   encodeJobvizSharePayload,
   JOBVIZ_REPORT_PARAM_NAME,
@@ -98,8 +99,10 @@ const useClipboard = () => {
 };
 
 const JobVizSummaryModal: React.FC = () => {
-  const { _jobvizSummaryModal } = useModalContext();
+  const { _jobvizSummaryModal, _selectedJob, _isJobModalOn } = useModalContext();
   const [summaryState, setSummaryState] = _jobvizSummaryModal;
+  const [, setSelectedJob] = _selectedJob;
+  const [, setIsJobModalOn] = _isJobModalOn;
   const { ratings } = useJobRatings();
   const router = useRouter();
   const copyToClipboard = useClipboard();
@@ -324,11 +327,33 @@ const JobVizSummaryModal: React.FC = () => {
     return shareUrl.toString();
   }, [jobRows, router.asPath, safeReflection, summaryState.payload, summaryState.unitName]);
 
+  const [shareUrlPreview, setShareUrlPreview] = useState<string | null>(null);
+
+  const refreshShareUrl = useCallback(async () => {
+    if (!showActions) {
+      setShareUrlPreview(null);
+      return;
+    }
+    try {
+      const url = await buildShareUrl();
+      setShareUrlPreview(url);
+    } catch {
+      setShareUrlPreview(null);
+    }
+  }, [buildShareUrl, showActions]);
+
+  useEffect(() => {
+    refreshShareUrl();
+  }, [refreshShareUrl, summaryState.isDisplayed]);
+
   const handleCopyShareLink = async () => {
     if (!showActions) return;
     try {
-      const url = await buildShareUrl();
+      const url = shareUrlPreview ?? (await buildShareUrl());
       await copyToClipboard(url);
+      setSelectedJob(null);
+      setIsJobModalOn(false);
+      setSummaryState((prev) => ({ ...prev, isDisplayed: true }));
       announceStatus("Share link copied");
     } catch (error) {
       announceStatus("Unable to copy link");
@@ -378,7 +403,7 @@ const JobVizSummaryModal: React.FC = () => {
         <div className={styles.summaryHeaderGroup}>
           <span className={styles.summaryHeaderBadge}>
             <LucideIcon name="Sparkles" aria-hidden="true" />
-            Report ready
+            Job Tour Summary
           </span>
           <p className={styles.summaryModalKicker}>
             Galactic Polymath | JobViz+
@@ -429,7 +454,7 @@ const JobVizSummaryModal: React.FC = () => {
           </div>
           <textarea
             className={styles.summaryReflectionInput}
-            placeholder="Add up to 200 characters describing your why."
+            placeholder="Add your thoughts about what you gained from exploring these jobs"
             value={reflection}
             onChange={handleReflectionChange}
             maxLength={reflectionLimit}
@@ -442,7 +467,7 @@ const JobVizSummaryModal: React.FC = () => {
         {showActions && (
         <div className={styles.summaryShareSection}>
               <div className={styles.summaryShareHeader}>
-                <h3>Share this assignment</h3>
+                <h3>Share your ratings and thoughts</h3>
                 <button
                   type="button"
                   className={styles.summaryInfoToggle}
@@ -488,6 +513,7 @@ const JobVizSummaryModal: React.FC = () => {
                 <LucideIcon name="Share2" /> Copy share link
               </button>
             </div>
+            {/* QR code preview temporarily disabled due to dense encoding */}
           </div>
         )}
         {statusMessage && (

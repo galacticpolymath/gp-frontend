@@ -3,10 +3,9 @@ import Image from 'next/image';
 import Link from 'next/link';
 import logo from '../assets/img/logo.png';
 import mobileLogo from '../assets/img/mobile_logo.png';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import LoginContainerForNavbar from './User/Login/LoginContainerForNavbar';
-import { useSearchParams } from 'next/navigation';
 import { useLessonContext } from '../providers/LessonProvider';
 import { JobToursCardTopSticky } from './JobViz/JobTours/JobToursCard';
 import useSiteSession from '../customHooks/useSiteSession';
@@ -14,9 +13,14 @@ import useSiteSession from '../customHooks/useSiteSession';
 export const DISABLE_NAVBAR_PARAM_NAME = 'disableNavbar';
 
 export default function Navbar() {
-  const searchParams = useSearchParams();
-  const disableNavbar = searchParams.get(DISABLE_NAVBAR_PARAM_NAME) === 'true';
   const router = useRouter();
+  const disableNavbar = useMemo(() => {
+    const value = router.query?.[DISABLE_NAVBAR_PARAM_NAME];
+    if (Array.isArray(value)) {
+      return value.includes('true');
+    }
+    return value === 'true';
+  }, [router.query]);
   const session = useSession();
   const [modalAnimation, setModalAnimation] = useState('d-none');
   const [isNavHidden, setIsNavHidden] = useState(false);
