@@ -67,7 +67,7 @@
     "mongoose": "^9.0.1",
     "nanoid": "^5.1.6",
     "net": "^1.0.2",
-    "next": "^16.0.10",
+    "next": "^16.1.0",
     "next-auth": "^4.24.13",
     "next-swagger-doc": "^0.4.1",
     "nextjs-google-analytics": "^2.3.7",
