@@ -488,7 +488,7 @@ export const getAllChildItemsOfFolder = async (
   tries = 3,
   currentChildItems: drive_v3.Schema$File[] = [],
   pageToken?: string,
-): Promise<drive_v3.Schema$FileList | null> => {
+): Promise<drive_v3.Schema$FileList | { didErr: boolean, doesFolderExist?: boolean, errMsg?: string }> => {
   try {
     const { status, data } = await axios.get<drive_v3.Schema$FileList>(
       'https://www.googleapis.com/drive/v3/files',
@@ -535,8 +535,15 @@ export const getAllChildItemsOfFolder = async (
       "Failed to get items in user's google drive. Reason: ",
       error
     );
+    const errMsg = "Failed to get items in user's google drive. Reason: " + error;
 
-
+    if (error?.response?.data?.error?.code === 404) {
+      console.error(`Folder with ID ${folderId} does not exist or was not found`);
+      return {
+        didErr: true,
+        doesFolderExist: false
+      };
+    }
 
     const canRetryResult = await getCanRetry(
       error,
@@ -551,7 +558,7 @@ export const getAllChildItemsOfFolder = async (
     if (canRetryResult.canRetry && tries > 0) {
       await waitWithExponentialBackOff(tries);
 
-      return await getUserChildItemsOfFolder(
+      return await getAllChildItemsOfFolder(
         folderId,
         canRetryResult.accessToken ?? gdriveAccessToken,
         gdriveRefreshToken,
@@ -560,7 +567,10 @@ export const getAllChildItemsOfFolder = async (
       );
     }
 
-    return null
+    return {
+      didErr: true,
+      errMsg
+    }
   }
 };
 
