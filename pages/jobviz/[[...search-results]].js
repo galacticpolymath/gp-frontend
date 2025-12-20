@@ -66,9 +66,7 @@ const JOBVIZ_DESCRIPTION =
 const JOBVIZ_DATA_SOURCE =
   "https://www.bls.gov/emp/tables/occupational-projections-and-characteristics.htm";
 const VIEWING_HEADER_TRANSITION_MS = 480;
-const GRID_CARD_EXTRA_PAUSE_MS = 250;
-const GRID_NAVIGATION_HEADER_DELAY_MS =
-  VIEWING_HEADER_TRANSITION_MS + GRID_CARD_EXTRA_PAUSE_MS;
+const GRID_NAVIGATION_HEADER_DELAY_MS = VIEWING_HEADER_TRANSITION_MS;
 
 const JobVizSearchResults = ({
   metaDescription,
@@ -113,6 +111,21 @@ const JobVizSearchResults = ({
   );
   const shouldRenderAssignment =
     Boolean(preservedUnitName) || Boolean(jobTitleAndSocCodePairs?.length);
+  const rawEditParam = router.query?.edit;
+  const wantsTeacherEditMode =
+    typeof rawEditParam === "string" &&
+    ["1", "true", "edit"].includes(rawEditParam.toLowerCase());
+  const canUseTeacherEditMode = wantsTeacherEditMode && !!hasGpPlusMembership;
+  const isStudentAssignmentView =
+    shouldRenderAssignment && !canUseTeacherEditMode;
+  const viewMode = canUseTeacherEditMode
+    ? "teacher-edit"
+    : isStudentAssignmentView
+      ? "student"
+      : "default";
+  const teacherEditDenied = wantsTeacherEditMode && !hasGpPlusMembership;
+  const isStudentMode = viewMode === "student";
+  const isTeacherEditMode = viewMode === "teacher-edit";
   const lastReportParamRef = useRef(null);
 
   const chainNodes = useMemo(
@@ -143,7 +156,14 @@ const JobVizSearchResults = ({
     [assignmentSocCodes]
   );
   const hasAssignmentList = Boolean(assignmentSocCodes?.size);
-  const [showAssignmentOnly, setShowAssignmentOnly] = useState(false);
+  const [showAssignmentOnly, setShowAssignmentOnly] = useState(
+    () => isStudentMode && hasAssignmentList
+  );
+  useEffect(() => {
+    if (isStudentMode && hasAssignmentList) {
+      setShowAssignmentOnly(true);
+    }
+  }, [hasAssignmentList, isStudentMode]);
   const sortQueryFromRouter =
     typeof router.query?.sort === "string" ? router.query.sort : undefined;
   const normalizedSortFromQuery = useMemo(
@@ -760,8 +780,18 @@ const JobVizSearchResults = ({
     }, VIEWING_HEADER_TRANSITION_MS);
   }, [activeViewingHeader, viewingHeaderData]);
 
-  const heroSubtitle =
+  const assignmentJobCount =
+    jobTitleAndSocCodePairs?.length ?? assignmentSocCodes?.size ?? 0;
+  const baseHeroSubtitle =
     "A tool for grades 6 to adult to explore career possibilities!";
+  const assignmentCountLabel = assignmentJobCount
+    ? `${assignmentJobCount} career${assignmentJobCount === 1 ? "" : "s"}`
+    : "a curated set of careers";
+  const studentHeroSubtitle = `This assignment spotlights ${assignmentCountLabel} with quick descriptions, wages, and growth stats so you can rate how interested you are. Feel free to explore related careers as you rate the selected jobs. Discover what's possible!`;
+  const heroSubtitle = isStudentMode ? studentHeroSubtitle : baseHeroSubtitle;
+  const heroTitle = isStudentMode
+    ? "JobViz+ Career Tour Assignment"
+    : "JobViz Career Explorer+";
   const isGpPlusHero = !!hasGpPlusMembership;
   const ensureJobCategoriesLevel = useCallback(() => {
     if (parsed.targetLevel === 1 && chainNodes.length === 0) {
@@ -786,9 +816,15 @@ const JobVizSearchResults = ({
   const handleHeroStatAction = useHeroStatAction({
     onBrowseNavigate: ensureJobCategoriesLevel,
   });
-  const heroSlot = isGpPlusHero ? null : (
+  const heroEyebrow = isStudentMode
+    ? "STUDENT VIEW"
+    : isGpPlusHero
+      ? "Premium | GP+ Subscriber"
+      : undefined;
+  const heroSlot = !isStudentMode && !isGpPlusHero ? (
     <HeroForFreeUsers onStatAction={handleHeroStatAction} />
-  );
+  ) : null;
+  const showGpPlusUpsell = !hasGpPlusMembership && !isStudentMode;
 
 
   useEffect(() => {
@@ -810,7 +846,19 @@ const JobVizSearchResults = ({
     url: "https://teach.galacticpolymath.com/jobviz",
     keywords:
       "jobviz, job viz, career explorer, career exploration, career pathways, BLS jobs, career navigation",
+    showNav: viewMode !== "student",
   };
+  const assignmentBannerOverrides = useMemo(() => {
+    if (viewMode !== "student") return null;
+    const unitLabel = preservedUnitName
+      ? `Jobs connected to the "${preservedUnitName}" lesson`
+      : "Jobs your teacher wants you to explore first";
+    return {
+      assignmentUnitLabelOverride: unitLabel,
+      assignmentCopyOverride:
+        "Explore each job, note how interested you are, and be ready to explain your rating using the data shown here.",
+    };
+  }, [preservedUnitName, viewMode]);
 
   return (
     <Layout {...layoutProps}>
@@ -821,6 +869,7 @@ const JobVizSearchResults = ({
           jobs={jobTitleAndSocCodePairs}
           assignmentParams={assignmentParams}
           onJobClick={handleAssignmentJobClick}
+          {...(assignmentBannerOverrides ?? {})}
         />
       )}
       <div
@@ -829,12 +878,28 @@ const JobVizSearchResults = ({
       >
         <div className={styles.jobvizMainColumn}>
           <JobVizLayout
-            heroTitle="JobViz Career Explorer+"
+            heroTitle={heroTitle}
             heroSubtitle={heroSubtitle}
             heroSlot={heroSlot}
-            heroEyebrow={isGpPlusHero ? "Premium | GP+ Subscriber" : undefined}
+            heroEyebrow={heroEyebrow}
             onStatAction={handleHeroStatAction}
           >
+            {teacherEditDenied && (
+              <div className={styles.jobvizNotice} role="alert">
+                <strong>Looking for edit controls?</strong> GP+ members can turn on tour editing to build and save custom JobViz+ assignments. Sign in with a GP+ account or remove the <code>?edit=1</code> parameter to preview the student view.
+              </div>
+            )}
+            {isTeacherEditMode && !teacherEditDenied && (
+              <div className={styles.tourBuilderPlaceholder}>
+                <h3>Tour Builder preview</h3>
+                <p>
+                  This editing surface will soon let you rename the assignment, customize the hero copy, and click assignment dots to add jobs to your tour. We&apos;ll store these plans in GP+ so you can reuse or share them.
+                </p>
+                <p>
+                  In the meantime, explore the assignment flow below to see what your students experience.
+                </p>
+              </div>
+            )}
             {showIntroHeading && (
               <h2 className={styles.jobvizSectionHeading}>{sectionHeading}</h2>
             )}
@@ -928,6 +993,15 @@ const JobVizSearchResults = ({
                         />
                         Show only assigned jobs
                       </button>
+                      {isStudentMode && !isShowingAssignmentScope && (
+                        <button
+                          type="button"
+                          className={styles.assignmentReturnButton}
+                          onClick={() => setShowAssignmentOnly(true)}
+                        >
+                          Back to assignment
+                        </button>
+                      )}
                     </div>
                   )}
                   <JobVizSortControl
@@ -958,6 +1032,26 @@ const JobVizSearchResults = ({
                   </>
                 )}
               </p>
+              {showGpPlusUpsell && (
+                <div className={styles.jobvizUpsellCard}>
+                  <div>
+                    <p className={styles.jobvizUpsellEyebrow}>For Teachers</p>
+                    <h3>Want to connect this resource to your classroom?</h3>
+                    <p>
+                      Unlock curated JobViz+ career tours, assignment tools, and ready-to-use lesson
+                      integrations with a GP+ subscription.
+                    </p>
+                  </div>
+                  <a
+                    href="https://www.galacticpolymath.com/plus"
+                    target="_blank"
+                    rel="noreferrer"
+                    className={styles.jobvizUpsellButton}
+                  >
+                    Explore GP+
+                  </a>
+                </div>
+              )}
             </div>
           </JobVizLayout>
         </div>
@@ -968,6 +1062,7 @@ const JobVizSearchResults = ({
             jobs={jobTitleAndSocCodePairs}
             assignmentParams={assignmentParams}
             onJobClick={handleAssignmentJobClick}
+            {...(assignmentBannerOverrides ?? {})}
           />
         )}
       </div>

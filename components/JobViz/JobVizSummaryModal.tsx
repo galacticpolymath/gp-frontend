@@ -13,8 +13,12 @@ import {
 import {
   buildJobvizUrl,
   getNodeBySocCode,
+  getDisplayTitle,
+  getIconNameForNode,
+  getJobSpecificIconName,
 } from "./jobvizUtils";
-import { JobRatingValue, ratingEmoji, useJobRatings } from "./jobRatingsStore";
+import type { JobVizNode } from "./jobvizUtils";
+import { JobRatingValue, useJobRatings } from "./jobRatingsStore";
 
 const INFO_COPY_LINES = [
   "JobViz+ lets you rate jobs to explore what interests you.",
@@ -35,43 +39,239 @@ const NAME_PLACEHOLDER = "Add_Name";
 const JOB_GROUP_SECTIONS: Array<{
   rating: JobRatingValue;
   title: string;
+  emoji: string;
 }> = [
-  { rating: "love", title: "Jobs I think I would enjoy" },
-  { rating: "like", title: "Jobs I might like" },
-  { rating: "dislike", title: "Jobs that are definitely not for me" },
+  { rating: "love", title: "Jobs I think I would enjoy", emoji: "💜" },
+  { rating: "like", title: "Jobs I might like", emoji: "👍" },
+  { rating: "dislike", title: "Jobs that are definitely not for me", emoji: "👎" },
 ];
 
-const describeSegment = (verb: string, count: number, fallback: string) => {
-  if (!count) return fallback;
-  return `${verb} ${count} ${count === 1 ? "job" : "jobs"}`;
+type SummaryJobRow = {
+  title: string;
+  soc: string;
+  rating: JobRatingValue | null;
+  scoreLabel: string;
+  link: string | null;
+  familyTitle: string;
+  familyNode: JobVizNode | null;
+  iconName: string | null;
 };
 
 type SummaryPronoun = "you" | "i";
+type RatingsInsightResult = {
+  summary: string;
+  secondaryPlain?: string;
+  linkTarget?: { title: string; href: string };
+  iconNames?: string[];
+};
+const RATING_SCORE_MAP: Record<JobRatingValue, number> = {
+  love: 3,
+  like: 2,
+  dislike: 1,
+};
 
-const buildSummarySentence = (
-  counts: { love: number; like: number; dislike: number; total: number },
+const OTHER_FAMILY_LABEL = "other career areas";
+const FAMILY_LIST_LIMIT = 2;
+const MIN_FAMILY_SAMPLE = 2;
+const SIGNIFICANT_DELTA = 0.25;
+const EXPLORATION_HINT = {
+  you: "Feel free to explore the other 800+ jobs in JobViz to discover new opportunities.",
+  i: "I'll explore the other 800+ jobs in JobViz to discover new opportunities.",
+};
+
+const formatFamilyGroupName = (value?: string | null) => {
+  if (!value) return OTHER_FAMILY_LABEL;
+  const normalized = value.trim();
+  if (!normalized) return OTHER_FAMILY_LABEL;
+  return normalized
+    .toLowerCase()
+    .replace(/\b\w/g, (char) => char.toUpperCase());
+};
+
+const resolveFamilyTitle = (node?: JobVizNode | null) => {
+  if (!node) return null;
+  const levelOneCode = node.level1 ?? null;
+  if (levelOneCode) {
+    const topLevelNode = getNodeBySocCode(levelOneCode);
+    if (topLevelNode) {
+      return getDisplayTitle(topLevelNode);
+    }
+  }
+  return getDisplayTitle(node);
+};
+
+const formatList = (items: string[]) => {
+  if (items.length <= 1) return items[0] ?? "";
+  const formatter =
+    typeof Intl !== "undefined" && typeof (Intl as any).ListFormat === "function"
+      ? new Intl.ListFormat("en", { style: "long", type: "conjunction" })
+      : null;
+  if (formatter) {
+    return formatter.format(items);
+  }
+  const tail = items[items.length - 1];
+  return `${items.slice(0, -1).join(", ")}, and ${tail}`;
+};
+
+const formatFamilyPhrase = (names: string[]) => {
+  if (!names.length) return null;
+  const capped = names.slice(0, FAMILY_LIST_LIMIT);
+  return `${formatList(capped)} jobs`;
+};
+
+const buildAbsoluteUrl = (path: string | null | undefined) => {
+  if (!path) return path ?? "";
+  if (/^https?:\/\//i.test(path)) return path;
+  if (typeof window !== "undefined") {
+    return new URL(path, window.location.origin).toString();
+  }
+  const defaultOrigin = process.env.NEXT_PUBLIC_SITE_URL ?? "https://teach.galacticpolymath.com";
+  return new URL(path, defaultOrigin).toString();
+};
+
+const buildRatingsInsight = (
+  jobRows: SummaryJobRow[],
+  counts: { love: number; like: number; dislike: number; rated: number; total: number },
   pronoun: SummaryPronoun
-) => {
-  if (!counts.total) {
+): RatingsInsightResult => {
+  if (!counts.total || !counts.rated) {
     return pronoun === "you"
-      ? "Rate each assignment job to unlock a shareable summary."
-      : "I need to rate each assignment job to unlock a shareable summary.";
+      ? { summary: "Rate each assignment job to unlock a shareable summary." }
+      : { summary: "I need to rate each assignment job to unlock a shareable summary." };
   }
 
-  const subject = pronoun === "you" ? "You" : "I";
-  const object = pronoun === "you" ? "you" : "me";
+  const scoredRows = jobRows
+    .filter((job) => Boolean(job.rating))
+    .map((job) => ({
+      rating: job.rating as JobRatingValue,
+      family: job.familyTitle ?? OTHER_FAMILY_LABEL,
+      score: RATING_SCORE_MAP[job.rating as JobRatingValue],
+      node: job.familyNode ?? null,
+    }));
 
-  return `${subject} ${describeSegment(
-    "loved",
-    counts.love,
-    "didn't love any"
-  )} , ${describeSegment("liked", counts.like, "didn't like any")} , and ${describeSegment(
-    "marked",
-    counts.dislike,
-    "didn't mark any"
-  )} as not for ${object} out of ${counts.total} ${
-    counts.total === 1 ? "job" : "jobs"
-  }.`;
+  if (!scoredRows.length) {
+    return pronoun === "you"
+      ? { summary: "Rate each assignment job to unlock a shareable summary." }
+      : { summary: "I need to rate each assignment job to unlock a shareable summary." };
+  }
+
+  const totalScore = scoredRows.reduce((acc, row) => acc + row.score, 0);
+  const overallAvg = totalScore / scoredRows.length;
+  const familyMap = new Map<
+    string,
+    { count: number; scoreSum: number; positive: number; negative: number; node: JobVizNode | null }
+  >();
+
+  scoredRows.forEach(({ family, score, rating, node }) => {
+    const entry =
+      familyMap.get(family) ?? {
+        count: 0,
+        scoreSum: 0,
+        positive: 0,
+        negative: 0,
+        node: null as JobVizNode | null,
+      };
+    entry.count += 1;
+    entry.scoreSum += score;
+    if (rating === "love" || rating === "like") {
+      entry.positive += 1;
+    } else if (rating === "dislike") {
+      entry.negative += 1;
+    }
+    if (!entry.node && node) {
+      entry.node = node;
+    }
+    familyMap.set(family, entry);
+  });
+
+  const familyStats = Array.from(familyMap.entries()).map(([name, stat]) => ({
+    name,
+    count: stat.count,
+    avg: stat.scoreSum / stat.count,
+    positive: stat.positive,
+    negative: stat.negative,
+    node: stat.node,
+  }));
+
+  const eligibleFamilies = familyStats.filter((family) => family.count >= MIN_FAMILY_SAMPLE);
+
+  const topCandidates = eligibleFamilies
+    .filter((family) => family.avg >= overallAvg + SIGNIFICANT_DELTA)
+    .sort((a, b) => b.avg - a.avg);
+
+  const bottomCandidates = eligibleFamilies
+    .filter((family) => overallAvg - family.avg >= SIGNIFICANT_DELTA)
+    .sort((a, b) => a.avg - b.avg);
+
+  const joinNames = (candidates: typeof topCandidates) =>
+    formatFamilyPhrase(
+      candidates.map((item) => formatFamilyGroupName(item.name))
+    );
+
+  const rawTopPhrase = joinNames(topCandidates);
+  const topPhrase = rawTopPhrase?.replace(/\b(jobs?|occupations)\b$/i, "").trim();
+  const bottomPhrase = joinNames(bottomCandidates);
+  const pronounParts =
+    pronoun === "you"
+      ? { subject: "You", possessive: "Your", object: "you", negativeVerb: "weren't" }
+      : { subject: "I", possessive: "My", object: "me", negativeVerb: "wasn't" };
+
+  const sentences: string[] = [];
+
+  if (topPhrase && bottomPhrase) {
+    sentences.push(
+      `${pronounParts.subject} showed the strongest interest in ${topPhrase}, while ${bottomPhrase} didn't resonate.`
+    );
+  } else if (topPhrase) {
+    sentences.push(`${pronounParts.subject} gravitated toward ${topPhrase} overall.`);
+  } else if (bottomPhrase) {
+    sentences.push(
+      `${pronounParts.subject} ${pronounParts.negativeVerb} very interested in ${bottomPhrase}.`
+    );
+  } else {
+    if (overallAvg >= 2.4) {
+      sentences.push(`${pronounParts.possessive} ratings leaned strongly positive overall.`);
+    } else if (overallAvg >= 1.8) {
+      sentences.push(`${pronounParts.subject} had mixed feelings about these jobs.`);
+    } else {
+      sentences.push(`None of these jobs really stood out for ${pronounParts.object}.`);
+    }
+  }
+
+  const highlightNode = topCandidates[0]?.node ?? bottomCandidates[0]?.node ?? null;
+  const linkTarget = highlightNode
+    ? {
+        title: formatFamilyGroupName(getDisplayTitle(highlightNode)),
+        href: buildAbsoluteUrl(buildJobvizUrl({ fromNode: highlightNode })),
+      }
+    : undefined;
+
+  const iconNames = topCandidates
+    .slice(0, FAMILY_LIST_LIMIT)
+    .map((candidate) => (candidate.node ? getIconNameForNode(candidate.node) : null))
+    .filter(
+      (value): value is Exclude<typeof value, null> =>
+        typeof value === "string" && value.length > 0
+    );
+
+  const shouldEncourageExploration = overallAvg < 1.8 || !topPhrase;
+  let secondaryPlain: string | undefined;
+  if (linkTarget) {
+    secondaryPlain = `${
+      pronoun === "you"
+        ? "Explore other careers in"
+        : "I'll explore other careers in"
+    } ${linkTarget.title} ${pronoun === "you" ? "that you might like" : "that I might like"}: ${linkTarget.href}`;
+  } else if (shouldEncourageExploration) {
+    secondaryPlain = EXPLORATION_HINT[pronoun];
+  }
+
+  return {
+    summary: sentences.join(" "),
+    secondaryPlain,
+    linkTarget,
+    iconNames: iconNames.length ? iconNames : undefined,
+  };
 };
 
 const sanitizePlainText = (value: string) =>
@@ -113,7 +313,6 @@ const JobVizSummaryModal: React.FC = () => {
   const statusTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const isOpen = summaryState.isDisplayed;
-  const allowEditing = summaryState.allowEditing !== false && !summaryState.payload;
 
   useEffect(() => {
     if (!isOpen) {
@@ -162,18 +361,26 @@ const JobVizSummaryModal: React.FC = () => {
 
   const activeRatings = payloadRatingsMap ?? ratings;
 
-  const jobRows = useMemo(
+  const jobRows = useMemo<SummaryJobRow[]>(
     () =>
       normalizedJobs.map((job) => {
         const rating = activeRatings[job.soc] ?? null;
         const node = getNodeBySocCode(job.soc);
         const link = node ? buildJobvizUrl({ fromNode: node }) : null;
+        const familyNode = node?.level1
+          ? getNodeBySocCode(node.level1) ?? node
+          : node ?? null;
+        const familyTitle = formatFamilyGroupName(resolveFamilyTitle(familyNode));
         return {
           ...job,
           rating,
-          emoji: ratingEmoji(rating),
           scoreLabel: rating ? ratingScoreLabel[rating] : "",
           link,
+          familyTitle,
+          familyNode,
+          iconName: node
+            ? getJobSpecificIconName(node) ?? getIconNameForNode(node)
+            : null,
         };
       }),
     [normalizedJobs, activeRatings]
@@ -201,9 +408,9 @@ const JobVizSummaryModal: React.FC = () => {
     );
   }, [jobRows]);
 
-  const summarySentence = useMemo(
-    () => buildSummarySentence(counts, "you"),
-    [counts]
+  const ratingsInsight = useMemo(
+    () => buildRatingsInsight(jobRows, counts, "you"),
+    [counts, jobRows]
   );
 
   const safeReflection = useMemo(() => sanitizePlainText(reflection), [reflection]);
@@ -239,16 +446,21 @@ const JobVizSummaryModal: React.FC = () => {
   };
 
   const buildReportText = (pronoun: SummaryPronoun = "you") => {
-    const summaryLine = buildSummarySentence(counts, pronoun);
+    const summaryLine = buildRatingsInsight(jobRows, counts, pronoun);
     const lines = [
       `Galactic Polymath | JobViz+ Assignment Report`,
       unitLabel,
       "",
-      summaryLine,
+      summaryLine.summary,
+    ];
+    if (summaryLine.secondaryPlain) {
+      lines.push(summaryLine.secondaryPlain);
+    }
+    lines.push(
       "",
       "Ratings:",
-      ...jobRows.map((job, index) => `${index + 1}. ${job.title} — ${job.rating ? job.rating.toUpperCase() : "Not rated"}`),
-    ];
+      ...jobRows.map((job, index) => `${index + 1}. ${job.title} — ${job.rating ? job.rating.toUpperCase() : "Not rated"}`)
+    );
     if (safeReflection) {
       lines.push("", `Reflection: ${safeReflection}`);
     }
@@ -382,7 +594,6 @@ const JobVizSummaryModal: React.FC = () => {
   };
 
   const handleReflectionChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    if (!allowEditing) return;
     const next = event.target.value.slice(0, reflectionLimit);
     setReflection(next);
   };
@@ -408,7 +619,7 @@ const JobVizSummaryModal: React.FC = () => {
           <p className={styles.summaryModalKicker}>
             Galactic Polymath | JobViz+
           </p>
-          <h2 className={styles.summaryModalTitle}>Summarize & Share</h2>
+          <h2 className={styles.summaryModalTitle}>Finalize & Share</h2>
         </div>
         <button
           type="button"
@@ -421,7 +632,18 @@ const JobVizSummaryModal: React.FC = () => {
       </Modal.Header>
       <Modal.Body className={styles.summaryModalBody}>
         <div className={styles.summaryAssignmentTitle}>{unitLabel}</div>
-        <p className={styles.summarySentence}>{summarySentence}</p>
+        <div className={styles.summarySentenceRow}>
+          {ratingsInsight.iconNames?.length ? (
+            <span className={styles.summaryIconDeck} aria-hidden="true">
+              {ratingsInsight.iconNames.map((icon) => (
+                <span key={icon} className={styles.summaryIconBadge}>
+                  <LucideIcon name={icon} />
+                </span>
+              ))}
+            </span>
+          ) : null}
+          <p className={styles.summarySentence}>{ratingsInsight.summary}</p>
+        </div>
         {jobRows.length > 0 && (
           <div className={styles.summaryCounts}>
             <div className={styles.summaryCountCard}>
@@ -449,7 +671,10 @@ const JobVizSummaryModal: React.FC = () => {
         )}
         <div className={styles.summaryReflectionBlock}>
           <div className={styles.summaryReflectionHeader}>
-            <span>Reflection (optional)</span>
+            <span>
+              <LucideIcon name="MessageCircleMore" aria-hidden="true" />
+              Reflection (optional)
+            </span>
             <span>{remainingCharacters} characters left</span>
           </div>
           <textarea
@@ -458,29 +683,29 @@ const JobVizSummaryModal: React.FC = () => {
             value={reflection}
             onChange={handleReflectionChange}
             maxLength={reflectionLimit}
-            disabled={!allowEditing}
           />
-          {!allowEditing && summaryState.payload && (
-            <p className={styles.summaryReadOnlyNote}>Shared reflections are read-only.</p>
-          )}
+          {/* Removed legacy read-only note to streamline messaging */}
         </div>
         {showActions && (
         <div className={styles.summaryShareSection}>
               <div className={styles.summaryShareHeader}>
-                <h3>Share your ratings and thoughts</h3>
+                <h3>
+                  <LucideIcon name="Send" aria-hidden="true" />
+                  Share your ratings and thoughts
+                </h3>
                 <button
                   type="button"
                   className={styles.summaryInfoToggle}
                   onClick={() => setInfoOpen((prev) => !prev)}
                 >
-                  {infoOpen ? "Hide info" : "About your job ratings"}
+                  {infoOpen ? "Hide info" : "About sharing and privacy"}
                 </button>
               </div>
             {infoOpen && (
               <div className={styles.summaryInfoPanel}>
                 <div className={styles.summaryInfoHeader}>
                   <LucideIcon name="Info" />
-                  <h4>About Your Job Ratings</h4>
+                  <h4>About Sharing and Privacy</h4>
                 </div>
                 <ul>
                   {INFO_COPY_LINES.map((line) => (
@@ -526,7 +751,12 @@ const JobVizSummaryModal: React.FC = () => {
             {categorizedJobs.map((category) => (
               <div key={category.rating} className={styles.summaryJobGroup}>
                 <div className={styles.summaryJobGroupHeader}>
-                  <h4>{category.title}</h4>
+                  <h4>
+                    <span className={styles.summaryGroupEmoji} aria-hidden="true">
+                      {category.emoji}
+                    </span>
+                    {category.title}
+                  </h4>
                   <span className={styles.summaryJobGroupCount}>
                     {category.jobs.length}
                   </span>
@@ -542,8 +772,8 @@ const JobVizSummaryModal: React.FC = () => {
                             rel="noopener noreferrer"
                             className={styles.summaryJobItemLink}
                           >
-                            <span className={styles.summaryJobItemEmoji}>
-                              {job.emoji}
+                            <span className={styles.summaryJobItemIcon}>
+                              <LucideIcon name={job.iconName ?? "Briefcase"} />
                             </span>
                             <span className={styles.summaryJobItemTitle}>
                               {job.title}
@@ -552,8 +782,8 @@ const JobVizSummaryModal: React.FC = () => {
                           </a>
                         ) : (
                           <span className={styles.summaryJobItemLink}>
-                            <span className={styles.summaryJobItemEmoji}>
-                              {job.emoji}
+                            <span className={styles.summaryJobItemIcon}>
+                              <LucideIcon name={job.iconName ?? "Briefcase"} />
                             </span>
                             <span className={styles.summaryJobItemTitle}>
                               {job.title}
@@ -569,6 +799,19 @@ const JobVizSummaryModal: React.FC = () => {
               </div>
             ))}
           </div>
+        )}
+        {ratingsInsight.linkTarget && (
+          <p className={styles.summarySecondaryCallout}>
+            Explore other careers in{" "}
+            <a
+              href={ratingsInsight.linkTarget.href}
+              target="_blank"
+              rel="noreferrer"
+            >
+              {ratingsInsight.linkTarget.title}
+            </a>{" "}
+            that you might like.
+          </p>
         )}
         <div className={styles.summaryModalFooter}>
           <button

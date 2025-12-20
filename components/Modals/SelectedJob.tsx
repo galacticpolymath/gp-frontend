@@ -619,7 +619,15 @@ const SelectedJob: React.FC = () => {
                     </span>
                   </div>
                   <p className={styles.modalRatingNotice}>
-                    Ratings unlock when this job is part of one of your assignments.
+                    Ratings unlock when this job is part of a JobViz+ Assignment (available with a{" "}
+                    <a
+                      href="https://www.galacticpolymath.com/plus"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      GP+ subscription
+                    </a>
+                    ).
                   </p>
                 </section>
               )}

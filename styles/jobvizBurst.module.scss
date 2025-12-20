@@ -1,5 +1,10 @@
-$assignment-layer-z: 10000050; // keep assignment UI above modals/blur layers
+$assignment-layer-z: 1100; // keep assignment UI above main layout but below modals
 $jobviz-nav-height: 64px;
+
+:root {
+  --jobviz-horizontal-gutter: clamp(1rem, 3vw, 2.75rem);
+  --jobviz-desktop-gap: clamp(0.75rem, 2vw, 2rem);
+}
 
 .previewPage {
   --preview-blue-950: #020812;
@@ -340,7 +345,7 @@ $jobviz-nav-height: 64px;
 
 .hero,
 .jobvizHero {
-  padding: clamp(2rem, 4vw, 4rem);
+  padding: clamp(2rem, 4vw, 4rem) var(--jobviz-horizontal-gutter, clamp(1rem, 3vw, 2.75rem));
   border-radius: 0;
   background: linear-gradient(135deg, rgba(5, 12, 32, 0.92), rgba(15, 67, 116, 0.82));
   border: 1px solid var(--preview-border);
@@ -348,12 +353,17 @@ $jobviz-nav-height: 64px;
   position: relative;
   overflow: hidden;
   transform-style: preserve-3d;
+  box-sizing: border-box;
+  width: 100%;
 }
 
 .jobvizHeroContent {
   display: flex;
   flex-direction: column;
   gap: clamp(1.5rem, 3vw, 3rem);
+  width: min(1200px, 100%);
+  margin: 0 auto;
+  box-sizing: border-box;
 }
 
 @media (min-width: 900px) {
@@ -665,6 +675,10 @@ $jobviz-nav-height: 64px;
     inset 0 1px 0 rgba(255, 255, 255, 0.2),
     inset 0 0 30px rgba(137, 82, 255, 0.15);
   transition: box-shadow 0.4s ease;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
 }
 
 .jobCard::after {
@@ -765,7 +779,7 @@ $jobviz-nav-height: 64px;
 }
 
 .cardExitDownPivot {
-  animation: jobvizCardPortal 860ms cubic-bezier(0.24, 0.82, 0.28, 1) both;
+  animation: jobvizCardPortal 760ms cubic-bezier(0.33, 0.85, 0.45, 1) both;
   animation-delay: var(--card-stagger-delay, 0ms);
   transform-origin: center;
   will-change: opacity, transform;
@@ -846,7 +860,10 @@ $jobviz-nav-height: 64px;
   border: 1px solid rgba(255, 255, 255, 0.55);
   box-shadow: 0 0 16px rgba(144, 158, 255, 0.45);
   flex-shrink: 0;
-  position: relative;
+  position: absolute;
+  top: 0.65rem;
+  right: 0.8rem;
+  z-index: 2;
 }
 
 
@@ -857,12 +874,9 @@ $jobviz-nav-height: 64px;
   margin: 0.4rem 0;
 }
 
-.jobCard .cardRatingRow {
-  margin-top: auto;
-}
-
 .jobCard .statRow {
-  margin-top: 0.4rem;
+  margin-top: auto;
+  padding-top: 0.4rem;
 }
 
 .cardRatingRowAssignment .cardRatingBadge {
@@ -980,6 +994,7 @@ $jobviz-nav-height: 64px;
   flex-wrap: wrap;
   gap: 0.6rem;
 }
+
 
 .statChip {
   flex: 1 1 110px;
@@ -1123,8 +1138,12 @@ $jobviz-nav-height: 64px;
   transition: margin-bottom 0.25s ease;
 }
 
+.assignmentMobileWrapper {
+  margin-bottom: clamp(0.85rem, 3vw, 1.35rem);
+}
+
 .assignmentMobileWrapper[data-collapsed="true"] {
-  margin-bottom: clamp(1.35rem, 5vw, 2.2rem);
+  margin-bottom: clamp(0.45rem, 2vw, 0.9rem);
 }
 
 .assignmentMobileWrapper::before,
@@ -2318,6 +2337,12 @@ $jobviz-nav-height: 64px;
   flex-wrap: nowrap;
 }
 
+.modalTitleGroup .assignmentBadgeDot {
+  position: static;
+  margin-top: 0.15rem;
+  margin-left: 0.35rem;
+}
+
 .modalIcon {
   width: 56px;
   height: 56px;
@@ -2675,23 +2700,14 @@ $jobviz-nav-height: 64px;
     opacity: 1;
     transform: translate3d(0, 0, 0) scale(1);
   }
-  45% {
+  55% {
     opacity: 1;
     transform: translate3d(
-        calc(var(--card-pivot-dx, 0px) * 0.45),
-        calc(var(--card-pivot-dy, 0px) * 0.45),
+        calc(var(--card-pivot-dx, 0px) * 0.7),
+        calc(var(--card-pivot-dy, 0px) * 0.7),
         0
       )
-      scale(1.1);
-  }
-  70% {
-    opacity: 0.85;
-    transform: translate3d(
-        calc(var(--card-pivot-dx, 0px)),
-        calc(var(--card-pivot-dy, 0px)),
-        0
-      )
-      scale(1.35);
+      scale(1.08);
   }
   100% {
     opacity: 0;
@@ -2700,7 +2716,7 @@ $jobviz-nav-height: 64px;
         calc(var(--card-pivot-dy, 0px)),
         0
       )
-      scale(1.6);
+      scale(1.2);
   }
 }
 
@@ -3066,6 +3082,28 @@ $jobviz-nav-height: 64px;
   z-index: 1;
   padding-bottom: clamp(2rem, 5vw, 4rem);
   margin-top: calc(var(--jobviz-hero-offset, 0px) * -1);
+  width: min(1200px, 100%);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--jobviz-horizontal-gutter, clamp(1rem, 3vw, 2.75rem));
+  padding-right: var(--jobviz-horizontal-gutter, clamp(1rem, 3vw, 2.75rem));
+  box-sizing: border-box;
+}
+
+@media (min-width: 1200px) {
+  .jobvizPageShell[data-has-assignment="true"] .jobvizSectionInner {
+    --jobviz-horizontal-gutter: clamp(0.65rem, 1.8vw, 1.5rem);
+    max-width: min(
+      1200px,
+      calc(100vw - var(--jobviz-desktop-dock-width, 0px) - var(--jobviz-desktop-gap, 1.5rem))
+    );
+  }
+}
+
+@media (min-width: 1400px) {
+  .jobvizPageShell[data-has-assignment="true"] .jobvizSectionInner {
+    --jobviz-horizontal-gutter: clamp(0.85rem, 2vw, 2.5rem);
+  }
 }
 
 .jobvizSectionHeading {
@@ -3092,10 +3130,11 @@ $jobviz-nav-height: 64px;
   border-radius: 32px;
   border: 1px solid rgba(255, 255, 255, 0.06);
   background: rgba(5, 10, 24, 0.9);
-  padding: clamp(1rem, 3vw, 1.75rem);
+  padding: clamp(0.85rem, 2.5vw, 1.5rem);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.08),
     0 35px 60px rgba(0, 0, 0, 0.55);
+  box-sizing: border-box;
 }
 
 .jobvizGridWrap > .jobvizBreadcrumb {
@@ -3325,7 +3364,12 @@ $jobviz-nav-height: 64px;
 }
 
 .jobvizSource a {
-  color: #64c8ff;
+  color: #9fe0ff;
+}
+
+.jobvizSource a:hover,
+.jobvizSource a:focus-visible {
+  color: #ffe0ff;
 }
 
 .jobvizSourceFixed {
@@ -3631,6 +3675,95 @@ $jobviz-nav-height: 64px;
   flex-direction: column;
   gap: 2rem;
   position: relative;
+}
+
+.jobvizPageShell a {
+  color: #8fd4ff;
+  text-decoration-color: rgba(143, 212, 255, 0.65);
+  transition: color 0.2s ease, text-shadow 0.2s ease,
+    text-decoration-color 0.2s ease;
+}
+
+.jobvizPageShell a:hover,
+.jobvizPageShell a:focus-visible {
+  color: #ffd5ff;
+  text-decoration-color: rgba(255, 213, 255, 0.9);
+  text-shadow: 0 0 14px rgba(255, 133, 255, 0.35);
+}
+
+.jobvizNotice {
+  margin-bottom: 1.25rem;
+  padding: 0.85rem 1rem;
+  border-radius: 1rem;
+  background: rgba(12, 14, 24, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  font-size: 0.95rem;
+  line-height: 1.5;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+}
+
+.jobvizNotice strong {
+  font-weight: 600;
+  display: inline-block;
+  margin-right: 0.35rem;
+}
+
+.jobvizNotice code {
+  font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+  font-size: 0.85em;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 0.1rem 0.3rem;
+  border-radius: 0.35rem;
+}
+
+.tourBuilderPlaceholder {
+  margin-bottom: 1.5rem;
+  padding: 1rem 1.25rem;
+  border-radius: 1.25rem;
+  background: linear-gradient(
+    140deg,
+    rgba(55, 18, 100, 0.6),
+    rgba(12, 16, 35, 0.8)
+  );
+  border: 1px dashed rgba(255, 255, 255, 0.28);
+  box-shadow: 0 16px 45px rgba(7, 3, 19, 0.55);
+}
+
+.tourBuilderPlaceholder h3 {
+  margin: 0 0 0.35rem;
+  font-size: 1.05rem;
+}
+
+.tourBuilderPlaceholder p {
+  margin: 0 0 0.4rem;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.tourBuilderPlaceholder p:last-child {
+  margin-bottom: 0;
+}
+
+.assignmentReturnButton {
+  margin-left: 0.85rem;
+  padding: 0.32rem 0.9rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: transparent;
+  color: inherit;
+  font-weight: 600;
+  font-size: 0.85rem;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.assignmentReturnButton:hover,
+.assignmentReturnButton:focus-visible {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.45);
+}
+
+.assignmentReturnButton:focus-visible {
+  outline: 2px solid #6ec8ff;
+  outline-offset: 2px;
 }
 
 .jobvizMainColumn {
@@ -4318,6 +4451,34 @@ $jobviz-nav-height: 64px;
     0 12px 30px rgba(3, 4, 18, 0.55);
 }
 
+.summarySentenceRow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.summaryIconDeck {
+  display: inline-flex;
+  gap: 0.35rem;
+}
+
+.summaryIconBadge {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  display: grid;
+  place-items: center;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
+}
+
+.summaryIconBadge svg {
+  width: 20px;
+  height: 20px;
+}
+
 .summaryCounts {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
@@ -4371,11 +4532,12 @@ $jobviz-nav-height: 64px;
   gap: 0.5rem;
   padding: 1rem;
   border-radius: 18px;
-  background: linear-gradient(160deg, rgba(12, 19, 48, 0.95), rgba(6, 9, 28, 0.94));
-  border: 1px solid rgba(255, 255, 255, 0.22);
+  background: linear-gradient(155deg, rgba(11, 15, 34, 0.96), rgba(19, 8, 46, 0.94));
+  border: 1px solid rgba(255, 255, 255, 0.2);
   box-shadow:
-    inset 0 0 25px rgba(0, 0, 0, 0.45),
-    0 14px 32px rgba(0, 0, 0, 0.5);
+    inset 0 0 18px rgba(0, 0, 0, 0.4),
+    0 16px 34px rgba(4, 5, 15, 0.55);
+  color: #f7fbff;
 }
 
 .summaryReflectionHeader {
@@ -4384,24 +4546,43 @@ $jobviz-nav-height: 64px;
   font-size: 0.85rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: rgba(255, 255, 255, 0.7);
+  color: rgba(255, 255, 255, 0.85);
+  gap: 0.75rem;
+}
+
+.summaryReflectionHeader span:first-child {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.summaryReflectionHeader svg {
+  width: 16px;
+  height: 16px;
 }
 
 .summaryReflectionInput {
-  min-height: 90px;
-  border-radius: 18px;
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  background: rgba(5, 12, 28, 0.4);
-  color: #fefefe;
-  font-size: 0.95rem;
-  padding: 0.9rem 1rem;
+  min-height: 120px;
+  border-radius: 22px;
+  border: 1px solid rgba(123, 91, 255, 0.35);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 1), rgba(255, 243, 226, 0.95) 45%, rgba(255, 214, 241, 0.92));
+  color: #1d1440;
+  font-size: 1rem;
+  padding: 1.1rem 1.25rem;
   resize: vertical;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.summaryReflectionInput::placeholder {
+  color: rgba(29, 20, 64, 0.55);
 }
 
 .summaryReflectionInput:focus {
-  border-color: rgba(255, 255, 255, 0.4);
-  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 123, 184, 0.6);
+  box-shadow: 0 18px 35px rgba(8, 5, 24, 0.2);
   outline: none;
 }
 
@@ -4438,6 +4619,9 @@ $jobviz-nav-height: 64px;
 
 .summaryShareHeader h3 {
   color: #f6fbff;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
 }
 
 .summaryInfoToggle {
@@ -4568,6 +4752,64 @@ $jobviz-nav-height: 64px;
   font-size: 0.95rem;
   letter-spacing: 0.05em;
   text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.summaryGroupEmoji {
+  font-size: 1.1rem;
+}
+
+.jobvizUpsellCard {
+  margin-top: 2rem;
+  padding: clamp(1.2rem, 3vw, 1.7rem);
+  border-radius: 28px;
+  background: linear-gradient(120deg, rgba(123, 91, 255, 0.9), rgba(255, 123, 184, 0.9));
+  color: #0c0f1b;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  align-items: center;
+  box-shadow: 0 20px 45px rgba(11, 7, 34, 0.45);
+}
+
+.jobvizUpsellCard h3 {
+  margin: 0 0 0.35rem;
+  font-size: clamp(1.4rem, 3vw, 1.8rem);
+}
+
+.jobvizUpsellCard p {
+  margin: 0.25rem 0 0;
+  color: rgba(12, 15, 27, 0.8);
+}
+
+.jobvizUpsellEyebrow {
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-size: 0.75rem;
+  color: rgba(12, 15, 27, 0.65);
+}
+
+.jobvizUpsellButton {
+  margin-left: auto;
+  padding: 0.85rem 1.8rem;
+  border-radius: 999px;
+  background: #0c0f1b;
+  color: #ffffff;
+  font-weight: 700;
+  text-decoration: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.45);
+}
+
+.jobvizUpsellButton:hover,
+.jobvizUpsellButton:focus-visible {
+  transform: translateY(-2px);
+  box-shadow: 0 18px 30px rgba(0, 0, 0, 0.5);
+  color: white !important;
+  text-shadow: 0 0 14px rgba(255, 238, 212, 0.65);
 }
 
 .summaryJobGroupCount {
@@ -4598,7 +4840,7 @@ $jobviz-nav-height: 64px;
   border-radius: 12px;
   padding: 0.45rem 0.65rem;
   color: #fefefe;
-  text-decoration: none;
+  text-decoration: none !important;
   border: 1px solid transparent;
   transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
 }
@@ -4606,6 +4848,8 @@ $jobviz-nav-height: 64px;
 .summaryJobItemLink svg {
   width: 1rem;
   height: 1rem;
+  color: #fefefe;
+  flex-shrink: 0;
 }
 
 .summaryJobItemLink:hover,
@@ -4614,22 +4858,62 @@ $jobviz-nav-height: 64px;
   border-color: rgba(255, 255, 255, 0.25);
   transform: translateY(-1px);
   color: #fefefe;
-  text-decoration: none;
+  text-decoration: none !important;
 }
 
-.summaryJobItemEmoji {
-  font-size: 1rem;
+.summaryJobItemLink:hover svg,
+.summaryJobItemLink:focus-visible svg {
+  color: #ffffff;
+}
+
+.summaryJobItemIcon {
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.08);
+  display: grid;
+  place-items: center;
+}
+
+.summaryJobItemIcon svg {
+  width: 18px;
+  height: 18px;
 }
 
 .summaryJobItemTitle {
   flex: 1;
   font-weight: 600;
+  color: #fefefe;
+  text-decoration: none;
+}
+
+.summaryJobItemLink:hover .summaryJobItemTitle,
+.summaryJobItemLink:focus-visible .summaryJobItemTitle {
+  color: #ffffff;
+  text-decoration: none;
 }
 
 .summaryJobGroupEmpty {
   margin: 0.8rem 0 0;
   color: rgba(255, 255, 255, 0.7);
   font-size: 0.9rem;
+}
+
+.summarySecondaryCallout {
+  margin: 1.2rem 0 0;
+  padding: 0.85rem 1.1rem;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(12, 20, 44, 0.85);
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.95rem;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+.summarySecondaryCallout a {
+  color: #ffffff;
+  text-decoration: underline;
 }
 
 .summaryModalFooter {
