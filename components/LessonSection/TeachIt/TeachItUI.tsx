@@ -4,6 +4,7 @@ import React, {
   RefObject,
   SetStateAction,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from "react";
@@ -69,7 +70,7 @@ export interface ITeachItServerProps extends Pick<IUnitTeachingMaterialsForUI, "
   unitId?: Pick<INewUnitSchema, "_id">["_id"];
 }
 
-type IUserGDriveItemCopy = {
+export type IUserGDriveItemCopy = {
   userGDriveItemCopyId?: string
 }
 
@@ -114,7 +115,8 @@ const getUserLessonsGDriveFolderIds = async (
   unitId: string,
   lessonNumIds: string[],
   gradesRange: string,
-  ensureValidToken: () => ReturnType<typeof _ensureValidToken>
+  ensureValidToken: () => ReturnType<typeof _ensureValidToken>,
+  gpGoogleDriveItemIdsOfLessons: string[]
 ) => {
   try {
     const url = new URL(
@@ -130,6 +132,9 @@ const getUserLessonsGDriveFolderIds = async (
 
     lessonNumIds.forEach((lessonNumId) => {
       url.searchParams.append("lessonNumIds", lessonNumId);
+    });
+    gpGoogleDriveItemIdsOfLessons.forEach((gpGoogleDriveItemIdOfLesson) => {
+      url.searchParams.append("lessonItemIds", gpGoogleDriveItemIdOfLesson);
     });
     url.searchParams.append("unitId", unitId!);
     url.searchParams.append("grades", gradesRange);
@@ -221,17 +226,20 @@ const TeachItUI = <
     gdriveAccessTokenExp,
   } = session;
   const [parts, setParts] = useState(_parts);
+  const gpGoogleDriveItemIdsOfLessons = useMemo(() => {
+    return _parts.flatMap(part => {
+      const gpGDriveItemId = part?.itemList?.map(item => "gpGDriveItemId" in item && item.gpGDriveItemId ? item.gpGDriveItemId : "") ?? [];
 
-  useEffect(() => {
-    console.log('parts within useEffect: ', parts);
-  });
+      return gpGDriveItemId.length ? gpGDriveItemId?.filter(Boolean) : [];
+    });
+  }, []);
 
   const ensureValidToken = async () =>
     await _ensureValidToken(gdriveAccessTokenExp!, setAppCookie);
 
   const { isFetching } = useQuery({
     refetchOnWindowFocus: false,
-    queryKey: [status, isGpPlusMember, selectedGrade],
+    queryKey: [status, isGpPlusMember, selectedGrade, _parts],
     queryFn: async () => {
       const lessonNumIds =
         status === "authenticated" && isGpPlusMember
@@ -244,7 +252,11 @@ const TeachItUI = <
 
       console.log('Fetching lesson parts...');
 
-      console.log('_parts, sup there: ', _parts);
+
+      console.log(
+        "gpGoogleDriveItemIdsOfLessonsRef.current, sup there: ",
+        gpGoogleDriveItemIdsOfLessons
+      );
 
       if (
         status === "authenticated" &&
@@ -266,7 +278,8 @@ const TeachItUI = <
             unitId!,
             lessonNumIds,
             selectedGrade.grades,
-            ensureValidToken
+            ensureValidToken,
+            gpGoogleDriveItemIdsOfLessons
           );
 
           console.log(
@@ -275,26 +288,56 @@ const TeachItUI = <
           );
 
           if (userGDriveLessonFolderIds?.userLessonFolderGDriveIds?.length) {
-            const _parts = parts.map((part) => {
-              const targetLessonGDriveUserFolderId =
-                userGDriveLessonFolderIds.userLessonFolderGDriveIds.find((gDriveLessonFolderId) => {
-                  return gDriveLessonFolderId.lessonNum == part.lsn;
-                });
+            setParts(parts => {
+              const _parts: (ILessonForUI | INewUnitLesson<IItemV2 & IUserGDriveItemCopy>)[] = parts.map((part) => {
+                const targetLessonGDriveUserFolderId =
+                  userGDriveLessonFolderIds.userLessonFolderGDriveIds.find((gDriveLessonFolderId) => {
+                    return gDriveLessonFolderId.lessonNum == part.lsn;
+                  });
 
-              if (targetLessonGDriveUserFolderId) {
+                console.log("Updating lesson part with user GDrive item copy id, sup there...");
+
+                if (targetLessonGDriveUserFolderId && userGDriveLessonFolderIds.userGDriveItemIdsOfLessonFolder && part.itemList?.length) {
+                  console.log("Updating lesson part with user GDrive item copy id...");
+                  const itemList = part.itemList.map(item => {
+                    const targetItem = userGDriveLessonFolderIds.userGDriveItemIdsOfLessonFolder.find(userGDriveItemIdOfLessonFolder => {
+                      return "gpGDriveItemId" in item && item.gpGDriveItemId === userGDriveItemIdOfLessonFolder.originalLessonItemIdInGpGoogleDrive;
+                    });
+
+                    console.log("targetItem, yo there: ", targetItem);
+
+                    return (targetItem ? {
+                      ...item,
+                      userGDriveItemCopyId: targetItem.userGDriveItemCopyId
+                    } : item) as (IItemV2 & IUserGDriveItemCopy)
+                  })
+                  return {
+                    ...part,
+                    itemList: itemList,
+                    userGDriveLessonFolderId:
+                      targetLessonGDriveUserFolderId.lessonDriveId,
+                  };
+                }
+
+                if (targetLessonGDriveUserFolderId) {
+                  return {
+                    ...part,
+                    userGDriveLessonFolderId:
+                      targetLessonGDriveUserFolderId.lessonDriveId,
+                  };
+                }
+
                 return {
                   ...part,
-                  userGDriveLessonFolderId:
-                    targetLessonGDriveUserFolderId.lessonDriveId,
+                  userGDriveLessonFolderId: undefined,
                 };
-              }
+              });
 
-              return {
-                ...part,
-                userGDriveLessonFolderId: undefined,
-              };
+              console.log("_parts, yo there meng: ", _parts);
+
+
+              return _parts
             });
-            setParts(_parts);
 
             // prevent runtime error
             return 1;

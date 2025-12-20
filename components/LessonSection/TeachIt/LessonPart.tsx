@@ -49,6 +49,7 @@ import CopyLessonBtn, { ICopyLessonBtnProps } from "./CopyLessonBtn";
 import { INewUnitSchema } from "../../../backend/models/Unit/types/unit";
 import useSiteSession from "../../../customHooks/useSiteSession";
 import { EXTERNAL_LINK_HELPER_TXT } from "../Modals/LessonItemsModal";
+import { IUserGDriveItemCopy } from "./TeachItUI";
 
 const LESSON_PART_BTN_COLOR = "#2C83C3";
 
@@ -156,6 +157,8 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
     selectedGrade,
   } = props;
 
+  console.log("itemList, lessonPart component: ", itemList);
+
   const sharedGDriveLessonFolder = useMemo(() => {
     if (!sharedGDriveLessonFolders) {
       console.log("No shared Google Drive lesson folders available");
@@ -254,7 +257,7 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
         docUrl: itemDocUrl,
       };
     });
-  }, []);
+  }, [itemList]);
 
   const handlePreviewDownloadBtnClick = (lessonItemIndex: number) => {
     if (!lsnNum) {
@@ -263,6 +266,8 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
       );
       return;
     }
+
+    console.log("allLessonItems: ", allLessonItems);
 
     setLessonItemModal({
       currentIndex: lessonItemIndex,

@@ -9,13 +9,14 @@ import { Session } from 'next-auth';
 import { IUserSchema, TAboutUserForm, TUserSchemaForClient, TUserSchemaV2 } from '../backend/models/User/types';
 import { TWebAppForUI } from '../backend/models/WebApp';
 import { TUserAccount } from '../providers/UserProvider';
+import { IUserGDriveItemCopy } from '../components/LessonSection/TeachIt/TeachItUI';
 
-interface IRequestArgs{
-    path: string;
-    method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
-    params?: Record<string, string>;
-    headers?: Record<string, string>;
-    body?: string | object;
+interface IRequestArgs {
+  path: string;
+  method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
+  params?: Record<string, string>;
+  headers?: Record<string, string>;
+  body?: string | object;
 }
 
 declare global {
@@ -32,18 +33,18 @@ declare global {
       on: (event: 'logout' | 'redirect' | 'signup', callback: (...args: unknown[]) => void | boolean | Promise<void | boolean>) => void;
     };
     gapi: {
-    client: {
-      request: (args: IRequestArgs) => Promise<unknown>
-    }
-    auth: {
-      getToken: () => {
-        access_token: string,
-        [key: string]: string | number
+      client: {
+        request: (args: IRequestArgs) => Promise<unknown>
+      }
+      auth: {
+        getToken: () => {
+          access_token: string,
+          [key: string]: string | number
+        }
       }
     }
   }
-  }
-  
+
 }
 interface IComponent {
   index: number;
@@ -58,7 +59,7 @@ export interface ILessonForUI extends ILesson {
   status: string;
 }
 
-export interface ICustomUserOfSession extends NonNullable<Session['user']>{
+export interface ICustomUserOfSession extends NonNullable<Session['user']> {
   userId: string
 }
 export interface IUserSession extends Pick<Session, 'expires'> {
@@ -75,7 +76,7 @@ interface ISectionDot {
   sectionDotId: string;
 }
 
-interface IItemForClient extends IItemV2 {
+interface IItemForClient extends IItemV2, IUserGDriveItemCopy {
   filePreviewImg: string;
 }
 
@@ -87,7 +88,7 @@ interface ISectionDots {
 // for the units page
 interface IMultiMediaItemForUI
   extends Pick<INewUnitSchema, 'ReleaseDate'>,
-    Pick<IFeaturedMultimedia, 'description' | 'mainLink'> {
+  Pick<IFeaturedMultimedia, 'description' | 'mainLink'> {
   id: string;
   lessonUnitTitle: string | null;
   videoTitle: string | null;
@@ -133,7 +134,7 @@ type TLiveUnit = INewUnitSchema & {
   isNew?: boolean;
 };
 
-interface ILiveUnit extends Pick<IUnitForUnitsPg, 'locals'>, TLiveUnit {}
+interface ILiveUnit extends Pick<IUnitForUnitsPg, 'locals'>, TLiveUnit { }
 
 interface ICurrentUnits {
   units: IGpUnitsItemsPg<ILiveUnit> | null;
@@ -151,7 +152,7 @@ interface IGpUnitsItemsPg<TData extends object> {
   didErrorOccur: boolean;
 }
 
-type TInputType = 
+type TInputType =
   | 'button'
   | 'checkbox'
   | 'color'
@@ -173,19 +174,19 @@ type TInputType =
   | 'text'
 type TReferredByOpt = (typeof REFERRED_BY_OPTS)[number];
 export type TEnvironment = 'dev' | 'production'
-export interface IUpdatedUserReqBody{
+export interface IUpdatedUserReqBody {
   updatedUser: Partial<Omit<IUserSchema, 'password' | '_id'>>
   clientUrl: string
   willUpdateMailingListStatusOnly?: boolean
   willSendEmailListingSubConfirmationEmail?: boolean
-} 
+}
 
-export interface IUpdatedAboutUserForm{
+export interface IUpdatedAboutUserForm {
   aboutUserForm: TAboutUserForm<Map>
 }
 
-export interface ISessionStorage{
-  userEntryRedirectUrl: string; 
+export interface ISessionStorage {
+  userEntryRedirectUrl: string;
   wasWelcomeNewUserModalShown: boolean
   isGpPlusUser: boolean
   didJobVizPgInitialRendered: boolean
@@ -193,7 +194,7 @@ export interface ISessionStorage{
   didOptOutOfMailingList: boolean
 }
 
-export interface ILocalStorage extends Pick<TUserSchemaV2, 'willShowGpPlusCopyLessonHelperModal'>{
+export interface ILocalStorage extends Pick<TUserSchemaV2, 'willShowGpPlusCopyLessonHelperModal'> {
   gpPlusFeatureLocation: string;
   willShowGpPlusPurchaseThankYouModal: boolean
   didGpSignInAttemptOccur: boolean;
@@ -204,7 +205,7 @@ export interface ILocalStorage extends Pick<TUserSchemaV2, 'willShowGpPlusCopyLe
   selectedGpPlusBillingType: 'month' | 'year';
 }
 
-interface IErr<TErrType extends string = string>{
+interface IErr<TErrType extends string = string> {
   errType: TErrType,
   errMsg: string
 }

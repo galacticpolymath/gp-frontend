@@ -227,7 +227,7 @@ interface INewUnitLesson<TItem extends IItem = IItemV2> {
   gradeVarNote: string | null;
   preface: string | null;
   tile: string | null;
-  itemList: IItem[] | null;
+  itemList: TItem[] | null;
   lsnDur: number | null;
   lsnPreface: string | null;
   learningObj: string[] | null;
