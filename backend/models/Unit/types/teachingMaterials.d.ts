@@ -26,6 +26,7 @@ export interface IItemV2 extends IItemV2Props {
   itemDescription: string | null;
   itemCat: string | null;
   links: ILink[] | null;
+  gpGDriveItemId?: string
 }
 
 export interface IGoingFurtherVal extends Omit<IItem, 'links' | 'itemCat'> {
@@ -264,4 +265,5 @@ export interface IUnitTeachingMaterialsForUI extends IUnitSectionObj, ITeachingM
   classroom: {
     resources: IResource<INewUnitLesson<IItemForUI>>[];
   };
+  itemsOfLessons?: { lessonId: string, items: { itemTitle: string, gpGDriveItemId: string }[] }[]
 }

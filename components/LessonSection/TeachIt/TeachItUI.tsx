@@ -24,6 +24,7 @@ import {
   ILink,
   INewUnitLesson,
   IResource,
+  IUnitTeachingMaterialsForUI,
 } from "../../../backend/models/Unit/types/teachingMaterials";
 import BootstrapBtn from "react-bootstrap/Button";
 import LessonPart from "./LessonPart";
@@ -63,9 +64,14 @@ export type IUserGDriveLessonId = Required<
 export type THandleOnChange<TResourceVal extends object = ILesson> = (
   selectedGrade: IResource<TResourceVal> | IResource<INewUnitLesson<IItemV2>>
 ) => void;
-export interface ITeachItServerProps {
+export interface ITeachItServerProps extends Pick<IUnitTeachingMaterialsForUI, "itemsOfLessons"> {
   unitId?: Pick<INewUnitSchema, "_id">["_id"];
 }
+
+type IUserGDriveItemCopy = {
+  userGDriveItemCopyId?: string
+}
+
 export interface TeachItUIProps<
   TResourceVal extends object = ILesson,
   TSelectedGrade extends object = IResource<ILessonForUI>
@@ -91,7 +97,7 @@ export interface TeachItUIProps<
   selectedEnvironment: "classroom" | "remote";
   setSelectedEnvironment: Dispatch<SetStateAction<"classroom" | "remote">>;
   selectedGradeResources: ILink | null;
-  parts: (ILessonForUI | INewUnitLesson<IItemV2 & { userCopiedGoogleDriveVersionId?: string, gpGoogleDriveVerionsI: string }>)[];
+  parts: (ILessonForUI | INewUnitLesson<IItemV2 & IUserGDriveItemCopy>)[];
   dataLesson: ILessonDetail[];
   GradesOrYears: string | null;
   ForGrades: string | null;
@@ -183,7 +189,6 @@ const TeachItUI = <
     unitId,
     handleOnChange,
   } = props;
-  // { lessonItems: { lessonId: string, items: { itemTitle: string, gpGDriveItemId: string }[] }[]}
 
   const didInitialRenderOccur = useRef(false);
   const copyUnitBtnRef = useRef<HTMLButtonElement | null>(null);
@@ -213,6 +218,10 @@ const TeachItUI = <
     gdriveAccessTokenExp,
   } = session;
   const [parts, setParts] = useState(_parts);
+
+  useEffect(() => {
+    console.log('parts within useEffect: ', parts);
+  });
 
   const ensureValidToken = async () =>
     await _ensureValidToken(gdriveAccessTokenExp!, setAppCookie);

@@ -112,6 +112,7 @@ const TeachIt: React.FC<TeachItProps> = (props) => {
     Title: unitTitle,
     MediumTitle,
     unitId,
+    itemsOfLessons
   } = props;
   let Data = props?.Data ?? props;
   const [, setSectionDots] = _sectionDots;
@@ -123,8 +124,8 @@ const TeachIt: React.FC<TeachItProps> = (props) => {
     const dataKeys = Data && typeof Data === "object" ? Object.keys(Data) : [];
     const environments = dataKeys.length
       ? (["classroom", "remote"] as const).filter((setting) =>
-          dataKeys.includes(setting)
-        )
+        dataKeys.includes(setting)
+      )
       : [];
 
     return environments;
@@ -152,10 +153,10 @@ const TeachIt: React.FC<TeachItProps> = (props) => {
   if (
     ("classroom" in Data || "remote" in Data) &&
     typeof (Data as ITeachingMaterialsDataForUI<ILessonForUI>)[
-      selectedEnvironment
+    selectedEnvironment
     ] === "object" &&
     (Data as ITeachingMaterialsDataForUI<ILessonForUI>)[selectedEnvironment] !=
-      null &&
+    null &&
     (Data as ITeachingMaterialsDataForUI<ILessonForUI>)[selectedEnvironment]
       ?.resources?.length
   ) {
@@ -185,8 +186,8 @@ const TeachIt: React.FC<TeachItProps> = (props) => {
 
   let resources = allResources?.length
     ? allResources.find(
-        ({ gradePrefix }) => gradePrefix === selectedGrade.gradePrefix
-      )
+      ({ gradePrefix }) => gradePrefix === selectedGrade.gradePrefix
+    )
     : ({} as IResource);
 
   let areThereMoreThan1Resource = false;
@@ -296,6 +297,7 @@ const TeachIt: React.FC<TeachItProps> = (props) => {
       ForGrades={ForGrades}
       MediumTitle={MediumTitle}
       lessonDur={unitDur}
+      itemsOfLessons={itemsOfLessons}
       unitId={unitId}
       lessonPreface={unitPreface}
       SectionTitle={SectionTitle}

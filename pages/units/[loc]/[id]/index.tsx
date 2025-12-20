@@ -983,16 +983,11 @@ export const getStaticProps = async (arg: {
 
       console.log('targetUnit.GdrivePublicID: ', targetUnit.GdrivePublicID);
 
-      const unitGDriveChildItems = (
+      const unitGDriveChildItemsAll = (
         await getUnitGDriveChildItems(targetUnit.GdrivePublicID!)
-      )?.filter((item) => item.mimeType?.includes('folder'));
-
-      console.log('unitGDriveChildItems first: ', unitGDriveChildItems);
-
-      // GOAL: get all of the items for each of the lesson folders
-
-      // throw new Error("yo there!");
-
+      );
+      const gpGDriveLessonItems = unitGDriveChildItemsAll?.filter(item => item.mimeType !== "application/vnd.google-apps.folder")
+      const unitGDriveChildItems = unitGDriveChildItemsAll?.filter((item) => item.mimeType?.includes('folder'));
       const headLinks = targetUnits
         .filter(({ locale, numID }) => locale && numID)
         .map(({ locale, numID }) => [
@@ -1091,6 +1086,26 @@ export const getStaticProps = async (arg: {
 
               return true;
             });
+            resource.lessons = resource?.lessons.map(lesson => {
+              if (lesson.itemList?.length) {
+                lesson.itemList = lesson.itemList.map(item => {
+                  const gdriveRoot = "gdriveRoot" in item && item.gdriveRoot as string
+                  const itemId = gdriveRoot ? gdriveRoot.split('/').at(-1) : undefined;
+                  const targetItemInGpGDrive = itemId ? gpGDriveLessonItems?.find(lessonItem => lessonItem.id === itemId) : undefined;
+
+                  if (targetItemInGpGDrive?.id) {
+                    return {
+                      ...item,
+                      gpGDriveItemId: targetItemInGpGDrive.id
+                    }
+                  }
+
+                  return item;
+                });
+              };
+
+              return lesson;
+            });
           }
           const allUnitLessons: Pick<
             INewUnitLesson,
@@ -1132,7 +1147,12 @@ export const getStaticProps = async (arg: {
             | undefined = undefined;
           const lessonsWithFilePreviewImgsPromises = resource.lessons?.map(
             async (lesson) => {
-              console.log('lesson, sup there: ', lesson.title);
+
+              // NOTES: 
+              // -get all of the items for all of the lessons
+              // -query the corresponding object in the array that contains all of the meta data for the files of all of the lessons by their name
+
+
 
               if (!lessonsFolder && unitGDriveChildItems) {
                 for (const unitGDriveChildItem of unitGDriveChildItems) {
