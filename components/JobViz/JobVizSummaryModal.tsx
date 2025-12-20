@@ -249,7 +249,10 @@ const buildRatingsInsight = (
   const iconNames = topCandidates
     .slice(0, FAMILY_LIST_LIMIT)
     .map((candidate) => (candidate.node ? getIconNameForNode(candidate.node) : null))
-    .filter((value): value is string => Boolean(value));
+    .filter(
+      (value): value is Exclude<typeof value, null> =>
+        typeof value === "string" && value.length > 0
+    );
 
   const shouldEncourageExploration = overallAvg < 1.8 || !topPhrase;
   let secondaryPlain: string | undefined;

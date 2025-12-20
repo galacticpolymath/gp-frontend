@@ -824,6 +824,7 @@ const JobVizSearchResults = ({
   const heroSlot = !isStudentMode && !isGpPlusHero ? (
     <HeroForFreeUsers onStatAction={handleHeroStatAction} />
   ) : null;
+  const showGpPlusUpsell = !hasGpPlusMembership && !isStudentMode;
 
 
   useEffect(() => {
@@ -1031,6 +1032,26 @@ const JobVizSearchResults = ({
                   </>
                 )}
               </p>
+              {showGpPlusUpsell && (
+                <div className={styles.jobvizUpsellCard}>
+                  <div>
+                    <p className={styles.jobvizUpsellEyebrow}>For Teachers</p>
+                    <h3>Want to connect this resource to your classroom?</h3>
+                    <p>
+                      Unlock curated JobViz+ career tours, assignment tools, and ready-to-use lesson
+                      integrations with a GP+ subscription.
+                    </p>
+                  </div>
+                  <a
+                    href="https://www.galacticpolymath.com/plus"
+                    target="_blank"
+                    rel="noreferrer"
+                    className={styles.jobvizUpsellButton}
+                  >
+                    Explore GP+
+                  </a>
+                </div>
+              )}
             </div>
           </JobVizLayout>
         </div>
