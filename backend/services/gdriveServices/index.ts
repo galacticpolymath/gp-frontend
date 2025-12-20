@@ -170,7 +170,7 @@ const getCanRetry = async (
       (await refreshAuthToken(refreshToken, reqOriginForRefreshingToken)) ?? {};
     const { accessToken } = refreshTokenRes;
 
-    if (!accessToken) {
+    if (!accessToken || typeof accessToken !== 'string') {
       throw new Error('Failed to refresh access token');
     }
 
@@ -361,7 +361,7 @@ export const renameFiles = async (
 
         if (
           'errType' in fileUpdateResult &&
-            fileUpdateResult.errType === 'unauthenticated'
+          fileUpdateResult.errType === 'unauthenticated'
         ) {
           filesToUpdateRetry.push({
             id: fileUpdateResult.fileId as string,
@@ -389,7 +389,7 @@ export const renameFiles = async (
       }
     }
 
-    if(filesToUpdateRetry.length && tries > 0){
+    if (filesToUpdateRetry.length && tries > 0) {
       tries -= 1;
       await waitWithExponentialBackOff(tries, [2_000, 5_000]);
 
@@ -469,14 +469,98 @@ export const getUserChildItemsOfFolder = async (
 
       return await getUserChildItemsOfFolder(
         folderId,
-        gdriveAccessToken,
+        canRetryResult.accessToken ?? gdriveAccessToken,
         gdriveRefreshToken,
         clientOrigin,
         tries - 1
       );
     }
 
-    return null;
+    return null
+  }
+};
+
+export const getAllChildItemsOfFolder = async (
+  folderId: string,
+  gdriveAccessToken: string,
+  gdriveRefreshToken: string,
+  clientOrigin: string,
+  tries = 3,
+  currentChildItems: drive_v3.Schema$File[] = [],
+  pageToken?: string,
+): Promise<drive_v3.Schema$FileList | null> => {
+  try {
+    const { status, data } = await axios.get<drive_v3.Schema$FileList>(
+      'https://www.googleapis.com/drive/v3/files',
+      {
+        headers: {
+          Authorization: `Bearer ${gdriveAccessToken}`,
+          'Content-Type': 'application/json',
+        },
+        params: {
+          orderBy: 'name',
+          q: `'${folderId}' in parents`,
+          supportAllDrives: true,
+          fields: '*',
+          pageToken
+        },
+      }
+    );
+
+    if (status !== 200) {
+      throw new Error(
+        `Failed to get items in user's google drive. Status: ${status}. Data: ${data}`
+      );
+    }
+
+    if (data.files?.length) {
+      currentChildItems.push(...data.files)
+    }
+
+    if (data.nextPageToken) {
+      return await getAllChildItemsOfFolder(
+        folderId,
+        gdriveAccessToken,
+        gdriveRefreshToken,
+        clientOrigin,
+        tries,
+        currentChildItems,
+        data.nextPageToken
+      )
+    }
+
+    return { ...data, files: currentChildItems };
+  } catch (error: any) {
+    console.error(
+      "Failed to get items in user's google drive. Reason: ",
+      error
+    );
+
+
+
+    const canRetryResult = await getCanRetry(
+      error,
+      gdriveRefreshToken,
+      clientOrigin
+    );
+
+    console.log('canRetryResult: ', canRetryResult);
+
+    console.log(`getUserChildItemsOfFolder tries: ${tries}`);
+
+    if (canRetryResult.canRetry && tries > 0) {
+      await waitWithExponentialBackOff(tries);
+
+      return await getUserChildItemsOfFolder(
+        folderId,
+        canRetryResult.accessToken ?? gdriveAccessToken,
+        gdriveRefreshToken,
+        clientOrigin,
+        tries - 1
+      );
+    }
+
+    return null
   }
 };
 
@@ -969,7 +1053,7 @@ export const getUnitGDriveChildItems = async (unitId: string) => {
   }
 };
 
-type TCopiedFile = { id: string; [key: string]: unknown };
+type TCopiedFile = { id: string;[key: string]: unknown };
 
 export const copyGDriveItem = async (
   accessToken: string,
@@ -977,12 +1061,20 @@ export const copyGDriveItem = async (
   fileId: string,
   refreshToken: string,
   clientOrigin: string,
-  tries = 3
+  tries = 3,
+  appProperties?: Record<string, unknown>
 ): Promise<
   | TCopiedFile
   | { errType: string; errMsg?: string; status?: number; errorObj?: any }
 > => {
-  const reqBody = parentFolderIds ? { parents: parentFolderIds } : {};
+  let reqBody: Record<string, unknown> = parentFolderIds ? { parents: parentFolderIds } : {};
+
+  if (appProperties) {
+    reqBody = {
+      ...reqBody,
+      appProperties
+    }
+  }
 
   try {
     console.log('fileId, sup there: ', fileId);
@@ -1042,7 +1134,10 @@ export const copyGDriveItem = async (
         fileId,
         refreshToken,
         clientOrigin,
-        tries
+        tries,
+        {
+          originalGpGDriveItemId: fileId
+        }
       );
     }
 
@@ -1755,9 +1850,13 @@ export const copyFiles = async (
       [lessonFolderId],
       fileId,
       refreshAuthToken,
-      clientOrigin
+      clientOrigin,
+      3,
+      {
+        originalGpGDriveItemId: fileId
+      }
     );
-    
+
     console.log('fileCopyResult: ', fileCopyResult.errType);
     console.log('permission: ', permission);
 
@@ -1770,7 +1869,7 @@ export const copyFiles = async (
       };
 
       copiedFiles.push(copiedFile);
-      
+
       sendMessageToClient({
         fileCopied: name,
       });
@@ -1798,7 +1897,7 @@ export const copyFiles = async (
       const fileLink = `https://drive.google.com/file/d/${fileId}/view`;
       const errorType =
         'errType' in fileCopyResult &&
-        typeof fileCopyResult.errType === 'string'
+          typeof fileCopyResult.errType === 'string'
           ? fileCopyResult.errType
           : 'unknown';
       const errorMessage =
@@ -1822,12 +1921,12 @@ export const copyFiles = async (
     }
   }
 
-  if(copiedFiles.length){
+  if (copiedFiles.length) {
     const renameFilesResult = await renameFiles(copiedFiles, gDriveAccessToken, refreshAuthToken, clientOrigin);
 
     console.log('The file names update results: ', renameFilesResult);
-    
-    if(!renameFilesResult.wasSuccessful){
+
+    if (!renameFilesResult.wasSuccessful) {
       console.error('Failed to rename copied files. Error type: ', renameFilesResult.errType);
     } else {
       console.log('All files have been successfully renamed.');

@@ -5,14 +5,47 @@ import {
   updateUserCustom,
 } from '../../../backend/services/userServices';
 import {
+  getAllChildItemsOfFolder,
   getGDriveItem,
   getUserChildItemsOfFolder,
 } from '../../../backend/services/gdriveServices';
+import { drive_v3 } from 'googleapis';
 
 interface IQueryParams {
   unitId: string;
   lessonNumIds: string[];
   grades?: string;
+}
+
+type TGetUserChildItemsOfFolderParams = Parameters<typeof getUserChildItemsOfFolder>
+
+/**The key will be the original id of the lesson item found in GP's Google Drive*/
+type TUserLessonItemsLatestVersion = Map<string, { userGDriveItemCopyId: string, createdTimeMs: number }>
+
+const getAllUserItemsOfLessons = async (
+  lessonFolderIds: string[],
+  gdriveAccessToken: TGetUserChildItemsOfFolderParams[1],
+  gdriveRefreshToken: TGetUserChildItemsOfFolderParams[2],
+  clientOrigin: TGetUserChildItemsOfFolderParams[3],
+) => {
+  //TODO: this fn will get all of the items for each lesson and will get the latest version of each item
+  try {
+
+    const userLessonItemsLatestVersion = new Map();
+    let lessonItems: drive_v3.Schema$File[] = [];
+    const retrieveLessonItems = await Promise.all(lessonFolderIds.flatMap(async lessonFolderId => {
+      const childItems = await getAllChildItemsOfFolder(lessonFolderId, gdriveAccessToken, gdriveRefreshToken, clientOrigin, 3)
+
+      return childItems?.files ?? null;
+    }));
+
+    if (retrieveLessonItems.includes(null)) {
+
+      return null;
+    }
+  } catch (error) {
+    console.error('Error in getAllUserItemsOfLessons: ', error);
+  }
 }
 
 export default async function handler(
