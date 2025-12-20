@@ -754,8 +754,11 @@ const CopyLessonBtn: React.FC<
                 }
 
                 if (isJobDone) {
+                  // GOAL: send the id of the original lesson item of gp's google drive and the new id in order to update the lesson items for the target lesson
+
                   setParts((parts) => {
                     console.log('lessonId: ', lessonId);
+                    // parts[0].lsn
 
                     const targetPartIndex = parts.findIndex((part) => {
                       return part.lsn && lessonId && part.lsn == lessonId;
@@ -1226,6 +1229,7 @@ const CopyLessonBtn: React.FC<
                     isJobDone,
                     wasSuccessful,
                     targetFolderId: _targetFolderId,
+                    copiedFiles
                   } = parsedData;
                   targetFolderId = _targetFolderId;
                   let canDisplayToast = true;

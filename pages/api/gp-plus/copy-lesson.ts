@@ -27,7 +27,7 @@ import {
 } from "../../../backend/models/User/types";
 import { INewUnitLesson } from "../../../backend/models/Unit/types/teachingMaterials";
 import { connectToMongodb } from "../../../backend/utils/connection";
-import { TFileToCopy } from "../../../backend/services/gdriveServices/types";
+import { TFilesToRename, TFileToCopy } from "../../../backend/services/gdriveServices/types";
 
 export const maxDuration = 240;
 export const VALID_WRITABLE_ROLES = new Set([
@@ -54,6 +54,7 @@ export type TCopyFilesMsg = Partial<{
   didRetrieveAllItems: boolean;
   refreshToken: string;
   errStatus: string;
+  copiedFiles: TFilesToRename
 }>;
 export type TCopyLessonReqQueryParams = {
   lessonId: string | undefined;
@@ -311,7 +312,7 @@ export default async function handler(
       // if the GP+ folder doesn't exist, then by setting gpPlusFolderId = undefined, the GP+ folder will be created again
       if (
         ("id" in targetGDriveFolder &&
-        (!targetGDriveFolder.id || targetGDriveFolder.labels.trashed)) || targetGDriveFolder.errType
+          (!targetGDriveFolder.id || targetGDriveFolder.labels.trashed)) || targetGDriveFolder.errType
       ) {
         gpPlusFolderId = undefined;
       }
@@ -381,8 +382,8 @@ export default async function handler(
         );
         doesTargetGDriveUnitFolderExist =
           ("id" in targetUnitFolder &&
-          !!targetUnitFolder.id &&
-          !targetUnitFolder.labels.trashed) || !targetUnitFolder.errType;
+            !!targetUnitFolder.id &&
+            !targetUnitFolder.labels.trashed) || !targetUnitFolder.errType;
       }
 
       let doesTargetGDriveLessonFolderExist = !!targetLessonFolderInUserDrive;
@@ -553,7 +554,7 @@ export default async function handler(
           });
         }
 
-        const wasSuccessful = await copyFiles(
+        const { wasJobSuccessful: wasSuccessful, copiedFiles } = await copyFiles(
           filesToCopy,
           email,
           drive,
@@ -601,6 +602,7 @@ export default async function handler(
           isJobDone: true,
           wasSuccessful,
           targetFolderId: lessonFolderId,
+          copiedFiles
         });
         return;
       }
@@ -640,7 +642,7 @@ export default async function handler(
               file.appProperties &&
               ORIGINAL_ITEM_ID_FIELD_NAME in file.appProperties &&
               typeof file.appProperties[ORIGINAL_ITEM_ID_FIELD_NAME] ===
-                "string"
+              "string"
             ) {
               return (
                 file.appProperties[ORIGINAL_ITEM_ID_FIELD_NAME] ===
@@ -825,7 +827,7 @@ export default async function handler(
           });
         }
 
-        const wasSuccessful = await copyFiles(
+        const { wasJobSuccessful: wasSuccessful, copiedFiles } = await copyFiles(
           filesToCopy,
           email,
           drive,
@@ -845,6 +847,7 @@ export default async function handler(
           isJobDone: true,
           wasSuccessful,
           targetFolderId: parentFolderOfCopiedItems,
+          copiedFiles
         });
 
         return;
@@ -852,8 +855,7 @@ export default async function handler(
 
       if (doesTargetGDriveLessonFolderExist) {
         console.log(
-          `The target lesson folder with id ${
-            targetLessonFolderInUserDrive!.lessonDriveId
+          `The target lesson folder with id ${targetLessonFolderInUserDrive!.lessonDriveId
           } already exists, so we will just copy the items into it.`
         );
 
@@ -907,7 +909,7 @@ export default async function handler(
           });
         }
 
-        const wasSuccessful = await copyFiles(
+        const { wasJobSuccessful: wasSuccessful, copiedFiles } = await copyFiles(
           filesToCopy,
           email,
           drive,
@@ -927,6 +929,7 @@ export default async function handler(
           isJobDone: true,
           wasSuccessful,
           targetFolderId: targetLessonFolderInUserDrive!.lessonDriveId,
+          copiedFiles
         });
 
         return;
@@ -1182,7 +1185,7 @@ export default async function handler(
       if (
         targetLessonFolderInUserDrive.id &&
         folderSubItemInUserDrive.originalFileId ===
-          targetLessonFolderInUserDrive.originalFileId
+        targetLessonFolderInUserDrive.originalFileId
       ) {
         console.log(
           `The lesson named ${selectedClientLessonName} was found in the unit ${reqQueryParams.unitName}.`
@@ -1340,7 +1343,7 @@ export default async function handler(
       });
     }
 
-    const wasJobSuccessful = await copyFiles(
+    const { wasJobSuccessful: wasJobSuccessful, copiedFiles } = await copyFiles(
       filesToCopy,
       email,
       drive,
@@ -1360,6 +1363,7 @@ export default async function handler(
       isJobDone: true,
       wasSuccessful: wasJobSuccessful,
       targetFolderId: targetLessonFolderInUserDrive.id,
+      copiedFiles
     });
   } catch (error: any) {
     const { message, code } = error ?? {};

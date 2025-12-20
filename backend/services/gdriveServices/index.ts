@@ -1813,8 +1813,6 @@ export const copyFiles = async (
 
     let didFailedToUpdateFilePermissions = false;
 
-    console.log(`userUpdatedRole: ${userUpdatedRole}`);
-
     while (!VALID_WRITABLE_ROLES.has(userUpdatedRole!)) {
       console.log(`tries: ${tries}`);
       console.log(`userUpdatedRole: ${userUpdatedRole}`);
@@ -1873,9 +1871,10 @@ export const copyFiles = async (
     if (('id' in fileCopyResult && fileCopyResult.id)) {
       console.log(`Successfully copied file ${name}`);
 
-      const copiedFile = {
+      const copiedFile: TFilesToRename[number] = {
         id: fileCopyResult.id,
         name: name,
+        fileIdInGpGoogleDrive: fileId
       };
 
       copiedFiles.push(copiedFile);
@@ -1943,7 +1942,10 @@ export const copyFiles = async (
     }
   }
 
-  return wasJobSuccessful;
+  return {
+    wasJobSuccessful,
+    copiedFiles
+  };
 };
 
 export const addNewGDriveLessonToTargetUser = async (
