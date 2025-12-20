@@ -244,6 +244,8 @@ const TeachItUI = <
 
       console.log('Fetching lesson parts...');
 
+      console.log('_parts, sup there: ', _parts);
+
       if (
         status === "authenticated" &&
         isGpPlusMember &&
