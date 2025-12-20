@@ -4761,6 +4761,55 @@ $jobviz-nav-height: 64px;
   font-size: 1.1rem;
 }
 
+.jobvizUpsellCard {
+  margin-top: 2rem;
+  padding: clamp(1.2rem, 3vw, 1.7rem);
+  border-radius: 28px;
+  background: linear-gradient(120deg, rgba(123, 91, 255, 0.9), rgba(255, 123, 184, 0.9));
+  color: #0c0f1b;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  align-items: center;
+  box-shadow: 0 20px 45px rgba(11, 7, 34, 0.45);
+}
+
+.jobvizUpsellCard h3 {
+  margin: 0 0 0.35rem;
+  font-size: clamp(1.4rem, 3vw, 1.8rem);
+}
+
+.jobvizUpsellCard p {
+  margin: 0.25rem 0 0;
+  color: rgba(12, 15, 27, 0.8);
+}
+
+.jobvizUpsellEyebrow {
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-size: 0.75rem;
+  color: rgba(12, 15, 27, 0.65);
+}
+
+.jobvizUpsellButton {
+  margin-left: auto;
+  padding: 0.85rem 1.8rem;
+  border-radius: 999px;
+  background: #0c0f1b;
+  color: #ffffff;
+  font-weight: 700;
+  text-decoration: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.45);
+}
+
+.jobvizUpsellButton:hover,
+.jobvizUpsellButton:focus-visible {
+  transform: translateY(-2px);
+  box-shadow: 0 18px 30px rgba(0, 0, 0, 0.5);
+}
+
 .summaryJobGroupCount {
   font-size: 0.85rem;
   padding: 0.2rem 0.65rem;
