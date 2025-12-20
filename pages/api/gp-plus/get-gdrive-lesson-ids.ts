@@ -10,6 +10,8 @@ import {
   getUserChildItemsOfFolder,
 } from '../../../backend/services/gdriveServices';
 import { drive_v3 } from 'googleapis';
+import { ILessonGDriveId } from '../../../backend/models/User/types';
+import { TUserGDriveData } from '../../../components/LessonSection/TeachIt/TeachItUI';
 
 interface IQueryParams {
   unitId: string;
@@ -22,6 +24,7 @@ type TGetUserChildItemsOfFolderParams = Parameters<typeof getUserChildItemsOfFol
 
 /**The key will be the original id of the lesson item found in GP's Google Drive*/
 type TUserLessonItemsLatestVersion = Map<string, { userGDriveItemCopyId: string, createdTimeMs: number }>
+export type TLatestUserGDriveItemOfLesson = NonNullable<Awaited<ReturnType<typeof getAllLatestUserItemIdsOfLessonFolders>>>[number]
 
 const getAllLatestUserItemIdsOfLessonFolders = async (
   lessonFolderIds: string[],
@@ -88,13 +91,42 @@ const getAllLatestUserItemIdsOfLessonFolders = async (
       }
     });
 
-    return latestUserItemIdsOfLessonFolders;
+    return Array.from(latestUserItemIdsOfLessonFolders);
   } catch (error) {
     console.error('Error in "getAllLatestUserItemIdsOfLessonFolders" fn call: ', error);
 
     return null;
   }
 }
+
+const getUserLessonDriveFolders = async (lessonDriveIds: ILessonGDriveId[], grades: string, gdriveAccessToken: string, gdriveRefreshToken: string, clientOrigin: string, nonExistingLessonFolderIds: string[]) => {
+  const userLessonDriveFoldersRetrievedPromises = lessonDriveIds.map(
+    async (lessonDriveFolder) => {
+      if (lessonDriveFolder.gradesRange !== grades) {
+        return null;
+      }
+
+      const gdriveItem = await getGDriveItem(
+        lessonDriveFolder.lessonDriveId,
+        gdriveAccessToken,
+        gdriveRefreshToken,
+        clientOrigin
+      );
+
+      console.log('gdriveItem, sup there: ', gdriveItem);
+
+      if (
+        !('id' in gdriveItem && gdriveItem.id && !gdriveItem.labels.trashed)
+      ) {
+        nonExistingLessonFolderIds.push(lessonDriveFolder.lessonDriveId);
+        return null;
+      }
+
+      return lessonDriveFolder;
+    }
+  )
+  return await Promise.all(userLessonDriveFoldersRetrievedPromises);
+};
 
 export default async function handler(
   request: NextApiRequest,
@@ -159,6 +191,7 @@ export default async function handler(
         .json({ error: 'All lessonItemIdsArr must be strings' });
     }
 
+    const lessonItemsIdsOfGpGoogleDriveSet = new Set(lessonItemIdsArr);
     const authorization = request.headers.authorization;
     const gdriveAccessToken = request.headers['gdrive-token'];
     const gdriveRefreshToken = request.headers['gdrive-token-refresh'];
@@ -196,6 +229,8 @@ export default async function handler(
       return response.status(401).json({ error: 'User is not authenticated' });
     }
 
+
+
     userEmail = email;
     const targetUser = await getUserByEmail(email, { unitGDriveLessons: 1 });
 
@@ -227,42 +262,27 @@ export default async function handler(
 
     console.log('gdriveAccessToken: ', gdriveAccessToken);
 
-    const queriedGDriveItemResults = await Promise.all(
-      targetUnitGDriveLessonObj.lessonDriveIds.map(
-        async (lessonDriveFolder) => {
-          if (lessonDriveFolder.gradesRange !== grades) {
-            return null;
-          }
-
-          const gdriveItem = await getGDriveItem(
-            lessonDriveFolder.lessonDriveId,
-            gdriveAccessToken,
-            gdriveRefreshToken,
-            clientOrigin
-          );
-
-          console.log('gdriveItem, sup there: ', gdriveItem);
-
-          if (
-            !('id' in gdriveItem && gdriveItem.id && !gdriveItem.labels.trashed)
-          ) {
-            nonExistingLessonFolderIds.push(lessonDriveFolder.lessonDriveId);
-            return null;
-          }
-
-          return lessonDriveFolder;
-        }
-      )
+    const targetLessonDriveIds = targetUnitGDriveLessonObj.lessonDriveIds.map(lessonDriveObj => lessonDriveObj.lessonDriveId)
+    const [queriedGDriveItemResults, latestUserItemIdsOfLessonFolders] = await Promise.all(
+      [
+        getUserLessonDriveFolders(targetUnitGDriveLessonObj.lessonDriveIds, grades, gdriveAccessToken, gdriveRefreshToken, clientOrigin, nonExistingLessonFolderIds),
+        getAllLatestUserItemIdsOfLessonFolders(targetLessonDriveIds, gdriveAccessToken, gdriveRefreshToken, clientOrigin, lessonItemsIdsOfGpGoogleDriveSet)
+      ]
     );
     const existingLessonFolderGDriveIds =
-      queriedGDriveItemResults.filter(Boolean);
+      queriedGDriveItemResults.filter(Boolean) as ILessonGDriveId[];
 
     console.log(
       'existingLessonFolderGDriveIds: ',
       existingLessonFolderGDriveIds
     );
 
-    return response.json(existingLessonFolderGDriveIds);
+    const resBody = {
+      userGDriveItemIdsOfLessonFolder: latestUserItemIdsOfLessonFolders ?? [],
+      userLessonFolderGDriveIds: existingLessonFolderGDriveIds
+    } satisfies TUserGDriveData;
+
+    return response.json(resBody);
   } catch (error: any) {
     console.error('Error in get-gdrive-lesson-ids:', error);
 

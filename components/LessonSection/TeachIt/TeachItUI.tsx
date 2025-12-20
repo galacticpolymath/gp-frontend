@@ -47,6 +47,7 @@ import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 import { ILessonGDriveId } from "../../../backend/models/User/types";
 import { ensureValidToken as _ensureValidToken } from "./CopyLessonBtn";
+import { TLatestUserGDriveItemOfLesson } from "../../../pages/api/gp-plus/get-gdrive-lesson-ids";
 
 export type TUnitPropsForTeachItSec = Partial<
   Pick<INewUnitSchema, "GdrivePublicID" | "Title" | "MediumTitle">
@@ -105,6 +106,8 @@ export interface TeachItUIProps<
 
 const ASSESSMENTS_ID = 100;
 
+export type TUserGDriveData = { userLessonFolderGDriveIds: ILessonGDriveId[], userGDriveItemIdsOfLessonFolder: TLatestUserGDriveItemOfLesson[] };
+
 const getUserLessonsGDriveFolderIds = async (
   token: string,
   gdriveRefreshToken: string,
@@ -131,7 +134,7 @@ const getUserLessonsGDriveFolderIds = async (
     url.searchParams.append("unitId", unitId!);
     url.searchParams.append("grades", gradesRange);
 
-    const { data, status } = await axios.get<ILessonGDriveId[] | null>(
+    const { data, status } = await axios.get<TUserGDriveData | null>(
       url.href,
       {
         headers: {
@@ -239,6 +242,8 @@ const TeachItUI = <
           })
           : [];
 
+      console.log('Fetching lesson parts...');
+
       if (
         status === "authenticated" &&
         isGpPlusMember &&
@@ -267,10 +272,10 @@ const TeachItUI = <
             userGDriveLessonFolderIds
           );
 
-          if (userGDriveLessonFolderIds?.length) {
+          if (userGDriveLessonFolderIds?.userLessonFolderGDriveIds?.length) {
             const _parts = parts.map((part) => {
               const targetLessonGDriveUserFolderId =
-                userGDriveLessonFolderIds.find((gDriveLessonFolderId) => {
+                userGDriveLessonFolderIds.userLessonFolderGDriveIds.find((gDriveLessonFolderId) => {
                   return gDriveLessonFolderId.lessonNum == part.lsn;
                 });
 
