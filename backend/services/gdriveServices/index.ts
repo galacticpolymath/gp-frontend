@@ -1087,8 +1087,6 @@ export const copyGDriveItem = async (
   }
 
   try {
-    console.log('fileId, sup there: ', fileId);
-
     const { status, data } = await axios.post<TCopiedFile>(
       `https://www.googleapis.com/drive/v3/files/${fileId}/copy`,
       reqBody,

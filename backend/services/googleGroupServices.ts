@@ -77,7 +77,6 @@ export const insertGoogleGroupMember = async (
       member: googleGroupMember.data,
     };
   } catch (error: any) {
-    console.error('An error occurred, sup there: ', error);
     console.error('error response: ', error.response);
     console.error('error response, java: ', error.response.data.error);
 
@@ -109,7 +108,6 @@ export const deleteGoogleGroupMember = async (
       wasSuccessful: googleGroupMember.ok,
     };
   } catch (error: any) {
-    console.error('An error occurred, sup there: ', error);
     console.error('error response: ', error.response);
     console.error('error response, java: ', error.response.data.error);
 
