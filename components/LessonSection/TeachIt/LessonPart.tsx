@@ -228,8 +228,6 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
 
   let allTags = lsnTags ?? _allTags;
   _itemList = (_itemList ?? linkResources) as IItemForClient[] | null;
-  let previewTags = null;
-  let restOfTags = null;
   let lsnNumParsed = NaN;
 
   if (typeof lsnNum === "string" && !isNaN(Number(lsnNum))) {
@@ -363,12 +361,6 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
   const handleUpdateProfileBtnClick = () => {
     router.push("/account?show_about_user_form=true");
   };
-
-  if (allTags?.length && Array.isArray(allTags)) {
-    allTags = allTags.flat().filter((tag) => !!tag);
-    previewTags = allTags?.length > 3 ? allTags.slice(0, 3) : allTags;
-    restOfTags = allTags?.length > 3 ? allTags.slice(3) : [];
-  }
 
   const defaultBorder = "solid 2.5px rgb(222, 226, 230)";
   const highlightedBorderColor = "#3987C5";
@@ -535,9 +527,9 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                         content={lsnPreface}
                       />
                     </div>
-                    {!!previewTags?.length && (
+                    {!!allTags?.length && (
                       <div className="d-flex tagPillContainer flex-wrap">
-                        {previewTags.map((tag: string, index) => (
+                        {allTags.map((tag: string, index) => (
                           <div
                             key={index}
                             style={{
@@ -616,25 +608,6 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
         }
       >
         <div className="p-0 lessonPartContent pb-3">
-          {!!restOfTags?.length && (
-            <div className="d-flex mt-0 mt-md-1 justify-content-sm-start tagPillContainer flex-wrap">
-              {restOfTags.map((tag: string, index) => (
-                <div
-                  key={index}
-                  id={`${lsnNum}-${tag.split(" ").join("-")}`}
-                  style={{ border: `solid .5px ${LESSON_PART_BTN_COLOR}` }}
-                  className="rounded-pill badge bg-white p-2"
-                >
-                  <span
-                    style={{ color: LESSON_PART_BTN_COLOR, fontWeight: 450 }}
-                    className="tag-testing"
-                  >
-                    {tag}
-                  </span>
-                </div>
-              ))}
-            </div>
-          )}
           {FeedbackComp}
           {Array.isArray(learningObjectives) && !!learningObjectives.length && (
             <div className="mt-4 d-col col-12 col-lg-8">
