@@ -54,7 +54,7 @@ export type TCopyFilesMsg = Partial<{
   didRetrieveAllItems: boolean;
   refreshToken: string;
   errStatus: string;
-  copiedFiles: TFilesToRename
+  fileCopies: TFilesToRename
 }>;
 export type TCopyLessonReqQueryParams = {
   lessonId: string | undefined;
@@ -554,7 +554,7 @@ export default async function handler(
           });
         }
 
-        const { wasJobSuccessful: wasSuccessful, copiedFiles } = await copyFiles(
+        const { wasJobSuccessful: wasSuccessful, fileCopies } = await copyFiles(
           filesToCopy,
           email,
           drive,
@@ -602,7 +602,7 @@ export default async function handler(
           isJobDone: true,
           wasSuccessful,
           targetFolderId: lessonFolderId,
-          copiedFiles
+          fileCopies
         });
         return;
       }
@@ -827,7 +827,7 @@ export default async function handler(
           });
         }
 
-        const { wasJobSuccessful: wasSuccessful, copiedFiles } = await copyFiles(
+        const { wasJobSuccessful: wasSuccessful, fileCopies } = await copyFiles(
           filesToCopy,
           email,
           drive,
@@ -847,7 +847,7 @@ export default async function handler(
           isJobDone: true,
           wasSuccessful,
           targetFolderId: parentFolderOfCopiedItems,
-          copiedFiles
+          fileCopies
         });
 
         return;
@@ -909,7 +909,7 @@ export default async function handler(
           });
         }
 
-        const { wasJobSuccessful: wasSuccessful, copiedFiles } = await copyFiles(
+        const { wasJobSuccessful: wasSuccessful, fileCopies } = await copyFiles(
           filesToCopy,
           email,
           drive,
@@ -929,7 +929,7 @@ export default async function handler(
           isJobDone: true,
           wasSuccessful,
           targetFolderId: targetLessonFolderInUserDrive!.lessonDriveId,
-          copiedFiles
+          fileCopies
         });
 
         return;
@@ -1343,7 +1343,7 @@ export default async function handler(
       });
     }
 
-    const { wasJobSuccessful: wasJobSuccessful, copiedFiles } = await copyFiles(
+    const { wasJobSuccessful: wasJobSuccessful, fileCopies } = await copyFiles(
       filesToCopy,
       email,
       drive,
@@ -1363,7 +1363,7 @@ export default async function handler(
       isJobDone: true,
       wasSuccessful: wasJobSuccessful,
       targetFolderId: targetLessonFolderInUserDrive.id,
-      copiedFiles
+      fileCopies
     });
   } catch (error: any) {
     const { message, code } = error ?? {};

@@ -42,6 +42,7 @@ import { EventSourcePolyfill } from 'event-source-polyfill';
 import { toast } from 'react-toastify';
 import { nanoid } from 'nanoid';
 import { TFileToCopy } from '../../../backend/services/gdriveServices/types';
+import { IUserGDriveItemCopy } from './TeachItUI';
 
 export interface ICopyLessonBtnProps
   extends Pick<INewUnitLesson, 'allUnitLessons' | 'lessonsFolder'>,
@@ -60,7 +61,7 @@ export interface ICopyLessonBtnProps
   lessonSharedDriveFolderName?: string;
   isRetrievingLessonFolderIds: boolean;
   sharedGDriveLessonFolderId?: string;
-  setParts: TSetter<(INewUnitLesson<IItemV2> | ILessonForUI)[]>;
+  setParts: TSetter<(ILessonForUI | INewUnitLesson<IItemV2 & IUserGDriveItemCopy>)[]>;
   btnRef: RefObject<HTMLButtonElement | null>;
 }
 
@@ -690,6 +691,7 @@ const CopyLessonBtn: React.FC<
                   wasSuccessful,
                   targetFolderId: _targetFolderId,
                   failedCopiedFile,
+                  fileCopies,
                   fileId,
                 } = parsedData;
                 targetFolderId = _targetFolderId;
@@ -758,23 +760,58 @@ const CopyLessonBtn: React.FC<
 
                   setParts((parts) => {
                     console.log('lessonId: ', lessonId);
-                    // parts[0].lsn
 
                     const targetPartIndex = parts.findIndex((part) => {
                       return part.lsn && lessonId && part.lsn == lessonId;
                     });
                     const targetPart = parts[targetPartIndex];
 
-                    console.log('targetPart: ', targetPart);
+                    console.log('targetPart, hey you: ', targetPart);
 
                     if (!targetPart) {
+                      console.log('sup there meng, print that');
+                      console.log('targetPart, sup there, java: ', targetPart);
                       return parts;
                     }
 
+                    console.log('targetPart itemList and fileCopies, hey yo: ');
+
+                    const itemList = targetPart?.itemList?.length && fileCopies?.length ?
+                      targetPart.itemList.map(item => {
+                        const gpGDriveItemId = "gpGDriveItemId" in item ? item.gpGDriveItemId : null;
+                        const targetLessonItemCopiedVersion = fileCopies.find(fileCopy => fileCopy.originalFileIdInGpGoogleDrive === gpGDriveItemId)
+
+
+                        if (targetLessonItemCopiedVersion?.id) {
+                          const itemUpdated = {
+                            ...item,
+                            userGDriveItemCopyId: targetLessonItemCopiedVersion.id
+                          }
+
+                          return itemUpdated as (IItemV2 & IUserGDriveItemCopy)
+                        }
+
+                        return item as (IItemV2 & IUserGDriveItemCopy);
+                      })
+                      :
+                      [];
+
+                    console.log('python java, C++: ');
+                    console.log('itemList, hey there: ', itemList);
                     parts[targetPartIndex] = {
                       ...targetPart,
                       userGDriveLessonFolderId: targetFolderId,
                     };
+
+
+                    if (itemList.length) {
+                      parts[targetPartIndex] = {
+                        ...targetPart,
+                        itemList,
+                      };
+                    }
+
+                    // GOAL: go through all of the items for the targetPart and add the user's lesson item id
 
                     return parts;
                   });
@@ -1229,7 +1266,7 @@ const CopyLessonBtn: React.FC<
                     isJobDone,
                     wasSuccessful,
                     targetFolderId: _targetFolderId,
-                    copiedFiles
+                    fileCopies
                   } = parsedData;
                   targetFolderId = _targetFolderId;
                   let canDisplayToast = true;
@@ -1262,6 +1299,8 @@ const CopyLessonBtn: React.FC<
 
                   console.log('data, python: ', parsedData);
 
+                  console.log('fileCopies: ', fileCopies);
+
                   if (isJobDone) {
                     setParts((parts) => {
                       console.log('lessonId: ', lessonId);
@@ -1271,16 +1310,52 @@ const CopyLessonBtn: React.FC<
                       });
                       const targetPart = parts[targetPartIndex];
 
-                      console.log('targetPart: ', targetPart);
+                      console.log('targetPart, hey you: ', targetPart);
 
                       if (!targetPart) {
+                        console.log('sup there meng, print that');
+                        console.log('targetPart, sup there, java: ', targetPart);
                         return parts;
                       }
 
+                      console.log('targetPart itemList and fileCopies, hey yo: ');
+
+                      const itemList = targetPart?.itemList?.length && fileCopies?.length ?
+                        targetPart.itemList.map(item => {
+                          const gpGDriveItemId = "gpGDriveItemId" in item ? item.gpGDriveItemId : null;
+                          const targetLessonItemCopiedVersion = fileCopies.find(fileCopy => fileCopy.originalFileIdInGpGoogleDrive === gpGDriveItemId)
+
+
+                          if (targetLessonItemCopiedVersion?.id) {
+                            const itemUpdated = {
+                              ...item,
+                              userGDriveItemCopyId: targetLessonItemCopiedVersion.id
+                            }
+
+                            return itemUpdated as (IItemV2 & IUserGDriveItemCopy)
+                          }
+
+                          return item as (IItemV2 & IUserGDriveItemCopy);
+                        })
+                        :
+                        [];
+
+                      console.log('python java, C++: ');
+                      console.log('itemList, hey there: ', itemList);
                       parts[targetPartIndex] = {
                         ...targetPart,
                         userGDriveLessonFolderId: targetFolderId,
                       };
+
+
+                      if (itemList.length) {
+                        parts[targetPartIndex] = {
+                          ...targetPart,
+                          itemList,
+                        };
+                      }
+
+                      // GOAL: go through all of the items for the targetPart and add the user's lesson item id
 
                       return parts;
                     });

@@ -1780,7 +1780,7 @@ export const copyFiles = async (
   sharedGDriveLessonsFolderId: string
 ) => {
   let wasJobSuccessful = true;
-  let copiedFiles: TFilesToRename = [];
+  let fileCopies: TFilesToRename = [];
 
   // check if the permission were propagated to all of the files to copy
   for (const fileToCopy of filesToCopy) {
@@ -1871,13 +1871,13 @@ export const copyFiles = async (
     if (('id' in fileCopyResult && fileCopyResult.id)) {
       console.log(`Successfully copied file ${name}`);
 
-      const copiedFile: TFilesToRename[number] = {
+      const fileCopy: TFilesToRename[number] = {
         id: fileCopyResult.id,
         name: name,
-        fileIdInGpGoogleDrive: fileId
+        originalFileIdInGpGoogleDrive: fileId
       };
 
-      copiedFiles.push(copiedFile);
+      fileCopies.push(fileCopy);
 
       sendMessageToClient({
         fileCopied: name,
@@ -1930,8 +1930,8 @@ export const copyFiles = async (
     }
   }
 
-  if (copiedFiles.length) {
-    const renameFilesResult = await renameFiles(copiedFiles, gDriveAccessToken, refreshAuthToken, clientOrigin);
+  if (fileCopies.length) {
+    const renameFilesResult = await renameFiles(fileCopies, gDriveAccessToken, refreshAuthToken, clientOrigin);
 
     console.log('The file names update results: ', renameFilesResult);
 
@@ -1944,7 +1944,7 @@ export const copyFiles = async (
 
   return {
     wasJobSuccessful,
-    copiedFiles
+    fileCopies
   };
 };
 

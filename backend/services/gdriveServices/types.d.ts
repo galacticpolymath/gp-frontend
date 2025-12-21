@@ -9,7 +9,7 @@ export type TRenameFilesResult = {
   wasSuccessful: boolean;
   errType?: 'fileUpdateErr' | 'renameFilesFailed' | 'invalidAuthToken';
 };
-export type TFilesToRename = (Parameters<typeof renameFiles>[0][number] & { fileIdInGpGoogleDrive: string })[]
+export type TFilesToRename = (Parameters<typeof renameFiles>[0][number] & { originalFileIdInGpGoogleDrive: string })[]
 export type TFileToCopy = {
   id: string
   name: string;
