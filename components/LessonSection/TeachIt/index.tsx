@@ -16,6 +16,8 @@ import Pill from "../../Pill";
 import { TeachItProps } from "./types";
 import {
   IItem,
+  IItemForUI,
+  IItemV2,
   ILessonDetail,
   ILink,
   INewUnitLesson,
@@ -133,7 +135,8 @@ const TeachIt: React.FC<TeachItProps> = (props) => {
   let gradeVariations:
     | IResource<ILessonForUI>[]
     | undefined
-    | IResource<INewUnitLesson<IItem>>[];
+    | IResource<INewUnitLesson<IItemV2>>[]
+    | IResource<INewUnitLesson<IItemForUI>>[];
 
   if ("classroom" in Data) {
     gradeVariations = Data?.classroom?.resources ?? [];
@@ -179,10 +182,6 @@ const TeachIt: React.FC<TeachItProps> = (props) => {
       ? gradeVariations[0]
       : ({} as IResource<ILessonForUI>)
   );
-
-  useEffect(() => {
-    console.log("selectedGrade, sup there: ", selectedGrade);
-  });
 
   let resources = allResources?.length
     ? allResources.find(
@@ -266,7 +265,6 @@ const TeachIt: React.FC<TeachItProps> = (props) => {
   return "lessonDur" in Data ? (
     <TeachItUI<ILessonForUI, IResource<ILessonForUI>>
       ref={ref}
-      setSelectedGrade={setSelectedGrade}
       setSelectedGradeResources={setSelectedGradeResources}
       unitId={unitId}
       ForGrades={ForGrades}
@@ -293,7 +291,6 @@ const TeachIt: React.FC<TeachItProps> = (props) => {
     <TeachItUI<INewUnitLesson, IResource<ILessonForUI>>
       ref={ref}
       handleOnChange={handleOnChange}
-      setSelectedGrade={setSelectedGrade}
       ForGrades={ForGrades}
       MediumTitle={MediumTitle}
       lessonDur={unitDur}

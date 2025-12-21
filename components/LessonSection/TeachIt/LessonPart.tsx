@@ -22,6 +22,7 @@ import { useUserContext } from "../../../providers/UserProvider";
 import {
   IChunk,
   IGoingFurtherVal,
+  IItemForUI,
   IItemV2,
   IItemV2Props,
   ILsnExt,
@@ -118,10 +119,10 @@ export interface ILessonPartProps
   GdrivePublicID?: string | null;
   unitId: Pick<INewUnitSchema, "_id">["_id"];
   unitTitle?: string | null;
-  setParts: TSetter<(INewUnitLesson<IItemV2> | ILessonForUI)[]>;
+  setParts: TSetter<(INewUnitLesson<IItemV2> | ILessonForUI | INewUnitLesson<IItemForUI>)[]>;
 }
 
-
+export type TLessonPart = INewUnitLesson<IItemV2> | ILessonForUI | INewUnitLesson<IItemForUI>
 
 const LessonPart: React.FC<ILessonPartProps> = (props) => {
   const {
@@ -212,8 +213,6 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
     : chunks && chunks.map(({ chunkDur }) => chunkDur);
   let _itemList = itemList;
 
-  console.log("_itemList: ", _itemList);
-
   const targetLessonsResources = resources?.lessons?.find((lesson) => {
     return lesson?.lsn == lsnNum;
   });
@@ -222,10 +221,6 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
     tags: _allTags,
     itemList: linkResources,
   } = targetLessonsResources ?? {};
-
-  console.log("lsnTags: ", lsnTags);
-  console.log("_allTags: ", _allTags);
-
   let allTags = lsnTags ?? _allTags;
   _itemList = (_itemList ?? linkResources) as IItemForClient[] | null;
   let lsnNumParsed = NaN;

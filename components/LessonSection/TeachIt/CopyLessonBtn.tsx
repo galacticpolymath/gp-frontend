@@ -26,6 +26,7 @@ import CopyingUnitToast, {
 } from '../../CopyingUnitToast';
 import { EXPIRATION_DATE_TIME } from '../../../pages/google-drive-auth-result';
 import {
+  IItemForUI,
   IItemV2,
   INewUnitLesson,
   IResource,
@@ -61,7 +62,7 @@ export interface ICopyLessonBtnProps
   lessonSharedDriveFolderName?: string;
   isRetrievingLessonFolderIds: boolean;
   sharedGDriveLessonFolderId?: string;
-  setParts: TSetter<(ILessonForUI | INewUnitLesson<IItemV2 & IUserGDriveItemCopy>)[]>;
+  setParts: TSetter<(INewUnitLesson<IItemV2> | ILessonForUI | INewUnitLesson<IItemForUI>)[]>;
   btnRef: RefObject<HTMLButtonElement | null>;
 }
 
@@ -349,14 +350,6 @@ const CopyLessonBtn: React.FC<
       lessonId == 100 ? 'assessments' : `L${lessonId}: ${lessonName}`;
 
     const copyingLessonStartingTxt = `Copying ${unitTitle} ${copyingLessonNameTxt}'`;
-
-    useEffect(() => {
-      console.log('userGDriveLessonFolderId: ', userGDriveLessonFolderId);
-      console.log(
-        'sharedGDriveLessonFolderId, sup there: ',
-        sharedGDriveLessonFolderId
-      );
-    });
 
     const handleFileReportTxtClick = (failedCopiedFiles: TFileToCopy[]) => {
       setFailedLessonCopyBugReport({
@@ -769,8 +762,6 @@ const CopyLessonBtn: React.FC<
                     console.log('targetPart, hey you: ', targetPart);
 
                     if (!targetPart) {
-                      console.log('sup there meng, print that');
-                      console.log('targetPart, sup there, java: ', targetPart);
                       return parts;
                     }
 
@@ -1303,22 +1294,14 @@ const CopyLessonBtn: React.FC<
 
                   if (isJobDone) {
                     setParts((parts) => {
-                      console.log('lessonId: ', lessonId);
-
                       const targetPartIndex = parts.findIndex((part) => {
                         return part.lsn && lessonId && part.lsn == lessonId;
                       });
                       const targetPart = parts[targetPartIndex];
 
-                      console.log('targetPart, hey you: ', targetPart);
-
                       if (!targetPart) {
-                        console.log('sup there meng, print that');
-                        console.log('targetPart, sup there, java: ', targetPart);
                         return parts;
                       }
-
-                      console.log('targetPart itemList and fileCopies, hey yo: ');
 
                       const itemList = targetPart?.itemList?.length && fileCopies?.length ?
                         targetPart.itemList.map(item => {

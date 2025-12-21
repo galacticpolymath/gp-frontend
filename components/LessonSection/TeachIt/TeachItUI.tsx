@@ -19,6 +19,7 @@ import RichText from "../../RichText";
 import { DisplayLessonTile, GRADE_VARIATION_ID } from ".";
 import {
   IItem,
+  IItemForUI,
   IItemV2,
   ILesson,
   ILessonDetail,
@@ -86,20 +87,17 @@ export interface TeachItUIProps<
   lessonPreface: string | null;
   gradeVariations?:
   | IResource<TResourceVal>[]
-  | IResource<INewUnitLesson<IItemV2>>[]
+  | IResource<INewUnitLesson<IItemForUI>>[]
   | null;
   resources?: IResource<ILesson>;
   selectedGrade: TSelectedGrade;
-  setSelectedGrade: Dispatch<
-    SetStateAction<IResource<INewUnitLesson<IItemV2>> | IResource<ILessonForUI>>
-  >;
   setSelectedGradeResources: Dispatch<SetStateAction<ILink | null>>;
   handleOnChange: (selectedGrade: unknown) => void;
   environments: ("classroom" | "remote")[];
   selectedEnvironment: "classroom" | "remote";
   setSelectedEnvironment: Dispatch<SetStateAction<"classroom" | "remote">>;
   selectedGradeResources: ILink | null;
-  parts: (ILessonForUI | INewUnitLesson<IItemV2 & IUserGDriveItemCopy>)[];
+  parts: (ILessonForUI | INewUnitLesson<IItemV2 & IUserGDriveItemCopy> | INewUnitLesson<IItemForUI>)[];
   dataLesson: ILessonDetail[];
   GradesOrYears: string | null;
   ForGrades: string | null;
@@ -289,13 +287,11 @@ const TeachItUI = <
 
           if (userGDriveLessonFolderIds?.userLessonFolderGDriveIds?.length) {
             setParts(parts => {
-              const _parts: (ILessonForUI | INewUnitLesson<IItemV2 & IUserGDriveItemCopy>)[] = parts.map((part) => {
+              const _parts: (ILessonForUI | INewUnitLesson<IItemV2 & IUserGDriveItemCopy> | INewUnitLesson<IItemForUI>)[] = parts.map((part) => {
                 const targetLessonGDriveUserFolderId =
                   userGDriveLessonFolderIds.userLessonFolderGDriveIds.find((gDriveLessonFolderId) => {
                     return gDriveLessonFolderId.lessonNum == part.lsn;
                   });
-
-                console.log("Updating lesson part with user GDrive item copy id, sup there...");
 
                 if (targetLessonGDriveUserFolderId && userGDriveLessonFolderIds.userGDriveItemIdsOfLessonFolder && part.itemList?.length) {
                   console.log("Updating lesson part with user GDrive item copy id...");

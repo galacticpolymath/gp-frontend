@@ -15,6 +15,7 @@ import { UNITS_URL_PATH } from '../../shared/constants';
 import { ITargetStandardsCode } from '../../backend/models/Unit/types/standards';
 import React from 'react';
 import { getStandards } from '../LessonSection/Overview';
+import { TLessonPart } from '../LessonSection/TeachIt/LessonPart';
 
 interface ILessonPreviewUIProps extends Pick<IGistCard, 'jobVizCareerConnections'> {
   areTargetStandardsValid: boolean;
@@ -36,7 +37,7 @@ interface ILessonPreviewUIProps extends Pick<IGistCard, 'jobVizCareerConnections
   isLesson4: boolean | null;
   SponsoredBy: string | null;
   sponsorLogoImgUrl?: string | string[] | null;
-  lessonParts: (INewUnitLesson | null)[] | null;
+  lessonParts: (TLessonPart)[] | null;
 }
 
 const UnitPreviewUI: React.FC<Partial<ILessonPreviewUIProps>> = ({
