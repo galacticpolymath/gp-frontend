@@ -1130,15 +1130,6 @@ export const getStaticProps = async (arg: {
               });
 
               if (targetUnitGDriveItem?.id && lesson.lsn) {
-                // TODO: make a query to the database to get all of the documents for the target folder
-
-                // NOTES:
-                // -get all of the ids of the gp's version of the documents 
-
-                // -the latest copy is retrieved and sent back to the client for the getUserLessonsGDriveFolderIds
-                // -
-                // END GOAL: for each lesson that is displayed in the lesson items modal, display the link of the user's latest copy to it
-
                 allUnitLessons.push({
                   id: lesson.lsn.toString(),
                   sharedGDriveId: targetUnitGDriveItem.id,
@@ -1152,13 +1143,6 @@ export const getStaticProps = async (arg: {
             | undefined = undefined;
           const lessonsWithFilePreviewImgsPromises = resource.lessons?.map(
             async (lesson) => {
-
-              // NOTES: 
-              // -get all of the items for all of the lessons
-              // -query the corresponding object in the array that contains all of the meta data for the files of all of the lessons by their name
-
-
-
               if (!lessonsFolder && unitGDriveChildItems) {
                 for (const unitGDriveChildItem of unitGDriveChildItems) {
                   let lessonTitle = lesson.title?.toLowerCase();
