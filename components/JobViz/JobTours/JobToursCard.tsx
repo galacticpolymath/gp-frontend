@@ -311,6 +311,7 @@ const JobToursCard: React.FC<IJobToursCard> = ({
       setSelectedJob(selectedJobOnJobVizPg.targetJob);
       router.push(selectedJobOnJobVizPg.url, selectedJobOnJobVizPg.url, {
         scroll: false,
+        shallow: true,
       });
       setSelectedJobOnJobVizPg(null);
     }
@@ -428,7 +429,7 @@ const JobToursCard: React.FC<IJobToursCard> = ({
 
       console.log("Navigating to JobViz URL: ", url);
 
-      router.push(url, url, { scroll: false });
+      router.push(url, url, { scroll: false, shallow: true });
       targetJob = {
         ...targetJob,
         wasSelectedFromJobToursCard: true,

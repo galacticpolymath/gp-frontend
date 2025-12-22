@@ -3,36 +3,103 @@ import Image from 'next/image';
 import Link from 'next/link';
 import logo from '../assets/img/logo.png';
 import mobileLogo from '../assets/img/mobile_logo.png';
-import { useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import LoginContainerForNavbar from './User/Login/LoginContainerForNavbar';
-import { useSearchParams } from 'next/navigation';
+import { useLessonContext } from '../providers/LessonProvider';
 import { JobToursCardTopSticky } from './JobViz/JobTours/JobToursCard';
+import useSiteSession from '../customHooks/useSiteSession';
 
 export const DISABLE_NAVBAR_PARAM_NAME = 'disableNavbar';
 
 export default function Navbar() {
-  const searchParams = useSearchParams();
-  const disableNavbar = searchParams.get(DISABLE_NAVBAR_PARAM_NAME) === 'true';
   const router = useRouter();
+  const disableNavbar = useMemo(() => {
+    const value = router.query?.[DISABLE_NAVBAR_PARAM_NAME];
+    if (Array.isArray(value)) {
+      return value.includes('true');
+    }
+    return value === 'true';
+  }, [router.query]);
   const session = useSession();
   const [modalAnimation, setModalAnimation] = useState('d-none');
+  const [isNavHidden, setIsNavHidden] = useState(false);
+  const lastScrollY = useRef(0);
+  const ticking = useRef(false);
+  const {
+    isGpPlusMember
+  } = useSiteSession()
+  const {
+      _isJobToursStickyTopCardDisplayed: [isJobToursStickTopCardDisplayed],
+      _willRenderJobToursStickyTopCard: [willRenderJobToursStickyTopCard],
+    } = useLessonContext();
+
+  useEffect(() => {
+    if (typeof window === 'undefined' || disableNavbar) return;
+
+    const isMobileViewport = () =>
+      window.matchMedia('(max-width: 1024px)').matches;
+    const shouldGateReveal = () => {
+      if (!isMobileViewport()) return false;
+      return document.body?.dataset?.jobvizAssignment === 'true';
+    };
+
+    const handleScroll = () => {
+      if (ticking.current) return;
+      ticking.current = true;
+      window.requestAnimationFrame(() => {
+        const currentY = window.scrollY || 0;
+        const previousY = lastScrollY.current;
+        const delta = currentY - previousY;
+        const gatingReveal = shouldGateReveal();
+        const hasAssignmentIntent =
+          document.body?.dataset?.jobvizAssignmentScrollIntent === 'true';
+
+        if (currentY < 80) {
+          setIsNavHidden(false);
+        } else if (delta > 5) {
+          setIsNavHidden(true);
+        } else if (delta < -5) {
+          if (!gatingReveal || hasAssignmentIntent) {
+            setIsNavHidden(false);
+          }
+        }
+
+        lastScrollY.current = currentY;
+        ticking.current = false;
+      });
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [disableNavbar]);
 
   return (
     <nav
-      style={{ zIndex: 1000 }}
+      style={{
+        zIndex: 10000100,
+        transform: isNavHidden ? 'translateY(-115%)' : 'translateY(0)',
+        opacity: isNavHidden ? 0.92 : 1,
+        transition:
+          'transform 0.5s cubic-bezier(0.19, 1, 0.22, 1), opacity 0.35s ease',
+        willChange: 'transform, opacity',
+      }}
+      data-nav-hidden={isNavHidden ? 'true' : 'false'}
       className={`fixed-top w-100 navbar-expand-lg py-0 ${disableNavbar ? 'pe-none' : ''}`}
     >
-      <div className='navbar navbar-expand-lg w-100 navbar-dark bg-dark position-relative'>
+      <div
+        className='navbar navbar-expand-lg w-100 navbar-dark bg-dark position-relative'
+        style={{ paddingTop: '0.35rem', paddingBottom: '0.35rem' }}
+      >
         <div className='w-100 container'>
           <Image
             className='object-fit-contain d-none d-sm-block'
             alt='Galactic Polymath'
             src={logo}
-            height={68}
-            width={841}
+            height={56}
+            width={700}
             style={{
-              maxHeight: '60px',
+              maxHeight: '48px',
               width: 'auto',
               height: 'auto',
             }}
@@ -41,10 +108,10 @@ export default function Navbar() {
             className='object-fit-contain d-block d-sm-none'
             alt='Galactic Polymath'
             src={mobileLogo}
-            height={68}
+            height={56}
             width={150}
             style={{
-              maxHeight: '60px',
+              maxHeight: '48px',
               width: 'auto',
               height: 'auto',
             }}
@@ -91,7 +158,7 @@ export default function Navbar() {
           </div>
         </div>
       </div>
-      {router.pathname.includes('jobviz') && <JobToursCardTopSticky />}
+      {(router.pathname.includes('jobviz') && isGpPlusMember) && <JobToursCardTopSticky />}
     </nav>
   );
 }
