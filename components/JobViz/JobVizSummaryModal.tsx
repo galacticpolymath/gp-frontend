@@ -19,6 +19,7 @@ import {
 } from "./jobvizUtils";
 import type { JobVizNode } from "./jobvizUtils";
 import { JobRatingValue, useJobRatings } from "./jobRatingsStore";
+import { JOBVIZ_CATEGORIES_ANCHOR_ID } from "./jobvizDomIds";
 
 const INFO_COPY_LINES = [
   "JobViz+ lets you rate jobs to explore what interests you.",
@@ -55,6 +56,7 @@ type SummaryJobRow = {
   familyTitle: string;
   familyNode: JobVizNode | null;
   iconName: string | null;
+  jobIconName: string | null;
 };
 
 type SummaryPronoun = "you" | "i";
@@ -83,7 +85,8 @@ const formatFamilyGroupName = (value?: string | null) => {
   if (!value) return OTHER_FAMILY_LABEL;
   const normalized = value.trim();
   if (!normalized) return OTHER_FAMILY_LABEL;
-  return normalized
+  const withoutOccupations = normalized.replace(/\boccupations?\b/gi, "").trim();
+  return withoutOccupations
     .toLowerCase()
     .replace(/\b\w/g, (char) => char.toUpperCase());
 };
@@ -117,16 +120,6 @@ const formatFamilyPhrase = (names: string[]) => {
   if (!names.length) return null;
   const capped = names.slice(0, FAMILY_LIST_LIMIT);
   return `${formatList(capped)} jobs`;
-};
-
-const buildAbsoluteUrl = (path: string | null | undefined) => {
-  if (!path) return path ?? "";
-  if (/^https?:\/\//i.test(path)) return path;
-  if (typeof window !== "undefined") {
-    return new URL(path, window.location.origin).toString();
-  }
-  const defaultOrigin = process.env.NEXT_PUBLIC_SITE_URL ?? "https://teach.galacticpolymath.com";
-  return new URL(path, defaultOrigin).toString();
 };
 
 const buildRatingsInsight = (
@@ -216,9 +209,45 @@ const buildRatingsInsight = (
       ? { subject: "You", possessive: "Your", object: "you", negativeVerb: "weren't" }
       : { subject: "I", possessive: "My", object: "me", negativeVerb: "wasn't" };
 
+  const loveJobs = jobRows.filter((job) => job.rating === "love");
+  const likeJobs = jobRows.filter((job) => job.rating === "like");
+  const likeFamilyNames = likeJobs.map((job) =>
+    formatFamilyGroupName(job.familyTitle)
+  );
+  const likeFamilyCounts = likeFamilyNames.reduce<Record<string, number>>(
+    (acc, name) => {
+      if (!name) return acc;
+      acc[name] = (acc[name] ?? 0) + 1;
+      return acc;
+    },
+    {}
+  );
+  const rankedLikeFamilies = Object.entries(likeFamilyCounts)
+    .sort((a, b) => b[1] - a[1])
+    .map(([name]) => name)
+    .filter(Boolean);
+  const likeFamilyPhrase = formatFamilyPhrase(rankedLikeFamilies);
+
   const sentences: string[] = [];
 
-  if (topPhrase && bottomPhrase) {
+  let customPreferenceSummary: string | null = null;
+  if (!topPhrase && loveJobs.length && likeJobs.length >= 2 && likeFamilyPhrase) {
+    const standout = loveJobs[0];
+    const standoutTitle = standout?.title ?? standout?.familyTitle ?? "one job";
+    customPreferenceSummary =
+      pronoun === "you"
+        ? `You like a lot of ${likeFamilyPhrase}, but seem especially drawn to “${standoutTitle}.”`
+        : `I like a lot of ${likeFamilyPhrase}, but I'm especially drawn to “${standoutTitle}.”`;
+  } else if (!loveJobs.length && likeJobs.length >= 2 && likeFamilyPhrase && !topPhrase) {
+    customPreferenceSummary =
+      pronoun === "you"
+        ? `You didn't love any jobs on this tour, but were somewhat interested in ${likeFamilyPhrase}.`
+        : `I didn't love any jobs on this tour, but I was somewhat interested in ${likeFamilyPhrase}.`;
+  }
+
+  if (customPreferenceSummary) {
+    sentences.push(customPreferenceSummary);
+  } else if (topPhrase && bottomPhrase) {
     sentences.push(
       `${pronounParts.subject} showed the strongest interest in ${topPhrase}, while ${bottomPhrase} didn't resonate.`
     );
@@ -239,10 +268,15 @@ const buildRatingsInsight = (
   }
 
   const highlightNode = topCandidates[0]?.node ?? bottomCandidates[0]?.node ?? null;
-  const linkTarget = highlightNode
+  const highlightFamilyName = highlightNode
+    ? formatFamilyGroupName(getDisplayTitle(highlightNode))
+    : null;
+  const familyUrl = highlightNode ? buildJobvizUrl({ fromNode: highlightNode }) : null;
+  const anchorSuffix = `#${JOBVIZ_CATEGORIES_ANCHOR_ID}`;
+  const linkTarget = highlightFamilyName
     ? {
-        title: formatFamilyGroupName(getDisplayTitle(highlightNode)),
-        href: buildAbsoluteUrl(buildJobvizUrl({ fromNode: highlightNode })),
+        title: highlightFamilyName,
+        href: familyUrl ? `${familyUrl}${anchorSuffix}` : anchorSuffix,
       }
     : undefined;
 
@@ -371,6 +405,8 @@ const JobVizSummaryModal: React.FC = () => {
           ? getNodeBySocCode(node.level1) ?? node
           : node ?? null;
         const familyTitle = formatFamilyGroupName(resolveFamilyTitle(familyNode));
+        const categoryIconName = node ? getIconNameForNode(node) : null;
+        const jobSpecificIconName = node ? getJobSpecificIconName(node) ?? null : null;
         return {
           ...job,
           rating,
@@ -378,9 +414,8 @@ const JobVizSummaryModal: React.FC = () => {
           link,
           familyTitle,
           familyNode,
-          iconName: node
-            ? getJobSpecificIconName(node) ?? getIconNameForNode(node)
-            : null,
+          iconName: categoryIconName,
+          jobIconName: jobSpecificIconName,
         };
       }),
     [normalizedJobs, activeRatings]
@@ -698,7 +733,14 @@ const JobVizSummaryModal: React.FC = () => {
                   className={styles.summaryInfoToggle}
                   onClick={() => setInfoOpen((prev) => !prev)}
                 >
-                  {infoOpen ? "Hide info" : "About sharing and privacy"}
+                  {infoOpen ? (
+                    "Hide info"
+                  ) : (
+                    <>
+                      <LucideIcon name="Info" aria-hidden="true" />
+                      <span>Sharing &amp; Privacy</span>
+                    </>
+                  )}
                 </button>
               </div>
             {infoOpen && (
@@ -764,7 +806,10 @@ const JobVizSummaryModal: React.FC = () => {
                 {category.jobs.length > 0 ? (
                   <ul className={styles.summaryJobGroupList}>
                     {category.jobs.map((job) => (
-                      <li key={job.soc} className={styles.summaryJobItem}>
+                      <li
+                        key={job.soc}
+                        className={styles.summaryJobItem}
+                      >
                         {job.link ? (
                           <a
                             href={job.link}
@@ -773,7 +818,15 @@ const JobVizSummaryModal: React.FC = () => {
                             className={styles.summaryJobItemLink}
                           >
                             <span className={styles.summaryJobItemIcon}>
-                              <LucideIcon name={job.iconName ?? "Briefcase"} />
+                              <LucideIcon
+                                name={job.iconName ?? "Briefcase"}
+                                aria-hidden="true"
+                              />
+                              {job.jobIconName && (
+                                <span className={styles.summaryJobItemNestedIcon}>
+                                  <LucideIcon name={job.jobIconName} aria-hidden="true" />
+                                </span>
+                              )}
                             </span>
                             <span className={styles.summaryJobItemTitle}>
                               {job.title}
@@ -783,7 +836,15 @@ const JobVizSummaryModal: React.FC = () => {
                         ) : (
                           <span className={styles.summaryJobItemLink}>
                             <span className={styles.summaryJobItemIcon}>
-                              <LucideIcon name={job.iconName ?? "Briefcase"} />
+                              <LucideIcon
+                                name={job.iconName ?? "Briefcase"}
+                                aria-hidden="true"
+                              />
+                              {job.jobIconName && (
+                                <span className={styles.summaryJobItemNestedIcon}>
+                                  <LucideIcon name={job.jobIconName} aria-hidden="true" />
+                                </span>
+                              )}
                             </span>
                             <span className={styles.summaryJobItemTitle}>
                               {job.title}
@@ -801,7 +862,7 @@ const JobVizSummaryModal: React.FC = () => {
           </div>
         )}
         {ratingsInsight.linkTarget && (
-          <p className={styles.summarySecondaryCallout}>
+          <div className={styles.summarySecondaryCallout}>
             Explore other careers in{" "}
             <a
               href={ratingsInsight.linkTarget.href}
@@ -811,7 +872,7 @@ const JobVizSummaryModal: React.FC = () => {
               {ratingsInsight.linkTarget.title}
             </a>{" "}
             that you might like.
-          </p>
+          </div>
         )}
         <div className={styles.summaryModalFooter}>
           <button

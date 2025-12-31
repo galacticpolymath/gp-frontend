@@ -15,8 +15,22 @@ import {
   countRatings,
   ratingEmoji,
   useJobRatings,
+  areJobRatingsHydrated,
+  onJobRatingsHydrated,
+  JOB_RATINGS_STORAGE_KEY,
 } from "./jobRatingsStore";
+import type { JobRatingsMap } from "./jobRatingsStore";
 import { useModalContext } from "../../providers/ModalProvider";
+import {
+  useAssignmentDockViewport,
+  toRectLike,
+  type RectLike,
+} from "./useAssignmentDockViewport";
+import {
+  computeScrollTipOverlay,
+  isScrollTargetHidden,
+} from "./assignmentScrollHelpers";
+import { useDelayedProgressAnimation } from "./useDelayedProgressAnimation";
 
 interface AssignmentBannerProps {
   unitName?: string | null;
@@ -31,6 +45,12 @@ interface AssignmentBannerProps {
 
 const ASSIGNMENT_LOGO = "/plus/gp-plus-submark.png";
 const COMPLETION_MODAL_DELAY_MS = 900;
+const RATING_EMOJI_DURATION_MS = 900;
+const ASSIGNMENT_EMOJI_ENTRANCE_MS = 200;
+const PROGRESS_EMOJI_TOTAL_DELAY_MS =
+  RATING_EMOJI_DURATION_MS + ASSIGNMENT_EMOJI_ENTRANCE_MS;
+const PROGRESS_ANIMATION_DURATION_MS = 950;
+
 const formatAssignmentTitle = (value: string) =>
   value.replace(/\sand\s/gi, " & ");
 
@@ -48,22 +68,37 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
   const modalContext = useModalContext();
   const [, setJobvizSummaryModal] = modalContext._jobvizSummaryModal;
   const [, setJobvizCompletionModal] = modalContext._jobvizCompletionModal;
-  const [, setIsJobModalOn] = modalContext._isJobModalOn;
+  const [isJobModalOn, setIsJobModalOn] = modalContext._isJobModalOn;
   const [, setSelectedJob] = modalContext._selectedJob;
   const [clickedSocCodes, setClickedSocCodes] = React.useState<Set<string>>(
     new Set()
   );
   const bannerRef = React.useRef<HTMLDivElement | null>(null);
   const infoBlockRef = React.useRef<HTMLDivElement | null>(null);
+  const jobButtonRefs = React.useRef<Map<string, HTMLButtonElement>>(new Map());
+  const assignmentScrollNodeRef = React.useRef<HTMLDivElement | null>(null);
+  const registerJobButtonRef = React.useCallback(
+    (soc: string) => (node: HTMLButtonElement | null) => {
+      if (!node) {
+        jobButtonRefs.current.delete(soc);
+        return;
+      }
+      jobButtonRefs.current.set(soc, node);
+    },
+    []
+  );
   const [activeJobIdx, setActiveJobIdx] = React.useState(0);
   const [slideDir, setSlideDir] = React.useState<"next" | "prev" | null>(null);
   const [flash, setFlash] = React.useState(false);
-  const highlightTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
+  const highlightTimeoutRef =
+    React.useRef<ReturnType<typeof setTimeout> | null>(null);
   const completionModalTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
   const [highlightedSoc, setHighlightedSoc] = React.useState<string | null>(null);
   const [suppressedSocCodes, setSuppressedSocCodes] = React.useState<Set<string>>(new Set());
   const [mobileCollapsed, setMobileCollapsed] = React.useState(false);
   const [hasCelebratedCompletion, setHasCelebratedCompletion] = React.useState(false);
+  const [scrollTipNeeded, setScrollTipNeeded] = React.useState(false);
+  const [scrollTipDismissed, setScrollTipDismissed] = React.useState(false);
   const shouldRenderBanner =
     Boolean(unitName) || Boolean(jobs?.length);
   const isMobile = variant === "mobile";
@@ -71,6 +106,34 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
   const hideInfoSection = isMobile && mobileCollapsed;
   const shouldShowAssignmentBody = !isMobile || !mobileCollapsed;
   const shouldShowCollapsedMobileContent = isMobile;
+  const [showRatingHint, setShowRatingHint] = React.useState(true);
+  const [dockCollapsed, setDockCollapsed] = React.useState(false);
+  const [isEnticementReady, setIsEnticementReady] = React.useState(true);
+  const isDesktopVariant = variant === "desktop";
+  const isDockCollapsed = isDesktopVariant && dockCollapsed;
+  const wrapperClass =
+    variant === "desktop"
+      ? styles.assignmentDesktopDock
+      : styles.assignmentMobileWrapper;
+  const showAssignmentPanel = !isDesktopVariant || !isDockCollapsed;
+  const isDockViewportEnabled =
+    shouldRenderBanner && isDesktopVariant && !isDockCollapsed;
+  const {
+    registerScrollNode: registerAssignmentScrollNode,
+    registerFooterNode: registerAssignmentFooterNode,
+    contentRect: assignmentContentRect,
+    footerRect: assignmentFooterRect,
+    windowSize: assignmentWindowSize,
+  } = useAssignmentDockViewport({
+    enabled: isDockViewportEnabled,
+  });
+  const handleAssignmentScrollRegister = React.useCallback(
+    (node: HTMLDivElement | null) => {
+      assignmentScrollNodeRef.current = node;
+      registerAssignmentScrollNode(node);
+    },
+    [registerAssignmentScrollNode]
+  );
   const assignmentUnitLabelValue = assignmentUnitLabelOverride?.trim();
   const resolvedUnitLabel = assignmentUnitLabelValue
     ? assignmentUnitLabelValue
@@ -90,10 +153,49 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
     : defaultAssignmentCopyNode;
   const resolvedTeacherCtaCopy = teacherCtaCopy?.trim() || null;
   const { ratings, clearRatings } = useJobRatings();
-  const [isMounted, setIsMounted] = React.useState(false);
+  const normalizedRatings = React.useMemo<JobRatingsMap>(() => {
+    const next: JobRatingsMap = {};
+    Object.entries(ratings).forEach(([key, value]) => {
+      if (!key) return;
+      next[key.trim()] = value;
+    });
+    return next;
+  }, [ratings]);
+  const [hasStoredRatings, setHasStoredRatings] = React.useState<boolean | null>(
+    null
+  );
+  const [ratingsHydrated, setRatingsHydrated] = React.useState(() =>
+    typeof window === "undefined" ? false : areJobRatingsHydrated()
+  );
   React.useEffect(() => {
-    setIsMounted(true);
+    if (typeof window === "undefined") return;
+    try {
+      const stored = window.localStorage.getItem(JOB_RATINGS_STORAGE_KEY);
+      setHasStoredRatings(Boolean(stored));
+    } catch {
+      setHasStoredRatings(false);
+    }
   }, []);
+  React.useEffect(() => {
+    if (typeof window === "undefined") return undefined;
+    if (areJobRatingsHydrated()) {
+      setRatingsHydrated(true);
+      return undefined;
+    }
+    const unsubscribe = onJobRatingsHydrated(() => {
+      setRatingsHydrated(true);
+    });
+    return unsubscribe;
+  }, []);
+  const shouldDelayAnimations =
+    typeof window === "undefined"
+      ? true
+      : hasStoredRatings === null
+        ? true
+        : hasStoredRatings
+          ? !ratingsHydrated
+          : false;
+  const hasHydratedRatings = !shouldDelayAnimations;
 
   React.useEffect(() => {
     if (!isMobile) {
@@ -109,15 +211,27 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
     }
   }, [hideInfoSection, isMobile]);
 
+  React.useEffect(() => {
+    return () => {
+      if (completionModalTimeoutRef.current) {
+        clearTimeout(completionModalTimeoutRef.current);
+        completionModalTimeoutRef.current = null;
+      }
+    };
+  }, []);
 
   React.useEffect(() => {
     if (typeof window === "undefined") return undefined;
     const handleHighlight = (event: Event) => {
-      const detail = (event as CustomEvent<{ socCode?: string; phase?: "start" | "finish" }>).detail;
+      const detail = (event as CustomEvent<{
+        socCode?: string;
+        phase?: "start" | "finish";
+      }>).detail;
       const socCode = detail?.socCode;
       const phase = detail?.phase ?? "finish";
       if (!socCode) return;
       if (phase === "start") {
+        setIsEnticementReady(false);
         setSuppressedSocCodes((prev) => {
           const next = new Set(prev);
           next.add(socCode);
@@ -156,29 +270,22 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
     };
   }, []);
 
-  React.useEffect(() => {
-    return () => {
-      if (completionModalTimeoutRef.current) {
-        clearTimeout(completionModalTimeoutRef.current);
-        completionModalTimeoutRef.current = null;
-      }
-    };
-  }, []);
-
   const assignmentSocCodes = React.useMemo(
-    () => (jobs?.map(([, soc]) => soc) ?? []).filter(Boolean),
+    () =>
+      (jobs?.map(([, soc]) => soc?.trim()).filter(
+        (soc): soc is string => Boolean(soc)
+      ) ?? []),
     [jobs]
   );
   const clientProgress = React.useMemo(() => {
-    return countRatings(assignmentSocCodes, ratings);
-  }, [assignmentSocCodes, ratings]);
-  const progress = isMounted
+    return countRatings(assignmentSocCodes, normalizedRatings);
+  }, [assignmentSocCodes, normalizedRatings]);
+  const progress = hasHydratedRatings
     ? clientProgress
     : { rated: 0, total: assignmentSocCodes.length };
   const isAssignmentComplete = Boolean(
     progress.total > 0 && progress.rated === progress.total
   );
-
   const handleJobClick = React.useCallback(
     (socCode: string) => {
       setClickedSocCodes((prev) => {
@@ -204,10 +311,11 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
   const jobItems = React.useMemo(() => {
     if (!jobs?.length) return [];
     return jobs.map(([title, soc]) => {
-      const node = getNodeBySocCode(soc);
+      const normalizedSoc = (soc ?? "").trim();
+      const node = getNodeBySocCode(normalizedSoc);
       const iconName = node ? getIconNameForNode(node) : "CircleDot";
       const jobIconName = node ? getJobSpecificIconName(node) : undefined;
-      return { title, soc, iconName, jobIconName };
+      return { title, soc: normalizedSoc, iconName, jobIconName };
     });
   }, [jobs]);
 
@@ -304,15 +412,93 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
 
   const nextUnratedSoc = React.useMemo(() => {
     if (!jobItems.length) return null;
-    const nextJob = jobItems.find(({ soc }) => !ratings[soc]);
+    const nextJob = jobItems.find(({ soc }) => !normalizedRatings[soc]);
     return nextJob?.soc ?? null;
-  }, [jobItems, ratings]);
+  }, [jobItems, normalizedRatings]);
+
+  const shouldShowScrollTip =
+    isDesktopVariant && !isDockCollapsed && scrollTipNeeded && !scrollTipDismissed;
+
+  React.useEffect(() => {
+    if (
+      !assignmentContentRect ||
+      !isDockViewportEnabled ||
+      !nextUnratedSoc ||
+      scrollTipDismissed
+    ) {
+      setScrollTipNeeded(false);
+      return;
+    }
+    const target = jobButtonRefs.current.get(nextUnratedSoc);
+    if (!target) {
+      setScrollTipNeeded(false);
+      return;
+    }
+    const targetRect = toRectLike(target.getBoundingClientRect());
+    const hidden = isScrollTargetHidden(targetRect, assignmentContentRect);
+    setScrollTipNeeded(hidden);
+  }, [
+    assignmentContentRect,
+    isDockViewportEnabled,
+    nextUnratedSoc,
+    scrollTipDismissed,
+  ]);
+
+  const scrollTipStyle = React.useMemo(() => {
+    if (
+      !shouldShowScrollTip ||
+      !assignmentFooterRect ||
+      !assignmentWindowSize.width ||
+      !assignmentWindowSize.height
+    ) {
+      return null;
+    }
+    return computeScrollTipOverlay(assignmentFooterRect, assignmentWindowSize);
+  }, [
+    assignmentFooterRect,
+    assignmentWindowSize.height,
+    assignmentWindowSize.width,
+    shouldShowScrollTip,
+  ]);
 
   const splitJobs = React.useMemo(() => {
     if (!jobItems.length) return [];
     const midpoint = Math.ceil(jobItems.length / 2);
     return [jobItems.slice(0, midpoint), jobItems.slice(midpoint)];
   }, [jobItems]);
+
+  React.useEffect(() => {
+    if (!shouldShowScrollTip || scrollTipDismissed) {
+      return undefined;
+    }
+    const node = assignmentScrollNodeRef.current;
+    if (!node) {
+      return undefined;
+    }
+    const handleScroll = () => {
+      setScrollTipDismissed(true);
+    };
+    node.addEventListener("scroll", handleScroll, { passive: true });
+    return () => {
+      node.removeEventListener("scroll", handleScroll);
+    };
+  }, [scrollTipDismissed, shouldShowScrollTip]);
+
+  React.useEffect(() => {
+    if (!shouldShowScrollTip || scrollTipDismissed) {
+      return undefined;
+    }
+    const handleGlobalScroll = () => {
+      setScrollTipDismissed(true);
+    };
+    const options: AddEventListenerOptions = { passive: true };
+    window.addEventListener("wheel", handleGlobalScroll, options);
+    window.addEventListener("touchmove", handleGlobalScroll, options);
+    return () => {
+      window.removeEventListener("wheel", handleGlobalScroll, options);
+      window.removeEventListener("touchmove", handleGlobalScroll, options);
+    };
+  }, [scrollTipDismissed, shouldShowScrollTip]);
 
   const [activeSocCode, setActiveSocCode] = React.useState<string | null>(null);
   React.useEffect(() => {
@@ -361,21 +547,12 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
     return () => clearTimeout(t);
   }, [activeJobIdx, jobItems.length]);
 
-  const wrapperClass =
-    variant === "desktop"
-      ? styles.assignmentDesktopDock
-      : styles.assignmentMobileWrapper;
-  const [showRatingHint, setShowRatingHint] = React.useState(true);
-  const [dockCollapsed, setDockCollapsed] = React.useState(false);
-  const isDesktopVariant = variant === "desktop";
-  const isDockCollapsed = isDesktopVariant && dockCollapsed;
   React.useEffect(() => {
     if (!jobs?.length) return;
     const timer = setTimeout(() => setShowRatingHint(false), 4000);
     return () => clearTimeout(timer);
   }, [jobs?.length, variant]);
 
-  const showAssignmentPanel = !isDesktopVariant || !isDockCollapsed;
   React.useEffect(() => {
     if (typeof window === "undefined") return undefined;
     if (variant !== "desktop" || !showAssignmentPanel) {
@@ -402,26 +579,49 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
       document.documentElement.style.setProperty("--jobviz-desktop-dock-width", "0px");
     };
   }, [variant, showAssignmentPanel, isDockCollapsed]);
+  const handleProgressAnimationComplete = React.useCallback(() => {
+    setIsEnticementReady(true);
+  }, []);
+
+  const {
+    displayedRated: safeDisplayedProgressRated,
+    isAnimating: shouldAnimateProgress,
+  } = useDelayedProgressAnimation({
+    rated: progress.rated,
+    total: progress.total,
+    delayMs: PROGRESS_EMOJI_TOTAL_DELAY_MS,
+    animationDurationMs: PROGRESS_ANIMATION_DURATION_MS,
+    onAnimationComplete: handleProgressAnimationComplete,
+  });
   const activeJob = jobItems[activeJobIdx] ?? null;
-  const isActiveJobUnrated =
-    Boolean(isMobile && activeJob && !ratings[activeJob.soc]);
+  const isActiveJobUnrated = Boolean(
+    activeJob && !normalizedRatings[activeJob.soc]
+  );
   const isActiveJobSuppressed = Boolean(
     activeJob && suppressedSocCodes.has(activeJob.soc)
   );
+  const isActiveJobNextToRate = Boolean(
+    isMobile && activeJob && activeJob.soc === nextUnratedSoc
+  );
   const shouldGlowActiveJob = Boolean(
-    isActiveJobUnrated && !isActiveJobSuppressed
+    !shouldDelayAnimations &&
+      isActiveJobNextToRate &&
+      isActiveJobUnrated &&
+      !isActiveJobSuppressed &&
+      isEnticementReady
   );
   const shouldPulseNextArrow = Boolean(
-    isMobile && activeJob && !!ratings[activeJob.soc]
+    !shouldDelayAnimations &&
+      isMobile &&
+      activeJob &&
+      !!normalizedRatings[activeJob.soc] &&
+      isEnticementReady
   );
 
   React.useEffect(() => {
-    if (variant !== "mobile" || !shouldRenderBanner) return undefined;
+    if (!shouldRenderBanner || variant !== "mobile") return undefined;
     if (typeof window === "undefined") return undefined;
-    const element = bannerRef.current;
-    if (!element || typeof ResizeObserver === "undefined") return undefined;
 
-    let rafId: number | null = null;
     const readNavOffset = () => {
       const nav =
         document.querySelector("nav.fixed-top") ||
@@ -430,10 +630,7 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
       if (!nav) {
         return 0;
       }
-      if (
-        nav instanceof HTMLElement &&
-        nav.dataset.navHidden === "true"
-      ) {
+      if (nav instanceof HTMLElement && nav.dataset.navHidden === "true") {
         return 0;
       }
       const rect = nav.getBoundingClientRect();
@@ -445,79 +642,110 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
       return Math.max(0, visibleBottom - visibleTop);
     };
 
-    const updateOffsets = () => {
-      const height = element.getBoundingClientRect().height;
-      document.documentElement.style.setProperty(
-        "--jobviz-assignment-offset",
-        `${height}px`
+    const emitNavOffsetChange = (value: number) => {
+      window.dispatchEvent(
+        new CustomEvent("jobviz-nav-offset-change", {
+          detail: { value },
+        })
       );
+    };
+
+    const updateNavOffset = () => {
+      const value = readNavOffset();
       document.documentElement.style.setProperty(
         "--jobviz-nav-offset",
-        `${readNavOffset()}px`
+        `${value}px`
       );
+      emitNavOffsetChange(value);
     };
 
-    const handleScroll = () => {
-      if (rafId !== null) return;
-      rafId = window.requestAnimationFrame(() => {
-        rafId = null;
-        document.documentElement.style.setProperty(
-          "--jobviz-nav-offset",
-          `${readNavOffset()}px`
-        );
-      });
-    };
+    updateNavOffset();
 
-    const handleResize = () => {
-      updateOffsets();
-    };
-
-    document.body.dataset.jobvizAssignment = "true";
-    updateOffsets();
-
-    const observer = new ResizeObserver(updateOffsets);
-    observer.observe(element);
-
-    let navMutation: MutationObserver | null = null;
     const navTarget =
       document.querySelector("nav.fixed-top") ||
       document.querySelector("nav.navbar");
+    let navMutation: MutationObserver | null = null;
+    let navResizeObserver: ResizeObserver | null = null;
     const handleNavTransition = () => {
-      document.documentElement.style.setProperty(
-        "--jobviz-nav-offset",
-        `${readNavOffset()}px`
-      );
+      updateNavOffset();
     };
 
     if (navTarget) {
       navTarget.addEventListener("transitionend", handleNavTransition);
       if (typeof MutationObserver !== "undefined") {
         navMutation = new MutationObserver(handleNavTransition);
-        navMutation.observe(navTarget, { attributes: true, attributeFilter: ["style", "class"] });
+        navMutation.observe(navTarget, {
+          attributes: true,
+          attributeFilter: ["style", "class"],
+        });
+      }
+      if (typeof ResizeObserver !== "undefined") {
+        navResizeObserver = new ResizeObserver(() => {
+          updateNavOffset();
+        });
+        navResizeObserver.observe(navTarget);
       }
     }
 
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    window.addEventListener("resize", handleResize);
-
     return () => {
-      observer.disconnect();
-      if (rafId !== null) {
-        window.cancelAnimationFrame(rafId);
-      }
-      window.removeEventListener("scroll", handleScroll);
-      window.removeEventListener("resize", handleResize);
       if (navTarget) {
         navTarget.removeEventListener("transitionend", handleNavTransition);
       }
       if (navMutation) {
         navMutation.disconnect();
       }
+      if (navResizeObserver) {
+        navResizeObserver.disconnect();
+      }
+      document.documentElement.style.setProperty("--jobviz-nav-offset", "0px");
+      emitNavOffsetChange(0);
+    };
+  }, [shouldRenderBanner, variant]);
+
+  React.useEffect(() => {
+    if (variant !== "mobile" || !shouldRenderBanner) return undefined;
+    if (typeof window === "undefined") return undefined;
+
+    const emitAssignmentOffsetChange = (value: number) => {
+      window.dispatchEvent(
+        new CustomEvent("jobviz-assignment-offset-change", {
+          detail: { value },
+        })
+      );
+    };
+
+    const updateAssignmentOffset = () => {
+      const target = bannerRef.current;
+      if (!target) return;
+      const height = target.getBoundingClientRect().height;
+      document.documentElement.style.setProperty(
+        "--jobviz-assignment-offset",
+        `${height}px`
+      );
+      emitAssignmentOffsetChange(height);
+    };
+
+    document.body.dataset.jobvizAssignment = "true";
+    updateAssignmentOffset();
+
+    let observer: ResizeObserver | null = null;
+    if (typeof ResizeObserver !== "undefined" && bannerRef.current) {
+      observer = new ResizeObserver(() => {
+        updateAssignmentOffset();
+      });
+      observer.observe(bannerRef.current);
+    }
+
+    window.addEventListener("resize", updateAssignmentOffset);
+
+    return () => {
+      observer?.disconnect();
+      window.removeEventListener("resize", updateAssignmentOffset);
       document.documentElement.style.setProperty(
         "--jobviz-assignment-offset",
         "0px"
       );
-      document.documentElement.style.setProperty("--jobviz-nav-offset", "0px");
+      emitAssignmentOffsetChange(0);
       delete document.body.dataset.jobvizAssignment;
     };
   }, [variant, shouldRenderBanner, mobileCollapsed, showAssignmentPanel]);
@@ -626,7 +854,8 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
   }
 
   return (
-    <div
+    <>
+      <div
       className={`${styles.assignmentBannerShell} ${wrapperClass}`}
       data-mode={variant === "desktop" ? "docked" : "default"}
       data-collapsed={isMobile && mobileCollapsed ? "true" : "false"}
@@ -757,16 +986,26 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
               ) : (
                 <div className={styles.assignmentProgressRow}>
                   <div className={styles.assignmentProgressLabel}>
-                    Rated {progress.rated}/{progress.total} jobs
+                    Rated {safeDisplayedProgressRated}/{progress.total} jobs
                   </div>
-                  <div className={styles.assignmentProgressTrack}>
-                    <div
-                      className={styles.assignmentProgressFill}
-                      style={{
-                        width: `${progress.total ? (progress.rated / progress.total) * 100 : 0}%`,
-                      }}
-                    />
-                  </div>
+                <div
+                  className={`${styles.assignmentProgressTrack} ${
+                    shouldAnimateProgress ? styles.assignmentProgressTrackPulse : ""
+                  }`}
+                >
+                  <div
+                    className={`${styles.assignmentProgressFill} ${
+                      shouldAnimateProgress ? styles.assignmentProgressFillPulse : ""
+                    }`}
+                    style={{
+                      width: `${
+                        progress.total
+                          ? (safeDisplayedProgressRated / progress.total) * 100
+                          : 0
+                      }%`,
+                    }}
+                  />
+                </div>
                 </div>
               ))}
             {(shouldShowAssignmentBody || shouldShowCollapsedMobileContent) && (
@@ -774,17 +1013,26 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
                 className={`${styles.assignmentContent} ${
                   variant === "mobile" ? styles.assignmentMobileContentSticky : ""
                 }`}
+                ref={
+                  variant === "desktop"
+                    ? handleAssignmentScrollRegister
+                    : undefined
+                }
               >
               {variant === "desktop" && splitJobs.length > 0 && (
                 <div className={styles.assignmentListWrap}>
                   {splitJobs.map((jobGroup, idx) => (
                     <ul key={idx} className={styles.assignmentList}>
                       {jobGroup.map(({ title, soc, iconName, jobIconName }, jobIdx) => {
-                        const ratingValue = ratings[soc];
+                        const ratingValue = normalizedRatings[soc];
                         const isHighlighted = highlightedSoc === soc;
                         const isSuppressed = suppressedSocCodes.has(soc);
                         const shouldPulseDesktopJob =
-                          isDesktopVariant && !ratingValue && nextUnratedSoc === soc;
+                          isDesktopVariant &&
+                          !shouldDelayAnimations &&
+                          !ratingValue &&
+                          nextUnratedSoc === soc &&
+                          isEnticementReady;
                         const shouldGlowQuestion =
                           !ratingValue && !isSuppressed;
                         const displayEmoji = ratingValue
@@ -805,8 +1053,14 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
                                   : ""
                               } ${
                                 activeSocCode === soc ? styles.assignmentLinkActive : ""
+                              } ${
+                                shouldPulseDesktopJob ? styles.assignmentLinkEntice : ""
                               }`}
                               onClick={() => handleJobClick(soc)}
+                              data-assignment-soc={soc}
+                              ref={
+                                isDesktopVariant ? registerJobButtonRef(soc) : undefined
+                              }
                             >
                               <span className={styles.assignmentListIconWrap}>
                                 <LucideIcon
@@ -819,11 +1073,15 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
                                   </span>
                                 )}
                               </span>
-                              {isMounted ? (
+                              {hasHydratedRatings ? (
                                 <span
                                   className={`${styles.assignmentListRating} ${
                                     shouldGlowQuestion
                                       ? styles.assignmentListRatingGradient
+                                      : ""
+                                  } ${
+                                    shouldPulseDesktopJob
+                                      ? styles.assignmentListRatingHalo
                                       : ""
                                   }`}
                                 >
@@ -902,6 +1160,7 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
                           : ""
                       }`}
                       onClick={() => activeJob && handleJobClick(activeJob.soc)}
+                      data-assignment-soc={activeJob?.soc ?? undefined}
                     >
                       <div className={styles.assignmentCarouselRow}>
                         <span
@@ -913,7 +1172,9 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
                         >
                           <span
                             className={`${styles.assignmentListRatingInner} ${
-                              isActiveJobUnrated ? styles.assignmentListRatingNudge : ""
+                              isActiveJobNextToRate && isActiveJobUnrated
+                                ? styles.assignmentListRatingNudge
+                                : ""
                             } ${
                               isActiveJobSuppressed
                                 ? styles.assignmentListRatingInnerHidden
@@ -926,8 +1187,12 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
                           >
                             {activeJob && suppressedSocCodes.has(activeJob.soc)
                               ? "\u00A0"
-                              : isMounted
-                                ? ratingEmoji(activeJob ? ratings[activeJob.soc] : undefined)
+                              : hasHydratedRatings
+                                ? ratingEmoji(
+                                    activeJob
+                                      ? normalizedRatings[activeJob.soc]
+                                      : undefined
+                                  )
                                 : "?"}
                           </span>
                         </span>
@@ -975,7 +1240,10 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
         </div>
       )}
       {variant === "desktop" && !isDockCollapsed && (
-        <div className={styles.assignmentClearFooter}>
+        <div
+          className={styles.assignmentClearFooter}
+          ref={registerAssignmentFooterNode}
+        >
           <button type="button" onClick={clearRatings}>
             Clear ratings
           </button>
@@ -988,5 +1256,21 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
         </div>
       )}
     </div>
+    {shouldShowScrollTip &&
+      scrollTipStyle && (
+        <div
+          className={`${styles.assignmentScrollTip} ${styles.assignmentScrollTipOverlay}`}
+          role="status"
+          style={{
+            left: `${scrollTipStyle.left}px`,
+            width: `${scrollTipStyle.width}px`,
+            bottom: `${scrollTipStyle.bottom}px`,
+          }}
+        >
+          <LucideIcon name="ArrowDown" aria-hidden="true" />
+          <span>Scroll to the next job...</span>
+        </div>
+      )}
+    </>
   );
 };

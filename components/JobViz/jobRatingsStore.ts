@@ -7,6 +7,7 @@ const STORAGE_KEY = "jobvizRatings";
 
 let ratingsStore: JobRatingsMap = {};
 let isHydrated = false;
+const hydrationListeners = new Set<() => void>();
 
 const loadFromStorage = () => {
   if (isHydrated || typeof window === "undefined") return;
@@ -22,6 +23,8 @@ const loadFromStorage = () => {
     console.error("Failed to parse JobViz ratings", error);
   }
   isHydrated = true;
+  hydrationListeners.forEach((listener) => listener());
+  hydrationListeners.clear();
 };
 
 const persist = () => {
@@ -38,6 +41,17 @@ const listeners = new Set<() => void>();
 const notify = () => {
   listeners.forEach((listener) => listener());
 };
+
+export const areJobRatingsHydrated = () => isHydrated;
+export const onJobRatingsHydrated = (listener: () => void) => {
+  if (isHydrated) {
+    listener();
+    return () => {};
+  }
+  hydrationListeners.add(listener);
+  return () => hydrationListeners.delete(listener);
+};
+export const JOB_RATINGS_STORAGE_KEY = STORAGE_KEY;
 
 const subscribe = (listener: () => void) => {
   listeners.add(listener);
