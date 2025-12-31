@@ -127,6 +127,7 @@ const addGradesOrYearsProperty = (
 };
 
 interface IProps {
+  /** @deprecated Use `unit` property instead. */
   lesson?: any;
   unit?: TUnitForUI;
   unitGDriveChildItems: Awaited<ReturnType<typeof getUnitGDriveChildItems>>;
@@ -173,7 +174,10 @@ export const updateOverviewSection = (sectionVal: object, unit: TUnitForUI) => {
   const jobVizConnectionsSec = unit.Sections?.jobvizConnections;
 
   if (!jobVizConnectionsSec) {
-    return sectionVal;
+    return {
+      ...sectionVal,
+      TargetStandardsCodes: unit.TargetStandardsCodes
+    };
   }
 
   const previewJobsSliced = jobVizConnectionsSec.Content.slice(0, 3);
@@ -199,6 +203,8 @@ export const updateOverviewSection = (sectionVal: object, unit: TUnitForUI) => {
       additionalJobsNum,
       jobTitleAndSocCodePairs,
     },
+    TargetStandardsCodes: unit.TargetStandardsCodes
+
   };
 
   return overviewSecProps;
@@ -982,12 +988,11 @@ export const getStaticProps = async (arg: {
 
       console.log('targetUnit.GdrivePublicID: ', targetUnit.GdrivePublicID);
 
-      const unitGDriveChildItems = (
+      const unitGDriveChildItemsAll = (
         await getUnitGDriveChildItems(targetUnit.GdrivePublicID!)
-      )?.filter((item) => item.mimeType?.includes('folder'));
-
-      console.log('unitGDriveChildItems first: ', unitGDriveChildItems);
-
+      );
+      const gpGDriveLessonItems = unitGDriveChildItemsAll?.filter(item => item.mimeType !== "application/vnd.google-apps.folder")
+      const unitGDriveChildItems = unitGDriveChildItemsAll?.filter((item) => item.mimeType?.includes('folder'));
       const headLinks = targetUnits
         .filter(({ locale, numID }) => locale && numID)
         .map(({ locale, numID }) => [
@@ -1086,6 +1091,26 @@ export const getStaticProps = async (arg: {
 
               return true;
             });
+            resource.lessons = resource?.lessons.map(lesson => {
+              if (lesson.itemList?.length) {
+                lesson.itemList = lesson.itemList.map(item => {
+                  const gdriveRoot = "gdriveRoot" in item && item.gdriveRoot as string
+                  const itemId = gdriveRoot ? gdriveRoot.split('/').at(-1) : undefined;
+                  const targetItemInGpGDrive = itemId ? gpGDriveLessonItems?.find(lessonItem => lessonItem.id === itemId) : undefined;
+
+                  if (targetItemInGpGDrive?.id) {
+                    return {
+                      ...item,
+                      gpGDriveItemId: targetItemInGpGDrive.id
+                    }
+                  }
+
+                  return item;
+                });
+              };
+
+              return lesson;
+            });
           }
           const allUnitLessons: Pick<
             INewUnitLesson,
@@ -1118,8 +1143,6 @@ export const getStaticProps = async (arg: {
             | undefined = undefined;
           const lessonsWithFilePreviewImgsPromises = resource.lessons?.map(
             async (lesson) => {
-              console.log('lesson, sup there: ', lesson.title);
-
               if (!lessonsFolder && unitGDriveChildItems) {
                 for (const unitGDriveChildItem of unitGDriveChildItems) {
                   let lessonTitle = lesson.title?.toLowerCase();

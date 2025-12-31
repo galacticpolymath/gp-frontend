@@ -3,6 +3,7 @@
 import {
   ITeachingMaterialsDataForUI,
   IUnitTeachingMaterials,
+  IUnitTeachingMaterialsForUI,
 } from "../../../backend/models/Unit/types/teachingMaterials";
 import { INewUnitSchema } from "../../../backend/models/Unit/types/unit";
 import {
@@ -19,9 +20,9 @@ type TTargetUnitProps<TKey extends TTargetUnitKeys = TTargetUnitKeys> = {
 };
 export interface TeachItProps
   extends Pick<IComponent, "index">,
-    TTargetUnitProps,
-    IUnitTeachingMaterials, TUnitPropsForTeachItSec, ITeachItServerProps {
+  TTargetUnitProps, TUnitPropsForTeachItSec, ITeachItServerProps, IUnitTeachingMaterialsForUI {
   Data: ITeachingMaterialsDataForUI<ILessonForUI> | null;
   _sectionDots: TUseStateReturnVal<ISectionDots>;
   SectionTitle: string;
+  supThere: string
 }

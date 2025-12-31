@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
- 
+
 /* eslint-disable comma-dangle */
 /* eslint-disable quotes */
 /* eslint-disable semi */
@@ -264,8 +264,6 @@ export const copyFile = async (accessToken, parentFolderIds, fileId, tries = 3) 
   const reqBody = parentFolderIds ? { parents: parentFolderIds } : {};
 
   try {
-    console.log("fileId, sup there: ", fileId);
-    
     return await axios.post(
       `https://www.googleapis.com/drive/v3/files/${fileId}/copy`,
       reqBody,
@@ -304,7 +302,7 @@ export const copyFile = async (accessToken, parentFolderIds, fileId, tries = 3) 
 
       return await copyFile(accessToken, parentFolderIds, fileId, tries - 1);
     }
-    
+
     if (response.status) {
       return {
         errType: "notFound"
@@ -369,7 +367,7 @@ export const copyFiles = async (
       continue;
     }
 
-    if (result.status === "rejected" ) {
+    if (result.status === "rejected") {
       failedCopiedFilesIndices.add(parseInt(index));
       continue;
     }

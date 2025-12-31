@@ -22,6 +22,7 @@ import { useUserContext } from "../../../providers/UserProvider";
 import {
   IChunk,
   IGoingFurtherVal,
+  IItemForUI,
   IItemV2,
   IItemV2Props,
   ILsnExt,
@@ -49,6 +50,7 @@ import CopyLessonBtn, { ICopyLessonBtnProps } from "./CopyLessonBtn";
 import { INewUnitSchema } from "../../../backend/models/Unit/types/unit";
 import useSiteSession from "../../../customHooks/useSiteSession";
 import { EXTERNAL_LINK_HELPER_TXT } from "../Modals/LessonItemsModal";
+import { IUserGDriveItemCopy } from "./TeachItUI";
 
 const LESSON_PART_BTN_COLOR = "#2C83C3";
 
@@ -117,10 +119,10 @@ export interface ILessonPartProps
   GdrivePublicID?: string | null;
   unitId: Pick<INewUnitSchema, "_id">["_id"];
   unitTitle?: string | null;
-  setParts: TSetter<(INewUnitLesson<IItemV2> | ILessonForUI)[]>;
+  setParts: TSetter<(INewUnitLesson<IItemV2> | ILessonForUI | INewUnitLesson<IItemForUI>)[]>;
 }
 
-
+export type TLessonPart = INewUnitLesson<IItemV2> | ILessonForUI | INewUnitLesson<IItemForUI>
 
 const LessonPart: React.FC<ILessonPartProps> = (props) => {
   const {
@@ -155,6 +157,8 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
     sharedGDriveLessonFolders,
     selectedGrade,
   } = props;
+
+  console.log("itemList, lessonPart component: ", itemList);
 
   const sharedGDriveLessonFolder = useMemo(() => {
     if (!sharedGDriveLessonFolders) {
@@ -209,8 +213,6 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
     : chunks && chunks.map(({ chunkDur }) => chunkDur);
   let _itemList = itemList;
 
-  console.log("_itemList: ", _itemList);
-
   const targetLessonsResources = resources?.lessons?.find((lesson) => {
     return lesson?.lsn == lsnNum;
   });
@@ -219,14 +221,8 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
     tags: _allTags,
     itemList: linkResources,
   } = targetLessonsResources ?? {};
-
-  console.log("lsnTags: ", lsnTags);
-  console.log("_allTags: ", _allTags);
-
   let allTags = lsnTags ?? _allTags;
   _itemList = (_itemList ?? linkResources) as IItemForClient[] | null;
-  let previewTags = null;
-  let restOfTags = null;
   let lsnNumParsed = NaN;
 
   if (typeof lsnNum === "string" && !isNaN(Number(lsnNum))) {
@@ -254,7 +250,7 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
         docUrl: itemDocUrl,
       };
     });
-  }, []);
+  }, [itemList]);
 
   const handlePreviewDownloadBtnClick = (lessonItemIndex: number) => {
     if (!lsnNum) {
@@ -263,6 +259,8 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
       );
       return;
     }
+
+    console.log("allLessonItems: ", allLessonItems);
 
     setLessonItemModal({
       currentIndex: lessonItemIndex,
@@ -358,12 +356,6 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
   const handleUpdateProfileBtnClick = () => {
     router.push("/account?show_about_user_form=true");
   };
-
-  if (allTags?.length && Array.isArray(allTags)) {
-    allTags = allTags.flat().filter((tag) => !!tag);
-    previewTags = allTags?.length > 3 ? allTags.slice(0, 3) : allTags;
-    restOfTags = allTags?.length > 3 ? allTags.slice(3) : [];
-  }
 
   const defaultBorder = "solid 2.5px rgb(222, 226, 230)";
   const highlightedBorderColor = "#3987C5";
@@ -530,9 +522,9 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                         content={lsnPreface}
                       />
                     </div>
-                    {!!previewTags?.length && (
+                    {!!allTags?.length && (
                       <div className="d-flex tagPillContainer flex-wrap">
-                        {previewTags.map((tag: string, index) => (
+                        {allTags.map((tag: string, index) => (
                           <div
                             key={index}
                             style={{
@@ -611,25 +603,6 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
         }
       >
         <div className="p-0 lessonPartContent pb-3">
-          {!!restOfTags?.length && (
-            <div className="d-flex mt-0 mt-md-1 justify-content-sm-start tagPillContainer flex-wrap">
-              {restOfTags.map((tag: string, index) => (
-                <div
-                  key={index}
-                  id={`${lsnNum}-${tag.split(" ").join("-")}`}
-                  style={{ border: `solid .5px ${LESSON_PART_BTN_COLOR}` }}
-                  className="rounded-pill badge bg-white p-2"
-                >
-                  <span
-                    style={{ color: LESSON_PART_BTN_COLOR, fontWeight: 450 }}
-                    className="tag-testing"
-                  >
-                    {tag}
-                  </span>
-                </div>
-              ))}
-            </div>
-          )}
           {FeedbackComp}
           {Array.isArray(learningObjectives) && !!learningObjectives.length && (
             <div className="mt-4 d-col col-12 col-lg-8">
@@ -746,22 +719,10 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                     const {
                       itemTitle,
                       itemDescription,
-                      links,
                       filePreviewImg,
-                      itemCat,
                       gdriveRoot,
                       itemType,
                     } = item;
-                    const openInNewTabLink = itemType === "presentation"
-                    const _links = links
-                      ? Array.isArray(links)
-                        ? links
-                        : [links]
-                      : null;
-                    const imgLink =
-                      itemCat === "web resource"
-                        ? _links?.[0]?.url ?? ""
-                        : _links?.[1]?.url ?? "";
                     const isTeacherItem = itemTitle
                       ? itemTitle.toLowerCase().includes("teacher")
                       : false;
