@@ -44,6 +44,11 @@ interface AssignmentBannerProps {
 
 const ASSIGNMENT_LOGO = "/plus/gp-plus-submark.png";
 const COMPLETION_MODAL_DELAY_MS = 900;
+const RATING_EMOJI_DURATION_MS = 900;
+const ASSIGNMENT_EMOJI_ENTRANCE_MS = 200;
+const PROGRESS_EMOJI_TOTAL_DELAY_MS =
+  RATING_EMOJI_DURATION_MS + ASSIGNMENT_EMOJI_ENTRANCE_MS;
+const PROGRESS_ANIMATION_DURATION_MS = 950;
 
 const formatAssignmentTitle = (value: string) =>
   value.replace(/\sand\s/gi, " & ");
@@ -84,7 +89,8 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
   const [activeJobIdx, setActiveJobIdx] = React.useState(0);
   const [slideDir, setSlideDir] = React.useState<"next" | "prev" | null>(null);
   const [flash, setFlash] = React.useState(false);
-  const highlightTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
+  const highlightTimeoutRef =
+    React.useRef<ReturnType<typeof setTimeout> | null>(null);
   const completionModalTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
   const [highlightedSoc, setHighlightedSoc] = React.useState<string | null>(null);
   const [suppressedSocCodes, setSuppressedSocCodes] = React.useState<Set<string>>(new Set());
@@ -102,11 +108,13 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
   const [showRatingHint, setShowRatingHint] = React.useState(true);
   const [dockCollapsed, setDockCollapsed] = React.useState(false);
   const [shouldAnimateProgress, setShouldAnimateProgress] = React.useState(false);
+  const [displayedProgressRated, setDisplayedProgressRated] = React.useState(0);
   const progressDelayTimeoutRef =
     React.useRef<ReturnType<typeof setTimeout> | null>(null);
   const progressResetTimeoutRef =
     React.useRef<ReturnType<typeof setTimeout> | null>(null);
   const hasInitializedProgressRef = React.useRef(false);
+  const [isEnticementReady, setIsEnticementReady] = React.useState(true);
   const isDesktopVariant = variant === "desktop";
   const isDockCollapsed = isDesktopVariant && dockCollapsed;
   const wrapperClass =
@@ -209,15 +217,53 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
     }
   }, [hideInfoSection, isMobile]);
 
+  React.useEffect(() => {
+    return () => {
+      if (progressDelayTimeoutRef.current) {
+        clearTimeout(progressDelayTimeoutRef.current);
+        progressDelayTimeoutRef.current = null;
+      }
+      if (progressResetTimeoutRef.current) {
+        clearTimeout(progressResetTimeoutRef.current);
+        progressResetTimeoutRef.current = null;
+      }
+    };
+  }, []);
+
+  React.useEffect(() => {
+    return () => {
+      if (completionModalTimeoutRef.current) {
+        clearTimeout(completionModalTimeoutRef.current);
+        completionModalTimeoutRef.current = null;
+      }
+    };
+  }, []);
+
+  const startProgressAnimation = React.useCallback(() => {
+    if (progressResetTimeoutRef.current) {
+      clearTimeout(progressResetTimeoutRef.current);
+      progressResetTimeoutRef.current = null;
+    }
+    setShouldAnimateProgress(true);
+    progressResetTimeoutRef.current = setTimeout(() => {
+      setShouldAnimateProgress(false);
+      progressResetTimeoutRef.current = null;
+      setIsEnticementReady(true);
+    }, PROGRESS_ANIMATION_DURATION_MS);
+  }, []);
 
   React.useEffect(() => {
     if (typeof window === "undefined") return undefined;
     const handleHighlight = (event: Event) => {
-      const detail = (event as CustomEvent<{ socCode?: string; phase?: "start" | "finish" }>).detail;
+      const detail = (event as CustomEvent<{
+        socCode?: string;
+        phase?: "start" | "finish";
+      }>).detail;
       const socCode = detail?.socCode;
       const phase = detail?.phase ?? "finish";
       if (!socCode) return;
       if (phase === "start") {
+        setIsEnticementReady(false);
         setSuppressedSocCodes((prev) => {
           const next = new Set(prev);
           next.add(socCode);
@@ -256,15 +302,6 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
     };
   }, []);
 
-  React.useEffect(() => {
-    return () => {
-      if (completionModalTimeoutRef.current) {
-        clearTimeout(completionModalTimeoutRef.current);
-        completionModalTimeoutRef.current = null;
-      }
-    };
-  }, []);
-
   const assignmentSocCodes = React.useMemo(
     () =>
       (jobs?.map(([, soc]) => soc?.trim()).filter(
@@ -278,10 +315,10 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
   const progress = hasHydratedRatings
     ? clientProgress
     : { rated: 0, total: assignmentSocCodes.length };
+  const clampedProgressRated = Math.min(progress.rated, progress.total);
   const isAssignmentComplete = Boolean(
     progress.total > 0 && progress.rated === progress.total
   );
-
   const handleJobClick = React.useCallback(
     (socCode: string) => {
       setClickedSocCodes((prev) => {
@@ -576,37 +613,31 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
     };
   }, [variant, showAssignmentPanel, isDockCollapsed]);
   React.useEffect(() => {
-    if (hasInitializedProgressRef.current) {
-      if (progressDelayTimeoutRef.current) {
-        clearTimeout(progressDelayTimeoutRef.current);
-        progressDelayTimeoutRef.current = null;
-      }
-      if (progressResetTimeoutRef.current) {
-        clearTimeout(progressResetTimeoutRef.current);
-        progressResetTimeoutRef.current = null;
-      }
-      setShouldAnimateProgress(false);
-      progressDelayTimeoutRef.current = setTimeout(() => {
-        setShouldAnimateProgress(true);
-        progressResetTimeoutRef.current = setTimeout(() => {
-          setShouldAnimateProgress(false);
-          progressResetTimeoutRef.current = null;
-        }, 950);
-      }, 360);
-      return () => {
-        if (progressDelayTimeoutRef.current) {
-          clearTimeout(progressDelayTimeoutRef.current);
-          progressDelayTimeoutRef.current = null;
-        }
-        if (progressResetTimeoutRef.current) {
-          clearTimeout(progressResetTimeoutRef.current);
-          progressResetTimeoutRef.current = null;
-        }
-      };
+    if (!hasInitializedProgressRef.current) {
+      hasInitializedProgressRef.current = true;
+      setDisplayedProgressRated(clampedProgressRated);
+      return undefined;
     }
-    hasInitializedProgressRef.current = true;
+    if (progressDelayTimeoutRef.current) {
+      clearTimeout(progressDelayTimeoutRef.current);
+      progressDelayTimeoutRef.current = null;
+    }
+    if (progressResetTimeoutRef.current) {
+      clearTimeout(progressResetTimeoutRef.current);
+      progressResetTimeoutRef.current = null;
+    }
+    setShouldAnimateProgress(false);
+    progressDelayTimeoutRef.current = setTimeout(() => {
+      setDisplayedProgressRated(clampedProgressRated);
+      startProgressAnimation();
+      progressDelayTimeoutRef.current = null;
+    }, PROGRESS_EMOJI_TOTAL_DELAY_MS);
     return undefined;
-  }, [progress.rated]);
+  }, [clampedProgressRated, startProgressAnimation]);
+  const safeDisplayedProgressRated = Math.min(
+    displayedProgressRated,
+    progress.total
+  );
   const activeJob = jobItems[activeJobIdx] ?? null;
   const isActiveJobUnrated = Boolean(
     activeJob && !normalizedRatings[activeJob.soc]
@@ -621,13 +652,15 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
     !shouldDelayAnimations &&
       isActiveJobNextToRate &&
       isActiveJobUnrated &&
-      !isActiveJobSuppressed
+      !isActiveJobSuppressed &&
+      isEnticementReady
   );
   const shouldPulseNextArrow = Boolean(
     !shouldDelayAnimations &&
       isMobile &&
       activeJob &&
-      !!normalizedRatings[activeJob.soc]
+      !!normalizedRatings[activeJob.soc] &&
+      isEnticementReady
   );
 
   React.useEffect(() => {
@@ -998,7 +1031,7 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
               ) : (
                 <div className={styles.assignmentProgressRow}>
                   <div className={styles.assignmentProgressLabel}>
-                    Rated {progress.rated}/{progress.total} jobs
+                    Rated {safeDisplayedProgressRated}/{progress.total} jobs
                   </div>
                 <div
                   className={`${styles.assignmentProgressTrack} ${
@@ -1010,7 +1043,11 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
                       shouldAnimateProgress ? styles.assignmentProgressFillPulse : ""
                     }`}
                     style={{
-                      width: `${progress.total ? (progress.rated / progress.total) * 100 : 0}%`,
+                      width: `${
+                        progress.total
+                          ? (safeDisplayedProgressRated / progress.total) * 100
+                          : 0
+                      }%`,
                     }}
                   />
                 </div>
@@ -1039,7 +1076,8 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
                           isDesktopVariant &&
                           !shouldDelayAnimations &&
                           !ratingValue &&
-                          nextUnratedSoc === soc;
+                          nextUnratedSoc === soc &&
+                          isEnticementReady;
                         const shouldGlowQuestion =
                           !ratingValue && !isSuppressed;
                         const displayEmoji = ratingValue
@@ -1064,6 +1102,7 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
                                 shouldPulseDesktopJob ? styles.assignmentLinkEntice : ""
                               }`}
                               onClick={() => handleJobClick(soc)}
+                              data-assignment-soc={soc}
                               ref={
                                 isDesktopVariant ? registerJobButtonRef(soc) : undefined
                               }
@@ -1166,6 +1205,7 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
                           : ""
                       }`}
                       onClick={() => activeJob && handleJobClick(activeJob.soc)}
+                      data-assignment-soc={activeJob?.soc ?? undefined}
                     >
                       <div className={styles.assignmentCarouselRow}>
                         <span
