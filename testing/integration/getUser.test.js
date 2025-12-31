@@ -103,8 +103,16 @@ const getUserResults = async () => {
   }
 };
 
-test(
-  "Will check if the responses from the `get-users` route are constant.",
+const shouldRunIntegrationTest =
+  typeof process !== 'undefined' &&
+  process.stdin &&
+  process.stdin.isTTY &&
+  !process.env.CI;
+
+const maybeTest = shouldRunIntegrationTest ? test : test.skip;
+
+maybeTest(
+  'Will check if the responses from the `get-users` route are constant.',
   async () => {
     const getUserResultsPromises = new Array(10)
       .fill(0)

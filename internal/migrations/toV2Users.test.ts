@@ -10,6 +10,16 @@ import {
 import readline from 'node:readline';
 import { TEnvironment } from '../../types/global';
 
+/**
+ * ⚠️  This migration test expects interactive confirmation (multiple `readline`
+ * prompts) and operates on real database records.  Running it in automated CI
+ * or any non-interactive sandbox will hang waiting for input, so we always
+ * skip it unless a developer runs it manually.
+ *
+ * To re-enable:
+ *   1. Change `test.skip` at the bottom back to `test`.
+ *   2. Run the suite locally (not in CI) so you can answer the prompts.
+ */
 const migrateUserToV2 = (user: TUserSchemaForClient) => {
   let migratedVals: Partial<IAboutUserFormNewFieldsV1> = {};
 
@@ -179,7 +189,7 @@ function ask(query: string): Promise<string> {
   );
 }
 
-test('Will perform user test migration to v2', async () => {
+test.skip('Will perform user test migration to v2', async () => {
   try {
     const { MIGRATION_ACCESS_TOKEN } = process.env;
     const headers = {

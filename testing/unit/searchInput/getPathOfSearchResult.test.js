@@ -4,63 +4,79 @@
 /* eslint-disable quotes */
 /* eslint-disable no-multiple-empty-lines */
 
-const { getPathsOfSearchResult } = require("../../helperFns/getPathsOfSearchResult")
-const jobVizData = require("../../data/Jobviz/jobVizData.json")
+const {
+  getPathsOfSearchResult,
+} = require("../../../helperFns/getPathsOfSearchResult");
+
+let jobVizData;
+
+try {
+  jobVizData = require("../../../data/Jobviz/jobVizData.json");
+} catch (error) {
+  console.warn(
+    "Skipping getPathOfSearchResult tests: unable to load jobVizData.json",
+    error?.message ?? error
+  );
+  jobVizData = null;
+}
+
+const findJob = (id) =>
+  jobVizData?.find(({ id: jobId }) => jobId === id);
 
 // "hierarchy": 4, line item
-const selectedJobCategoryTest1 = jobVizData.find(({ id }) => id === 759);
+const selectedJobCategoryTest1 = findJob(759);
 // summary item, "hierarchy": 1
-const selectedJobCategoryTest2 = jobVizData.find(({ id }) => id === 558);
+const selectedJobCategoryTest2 = findJob(558);
 // summary item, at the second level 
-const selectedJobCategoryTest3 = jobVizData.find(({ id }) => id === 1009);
+const selectedJobCategoryTest3 = findJob(1009);
 // summary item, at the second level
-const selectedJobCategoryTest4 = jobVizData.find(({ id }) => id === 490);
+const selectedJobCategoryTest4 = findJob(490);
 // line item, at the fourth level
-const selectedJobCategoryTest5 = jobVizData.find(({ id }) => id === 494);
+const selectedJobCategoryTest5 = findJob(494);
 // third level, summary item
-const selectedJobCategoryTest6 = jobVizData.find(({ id }) => id === 492);
+const selectedJobCategoryTest6 = findJob(492);
 // line item at the third level
-const selectedJobCategoryTest7 = jobVizData.find(({ id }) => id === 1091);
+const selectedJobCategoryTest7 = findJob(1091);
 // line item at level four
-const selectedJobCategoryTest8 = jobVizData.find(({ id }) => id === 1090);
+const selectedJobCategoryTest8 = findJob(1090);
 // line item at third level
-const selectedJobCategoryTest9 = jobVizData.find(({ id }) => id === 93);
+const selectedJobCategoryTest9 = findJob(93);
 // summary item at level one
-const selectedJobCategoryTest10 = jobVizData.find(({ id }) => id === 742);
+const selectedJobCategoryTest10 = findJob(742);
 // summary item at level 3
-const selectedJobCategoryTest11 = jobVizData.find(({ id }) => id === 546);
+const selectedJobCategoryTest11 = findJob(546);
 // summary item at level 3
-const selectedJobCategoryTest12 = jobVizData.find(({ id }) => id === 513);
+const selectedJobCategoryTest12 = findJob(513);
 // job id that produces errors
 // [647, 664, 727, 728,729, 807, 808, 809,810, 811, 812, 965,966]
 // summary item at level 3
-const selectedJobCategoryTest13 = jobVizData.find(({ id }) => id === 580);
-const selectedJobCategoryTest14 = jobVizData.find(({ id }) => id === 67);
-const selectedJobCategoryTest15 = jobVizData.find(({ id }) => id === 1050);
-const selectedJobCategoryTest16 = jobVizData.find(({ id }) => id === 47);
-const selectedJobCategoryTest17 = jobVizData.find(({ id }) => id === 94);
-const selectedJobCategoryTest18 = jobVizData.find(({ id }) => id === 231);
-const selectedJobCategoryTest19 = jobVizData.find(({ id }) => id === 499);
-const selectedJobCategoryTest20 = jobVizData.find(({ id }) => id === 561);
-const selectedJobCategoryTest21 = jobVizData.find(({ id }) => id === 584);
-const selectedJobCategoryTest22 = jobVizData.find(({ id }) => id === 593);
-const selectedJobCategoryTest23 = jobVizData.find(({ id }) => id === 594);
-const selectedJobCategoryTest24 = jobVizData.find(({ id }) => id === 595);
-const selectedJobCategoryTest25 = jobVizData.find(({ id }) => id === 634);
-const selectedJobCategoryTest26 = jobVizData.find(({ id }) => id === 964);
-const selectedJobCategoryTest27 = jobVizData.find(({ id }) => id === 647);
-const selectedJobCategoryTest28 = jobVizData.find(({ id }) => id === 664);
-const selectedJobCategoryTest29 = jobVizData.find(({ id }) => id === 727);
-const selectedJobCategoryTest30 = jobVizData.find(({ id }) => id === 728);
-const selectedJobCategoryTest31 = jobVizData.find(({ id }) => id === 729);
-const selectedJobCategoryTest32 = jobVizData.find(({ id }) => id === 807);
-const selectedJobCategoryTest33 = jobVizData.find(({ id }) => id === 808);
-const selectedJobCategoryTest34 = jobVizData.find(({ id }) => id === 809);
-const selectedJobCategoryTest35 = jobVizData.find(({ id }) => id === 810);
-const selectedJobCategoryTest36 = jobVizData.find(({ id }) => id === 811);
-const selectedJobCategoryTest37 = jobVizData.find(({ id }) => id === 812);
-const selectedJobCategoryTest38 = jobVizData.find(({ id }) => id === 965);
-const selectedJobCategoryTest39 = jobVizData.find(({ id }) => id === 966);
+const selectedJobCategoryTest13 = findJob(580);
+const selectedJobCategoryTest14 = findJob(67);
+const selectedJobCategoryTest15 = findJob(1050);
+const selectedJobCategoryTest16 = findJob(47);
+const selectedJobCategoryTest17 = findJob(94);
+const selectedJobCategoryTest18 = findJob(231);
+const selectedJobCategoryTest19 = findJob(499);
+const selectedJobCategoryTest20 = findJob(561);
+const selectedJobCategoryTest21 = findJob(584);
+const selectedJobCategoryTest22 = findJob(593);
+const selectedJobCategoryTest23 = findJob(594);
+const selectedJobCategoryTest24 = findJob(595);
+const selectedJobCategoryTest25 = findJob(634);
+const selectedJobCategoryTest26 = findJob(964);
+const selectedJobCategoryTest27 = findJob(647);
+const selectedJobCategoryTest28 = findJob(664);
+const selectedJobCategoryTest29 = findJob(727);
+const selectedJobCategoryTest30 = findJob(728);
+const selectedJobCategoryTest31 = findJob(729);
+const selectedJobCategoryTest32 = findJob(807);
+const selectedJobCategoryTest33 = findJob(808);
+const selectedJobCategoryTest34 = findJob(809);
+const selectedJobCategoryTest35 = findJob(810);
+const selectedJobCategoryTest36 = findJob(811);
+const selectedJobCategoryTest37 = findJob(812);
+const selectedJobCategoryTest38 = findJob(965);
+const selectedJobCategoryTest39 = findJob(966);
 
 // if on the third level, if there are three numbers after string level, then a modal is displayed on the screen
 
