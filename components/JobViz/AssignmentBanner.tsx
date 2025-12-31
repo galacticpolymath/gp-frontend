@@ -30,6 +30,7 @@ import {
   computeScrollTipOverlay,
   isScrollTargetHidden,
 } from "./assignmentScrollHelpers";
+import { useDelayedProgressAnimation } from "./useDelayedProgressAnimation";
 
 interface AssignmentBannerProps {
   unitName?: string | null;
@@ -107,13 +108,6 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
   const shouldShowCollapsedMobileContent = isMobile;
   const [showRatingHint, setShowRatingHint] = React.useState(true);
   const [dockCollapsed, setDockCollapsed] = React.useState(false);
-  const [shouldAnimateProgress, setShouldAnimateProgress] = React.useState(false);
-  const [displayedProgressRated, setDisplayedProgressRated] = React.useState(0);
-  const progressDelayTimeoutRef =
-    React.useRef<ReturnType<typeof setTimeout> | null>(null);
-  const progressResetTimeoutRef =
-    React.useRef<ReturnType<typeof setTimeout> | null>(null);
-  const hasInitializedProgressRef = React.useRef(false);
   const [isEnticementReady, setIsEnticementReady] = React.useState(true);
   const isDesktopVariant = variant === "desktop";
   const isDockCollapsed = isDesktopVariant && dockCollapsed;
@@ -219,37 +213,11 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
 
   React.useEffect(() => {
     return () => {
-      if (progressDelayTimeoutRef.current) {
-        clearTimeout(progressDelayTimeoutRef.current);
-        progressDelayTimeoutRef.current = null;
-      }
-      if (progressResetTimeoutRef.current) {
-        clearTimeout(progressResetTimeoutRef.current);
-        progressResetTimeoutRef.current = null;
-      }
-    };
-  }, []);
-
-  React.useEffect(() => {
-    return () => {
       if (completionModalTimeoutRef.current) {
         clearTimeout(completionModalTimeoutRef.current);
         completionModalTimeoutRef.current = null;
       }
     };
-  }, []);
-
-  const startProgressAnimation = React.useCallback(() => {
-    if (progressResetTimeoutRef.current) {
-      clearTimeout(progressResetTimeoutRef.current);
-      progressResetTimeoutRef.current = null;
-    }
-    setShouldAnimateProgress(true);
-    progressResetTimeoutRef.current = setTimeout(() => {
-      setShouldAnimateProgress(false);
-      progressResetTimeoutRef.current = null;
-      setIsEnticementReady(true);
-    }, PROGRESS_ANIMATION_DURATION_MS);
   }, []);
 
   React.useEffect(() => {
@@ -315,7 +283,6 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
   const progress = hasHydratedRatings
     ? clientProgress
     : { rated: 0, total: assignmentSocCodes.length };
-  const clampedProgressRated = Math.min(progress.rated, progress.total);
   const isAssignmentComplete = Boolean(
     progress.total > 0 && progress.rated === progress.total
   );
@@ -612,32 +579,20 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
       document.documentElement.style.setProperty("--jobviz-desktop-dock-width", "0px");
     };
   }, [variant, showAssignmentPanel, isDockCollapsed]);
-  React.useEffect(() => {
-    if (!hasInitializedProgressRef.current) {
-      hasInitializedProgressRef.current = true;
-      setDisplayedProgressRated(clampedProgressRated);
-      return undefined;
-    }
-    if (progressDelayTimeoutRef.current) {
-      clearTimeout(progressDelayTimeoutRef.current);
-      progressDelayTimeoutRef.current = null;
-    }
-    if (progressResetTimeoutRef.current) {
-      clearTimeout(progressResetTimeoutRef.current);
-      progressResetTimeoutRef.current = null;
-    }
-    setShouldAnimateProgress(false);
-    progressDelayTimeoutRef.current = setTimeout(() => {
-      setDisplayedProgressRated(clampedProgressRated);
-      startProgressAnimation();
-      progressDelayTimeoutRef.current = null;
-    }, PROGRESS_EMOJI_TOTAL_DELAY_MS);
-    return undefined;
-  }, [clampedProgressRated, startProgressAnimation]);
-  const safeDisplayedProgressRated = Math.min(
-    displayedProgressRated,
-    progress.total
-  );
+  const handleProgressAnimationComplete = React.useCallback(() => {
+    setIsEnticementReady(true);
+  }, []);
+
+  const {
+    displayedRated: safeDisplayedProgressRated,
+    isAnimating: shouldAnimateProgress,
+  } = useDelayedProgressAnimation({
+    rated: progress.rated,
+    total: progress.total,
+    delayMs: PROGRESS_EMOJI_TOTAL_DELAY_MS,
+    animationDurationMs: PROGRESS_ANIMATION_DURATION_MS,
+    onAnimationComplete: handleProgressAnimationComplete,
+  });
   const activeJob = jobItems[activeJobIdx] ?? null;
   const isActiveJobUnrated = Boolean(
     activeJob && !normalizedRatings[activeJob.soc]
