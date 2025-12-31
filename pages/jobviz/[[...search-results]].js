@@ -863,14 +863,17 @@ const JobVizSearchResults = ({
   return (
     <Layout {...layoutProps}>
       {shouldRenderAssignment && (
-        <AssignmentBanner
-          variant="mobile"
-          unitName={preservedUnitName}
-          jobs={jobTitleAndSocCodePairs}
-          assignmentParams={assignmentParams}
-          onJobClick={handleAssignmentJobClick}
-          {...(assignmentBannerOverrides ?? {})}
-        />
+        <>
+          <AssignmentBanner
+            variant="mobile"
+            unitName={preservedUnitName}
+            jobs={jobTitleAndSocCodePairs}
+            assignmentParams={assignmentParams}
+            onJobClick={handleAssignmentJobClick}
+            {...(assignmentBannerOverrides ?? {})}
+          />
+          <div id="jobviz-mobile-modal-anchor" />
+        </>
       )}
       <div
         className={styles.jobvizPageShell}
