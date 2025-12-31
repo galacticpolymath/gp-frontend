@@ -654,7 +654,6 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
       return Math.max(0, visibleBottom - visibleTop);
     };
 
-    let rafId: number | null = null;
     const emitNavOffsetChange = (value: number) => {
       window.dispatchEvent(
         new CustomEvent("jobviz-nav-offset-change", {
@@ -671,13 +670,6 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
       );
       emitNavOffsetChange(value);
     };
-    const scheduleUpdate = () => {
-      if (rafId !== null) return;
-      rafId = window.requestAnimationFrame(() => {
-        rafId = null;
-        updateNavOffset();
-      });
-    };
 
     updateNavOffset();
 
@@ -685,6 +677,7 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
       document.querySelector("nav.fixed-top") ||
       document.querySelector("nav.navbar");
     let navMutation: MutationObserver | null = null;
+    let navResizeObserver: ResizeObserver | null = null;
     const handleNavTransition = () => {
       updateNavOffset();
     };
@@ -698,22 +691,23 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
           attributeFilter: ["style", "class"],
         });
       }
+      if (typeof ResizeObserver !== "undefined") {
+        navResizeObserver = new ResizeObserver(() => {
+          updateNavOffset();
+        });
+        navResizeObserver.observe(navTarget);
+      }
     }
 
-    window.addEventListener("scroll", scheduleUpdate, { passive: true });
-    window.addEventListener("resize", scheduleUpdate);
-
     return () => {
-      if (rafId !== null) {
-        window.cancelAnimationFrame(rafId);
-      }
-      window.removeEventListener("scroll", scheduleUpdate);
-      window.removeEventListener("resize", scheduleUpdate);
       if (navTarget) {
         navTarget.removeEventListener("transitionend", handleNavTransition);
       }
       if (navMutation) {
         navMutation.disconnect();
+      }
+      if (navResizeObserver) {
+        navResizeObserver.disconnect();
       }
       document.documentElement.style.setProperty("--jobviz-nav-offset", "0px");
       emitNavOffsetChange(0);

@@ -165,7 +165,7 @@ $jobInfoStatCard: rgba(14, 21, 54, 0.85);
   padding-bottom: 1.25rem;
 }
 
-@media (max-width: 767px) {
+@media (max-width: 991px) {
   .selectedJobBody {
     padding-bottom: calc(var(--jobviz-assignment-offset, 0px) + 1.75rem) !important;
     max-height: calc(
