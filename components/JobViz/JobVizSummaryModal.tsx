@@ -698,7 +698,14 @@ const JobVizSummaryModal: React.FC = () => {
                   className={styles.summaryInfoToggle}
                   onClick={() => setInfoOpen((prev) => !prev)}
                 >
-                  {infoOpen ? "Hide info" : "About sharing and privacy"}
+                  {infoOpen ? (
+                    "Hide info"
+                  ) : (
+                    <>
+                      <LucideIcon name="Info" aria-hidden="true" />
+                      <span>Sharing &amp; Privacy</span>
+                    </>
+                  )}
                 </button>
               </div>
             {infoOpen && (

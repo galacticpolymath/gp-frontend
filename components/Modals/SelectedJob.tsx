@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import Modal from "react-bootstrap/Modal";
 import { useRouter } from "next/router";
@@ -83,6 +83,7 @@ const SelectedJob: React.FC = () => {
     selectedJob ? "enter" : "exit"
   );
   const assignmentQueryParam = router.query?.[SOC_CODES_PARAM_NAME];
+  const [jobvizOverlayOffset, setJobvizOverlayOffset] = useState(0);
 
   const assignmentSocCodes = useMemo(() => {
     const value = Array.isArray(assignmentQueryParam)
@@ -92,6 +93,9 @@ const SelectedJob: React.FC = () => {
     return new Set(value.split(",").filter(Boolean));
   }, [assignmentQueryParam]);
   const hasAssignmentParams = Boolean(assignmentSocCodes?.size);
+
+  const modalZIndex = isMobileViewport ? 1400 : 10000000;
+  const [modalContainer, setModalContainer] = useState<HTMLElement | null>(null);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -107,6 +111,49 @@ const SelectedJob: React.FC = () => {
     mq.addListener(handleChange);
     return () => mq.removeListener(handleChange);
   }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (!isMobileViewport) {
+      setModalContainer(null);
+      return;
+    }
+    setModalContainer(document.getElementById("jobviz-mobile-modal-anchor"));
+  }, [isMobileViewport]);
+
+  const updateJobvizOverlayOffset = useCallback(() => {
+    if (typeof window === "undefined" || typeof document === "undefined") {
+      return;
+    }
+    const styles = window.getComputedStyle(document.documentElement);
+    const parseOffset = (value: string) => {
+      const parsed = Number.parseFloat(value);
+      return Number.isFinite(parsed) ? parsed : 0;
+    };
+    const navOffset = parseOffset(styles.getPropertyValue("--jobviz-nav-offset"));
+    const assignmentOffset = parseOffset(
+      styles.getPropertyValue("--jobviz-assignment-offset")
+    );
+    setJobvizOverlayOffset(navOffset + assignmentOffset);
+  }, []);
+
+  useEffect(() => {
+    updateJobvizOverlayOffset();
+    const handleOffsetChange = () => {
+      updateJobvizOverlayOffset();
+    };
+    window.addEventListener("jobviz-assignment-offset-change", handleOffsetChange);
+    window.addEventListener("jobviz-nav-offset-change", handleOffsetChange);
+    window.addEventListener("resize", handleOffsetChange);
+    return () => {
+      window.removeEventListener(
+        "jobviz-assignment-offset-change",
+        handleOffsetChange
+      );
+      window.removeEventListener("jobviz-nav-offset-change", handleOffsetChange);
+      window.removeEventListener("resize", handleOffsetChange);
+    };
+  }, [updateJobvizOverlayOffset]);
 
   useEffect(() => {
     if (typeof window === "undefined") return undefined;
@@ -479,8 +526,10 @@ const SelectedJob: React.FC = () => {
         }`}
         backdropClassName="selectedJobBackdrop"
         fullscreen="md-down"
+        container={isMobileViewport ? modalContainer ?? undefined : undefined}
         style={{
-          zIndex: 10000000,
+          zIndex: modalZIndex,
+          top: jobvizOverlayOffset ? jobvizOverlayOffset : undefined,
         }}
       >
         <Body className="selectedJobBody" ref={modalScrollRef}>
