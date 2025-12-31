@@ -73,7 +73,7 @@ const OUTSETA_WEBHOOK_PATHS = new Set([
 ]);
 
 /** @param {import('next/server').NextRequest} request */
-export async function middleware(request) {
+export default async function proxy(request) {
   try {
     const { nextUrl, method, headers } = request;
     /**
