@@ -54,6 +54,16 @@ const RESOURCE_LINKS = [
     label: 'About',
   },
 ];
+const POLICY_LINKS = [
+  {
+    href: 'https://www.galacticpolymath.com/terms-and-conditions',
+    label: 'Terms & Conditions',
+  },
+  {
+    href: 'https://www.galacticpolymath.com/privacy-policy',
+    label: 'Privacy Policy',
+  },
+];
 
 export default function Footer() {
   const searchParams = useSearchParams();
@@ -115,18 +125,33 @@ export default function Footer() {
             </span>
             by Galactic Polymath &copy; {new Date().getFullYear()}
           </div>
-          <div className="d-flex flex-wrap justify-content-center gap-3">
-            {RESOURCE_LINKS.map(({ href, label }) => (
-              <Link
-                key={href}
-                className="text-white text-decoration-none linkHover fs-7"
-                href={href}
-                target="_blank"
-                rel="noreferrer"
-              >
-                {label}
-              </Link>
-            ))}
+          <div className="d-flex flex-column flex-sm-row align-items-center gap-3">
+            <div className="d-flex flex-wrap justify-content-center gap-3">
+              {RESOURCE_LINKS.map(({ href, label }) => (
+                <Link
+                  key={href}
+                  className="text-white text-decoration-none linkHover fs-7"
+                  href={href}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  {label}
+                </Link>
+              ))}
+            </div>
+            <div className="d-flex flex-wrap justify-content-center gap-3">
+              {POLICY_LINKS.map(({ href, label }) => (
+                <Link
+                  key={href}
+                  className="text-white text-decoration-none linkHover fs-7"
+                  href={href}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  {label}
+                </Link>
+              ))}
+            </div>
           </div>
         </div>
       </div>

@@ -29,6 +29,7 @@ export default function Layout({
   showFooter = true,
   structuredData = null,
   locale = "en-US",
+  indexable = true,
 }) {
   const isOnProd = process.env.NEXT_PUBLIC_VERCEL_ENV === "production";
   const resolvedDescription = summarizeDescription(description);
@@ -43,6 +44,7 @@ export default function Layout({
     return (Array.isArray(structuredData) ? structuredData : [structuredData]).filter(Boolean);
   }, [structuredData]);
   const ogLocale = toOgLocale(locale);
+  const shouldBlockIndexing = !isOnProd || !indexable;
 
   useEffect(() => {
     window.Outseta?.on("signup", () => {
@@ -55,7 +57,7 @@ export default function Layout({
       <Head>
         <title>{title}</title>
         <meta property="og:title" content={title} />
-        {!isOnProd && <meta name="robots" content="noindex, nofollow" />}
+        {shouldBlockIndexing && <meta name="robots" content="noindex, nofollow" />}
         <meta
           name="google-site-verification"
           content="87qwPzeD5oQKG15RKEP8BzbRr5VNhCbDPf98tLcZGUk"

@@ -106,10 +106,12 @@ const GpSignUpResult: React.FC = () => {
       <Layout
         title="GP Plus Sign Up Set password"
         description="GP Plus set password page."
-        url="/gp-sign-up-result"
+        url="https://teach.galacticpolymath.com/gp-plus-set-password"
+        canonicalLink="https://teach.galacticpolymath.com/gp-plus-set-password"
         imgSrc="/assets/img/galactic_polymath_logo.png"
         imgAlt="Galactic Polymath Logo"
         langLinks={[]}
+        indexable={false}
       >
         <div className="mt-5 min-vh-100 min-vw-100 ps-5 input-read-only">
           {isCreatingGpPlusAccount ? (

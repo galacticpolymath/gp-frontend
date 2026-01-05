@@ -47,6 +47,17 @@ const MailingListConfirmation = () => {
   const session = useSession();
   const { status, data } = session;
   const { token } = data ?? {};
+  const layoutProps = {
+    title: 'Mailing List Confirmation | Galactic Polymath',
+    description:
+      'Check your Galactic Polymath mailing list subscription status.',
+    url: 'https://teach.galacticpolymath.com/mailing-list-confirmation',
+    canonicalLink: 'https://teach.galacticpolymath.com/mailing-list-confirmation',
+    imgSrc: '/imgs/gp-logos/GP_Stacked_logo+wordmark_gradient_transBG.png',
+    imgAlt: 'Galactic Polymath Logo',
+    indexable: false,
+    langLinks: [],
+  };
   const confirmationMaliingListId = useMemo(() => {
     return typeof window === 'undefined'
       ? null
@@ -227,7 +238,7 @@ const MailingListConfirmation = () => {
 
   if (isRetrievingUserMailingListStatus) {
     return (
-      <Layout>
+      <Layout {...layoutProps}>
         <div className="lessonDetailsContainer min-vh-100 pt-5 ps-3 ps-xxl-5 pt-xxl-4 d-flex flex-column">
           <div className="d-flex justify-content-center flex-column col-sm-2 align-items-center">
             <span className="pt-3 text-center">Loading, please wait...</span>
@@ -239,7 +250,7 @@ const MailingListConfirmation = () => {
   }
 
   return (
-    <Layout>
+    <Layout {...layoutProps}>
       <div className="lessonDetailsContainer min-vh-100 pt-5 ps-3 ps-xxl-5 pt-xxl-4 d-flex flex-column">
         {userMailingListStatusResultUI}
       </div>
