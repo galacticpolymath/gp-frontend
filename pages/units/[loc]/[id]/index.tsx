@@ -52,6 +52,7 @@ import CopyLessonHelperModal from '../../../../components/GpPlus/CopyLessonHelpe
 import FailedCopiedFilesReportModal from '../../../../components/GpPlus/FailedCopiedFilesReportModal';
 import WelcomeNewUserModal from '../../../../components/Modals/WelcomeNewUserModal';
 import { IOverviewProps } from '../../../../components/LessonSection/Overview';
+import { buildUnitUrl, DEFAULT_LOCALE, getSiteUrl } from '../../../../shared/seo';
 
 const IS_ON_PROD = process.env.NODE_ENV === 'production';
 const GOOGLE_DRIVE_THUMBNAIL_URL = 'https://drive.google.com/thumbnail?id=';
@@ -63,6 +64,96 @@ const NAV_CLASSNAMES = [
   'sectionTitleSpan',
 ];
 const NAV_CLASSNAMES_SET = new Set(NAV_CLASSNAMES);
+const providePlainText = (value?: string | null) =>
+  value
+    ? sanitizeHtml(value, { allowedTags: [], allowedAttributes: {} })
+      .replace(/\s+/g, ' ')
+      .trim()
+    : '';
+const isoFromDate = (value?: string | Date | null) => {
+  if (!value) {
+    return undefined;
+  }
+  const date = value instanceof Date ? value : new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return undefined;
+  }
+
+  return date.toISOString();
+};
+const createUnitStructuredData = (
+  unit: TUnitForUI,
+  canonicalUrl: string,
+  unitBanner: string
+) => {
+  const overviewDescription = unit?.Sections?.overview?.TheGist ?? '';
+  const description = providePlainText(overviewDescription);
+  const datePublished = isoFromDate(unit?.ReleaseDate ?? null);
+  const dateModified =
+    isoFromDate(unit?.LastUpdated_web ?? null) ??
+    isoFromDate(unit?.LastUpdated ?? null);
+
+  const schema: Record<string, unknown> = {
+    "@context": "https://schema.org",
+    "@type": "Course",
+    name: unit.Title,
+    description: description || undefined,
+    url: canonicalUrl,
+    image: unitBanner || undefined,
+    inLanguage: unit.locale ?? DEFAULT_LOCALE,
+    datePublished,
+    dateModified,
+    creativeWorkStatus: unit.PublicationStatus ?? undefined,
+    provider: {
+      "@type": "Organization",
+      name: "Galactic Polymath",
+      url: getSiteUrl(),
+    },
+    audience: {
+      "@type": "EducationalAudience",
+      educationalRole: "teacher",
+    },
+    educationalLevel: unit.ForGrades ?? undefined,
+    isAccessibleForFree: true,
+    offers: [
+      {
+        "@type": "Offer",
+        availability: "https://schema.org/InStock",
+        price: 0,
+        priceCurrency: "USD",
+        description:
+          "Free, open-access lesson view with data-rich career connections.",
+      },
+      {
+        "@type": "Offer",
+        availability: "https://schema.org/InStock",
+        description:
+          "GP+ subscription unlocks editable lesson files, JobViz career tours, and classroom convenience features.",
+      },
+    ],
+  };
+
+  if (unit.TargetSubject) {
+    schema.about = [
+      {
+        "@type": "Thing",
+        name: unit.TargetSubject,
+      },
+    ];
+  }
+
+  if (unit.GradesOrYears) {
+    schema.educationalAlignment = {
+      "@type": "AlignmentObject",
+      alignmentType: "educationalLevel",
+      educationalFramework: "Grades or Years",
+      targetName: unit.GradesOrYears,
+    };
+  }
+
+  return schema;
+};
 
 const getSectionDotsDefaultVal = <T extends TSectionsForUI>(
   sectionComps: (T | null)[]
@@ -829,18 +920,40 @@ const LessonDetails: React.FC<IProps> = ({ lesson, unit }) => {
         width: '60px',
       },
     };
+  const canonicalLocale =
+    typeof router.query.loc === 'string'
+      ? router.query.loc
+      : _unit.locale ?? DEFAULT_LOCALE;
+  const canonicalUrl = buildUnitUrl(
+    canonicalLocale,
+    (_unit.numID ?? '').toString()
+  );
+  const defaultLocale =
+    _unit.DefaultLocale ?? canonicalLocale ?? DEFAULT_LOCALE;
+  const defaultLocaleUrl = buildUnitUrl(
+    defaultLocale,
+    (_unit.numID ?? '').toString()
+  );
+  const structuredData = createUnitStructuredData(
+    _unit,
+    canonicalUrl,
+    unitBanner
+  );
+
   const layoutProps = {
     title: `Mini-Unit: ${_unit.Title}`,
     description: _unit?.Sections?.overview?.TheGist
       ? sanitizeHtml(_unit.Sections.overview.TheGist)
       : `Description for ${_unit.Title}.`,
     imgSrc: unitBanner,
-    url: _unit.URL,
+    url: canonicalUrl,
     imgAlt: `${_unit.Title} cover image`,
     className: 'overflow-hidden selected-unit-pg',
-    canonicalLink: `https://www.galacticpolymath.com/${UNITS_URL_PATH}/${_unit.numID}`,
-    defaultLink: `https://www.galacticpolymath.com/${UNITS_URL_PATH}/${_unit.numID}`,
+    canonicalLink: canonicalUrl,
+    defaultLink: defaultLocaleUrl,
     langLinks: _unit.headLinks ?? ([] as TUnitForUI['headLinks']),
+    structuredData,
+    locale: _unit.locale ?? DEFAULT_LOCALE,
   };
 
   return (
@@ -996,8 +1109,8 @@ export const getStaticProps = async (arg: {
       const headLinks = targetUnits
         .filter(({ locale, numID }) => locale && numID)
         .map(({ locale, numID }) => [
-          `https://www.galacticpolymath.com/${UNITS_URL_PATH}/${locale}/${numID}`,
-          locale,
+          buildUnitUrl(locale ?? DEFAULT_LOCALE, (numID ?? '').toString()),
+          locale ?? DEFAULT_LOCALE,
         ]) as [string, string][];
       const resources =
         targetUnit.Sections?.teachingMaterials?.classroom?.resources;

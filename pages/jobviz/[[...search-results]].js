@@ -839,14 +839,47 @@ const JobVizSearchResults = ({
     setJobvizReturnPath(null);
   }, [activeNode, setIsJobModalOn, setSelectedJob, setJobvizReturnPath]);
 
+  const jobvizCanonicalUrl = "https://teach.galacticpolymath.com/jobviz";
+  const datasetStructuredData = useMemo(
+    () => ({
+      "@context": "https://schema.org",
+      "@type": "Dataset",
+      name: resolvedPageTitle,
+      description: resolvedMetaDescription,
+      creator: {
+        "@type": "Organization",
+        name: "Galactic Polymath",
+        url: "https://teach.galacticpolymath.com",
+      },
+      keywords: [
+        "jobviz",
+        "career explorer",
+        "career exploration",
+        "Bureau of Labor Statistics",
+        "STEM careers",
+      ],
+      isAccessibleForFree: true,
+      url: jobvizCanonicalUrl,
+      distribution: [
+        {
+          "@type": "DataDownload",
+          encodingFormat: "text/html",
+          contentUrl: jobvizCanonicalUrl,
+        },
+      ],
+    }),
+    [resolvedMetaDescription, resolvedPageTitle]
+  );
   const layoutProps = {
     title: resolvedPageTitle,
     description: resolvedMetaDescription,
     imgSrc: "https://teach.galacticpolymath.com/imgs/jobViz/jobviz_icon.png",
-    url: "https://teach.galacticpolymath.com/jobviz",
+    url: jobvizCanonicalUrl,
+    canonicalLink: jobvizCanonicalUrl,
     keywords:
       "jobviz, job viz, career explorer, career exploration, career pathways, BLS jobs, career navigation",
     showNav: viewMode !== "student",
+    structuredData: datasetStructuredData,
   };
   const assignmentBannerOverrides = useMemo(() => {
     if (viewMode !== "student") return null;

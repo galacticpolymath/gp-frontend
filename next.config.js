@@ -69,6 +69,20 @@ module.exports = {
       },
     ];
   },
+  async redirects() {
+    return [
+      {
+        source: '/about',
+        destination: 'https://www.galacticpolymath.com/about',
+        permanent: true,
+      },
+      {
+        source: '/hire-us',
+        destination: 'https://www.galacticpolymath.com/for-scientists',
+        permanent: true,
+      },
+    ];
+  },
   webpack(config) {
     config.resolve.fallback = {
       // if you miss it, all the other options in fallback, specified
