@@ -30,21 +30,18 @@ module.exports = {
     MONGODB_DB_NAME: process.env.MONGODB_DB_NAME,
   },
   reactStrictMode: true,
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
   images: {
-    domains: [
-      'catalog.galacticpolymath.com',
-      'gp-catalog.vercel.app',
-      'i3.ytimg.com',
-      'storage.googleapis.com',
-      'into-the-dark.vercel.app',
-      'echo-galactic-polymath.vercel.app',
-      'drive.google.com',
-      'img.youtube.com',
-      'pacific-h2o.galacticpolymath.com',
-      'energy-app.galacticpolymath.com',
+    remotePatterns: [
+      { protocol: 'https', hostname: 'catalog.galacticpolymath.com' },
+      { protocol: 'https', hostname: 'gp-catalog.vercel.app' },
+      { protocol: 'https', hostname: 'i3.ytimg.com' },
+      { protocol: 'https', hostname: 'storage.googleapis.com' },
+      { protocol: 'https', hostname: 'into-the-dark.vercel.app' },
+      { protocol: 'https', hostname: 'echo-galactic-polymath.vercel.app' },
+      { protocol: 'https', hostname: 'drive.google.com' },
+      { protocol: 'https', hostname: 'img.youtube.com' },
+      { protocol: 'https', hostname: 'pacific-h2o.galacticpolymath.com' },
+      { protocol: 'https', hostname: 'energy-app.galacticpolymath.com' },
     ],
   },
   async headers() {
@@ -66,6 +63,20 @@ module.exports = {
       {
         source: '/(.*)',
         headers: headersVal,
+      },
+    ];
+  },
+  async redirects() {
+    return [
+      {
+        source: '/about',
+        destination: 'https://www.galacticpolymath.com/about',
+        permanent: true,
+      },
+      {
+        source: '/hire-us',
+        destination: 'https://www.galacticpolymath.com/for-scientists',
+        permanent: true,
       },
     ];
   },

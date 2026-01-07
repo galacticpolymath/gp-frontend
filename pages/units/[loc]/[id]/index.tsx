@@ -33,6 +33,8 @@ import {
   INewUnitLesson,
   IResource,
   ISharedGDriveLessonFolder,
+  ITeachingMaterialsDataForUI,
+  ILessonDetail,
 } from '../../../../backend/models/Unit/types/teachingMaterials';
 import { UNITS_URL_PATH } from '../../../../shared/constants';
 import { TUserSchemaForClient } from '../../../../backend/models/User/types';
@@ -52,6 +54,7 @@ import CopyLessonHelperModal from '../../../../components/GpPlus/CopyLessonHelpe
 import FailedCopiedFilesReportModal from '../../../../components/GpPlus/FailedCopiedFilesReportModal';
 import WelcomeNewUserModal from '../../../../components/Modals/WelcomeNewUserModal';
 import { IOverviewProps } from '../../../../components/LessonSection/Overview';
+import { buildUnitUrl, DEFAULT_LOCALE, getSiteUrl } from '../../../../shared/seo';
 
 const IS_ON_PROD = process.env.NODE_ENV === 'production';
 const GOOGLE_DRIVE_THUMBNAIL_URL = 'https://drive.google.com/thumbnail?id=';
@@ -63,6 +66,380 @@ const NAV_CLASSNAMES = [
   'sectionTitleSpan',
 ];
 const NAV_CLASSNAMES_SET = new Set(NAV_CLASSNAMES);
+const providePlainText = (value?: string | null) =>
+  value
+    ? sanitizeHtml(value, { allowedTags: [], allowedAttributes: {} })
+      .replace(/\s+/g, ' ')
+      .trim()
+    : '';
+const isoFromDate = (value?: string | Date | null) => {
+  if (!value) {
+    return undefined;
+  }
+  const date = value instanceof Date ? value : new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return undefined;
+  }
+
+  return date.toISOString();
+};
+type TAlignmentObject = {
+  '@type': 'AlignmentObject';
+  alignmentType: 'educationalStandard';
+  educationalFramework?: string;
+  targetName: string;
+  targetUrl?: string;
+};
+
+type TSeoLessonHighlight = {
+  name: string;
+  description?: string;
+  keywords?: string[];
+};
+
+type TSeoCareer = { name: string; socCode?: string | null };
+
+type TSeoContent = {
+  contextualSummary?: string | null;
+  standardAlignments?: TAlignmentObject[];
+  lessonHighlights?: TSeoLessonHighlight[];
+  careerConnections?: TSeoCareer[];
+};
+
+const extractMarkdownSection = (
+  markdown?: string | null,
+  headingPattern?: string
+) => {
+  if (!markdown || !headingPattern) {
+    return null;
+  }
+  const pattern = new RegExp(
+    `####\\s*${headingPattern}\\s*:?\\s*([\\s\\S]*?)(?=\\n####|$)`,
+    'i'
+  );
+  const match = markdown.match(pattern);
+  if (!match) {
+    return null;
+  }
+  return providePlainText(match[1]);
+};
+
+const getStandardAlignments = (
+  TargetStandardsCodes: TUnitForUI['TargetStandardsCodes']
+): TAlignmentObject[] => {
+  if (!Array.isArray(TargetStandardsCodes)) {
+    return [];
+  }
+  return TargetStandardsCodes.map((standard) => {
+    const targetName = [standard?.subject, standard?.code]
+      .filter(Boolean)
+      .join(' ')
+      .trim();
+    return {
+      '@type': 'AlignmentObject' as const,
+      alignmentType: 'educationalStandard' as const,
+      educationalFramework: standard?.set ?? standard?.subject ?? undefined,
+      targetName: targetName || standard?.dim || 'Educational standard',
+    };
+  }).filter((alignment) => alignment.targetName);
+};
+
+const getCareerConnections = (unit: TUnitForUI): TSeoCareer[] => {
+  const content = unit.Sections?.jobvizConnections?.Content;
+  if (!Array.isArray(content)) {
+    return [];
+  }
+
+  const connections: TSeoCareer[] = [];
+  content.forEach((connection) => {
+    const jobTitle = Array.isArray(connection?.job_title)
+      ? connection?.job_title?.[0]
+      : connection?.job_title;
+    const socCode = Array.isArray(connection?.soc_code)
+      ? connection?.soc_code?.[0]
+      : connection?.soc_code;
+
+    if (jobTitle) {
+      connections.push({
+        name: jobTitle,
+        socCode: socCode ?? null,
+      });
+    }
+  });
+
+  return connections;
+};
+
+const getLessonHighlights = (unit: TUnitForUI): TSeoLessonHighlight[] => {
+  const teachingMaterials = unit.Sections?.teachingMaterials as
+    | (ITeachingMaterialsDataForUI<INewUnitLesson> & {
+        lesson?: ILessonDetail[];
+      })
+    | undefined;
+  const lessons = teachingMaterials?.lesson;
+
+  if (!Array.isArray(lessons)) {
+    return [];
+  }
+
+  const highlights: TSeoLessonHighlight[] = [];
+
+  lessons.forEach((lesson) => {
+    if (!lesson) {
+      return;
+    }
+    const segments = [];
+    if (lesson.lsnNum) {
+      segments.push(`Lesson ${lesson.lsnNum}`);
+    }
+    if (lesson.lsnTitle) {
+      segments.push(lesson.lsnTitle);
+    }
+    const name = (segments.join(': ').trim() || lesson.lsnTitle)?.trim();
+    if (!name) {
+      return;
+    }
+    const learningObjectives = Array.isArray(lesson.learningObj)
+      ? lesson.learningObj.filter(Boolean)
+      : [];
+    const description =
+      lesson.lsnPreface ||
+      (learningObjectives.length
+        ? `Students will be able to ${learningObjectives.join('; ')}.`
+        : undefined);
+
+    const rawLessonTags = (lesson as { lsnTags?: string[] }).lsnTags;
+    const lessonTags: string[] = Array.isArray(rawLessonTags)
+      ? rawLessonTags.filter((tag): tag is string => typeof tag === 'string' && tag.trim().length > 0)
+      : [];
+
+    highlights.push({
+      name,
+      description: description ? providePlainText(description) : undefined,
+      keywords: lessonTags,
+    });
+  });
+
+  return highlights;
+};
+
+const collectUnitSeoContent = (unit: TUnitForUI) => {
+  const overview = unit.Sections?.overview ?? {};
+  const tags = new Set<string>();
+
+  const addTags = (values?: (string | null | undefined)[]) => {
+    values
+      ?.filter((value): value is string => typeof value === 'string' && value.trim().length > 0)
+      .forEach((value) => tags.add(value.trim()));
+  };
+
+  addTags(overview?.UnitTags ?? undefined);
+  addTags(overview?.Tags?.map((tag) => tag.Value));
+
+  const lessonHighlights = getLessonHighlights(unit);
+  lessonHighlights.forEach((lesson) => addTags(lesson.keywords));
+
+  const careerConnections = getCareerConnections(unit);
+  careerConnections.forEach((career) => addTags([career.name]));
+
+  const standardAlignments = getStandardAlignments(unit.TargetStandardsCodes);
+  standardAlignments.forEach((alignment) => addTags([alignment.targetName]));
+
+  const drivingQuestions = extractMarkdownSection(
+    overview?.Text,
+    'Driving Question(?:\\(s\\))?'
+  );
+  const hooks = extractMarkdownSection(overview?.Text, 'Hook(?:\\(s\\))?');
+
+  const gradeSpan =
+    overview?.GradesOrYears ||
+    unit.GradesOrYears ||
+    overview?.ForGrades ||
+    unit.ForGrades ||
+    '';
+  const subject =
+    overview?.TargetSubject || unit.TargetSubject || 'interdisciplinary studies';
+  const gist = overview?.TheGist
+    ? providePlainText(overview.TheGist)
+    : 'real-world STEM challenges';
+
+  const summaryParts = [
+    `An open-access unit for ${gradeSpan || 'grades'} focused on ${subject}.`,
+    `Students explore how ${gist}`,
+  ];
+
+  if (drivingQuestions) {
+    summaryParts.push(`Driving Questions: ${drivingQuestions}`);
+  }
+
+  if (hooks) {
+    summaryParts.push(`Hooks: ${hooks}`);
+  }
+
+  if (lessonHighlights.length) {
+    summaryParts.push(
+      `Lesson highlights include ${lessonHighlights
+        .slice(0, 2)
+        .map((lesson) => lesson.name)
+        .join(' and ')}.`
+    );
+  }
+
+  if (careerConnections.length) {
+    summaryParts.push(
+      `Career connections: ${careerConnections
+        .slice(0, 4)
+        .map((career) => career.name)
+        .join(', ')}`
+    );
+  }
+
+  const contextualSummary = summaryParts.join(' ').replace(/\s+/g, ' ').trim();
+
+  return {
+    contextualSummary,
+    careerConnections,
+    lessonHighlights,
+    standardAlignments,
+    keywords: Array.from(tags),
+  };
+};
+
+const createUnitStructuredData = (
+  unit: TUnitForUI,
+  canonicalUrl: string,
+  unitBanner: string,
+  seoContent?: TSeoContent
+) => {
+  const overviewDescription = unit?.Sections?.overview?.TheGist ?? '';
+  const description = providePlainText(overviewDescription);
+  const datePublished = isoFromDate(unit?.ReleaseDate ?? null);
+  const dateModified =
+    isoFromDate(unit?.LastUpdated_web ?? null) ??
+    isoFromDate(unit?.LastUpdated ?? null);
+
+  const schema: Record<string, unknown> = {
+    "@context": "https://schema.org",
+    "@type": "Course",
+    name: unit.Title,
+    description: description || undefined,
+    url: canonicalUrl,
+    image: unitBanner || undefined,
+    inLanguage: unit.locale ?? DEFAULT_LOCALE,
+    datePublished,
+    dateModified,
+    creativeWorkStatus: unit.PublicationStatus ?? undefined,
+    provider: {
+      "@type": "Organization",
+      name: "Galactic Polymath",
+      url: getSiteUrl(),
+    },
+    audience: {
+      "@type": "EducationalAudience",
+      educationalRole: "teacher",
+    },
+    educationalLevel: unit.ForGrades ?? undefined,
+    isAccessibleForFree: true,
+    offers: [
+      {
+        "@type": "Offer",
+        availability: "https://schema.org/InStock",
+        price: 0,
+        priceCurrency: "USD",
+        description:
+          "Free, open-access lesson view with data-rich career connections.",
+      },
+      {
+        "@type": "Offer",
+        availability: "https://schema.org/InStock",
+        description:
+          "GP+ subscription unlocks editable lesson files, JobViz career tours, and classroom convenience features.",
+      },
+    ],
+  };
+
+  if (unit.TargetSubject) {
+    schema.about = [
+      {
+        "@type": "Thing",
+        name: unit.TargetSubject,
+      },
+    ];
+  }
+
+  if (unit.GradesOrYears) {
+    schema.educationalAlignment = {
+      "@type": "AlignmentObject",
+      alignmentType: "educationalLevel",
+      educationalFramework: "Grades or Years",
+      targetName: unit.GradesOrYears,
+    };
+  }
+
+  if (seoContent?.standardAlignments?.length) {
+    const existing = schema.educationalAlignment;
+    schema.educationalAlignment = Array.isArray(existing)
+      ? [...existing, ...seoContent.standardAlignments]
+      : seoContent.standardAlignments;
+  }
+
+  if (seoContent?.lessonHighlights?.length) {
+    schema.hasPart = seoContent.lessonHighlights.map((lesson) => {
+      const lessonSchema: Record<string, unknown> = {
+        "@type": "CreativeWork",
+        name: lesson.name,
+        learningResourceType: "Lesson",
+      };
+
+      if (lesson.description) {
+        lessonSchema.description = lesson.description;
+      }
+
+      if (lesson.keywords?.length) {
+        lessonSchema.keywords = lesson.keywords.join(", ");
+      }
+
+      return lessonSchema;
+    });
+  }
+
+  const aboutEntries: Record<string, unknown>[] = [];
+
+  if (seoContent?.contextualSummary) {
+    aboutEntries.push({
+      "@type": "Thing",
+      name: seoContent.contextualSummary,
+    });
+  }
+
+  if (seoContent?.careerConnections?.length) {
+    seoContent.careerConnections.forEach(({ name, socCode }) => {
+      const occupation: Record<string, unknown> = {
+        "@type": "Occupation",
+        name,
+      };
+
+      if (socCode) {
+        occupation.identifier = {
+          "@type": "PropertyValue",
+          propertyID: "SOC",
+          value: socCode,
+        };
+      }
+
+      aboutEntries.push(occupation);
+    });
+  }
+
+  if (aboutEntries.length) {
+    schema.about = Array.isArray(schema.about)
+      ? [...aboutEntries, ...schema.about]
+      : aboutEntries;
+  }
+
+  return schema;
+};
 
 const getSectionDotsDefaultVal = <T extends TSectionsForUI>(
   sectionComps: (T | null)[]
@@ -829,22 +1206,50 @@ const LessonDetails: React.FC<IProps> = ({ lesson, unit }) => {
         width: '60px',
       },
     };
-  const layoutProps = {
+  const canonicalLocale =
+    typeof router.query.loc === 'string'
+      ? router.query.loc
+      : _unit.locale ?? DEFAULT_LOCALE;
+  const canonicalUrl = buildUnitUrl(
+    canonicalLocale,
+    (_unit.numID ?? '').toString()
+  );
+  const defaultLocale =
+    _unit.DefaultLocale ?? canonicalLocale ?? DEFAULT_LOCALE;
+  const defaultLocaleUrl = buildUnitUrl(
+    defaultLocale,
+    (_unit.numID ?? '').toString()
+  );
+  const seoContent = collectUnitSeoContent(_unit);
+  const keywordsMeta = seoContent.keywords?.length
+    ? seoContent.keywords.join(', ')
+    : undefined;
+  const structuredData = createUnitStructuredData(
+    _unit,
+    canonicalUrl,
+    unitBanner,
+    seoContent
+  );
+
+  const layoutProps: Record<string, unknown> = {
     title: `Mini-Unit: ${_unit.Title}`,
     description: _unit?.Sections?.overview?.TheGist
       ? sanitizeHtml(_unit.Sections.overview.TheGist)
       : `Description for ${_unit.Title}.`,
     imgSrc: unitBanner,
-    url: _unit.URL,
+    url: canonicalUrl,
     imgAlt: `${_unit.Title} cover image`,
     className: 'overflow-hidden selected-unit-pg',
-    canonicalLink: `https://www.galacticpolymath.com/${UNITS_URL_PATH}/${_unit.numID}`,
-    defaultLink: `https://www.galacticpolymath.com/${UNITS_URL_PATH}/${_unit.numID}`,
+    canonicalLink: canonicalUrl,
+    defaultLink: defaultLocaleUrl,
     langLinks: _unit.headLinks ?? ([] as TUnitForUI['headLinks']),
+    structuredData,
+    locale: _unit.locale ?? DEFAULT_LOCALE,
+    keywords: keywordsMeta,
   };
 
   return (
-    <Layout {...layoutProps}>
+    <Layout {...(layoutProps as any)}>
       <ToastContainer
         stacked
         autoClose={false}
@@ -996,8 +1401,8 @@ export const getStaticProps = async (arg: {
       const headLinks = targetUnits
         .filter(({ locale, numID }) => locale && numID)
         .map(({ locale, numID }) => [
-          `https://www.galacticpolymath.com/${UNITS_URL_PATH}/${locale}/${numID}`,
-          locale,
+          buildUnitUrl(locale ?? DEFAULT_LOCALE, (numID ?? '').toString()),
+          locale ?? DEFAULT_LOCALE,
         ]) as [string, string][];
       const resources =
         targetUnit.Sections?.teachingMaterials?.classroom?.resources;
