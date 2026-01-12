@@ -42,20 +42,6 @@ const GP_PLUS_ROUTES = [
   '/api/gp-plus/send-failed-files-report',
 ];
 const GP_PLUS_ROUTES_SET = new Set(GP_PLUS_ROUTES);
-const USER_ACCOUNT_ROUTES = [
-  '/api/save-about-user-form',
-  '/api/copy-files',
-  '/api/update-user',
-  '/api/get-user-account-data',
-  '/api/delete-user',
-  '/api/user-confirms-mailing-list-sub',
-  '/api/get-signed-in-user-brevo-status',
-  '/api/job-tours/create',
-  '/api/job-tours/get',
-  '/api/job-tours/update',
-  '/api/job-tours/delete',
-  ...GP_PLUS_ROUTES,
-];
 
 const getUnitNum = (pathName) =>
   parseInt(
