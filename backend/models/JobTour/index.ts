@@ -1,3 +1,4 @@
+import { ObjectId } from 'mongodb';
 import { Model, Schema, model, models } from 'mongoose';
 
 export interface IJobTour {
@@ -24,7 +25,6 @@ let JobTour = models.jobTours as Model<IJobTour, {}, {}, {}, any, any>;
 if (!JobTour) {
     const JobTourSchema = new Schema<IJobTour>(
         {
-            _id: { type: String, required: true },
             userId: { type: String, required: true },
             createdDate: { type: Date, required: true, default: Date.now },
             lastEdited: { type: Date, required: true, default: Date.now },

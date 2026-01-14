@@ -3,8 +3,10 @@ import { DeleteResult, ProjectionType } from 'mongoose';
 import { IJobTour } from '../models/JobTour';
 import JobTour from '../models/JobTour';
 
-const insertJobTour = async (jobTour: IJobTour) => {
+const insertJobTour = async (jobTour: Omit<IJobTour, "_id">) => {
     try {
+        console.log('Inserting job tour into database...');
+
         if (!JobTour) {
             throw new Error(
                 'Failed to connect to the database. `jobTours` collection does not exist.'
@@ -16,11 +18,12 @@ const insertJobTour = async (jobTour: IJobTour) => {
 
         saveResult.validateSync();
 
-        const { heading, _id } = jobTour;
+        console.log('saveResult: ', saveResult);
 
         return {
             status: 200,
-            msg: `Job Tour '${heading}' (${_id}) was successfully saved into the database!`,
+            msg: `Job tour was saved!`,
+            _id: saveResult._id
         };
     } catch (error) {
         const errMsg = `Failed to save job tour into the database. Error message: ${error}`;
@@ -101,6 +104,27 @@ const retrieveJobTours = async (
             );
         }
 
+        const isFilterObjValid = "userId" in filterObj || "heading" in filterObj
+
+        if (!isFilterObjValid) {
+            throw new Error('Retrieval is only allowed when filtering by userId or heading.');
+        }
+
+        if ("heading" in filterObj) {
+            const filterObjCustom = {
+                heading: {
+                    $regex: filterObj.heading, $options: 'i'
+                }
+            }
+
+            const jobTours = await JobTour.find(filterObjCustom, projectionObj)
+                .sort(sort ?? {})
+                .limit(limit)
+                .lean();
+
+            return { wasSuccessful: true, data: jobTours as IJobTour[] };
+        }
+
         const jobTours = await JobTour.find(filterObj, projectionObj)
             .sort(sort ?? {})
             .limit(limit)
@@ -125,6 +149,15 @@ const updateJobTour = async (
             throw new Error(
                 'Failed to connect to the database. `jobTours` collection does not exist.'
             );
+        }
+
+        const areUpdatesInvalid =
+            "userId" in updatedProps ||
+            "isGp" in updatedProps ||
+            "_id" in updatedProps
+
+        if (areUpdatesInvalid) {
+            throw new Error('Updating userId, isGp, or _id fields is not allowed.');
         }
 
         const { modifiedCount, matchedCount } = await JobTour.updateMany(

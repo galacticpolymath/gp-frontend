@@ -82,17 +82,17 @@ export default async function handler(
             throw new CustomError('No user found for the provided email address.', 404);
         }
 
-        const _newJobTour: IJobTour = {
+        const _newJobTour: Omit<IJobTour, "_id"> = {
             ...newJobTour,
             userId: targetUser._id
         }
-        const { status, msg } = await insertJobTour(_newJobTour);
+        const { status, msg, _id } = await insertJobTour(_newJobTour);
 
         if (status !== 200) {
             throw new CustomError(msg, status);
         }
 
-        return response.status(status).json({ msg: msg });
+        return response.status(status).json({ msg: msg, jobTourId: _id });
     } catch (error: unknown) {
         const { code, message } = error as { code: number; message: string };
 
