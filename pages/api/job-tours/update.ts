@@ -6,9 +6,11 @@ import { CustomError } from '../../../backend/utils/errors';
 import { updateJobTour } from '../../../backend/services/jobTourServices';
 import { IJobTour } from '../../../backend/models/JobTour';
 
+export type TJobUpdates = Partial<Omit<IJobTour, "_id" | "userId" | "isGP">>;
+
 interface IReqBody {
     jobTourId: string;
-    keysAndUpdatedValsObj: string;
+    updates: TJobUpdates;
     dbType?: Parameters<typeof connectToMongodb>[3];
 }
 
@@ -23,27 +25,15 @@ export default async function handler(
             throw new CustomError('This route only accepts PUT requests.', 404);
         }
 
-        const { jobTourId, keysAndUpdatedValsObj, dbType } = (body ?? {}) as IReqBody;
+        const { jobTourId, updates, dbType } = (body ?? {}) as IReqBody;
 
-        const valsToUpdate: Partial<IJobTour> =
-            typeof keysAndUpdatedValsObj === 'string'
-                ? JSON.parse(keysAndUpdatedValsObj)
-                : keysAndUpdatedValsObj;
 
-        if (
-            valsToUpdate &&
-            ((typeof valsToUpdate !== 'object' && valsToUpdate === null) ||
-                Array.isArray(valsToUpdate) ||
-                typeof valsToUpdate !== 'object')
-        ) {
-            throw new CustomError(
-                '`keysAndUpdatedValsObj` must be an non-array object.',
-                400
-            );
+        if (!Object.keys(updates).length) {
+            throw new CustomError('No updates provided; the `updates` object must have at least one property.', 400);
         }
 
-        if ("_id" in valsToUpdate || "userId" in valsToUpdate) {
-            throw new CustomError('Modifying `_id` or `userId` is not allowed.', 400);
+        if ("_id" in updates || "userId" in updates || "isGp" in updates) {
+            throw new CustomError('Modifying `_id`, `userId`, or "isGp" is not allowed.', 400);
         }
 
         const { wasSuccessful: wasConnectionSuccessful } = await connectToMongodb(
@@ -59,7 +49,7 @@ export default async function handler(
 
         const { wasSuccessful, errMsg } = await updateJobTour(
             { _id: jobTourId },
-            valsToUpdate
+            updates
         );
 
         if (!wasSuccessful || errMsg) {

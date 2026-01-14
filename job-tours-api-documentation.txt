@@ -114,7 +114,6 @@ Request Body:
     "lastEdited": "Date" (required),
     "version": "string" (required, format: MAJOR.MINOR.YYYYMMDD, e.g., "1.4.20250528"),
     "publishedDate": "Date" (optional),
-    "isGP": boolean (optional, auto-set based on user email),
     "whoCanSee": "just-teachers" | "me" | "everyone" (required, default: "everyone"),
     "classSubject": "string" (required),
     "gradeLevel": "string" (required),
@@ -207,11 +206,19 @@ REQUEST STRUCTURE:
 Request Body:
 {
   "jobTourId": "string" (required),
-  "keysAndUpdatedValsObj": string | object (required),
-    Description: Object containing the fields to update and their new values
-    If string, must be JSON stringified
-    Note: Must be a non-array object when parsed
-    Restrictions: Cannot modify "_id" or "userId" fields
+  "updates": {
+    "version": "string" (required, format: MAJOR.MINOR.YYYYMMDD, e.g., "1.4.20250528"),
+    "publishedDate": "Date" (optional),
+    "whoCanSee": "just-teachers" | "me" | "everyone" (required, default: "everyone"),
+    "classSubject": "string" (required),
+    "gradeLevel": "string" (required),
+    "tags": ["string"] (required, default: []),
+    "gpUnitsAssociated": ["string"] (required, default: []),
+    "explanation": "string" (required),
+    "heading": "string" (required),
+    "assignment": "string" (required),
+    "selectedJobs": ["string"] (required, default: [])
+  }
   "dbType": "dev" | "production" (optional)
 }
 

@@ -2,8 +2,11 @@
 import { DeleteResult, ProjectionType } from 'mongoose';
 import { IJobTour } from '../models/JobTour';
 import JobTour from '../models/JobTour';
+import { TJobUpdates } from '../../pages/api/job-tours/update';
 
-const insertJobTour = async (jobTour: Omit<IJobTour, "_id">) => {
+export type TJobTourToInsert = Omit<IJobTour, "_id" | "createdDate" | "lastEdited">;
+
+const insertJobTour = async (jobTour: TJobTourToInsert) => {
     try {
         console.log('Inserting job tour into database...');
 
@@ -13,7 +16,7 @@ const insertJobTour = async (jobTour: Omit<IJobTour, "_id">) => {
             );
         }
 
-        const newJobTour = new JobTour(jobTour);
+        const newJobTour = new JobTour({ ...jobTour, createdDate: new Date(), lastEdited: new Date() });
         const saveResult = await newJobTour.save();
 
         saveResult.validateSync();
@@ -34,46 +37,11 @@ const insertJobTour = async (jobTour: Omit<IJobTour, "_id">) => {
     }
 };
 
-const deleteJobTour = async (_id?: unknown, queryPair?: [string, unknown]) => {
+const deleteJobTourById = async (_ids: string[]) => {
     try {
-        console.log(
-            `Attempting to delete job tour with id ${_id} and queryPair ${JSON.stringify(
-                queryPair
-            )}`
-        );
+        console.log('Attempting to delete job tour with _id:', _ids);
 
-        if (!JobTour) {
-            throw new Error(
-                'Failed to connect to the database. `jobTours` collection does not exist.'
-            );
-        }
-
-        if (!_id && !queryPair) {
-            return {
-                status: 500,
-                msg: 'Both `jobTourId` and `queryPair` are falsy. At least one of them must have a value.',
-            };
-        }
-
-        if (_id && typeof _id !== 'string') {
-            throw new Error('`_id` must be a string.');
-        }
-
-        let deletionResult: DeleteResult;
-
-        if (queryPair && queryPair.length > 0) {
-            const [key, val] = queryPair;
-            deletionResult = await JobTour.deleteOne({ [key]: val });
-        } else {
-            deletionResult = await JobTour.deleteOne({ _id: { $eq: _id as string } });
-        }
-
-        if (deletionResult.deletedCount === 0) {
-            return {
-                status: 500,
-                msg: 'Failed to delete job tour',
-            };
-        }
+        const deletionResult = await JobTour.deleteOne({ _id: { $in: _ids } });
 
         console.log('deletionResult: ', deletionResult);
 
@@ -142,7 +110,7 @@ const retrieveJobTours = async (
 
 const updateJobTour = async (
     filterObj: Partial<IJobTour>,
-    updatedProps: Partial<IJobTour>
+    updatedProps: TJobUpdates
 ) => {
     try {
         if (!JobTour) {
@@ -183,7 +151,7 @@ const updateJobTour = async (
 
 export {
     insertJobTour,
-    deleteJobTour,
+    deleteJobTourById,
     retrieveJobTours,
     updateJobTour,
 };

@@ -4,7 +4,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { connectToMongodb } from '../../../backend/utils/connection';
 import { CustomError } from '../../../backend/utils/errors';
 import { IJobTour } from '../../../backend/models/JobTour';
-import { insertJobTour } from '../../../backend/services/jobTourServices';
+import { insertJobTour, TJobTourToInsert } from '../../../backend/services/jobTourServices';
 import { verifyJwt } from '../../../nondependencyFns';
 import { getUser, getUserByEmail } from '../../../backend/services/userServices';
 
@@ -59,7 +59,7 @@ export default async function handler(
         }
 
         const userEmail = jwtVerified.payload.email;
-        const newJobTour: Omit<IJobTour, "userId"> = request?.body?.jobTour;
+        const newJobTour: Omit<TJobTourToInsert, "userId"> = request?.body?.jobTour;
 
         if (VALID_GP_USERS.has(userEmail)) {
             newJobTour.isGP = true;
@@ -82,7 +82,7 @@ export default async function handler(
             throw new CustomError('No user found for the provided email address.', 404);
         }
 
-        const _newJobTour: Omit<IJobTour, "_id"> = {
+        const _newJobTour: TJobTourToInsert = {
             ...newJobTour,
             userId: targetUser._id
         }
