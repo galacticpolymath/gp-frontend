@@ -224,15 +224,14 @@ Request Body:
     "explanation": "string" (optional),
     "heading": "string" (optional),
     "assignment": "string" (optional),
-    "selectedJobs": ["string"] (optional),
-    "createdDate": "Date" (optional)
+    "selectedJobs": ["string"] (optional)
   },
   "dbType": "dev" | "production" (optional)
 }
 
 Note: 
   - The "updates" object must have at least one property
-  - The "lastEdited" field is automatically updated to the current date/time
+  - The "lastEdited" field is automatically updated to the current date/time (cannot be explicitly set)
   - All fields in "updates" are optional - only include the fields you want to change
 
 Example Request Body:
@@ -247,7 +246,6 @@ Example Request Body:
 }
 
 Allowed Fields to Update:
-  - createdDate
   - version
   - publishedDate
   - whoCanSee
@@ -259,12 +257,13 @@ Allowed Fields to Update:
   - heading
   - assignment
   - selectedJobs
-  - lastEdited (automatically updated, but can be explicitly set)
 
 Forbidden Fields:
   - _id (cannot be modified)
   - userId (cannot be modified)
   - isGP (cannot be modified)
+  - createdDate (cannot be modified)
+  - lastEdited (automatically updated to current date/time, cannot be explicitly set)
 
 SUCCESSFUL RESPONSE (200):
 --------------------------
@@ -280,7 +279,7 @@ Status 400 - Bad Request:
 }
 OR
 {
-  "msg": "Error message: Modifying `_id`, `userId`, or \"isGp\" is not allowed."
+  "msg": "Error message: Modifying the fields `_id`, `userId`, `isGp`, `lastEdited`, or `createdDate` is not allowed."
 }
 
 Status 404 - Not Found:
@@ -385,8 +384,8 @@ NOTES
 3. The create route requires JWT authentication via Authorization header
 4. The create route automatically generates _id, createdDate, lastEdited, and sets userId from JWT token
 5. The create route automatically sets isGP to true if user email is in VALID_GP_USERS
-6. The update route automatically updates the lastEdited field to current date/time
-7. The update route does not allow modification of _id, userId, or isGP fields
+6. The update route automatically updates the lastEdited field to current date/time (cannot be explicitly set)
+7. The update route does not allow modification of _id, userId, isGP, createdDate, or lastEdited fields
 8. The update route requires at least one field in the updates object
 9. The get route only allows filtering by userId or heading (heading uses case-insensitive regex)
 10. The delete route accepts a single ID or multiple IDs via the ids query parameter

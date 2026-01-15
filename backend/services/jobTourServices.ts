@@ -109,7 +109,7 @@ const retrieveJobTours = async (
 };
 
 const updateJobTour = async (
-    filterObj: Partial<IJobTour>,
+    filterObj: Pick<IJobTour, "_id">,
     updatedProps: TJobUpdates
 ) => {
     try {
@@ -126,6 +126,10 @@ const updateJobTour = async (
 
         if (areUpdatesInvalid) {
             throw new Error('Updating userId, isGp, or _id fields is not allowed.');
+        }
+
+        if (!("_id" in filterObj)) {
+            throw new Error('No `jobTourId` provided. Cannot update job tour.');
         }
 
         const { modifiedCount, matchedCount } = await JobTour.updateMany(

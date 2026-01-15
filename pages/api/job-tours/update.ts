@@ -27,6 +27,10 @@ export default async function handler(
 
         const { jobTourId, updates, dbType } = (body ?? {}) as IReqBody;
 
+        if (typeof jobTourId !== 'string') {
+            throw new CustomError('No `jobTourId` provided. Cannot update job tour.', 400);
+        }
+
 
         if (!Object.keys(updates).length) {
             throw new CustomError('No updates provided; the `updates` object must have at least one property.', 400);
