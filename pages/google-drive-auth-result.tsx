@@ -37,6 +37,17 @@ const GoogleDriveAuthResult = () => {
     typeof sessionStorage !== "undefined"
       ? sessionStorage.getItem(`${window.location.search}`)
       : null;
+  const layoutProps = {
+    title: "Google Drive Auth Result | Galactic Polymath",
+    description:
+      "View the status of your Google Drive integration with Galactic Polymath.",
+    url: "https://teach.galacticpolymath.com/google-drive-auth-result",
+    canonicalLink: "https://teach.galacticpolymath.com/google-drive-auth-result",
+    imgSrc: "/imgs/gp-logos/GP_Stacked_logo+wordmark_gradient_transBG.png",
+    imgAlt: "Galactic Polymath Logo",
+    indexable: false,
+    langLinks: [],
+  };
 
   const handleLoginBtnClick = () => {
     setWasLoginBtnClicked(true);
@@ -134,7 +145,7 @@ const GoogleDriveAuthResult = () => {
 
   if (status === "unauthenticated") {
     return (
-      <Layout>
+      <Layout {...layoutProps}>
         <div className="min-vh-100 pt-5 ps-2 pe-2 pe-sm-0 ps-sm-5 d-flex flex-column w-sm-25">
           <span className="text-center text-sm-start">
             Please sign in to authenticate with Google Drive if you are a GP
@@ -155,7 +166,7 @@ const GoogleDriveAuthResult = () => {
 
   if (isFetching) {
     return (
-      <Layout>
+      <Layout {...layoutProps}>
         <div className="min-vh-100 pt-5 ps-2 pe-2 pe-sm-0 ps-sm-5 d-flex flex-column">
           <div className="text-center text-sm-start d-flex flex-column">
             <span
@@ -185,7 +196,7 @@ const GoogleDriveAuthResult = () => {
 
   if (isError) {
     return (
-      <Layout>
+      <Layout {...layoutProps}>
         <div className="min-vh-100 pt-5 ps-2 pe-2 pe-sm-0 ps-sm-5 d-flex flex-column w-sm-25">
           <span>We failed to authenticated you with Google Drive.</span>
           <span className="mt-2">
@@ -208,7 +219,7 @@ const GoogleDriveAuthResult = () => {
   }
 
   return (
-    <Layout>
+    <Layout {...layoutProps}>
       <div className="min-vh-100 pt-5 ps-2 pe-2 pe-sm-0 ps-sm-5 d-flex flex-column w-sm-25">
         <span>GP now has access to your google drive with your permission!</span>
         {gpPlusFeatureLocation && (

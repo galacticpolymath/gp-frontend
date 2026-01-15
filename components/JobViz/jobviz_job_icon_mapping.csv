@@ -1,0 +1,833 @@
+soc_code,job_title,icon_name
+11-1011,"Chief executives",AArrowDown
+11-1021,"General and operations managers",BriefcaseBusiness
+11-1031,"Legislators",AArrowUp
+11-2011,"Advertising and promotions managers",ClipboardList
+11-2021,"Marketing managers",ClipboardCheck
+11-2022,"Sales managers",ShoppingBag
+11-2032,"Public relations managers",ALargeSmall
+11-2033,"Fundraising managers",Accessibility
+11-3012,"Administrative services managers",Headset
+11-3013,"Facilities managers",ActivitySquare
+11-3021,"Computer and information systems managers",Flame
+11-3031,"Financial managers",LineChart
+11-3051,"Industrial production managers",Factory
+11-3061,"Purchasing managers",Activity
+11-3071,"Transportation, storage, etc",Truck
+11-3111,"Compensation and benefits managers",AirVent
+11-3121,"Human resources managers",UsersRound
+11-3131,"Training and development managers",Airplay
+11-9013,"Farmers, ranchers, etc",Sprout
+11-9021,"Construction managers",Hammer
+11-9031,"Education and childcare administrators, preschool and daycare",GraduationCap
+11-9032,"Education administrators, kindergarten through secondary",Presentation
+11-9033,"Education administrators, postsecondary",BookOpenCheck
+11-9039,"Education administrators, all other",AlarmCheck
+11-9041,"Architectural and engineering managers",Cog
+11-9051,"Food service managers",ChefHat
+11-9071,"Gambling managers",AlarmClockCheck
+11-9072,"Entertainment and recreation managers, except gambling",AlarmClockMinus
+11-9081,"Lodging managers",AlarmClockOff
+11-9111,"Medical and health services managers",Stethoscope
+11-9121,"Natural sciences managers",AlarmClockPlus
+11-9131,"Postmasters and mail superintendents",AlarmClock
+11-9141,"Property, real estate, etc",AlarmMinus
+11-9151,"Social and community service managers",Users
+11-9161,"Emergency management directors",AlarmPlus
+11-9171,"Funeral home managers",AlarmSmoke
+11-9179,"Personal service managers, all other",MessageSquare
+11-9199,"Managers, all other",Album
+13-1011,"Agents and business managers of artists, performers, etc",Palette
+13-1020,"Buyers and purchasing agents",AlertCircle
+13-1031,"Claims adjusters, examiners, etc",AlertOctagon
+13-1032,"Insurance appraisers, auto damage",AlertTriangle
+13-1041,"Compliance officers",AlignCenterHorizontal
+13-1051,"Cost estimators",AlignCenterVertical
+13-1071,"Human resources specialists",IdCard
+13-1074,"Farm labor contractors",AlignCenter
+13-1075,"Labor relations specialists",AlignEndHorizontal
+13-1081,"Logisticians",Boxes
+13-1082,"Project management specialists",AlignEndVertical
+13-1111,"Management analysts",Code2
+13-1121,"Meeting, convention, etc",AlignHorizontalDistributeCenter
+13-1131,"Fundraisers",AlignHorizontalDistributeEnd
+13-1141,"Compensation, benefits, etc",AlignHorizontalDistributeStart
+13-1151,"Training and development specialists",AlignHorizontalJustifyCenter
+13-1161,"Market research analysts and marketing specialists",Cpu
+13-1199,"Business operations specialists, all other",AlignHorizontalJustifyEnd
+13-2011,"Accountants and auditors",Calculator
+13-2020,"Property appraisers and assessors",AlignHorizontalJustifyStart
+13-2031,"Budget analysts",Binary
+13-2041,"Credit analysts",AlignHorizontalSpaceAround
+13-2051,"Financial and investment analysts",PiggyBank
+13-2052,"Personal financial advisors",AlignHorizontalSpaceBetween
+13-2053,"Insurance underwriters",PenSquare
+13-2054,"Financial risk specialists",AlignJustify
+13-2061,"Financial examiners",AlignLeft
+13-2071,"Credit counselors",Handshake
+13-2072,"Loan officers",AlignRight
+13-2081,"Tax examiners and collectors, and revenue agents",AlignStartHorizontal
+13-2082,"Tax preparers",AlignStartVertical
+13-2099,"Financial specialists, all other",AlignVerticalDistributeCenter
+15-1211,"Computer systems analysts",LifeBuoy
+15-1212,"Information security analysts",Shield
+15-1221,"Computer and information research scientists",Atom
+15-1231,"Computer network support specialists",PhoneCall
+15-1232,"Computer user support specialists",AlignVerticalDistributeEnd
+15-1241,"Computer network architects",Wrench
+15-1242,"Database administrators",AlignVerticalDistributeStart
+15-1243,"Database architects",DraftingCompass
+15-1244,"Network and computer systems administrators",AlignVerticalJustifyCenter
+15-1251,"Computer programmers",AlignVerticalJustifyEnd
+15-1252,"Software developers",AlignVerticalJustifyStart
+15-1253,"Software quality assurance analysts and testers",AlignVerticalSpaceAround
+15-1254,"Web developers",AlignVerticalSpaceBetween
+15-1255,"Web and digital interface designers",Sparkles
+15-1299,"Computer jobs, all other",Ambulance
+15-2011,"Actuaries",Ampersand
+15-2021,"Mathematicians",Ampersands
+15-2031,"Operations research analysts",Amphora
+15-2041,"Statisticians",Anchor
+15-2051,"Data scientists",FlaskConical
+15-2099,"Mathematical science jobs, all other",Angry
+17-1011,"Architects, except landscape and naval",Annoyed
+17-1012,"Landscape architects",Antenna
+17-1021,"Cartographers and photogrammetrists",Anvil
+17-1022,"Surveyors",Aperture
+17-2011,"Aerospace engineers",AppWindowMac
+17-2021,"Agricultural engineers",Tractor
+17-2031,"Bioengineers and biomedical engineers",HeartPulse
+17-2041,"Chemical engineers",AppWindow
+17-2051,"Civil engineers",Apple
+17-2061,"Computer hardware engineers",ArchiveRestore
+17-2071,"Electrical engineers",Saw
+17-2072,"Electronics engineers, except computer",ArchiveX
+17-2081,"Environmental engineers",Globe
+17-2111,"Health and safety engineers, except mining safety engineers and inspectors",Archive
+17-2112,"Industrial engineers",Fuel
+17-2121,"Marine engineers and naval architects",AreaChart
+17-2131,"Materials engineers",Armchair
+17-2141,"Mechanical engineers",ArrowBigDownDash
+17-2151,"Mining and geological engineers, including mining safety engineers",ArrowBigDown
+17-2161,"Nuclear engineers",ArrowBigLeftDash
+17-2171,"Petroleum engineers",ArrowBigLeft
+17-2199,"Engineers, all other",ArrowBigRightDash
+17-3011,"Architectural and civil drafters",ArrowBigRight
+17-3012,"Electrical and electronics drafters",PlugZap
+17-3013,"Mechanical drafters",ArrowBigUpDash
+17-3019,"Drafters, all other",ArrowBigUp
+17-3021,"Aerospace engineering and operations technologists and technicians",ArrowDown01
+17-3022,"Civil engineering technologists and technicians",ArrowDown10
+17-3023,"Electrical and electronic engineering technologists and technicians",ArrowDownAZ
+17-3024,"Electro-mechanical and mechatronics technologists and technicians",ArrowDownAz
+17-3025,"Environmental engineering technologists and technicians",Mountain
+17-3026,"Industrial engineering technologists and technicians",ArrowDownCircle
+17-3027,"Mechanical engineering technologists and technicians",ArrowDownFromLine
+17-3028,"Calibration technologists and technicians",ArrowDownLeftFromCircle
+17-3029,"Engineering technologists and technicians, except drafters, etc",ArrowDownLeftFromSquare
+17-3031,"Surveying and mapping technicians",ArrowDownLeftSquare
+19-1011,"Animal scientists",TestTube
+19-1012,"Food scientists and technologists",Utensils
+19-1013,"Soil and plant scientists",Leaf
+19-1021,"Biochemists and biophysicists",ArrowDownLeft
+19-1022,"Microbiologists",ArrowDownNarrowWide
+19-1023,"Zoologists and wildlife biologists",TreeDeciduous
+19-1029,"Biological scientists, all other",ArrowDownRightFromCircle
+19-1031,"Conservation scientists",Panda
+19-1032,"Foresters",ArrowDownRightSquare
+19-1041,"Epidemiologists",ArrowDownRight
+19-1042,"Medical scientists, except epidemiologists",Hospital
+19-1099,"Life scientists, all other",ArrowDownSquare
+19-2011,"Astronomers",ArrowDownToDot
+19-2012,"Physicists",ArrowDownToLine
+19-2021,"Atmospheric and space scientists",ArrowDownUp
+19-2031,"Chemists",ArrowDownWideNarrow
+19-2032,"Materials scientists",ArrowDownZA
+19-2041,"Environmental scientists and specialists, including health",ArrowDownZa
+19-2042,"Geoscientists, except hydrologists and geographers",ArrowDown
+19-2043,"Hydrologists",ArrowLeftCircle
+19-2099,"Physical scientists, all other",ArrowLeftFromLine
+19-3011,"Economists",ArrowLeftRight
+19-3022,"Survey researchers",ArrowLeftSquare
+19-3032,"Industrial-organizational psychologists",ArrowLeftToLine
+19-3033,"Clinical and counseling psychologists",HeartHandshake
+19-3034,"School psychologists",ArrowLeft
+19-3039,"Psychologists, all other",ArrowRightCircle
+19-3041,"Sociologists",ArrowRightFromLine
+19-3051,"Urban and regional planners",ArrowRightLeft
+19-3091,"Anthropologists and archeologists",ArrowRightSquare
+19-3092,"Geographers",ArrowRightToLine
+19-3093,"Historians",ArrowRight
+19-3094,"Political scientists",ArrowUp01
+19-3099,"Social scientists and related workers, all other",ArrowUp10
+19-4012,"Agricultural technicians",ArrowUpAZ
+19-4013,"Food science technicians",CupSoda
+19-4021,"Biological technicians",ArrowUpAz
+19-4031,"Chemical technicians",ArrowUpCircle
+19-4042,"Environmental science and protection technicians, including health",Badge
+19-4043,"Geological technicians, except hydrologic technicians",ArrowUpDown
+19-4044,"Hydrologic technicians",ArrowUpFromDot
+19-4051,"Nuclear technicians",ArrowUpFromLine
+19-4061,"Social science research assistants",ArrowUpLeftFromCircle
+19-4071,"Forest and conservation technicians",ArrowUpLeftFromSquare
+19-4092,"Forensic science technicians",ArrowUpLeftSquare
+19-4099,"Life, physical, etc",ArrowUpLeft
+19-5011,"Occupational health and safety specialists",ArrowUpNarrowWide
+19-5012,"Occupational health and safety technicians",ArrowUpRightFromCircle
+21-1012,"Educational, guidance, etc",ArrowUpRightFromSquare
+21-1013,"Marriage and family therapists",Bandage
+21-1015,"Rehabilitation counselors",ArrowUpRightSquare
+21-1018,"Substance abuse, behavioral disorder, etc",ArrowUpRight
+21-1019,"Counselors, all other",ArrowUpSquare
+21-1021,"Child, family, etc",ArrowUpToLine
+21-1022,"Healthcare social workers",ArrowUpWideNarrow
+21-1023,"Mental health and substance abuse social workers",ArrowUpZA
+21-1029,"Social workers, all other",ArrowUpZa
+21-1091,"Health education specialists",ArrowUp
+21-1092,"Probation officers and correctional treatment specialists",ArrowsUpFromLine
+21-1093,"Social and human service assistants",AsteriskSquare
+21-1094,"Community health workers",Asterisk
+21-1099,"Community and social service specialists, all other",AtSign
+21-2011,"Clergy",AudioLines
+21-2021,"Directors, religious activities and education",AudioWaveform
+21-2099,"Religious workers, all other",Award
+23-1011,"Lawyers",Gavel
+23-1012,"Judicial law clerks",Scale
+23-1021,"Administrative law judges, adjudicators, etc",ScrollText
+23-1022,"Arbitrators, mediators, etc",Newspaper
+23-1023,"Judges, magistrate judges, etc",Axe
+23-2011,"Paralegals and legal assistants",Axis3D
+23-2093,"Title examiners, abstractors, etc",Axis3d
+23-2099,"Legal support workers, all other",Baby
+25-1011,"Business teachers, postsecondary",Backpack
+25-1021,"Computer science teachers, postsecondary",BadgeAlert
+25-1022,"Mathematical science teachers, postsecondary",BadgeCent
+25-1031,"Architecture teachers, postsecondary",BadgeCheck
+25-1032,"Engineering teachers, postsecondary",BadgeDollarSign
+25-1041,"Agricultural sciences teachers, postsecondary",Sprout
+25-1042,"Biological science teachers, postsecondary",Microscope
+25-1043,"Forestry and conservation science teachers, postsecondary",TreePine
+25-1051,"Atmospheric, earth, etc",CloudSun
+25-1052,"Chemistry teachers, postsecondary",FlaskRound
+25-1053,"Environmental science teachers, postsecondary",Leaf
+25-1054,"Physics teachers, postsecondary",Atom
+25-1061,"Anthropology and archeology teachers, postsecondary",Bone
+25-1062,"Area, ethnic, etc",Globe
+25-1063,"Economics teachers, postsecondary",LineChart
+25-1064,"Geography teachers, postsecondary",Map
+25-1065,"Political science teachers, postsecondary",Flag
+25-1066,"Psychology teachers, postsecondary",Brain
+25-1067,"Sociology teachers, postsecondary",Users
+25-1069,"Social sciences teachers, postsecondary, etc",UsersRound
+25-1071,"Health specialties teachers, postsecondary",Ban
+25-1072,"Nursing instructors and teachers, postsecondary",Banana
+25-1081,"Education teachers, postsecondary",BanknoteArrowDown
+25-1082,"Library science teachers, postsecondary",BanknoteArrowUp
+25-1111,"Criminal justice and law enforcement teachers, postsecondary",BanknoteX
+25-1112,"Law teachers, postsecondary",Banknote
+25-1113,"Social work teachers, postsecondary",BarChart2
+25-1121,"Art, drama, etc",BarChart3
+25-1122,"Communications teachers, postsecondary",BarChart4
+25-1123,"English language and literature teachers, postsecondary",BarChartBig
+25-1124,"Foreign language and literature teachers, postsecondary",BarChartHorizontalBig
+25-1125,"History teachers, postsecondary",BarChartHorizontal
+25-1126,"Philosophy and religion teachers, postsecondary",BarChart
+25-1192,"Family and consumer sciences teachers, postsecondary",Barcode
+25-1193,"Recreation and fitness studies teachers, postsecondary",Barrel
+25-1194,"Career/technical education teachers, postsecondary",Baseline
+25-1199,"Postsecondary teachers, all other",GraduationCap
+25-2011,"Preschool teachers, except special education",BatteryCharging
+25-2012,"Kindergarten teachers, except special education",BatteryFull
+25-2021,"Elementary school teachers, except special education",BatteryLow
+25-2022,"Middle school teachers, except special and career/technical education",BatteryMedium
+25-2023,"Career/technical education teachers, middle school",BatteryPlus
+25-2031,"Secondary school teachers, except special and career/technical education",BatteryWarning
+25-2032,"Career/technical education teachers, secondary school",Battery
+25-2051,"Special education teachers, preschool",Beaker
+25-2052,"Special education teachers, kindergarten and elementary school",BeanOff
+25-2057,"Special education teachers, middle school",Bean
+25-2058,"Special education teachers, secondary school",BedDouble
+25-2059,"Special education teachers, all other",BedSingle
+25-3011,"Adult basic education, adult secondary education, etc",Bed
+25-3021,"Self-enrichment teachers",Beef
+25-3031,"Substitute teachers, short-term",BeerOff
+25-3041,"Tutors",Beer
+25-3099,"Teachers and instructors, all other",BellDot
+25-4011,"Archivists",BellElectric
+25-4012,"Curators",BellMinus
+25-4013,"Museum technicians and conservators",BellOff
+25-4022,"Librarians and media collections specialists",Mic
+25-4031,"Library technicians",BellPlus
+25-9021,"Farm and home management educators",BellRing
+25-9031,"Instructional coordinators",Bell
+25-9044,"Teaching assistants, postsecondary",BetweenHorizonalEnd
+25-9045,"Teaching assistants, except postsecondary",BetweenHorizonalStart
+25-9099,"Educational instruction and library workers, all other",BetweenHorizontalEnd
+27-1011,"Art directors",BetweenHorizontalStart
+27-1012,"Craft artists",Music3
+27-1013,"Fine artists, including painters, etc",BetweenVerticalEnd
+27-1014,"Special effects artists and animators",BetweenVerticalStart
+27-1019,"Artists and related workers, all other",BicepsFlexed
+27-1021,"Commercial and industrial designers",Bike
+27-1022,"Fashion designers",Binoculars
+27-1023,"Floral designers",Biohazard
+27-1024,"Graphic designers",Bird
+27-1025,"Interior designers",Birdhouse
+27-1026,"Merchandise displayers and window trimmers",Bitcoin
+27-1027,"Set and exhibit designers",Blend
+27-1029,"Designers, all other",Blinds
+27-2011,"Actors",Blocks
+27-2012,"Producers and directors",BluetoothConnected
+27-2021,"Athletes and sports competitors",BluetoothOff
+27-2022,"Coaches and scouts",BluetoothSearching
+27-2023,"Umpires, referees, etc",Bluetooth
+27-2031,"Dancers",Bold
+27-2032,"Choreographers",Bolt
+27-2041,"Music directors and composers",Bomb
+27-2042,"Musicians and singers",Bone
+27-2091,"Disc jockeys, except radio",BookA
+27-2099,"Entertainers and performers, sports and related workers, etc",BookAlert
+27-3011,"Broadcast announcers and radio disc jockeys",BookAudio
+27-3023,"News analysts, reporters, etc",BookCheck
+27-3031,"Public relations specialists",BookCopy
+27-3041,"Editors",BookDashed
+27-3042,"Technical writers",BookDown
+27-3043,"Writers and authors",BookHeadphones
+27-3091,"Interpreters and translators",BookHeart
+27-3092,"Court reporters and simultaneous captioners",BookImage
+27-3099,"Media and communication workers, all other",BookKey
+27-4011,"Audio and video technicians",BookLock
+27-4012,"Broadcast technicians",BookMarked
+27-4014,"Sound engineering technicians",BookMinus
+27-4015,"Lighting technicians",BookOpenText
+27-4021,"Photographers",BookOpen
+27-4031,"Camera operators, television, etc",BookPlus
+27-4032,"Film and video editors",BookTemplate
+27-4099,"Media and communication equipment workers, all other",BookText
+29-1011,"Chiropractors",BookType
+29-1021,"Dentists, general",BookUp2
+29-1022,"Oral and maxillofacial surgeons",BookUp
+29-1023,"Orthodontists",BookUser
+29-1024,"Prosthodontists",BookX
+29-1029,"Dentists, all other specialists",Book
+29-1031,"Dietitians and nutritionists",BookmarkCheck
+29-1041,"Optometrists",BookmarkMinus
+29-1051,"Pharmacists",BookmarkPlus
+29-1071,"Physician assistants",BookmarkX
+29-1081,"Podiatrists",Bookmark
+29-1122,"Occupational therapists",BoomBox
+29-1123,"Physical therapists",BotMessageSquare
+29-1124,"Radiation therapists",BotOff
+29-1125,"Recreational therapists",Bot
+29-1126,"Respiratory therapists",BottleWine
+29-1127,"Speech-language pathologists",BowArrow
+29-1128,"Exercise physiologists",BoxSelect
+29-1129,"Therapists, all other",Box
+29-1131,"Veterinarians",Braces
+29-1141,"Registered nurses",Brackets
+29-1151,"Nurse anesthetists",BrainCircuit
+29-1161,"Nurse midwives",BrainCog
+29-1171,"Nurse practitioners",Brain
+29-1181,"Audiologists",BrickWallFire
+29-1211,"Anesthesiologists",BrickWallShield
+29-1212,"Cardiologists",BrickWall
+29-1213,"Dermatologists",BriefcaseConveyorBelt
+29-1214,"Emergency medicine physicians",BriefcaseMedical
+29-1215,"Family medicine physicians",Briefcase
+29-1216,"General internal medicine physicians",BringToFront
+29-1217,"Neurologists",BrushCleaning
+29-1218,"Obstetricians and gynecologists",Brush
+29-1221,"Pediatricians, general",Bubbles
+29-1222,"Physicians, pathologists",BugOff
+29-1223,"Psychiatrists",BugPlay
+29-1224,"Radiologists",Bug
+29-1229,"Physicians, all other",Building2
+29-1241,"Ophthalmologists, except pediatric",Building
+29-1242,"Orthopedic surgeons, except pediatric",BusFront
+29-1243,"Pediatric surgeons",Bus
+29-1249,"Surgeons, all other",CableCar
+29-1291,"Acupuncturists",Cable
+29-1292,"Dental hygienists",CakeSlice
+29-1299,"Healthcare diagnosing or treating practitioners, all other",Cake
+29-2010,"Clinical laboratory technologists and technicians",Calendar1
+29-2031,"Cardiovascular technologists and technicians",CalendarArrowDown
+29-2032,"Diagnostic medical sonographers",CalendarArrowUp
+29-2033,"Nuclear medicine technologists",CalendarCheck2
+29-2034,"Radiologic technologists and technicians",CalendarCheck
+29-2035,"Magnetic resonance imaging technologists",CalendarClock
+29-2036,"Medical dosimetrists",CalendarCog
+29-2042,"Emergency medical technicians",CalendarDays
+29-2043,"Paramedics",CalendarFold
+29-2051,"Dietetic technicians",CalendarHeart
+29-2052,"Pharmacy technicians",CalendarMinus2
+29-2053,"Psychiatric technicians",CalendarMinus
+29-2055,"Surgical technologists",CalendarOff
+29-2056,"Veterinary technologists and technicians",CalendarPlus2
+29-2057,"Ophthalmic medical technicians",CalendarPlus
+29-2061,"Licensed practical and licensed vocational nurses",CalendarRange
+29-2072,"Medical records specialists",CalendarSearch
+29-2081,"Opticians, dispensing",CalendarSync
+29-2091,"Orthotists and prosthetists",CalendarX2
+29-2092,"Hearing aid specialists",CalendarX
+29-2099,"Health technologists and technicians, all other",Calendar
+29-9021,"Health information technologists and medical registrars",Calendars
+29-9091,"Athletic trainers",CameraOff
+29-9092,"Genetic counselors",Camera
+29-9093,"Surgical assistants",CandlestickChart
+29-9099,"Healthcare practitioners and technical workers, all other",CandyCane
+31-1120,"Home health and personal care aides",CandyOff
+31-1131,"Nursing assistants",Candy
+31-1132,"Orderlies",Cannabis
+31-1133,"Psychiatric aides",CaptionsOff
+31-2011,"Occupational therapy assistants",Captions
+31-2012,"Occupational therapy aides",CarFront
+31-2021,"Physical therapist assistants",CarTaxiFront
+31-2022,"Physical therapist aides",Car
+31-9011,"Massage therapists",Caravan
+31-9091,"Dental assistants",CardSim
+31-9092,"Medical assistants",Carrot
+31-9093,"Medical equipment preparers",CaseLower
+31-9094,"Medical transcriptionists",CaseSensitive
+31-9095,"Pharmacy aides",CaseUpper
+31-9096,"Veterinary assistants and laboratory animal caretakers",CassetteTape
+31-9097,"Phlebotomists",Cast
+31-9099,"Healthcare support workers, all other",Castle
+33-1011,"First-line supervisors of correctional officers",Cat
+33-1012,"First-line supervisors of police and detectives",ShieldCheck
+33-1021,"First-line supervisors of firefighting and prevention workers",Cctv
+33-1091,"First-line supervisors of security workers",ChartArea
+33-1099,"First-line supervisors of protective service workers, all other",ChartBarBig
+33-2011,"Firefighters",ChartBarDecreasing
+33-2021,"Fire inspectors and investigators",ChartBarIncreasing
+33-2022,"Forest fire inspectors and prevention specialists",ChartBarStacked
+33-3011,"Bailiffs",ChartBar
+33-3012,"Correctional officers and jailers",ChartCandlestick
+33-3021,"Detectives and criminal investigators",ChartColumnBig
+33-3031,"Fish and game wardens",ChartColumnDecreasing
+33-3041,"Parking enforcement workers",ChartColumnIncreasing
+33-3051,"Police and sheriff's patrol officers",ChartColumnStacked
+33-3052,"Transit and railroad police",ChartColumn
+33-9011,"Animal control workers",ChartGantt
+33-9021,"Private detectives and investigators",ChartLine
+33-9031,"Gambling surveillance officers and gambling investigators",ChartNetwork
+33-9032,"Security guards",ChartNoAxesColumnDecreasing
+33-9091,"Crossing guards and flaggers",ChartNoAxesColumnIncreasing
+33-9092,"Lifeguards, ski patrol, etc",ChartNoAxesColumn
+33-9093,"Transportation security screeners",Ship
+33-9094,"School bus monitors",ChartNoAxesCombined
+33-9099,"Protective service workers, all other",ChartNoAxesGantt
+35-1011,"Chefs and head cooks",ChartPie
+35-1012,"First-line supervisors of food preparation and serving workers",ChartScatter
+35-2011,"Cooks, fast food",ChartSpline
+35-2012,"Cooks, institution and cafeteria",CheckCheck
+35-2013,"Cooks, private household",CheckCircle2
+35-2014,"Cooks, restaurant",CheckCircle
+35-2015,"Cooks, short order",CheckLine
+35-2019,"Cooks, all other",CheckSquare2
+35-2021,"Food preparation workers",CheckSquare
+35-3011,"Bartenders",Check
+35-3023,"Fast food and counter workers",Cherry
+35-3031,"Waiters and waitresses",ChessBishop
+35-3041,"Food servers, nonrestaurant",ChessKing
+35-9011,"Dining room and cafeteria attendants and bartender helpers",ChessKnight
+35-9021,"Dishwashers",ChessPawn
+35-9031,"Hosts and hostesses, restaurant, etc",ChessQueen
+35-9099,"Food preparation and serving related workers, all other",ChessRook
+37-1011,"First-line supervisors of housekeeping and janitorial workers",Broom
+37-1012,"First-line supervisors of landscaping, lawn service, etc",ChevronDownCircle
+37-2011,"Janitors and cleaners, except maids and housekeeping cleaners",SprayCan
+37-2012,"Maids and housekeeping cleaners",Sparkle
+37-2019,"Building cleaning workers, all other",ChevronDownSquare
+37-2021,"Pest control workers",ChevronDown
+37-3011,"Landscaping and groundskeeping workers",ChevronFirst
+37-3012,"Pesticide handlers, sprayers, etc",ChevronLast
+37-3013,"Tree trimmers and pruners",ChevronLeftCircle
+37-3019,"Grounds maintenance workers, all other",ChevronLeftSquare
+39-1013,"First-line supervisors of gambling services workers",ChevronLeft
+39-1014,"First-line supervisors of entertainment and recreation workers, except gambling services",ChevronRightCircle
+39-1022,"First-line supervisors of personal service workers",ChevronRightSquare
+39-2011,"Animal trainers",ChevronRight
+39-2021,"Animal caretakers",ChevronUpCircle
+39-3011,"Gambling dealers",ChevronUpSquare
+39-3012,"Gambling and sports book writers and runners",ChevronUp
+39-3019,"Gambling service workers, all other",ChevronsDownUp
+39-3021,"Motion picture projectionists",ChevronsDown
+39-3031,"Ushers, lobby attendants, etc",ChevronsLeftRightEllipsis
+39-3091,"Amusement and recreation attendants",ChevronsLeftRight
+39-3092,"Costume attendants",ChevronsLeft
+39-3093,"Locker room, coatroom, etc",ChevronsRightLeft
+39-3099,"Entertainment attendants and related workers, all other",ChevronsRight
+39-4011,"Embalmers",ChevronsUpDown
+39-4012,"Crematory operators",ChevronsUp
+39-4021,"Funeral attendants",Chrome
+39-4031,"Morticians, undertakers, etc",Chromium
+39-5011,"Barbers",Church
+39-5012,"Hairdressers, hairstylists, etc",CigaretteOff
+39-5091,"Makeup artists, theatrical and performance",Cigarette
+39-5092,"Manicurists and pedicurists",CircleAlert
+39-5093,"Shampooers",CircleArrowDown
+39-5094,"Skincare specialists",CircleArrowLeft
+39-6011,"Baggage porters and bellhops",CircleArrowOutDownLeft
+39-6012,"Concierges",CircleArrowOutDownRight
+39-7010,"Tour and travel guides",CircleArrowOutUpLeft
+39-9011,"Childcare workers",CircleArrowOutUpRight
+39-9031,"Exercise trainers and group fitness instructors",CircleArrowRight
+39-9032,"Recreation workers",CircleArrowUp
+39-9041,"Residential advisors",CircleCheckBig
+39-9099,"Personal care and service workers, all other",CircleCheck
+41-1011,"First-line supervisors of retail sales workers",Megaphone
+41-1012,"First-line supervisors of non-retail sales workers",ReceiptText
+41-2011,"Cashiers",CircleChevronDown
+41-2012,"Gambling change persons and booth cashiers",CircleChevronLeft
+41-2021,"Counter and rental clerks",CircleChevronRight
+41-2022,"Parts salespersons",CircleChevronUp
+41-2031,"Retail salespersons",CircleDashed
+41-3011,"Advertising sales agents",CircleDivide
+41-3021,"Insurance sales agents",CircleDollarSign
+41-3031,"Securities, commodities, etc",CircleDotDashed
+41-3041,"Travel agents",CircleDot
+41-3091,"Sales representatives of services, except advertising, etc",CircleEllipsis
+41-4011,"Sales representatives, wholesale and manufacturing, etc",CircleEqual
+41-4012,"Sales representatives, wholesale and manufacturing, etc",CircleFadingArrowUp
+41-9011,"Demonstrators and product promoters",CircleFadingPlus
+41-9012,"Models",CircleGauge
+41-9021,"Real estate brokers",House
+41-9022,"Real estate sales agents",CircleMinus
+41-9031,"Sales engineers",CircleOff
+41-9041,"Telemarketers",CircleParkingOff
+41-9091,"Door-to-door sales workers, news and street vendors, etc",CircleParking
+41-9099,"Sales and related workers, all other",CirclePause
+43-1011,"First-line supervisors of office and administrative support workers",CirclePercent
+43-2011,"Switchboard operators, including answering service",CirclePlay
+43-2021,"Telephone operators",CirclePlus
+43-2099,"Communications equipment operators, all other",CirclePoundSterling
+43-3011,"Bill and account collectors",CirclePower
+43-3021,"Billing and posting clerks",Receipt
+43-3031,"Bookkeeping, accounting, etc",CircleSlash2
+43-3041,"Gambling cage workers",CircleSlash
+43-3051,"Payroll and timekeeping clerks",CircleSlashed
+43-3061,"Procurement clerks",CircleSmall
+43-3071,"Tellers",CircleStar
+43-3099,"Financial clerks, all other",CircleStop
+43-4011,"Brokerage clerks",CircleUserRound
+43-4021,"Correspondence clerks",CircleUser
+43-4031,"Court, municipal, etc",CircleX
+43-4041,"Credit authorizers, checkers, etc",Circle
+43-4051,"Customer service representatives",CircuitBoard
+43-4061,"Eligibility interviewers, government programs",Citrus
+43-4071,"File clerks",Clapperboard
+43-4081,"Hotel, motel, etc",ClipboardClock
+43-4111,"Interviewers, except eligibility and loan",ClipboardCopy
+43-4121,"Library assistants, clerical",ClipboardEdit
+43-4131,"Loan interviewers and clerks",ClipboardMinus
+43-4141,"New accounts clerks",ClipboardPaste
+43-4151,"Order clerks",ClipboardPenLine
+43-4161,"Human resources assistants, except payroll and timekeeping",ClipboardPen
+43-4171,"Receptionists and information clerks",ClipboardPlus
+43-4181,"Reservation and transportation ticket agents and travel clerks",Plane
+43-4199,"Information and record clerks, all other",ClipboardSignature
+43-5011,"Cargo and freight agents",ClipboardType
+43-5021,"Couriers and messengers",ClipboardX
+43-5031,"Public safety telecommunicators",Clipboard
+43-5032,"Dispatchers, except police, etc",Clock1
+43-5041,"Meter readers, utilities",Clock10
+43-5051,"Postal service clerks",Clock11
+43-5052,"Postal service mail carriers",Clock12
+43-5053,"Postal service mail sorters, processors, etc",Clock2
+43-5061,"Production, planning, etc",Clock3
+43-5071,"Shipping, receiving, etc",Clock4
+43-5111,"Weighers, measurers, etc",Clock5
+43-6011,"Executive secretaries and executive administrative assistants",Clock6
+43-6012,"Legal secretaries and administrative assistants",Clock7
+43-6013,"Medical secretaries and administrative assistants",Clock8
+43-6014,"Secretaries and administrative assistants, except legal, etc",Clock9
+43-9021,"Data entry keyers",ClockAlert
+43-9022,"Word processors and typists",ClockArrowDown
+43-9031,"Desktop publishers",ClockArrowUp
+43-9041,"Insurance claims and policy processing clerks",ClockCheck
+43-9051,"Mail clerks and mail machine operators, except postal service",ClockFading
+43-9061,"Office clerks, general",ClockPlus
+43-9071,"Office machine operators, except computer",Clock
+43-9081,"Proofreaders and copy markers",ClosedCaption
+43-9111,"Statistical assistants",CloudAlert
+43-9199,"Office and administrative support workers, all other",CloudCheck
+45-1011,"First-line supervisors of farming, fishing, etc",CloudCog
+45-2011,"Agricultural inspectors",CloudDownload
+45-2021,"Animal breeders",CloudDrizzle
+45-2041,"Graders and sorters, agricultural products",CloudFog
+45-2091,"Agricultural equipment operators",CloudHail
+45-2092,"Farmworkers and laborers, crop, etc",CloudLightning
+45-2093,"Farmworkers, farm, etc",CloudMoonRain
+45-2099,"Agricultural workers, all other",CloudMoon
+45-3031,"Fishing and hunting workers",CloudOff
+45-4011,"Forest and conservation workers",CloudRainWind
+45-4021,"Fallers",CloudRain
+45-4022,"Logging equipment operators",CloudSnow
+45-4023,"Log graders and scalers",CloudSunRain
+45-4029,"Logging workers, all other",CloudSun
+47-1011,"First-line supervisors of construction trades and extraction workers",CloudUpload
+47-2011,"Boilermakers",Cloud
+47-2021,"Brickmasons and blockmasons",Cloudy
+47-2022,"Stonemasons",Clover
+47-2031,"Carpenters",Club
+47-2041,"Carpet installers",CodeSquare
+47-2042,"Floor layers, except carpet, etc",CodeXml
+47-2043,"Floor sanders and finishers",Code
+47-2044,"Tile and stone setters",Codepen
+47-2051,"Cement masons and concrete finishers",Codesandbox
+47-2053,"Terrazzo workers and finishers",Coffee
+47-2061,"Construction laborers",Coins
+47-2071,"Paving, surfacing, etc",Columns2
+47-2072,"Pile driver operators",Columns3Cog
+47-2073,"Operating engineers and other construction equipment operators",Columns3
+47-2081,"Drywall and ceiling tile installers",Columns4
+47-2082,"Tapers",ColumnsSettings
+47-2111,"Electricians",Columns
+47-2121,"Glaziers",Combine
+47-2131,"Insulation workers, floor, etc",Command
+47-2132,"Insulation workers, mechanical",Compass
+47-2141,"Painters, construction and maintenance",Component
+47-2142,"Paperhangers",Computer
+47-2151,"Pipelayers",ConciergeBell
+47-2152,"Plumbers, pipefitters, etc",Cone
+47-2161,"Plasterers and stucco masons",Construction
+47-2171,"Reinforcing iron and rebar workers",Contact2
+47-2181,"Roofers",ContactRound
+47-2211,"Sheet metal workers",Contact
+47-2221,"Structural iron and steel workers",Container
+47-2231,"Solar photovoltaic installers",Contrast
+47-3011,"Helpers--brickmasons, blockmasons, etc",Cookie
+47-3012,"Helpers--carpenters",CookingPot
+47-3013,"Helpers--electricians",CopyCheck
+47-3014,"Helpers--painters, paperhangers, etc",CopyMinus
+47-3015,"Helpers--pipelayers, plumbers, etc",CopyPlus
+47-3016,"Helpers--roofers",CopySlash
+47-3019,"Helpers, construction trades, etc",CopyX
+47-4011,"Construction and building inspectors",Copy
+47-4021,"Elevator and escalator installers and repairers",Copyleft
+47-4031,"Fence erectors",Copyright
+47-4041,"Hazardous materials removal workers",CornerDownLeft
+47-4051,"Highway maintenance workers",CornerDownRight
+47-4061,"Rail-track laying and maintenance equipment operators",CornerLeftDown
+47-4071,"Septic tank servicers and sewer pipe cleaners",CornerLeftUp
+47-4090,"Miscellaneous construction and related workers",CornerRightDown
+47-5011,"Derrick operators, oil and gas",CornerRightUp
+47-5012,"Rotary drill operators, oil and gas",CornerUpLeft
+47-5013,"Service unit operators, oil and gas",CornerUpRight
+47-5022,"Excavating and loading machine and dragline operators, surface mining",CreativeCommons
+47-5023,"Earth drillers, except oil and gas",CreditCard
+47-5032,"Explosives workers, ordnance handling experts, etc",Croissant
+47-5041,"Continuous mining machine operators",Crop
+47-5043,"Roof bolters, mining",Cross
+47-5044,"Loading and moving machine operators, underground mining",Crosshair
+47-5049,"Underground mining machine operators, all other",Crown
+47-5051,"Rock splitters, quarry",Cuboid
+47-5071,"Roustabouts, oil and gas",CurlyBraces
+47-5081,"Helpers--extraction workers",Currency
+47-5099,"Extraction workers, all other",Cylinder
+49-1011,"First-line supervisors of mechanics, installers, etc",Dam
+49-2011,"Computer, automated teller, etc",DatabaseBackup
+49-2021,"Radio, cellular, etc",DatabaseZap
+49-2022,"Telecommunications equipment installers and repairers, except line installers",Database
+49-2091,"Avionics technicians",DecimalsArrowLeft
+49-2092,"Electric motor, power tool, etc",SolarPanel
+49-2093,"Electrical and electronics installers and repairers, transportation equipment",DecimalsArrowRight
+49-2094,"Electrical and electronics repairers, commercial and industrial equipment",Delete
+49-2095,"Electrical and electronics repairers, powerhouse, etc",Dessert
+49-2096,"Electronic equipment installers and repairers, motor vehicles",Diameter
+49-2097,"Audiovisual equipment installers and repairers",DiamondMinus
+49-2098,"Security and fire alarm systems installers",DiamondPercent
+49-3011,"Aircraft mechanics and service technicians",DiamondPlus
+49-3021,"Automotive body and related repairers",Diamond
+49-3022,"Automotive glass installers and repairers",Dice1
+49-3023,"Automotive service technicians and mechanics",Dice2
+49-3031,"Bus and truck mechanics and diesel engine specialists",Dice3
+49-3041,"Farm equipment mechanics and service technicians",Dice4
+49-3042,"Mobile heavy equipment mechanics, except engines",Dice5
+49-3043,"Rail car repairers",Dice6
+49-3051,"Motorboat mechanics and service technicians",Dices
+49-3052,"Motorcycle mechanics",Diff
+49-3053,"Outdoor power equipment and other small engine mechanics",Disc2
+49-3091,"Bicycle repairers",Disc3
+49-3092,"Recreational vehicle service technicians",DiscAlbum
+49-3093,"Tire repairers and changers",Disc
+49-9011,"Mechanical door repairers",DivideCircle
+49-9012,"Control and valve installers and repairers, except mechanical door",DivideSquare
+49-9021,"Heating, air conditioning, etc",Divide
+49-9031,"Home appliance repairers",DnaOff
+49-9041,"Industrial machinery mechanics",Dna
+49-9043,"Maintenance workers, machinery",Dock
+49-9044,"Millwrights",Dog
+49-9045,"Refractory materials repairers, except brickmasons",DollarSign
+49-9051,"Electrical power-line installers and repairers",Donut
+49-9052,"Telecommunications line installers and repairers",DoorClosedLocked
+49-9061,"Camera and photographic equipment repairers",DoorClosed
+49-9062,"Medical equipment repairers",DoorOpen
+49-9063,"Musical instrument repairers and tuners",DotSquare
+49-9064,"Watch and clock repairers",Dot
+49-9069,"Precision instrument and equipment repairers, all other",DownloadCloud
+49-9071,"Maintenance and repair workers, general",Download
+49-9081,"Wind turbine service technicians",Drama
+49-9091,"Coin, vending, etc",Dribbble
+49-9092,"Commercial divers",Drill
+49-9094,"Locksmiths and safe repairers",Drone
+49-9095,"Manufactured building and mobile home installers",DropletOff
+49-9096,"Riggers",Droplet
+49-9097,"Signal and track switch repairers",Droplets
+49-9098,"Helpers--installation, maintenance, etc",Drum
+49-9099,"Installation, maintenance, etc",Drumstick
+51-1011,"First-line supervisors of production and operating workers",Dumbbell
+51-2011,"Aircraft structure, surfaces, etc",EarOff
+51-2021,"Coil winders, tapers, etc",Ear
+51-2028,"Electrical, electronic, etc",EarthLock
+51-2031,"Engine and other machine assemblers",Earth
+51-2041,"Structural metal fabricators and fitters",Eclipse
+51-2051,"Fiberglass laminators and fabricators",Edit2
+51-2061,"Timing device assemblers and adjusters",Edit3
+51-2090,"Miscellaneous assemblers and fabricators",Edit
+51-3011,"Bakers",EggFried
+51-3021,"Butchers and meat cutters",EggOff
+51-3022,"Meat, poultry, etc",Egg
+51-3023,"Slaughterers and meat packers",EllipsisVertical
+51-3091,"Food and tobacco roasting, baking, etc",Ellipsis
+51-3092,"Food batchmakers",EqualApproximately
+51-3093,"Food cooking machine operators and tenders",EqualNot
+51-3099,"Food processing workers, all other",EqualSquare
+51-4021,"Extruding and drawing machine setters, operators, etc",Equal
+51-4022,"Forging machine setters, operators, etc",Eraser
+51-4023,"Rolling machine setters, operators, etc",EthernetPort
+51-4031,"Cutting, punching, etc",Euro
+51-4032,"Drilling and boring machine tool setters, operators, etc",EvCharger
+51-4033,"Grinding, lapping, etc",Expand
+51-4034,"Lathe and turning machine tool setters, operators, etc",ExternalLink
+51-4035,"Milling and planing machine setters, operators, etc",EyeClosed
+51-4041,"Machinists",EyeOff
+51-4051,"Metal-refining furnace operators and tenders",Eye
+51-4052,"Pourers and casters, metal",Facebook
+51-4061,"Model makers, metal and plastic",Fan
+51-4062,"Patternmakers, metal and plastic",FastForward
+51-4071,"Foundry mold and coremakers",Feather
+51-4072,"Molding, coremaking, etc",Fence
+51-4081,"Multiple machine tool setters, operators, etc",FerrisWheel
+51-4111,"Tool and die makers",Figma
+51-4121,"Welders, cutters, etc",FileArchive
+51-4122,"Welding, soldering, etc",FileAudio2
+51-4191,"Heat treating equipment setters, operators, etc",FileAudio
+51-4192,"Layout workers, metal and plastic",FileAxis3D
+51-4193,"Plating machine setters, operators, etc",FileAxis3d
+51-4194,"Tool grinders, filers, etc",FileBadge2
+51-4199,"Metal workers and plastic workers, all other",FileBadge
+51-5111,"Prepress technicians and workers",FileBarChart2
+51-5112,"Printing press operators",FileBarChart
+51-5113,"Print binding and finishing workers",FileBox
+51-6011,"Laundry and dry-cleaning workers",FileBracesCorner
+51-6021,"Pressers, textile, etc",FileBraces
+51-6031,"Sewing machine operators",FileChartColumnIncreasing
+51-6041,"Shoe and leather workers and repairers",FileChartColumn
+51-6042,"Shoe machine operators and tenders",FileChartLine
+51-6051,"Sewers, hand",FileChartPie
+51-6052,"Tailors, dressmakers, etc",FileCheck2
+51-6061,"Textile bleaching and dyeing machine operators and tenders",FileCheckCorner
+51-6062,"Textile cutting machine setters, operators, etc",FileCheck
+51-6063,"Textile knitting and weaving machine setters, operators, etc",FileClock
+51-6064,"Textile winding, twisting, etc",FileCode2
+51-6091,"Extruding and forming machine setters, operators, etc",FileCodeCorner
+51-6092,"Fabric and apparel patternmakers",FileCode
+51-6093,"Upholsterers",FileCog2
+51-6099,"Textile, apparel, etc",FileCog
+51-7011,"Cabinetmakers and bench carpenters",FileDiff
+51-7021,"Furniture finishers",FileDigit
+51-7031,"Model makers, wood",FileDown
+51-7032,"Patternmakers, wood",FileEdit
+51-7041,"Sawing machine setters, operators, etc",FileExclamationPoint
+51-7042,"Woodworking machine setters, operators, etc",FileHeadphone
+51-7099,"Woodworkers, all other",FileHeart
+51-8011,"Nuclear power reactor operators",FileImage
+51-8012,"Power distributors and dispatchers",FileInput
+51-8013,"Power plant operators",FileJson2
+51-8021,"Stationary engineers and boiler operators",FileJson
+51-8031,"Water and wastewater treatment plant and system operators",FileKey2
+51-8091,"Chemical plant and system operators",FileKey
+51-8092,"Gas plant operators",FileLineChart
+51-8093,"Petroleum pump system operators, refinery operators, etc",FileLock2
+51-8099,"Plant and system operators, all other",FileLock
+51-9011,"Chemical equipment operators and tenders",FileMinus2
+51-9012,"Separating, filtering, etc",FileMinusCorner
+51-9021,"Crushing, grinding, etc",FileMinus
+51-9022,"Grinding and polishing workers, hand",FileMusic
+51-9023,"Mixing and blending machine setters, operators, etc",FileOutput
+51-9031,"Cutters and trimmers, hand",FilePenLine
+51-9032,"Cutting and slicing machine setters, operators, etc",FilePen
+51-9041,"Extruding, forming, etc",FilePieChart
+51-9051,"Furnace, kiln, etc",FilePlay
+51-9061,"Inspectors, testers, etc",FilePlus2
+51-9071,"Jewelers and precious stone and metal workers",FilePlusCorner
+51-9081,"Dental laboratory technicians",FilePlus
+51-9082,"Medical appliance technicians",Wrench
+51-9083,"Ophthalmic laboratory technicians",Eye
+51-9111,"Packaging and filling machine operators and tenders",FileScan
+51-9123,"Painting, coating, etc",FileSearch2
+51-9124,"Coating, painting, etc",FileSearchCorner
+51-9141,"Semiconductor processing technicians",FileSearch
+51-9151,"Photographic process workers and processing machine operators",FileSignal
+51-9161,"Computer numerically controlled tool operators",FileSignature
+51-9162,"Computer numerically controlled tool programmers",FileSliders
+51-9191,"Adhesive bonding machine operators and tenders",FileSpreadsheet
+51-9192,"Cleaning, washing, etc",FileStack
+51-9193,"Cooling and freezing equipment operators and tenders",FileSymlink
+51-9194,"Etchers and engravers",FileTerminal
+51-9195,"Molders, shapers, etc",FileText
+51-9196,"Paper goods machine setters, operators, etc",FileType2
+51-9197,"Tire builders",FileTypeCorner
+51-9198,"Helpers--production workers",FileType
+51-9199,"Production workers, all other",FileUp
+53-1041,"Aircraft cargo handling supervisors",FileUser
+53-1047,"First-line supervisors of transportation and material moving workers, except aircraft cargo handling supervisors",UsersRound
+53-2011,"Airline pilots, copilots, etc",FileVideoCamera
+53-2012,"Commercial pilots",FileVideo
+53-2021,"Air traffic controllers",FileVolume2
+53-2022,"Airfield operations specialists",FileVolume
+53-2031,"Flight attendants",FileWarning
+53-3011,"Ambulance drivers and attendants, except emergency medical technicians",FileX2
+53-3031,"Driver/sales workers",FileXCorner
+53-3032,"Heavy and tractor-trailer truck drivers",FileX
+53-3033,"Light truck drivers",File
+53-3051,"Bus drivers, school",Files
+53-3052,"Bus drivers, transit and intercity",Film
+53-3053,"Shuttle drivers and chauffeurs",FilterX
+53-3054,"Taxi drivers",Filter
+53-3099,"Motor vehicle operators, all other",FingerprintPattern
+53-4011,"Locomotive engineers",FireExtinguisher
+53-4013,"Rail yard engineers, dinkey operators, etc",FishOff
+53-4022,"Railroad brake, signal, etc",FishSymbol
+53-4031,"Railroad conductors and yardmasters",Fish
+53-4041,"Subway and streetcar operators",FlagOff
+53-4099,"Rail transportation workers, all other",FlagTriangleLeft
+53-5011,"Sailors and marine oilers",FlagTriangleRight
+53-5021,"Captains, mates, etc",Flag
+53-5022,"Motorboat operators",FlameKindling
+53-5031,"Ship engineers",FlashlightOff
+53-6011,"Bridge and lock tenders",Flashlight
+53-6021,"Parking attendants",FlaskConicalOff
+53-6031,"Automotive and watercraft service attendants",FlaskRound
+53-6032,"Aircraft service attendants",FlipHorizontal2
+53-6041,"Traffic technicians",FlipHorizontal
+53-6051,"Transportation inspectors",FlipVertical2
+53-6061,"Passenger attendants",FlipVertical
+53-6099,"Transportation workers, all other",Flower2
+53-7011,"Conveyor operators and tenders",Flower
+53-7021,"Crane and tower operators",Focus
+53-7031,"Dredge operators",FoldHorizontal
+53-7041,"Hoist and winch operators",FoldVertical
+53-7051,"Industrial truck and tractor operators",FolderArchive
+53-7061,"Cleaners of vehicles and equipment",FolderCheck
+53-7062,"Laborers and freight, stock, etc",FolderClock
+53-7063,"Machine feeders and offbearers",FolderClosed
+53-7064,"Packers and packagers, hand",FolderCode
+53-7065,"Stockers and order fillers",FolderCog2
+53-7071,"Gas compressor and gas pumping station operators",FolderCog
+53-7072,"Pump operators, except wellhead pumpers",FolderDot
+53-7073,"Wellhead pumpers",FolderDown
+53-7081,"Refuse and recyclable material collectors",FolderEdit
+53-7121,"Tank car, truck, etc",FolderGit2
+53-7199,"Material moving workers, all other",FolderGit

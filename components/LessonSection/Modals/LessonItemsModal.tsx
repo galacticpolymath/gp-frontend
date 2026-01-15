@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Button, Modal, CloseButton } from "react-bootstrap";
 import { ILessonItem, useModalContext } from "../../../providers/ModalProvider";
 import { TbDownload } from "react-icons/tb";
@@ -6,7 +6,7 @@ import { TbExternalLink } from "react-icons/tb";
 import { useUserContext } from "../../../providers/UserProvider";
 import { useLessonContext } from "../../../providers/LessonProvider";
 import { FaChevronRight, FaChevronLeft } from "react-icons/fa";
-import { CopyLessonBtnUI } from "../TeachIt/CopyLessonBtn";
+import { CopyLessonBtnUI, LessonItemLink } from "../TeachIt/CopyLessonBtn";
 import useSiteSession from "../../../customHooks/useSiteSession";
 import Image from "next/image";
 import { FcGoogle } from "react-icons/fc";
@@ -217,6 +217,12 @@ const LessonItemDownloadBtnsDropDown: React.FC<{
   );
 };
 
+type TLessonItemUrlCreatorFn = (itemId: string) => string
+const LESSON_ITEM_URL_CREATOR_FNS: Record<string, TLessonItemUrlCreatorFn> = {
+  document: (itemId: string) => `https://docs.google.com/document/d/${itemId}`,
+  presentation: (itemId: string) => `https://docs.google.com/presentation/d/${itemId}`,
+}
+
 const LessonItemsModal: React.FC = () => {
   const { _lessonItemModal, _isGpPlusModalDisplayed } = useModalContext();
   const { _isGpPlusMember, _isUserTeacher: [isUserTeacher] } = useUserContext();
@@ -226,8 +232,6 @@ const LessonItemsModal: React.FC = () => {
   const [idsOfLessonsBeingCopied] = _idsOfLessonsBeingCopied;
   const router = useRouter();
   const [lessonItemModal, setLessonItemModal] = _lessonItemModal;
-  const rightArrownRef = useRef<HTMLButtonElement>(null);
-  const leftArrownRef = useRef<HTMLButtonElement>(null);
   const [isGpPlusModalDisplayed, setIsGpPlusModalDisplayed] =
     _isGpPlusModalDisplayed;
   const [isGpPlusMember] = _isGpPlusMember;
@@ -274,14 +278,25 @@ const LessonItemsModal: React.FC = () => {
   console.log("lessonItems, hey there; ", lessonItems);
 
   const currentLessonItem = lessonItems[currentIndex] ?? {};
-  console.log("currentLessonItem: ", currentLessonItem);
   const {
     docUrl: currentLessonItemDocUrl,
     itemTitle: currentLessonItemName,
     itemCat,
     itemType,
     externalUrl,
+    userGDriveItemCopyId
   } = currentLessonItem;
+  const itemUrl = useMemo(() => {
+    if (itemCat && LESSON_ITEM_URL_CREATOR_FNS[itemCat] && userGDriveItemCopyId) {
+      const createUrl = LESSON_ITEM_URL_CREATOR_FNS[itemCat];
+
+      return createUrl(userGDriveItemCopyId)
+    }
+
+    return null;
+  }, [currentIndex, isDisplayed])
+  console.log("itmeUrl, yo there: ", itemUrl);
+  console.log("currentLessonItem: ", currentLessonItem);
   const isTeacherItem = currentLessonItemName ? currentLessonItemName.toLowerCase().includes('teacher') : false;
 
   const handleDownloadPdfBtnClick = () => {
@@ -331,15 +346,6 @@ const LessonItemsModal: React.FC = () => {
     });
   };
 
-  const handleCarouselNavBtnClick = (navDirection: "left" | "right") => () => {
-    if (navDirection === "right") {
-      rightArrownRef.current?.click();
-      return;
-    }
-
-    leftArrownRef.current?.click();
-  };
-
   const handleCopyLessonBtnClick = () => {
     copyLessonBtnRef?.current?.click();
   };
@@ -372,10 +378,6 @@ const LessonItemsModal: React.FC = () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
   }, []);
-
-  useEffect(() => {
-    console.log("current lesson item: ", currentLessonItem);
-  });
 
   return (
     <>
@@ -422,49 +424,52 @@ const LessonItemsModal: React.FC = () => {
                 }`}
             >
               {isGpPlusMember ? (
-                <CopyLessonBtnUI
-                  btnRef={null}
-                  btnClassName="p-2 py-sm-2 px-md-3 col-12"
-                  isLoading={idsOfLessonsBeingCopied.has(lessonId!)}
-                  disabled={idsOfLessonsBeingCopied.has(lessonId!)}
-                  isCopyingLesson={idsOfLessonsBeingCopied.has(lessonId!)}
-                  isGpPlusMember={isGpPlusMember}
-                  gdriveAccessToken={gdriveAccessToken}
-                  onClick={handleCopyLessonBtnClick}
-                  btnWrapperClassName="d-flex justify-content-center align-items-center"
-                  childrenClassName="d-flex flex-row flex-md-row align-items-center justify-content-center gap-2"
-                  btnStyles={{
-                    minHeight: "51px",
-                    backgroundColor: "white",
-                    border: "solid 3px #2339C4",
-                    borderRadius: "2em",
-                    textTransform: "none",
-                  }}
-                >
-                  <div
-                    style={{ lineHeight: "23px", fontSize: "18px" }}
-                    className="d-flex flex-column text-black"
+                <div className={`d-flex justify-content-end align-items-end justify-content-sm-center align-items-sm-center flex-column ${itemUrl ? 'pb-2' : ''}`}>
+                  <CopyLessonBtnUI
+                    btnRef={null}
+                    btnClassName="p-2 py-sm-2 px-md-3 col-12"
+                    isLoading={idsOfLessonsBeingCopied.has(lessonId!)}
+                    disabled={idsOfLessonsBeingCopied.has(lessonId!)}
+                    isCopyingLesson={idsOfLessonsBeingCopied.has(lessonId!)}
+                    isGpPlusMember={isGpPlusMember}
+                    gdriveAccessToken={gdriveAccessToken}
+                    onClick={handleCopyLessonBtnClick}
+                    btnWrapperClassName="d-flex justify-content-center align-items-center"
+                    childrenClassName="d-flex flex-row flex-md-row align-items-center justify-content-center gap-2"
+                    btnStyles={{
+                      minHeight: "51px",
+                      backgroundColor: "white",
+                      border: "solid 3px #2339C4",
+                      borderRadius: "2em",
+                      textTransform: "none",
+                    }}
                   >
-                    {isGpPlusMember && !gdriveAccessToken && (
-                      <>
-                        <p className="p-0 m-0 d-none d-md-block">
-                          Authenticate w/ Google Drive & Copy lesson
-                        </p>
-                        <div className="p-0 m-0 d-block d-md-none">
-                          Sign in w/ <FcGoogle /> Drive & Copy lesson
-                        </div>
-                      </>
-                    )}
-                    {isGpPlusMember &&
-                      gdriveAccessToken &&
-                      (userGDriveLessonFolderId
-                        ? "Bulk copy to my Google Drive again"
-                        : "Bulk copy to my Google Drive")}
-                    {!isGpPlusMember && (
-                      <>Subscribe to copy this lesson to your Google Drive</>
-                    )}
-                  </div>
-                </CopyLessonBtnUI>
+                    <div
+                      style={{ lineHeight: "23px", fontSize: "18px" }}
+                      className="d-flex flex-column text-black"
+                    >
+                      {isGpPlusMember && !gdriveAccessToken && (
+                        <>
+                          <p className="p-0 m-0 d-none d-md-block">
+                            Authenticate w/ Google Drive & Copy lesson
+                          </p>
+                          <div className="p-0 m-0 d-block d-md-none">
+                            Sign in w/ <FcGoogle /> Drive & Copy lesson
+                          </div>
+                        </>
+                      )}
+                      {isGpPlusMember &&
+                        gdriveAccessToken &&
+                        (userGDriveLessonFolderId
+                          ? "Bulk copy to my Google Drive again"
+                          : "Bulk copy to my Google Drive")}
+                      {!isGpPlusMember && (
+                        <>Subscribe to copy this lesson to your Google Drive</>
+                      )}
+                    </div>
+                  </CopyLessonBtnUI>
+                  {itemUrl && <LessonItemLink txt="Your latest copy for this item is linked " href={itemUrl} />}
+                </div>
               ) : (
                 <Button
                   style={{

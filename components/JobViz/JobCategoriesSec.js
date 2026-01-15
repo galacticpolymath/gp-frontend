@@ -54,7 +54,7 @@ const JobCategoriesSec = ({ dynamicJobResults, currentHierarchyNum, resetSearch 
         if (pathname == '/jobviz') {
             const baseUrl = `${window.location.origin}/jobviz/${nextLevelHierarchyNum}/${level}/${currentJobsCategoryId}`
             const urlUpdated = searchParamsStr.length ? `${baseUrl}?${searchParamsStr}` : baseUrl;
-            router.push(urlUpdated, null, { scroll: false })
+            router.push(urlUpdated, null, { scroll: false, shallow: true })
             return;
         }
 
@@ -68,7 +68,7 @@ const JobCategoriesSec = ({ dynamicJobResults, currentHierarchyNum, resetSearch 
         const baseUrl = `${window.location.origin}/jobviz/${nextLevelHierarchyNum}/${level}/${jobCategoryIds.join('/')}`
         const urlUpdated = searchParamsStr.length ? `${baseUrl}?${searchParamsStr}` : baseUrl;
 
-        router.push(urlUpdated, null, { scroll: false })
+        router.push(urlUpdated, null, { scroll: false, shallow: true })
     }
 
     return (

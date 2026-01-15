@@ -11,6 +11,17 @@ import {
 import readline from 'node:readline';
 import { TEnvironment } from '../../types/global';
 
+/**
+ * ⚠️  This migration test performs real writes against the production database
+ * and requires interactive readline confirmations. Automated environments will
+ * hang forever waiting for input, so keep it skipped unless you intentionally
+ * run it locally.
+ *
+ * To re-enable:
+ *   1. Change `maybeTest` at the bottom to `test`.
+ *   2. Run it outside CI so you can respond to the prompts.
+ */
+
 const migrateUserToV2 = (user: TUserSchemaForClient) => {
   let migratedVals: Partial<IAboutUserFormNewFieldsV1> = {};
 
@@ -182,7 +193,15 @@ function ask(query: string): Promise<string> {
 const RED = '\\x1b[31m';
 const DEFAULT = '\\x1b[0m';
 
-test('Will perform user test migration to v2', async () => {
+const shouldRunProdMigrationTest =
+  typeof process !== 'undefined' &&
+  process.stdin &&
+  process.stdin.isTTY &&
+  !process.env.CI;
+
+const maybeTest = shouldRunProdMigrationTest ? test : test.skip;
+
+maybeTest('Will perform user test migration to v2', async () => {
   try {
     const { MIGRATION_ACCESS_TOKEN } = process.env;
     const headers = {

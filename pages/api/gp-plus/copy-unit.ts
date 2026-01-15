@@ -24,6 +24,8 @@ import { nanoid } from "nanoid";
 import { deleteCacheVal, setCacheVal } from "../../../backend/helperFns";
 import { GDriveItem } from "../../../backend/services/gdriveServices";
 
+export const runtime = "nodejs";
+
 export const maxDuration = 300;
 const USER_GP_PLUS_PARENT_FOLDER_NAME = "My GP+ Units";
 

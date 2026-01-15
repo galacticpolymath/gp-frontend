@@ -19,22 +19,23 @@ import {
   INewUnitSchema,
   ISections,
   TFeaturedMultimediaForUI,
+  TSectionsForUI,
+  TUnitForUI,
 } from '../../../../../backend/models/Unit/types/unit';
 import { IUnitOverview } from '../../../../../backend/models/Unit/types/overview';
 import { IStandards } from '../../../../../backend/models/Unit/types/standards';
 import { IUnitTeachingMaterials } from '../../../../../backend/models/Unit/types/teachingMaterials';
 import UnitPreviewUI from '../../../../../components/UnitPreview/UnitPreviewUI';
 import { UNITS_URL_PATH } from '../../../../../shared/constants';
+import { updateOverviewSection } from '..';
+import { getStandards, IOverviewProps } from '../../../../../components/LessonSection/Overview';
 
 interface IProps {
   lesson?: any;
-  unit?: INewUnitSchema<
-    ISections<IUnitOverview, IStandards, IUnitTeachingMaterials>,
-    TFeaturedMultimediaForUI
-  >;
+  unit?: TUnitForUI;
 }
 
-const LessonPreview = ({ lesson, unit }: IProps) => {
+const LessonPreview: React.FC<IProps> = ({ lesson, unit }) => {
   const latestSubRelease = lesson?.Section
     ? getLatestSubRelease(lesson?.Section)
     : {};
@@ -83,14 +84,35 @@ const LessonPreview = ({ lesson, unit }: IProps) => {
     const latestSubRelease = getLatestSubRelease(
       unit.Sections?.overview?.versions
     );
+    let jobVizCareerConnections: IOverviewProps["jobVizCareerConnections"];
+    let overview: IOverviewProps | undefined;
+
+    if (unit.Sections?.overview && unit) {
+      overview = updateOverviewSection(unit.Sections?.overview, unit) as IOverviewProps
+      jobVizCareerConnections = overview.jobVizCareerConnections;
+    }
+
+    const targetStandardCodes: IOverviewProps["TargetStandardsCodes"] = overview?.TargetStandardsCodes;
+    let areTargetStandardsValid = false;
+    let standards: ReturnType<typeof getStandards> | undefined;
+
+    if (targetStandardCodes) {
+      areTargetStandardsValid = !!targetStandardCodes!.every(
+        (standard) =>
+          typeof standard?.code === 'string' &&
+          typeof standard?.dim === 'string' &&
+          typeof standard?.set === 'string' &&
+          typeof standard?.subject === 'string'
+      );
+      standards = getStandards(targetStandardCodes!)
+    }
 
     return (
       <UnitPreviewUI
-        areTargetStandardsValid={
-          lesson?.Section?.overview?.TargetStandardsCodes?.length > 0
-        }
-        standards={lesson?.Section?.overview?.TargetStandardsCodes}
-        TargetStandardsCodes={lesson?.Section?.overview?.TargetStandardsCodes}
+        areTargetStandardsValid={areTargetStandardsValid}
+        jobVizCareerConnections={jobVizCareerConnections}
+        standards={standards}
+        TargetStandardsCodes={targetStandardCodes ?? undefined}
         latestSubRelease={latestSubRelease}
         Title={unit?.Title}
         Subtitle={unit?.Subtitle}
@@ -407,6 +429,11 @@ export const getStaticPaths = async () => {
       'An error has occurred in getting the available paths for the selected lesson page. Error message: ',
       error
     );
+
+    return {
+      paths: [],
+      fallback: false,
+    };
   }
 };
 

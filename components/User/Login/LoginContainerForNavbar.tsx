@@ -159,7 +159,12 @@ const LoginContainerForNavbar: React.FC<IProps> = ({ _modalAnimation }) => {
 
     console.log("User signed out successfully");
 
-    const isUserSignedIn = !!(await (window.Outseta as any).getAccessToken());
+    const outseta = (window as any)?.Outseta;
+    const canReadOutsetaToken =
+      outseta && typeof outseta.getAccessToken === "function";
+    const isUserSignedIn = canReadOutsetaToken
+      ? Boolean(await outseta.getAccessToken())
+      : false;
 
     if (!isUserSignedIn) {
       console.log("No user found in outseta. Will reload.");

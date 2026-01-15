@@ -6,6 +6,16 @@ import Link from 'next/link';
 const AuthResultPg = () => {
   const session = useSession();
   const [wasRendered, setWasRendered] = useState(false);
+  const layoutProps = {
+    title: 'Authentication Result | Galactic Polymath',
+    description: 'View the result of your Galactic Polymath authentication attempt.',
+    url: 'https://teach.galacticpolymath.com/auth-result',
+    canonicalLink: 'https://teach.galacticpolymath.com/auth-result',
+    imgSrc: '/imgs/gp-logos/GP_Stacked_logo+wordmark_gradient_transBG.png',
+    imgAlt: 'Galactic Polymath Logo',
+    indexable: false,
+    langLinks: [],
+  };
 
   useEffect(() => {
     setTimeout(() => {
@@ -15,7 +25,7 @@ const AuthResultPg = () => {
 
   if (!wasRendered) {
     return (
-      <Layout>
+      <Layout {...layoutProps}>
         <div style={{ minHeight: '100vh', paddingTop: '10px' }} className="container pt-4">
           <h1>Loading, please wait...</h1>
         </div>
@@ -25,7 +35,7 @@ const AuthResultPg = () => {
 
   if (!session && wasRendered) {
     return (
-      <Layout>
+      <Layout {...layoutProps}>
         <div style={{ minHeight: '100vh', paddingTop: '10px' }} className="container pt-4">
           <h1>This page is for the authentication result with google.</h1>
         </div>
@@ -35,7 +45,7 @@ const AuthResultPg = () => {
 
   if (!session?.data?.token && wasRendered) {
     return (
-      <Layout>
+      <Layout {...layoutProps}>
         <div style={{ minHeight: '100vh', paddingTop: '10px' }} className="container pt-4">
           <h1>Failed to generate token. You may have been authenticated already. Please try again.</h1>
         </div>
@@ -44,7 +54,7 @@ const AuthResultPg = () => {
   }
 
   return (
-    <Layout>
+    <Layout {...layoutProps}>
       <div style={{ minHeight: '100vh', paddingTop: '10px' }} className="container pt-4">
         <p
           style={{

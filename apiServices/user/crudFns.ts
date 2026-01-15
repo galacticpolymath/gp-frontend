@@ -1,7 +1,7 @@
 /* eslint-disable quotes */
- 
+
 /* eslint-disable no-console */
- 
+
 import axios, { AxiosError, AxiosHeaders } from "axios";
 import cookies from "js-cookie";
 import {
@@ -41,8 +41,8 @@ export const updateUser = async (
 
     if (query &&
       (("id" in query && typeof query.id !== "string") ||
-      ("email" in query && typeof query.email !== "string") ||
-      ("emali" in query && "id" in query))
+        ("email" in query && typeof query.email !== "string") ||
+        ("emali" in query && "id" in query))
     ) {
       throw new Error(
         'The "id" and "email" parameters must be strings. Both cannot be present.'
@@ -238,7 +238,6 @@ export const getIndividualGpPlusSubscription = async (token: string) => {
     });
 
     console.log("Response object: ", response);
-    console.log("Response, sup there: ", response.data);
     console.log("Response status: ", response.status);
 
     if (response.status !== 200) {
@@ -247,7 +246,6 @@ export const getIndividualGpPlusSubscription = async (token: string) => {
       );
     }
 
-    console.log("Will return the data sup there...");
 
     return response.data;
   } catch (error) {
@@ -288,8 +286,6 @@ export const getUserPlanDetails = async (
         `Failed to get individual GP+ subscription. Status code: ${response.status}`
       );
     }
-
-    console.log("Will return the data sup there...");
 
     return response.data;
   } catch (error) {

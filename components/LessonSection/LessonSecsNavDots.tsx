@@ -48,7 +48,6 @@ const LessonsSecsNavDots = ({
   };
 
   const handleMouseLeave = () => {
-    console.log("sup there, handleMouseLeave");
     setSectionDots((sectionDots) => {
       return {
         ...sectionDots,

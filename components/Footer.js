@@ -34,13 +34,34 @@ const SOCIAL_MEDIA_ITEMS = [
       alt='teachers pay teachers Galactic Polymath link'
           />,
   },
+];
+
+const RESOURCE_LINKS = [
   {
-    link: 'https://www.galacticpolymath.com/blog',
-    icon: <p className='mb-0 text-lg text-nowrap fw-normal text-white'>Blog</p>,
+    href: 'https://www.galacticpolymath.com/plus',
+    label: 'Get More with GP+',
   },
   {
-    link: 'https://www.galacticpolymath.com',
-    icon: <p className='mb-0 text-lg text-nowrap fw-normal text-white'>Main Site</p>,
+    href: 'https://www.galacticpolymath.com/for-scientists',
+    label: 'Hire Us',
+  },
+  {
+    href: 'https://www.galacticpolymath.com/blog',
+    label: 'Teacher ↔ Scientist Blog',
+  },
+  {
+    href: 'https://www.galacticpolymath.com/about',
+    label: 'About',
+  },
+];
+const POLICY_LINKS = [
+  {
+    href: 'https://www.galacticpolymath.com/terms-and-conditions',
+    label: 'Terms & Conditions',
+  },
+  {
+    href: 'https://www.galacticpolymath.com/privacy-policy',
+    label: 'Privacy Policy',
   },
 ];
 
@@ -50,7 +71,7 @@ export default function Footer() {
 
   return (
     <footer className={`pt-4 bg-dark-gray text-white ${disableFooter ? 'pe-none' : ''}`}>
-      <div className="container py-4 row mx-auto gap-2 gap-lg-0">
+      <div className="container py-4 row mx-auto g-4">
         <div className="col-12 col-lg-5">
           <h4 className="fs-5">Galactic Polymath</h4>
           <p>We translate current research into creative interdisciplinary lessons for grades 5+ that are <em>free for everyone.</em></p>
@@ -95,15 +116,44 @@ export default function Footer() {
           </a>
         </div>
       </div>
-      <div className="bg-dark text-center text-gray py-3 fs-7">
-        made with
-        <span
-          role="img"
-          aria-label="heart"
-          className='mx-1'
-        >
-          ❤️
-        </span> by Galactic Polymath &copy; {new Date().getFullYear()}
+      <div className="bg-dark py-3">
+        <div className="container d-flex flex-column flex-md-row align-items-center justify-content-between gap-3 text-gray">
+          <div className="text-center text-md-start fs-7">
+            made with
+            <span role="img" aria-label="heart" className="mx-1">
+              ❤️
+            </span>
+            by Galactic Polymath &copy; {new Date().getFullYear()}
+          </div>
+          <div className="d-flex flex-column flex-sm-row align-items-center gap-3">
+            <div className="d-flex flex-wrap justify-content-center gap-3">
+              {RESOURCE_LINKS.map(({ href, label }) => (
+                <Link
+                  key={href}
+                  className="text-white text-decoration-none linkHover fs-7"
+                  href={href}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  {label}
+                </Link>
+              ))}
+            </div>
+            <div className="d-flex flex-wrap justify-content-center gap-3">
+              {POLICY_LINKS.map(({ href, label }) => (
+                <Link
+                  key={href}
+                  className="text-white text-decoration-none linkHover fs-7"
+                  href={href}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  {label}
+                </Link>
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
     </footer>
   );

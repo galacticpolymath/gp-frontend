@@ -179,8 +179,6 @@ export const getGpPlusMembership = async (
 
     const currentSubscription = data.items?.[0];
 
-    console.log('currentSubscription, sup there: ', currentSubscription);
-
     console.log('Status code: ', status);
 
     if (status !== 200 || !currentSubscription) {
@@ -299,12 +297,12 @@ export const getSavings = async () => {
     return {
       individualGpPlusPlanSavings: plusPlanPercentSaved,
     };
-  } catch(error){
+  } catch (error) {
     console.error('An error has occurred. Failed to get savings: ', error);
 
     return null;
   }
-}; 
+};
 
 export const deleteAccount = async (
   accountId: string,
@@ -345,8 +343,7 @@ export const deleteAccount = async (
 
     if ((isNetworkError || isTimeoutError) && tries > 0) {
       console.log(
-        `Retrying account deletion for accountId: ${accountId}, attempts remaining: ${
-          tries - 1
+        `Retrying account deletion for accountId: ${accountId}, attempts remaining: ${tries - 1
         }`
       );
 

@@ -12,8 +12,8 @@ import GistCard, { IGistCard } from './GistCard';
 
 export interface IOverviewProps
   extends ITitleProps,
-    Pick<TOverviewForUI, 'TheGist' | 'EstUnitTime' | 'UnitTags' | 'Tags'>,
-    Pick<IGistCard, 'jobVizCareerConnections'> {
+  Pick<TOverviewForUI, 'TheGist' | 'EstUnitTime' | 'UnitTags' | 'Tags'>,
+  Pick<IGistCard, 'jobVizCareerConnections'> {
   Accessibility: TOverviewForUI['Accessibility'];
   Description: string;
   EstLessonTime: string;
@@ -27,6 +27,37 @@ export interface IOverviewProps
   TargetSubject: string;
   Text: string;
   _sectionDots: TUseStateReturnVal<ISectionDots>;
+}
+
+export const getStandards = (TargetStandardsCodes: TUnitForUI['TargetStandardsCodes']) => {
+  const areTargetStandardsValid = TargetStandardsCodes?.every(
+    (standard) =>
+      typeof standard?.code === 'string' &&
+      typeof standard?.dim === 'string' &&
+      typeof standard?.set === 'string' &&
+      typeof standard?.subject === 'string'
+  );
+  let standards: Record<string, Omit<ITargetStandardsCode, 'set'>[]> = {};
+
+  if (areTargetStandardsValid && TargetStandardsCodes) {
+    standards = TargetStandardsCodes.reduce((accum, stardardCodesProp) => {
+      const { set, code, dim, subject } = stardardCodesProp;
+
+      if (set in accum) {
+        return {
+          ...accum,
+          [set]: [...accum[set], { code, dim, subject }],
+        };
+      }
+
+      return {
+        ...accum,
+        [set]: [{ code, dim, subject }],
+      };
+    }, standards);
+  }
+
+  return standards
 }
 
 const Overview: React.FC<IOverviewProps> = ({
@@ -52,7 +83,7 @@ const Overview: React.FC<IOverviewProps> = ({
 }) => {
   console.log('UnitTags: ', UnitTags);
   console.log('_Tags: ', _Tags);
-  
+
   let Tags = UnitTags ?? (_Tags ? _Tags.map((tag) => tag.Value) : []);
   const areTargetStandardsValid = TargetStandardsCodes?.every(
     (standard) =>
@@ -62,48 +93,6 @@ const Overview: React.FC<IOverviewProps> = ({
       typeof standard?.subject === 'string'
   );
   let standards: Record<string, Omit<ITargetStandardsCode, 'set'>[]> = {};
-
-  const handleLinkClick = (
-    event: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
-    descriptor: Omit<ITargetStandardsCode, 'set'>
-  ) => {
-    event.preventDefault();
-    const code = (event.target as HTMLAnchorElement).href.split('#')[1];
-    console.log('code: ', code);
-    console.log('descriptor: ', descriptor);
-    const element = document.getElementById(descriptor.code);
-
-    if (element) {
-      element.scrollIntoView({
-        behavior: 'smooth',
-        block: 'center', // This centers the element vertically in the viewport
-      });
-      element.className += ' bounce-animation';
-      setTimeout(() => {
-        element.className = element.className.replace(' bounce-animation', '');
-      }, 3500);
-      return;
-    }
-
-    const elementDim = document.getElementById(descriptor.dim);
-
-    if (elementDim) {
-      elementDim.scrollIntoView({
-        behavior: 'smooth',
-        block: 'center', // This centers the element vertically in the viewport
-      });
-      elementDim.className += ' bounce-animation';
-      setTimeout(() => {
-        elementDim.className = elementDim.className.replace(
-          ' bounce-animation',
-          ''
-        );
-      }, 3500);
-      return;
-    }
-
-    console.log('code: ', code);
-  };
 
   if (areTargetStandardsValid && TargetStandardsCodes) {
     standards = TargetStandardsCodes.reduce((accum, stardardCodesProp) => {
@@ -143,9 +132,8 @@ const Overview: React.FC<IOverviewProps> = ({
     <div
       id="overview_sec"
       ref={ref}
-      className={`SectionHeading container mb-4 px-0 position-relative ${
-        SectionTitle?.replace(/[\s!]/gi, '_')?.toLowerCase() ?? ''
-      }`}
+      className={`SectionHeading container mb-4 px-0 position-relative ${SectionTitle?.replace(/[\s!]/gi, '_')?.toLowerCase() ?? ''
+        }`}
     >
       <div
         id={h2Id}

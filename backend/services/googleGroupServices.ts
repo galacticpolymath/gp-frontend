@@ -10,10 +10,10 @@ export const createGoogleAdminService = async () => {
       ['https://www.googleapis.com/auth/admin.directory.group'],
       { subject: 'matt@galacticpolymath.com' }
     );
-    
+
     return googleAdminService;
-  } catch(error){
-    console.error('An error occurred, sup there: ', error);
+  } catch (error) {
+    console.error('An error occurred: ', error);
 
     return null;
   }
@@ -29,7 +29,7 @@ export const getGoogleGroupMember = async (
     if (!_googleAdminServices) {
       throw new Error('googleAdminServices is required to get a google group member. Unable to initialize it.');
     }
-    
+
     console.log(`Retrieving google group member for ${email}`);
 
     const googleGroupMember = await (_googleAdminServices as admin_directory_v1.Admin).members.get({
@@ -39,9 +39,8 @@ export const getGoogleGroupMember = async (
 
     return googleGroupMember.data;
   } catch (error: any) {
-    console.error('An error occurred, sup there: ', error);
+    console.error('An error occurred: ', error);
     console.error('error response: ', error.response);
-    console.error('error response, java: ', error?.response?.data);
 
     return null;
   }
@@ -68,8 +67,8 @@ export const insertGoogleGroupMember = async (
     });
 
     console.log('googleGroupMember, hey there: ', googleGroupMember.data);
-    
-    if (!googleGroupMember.ok){
+
+    if (!googleGroupMember.ok) {
       throw new Error(`Failed to insert user into Google group. Email: ${email}.`);
     }
 
@@ -78,7 +77,6 @@ export const insertGoogleGroupMember = async (
       member: googleGroupMember.data,
     };
   } catch (error: any) {
-    console.error('An error occurred, sup there: ', error);
     console.error('error response: ', error.response);
     console.error('error response, java: ', error.response.data.error);
 
@@ -110,7 +108,6 @@ export const deleteGoogleGroupMember = async (
       wasSuccessful: googleGroupMember.ok,
     };
   } catch (error: any) {
-    console.error('An error occurred, sup there: ', error);
     console.error('error response: ', error.response);
     console.error('error response, java: ', error.response.data.error);
 

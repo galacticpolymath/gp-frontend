@@ -8,6 +8,7 @@ import React, {
   useState,
 } from "react";
 import { IItemForClient, TUseStateReturnVal } from "../types/global";
+import type { JobvizSharePayload } from "../components/JobViz/jobvizShareUtils";
 
 export const ModalContext = createContext<IModalProviderValue | null>(null);
 
@@ -52,6 +53,7 @@ export interface ILessonItemsModal {
 type TEmailNewsletterSignUpModal = IEmailNewsletterSignUpModal;
 
 export interface IModalProviderValue {
+  _jobvizReturnPath: TUseStateReturnVal<string | null>;
   _customModalFooter: TUseStateReturnVal<null | ReactNode>;
   _isAccountModalMobileOn: TUseStateReturnVal<boolean>;
   _isPasswordResetModalOn: TUseStateReturnVal<boolean>;
@@ -72,6 +74,22 @@ export interface IModalProviderValue {
   _lessonItemModal: TUseStateReturnVal<ILessonItemsModal>;
   _jobToursModalCssProps: TUseStateReturnVal<CSSProperties>;
   _emailNewsletterSignUpModal: TUseStateReturnVal<TEmailNewsletterSignUpModal>;
+  _jobvizSummaryModal: TUseStateReturnVal<JobvizSummaryModalState>;
+  _jobvizCompletionModal: TUseStateReturnVal<JobvizCompletionModalState>;
+}
+
+export interface JobvizSummaryModalState {
+  isDisplayed: boolean;
+  unitName?: string | null;
+  jobs?: Array<{ title: string; soc: string }>;
+  payload?: JobvizSharePayload | null;
+  allowEditing?: boolean;
+}
+
+export interface JobvizCompletionModalState {
+  isDisplayed: boolean;
+  unitName?: string | null;
+  onShare?: (() => void) | null;
 }
 
 type TSelectedJobModal = Partial<{
@@ -185,11 +203,29 @@ export const ModalProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const [customModalFooter, setCustomModalFooter] = useState<null | ReactNode>(
     null
   );
+  const [jobvizReturnPath, setJobvizReturnPath] = useState<string | null>(null);
+  const [jobvizSummaryModal, setJobvizSummaryModal] =
+    useState<JobvizSummaryModalState>({
+      isDisplayed: false,
+      jobs: [],
+      allowEditing: true,
+    });
+  const [jobvizCompletionModal, setJobvizCompletionModal] =
+    useState<JobvizCompletionModalState>({
+      isDisplayed: false,
+      onShare: null,
+    });
   const value: IModalProviderValue = {
+    _jobvizReturnPath: [jobvizReturnPath, setJobvizReturnPath],
     _jobToursModalCssProps: [jobToursModalCssProps, setJobToursModalCssProps],
     _emailNewsletterSignUpModal: [
       emailNewsletterSignUpModal,
       setEmailNewsletterSignUpModal,
+    ],
+    _jobvizSummaryModal: [jobvizSummaryModal, setJobvizSummaryModal],
+    _jobvizCompletionModal: [
+      jobvizCompletionModal,
+      setJobvizCompletionModal,
     ],
     _isCopyLessonHelperModalDisplayed: [
       isCopyLessonHelperModalDisplayed,

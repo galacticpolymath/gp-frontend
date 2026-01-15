@@ -97,6 +97,8 @@ export default async function handler(
       getMailingListContactPromise,
     ]);
 
+    console.log("userAccount: ", userAccount)
+
     if (!userAccount) {
       throw new CustomError("User not found.", 404);
     }

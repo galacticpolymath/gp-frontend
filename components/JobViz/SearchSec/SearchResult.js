@@ -27,7 +27,7 @@ const SearchResult = ({
       ? `${window.location.origin}/jobviz${paths}?${searchParamsStr}`
       : `${window.location.origin}/jobviz${paths}`;
 
-    router.push(url, url, { scroll: false });
+    router.push(url, url, { scroll: false, shallow: true });
 
     if (currentPath !== "/jobviz") {
       forceUpdateParentComp();
