@@ -6,7 +6,7 @@ import { CustomError } from '../../../backend/utils/errors';
 import { updateJobTour } from '../../../backend/services/jobTourServices';
 import { IJobTour } from '../../../backend/models/JobTour';
 
-export type TJobUpdates = Partial<Omit<IJobTour, "_id" | "userId" | "isGP">>;
+export type TJobUpdates = Partial<Omit<IJobTour, "_id" | "userId" | "isGP" | "lastEdited" | "createdDate">>;
 
 interface IReqBody {
     jobTourId: string;
@@ -32,8 +32,8 @@ export default async function handler(
             throw new CustomError('No updates provided; the `updates` object must have at least one property.', 400);
         }
 
-        if ("_id" in updates || "userId" in updates || "isGp" in updates) {
-            throw new CustomError('Modifying `_id`, `userId`, or "isGp" is not allowed.', 400);
+        if ("_id" in updates || "userId" in updates || "isGp" in updates || "lastEdited" in updates || "createdDate" in updates) {
+            throw new CustomError('Modifying the fields `_id`, `userId`, `isGp`, `lastEdited`, or `createdDate` is not allowed.', 400);
         }
 
         const { wasSuccessful: wasConnectionSuccessful } = await connectToMongodb(

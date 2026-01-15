@@ -15,8 +15,9 @@ REQUEST STRUCTURE:
 Query Parameters (all optional):
   - filterObj: string (JSON stringified object)
     Description: MongoDB filter object to filter job tours
-    Example: '{"whoCanSee": "everyone", "isGP": true}'
+    Example: '{"userId": "user-123"}' or '{"heading": "Medical jobs"}'
     Note: Must be a non-array object when parsed
+    IMPORTANT: Retrieval is only allowed when filtering by userId or heading
   
   - projectionsObj: string (JSON stringified object)
     Description: MongoDB projection object to specify which fields to return
@@ -38,7 +39,9 @@ Query Parameters (all optional):
     Note: Values can be 1, -1, 'asc', 'desc', 'ascending', 'descending'
 
 Example Request:
-  GET /api/job-tours/get?filterObj={"whoCanSee":"everyone"}&limit=10&sort={"createdDate":-1}
+  GET /api/job-tours/get?filterObj={"userId":"user-123"}&limit=10&sort={"createdDate":-1}
+  
+Note: When filtering by heading, the search is case-insensitive and uses regex matching.
 
 SUCCESSFUL RESPONSE (200):
 --------------------------
@@ -87,6 +90,10 @@ Status 500 - Internal Server Error:
 }
 OR
 {
+  "msg": "Error message: Retrieval is only allowed when filtering by userId or heading."
+}
+OR
+{
   "msg": "Error message: [error message from retrieveJobTours]"
 }
 OR
@@ -110,8 +117,6 @@ Headers:
 Request Body:
 {
   "jobTour": {
-    "createdDate": "Date" (required),
-    "lastEdited": "Date" (required),
     "version": "string" (required, format: MAJOR.MINOR.YYYYMMDD, e.g., "1.4.20250528"),
     "publishedDate": "Date" (optional),
     "whoCanSee": "just-teachers" | "me" | "everyone" (required, default: "everyone"),
@@ -127,15 +132,16 @@ Request Body:
   "dbType": "dev" | "production" (optional)
 }
 
-Note: userId is automatically extracted from JWT token and added to the job tour.
-      If user email is in VALID_GP_USERS, isGP will be set to true. The _id for the job tour will generated as well on the server.
+Note: The following fields are automatically generated on the server:
+      - _id: Generated automatically (string type)
+      - userId: Extracted from JWT token
+      - createdDate: Set to current date/time
+      - lastEdited: Set to current date/time
+      - isGP: Set to true if user email is in VALID_GP_USERS, otherwise false
 
 Example Request Body:
 {
   "jobTour": {
-    "_id": "job-tour-123",
-    "createdDate": "2024-01-01T00:00:00.000Z",
-    "lastEdited": "2024-01-01T00:00:00.000Z",
     "version": "1.0.20240101",
     "whoCanSee": "everyone",
     "classSubject": "Science",
@@ -153,8 +159,8 @@ Example Request Body:
 SUCCESSFUL RESPONSE (200):
 --------------------------
 {
-  "msg": "Job tour was saved!"
-  _id: "(The _id of the job tour db document)" 
+  "msg": "Job tour was saved!",
+  "jobTourId": "string" // The _id of the saved job tour document
 }
 
 ERROR RESPONSES:
@@ -207,48 +213,43 @@ Request Body:
 {
   "jobTourId": "string" (required),
   "updates": {
-    "version": "string" (required, format: MAJOR.MINOR.YYYYMMDD, e.g., "1.4.20250528"),
+    // All fields are optional - provide only the fields you want to update
+    "version": "string" (optional, format: MAJOR.MINOR.YYYYMMDD, e.g., "1.4.20250528"),
     "publishedDate": "Date" (optional),
-    "whoCanSee": "just-teachers" | "me" | "everyone" (required, default: "everyone"),
-    "classSubject": "string" (required),
-    "gradeLevel": "string" (required),
-    "tags": ["string"] (required, default: []),
-    "gpUnitsAssociated": ["string"] (required, default: []),
-    "explanation": "string" (required),
-    "heading": "string" (required),
-    "assignment": "string" (required),
-    "selectedJobs": ["string"] (required, default: [])
-  }
+    "whoCanSee": "just-teachers" | "me" | "everyone" (optional),
+    "classSubject": "string" (optional),
+    "gradeLevel": "string" (optional),
+    "tags": ["string"] (optional),
+    "gpUnitsAssociated": ["string"] (optional),
+    "explanation": "string" (optional),
+    "heading": "string" (optional),
+    "assignment": "string" (optional),
+    "selectedJobs": ["string"] (optional),
+    "createdDate": "Date" (optional)
+  },
   "dbType": "dev" | "production" (optional)
 }
 
-Example Request Body (as object):
+Note: 
+  - The "updates" object must have at least one property
+  - The "lastEdited" field is automatically updated to the current date/time
+  - All fields in "updates" are optional - only include the fields you want to change
+
+Example Request Body:
 {
   "jobTourId": "job-tour-123",
-  "keysAndUpdatedValsObj": {
+  "updates": {
     "heading": "Updated heading",
     "tags": ["updated", "tags"],
-    "whoCanSee": "just-teachers",
-    "lastEdited": "2024-01-02T00:00:00.000Z"
+    "whoCanSee": "just-teachers"
   },
   "dbType": "production"
 }
 
-Example Request Body (as JSON string):
-{
-  "jobTourId": "job-tour-123",
-  "keysAndUpdatedValsObj": "{\"heading\":\"Updated heading\",\"tags\":[\"updated\",\"tags\"]}",
-  "dbType": "production"
-}
-
-Note: The "lastEdited" field is automatically updated to the current date/time.
-
-Allowed Fields to Update (from IJobTour interface):
+Allowed Fields to Update:
   - createdDate
-  - lastEdited (auto-updated)
   - version
   - publishedDate
-  - isGP
   - whoCanSee
   - classSubject
   - gradeLevel
@@ -258,10 +259,12 @@ Allowed Fields to Update (from IJobTour interface):
   - heading
   - assignment
   - selectedJobs
+  - lastEdited (automatically updated, but can be explicitly set)
 
 Forbidden Fields:
   - _id (cannot be modified)
   - userId (cannot be modified)
+  - isGP (cannot be modified)
 
 SUCCESSFUL RESPONSE (200):
 --------------------------
@@ -273,11 +276,11 @@ ERROR RESPONSES:
 ---------------
 Status 400 - Bad Request:
 {
-  "msg": "Error message: `keysAndUpdatedValsObj` must be an non-array object."
+  "msg": "Error message: No updates provided; the `updates` object must have at least one property."
 }
 OR
 {
-  "msg": "Error message: Modifying `_id` or `userId` is not allowed."
+  "msg": "Error message: Modifying `_id`, `userId`, or \"isGp\" is not allowed."
 }
 
 Status 404 - Not Found:
@@ -311,25 +314,16 @@ HTTP Method: DELETE
 REQUEST STRUCTURE:
 ------------------
 Query Parameters:
-  Option 1 - Delete by _id:
-    - _id: string (required if key/val not provided)
-      Description: The _id of the job tour to delete
-  
-  Option 2 - Delete by custom query:
-    - key: string (required if _id not provided)
-      Description: Field name to match against
-    - val: string (required if _id not provided)
-      Description: Value to match
+  - ids: string | string[] (required)
+    Description: The _id(s) of the job tour(s) to delete
+    Can be a single string or an array of strings
+    If a single string is provided, it will be converted to an array
 
-Note: At least one of the following must be provided:
-      - _id, OR
-      - Both key and val
+Example Request 1 (single ID):
+  DELETE /api/job-tours/delete?ids=job-tour-123
 
-Example Request 1 (by _id):
-  DELETE /api/job-tours/delete?_id=job-tour-123
-
-Example Request 2 (by custom query):
-  DELETE /api/job-tours/delete?key=userId&val=user-456
+Example Request 2 (multiple IDs):
+  DELETE /api/job-tours/delete?ids=job-tour-123&ids=job-tour-456
 
 SUCCESSFUL RESPONSE (200):
 --------------------------
@@ -339,17 +333,14 @@ SUCCESSFUL RESPONSE (200):
 
 ERROR RESPONSES:
 ---------------
+Status 400 - Bad Request:
+{
+  "msg": "No `_id` provided in the query. Cannot delete job tour."
+}
+
 Status 500 - Internal Server Error:
 {
-  "msg": "Both `jobTourId` and `queryPair` are falsy. At least one of them must have a value."
-}
-OR
-{
   "msg": "Failed to connect to the database."
-}
-OR
-{
-  "msg": "Failed to delete job tour"
 }
 OR
 {
@@ -392,13 +383,16 @@ NOTES
 1. All routes use MongoDB for data storage
 2. Database connection timeout is 15,000ms (15 seconds)
 3. The create route requires JWT authentication via Authorization header
-4. The create route automatically sets userId from the JWT token
+4. The create route automatically generates _id, createdDate, lastEdited, and sets userId from JWT token
 5. The create route automatically sets isGP to true if user email is in VALID_GP_USERS
 6. The update route automatically updates the lastEdited field to current date/time
-7. The update route does not allow modification of _id or userId fields
-8. All error responses follow a consistent format with a "msg" field
-9. JSON stringified parameters in query strings must be properly URL-encoded
-10. Date fields should be in ISO 8601 format (e.g., "2024-01-01T00:00:00.000Z")
+7. The update route does not allow modification of _id, userId, or isGP fields
+8. The update route requires at least one field in the updates object
+9. The get route only allows filtering by userId or heading (heading uses case-insensitive regex)
+10. The delete route accepts a single ID or multiple IDs via the ids query parameter
+11. All error responses follow a consistent format with a "msg" field
+12. JSON stringified parameters in query strings must be properly URL-encoded
+13. Date fields should be in ISO 8601 format (e.g., "2024-01-01T00:00:00.000Z")
 
 ================================================================================
 END OF DOCUMENTATION
