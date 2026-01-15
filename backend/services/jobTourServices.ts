@@ -72,7 +72,7 @@ const retrieveJobTours = async (
             );
         }
 
-        const isFilterObjValid = "userId" in filterObj || "heading" in filterObj
+        const isFilterObjValid = "userId" in filterObj && typeof filterObj.userId === "string" || "heading" in filterObj && typeof filterObj.heading === 'string'
 
         if (!isFilterObjValid) {
             throw new Error('Retrieval is only allowed when filtering by userId or heading.');
