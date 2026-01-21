@@ -42,16 +42,6 @@ const GP_PLUS_ROUTES = [
   '/api/gp-plus/send-failed-files-report',
 ];
 const GP_PLUS_ROUTES_SET = new Set(GP_PLUS_ROUTES);
-const USER_ACCOUNT_ROUTES = [
-  '/api/save-about-user-form',
-  '/api/copy-files',
-  '/api/update-user',
-  '/api/get-user-account-data',
-  '/api/delete-user',
-  '/api/user-confirms-mailing-list-sub',
-  '/api/get-signed-in-user-brevo-status',
-  ...GP_PLUS_ROUTES,
-];
 
 const getUnitNum = (pathName) =>
   parseInt(
@@ -462,6 +452,18 @@ export default async function proxy(request) {
         authorizationStr) ||
       (nextUrl.pathname == '/api/gp-plus/copy-lesson' &&
         method === 'GET' &&
+        authorizationStr) ||
+      (nextUrl.pathname == '/api/job-tours/create' &&
+        method === 'POST' &&
+        authorizationStr) ||
+      (nextUrl.pathname == '/api/job-tours/get' &&
+        method === 'GET' &&
+        authorizationStr) ||
+      (nextUrl.pathname == '/api/job-tours/update' &&
+        method === 'PUT' &&
+        authorizationStr) ||
+      (nextUrl.pathname == '/api/job-tours/delete' &&
+        method === 'DELETE' &&
         authorizationStr)
     ) {
       const willCheckIfUserIsDbAdmin = DB_ADMIN_ROUTES_SET.has(
@@ -527,5 +529,6 @@ export const config = {
     '/api/admin/update-user',
     '/api/admin/delete-users',
     '/api/gp-plus/outseta/account-updated',
+    '/api/job-tours/:path*',
   ],
 };
