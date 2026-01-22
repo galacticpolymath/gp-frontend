@@ -1,774 +1,1246 @@
 import Head from "next/head";
 import React, { useEffect, useRef, useState } from "react";
-import { LucideIcon } from "../../components/JobViz/LucideIcon";
+import Image from "next/image";
+import { FiCompass, FiLayers, FiUsers, FiPlayCircle, FiPlay } from "react-icons/fi";
+import { MdOutlineSchool } from "react-icons/md";
+import styles from "./design-preview.module.css";
+import { retrieveUnits } from "../../backend/services/unitServices";
+import { createDbProjections, getLiveUnits } from "../../shared/fns";
+import { INewUnitSchema } from "../../backend/models/Unit/types/unit";
+import sanitizeHtml from "sanitize-html";
+import RichText from "../../components/RichText";
+import GpLogo from "../../assets/img/gp_logo_white_transBG.png";
 import {
-  BreadcrumbSegment,
-  JobVizBreadcrumb,
-} from "../../components/JobViz/JobVizBreadcrumb";
-import { JobVizGrid, JobVizGridItem } from "../../components/JobViz/JobVizGrid";
-import {
-  jobVizData,
-  getIconNameForNode,
-  JobVizNode,
-} from "../../components/JobViz/jobvizUtils";
-import {
-  employmentTiers,
-  formatCurrency,
-  formatCurrencyRange,
-  formatEmploymentRange,
-  formatNumber,
-  formatPercent,
-  formatPercentRange,
-  growthTiers,
-  infoModalContent,
-  InfoModalType,
-  wageTiers,
-} from "../../components/JobViz/infoModalContent";
-import styles from "../../styles/jobvizBurst.module.scss";
+  FrontEndUserStats,
+  getFrontEndUserStats,
+} from "../../backend/services/userStatsService";
 
-type Tone = "calm" | "burst";
-
-interface AssignmentJob {
-  node: JobVizNode;
-  rating: string;
+interface PreviewUnit {
+  id: string;
+  title: string;
+  subtitle: string;
+  bannerUrl: string;
+  subject: string;
+  grades: string;
+  lessons: number | null;
+  isNew: boolean;
+  gist: string;
+  gistMarkdown: string;
+  epaulette: string | null;
+  epauletteVert: string | null;
+  targetStandards: string[];
+  careerConnections: string[];
+  sponsorText: string;
+  sponsorMarkdown: string;
+  sponsorLogo: string | null;
+  media: MediaItem[];
+  targetSubject: string;
+  subjectConnections: string[];
 }
 
-const palette = [
-  { name: "Nebula Deep", hex: "#061b2d", role: "Canvas / page base" },
-  { name: "Hydro Mist", hex: "#0f3158", role: "Hero gradient anchor" },
-  { name: "Ionosphere", hex: "#13406f", role: "Card fill" },
-  { name: "Halo Smoke", hex: "#7aa6dc", role: "Borders + dividers" },
-  { name: "Free Tier Blue", hex: "#00aceb", role: "CTA / focus" },
-  { name: "Pulse Accent", hex: "#ff5ab5", role: "Rare highlight" },
+interface TeacherPortalPreviewProps {
+  featuredUnits: PreviewUnit[];
+  userStats: FrontEndUserStats;
+}
+
+const NAV_TABS = ["All", "Units", "Apps", "Videos", "Lessons"];
+
+const wizardTracks = [
+  {
+    title: "Showcase authentic science",
+    description: "Highlight diverse researchers and real-world inquiry.",
+    cta: "Start SciJourneys",
+    icon: MdOutlineSchool,
+  },
+  {
+    title: "Connect learning to careers",
+    description: "Use JobViz and career storylines to anchor lessons.",
+    cta: "Launch JobViz",
+    icon: FiCompass,
+  },
+  {
+    title: "Build question-asking skills",
+    description: "Guide students through observation and curiosity routines.",
+    cta: "Open FairyWrens",
+    icon: FiLayers,
+  },
 ];
 
-const humanize = (value?: string | null) => {
-  if (!value || value.trim().toLowerCase() === "data unavailable") {
-    return "Data unavailable";
+const experiencePillars = [
+  {
+    title: "Interdisciplinary by design",
+    description:
+      "Every unit blends science, storytelling, and data so teachers can anchor standards in real contexts.",
+    icon: FiLayers,
+  },
+  {
+    title: "Open-access and teacher-friendly",
+    description:
+      "No paywalls for core lessons. Optional GP+ adds editable files and workflow boosts.",
+    icon: FiUsers,
+  },
+  {
+    title: "Built with experts",
+    description:
+      "Developed alongside STEM researchers, classroom teachers, and creative partners.",
+    icon: FiCompass,
+  },
+];
+
+const quickFAQ = [
+  {
+    question: "Is Galactic Polymath just astronomy or math?",
+    answer:
+      "No. We are interdisciplinary science — from Earth systems to food futures to engineering design.",
+  },
+  {
+    question: "What grade bands do you serve?",
+    answer:
+      "Most resources fit grades 5-12, with extensions for upper middle school and college-level intros.",
+  },
+  {
+    question: "What is GP+?",
+    answer:
+      "GP+ adds editable lesson files, Google Drive copies, and streamlined classroom prep tools.",
+  },
+];
+
+const spotlightResources = [
+  {
+    title: "GP Classroom Starter",
+    eyebrow: "Teacher Orientation",
+    description:
+      "A short path to understand how to teach with GP in your first week.",
+    meta: "15 minutes · Printable checklist",
+    icon: FiPlayCircle,
+  },
+  {
+    title: "JobViz Career Explorer",
+    eyebrow: "Interactive App",
+    description:
+      "Help students map interests to real careers using curated job data.",
+    meta: "Live app · Student-friendly",
+    icon: FiCompass,
+  },
+  {
+    title: "SciJourneys Lesson 1",
+    eyebrow: "Launch Lesson",
+    description:
+      "Introduce authentic science with diverse researchers and field stories.",
+    meta: "1 class period · Free",
+    icon: MdOutlineSchool,
+  },
+];
+
+interface MediaItem {
+  title: string;
+  type: "Video" | "App";
+  thumbnail: string;
+  link?: string | null;
+}
+
+const fallbackUnits: PreviewUnit[] = [
+  {
+    id: "unit-fairywrens",
+    title: "Fairywrens and the Art of Inquiry",
+    subtitle: "How do scientists pick a question to study?",
+    bannerUrl:
+      "https://storage.googleapis.com/gp-cloud/units/fairywrens/fairywrens_banner.png",
+    subject: "Science",
+    grades: "Grades 6-8",
+    lessons: 2,
+    isNew: true,
+    gist:
+      "Students explore how researchers observe, ask sharper questions, and design investigations in the wild.",
+    gistMarkdown:
+      "Students explore how researchers observe, ask sharper questions, and design investigations in the wild.",
+    epaulette: null,
+    epauletteVert: null,
+    targetStandards: ["NGSS MS-LS1-4", "NGSS SEP"],
+    careerConnections: ["Field Biologist", "Research Assistant"],
+    sponsorText: "Supported by the GP community of scientists and teachers.",
+    sponsorMarkdown:
+      "Supported by the GP community of scientists and teachers.",
+    sponsorLogo: null,
+    media: [
+      {
+        title: "Observations mini-video",
+        type: "Video",
+        thumbnail:
+          "https://storage.googleapis.com/gp-cloud/units/fairywrens/fairywrens_banner.png",
+        link: null,
+      },
+      {
+        title: "Question Builder",
+        type: "App",
+        thumbnail:
+          "https://storage.googleapis.com/gp-cloud/units/fairywrens/fairywrens_banner.png",
+        link: null,
+      },
+    ],
+    targetSubject: "Science",
+    subjectConnections: ["Biology", "Ecology"],
+  },
+  {
+    id: "unit-future-foods",
+    title: "Future Foods",
+    subtitle: "Can we reduce the carbon footprint of our favorite meals?",
+    bannerUrl:
+      "https://storage.googleapis.com/gp-cloud/units/future-foods/future_foods_banner.png",
+    subject: "Science",
+    grades: "Grades 6-9",
+    lessons: 4,
+    isNew: false,
+    gist:
+      "Learners trace food systems, energy use, and climate tradeoffs to design more sustainable meals.",
+    gistMarkdown:
+      "Learners trace food systems, energy use, and climate tradeoffs to design more sustainable meals.",
+    epaulette: null,
+    epauletteVert: null,
+    targetStandards: ["NGSS MS-ESS3-3", "NGSS ETS1"],
+    careerConnections: ["Food Scientist", "Sustainability Analyst"],
+    sponsorText: "Sponsored by mission-aligned partners.",
+    sponsorMarkdown: "Sponsored by mission-aligned partners.",
+    sponsorLogo: null,
+    media: [
+      {
+        title: "Food systems explainer",
+        type: "Video",
+        thumbnail:
+          "https://storage.googleapis.com/gp-cloud/units/future-foods/future_foods_banner.png",
+        link: null,
+      },
+      {
+        title: "Career pathway board",
+        type: "App",
+        thumbnail:
+          "https://storage.googleapis.com/gp-cloud/units/future-foods/future_foods_banner.png",
+        link: null,
+      },
+    ],
+    targetSubject: "Earth Science",
+    subjectConnections: ["Engineering", "Environmental Science"],
+  },
+];
+
+const PROJECTED_UNITS_FIELDS = [
+  "UnitBanner",
+  "Title",
+  "Subtitle",
+  "TargetSubject",
+  "ForGrades",
+  "GradesOrYears",
+  "LsnCount",
+  "ReleaseDate",
+  "PublicationStatus",
+  "numID",
+  "locale",
+  "TargetStandardsCodes",
+  "SponsoredBy",
+  "SponsorLogo",
+  "FeaturedMultimedia",
+  "Sections.overview.TheGist",
+  "Sections.overview.SteamEpaulette",
+  "Sections.overview.SteamEpaulette_vert",
+  "Sections.jobvizConnections.Content",
+] as string[];
+
+const getUnitBanner = (unit: INewUnitSchema) =>
+  unit.UnitBanner ||
+  "/imgs/gp-logos/GP_Stacked_logo+wordmark_gradient_whiteBG.jpg";
+
+const getGradeLabel = (unit: INewUnitSchema) =>
+  unit.ForGrades || unit.GradesOrYears || "Grades 6-12";
+
+const isNewRelease = (releaseDate?: string | null) => {
+  if (!releaseDate) return false;
+  const releaseMs = new Date(releaseDate).getTime();
+  if (Number.isNaN(releaseMs)) return false;
+  const nowMs = Date.now();
+  return nowMs > releaseMs && nowMs - releaseMs < 1000 * 60 * 60 * 24 * 37;
+};
+
+const toPlainText = (value?: string | null) =>
+  value
+    ? sanitizeHtml(value, { allowedTags: [], allowedAttributes: {} })
+        .replace(/\s+/g, " ")
+        .trim()
+    : "";
+
+const getSponsorLogo = (logo?: string[] | string | null) => {
+  if (Array.isArray(logo)) {
+    return logo[0] ?? null;
   }
-  return value;
+  return logo ?? null;
 };
 
-const summarizeDefinition = (def?: string | null, max = 160) => {
-  if (!def) return "Definition unavailable from the BLS feed.";
-  return def.length > max ? `${def.slice(0, max).trim()}…` : def;
+const getTargetStandards = (unit: INewUnitSchema) => {
+  if (!Array.isArray(unit.TargetStandardsCodes)) {
+    return [];
+  }
+  const standards = unit.TargetStandardsCodes.map((standard) =>
+    [standard?.set ?? standard?.subject, standard?.code ?? standard?.dim]
+      .filter(Boolean)
+      .join(" ")
+      .trim()
+  ).filter((value) => value.length > 0);
+
+  return Array.from(new Set(standards));
 };
 
-const isNode = (node: JobVizNode | undefined): node is JobVizNode => Boolean(node);
+const getSubjectConnections = (unit: INewUnitSchema, targetSubject?: string) => {
+  if (!Array.isArray(unit.TargetStandardsCodes)) {
+    return [];
+  }
+  const subjects = unit.TargetStandardsCodes.map((standard) => {
+    if (typeof standard?.subject === "string") {
+      return standard.subject;
+    }
+    if (typeof standard?.set === "string") {
+      return standard.set;
+    }
+    return null;
+  }).filter((value): value is string => Boolean(value));
 
-const lineItemNodes = jobVizData.filter(
-  (node) => node.occupation_type === "Line item"
-);
-const topLevelNodes = jobVizData.filter((node) => node.hierarchy === 1);
+  return Array.from(new Set(subjects)).filter(
+    (subject) => subject !== targetSubject
+  );
+};
 
-const averageLineItemGrowth = (() => {
-  const values = lineItemNodes
-    .map((node) => node.employment_change_percent)
-    .filter(
-      (value): value is number =>
-        typeof value === "number" && Number.isFinite(value)
+const getCareerConnections = (unit: INewUnitSchema) => {
+  const content = unit.Sections?.jobvizConnections?.Content;
+  if (!Array.isArray(content)) {
+    return [];
+  }
+  const careers = content
+    .map((connection) => {
+      const jobTitle = Array.isArray(connection?.job_title)
+        ? connection?.job_title?.[0]
+        : connection?.job_title;
+      return typeof jobTitle === "string" ? jobTitle : null;
+    })
+    .filter((value): value is string => Boolean(value));
+
+  return Array.from(new Set(careers));
+};
+
+const summarizeList = (items: string[], maxItems: number) => {
+  if (!items.length) return null;
+  if (items.length <= maxItems) return items.join(", ");
+  return `${items.slice(0, maxItems).join(", ")} (+${items.length - maxItems})`;
+};
+
+const getYoutubeId = (url?: string | null) => {
+  if (!url) return null;
+  const shortMatch = url.match(/youtu\.be\/([a-zA-Z0-9_-]+)/);
+  if (shortMatch?.[1]) return shortMatch[1];
+  const watchMatch = url.match(/[?&]v=([a-zA-Z0-9_-]+)/);
+  if (watchMatch?.[1]) return watchMatch[1];
+  const embedMatch = url.match(/embed\/([a-zA-Z0-9_-]+)/);
+  if (embedMatch?.[1]) return embedMatch[1];
+  const shortsMatch = url.match(/shorts\/([a-zA-Z0-9_-]+)/);
+  if (shortsMatch?.[1]) return shortsMatch[1];
+  return null;
+};
+
+const getDriveThumbnail = (url?: string | null) => {
+  if (!url || !url.includes("drive.google")) return null;
+  const idMatch = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+  const id = idMatch?.[1] ?? url.split("/").at(-2);
+  return id ? `https://drive.google.com/thumbnail?id=${id}` : null;
+};
+
+const buildMediaItems = (
+  unit: INewUnitSchema,
+  fallbackThumbnail: string
+): MediaItem[] => {
+  const items = unit.FeaturedMultimedia ?? [];
+  return items
+    .filter((item) => item?.type === "video" || item?.type === "web-app")
+    .map((item) => {
+      const type = item.type === "web-app" ? "App" : "Video";
+      const thumbnail =
+        item.webAppPreviewImg ||
+        getDriveThumbnail(item.mainLink) ||
+        (type === "Video"
+          ? (() => {
+              const id = getYoutubeId(item.mainLink);
+              return id ? `https://img.youtube.com/vi/${id}/hqdefault.jpg` : null;
+            })()
+          : null) ||
+        fallbackThumbnail;
+      return {
+        title: item.title ?? "Untitled media",
+        type,
+        thumbnail,
+        link: item.mainLink ?? null,
+      };
+    });
+};
+
+export async function getStaticProps() {
+  try {
+    const userStats = await getFrontEndUserStats();
+    const { data: retrievedUnits } = await retrieveUnits(
+      {},
+      createDbProjections(PROJECTED_UNITS_FIELDS),
+      0,
+      { ReleaseDate: -1 }
     );
 
-  if (!values.length) {
-    return 0;
+    const liveUnits = getLiveUnits(retrievedUnits ?? []);
+    const featuredUnits = liveUnits.slice(0, 6).map((unit) => {
+      const bannerUrl = getUnitBanner(unit);
+      const targetSubject = unit.TargetSubject || "Science";
+      const gistMarkdown = unit.Sections?.overview?.TheGist ?? "";
+      const sponsorMarkdown = unit.SponsoredBy ?? "";
+      return {
+        id: `${unit.numID ?? unit._id ?? unit.Title}`,
+        title: unit.Title || "Untitled unit",
+        subtitle:
+          unit.Subtitle || "Interdisciplinary science for curious learners.",
+        bannerUrl,
+        subject: targetSubject,
+        grades: getGradeLabel(unit),
+        lessons: unit.LsnCount ?? null,
+        isNew: isNewRelease(unit.ReleaseDate),
+        gist: toPlainText(gistMarkdown),
+        gistMarkdown,
+        epaulette: unit.Sections?.overview?.SteamEpaulette ?? null,
+        epauletteVert: unit.Sections?.overview?.SteamEpaulette_vert ?? null,
+        targetStandards: getTargetStandards(unit).slice(0, 4),
+        careerConnections: getCareerConnections(unit).slice(0, 4),
+        sponsorText: toPlainText(sponsorMarkdown) || "Sponsored by partners.",
+        sponsorMarkdown,
+        sponsorLogo: getSponsorLogo(unit.SponsorLogo),
+        media: buildMediaItems(unit, bannerUrl).slice(0, 4),
+        targetSubject,
+        subjectConnections: getSubjectConnections(unit, targetSubject),
+      };
+    });
+
+    return {
+      props: {
+        featuredUnits: featuredUnits.length ? featuredUnits : fallbackUnits,
+        userStats,
+      },
+      revalidate: 86_400,
+    };
+  } catch (error) {
+    console.error("Teacher portal design preview failed to load units.", error);
+    return {
+      props: {
+        featuredUnits: fallbackUnits,
+        userStats: {
+          totalTeachers: 0,
+          usStates: 0,
+          otherCountries: 0,
+          highlightedCountries: [],
+        },
+      },
+      revalidate: 86_400,
+    };
   }
+}
 
-  return values.reduce((sum, value) => sum + value, 0) / values.length;
-})();
-
-const heroStats = [
-  { label: "Line item jobs", value: formatNumber(lineItemNodes.length) },
-  { label: "Top-level clusters", value: formatNumber(topLevelNodes.length) },
-  { label: "Avg. 10-yr change", value: formatPercent(averageLineItemGrowth) },
-];
-
-const getDescendantLineItems = (node: JobVizNode) =>
-  lineItemNodes.filter((lineItem) => lineItem.path.startsWith(node.path))
-    .length;
-
-const featuredCategories = ["15-0000", "17-0000", "19-0000"]
-  .map((code) => jobVizData.find((node) => node.soc_code === code))
-  .filter(isNode);
-
-const featuredJobs = ["15-1252", "17-2141", "19-2041"]
-  .map((code) => jobVizData.find((node) => node.soc_code === code))
-  .filter(isNode);
-
-const ratingScale = ["🤩", "😀", "❓", "😐"];
-
-const assignmentJobs: AssignmentJob[] = ["19-2041", "19-2042", "17-3025", "45-4011"]
-  .map((code, index) => {
-    const node = jobVizData.find((candidate) => candidate.soc_code === code);
-    if (!node) return null;
-    return { node, rating: ratingScale[index] ?? "❓" };
-  })
-  .filter((entry): entry is AssignmentJob => Boolean(entry));
-
-const assignmentMeta = {
-  title: "Assignment: New Water Futures",
-  prompt:
-    "Skim each BLS occupation, grab the wage or growth stat, and justify your emoji reaction for our water systems discussion.",
-};
-
-const managementClusterNode =
-  jobVizData.find((node) => node.soc_code === "11-0000") ?? null;
-const managementClusterCount = managementClusterNode
-  ? getDescendantLineItems(managementClusterNode)
-  : 0;
-const managementClusterLabel =
-  managementClusterNode?.soc_title ??
-  managementClusterNode?.title ??
-  "Management occupations";
-const marketingSummaryNode =
-  jobVizData.find((node) => node.soc_code === "11-2020") ?? null;
-const marketingSummaryLabel =
-  marketingSummaryNode?.title ??
-  marketingSummaryNode?.soc_title ??
-  "Marketing and Sales Managers";
-
-const previewBreadcrumbSegments: BreadcrumbSegment[] = [
-  { label: "job-categories", iconName: "Grid2x2" },
-  { label: managementClusterLabel, iconName: "GitBranch" },
-  { label: marketingSummaryLabel, iconName: "Share2", isActive: true },
-];
-
-const managementPreviewSocCodes = [
-  "11-2011",
-  "11-2021",
-  "11-2022",
-  "11-2032",
-  "11-2033",
-  "11-1021",
-];
-
-const managementPreviewJobs = managementPreviewSocCodes
-  .map((code) => jobVizData.find((node) => node.soc_code === code))
-  .filter(isNode);
-
-const managementAssignedSocCodes = new Set(["11-2011", "11-2021", "11-2032"]);
-const managementAssignedCount = managementAssignedSocCodes.size;
-const marketingTitleIcon = marketingSummaryNode
-  ? getIconNameForNode(marketingSummaryNode)
-  : managementClusterNode
-    ? getIconNameForNode(managementClusterNode)
-    : "Sparkles";
-
-const previewGridItems: JobVizGridItem[] = managementPreviewJobs.map((node) => ({
-  id: node.soc_code ?? `${node.id}`,
-  title: node.soc_title ?? node.title,
-  iconName: getIconNameForNode(node),
-  level: 2,
-  wage:
-    typeof node.median_annual_wage === "string"
-      ? Number(node.median_annual_wage)
-      : node.median_annual_wage ?? null,
-  growthPercent: node.employment_change_percent ?? null,
-  education: humanize(node.typical_education_needed_for_entry),
-  socCode: node.soc_code ?? null,
-  isAssignmentJob: managementAssignedSocCodes.has(node.soc_code ?? ""),
-}));
-
-const emojiScale = [
-  { label: "Love", icon: "🤩" },
-  { label: "Like", icon: "😀" },
-  { label: "Meh", icon: "😐" },
-  { label: "Pass", icon: "🙁" },
-  { label: "Nope", icon: "😱" },
-];
-
-const modalNode =
-  assignmentJobs.find((job) => job.node.soc_code === "19-2041")?.node ??
-  assignmentJobs[0]?.node ??
-  featuredJobs[0];
-
-
-export default function JobVizDesignPreview() {
-  const [tone, setTone] = useState<Tone>("calm");
-  const [assignmentCollapsed, setAssignmentCollapsed] = useState(false);
-  const [showWageInfo, setShowWageInfo] = useState(false);
-  const [infoModal, setInfoModal] = useState<InfoModalType | null>(null);
-  const [modalHistory, setModalHistory] = useState<InfoModalType | null>(null);
-  const [isModalClosing, setIsModalClosing] = useState(false);
-  const [showAssignedOnlyPreview, setShowAssignedOnlyPreview] = useState(false);
-  const closeModalTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const activeInfoModal = modalHistory ? infoModalContent[modalHistory] : null;
-
-  const shouldRenderInfoModal =
-    (infoModal !== null || isModalClosing) && !!activeInfoModal;
-  const visiblePreviewItems = showAssignedOnlyPreview
-    ? previewGridItems.filter((item) => item.isAssignmentJob)
-    : previewGridItems;
-  const visibleGroupCount = visiblePreviewItems.filter((item) => item.level === 1).length;
-  const visibleJobCount = visiblePreviewItems.filter((item) => item.level === 2).length;
-  const previewMetaLine =
-    visibleGroupCount > 0
-      ? `Showing ${visibleGroupCount} job group${visibleGroupCount === 1 ? "" : "s"}${
-          visibleJobCount > 0
-            ? ` & ${visibleJobCount} job${visibleJobCount === 1 ? "" : "s"}`
-            : ""
-        }`
-      : `Showing ${visibleJobCount} job${visibleJobCount === 1 ? "" : "s"}`;
-
-  const triggerHaptic = (duration = 14) => {
-    if (typeof navigator !== "undefined" && "vibrate" in navigator) {
-      navigator.vibrate(duration);
-    }
+export default function TeacherPortalDesignPreview({
+  featuredUnits,
+  userStats,
+}: TeacherPortalPreviewProps) {
+  const [activeModal, setActiveModal] = useState<"wizard" | "media" | null>(
+    null
+  );
+  const [activeMedia, setActiveMedia] = useState<MediaItem | null>(null);
+  const modalRef = useRef<HTMLDivElement | null>(null);
+  const closeButtonRef = useRef<HTMLButtonElement | null>(null);
+  const lastFocusedRef = useRef<HTMLElement | null>(null);
+  const mapContainerRef = useRef<HTMLDivElement | null>(null);
+  const mapInstanceRef = useRef<unknown>(null);
+  const [animatedStats, setAnimatedStats] = useState({
+    totalTeachers: 0,
+    usStates: 0,
+    otherCountries: 0,
+  });
+  const newUnits = featuredUnits.filter((unit) => unit.isNew);
+  const spotlightUnits = newUnits.length ? newUnits : featuredUnits.slice(0, 3);
+  const handleOpenWizard = () => setActiveModal("wizard");
+  const handleCloseModal = () => {
+    setActiveModal(null);
+    setActiveMedia(null);
   };
-
-  const handleAssignedPreviewToggle = () => {
-    setShowAssignedOnlyPreview((prev) => !prev);
-    triggerHaptic();
-  };
-
-  const openInfoModal = (type: InfoModalType) => {
-    setModalHistory(type);
-    setInfoModal(type);
-    setIsModalClosing(false);
-    triggerHaptic();
-  };
-
-  const closeInfoModal = () => {
-    triggerHaptic(6);
-    setIsModalClosing(true);
-    setInfoModal(null);
-    if (closeModalTimeoutRef.current) {
-      clearTimeout(closeModalTimeoutRef.current);
-    }
-    closeModalTimeoutRef.current = setTimeout(() => {
-      setIsModalClosing(false);
-      closeModalTimeoutRef.current = null;
-    }, 280);
+  const handleOpenMedia = (media: MediaItem) => {
+    setActiveMedia(media);
+    setActiveModal("media");
   };
 
   useEffect(() => {
-    return () => {
-      if (closeModalTimeoutRef.current) {
-        clearTimeout(closeModalTimeoutRef.current);
+    if (!activeModal) {
+      return;
+    }
+
+    lastFocusedRef.current = document.activeElement as HTMLElement;
+    closeButtonRef.current?.focus();
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        handleCloseModal();
+        return;
+      }
+
+      if (event.key !== "Tab") {
+        return;
+      }
+
+      const focusable = modalRef.current?.querySelectorAll<HTMLElement>(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      );
+      if (!focusable || focusable.length === 0) {
+        event.preventDefault();
+        return;
+      }
+
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      const isShift = event.shiftKey;
+      const current = document.activeElement as HTMLElement;
+
+      if (!isShift && current === last) {
+        event.preventDefault();
+        first.focus();
+      }
+
+      if (isShift && current === first) {
+        event.preventDefault();
+        last.focus();
       }
     };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+      lastFocusedRef.current?.focus();
+    };
+  }, [activeModal]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+
+    if (prefersReducedMotion) {
+      setAnimatedStats({
+        totalTeachers: userStats.totalTeachers,
+        usStates: userStats.usStates,
+        otherCountries: userStats.otherCountries,
+      });
+      return;
+    }
+
+    const durationMs = 900;
+    const start = window.performance.now();
+    const targets = {
+      totalTeachers: userStats.totalTeachers,
+      usStates: userStats.usStates,
+      otherCountries: userStats.otherCountries,
+    };
+
+    let animationFrame = 0;
+
+    const tick = (now: number) => {
+      const progress = Math.min((now - start) / durationMs, 1);
+      const ease = 1 - Math.pow(1 - progress, 3);
+      setAnimatedStats({
+        totalTeachers: Math.round(targets.totalTeachers * ease),
+        usStates: Math.round(targets.usStates * ease),
+        otherCountries: Math.round(targets.otherCountries * ease),
+      });
+
+      if (progress < 1) {
+        animationFrame = window.requestAnimationFrame(tick);
+      }
+    };
+
+    animationFrame = window.requestAnimationFrame(tick);
+
+    return () => {
+      window.cancelAnimationFrame(animationFrame);
+    };
+  }, [userStats]);
+
+  useEffect(() => {
+    if (!mapContainerRef.current) {
+      return;
+    }
+
+    let isMounted = true;
+
+    const initMap = async () => {
+      if (mapInstanceRef.current || !mapContainerRef.current) {
+        return;
+      }
+
+      const { default: SvgMap } = await import("svgmap");
+
+      if (!isMounted || !mapContainerRef.current) {
+        return;
+      }
+
+      const values = userStats.highlightedCountries.reduce(
+        (acc, code) => ({
+          ...acc,
+          [code]: {
+            teachers: 1,
+            color: "#2c83c3",
+          },
+        }),
+        {} as Record<string, { teachers: number; color: string }>
+      );
+
+      mapInstanceRef.current = new SvgMap({
+        targetElementID: "gp-world-map",
+        allowInteraction: false,
+        showZoomReset: false,
+        showContinentSelector: false,
+        mouseWheelZoomEnabled: false,
+        touchLink: false,
+        colorNoData: "transparent",
+        colorMin: "#2c83c3",
+        colorMax: "#2c83c3",
+        data: {
+          data: {
+            teachers: {
+              name: "Teachers",
+              format: "{0}",
+              thresholdMin: 1,
+              thresholdMax: 1,
+            },
+          },
+          applyData: "teachers",
+          values,
+        },
+      });
+    };
+
+    initMap();
+
+    return () => {
+      isMounted = false;
+      mapInstanceRef.current = null;
+      if (mapContainerRef.current) {
+        mapContainerRef.current.innerHTML = "";
+      }
+    };
+  }, [userStats.highlightedCountries]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    const elements = Array.from(
+      document.querySelectorAll<HTMLElement>("[data-animate]")
+    );
+    if (!elements.length) {
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add(styles.inView);
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.2 }
+    );
+
+    elements.forEach((element) => observer.observe(element));
+
+    return () => observer.disconnect();
   }, []);
 
   return (
     <>
       <Head>
-        <title>JobViz Design Preview Lab</title>
+        <title>Teacher Portal Preview | Galactic Polymath</title>
+        <meta
+          name="description"
+          content="Preview the next-generation Galactic Polymath teacher portal with onboarding, search, and curated resources."
+        />
       </Head>
-      <main className={styles.previewPage} data-tone={tone}>
-        <section className={styles.hero}>
-          <div className={styles.heroCopy}>
-            <p className={styles.heroEyebrow}>JobViz 2.0 · Aesthetic Lab</p>
-            <h1 className={styles.heroTitle}>
-              Cooler blues, calmer glass, sharper storytelling.
-            </h1>
-            <p className={styles.heroSubtitle}>
-              Use these abstract components to stress-test spacing, iconography,
-              and gamified classroom moments before touching the production
-              hierarchy.
-            </p>
-            <div className={styles.heroToggles}>
-              {(["calm", "burst"] as Tone[]).map((option) => (
-                <button
-                  key={option}
-                  type="button"
-                  className={`${styles.toneButton} ${
-                    tone === option ? styles.toneButtonActive : ""
-                  }`}
-                  onClick={() => {
-                    setTone(option);
-                    triggerHaptic();
-                  }}
-                >
-                  {option === "calm" ? "Calm blues" : "Burst accents"}
-                </button>
-              ))}
-            </div>
-          </div>
-          <div className={styles.heroStats}>
-            {heroStats.map((stat) => (
-              <div key={stat.label} className={styles.heroStat}>
-                <span className={styles.heroStatLabel}>{stat.label}</span>
-                <strong className={styles.heroStatValue}>{stat.value}</strong>
+      <div className={styles.page}>
+        <header className={styles.hero}>
+          <div className={styles.heroGlow} aria-hidden="true" />
+          <nav className={styles.nav}>
+            <div className={styles.brand}>
+              <div className={styles.brandLogo}>
+                <Image src={GpLogo} alt="Galactic Polymath" priority />
               </div>
-            ))}
-          </div>
-        </section>
-
-        <section className={styles.previewSection}>
-          <header>
-            <h2 className={styles.sectionHeading}>Palette + roles</h2>
-            <p className={styles.sectionDescription}>
-              Blues carry almost everything; Pulse/Fuchsia only appears for
-              celebratory flashes and micro-highlights.
-            </p>
-          </header>
-          <div className={styles.paletteBoard}>
-            {palette.map((swatch) => (
-              <article key={swatch.name} className={styles.swatch}>
-                <div
-                  className={styles.swatchColor}
-                  style={{ backgroundColor: swatch.hex }}
-                />
-                <div className={styles.swatchMeta}>
-                  <span className={styles.swatchName}>{swatch.name}</span>
-                  <span className={styles.swatchHex}>{swatch.hex}</span>
-                  <span className={styles.swatchRole}>{swatch.role}</span>
-                </div>
-              </article>
-            ))}
-          </div>
-        </section>
-
-        <section className={styles.previewSection}>
-          <header className={styles.sectionHeader}>
-            <div>
-              <h2 className={styles.sectionHeading}>Hierarchy anatomy</h2>
-              <p className={styles.sectionDescription}>
-                Category cards stay translucent; job cards receive a gentle fill +
-                stacked icon to separate depth. Stats chips give rapid context.
-              </p>
+              <div>
+                <p className={styles.brandTitle}>GP Teacher Portal</p>
+                <p className={styles.brandSubtitle}>
+                  Interdisciplinary science for grades 5-12+
+                </p>
+              </div>
             </div>
-            <button
-              type="button"
-              className={styles.infoButton}
-              aria-expanded={showWageInfo}
-              aria-controls="wage-tier-explainer"
-              onClick={() => {
-                setShowWageInfo((prev) => !prev);
-                triggerHaptic();
-              }}
-            >
-              <LucideIcon name="Info" />
-              Wage tag explainer
-            </button>
-          </header>
-          <div
-            className={`${styles.tierInfoCard} ${
-              showWageInfo ? styles.tierInfoCardOpen : ""
-            }`}
-            id="wage-tier-explainer"
-            aria-hidden={!showWageInfo}
-          >
-            <div className={styles.tierInfoInner}>
-              {showWageInfo && (
-                <>
-                <div className={styles.tierInfoHeader}>
-                  <h3>What does median wage mean?</h3>
+            <div className={styles.navRight}>
+              <div
+                className={styles.navTabs}
+                role="tablist"
+                aria-label="Resource types"
+              >
+                {NAV_TABS.map((tab, index) => (
                   <button
+                    key={tab}
                     type="button"
-                    className={styles.closeInfoButton}
-                    onClick={() => {
-                      setShowWageInfo(false);
-                      triggerHaptic(8);
-                    }}
-                    aria-label="Close wage tag explainer"
+                    className={`${styles.navTab} ${
+                      index === 0 ? styles.navTabActive : ""
+                    }`}
                   >
-                    <LucideIcon name="X" />
+                    {tab}
                   </button>
+                ))}
+              </div>
+              <div className={styles.profileSlot}>
+                <span className={styles.profileAvatar} aria-hidden="true">
+                  GP
+                </span>
+                <button className={styles.profileButton} type="button">
+                  Log in
+                </button>
+              </div>
+            </div>
+          </nav>
+          <div className={styles.heroBody}>
+            <div className={styles.heroCopy}>
+              <p className={styles.kicker}>Open-access, expert-built science.</p>
+              <h1 className={styles.heroTitle}>
+                A clear landing place for teachers who want real-world science,
+                not just astronomy.
+              </h1>
+              <p className={styles.heroLead}>
+                Galactic Polymath delivers interdisciplinary lesson arcs and
+                career pathways that help students see science in context.
+                Everything starts free; GP+ adds editable files and streamlined
+                prep.
+              </p>
+              <div className={styles.heroActions}>
+                <button className={styles.secondaryButton} type="button">
+                  Browse latest resources
+                </button>
+              </div>
+              <div className={styles.heroHighlights}>
+                {experiencePillars.map((pillar) => (
+                  <div
+                    key={pillar.title}
+                    className={`${styles.highlightCard} ${styles.reveal}`}
+                    data-animate
+                  >
+                    <div className={styles.highlightIcon}>
+                      <pillar.icon />
+                    </div>
+                    <h3>{pillar.title}</h3>
+                    <p>{pillar.description}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className={styles.heroPanel}>
+              <div className={styles.searchCard}>
+                <p className={styles.searchLabel}>Search the library</p>
+                <div className={styles.searchBar}>
+                  <span className={styles.searchIcon} aria-hidden="true">
+                    ⌕
+                  </span>
+                  <input
+                    type="text"
+                    placeholder="Search by title, topic, standards, or skill..."
+                    aria-label="Search resources"
+                  />
+                </div>
+                <div className={styles.filterNote}>
+                  Search is static in this mock; filters live on the library tab.
+                </div>
+              </div>
+              <div className={`${styles.wizardTeaser} ${styles.reveal}`} data-animate>
+                <div className={styles.wizardTeaserTitle}>
+                  <span className={styles.wizardTeaserIcon}>
+                    <FiPlay />
+                  </span>
+                  <h2>Not sure where to begin?</h2>
                 </div>
                 <p>
-                  Median wage is the pay right in the middle when all salaries are
-                  lined up from lowest to highest. It tells us more than an average,
-                  because a few super-high earners can’t skew it.
+                  Answer three quick prompts and we will route you to the best
+                  unit, app, or video to start today.
                 </p>
-                <ul className={styles.tierList}>
-                  {wageTiers.map((tier) => (
-                    <li key={tier.label} className={styles.tierItem}>
-                      <div className={styles.tierListHeading}>
-                        <span className={styles.tierLabel}>{tier.label}</span>
-                        <span className={styles.tierRange}>
-                          {tier.max === Infinity
-                            ? `${formatCurrency(tier.min)}+`
-                            : `${formatCurrency(tier.min)} – ${formatCurrency(
-                                tier.max
-                              )}`}
-                        </span>
-                      </div>
-                      <p>{tier.descriptor}</p>
-                    </li>
-                  ))}
-                </ul>
-                <p className={styles.tierFootnote}>
-                  Ranges are based on recent U.S. full-time worker medians (about{" "}
-                  {formatCurrency(62000)}). Every family’s situation is different.
-                </p>
-              </>
-              )}
+                <button
+                  className={styles.secondaryButton}
+                  type="button"
+                  onClick={handleOpenWizard}
+                >
+                  Open the Easy Start Wizard
+                </button>
+              </div>
             </div>
           </div>
-          <div className={styles.cardWall}>
-            <div className={styles.cardCluster}>
-              {featuredCategories.map((cat) => (
-                <article key={cat.soc_code} className={styles.categoryCard}>
-                  <div className={styles.categoryTop}>
-                    <div className={styles.categoryIconBadge}>
-                      <LucideIcon name={getIconNameForNode(cat)} />
-                    </div>
-                    <h3 className={styles.categoryTitle}>
-                      {cat.soc_title ?? cat.title}
-                    </h3>
+        </header>
+
+        <div className={styles.heroWave} aria-hidden="true" />
+        <main className={styles.main}>
+          <section
+            className={`${styles.sectionStats} ${styles.reveal}`}
+            data-animate
+          >
+            <div className={styles.sectionHeader}>
+              <div>
+                <p className={styles.sectionKicker}>Across the globe</p>
+                <h2>Teachers are already exploring GP</h2>
+                <p>
+                  Used by {animatedStats.totalTeachers.toLocaleString()}{" "}
+                  teachers across {animatedStats.usStates.toLocaleString()} US
+                  states and{" "}
+                  {animatedStats.otherCountries.toLocaleString()} other
+                  countries.
+                </p>
+              </div>
+              <div className={styles.statsCtaRow}>
+                <a className={styles.primaryButton} href="/account">
+                  Log in
+                </a>
+                <a className={styles.secondaryButton} href="/gp-plus">
+                  Create free account
+                </a>
+              </div>
+            </div>
+            <div className={styles.statsGrid}>
+              <div className={styles.statsCard}>
+                <div>
+                  <p className={styles.statsKicker}>Teachers</p>
+                  <p className={styles.statsValue}>
+                    {animatedStats.totalTeachers.toLocaleString()}
+                  </p>
+                </div>
+                <p className={styles.statsCaption}>
+                  Educators using GP resources worldwide.
+                </p>
+                <div className={styles.statsDivider} aria-hidden="true" />
+                <div className={styles.statsList}>
+                  <div>
+                    <span>US states</span>
+                    <strong>{animatedStats.usStates}</strong>
                   </div>
-                  <div className={styles.categoryMetaRow}>
-                    <div>
-                      <span className={styles.categoryLabel}>Jobs</span>
-                      <strong className={styles.categoryValue}>
-                        {formatNumber(getDescendantLineItems(cat))}
-                      </strong>
-                    </div>
-                    <div>
-                      <span className={styles.categoryLabel}>Growth</span>
-                      <strong className={styles.categoryValue}>
-                        {formatPercent(cat.employment_change_percent)}
-                      </strong>
+                  <div>
+                    <span>Other countries</span>
+                    <strong>{animatedStats.otherCountries}</strong>
+                  </div>
+                </div>
+              </div>
+              <div className={styles.mapWrap}>
+                <div
+                  className={styles.mapFrame}
+                  id="gp-world-map"
+                  ref={mapContainerRef}
+                />
+                <p className={styles.mapCaption}>
+                  Highlighted countries show where GP teachers are located.
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <section
+            className={`${styles.section} ${styles.sectionOrientation} ${styles.reveal}`}
+            data-animate
+          >
+            <div className={styles.sectionHeader}>
+              <div>
+                <p className={styles.sectionKicker}>Curated for teachers</p>
+                <h2>Orientation &amp; quick wins</h2>
+                <p>
+                  Start with a guide, a data-rich app, or a ready-to-teach
+                  launch lesson.
+                </p>
+              </div>
+            </div>
+            <div className={styles.spotlightGrid}>
+              {spotlightResources.map((resource, index) => (
+                <article
+                  key={resource.title}
+                  className={`${styles.spotlightCard} ${styles.reveal}`}
+                  style={{ transitionDelay: `${index * 90}ms` }}
+                  data-animate
+                >
+                  <p className={styles.spotlightEyebrow}>
+                    {resource.eyebrow}
+                  </p>
+                  <div className={styles.spotlightTitleRow}>
+                    <h3>{resource.title}</h3>
+                    <div className={styles.spotlightIcon}>
+                      <resource.icon />
                     </div>
                   </div>
+                  <p>{resource.description}</p>
+                  <span className={styles.spotlightMeta}>{resource.meta}</span>
                 </article>
               ))}
             </div>
+          </section>
 
-            <div className={styles.cardCluster}>
-              {featuredJobs.map((job) => {
+          <div
+            className={`${styles.sectionDivider} ${styles.sectionDividerFresh}`}
+            aria-hidden="true"
+          />
+
+          <section className={`${styles.section} ${styles.sectionFresh}`}>
+            <div className={styles.sectionHeader}>
+              <div>
+                <p className={styles.sectionKicker}>New + noteworthy</p>
+                <h2>Hot off the Press</h2>
+                <p>
+                  Ready-to-go units that check all the boxes!
+                </p>
+              </div>
+            </div>
+            <div className={styles.newUnitGrid}>
+              {spotlightUnits.map((unit, index) => {
+                const mediaItems = unit.media ?? [];
+                const videoCount = mediaItems.filter(
+                  (item) => item.type === "Video"
+                ).length;
+                const appCount = mediaItems.filter((item) => item.type === "App")
+                  .length;
+                const subjectConnections = summarizeList(
+                  unit.subjectConnections,
+                  2
+                );
+                const targetStandards = summarizeList(unit.targetStandards, 1);
+                const careerConnections = summarizeList(
+                  unit.careerConnections,
+                  1
+                );
+
                 return (
-                  <article key={job.soc_code} className={styles.jobCard}>
-                    <div className={styles.cardHeader}>
-                      <div className={styles.iconBadge}>
-                        <LucideIcon name={getIconNameForNode(job)} />
-                        <span className={styles.nestedIcon}>
-                          <LucideIcon name="Sparkles" />
-                        </span>
+                  <article
+                    key={unit.id}
+                    className={`${styles.newUnitCard} ${styles.reveal}`}
+                    style={{ transitionDelay: `${index * 110}ms` }}
+                    data-animate
+                  >
+                    <div className={styles.newUnitBody}>
+                      <div className={styles.unitHeaderRow}>
+                        <div className={styles.unitHeaderInfo}>
+                          <div className={styles.cardHeader}>
+                            <h3>{unit.title}</h3>
+                          </div>
+                          <p className={styles.cardSubtitle}>{unit.subtitle}</p>
+                          <div className={styles.cardMeta}>
+                            <span>{unit.subject}</span>
+                            <span>{unit.grades}</span>
+                            <span>
+                              {unit.lessons
+                                ? `${unit.lessons} lessons`
+                                : "Lessons"}
+                            </span>
+                          </div>
+                          <div className={styles.unitBannerWrap}>
+                            <img src={unit.bannerUrl} alt="" loading="lazy" />
+                            {unit.isNew && (
+                              <span className={styles.newBadge}>New</span>
+                            )}
+                          </div>
+                        </div>
+                        <div className={styles.sponsorPanel}>
+                          <p className={styles.sponsorTitle}>Sponsored by</p>
+                          {unit.sponsorLogo && (
+                            <div className={styles.sponsorLogo}>
+                              <img src={unit.sponsorLogo} alt="" />
+                            </div>
+                          )}
+                          {unit.sponsorMarkdown ? (
+                            <RichText
+                              content={unit.sponsorMarkdown}
+                              className={styles.sponsorText}
+                            />
+                          ) : (
+                            <p className={styles.sponsorText}>
+                              {unit.sponsorText}
+                            </p>
+                          )}
+                        </div>
                       </div>
-                      <div>
-                        <h3 className={styles.cardTitle}>
-                          {job.soc_title ?? job.title}
-                        </h3>
-                        <p className={styles.cardDescriptor}>
-                          {summarizeDefinition(job.def)}
-                        </p>
+                      <div className={styles.unitOverview}>
+                        {unit.gistMarkdown ? (
+                          <div className={styles.gistBlock}>
+                            <p className={styles.gistLabel}>The Gist</p>
+                            <RichText content={unit.gistMarkdown} />
+                          </div>
+                        ) : null}
+                        <div className={styles.unitConnections}>
+                          <div className={styles.epauletteBlock}>
+                            <p className={styles.overviewLabel}>Epaulette</p>
+                            <div className={styles.epauletteWrap}>
+                              {unit.epaulette && (
+                                <img src={unit.epaulette} alt="" />
+                              )}
+                            </div>
+                          </div>
+                          <div className={styles.unitConnectionsTextBlock}>
+                            <p className={styles.unitConnectionsLabel}>
+                              Quick connections
+                            </p>
+                            <p className={styles.unitConnectionsText}>
+                              <strong>Targets:</strong> {unit.targetSubject}
+                              .{" "}
+                              {subjectConnections
+                                ? `Connects to ${subjectConnections}.`
+                                : "Connects to additional subjects to be added."}
+                            </p>
+                            <p className={styles.unitConnectionsText}>
+                              <strong>Standards:</strong>{" "}
+                              {targetStandards ?? "Not listed yet."}
+                            </p>
+                            <p className={styles.unitConnectionsText}>
+                              <strong>Connected careers:</strong>{" "}
+                              {careerConnections ??
+                                "JobViz connections coming soon."}
+                            </p>
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                    <div className={styles.statRow}>
-                      <div className={styles.statChip}>
-                        <span className={styles.statLabel}>Median wage</span>
-                        <strong className={styles.statValue}>
-                          {formatCurrency(job.median_annual_wage)}
-                        </strong>
+                      <div className={styles.resourceBlock}>
+                        <p>Associated videos/apps</p>
+                        {mediaItems.length ? (
+                          <>
+                            <div className={styles.resourceSummary}>
+                              <span>{videoCount} videos</span>
+                              <span>{appCount} apps</span>
+                            </div>
+                            <div className={styles.mediaGrid}>
+                              {mediaItems.map((media) => (
+                                <button
+                                  key={`${unit.id}-${media.title}`}
+                                  type="button"
+                                  className={styles.mediaCard}
+                                  onClick={() => handleOpenMedia(media)}
+                                >
+                                  <div className={styles.mediaThumb}>
+                                    <img src={media.thumbnail} alt="" />
+                                    <span className={styles.mediaBadge}>
+                                      {media.type}
+                                    </span>
+                                  </div>
+                                  <span className={styles.mediaTitle}>
+                                    {media.title}
+                                  </span>
+                                </button>
+                              ))}
+                            </div>
+                          </>
+                        ) : (
+                          <p className={styles.mediaEmpty}>
+                            Media previews are coming soon.
+                          </p>
+                        )}
                       </div>
-                      <div className={styles.statChip}>
-                        <span className={styles.statLabel}>Growth</span>
-                        <strong className={styles.statValue}>
-                          {formatPercent(job.employment_change_percent)}
-                        </strong>
-                      </div>
-                      <div className={styles.statChip}>
-                        <span className={styles.statLabel}>Entry edu.</span>
-                        <strong className={styles.statValue}>
-                          {humanize(job.typical_education_needed_for_entry)}
-                        </strong>
+                      <div className={styles.cardActions}>
+                        <button className={styles.primaryButton} type="button">
+                          Take Me to the Unit
+                        </button>
                       </div>
                     </div>
                   </article>
                 );
               })}
             </div>
-          </div>
-        </section>
+          </section>
 
-        <section
-          className={`${styles.previewSection} ${styles.navPreviewSection}`}
-        >
-          <header>
-            <h2 className={styles.sectionHeading}>Path controls in situ</h2>
-            <p className={styles.sectionDescription}>
-              Same hierarchy stack as production—now with a plain-language view
-              title and a single assigned toggle that mirrors the live layout.
-            </p>
-          </header>
-          <div className={styles.jobvizPreviewShell}>
-            <div className={styles.jobvizGridWrap}>
-              <div className={styles.pathHeader}>
-                <div className={styles.gridContextLabel}>Current Path</div>
-                {showAssignedOnlyPreview ? (
-                  <div className={styles.assignedScopeMessage}>
-                    <LucideIcon name="Sparkles" />
-                    Showing assigned jobs across multiple categories
-                  </div>
-                ) : (
-                  <JobVizBreadcrumb segments={previewBreadcrumbSegments} />
-                )}
-              </div>
-              <div className={styles.viewingHeader}>
-                <div className={styles.viewingIdentity}>
-                  <span className={styles.viewingIcon}>
-                    <LucideIcon name={marketingTitleIcon} />
-                  </span>
-                  <div>
-                    <h3 className={styles.viewingTitle}>{marketingSummaryLabel}</h3>
-                    <p className={styles.viewingMeta}>{previewMetaLine}</p>
-                  </div>
-                </div>
-              </div>
-              <div className={styles.gridFilterRow}>
-                <div className={styles.gridFilterActions}>
-                  <button
-                    type="button"
-                    className={`${styles.assignedToggleButton} ${
-                      showAssignedOnlyPreview ? styles.assignedToggleButtonActive : ""
-                    }`}
-                    onClick={handleAssignedPreviewToggle}
-                    aria-pressed={showAssignedOnlyPreview}
-                  >
-                    <span className={styles.assignedToggleIndicator} aria-hidden="true" />
-                    Show only assigned jobs
-                  </button>
-                </div>
-                <div className={styles.sortControl}>
-                  <button type="button" className={styles.sortButton} aria-haspopup="listbox">
-                    <span className={styles.sortButtonLabel}>Sort by</span>
-                    <span className={styles.sortButtonValue}>Median Wage</span>
-                    <LucideIcon name="ChevronDown" className={styles.sortButtonDirectionIcon} />
-                  </button>
-                </div>
-              </div>
-              <JobVizGrid items={visiblePreviewItems} />
-            </div>
-          </div>
-        </section>
-
-        <section
-          className={`${styles.previewSection} ${styles.assignmentSection}`}
-        >
-          <header>
-            <h2 className={styles.sectionHeading}>Assignment dock</h2>
-            <p className={styles.sectionDescription}>
-              Collapsible on small screens, lightweight on desktop—emoji metadata
-              feeds both cards and the dock.
-            </p>
-          </header>
-          <article
-            className={styles.assignmentDock}
-            data-collapsed={assignmentCollapsed}
-          >
-            <div className={styles.assignmentHeader}>
-              <div>
-                <p className={styles.assignmentLabel}>GP+ Share Link</p>
-                <h3 className={styles.assignmentTitle}>{assignmentMeta.title}</h3>
-              </div>
-              <button
-                type="button"
-                className={styles.assignmentToggle}
-                onClick={() => {
-                  setAssignmentCollapsed((prev) => !prev);
-                  triggerHaptic();
-                }}
-              >
-                {assignmentCollapsed ? "Expand brief" : "Collapse brief"}
-              </button>
-            </div>
-            <p className={styles.assignmentPrompt}>{assignmentMeta.prompt}</p>
-            <div className={styles.assignmentCarousel}>
-              {assignmentJobs.map(({ node, rating }) => (
-                <div key={node.soc_code} className={styles.assignmentJob}>
-                  <span className={styles.assignmentJobTitle}>
-                    <LucideIcon name={getIconNameForNode(node)} />
-                    {node.soc_title ?? node.title}
-                  </span>
-                  <span className={styles.assignmentEmoji}>{rating}</span>
-                </div>
-              ))}
-            </div>
-            <div className={styles.emojiScale}>
-              {emojiScale.map((emoji) => (
-                <button
-                  key={emoji.label}
-                  type="button"
-                  className={styles.emojiButton}
-                  onClick={() => triggerHaptic(6)}
-                >
-                  <span role="img" aria-label={emoji.label}>
-                    {emoji.icon}
-                  </span>
-                  <small>{emoji.label}</small>
-                </button>
-              ))}
-            </div>
-          </article>
-        </section>
-
-        <section className={styles.previewSection}>
-          <header>
-            <h2 className={styles.sectionHeading}>Job modal slice</h2>
-            <p className={styles.sectionDescription}>
-              Drawer-ready layout with compact stats, bullets for teacher value,
-              and CTA pairings.
-            </p>
-          </header>
-          {modalNode && (
-            <article className={styles.modalCard}>
-              <header className={styles.modalHeader}>
-                <div className={styles.modalIdentity}>
-                  <div className={`${styles.iconBadge} ${styles.modalIcon}`}>
-                    <LucideIcon name={getIconNameForNode(modalNode)} />
-                  </div>
-                  <div>
-                    <p className={styles.modalEyebrow}>Job detail modal</p>
-                    <h3 className={styles.modalTitle}>
-                      {modalNode.soc_title ?? modalNode.title}
-                    </h3>
-                  </div>
-                </div>
-                <span className={styles.modalBadge}>{modalNode.soc_code}</span>
-              </header>
-              <p className={styles.modalSummary}>{modalNode.def}</p>
-              <dl className={styles.modalStats}>
-                <div className={styles.modalStat}>
-                  <div className={styles.modalStatHeader}>
-                    <dt>Median wage</dt>
-                    <button
-                      type="button"
-                      className={styles.inlineInfoButton}
-                      aria-haspopup="dialog"
-                      aria-controls="jobviz-info-modal"
-                      onClick={() => openInfoModal("wage")}
-                      aria-label="Open wage explainer"
-                    >
-                      <LucideIcon name="Info" />
-                    </button>
-                  </div>
-                  <dd>{formatCurrency(modalNode.median_annual_wage)}</dd>
-                </div>
-                <div className={styles.modalStat}>
-                  <div className={styles.modalStatHeader}>
-                    <dt>10-year change</dt>
-                    <button
-                      type="button"
-                      className={styles.inlineInfoButton}
-                      aria-haspopup="dialog"
-                      aria-controls="jobviz-info-modal"
-                      onClick={() => openInfoModal("growth")}
-                      aria-label="Open growth explainer"
-                    >
-                      <LucideIcon name="Info" />
-                    </button>
-                  </div>
-                  <dd>{formatPercent(modalNode.employment_change_percent)}</dd>
-                </div>
-                <div className={styles.modalStat}>
-                  <div className={styles.modalStatHeader}>
-                    <dt>Jobs by 2034</dt>
-                    <button
-                      type="button"
-                      className={styles.inlineInfoButton}
-                      aria-haspopup="dialog"
-                      aria-controls="jobviz-info-modal"
-                      onClick={() => openInfoModal("jobs")}
-                      aria-label="Open job count explainer"
-                    >
-                      <LucideIcon name="Info" />
-                    </button>
-                  </div>
-                  <dd>{formatNumber(modalNode.employment_end_yr)}</dd>
-                </div>
-              </dl>
-              <ul className={styles.modalList}>
-                <li>
-                  Typical education:{" "}
-                  {humanize(modalNode.typical_education_needed_for_entry)}
-                </li>
-                <li>
-                  Work experience:{" "}
-                  {humanize(modalNode.work_experience_in_a_related_occupation)}
-                </li>
-                <li>
-                  On-the-job training:{" "}
-                  {humanize(
-                    modalNode[
-                      "typical_on-the-job_training_needed_to_attain_competency_in_the_occupation"
-                    ]
-                  )}
-                </li>
-              </ul>
-              <footer className={styles.modalActions}>
-                {modalNode.BLS_link && (
-                  <a
-                    className={styles.ghostButton}
-                    href={modalNode.BLS_link}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    View BLS profile
-                  </a>
-                )}
-                <button type="button" className={styles.primaryButton}>
-                  Copy share link
-                </button>
-              </footer>
-            </article>
-          )}
-        </section>
-        {shouldRenderInfoModal && activeInfoModal && (
           <div
-            className={styles.infoModalBackdrop}
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="jobviz-info-modal-title"
-            id="jobviz-info-modal"
-            data-state={isModalClosing ? "closing" : "open"}
-            onClick={closeInfoModal}
-          >
-            <div
-              className={styles.infoModal}
-              onClick={(event) => event.stopPropagation()}
-            >
-              <header className={styles.infoModalHeader}>
-                <div className={styles.infoModalTitle}>
-                  <span className={styles.infoModalIcon}>
-                    <LucideIcon name="Info" />
-                  </span>
-                  <div>
-                    <p className={styles.infoModalEyebrow}>
-                      {activeInfoModal.eyebrow}
-                    </p>
-                    <h3
-                      className={styles.infoModalHeading}
-                      id="jobviz-info-modal-title"
-                    >
-                      {activeInfoModal.heading}
-                    </h3>
-                  </div>
-                </div>
-                <button
-                  type="button"
-                  className={styles.closeInfoButton}
-                  aria-label="Close info explainer"
-                  onClick={closeInfoModal}
-                >
-                  <LucideIcon name="X" />
-                </button>
-              </header>
-              <div className={styles.infoModalBody}>
-                {activeInfoModal.paragraphs.map((paragraph) => (
-                  <p key={paragraph}>{paragraph}</p>
-                ))}
-                <ul className={styles.tierList}>
-                  {activeInfoModal.tiers.map((tier) => (
-                    <li key={tier.label} className={styles.tierItem}>
-                      <div className={styles.tierListHeading}>
-                        <span className={styles.tierLabel}>{tier.label}</span>
-                        <span className={styles.tierRange}>
-                          {activeInfoModal.rangeFormatter(tier)}
-                        </span>
-                      </div>
-                      <p>{tier.descriptor}</p>
-                    </li>
-                  ))}
-                </ul>
-                <p className={styles.tierFootnote}>
-                  {activeInfoModal.footnote}
+            className={`${styles.sectionDivider} ${styles.sectionDividerAlt}`}
+            aria-hidden="true"
+          />
+
+          <section className={`${styles.sectionAlt} ${styles.reveal}`} data-animate>
+            <div className={styles.sectionHeader}>
+              <div>
+                <p className={styles.sectionKicker}>Find your path fast</p>
+                <h2>Pick a starting track</h2>
+                <p>
+                  These curated pathways direct teachers to the right resources
+                  without the overwhelm.
                 </p>
               </div>
             </div>
+            <div className={styles.trackGrid}>
+              {wizardTracks.map((track, index) => (
+                <article
+                  key={track.title}
+                  className={`${styles.trackCard} ${styles.reveal}`}
+                  style={{ transitionDelay: `${index * 120}ms` }}
+                  data-animate
+                >
+                  <div className={styles.trackIcon}>
+                    <track.icon />
+                  </div>
+                  <h3>{track.title}</h3>
+                  <p>{track.description}</p>
+                  <button className={styles.secondaryButton} type="button">
+                    {track.cta}
+                  </button>
+                </article>
+              ))}
+            </div>
+          </section>
+
+          <div
+            className={`${styles.sectionDivider} ${styles.sectionDividerSoft}`}
+            aria-hidden="true"
+          />
+
+          <section className={`${styles.section} ${styles.reveal}`} data-animate>
+            <div className={styles.sectionHeader}>
+              <div>
+                <p className={styles.sectionKicker}>What teachers ask</p>
+                <h2>FAQ</h2>
+              </div>
+            </div>
+            <div className={styles.faqList}>
+              {quickFAQ.map((item) => (
+                <details
+                  key={item.question}
+                  className={`${styles.faqItem} ${styles.reveal}`}
+                  data-animate
+                >
+                  <summary>{item.question}</summary>
+                  <p>{item.answer}</p>
+                </details>
+              ))}
+            </div>
+          </section>
+        </main>
+      </div>
+      {activeModal && (
+        <div className={styles.modalOverlay} role="presentation">
+          <div
+            className={styles.modal}
+            role="dialog"
+            aria-modal="true"
+            ref={modalRef}
+          >
+            <div className={styles.modalHeader}>
+              <div>
+                <p className={styles.modalKicker}>
+                  {activeModal === "wizard"
+                    ? "Easy Start Wizard"
+                    : activeMedia?.type ?? "Media preview"}
+                </p>
+                <h2 className={styles.modalTitle}>
+                  {activeModal === "wizard"
+                    ? "Tell us your goals"
+                    : activeMedia?.title ?? "Preview"}
+                </h2>
+              </div>
+              <button
+                className={styles.modalClose}
+                type="button"
+                onClick={handleCloseModal}
+                ref={closeButtonRef}
+              >
+                Close
+              </button>
+            </div>
+            {activeModal === "wizard" && (
+              <div className={styles.wizardCard}>
+                <div className={styles.wizardHeader}>
+                  <div>
+                    <p className={styles.wizardKicker}>Easy Start Wizard</p>
+                    <h2>Tell us your goals</h2>
+                  </div>
+                  <span className={styles.wizardBadge}>3 steps</span>
+                </div>
+                <div className={styles.wizardStep}>
+                  <p>1. Which grade band do you teach?</p>
+                  <div className={styles.pillRow}>
+                    <span className={styles.pill}>Upper Elementary</span>
+                    <span className={styles.pillActive}>Middle School</span>
+                    <span className={styles.pill}>High School</span>
+                    <span className={styles.pill}>Intro College</span>
+                  </div>
+                </div>
+                <div className={styles.wizardStep}>
+                  <p>2. Which subject focus fits you best?</p>
+                  <div className={styles.pillRow}>
+                    <span className={styles.pill}>Life Science</span>
+                    <span className={styles.pill}>Earth &amp; Space</span>
+                    <span className={styles.pillActive}>STEM + Careers</span>
+                    <span className={styles.pill}>Engineering</span>
+                  </div>
+                </div>
+                <div className={styles.wizardStep}>
+                  <p>3. What do you want students to practice?</p>
+                  <div className={styles.pillRow}>
+                    <span className={styles.pillActive}>
+                      Authentic research
+                    </span>
+                    <span className={styles.pill}>Career connections</span>
+                    <span className={styles.pill}>Question formation</span>
+                  </div>
+                </div>
+                <div className={styles.wizardFooter}>
+                  <button className={styles.primaryButton} type="button">
+                    Build my path
+                  </button>
+                  <button
+                    className={styles.ghostButton}
+                    type="button"
+                    onClick={handleCloseModal}
+                  >
+                    Close wizard
+                  </button>
+                </div>
+              </div>
+            )}
+            {activeModal === "media" && activeMedia && (
+              <div className={styles.mediaModalBody}>
+                <div className={styles.mediaModalThumb}>
+                  <img src={activeMedia.thumbnail} alt="" />
+                </div>
+                <p>
+                  This is a placeholder preview for the{" "}
+                  {activeMedia.type.toLowerCase()}. The final version can open
+                  the real video or app in a new panel.
+                </p>
+                {activeMedia.link ? (
+                  <a
+                    className={styles.primaryButton}
+                    href={activeMedia.link}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    Open {activeMedia.type}
+                  </a>
+                ) : (
+                  <button className={styles.primaryButton} type="button">
+                    Open {activeMedia.type}
+                  </button>
+                )}
+              </div>
+            )}
           </div>
-        )}
-      </main>
+          <button
+            className={styles.modalBackdrop}
+            type="button"
+            onClick={handleCloseModal}
+            aria-label="Close modal"
+          />
+        </div>
+      )}
     </>
   );
 }

@@ -30,6 +30,9 @@ module.exports = {
     MONGODB_DB_NAME: process.env.MONGODB_DB_NAME,
   },
   reactStrictMode: true,
+  turbopack: {
+    root: __dirname,
+  },
   images: {
     remotePatterns: [
       { protocol: 'https', hostname: 'catalog.galacticpolymath.com' },
