@@ -212,7 +212,7 @@
   font-size: 14px;
   cursor: pointer;
   font-weight: 600;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, background-color 0.45s ease;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -223,6 +223,31 @@
   background: #2c83c3;
   color: #ffffff;
   box-shadow: 0 12px 24px rgba(44, 131, 195, 0.25);
+}
+
+.primaryButton:visited {
+  color: #ffffff !important;
+}
+
+.primaryButton:hover,
+.primaryButton:focus-visible {
+  background: #6c2d82;
+  color: #ffffff !important;
+  box-shadow: 0 12px 24px rgba(44, 131, 195, 0.3);
+  transform: translateY(-1px);
+}
+
+.secondaryButton:hover,
+.secondaryButton:focus-visible {
+  background: #6c2d82;
+  color: #ffffff !important;
+  border-color: transparent;
+  box-shadow: 0 12px 24px rgba(44, 131, 195, 0.2);
+  transform: translateY(-1px);
+}
+
+.primaryButton:active {
+  color: #ffffff !important;
 }
 
 .secondaryButton {
@@ -471,7 +496,7 @@
 
 .main {
   max-width: 1200px;
-  margin: 72px auto 0;
+  margin: 0 auto;
   padding: 0 24px 80px;
 }
 
@@ -526,31 +551,35 @@
 
 .section,
 .sectionAlt {
-  margin-top: 48px;
+  margin-top: 0;
+  padding-top: 6.6vmax;
+  padding-bottom: 6.6vmax;
 }
 
 .sectionStats {
   position: relative;
-  margin-top: 32px;
-  padding: 36px 32px;
-  border-radius: 24px;
-  background: #ffffff;
-  border: 1px solid rgba(44, 131, 195, 0.12);
-  box-shadow: 0 16px 30px rgba(24, 30, 72, 0.08);
-  overflow: hidden;
+  margin-top: 0;
+  padding: 6.6vmax 0;
+  background: transparent;
+  overflow: visible;
 }
 
-.sectionStats::after {
+.sectionStats::before {
   content: "";
   position: absolute;
   inset: 0;
+  width: 100vw;
+  left: 50%;
+  transform: translateX(-50%);
   background:
-    radial-gradient(circle, rgba(44, 131, 195, 0.12) 1px, transparent 1px),
-    radial-gradient(circle at 85% 20%, rgba(255, 61, 172, 0.16), transparent 45%);
-  background-size: 26px 26px, auto;
-  background-position: 16px 18px, center;
-  opacity: 0.5;
+    radial-gradient(circle at 18% 12%, rgba(108, 45, 130, 0.14), transparent 45%),
+    radial-gradient(circle at 82% 18%, rgba(44, 131, 195, 0.16), transparent 50%),
+    url("data:image/svg+xml,%3Csvg width='44' height='44' viewBox='0 0 44 44' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M22 12v20M12 22h20' stroke='%23c3a0dc' stroke-opacity='0.45' stroke-width='2'/%3E%3C/svg%3E");
+  background-size: auto, auto, 44px 44px;
+  background-position: center, center, 8px 8px;
+  opacity: 0.6;
   pointer-events: none;
+  z-index: 0;
 }
 
 .sectionStats > * {
@@ -562,6 +591,9 @@
   display: flex;
   gap: 12px;
   flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 20px;
+  padding-top: 8px;
 }
 
 .statsGrid {
@@ -569,15 +601,50 @@
   grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
   gap: 24px;
   margin-top: 20px;
+  padding: 20px;
+  border-radius: 20px;
+  background: linear-gradient(120deg, #2c83c3 0%, #6c2d82 100%);
+  border: 1px solid rgba(44, 131, 195, 0.12);
+  box-shadow: inset 0 0 0 1px rgba(44, 131, 195, 0.05);
+}
+
+.statsDebug {
+  margin-top: 12px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: rgba(44, 131, 195, 0.08);
+  border: 1px solid rgba(44, 131, 195, 0.2);
+  font-size: 12px;
+  color: #2b3355;
+}
+
+.statsDebugTitle {
+  margin: 0 0 8px;
+  font-weight: 600;
+  color: #2c83c3;
+}
+
+.statsDebug pre {
+  margin: 0;
+  white-space: pre-wrap;
+  font-family: "SFMono-Regular", ui-monospace, "Courier New", monospace;
 }
 
 .statsCard {
-  background: #f7fbff;
+  background: #ffffff1a;
   border-radius: 18px;
   padding: 20px;
-  border: 1px solid rgba(44, 131, 195, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.25);
   display: grid;
   gap: 12px;
+  backdrop-filter: blur(6px);
+  color: #d6e8ff;
+}
+
+.statsPrimaryRow {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 16px;
 }
 
 .statsKicker {
@@ -585,26 +652,30 @@
   text-transform: uppercase;
   letter-spacing: 0.14em;
   font-size: 12px;
-  color: #6c2d82;
+  color: #c6ddff;
   font-weight: 700;
 }
 
 .statsValue {
   margin: 0;
-  font-size: 32px;
+  font-size: 52px;
   font-weight: 700;
-  color: #1c1f2e;
+  color: #f0f6ff;
+  line-height: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .statsCaption {
   margin: 0;
-  color: #5e6275;
+  color: #c6ddff;
   font-size: 14px;
 }
 
 .statsDivider {
   height: 1px;
-  background: rgba(44, 131, 195, 0.2);
+  background: rgba(240, 246, 255, 0.35);
 }
 
 .statsList {
@@ -612,15 +683,32 @@
   gap: 8px;
 }
 
+.statsRowHidden {
+  opacity: 0;
+  transform: translateY(6px);
+}
+
+.statsRowVisible {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
 .statsList div {
   display: flex;
   justify-content: space-between;
-  font-size: 14px;
-  color: #2b3355;
+  font-size: 16px;
+  color: #d6e8ff;
+  align-items: baseline;
 }
 
 .statsList strong {
-  color: #2c83c3;
+  color: #f0f6ff;
+  font-size: 32px;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .mapWrap {
@@ -630,18 +718,36 @@
 
 .mapFrame {
   min-height: 260px;
-  background: #ffffff;
+  background: transparent;
   border-radius: 18px;
-  border: 1px solid rgba(44, 131, 195, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.22);
   padding: 12px;
   position: relative;
-  --map-outline: rgba(44, 131, 195, 0.35);
+  --map-outline: rgba(225, 230, 238, 0.6);
+  transition: opacity 0.9s ease, transform 0.9s ease;
+}
+
+.mapHidden {
+  opacity: 0;
+  transform: translateY(8px);
+}
+
+.mapVisible {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .mapCaption {
+  position: absolute;
+  left: 14px;
+  bottom: 12px;
   margin: 0;
   font-size: 12px;
-  color: #6a6f87;
+  color: #c6ddff;
+  background: rgba(15, 24, 44, 0.35);
+  padding: 6px 10px;
+  border-radius: 999px;
+  backdrop-filter: blur(4px);
 }
 
 .mapFrame :global(.svgMap-map-wrapper) {
@@ -649,6 +755,7 @@
   background: transparent;
   padding-top: 60%;
   overflow: hidden;
+  pointer-events: none;
 }
 
 .mapFrame :global(.svgMap-container),
@@ -671,13 +778,14 @@
 }
 
 .mapFrame :global(.svgMap-country) {
-  fill: transparent;
+  fill: var(--svg-map-country-fill, transparent);
   stroke: var(--map-outline);
   stroke-width: 1.2;
 }
 
 .mapFrame :global(.svgMap-country.svgMap-active) {
-  stroke: #2c83c3;
+  fill: #b6e0ff;
+  stroke: #b6e0ff;
 }
 
 .mapFrame :global(.svgMap-tooltip),
@@ -690,39 +798,31 @@
 .sectionOrientation {
   position: relative;
   background: transparent;
-  padding: 0;
-  margin-top: 56px;
+  padding: 6.6vmax 0;
+  margin-top: 0;
 }
 
 .sectionOrientation::before {
   content: "";
   position: absolute;
+  inset: 0;
   left: 50%;
   transform: translateX(-50%);
   width: 100vw;
-  top: -40px;
-  bottom: -32px;
-  background:
-    radial-gradient(circle, rgba(44, 131, 195, 0.12) 1px, transparent 1px),
-    #ffffff;
-  background-size: 32px 32px, auto;
-  background-position: 16px 14px, center;
-  z-index: -1;
+  background: #ffffff;
+  z-index: 0;
 }
 
 .sectionOrientation::after {
   content: "";
   position: absolute;
+  top: 0;
   left: 50%;
   transform: translateX(-50%);
   width: 100vw;
-  top: -40px;
-  height: 160px;
-  background:
-    radial-gradient(circle at 12% 30%, rgba(255, 61, 172, 0.18), transparent 58%),
-    radial-gradient(circle at 82% 20%, rgba(44, 131, 195, 0.2), transparent 60%);
-  pointer-events: none;
-  z-index: -1;
+  height: 10px;
+  background: linear-gradient(90deg, #2c83c3 0%, #6c2d82 100%);
+  z-index: 1;
 }
 
 .sectionFresh {
@@ -802,6 +902,8 @@
   justify-content: space-between;
   gap: 16px;
   margin-bottom: 24px;
+  position: relative;
+  z-index: 2;
 }
 
 .sectionKicker {
@@ -813,6 +915,31 @@
   font-weight: 700;
 }
 
+.orientationCard {
+  background: #ffffff;
+  border-radius: 22px;
+  padding: 24px;
+  border: 1px solid rgba(44, 131, 195, 0.12);
+  box-shadow: 0 14px 26px rgba(24, 30, 72, 0.08);
+  position: relative;
+  overflow: hidden;
+  z-index: 2;
+}
+
+.orientationCard::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 6px;
+  width: 100%;
+  background: linear-gradient(90deg, #2c83c3 0%, #6c2d82 100%);
+}
+
+.orientationCard > * {
+  position: relative;
+  z-index: 1;
+}
 .spotlightGrid,
 .trackGrid {
   display: grid;

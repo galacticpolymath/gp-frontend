@@ -432,7 +432,8 @@ export async function getStaticProps() {
       props: {
         featuredUnits: fallbackUnits,
         userStats: {
-          totalTeachers: 0,
+          totalUsers: 0,
+          totalStudents: 0,
           usStates: 0,
           otherCountries: 0,
           highlightedCountries: [],
@@ -456,10 +457,20 @@ export default function TeacherPortalDesignPreview({
   const lastFocusedRef = useRef<HTMLElement | null>(null);
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
   const mapInstanceRef = useRef<unknown>(null);
+  const [showStatsDebug, setShowStatsDebug] = useState(false);
+  const statsSectionRef = useRef<HTMLElement | null>(null);
+  const statsAnimationStarted = useRef(false);
   const [animatedStats, setAnimatedStats] = useState({
-    totalTeachers: 0,
+    totalUsers: 0,
+    totalStudents: 0,
     usStates: 0,
     otherCountries: 0,
+    totalCountries: 0,
+  });
+  const [statsVisibility, setStatsVisibility] = useState({
+    showCountries: false,
+    showStates: false,
+    showMap: false,
   });
   const newUnits = featuredUnits.filter((unit) => unit.isNew);
   const spotlightUnits = newUnits.length ? newUnits : featuredUnits.slice(0, 3);
@@ -524,7 +535,7 @@ export default function TeacherPortalDesignPreview({
   }, [activeModal]);
 
   useEffect(() => {
-    if (typeof window === "undefined") {
+    if (typeof window === "undefined" || !statsSectionRef.current) {
       return;
     }
 
@@ -532,44 +543,80 @@ export default function TeacherPortalDesignPreview({
       "(prefers-reduced-motion: reduce)"
     ).matches;
 
-    if (prefersReducedMotion) {
-      setAnimatedStats({
-        totalTeachers: userStats.totalTeachers,
-        usStates: userStats.usStates,
-        otherCountries: userStats.otherCountries,
-      });
-      return;
-    }
+    const runCountUp = (
+      key: keyof typeof animatedStats,
+      target: number,
+      durationMs: number
+    ) =>
+      new Promise<void>((resolve) => {
+        const start = window.performance.now();
+        const initial = animatedStats[key] ?? 0;
+        let animationFrame = 0;
 
-    const durationMs = 900;
-    const start = window.performance.now();
-    const targets = {
-      totalTeachers: userStats.totalTeachers,
-      usStates: userStats.usStates,
-      otherCountries: userStats.otherCountries,
-    };
+        const tick = (now: number) => {
+          const progress = Math.min((now - start) / durationMs, 1);
+          const ease = 1 - Math.pow(1 - progress, 3);
+          const nextValue = Math.round(initial + (target - initial) * ease);
+          setAnimatedStats((prev) => ({ ...prev, [key]: nextValue }));
 
-    let animationFrame = 0;
+          if (progress < 1) {
+            animationFrame = window.requestAnimationFrame(tick);
+          } else {
+            resolve();
+          }
+        };
 
-    const tick = (now: number) => {
-      const progress = Math.min((now - start) / durationMs, 1);
-      const ease = 1 - Math.pow(1 - progress, 3);
-      setAnimatedStats({
-        totalTeachers: Math.round(targets.totalTeachers * ease),
-        usStates: Math.round(targets.usStates * ease),
-        otherCountries: Math.round(targets.otherCountries * ease),
-      });
-
-      if (progress < 1) {
         animationFrame = window.requestAnimationFrame(tick);
-      }
-    };
 
-    animationFrame = window.requestAnimationFrame(tick);
+        return () => window.cancelAnimationFrame(animationFrame);
+      });
 
-    return () => {
-      window.cancelAnimationFrame(animationFrame);
-    };
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting || statsAnimationStarted.current) {
+            return;
+          }
+          statsAnimationStarted.current = true;
+
+          if (prefersReducedMotion) {
+            setAnimatedStats({
+              totalUsers: userStats.totalUsers,
+              totalStudents: userStats.totalStudents,
+              usStates: userStats.usStates,
+              otherCountries: userStats.otherCountries,
+              totalCountries: userStats.highlightedCountries.length,
+            });
+            setStatsVisibility({
+              showCountries: true,
+              showStates: true,
+              showMap: true,
+            });
+            return;
+          }
+
+          (async () => {
+            await runCountUp("totalUsers", userStats.totalUsers, 900);
+            await runCountUp("totalStudents", userStats.totalStudents, 900);
+            setStatsVisibility((prev) => ({ ...prev, showCountries: true }));
+            await new Promise((resolve) => setTimeout(resolve, 200));
+            setStatsVisibility((prev) => ({ ...prev, showStates: true }));
+            await new Promise((resolve) => setTimeout(resolve, 200));
+            setStatsVisibility((prev) => ({ ...prev, showMap: true }));
+            setAnimatedStats((prev) => ({
+              ...prev,
+              totalCountries: userStats.highlightedCountries.length,
+              usStates: userStats.usStates,
+            }));
+          })();
+        });
+      },
+      { threshold: 0.35 }
+    );
+
+    observer.observe(statsSectionRef.current);
+
+    return () => observer.disconnect();
   }, [userStats]);
 
   useEffect(() => {
@@ -595,7 +642,7 @@ export default function TeacherPortalDesignPreview({
           ...acc,
           [code]: {
             teachers: 1,
-            color: "#2c83c3",
+            color: "#f0f6ff",
           },
         }),
         {} as Record<string, { teachers: number; color: string }>
@@ -609,8 +656,8 @@ export default function TeacherPortalDesignPreview({
         mouseWheelZoomEnabled: false,
         touchLink: false,
         colorNoData: "transparent",
-        colorMin: "#2c83c3",
-        colorMax: "#2c83c3",
+        colorMin: "#f0f6ff",
+        colorMax: "#f0f6ff",
         data: {
           data: {
             teachers: {
@@ -641,6 +688,8 @@ export default function TeacherPortalDesignPreview({
     if (typeof window === "undefined") {
       return;
     }
+
+    setShowStatsDebug(window.location.search.includes("stats-debug=1"));
 
     const elements = Array.from(
       document.querySelectorAll<HTMLElement>("[data-animate]")
@@ -797,61 +846,87 @@ export default function TeacherPortalDesignPreview({
           <section
             className={`${styles.sectionStats} ${styles.reveal}`}
             data-animate
+            ref={statsSectionRef}
           >
             <div className={styles.sectionHeader}>
               <div>
-                <p className={styles.sectionKicker}>Across the globe</p>
-                <h2>Teachers are already exploring GP</h2>
+                <p className={styles.sectionKicker}>Join The GP Global Classroom</p>
+                <h2>Science is for Everyone!</h2>
                 <p>
-                  Used by {animatedStats.totalTeachers.toLocaleString()}{" "}
-                  teachers across {animatedStats.usStates.toLocaleString()} US
-                  states and{" "}
-                  {animatedStats.otherCountries.toLocaleString()} other
-                  countries.
+                  A growing community of educators and students worldwide.
                 </p>
               </div>
-              <div className={styles.statsCtaRow}>
-                <a className={styles.primaryButton} href="/account">
-                  Log in
-                </a>
-                <a className={styles.secondaryButton} href="/gp-plus">
-                  Create free account
-                </a>
-              </div>
             </div>
+            {showStatsDebug && userStats.debug && (
+              <div className={styles.statsDebug}>
+                <p className={styles.statsDebugTitle}>Stats debug</p>
+                <pre>{JSON.stringify(userStats.debug, null, 2)}</pre>
+              </div>
+            )}
             <div className={styles.statsGrid}>
               <div className={styles.statsCard}>
-                <div>
-                  <p className={styles.statsKicker}>Teachers</p>
-                  <p className={styles.statsValue}>
-                    {animatedStats.totalTeachers.toLocaleString()}
-                  </p>
+                <div className={styles.statsPrimaryRow}>
+                  <div>
+                    <p className={styles.statsKicker}>Users</p>
+                    <p className={styles.statsValue}>
+                      {animatedStats.totalUsers.toLocaleString()}
+                    </p>
+                  </div>
+                  <div>
+                    <p className={styles.statsKicker}>Students</p>
+                    <p className={styles.statsValue}>
+                      {animatedStats.totalStudents.toLocaleString()}
+                    </p>
+                  </div>
                 </div>
                 <p className={styles.statsCaption}>
-                  Educators using GP resources worldwide.
+                  Registered users and their total student reach.
                 </p>
                 <div className={styles.statsDivider} aria-hidden="true" />
                 <div className={styles.statsList}>
-                  <div>
+                  <div
+                    className={
+                      statsVisibility.showCountries
+                        ? styles.statsRowVisible
+                        : styles.statsRowHidden
+                    }
+                  >
+                    <span>Countries</span>
+                    <strong>{animatedStats.totalCountries}</strong>
+                  </div>
+                  <div
+                    className={
+                      statsVisibility.showStates
+                        ? styles.statsRowVisible
+                        : styles.statsRowHidden
+                    }
+                  >
                     <span>US states</span>
                     <strong>{animatedStats.usStates}</strong>
-                  </div>
-                  <div>
-                    <span>Other countries</span>
-                    <strong>{animatedStats.otherCountries}</strong>
                   </div>
                 </div>
               </div>
               <div className={styles.mapWrap}>
                 <div
-                  className={styles.mapFrame}
+                  className={`${styles.mapFrame} ${
+                    statsVisibility.showMap ? styles.mapVisible : styles.mapHidden
+                  }`}
                   id="gp-world-map"
                   ref={mapContainerRef}
-                />
-                <p className={styles.mapCaption}>
-                  Highlighted countries show where GP teachers are located.
-                </p>
+                >
+                  <p className={styles.mapCaption}>
+                    Highlighted countries show where GP teachers are located.
+                  </p>
+                </div>
               </div>
+            </div>
+            <div className={styles.statsCtaRow}>
+              <a className={styles.primaryButton} href="/account">
+                Log in
+              </a>
+              <a className={styles.secondaryButton} href="/gp-plus">
+                Create free account
+              </a>
             </div>
           </section>
 
@@ -861,8 +936,8 @@ export default function TeacherPortalDesignPreview({
           >
             <div className={styles.sectionHeader}>
               <div>
-                <p className={styles.sectionKicker}>Curated for teachers</p>
-                <h2>Orientation &amp; quick wins</h2>
+                <p className={styles.sectionKicker}>Start Here</p>
+                <h2>Pick your starting point</h2>
                 <p>
                   Start with a guide, a data-rich app, or a ready-to-teach
                   launch lesson.
