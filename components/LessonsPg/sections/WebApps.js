@@ -1,10 +1,10 @@
-/* eslint-disable indent */
+ 
  
 /* eslint-disable react/jsx-key */
  
-/* eslint-disable semi */
  
-/* eslint-disable quotes */
+ 
+ 
 
 import WebAppCard from "../WebAppCard"
 

@@ -1,10 +1,10 @@
-/* eslint-disable react/jsx-curly-brace-presence */
-/* eslint-disable quotes */
  
-/* eslint-disable no-console */
  
-/* eslint-disable react/jsx-indent */
-/* eslint-disable indent */
+ 
+ 
+ 
+ 
+ 
 import React from "react";
 import {
   Accordion,

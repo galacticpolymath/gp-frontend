@@ -1,16 +1,16 @@
-/* eslint-disable react/jsx-indent-props */
-/* eslint-disable react/jsx-curly-brace-presence */
- 
-/* eslint-disable comma-dangle */
-/* eslint-disable no-multiple-empty-lines */
-/* eslint-disable quotes */
-/* eslint-disable semi */
  
  
  
  
-/* eslint-disable indent */
-/* eslint-disable react/jsx-indent */
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
 import PicAndDescriptionSec from './PicAndDescriptionSec';
 
 const SCIENTISTS = [

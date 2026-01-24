@@ -1,4 +1,4 @@
-/* eslint-disable quotes */
+ 
 
 import Image from "next/image";
 import Link from "next/link";

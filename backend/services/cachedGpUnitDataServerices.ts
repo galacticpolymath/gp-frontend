@@ -1,5 +1,5 @@
-/* eslint-disable quotes */
-/* eslint-disable no-console */
+ 
+ 
  
 import { createPaginationArr } from "../../globalFns";
 import { getUnits } from "../helperFns/lessonsFns";

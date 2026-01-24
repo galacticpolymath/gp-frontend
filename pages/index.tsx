@@ -1,6 +1,6 @@
-/* eslint-disable no-console */
-/* eslint-disable quotes */
-/* eslint-disable indent */
+ 
+ 
+ 
 
 import React, { useEffect } from "react";
 import { nanoid } from "nanoid";

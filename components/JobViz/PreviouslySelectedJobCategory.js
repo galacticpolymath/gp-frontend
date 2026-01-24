@@ -1,9 +1,9 @@
-/* eslint-disable semi */
-/* eslint-disable react/jsx-max-props-per-line */
-/* eslint-disable react/jsx-indent-props */
-/* eslint-disable quotes */
-/* eslint-disable react/jsx-indent */
-/* eslint-disable indent */
+ 
+ 
+ 
+ 
+ 
+ 
 
 import { useRouter } from "next/router";
 import getNewUrl from "../../helperFns/getNewUrl";

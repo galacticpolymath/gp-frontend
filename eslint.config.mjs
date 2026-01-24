@@ -14,18 +14,9 @@ const jobVizComponentTargets = [
   "components/JobViz/infoModalContent.ts",
 ];
 
-const jsTargets = [
-  ...jobVizComponentTargets,
-  "pages/jobviz/**/*.{js,jsx,ts,tsx}",
-  "components/Modals/SelectedJob.tsx",
-  "scripts/**/*.js",
-];
+const jsTargets = ["**/*.{js,jsx}"];
 
-const tsTargets = [
-  ...jobVizComponentTargets.filter((file) => file.endsWith(".ts") || file.endsWith(".tsx")),
-  "pages/jobviz/**/*.{ts,tsx}",
-  "components/Modals/SelectedJob.tsx",
-];
+const tsTargets = ["**/*.{ts,tsx}"];
 
 const scopedNextConfig = nextConfig.map((entry) => {
   if (!entry) return entry;
@@ -38,7 +29,7 @@ const scopedNextConfig = nextConfig.map((entry) => {
   if (Array.isArray(entry.files)) {
     return {
       ...entry,
-      files: jsTargets,
+      files: ["**/*.{js,jsx,ts,tsx}"],
     };
   }
   return entry;
@@ -49,11 +40,41 @@ export default [
   {
     files: jsTargets,
     languageOptions: {
+      parserOptions: {
+        ecmaFeatures: {
+          jsx: true,
+        },
+      },
       globals: {
         ...globals.browser,
         ...globals.node,
       },
     },
     ignores: ["node_modules/**", ".next/**", "out/**", "build/**"],
+  },
+  {
+    files: tsTargets,
+    languageOptions: {
+      parserOptions: {
+        ecmaFeatures: {
+          jsx: true,
+        },
+      },
+      globals: {
+        ...globals.browser,
+        ...globals.node,
+      },
+    },
+    ignores: ["node_modules/**", ".next/**", "out/**", "build/**"],
+  },
+  {
+    files: ["**/*.{js,jsx,ts,tsx}"],
+    rules: {
+      "@next/next/no-img-element": "off",
+      "react-hooks/refs": "off",
+      "react-hooks/set-state-in-effect": "off",
+      "react-hooks/preserve-manual-memoization": "off",
+      "react-hooks/immutability": "off",
+    },
   },
 ];

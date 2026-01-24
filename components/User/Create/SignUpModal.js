@@ -1,9 +1,9 @@
-/* eslint-disable react/jsx-curly-brace-presence */
  
-/* eslint-disable quotes */
-/* eslint-disable react/jsx-indent-props */
-/* eslint-disable react/jsx-indent */
-/* eslint-disable indent */
+ 
+ 
+ 
+ 
+ 
 import { useContext, useState } from 'react';
 import { CloseButton, Modal, ModalBody, ModalFooter, ModalHeader, Spinner } from 'react-bootstrap';
 import { ModalContext } from '../../../providers/ModalProvider';

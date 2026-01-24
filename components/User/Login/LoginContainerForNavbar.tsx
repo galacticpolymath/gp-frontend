@@ -1,5 +1,5 @@
-/* eslint-disable indent */
-/* eslint-disable quotes */
+ 
+ 
 
 import { FaUserAlt } from "react-icons/fa";
 import React, { useEffect, useMemo, useRef, useState } from "react";

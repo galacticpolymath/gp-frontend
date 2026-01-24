@@ -1,6 +1,6 @@
-/* eslint-disable react/jsx-indent-props */
-/* eslint-disable react/jsx-indent */
-/* eslint-disable indent */
+ 
+ 
+ 
 
 const CardTitle = ({
     children: title,

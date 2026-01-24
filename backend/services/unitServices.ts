@@ -1,4 +1,4 @@
-/* eslint-disable no-console */
+ 
 
 import { DeleteResult, ProjectionType } from 'mongoose';
 import { INewUnitSchema, IUnit } from '../models/Unit/types/unit';

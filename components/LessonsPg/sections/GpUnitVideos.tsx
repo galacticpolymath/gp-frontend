@@ -1,4 +1,4 @@
-/* eslint-disable quotes */
+ 
  
 import VideoCard from "../VideoCard";
 import { useGetGpDataStates } from "../../../customHooks/useGetGpDataStates";

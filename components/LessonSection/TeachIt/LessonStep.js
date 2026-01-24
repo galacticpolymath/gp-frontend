@@ -1,4 +1,4 @@
-/* eslint-disable quotes */
+ 
  
 import RichText from "../../RichText";
 import { TbArrowsSplit2 } from "react-icons/tb";

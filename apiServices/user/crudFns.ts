@@ -1,6 +1,6 @@
-/* eslint-disable quotes */
+ 
 
-/* eslint-disable no-console */
+ 
 
 import axios, { AxiosError, AxiosHeaders } from "axios";
 import cookies from "js-cookie";

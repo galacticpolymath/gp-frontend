@@ -1,8 +1,8 @@
-/* eslint-disable quotes */
-/* eslint-disable indent */
-/* eslint-disable semi */
-/* eslint-disable react/jsx-indent-props */
-/* eslint-disable react/jsx-indent */
+ 
+ 
+ 
+ 
+ 
 import Image from "next/image";
 
 const JobVizIcon = ({ isOnJobVizPg }) => {

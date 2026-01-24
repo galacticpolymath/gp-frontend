@@ -1,7 +1,7 @@
-/* eslint-disable react/jsx-indent-props */
  
-/* eslint-disable indent */
-/* eslint-disable react/jsx-indent */
+ 
+ 
+ 
 import { IoMdEyeOff, IoMdEye } from 'react-icons/io';
 import { useContext, useState } from 'react';
 import { InputSection } from '../formElements';

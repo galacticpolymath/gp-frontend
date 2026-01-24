@@ -1,7 +1,7 @@
-/* eslint-disable react/jsx-wrap-multilines */
-/* eslint-disable react/jsx-indent */
-/* eslint-disable react/jsx-indent-props */
-/* eslint-disable indent */
+ 
+ 
+ 
+ 
 import Modal from 'react-bootstrap/Modal';
 import Button from '../../General/Button';
 import { getMediaComponent as Video } from '../../LessonSection/Preview/utils';

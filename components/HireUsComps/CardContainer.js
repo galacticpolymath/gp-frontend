@@ -1,25 +1,25 @@
-/* eslint-disable react/jsx-curly-brace-presence */
-/* eslint-disable react/jsx-tag-spacing */
-/* eslint-disable curly */
  
-/* eslint-disable brace-style */
-/* eslint-disable no-multiple-empty-lines */
-/* eslint-disable prefer-template */
-/* eslint-disable react/jsx-wrap-multilines */
+ 
+ 
+ 
+ 
+ 
+ 
+ 
 /* eslint-disable react/no-unescaped-entities */
-/* eslint-disable react/jsx-closing-tag-location */
-/* eslint-disable quotes */
  
  
  
-/* eslint-disable react/jsx-indent-props */
-/* eslint-disable semi */
  
  
-/* eslint-disable react/jsx-max-props-per-line */
  
-/* eslint-disable indent */
-/* eslint-disable react/jsx-indent */
+ 
+ 
+ 
+ 
+ 
+ 
+ 
 
 
 import { useEffect, useRef, useState } from 'react';

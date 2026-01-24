@@ -1,4 +1,4 @@
-/* eslint-disable quotes */
+ 
  
 import UnitIconSvg from "../../../assets/img/gp-unit-icon.svg";
 import { UNVIEWABLE_LESSON_STR } from "../../../globalVars";

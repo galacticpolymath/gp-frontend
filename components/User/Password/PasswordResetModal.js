@@ -1,8 +1,8 @@
-/* eslint-disable no-console */
  
-/* eslint-disable react/jsx-indent-props */
-/* eslint-disable react/jsx-indent */
-/* eslint-disable indent */
+ 
+ 
+ 
+ 
 import { useContext, useEffect, useState } from 'react';
 import { CloseButton, Modal, ModalBody, ModalFooter, ModalHeader, ModalTitle } from 'react-bootstrap';
 import { MdOutlineMail } from 'react-icons/md';

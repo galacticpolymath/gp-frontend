@@ -1,22 +1,22 @@
-/* eslint-disable react/jsx-tag-spacing */
- 
-/* eslint-disable no-multiple-empty-lines */
- 
-/* eslint-disable react/jsx-wrap-multilines */
  
  
-/* eslint-disable quotes */
  
  
-/* eslint-disable react/jsx-closing-bracket-location */
-/* eslint-disable react/jsx-indent-props */
-/* eslint-disable semi */
- 
-/* eslint-disable react/no-unknown-property */
  
  
-/* eslint-disable indent */
-/* eslint-disable react/jsx-indent */
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
 import { useState } from 'react';
 import LessonSlide from './LessonSlide';
 import { getVideoThumb } from './utils';

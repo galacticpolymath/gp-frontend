@@ -1,4 +1,4 @@
-/* eslint-disable quotes */
+ 
 
 import Head from "next/head";
 import Footer from "./Footer";
@@ -130,7 +130,7 @@ export default function Layout({
         )}
         {structuredDataPayload.map((schema, index) => (
           <script
-            // eslint-disable-next-line react/no-danger
+             
             dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
             key={`ld-json-${index}`}
             type="application/ld+json"

@@ -1,4 +1,4 @@
-/* eslint-disable quotes */
+ 
 import React from 'react';
 import MarkdownView from 'react-showdown';
 import Link from 'next/link';

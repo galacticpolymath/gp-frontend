@@ -1,4 +1,4 @@
-/* eslint-disable quotes */
+ 
 
 import { Modal, Spinner } from "react-bootstrap";
 import { useModalContext } from "../../providers/ModalProvider";

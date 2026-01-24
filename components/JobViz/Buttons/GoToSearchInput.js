@@ -1,11 +1,11 @@
-/* eslint-disable react/jsx-curly-brace-presence */
-/* eslint-disable quotes */
  
-/* eslint-disable semi */
  
-/* eslint-disable react/jsx-indent-props */
-/* eslint-disable indent */
-/* eslint-disable react/jsx-indent */
+ 
+ 
+ 
+ 
+ 
+ 
 import { Button } from "react-bootstrap";
 import Fade from "../../Fade";
 import { IoArrowUp } from 'react-icons/io5';

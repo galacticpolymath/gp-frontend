@@ -1,6 +1,6 @@
-/* eslint-disable no-console */
  
-/* eslint-disable quotes */
+ 
+ 
 import { NextApiRequest, NextApiResponse } from "next";
 import { cache } from "../../backend/authOpts/authOptions";
 import {

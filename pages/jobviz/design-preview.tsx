@@ -1,6 +1,7 @@
 import Head from "next/head";
 import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { FiCompass, FiLayers, FiUsers, FiPlayCircle, FiPlay } from "react-icons/fi";
 import { MdOutlineSchool } from "react-icons/md";
 import styles from "./design-preview.module.css";
@@ -592,6 +593,7 @@ export default function TeacherPortalDesignPreview({
     otherCountries: 0,
     totalCountries: 0,
   });
+  const animatedStatsRef = useRef(animatedStats);
   const [statsVisibility, setStatsVisibility] = useState({
     showCountries: false,
     showStates: false,
@@ -661,6 +663,10 @@ export default function TeacherPortalDesignPreview({
   }, [activeModal]);
 
   useEffect(() => {
+    animatedStatsRef.current = animatedStats;
+  }, [animatedStats]);
+
+  useEffect(() => {
     if (typeof window === "undefined" || !statsSectionRef.current) {
       return;
     }
@@ -676,7 +682,7 @@ export default function TeacherPortalDesignPreview({
     ) =>
       new Promise<void>((resolve) => {
         const start = window.performance.now();
-        const initial = animatedStats[key] ?? 0;
+        const initial = animatedStatsRef.current[key] ?? 0;
         let animationFrame = 0;
 
         const tick = (now: number) => {
@@ -746,20 +752,21 @@ export default function TeacherPortalDesignPreview({
   }, [userStats]);
 
   useEffect(() => {
-    if (!mapContainerRef.current) {
+    const container = mapContainerRef.current;
+    if (!container) {
       return;
     }
 
     let isMounted = true;
 
     const initMap = async () => {
-      if (mapInstanceRef.current || !mapContainerRef.current) {
+      if (mapInstanceRef.current || !container) {
         return;
       }
 
       const { default: SvgMap } = await import("svgmap");
 
-      if (!isMounted || !mapContainerRef.current) {
+      if (!isMounted || !container) {
         return;
       }
 
@@ -804,9 +811,7 @@ export default function TeacherPortalDesignPreview({
     return () => {
       isMounted = false;
       mapInstanceRef.current = null;
-      if (mapContainerRef.current) {
-        mapContainerRef.current.innerHTML = "";
-      }
+      container.innerHTML = "";
     };
   }, [userStats.highlightedCountries]);
 
@@ -1062,14 +1067,14 @@ export default function TeacherPortalDesignPreview({
                   </div>
                 </div>
               </div>
-              <div className={styles.statsCtaRow}>
-                <a className={styles.primaryButton} href="/account">
-                  Log in
-                </a>
-                <a className={styles.secondaryButton} href="/gp-plus">
-                  Create free account
-                </a>
-              </div>
+            <div className={styles.statsCtaRow}>
+              <Link className={styles.primaryButton} href="/account">
+                Log in
+              </Link>
+              <Link className={styles.secondaryButton} href="/gp-plus">
+                Create free account
+              </Link>
+            </div>
             </div>
           </section>
 

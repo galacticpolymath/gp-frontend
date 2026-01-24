@@ -1,7 +1,7 @@
-/* eslint-disable react/jsx-indent */
-/* eslint-disable quotes */
-/* eslint-disable indent */
-/* eslint-disable react/jsx-indent-props */
+ 
+ 
+ 
+ 
 
 import { BiCheckbox, BiCheckboxChecked } from "react-icons/bi";
 import { FONT_SIZE_CHECKBOX } from "../User/Create/SignUpModal";

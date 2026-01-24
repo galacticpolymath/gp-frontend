@@ -1,5 +1,5 @@
-/* eslint-disable quotes */
-/* eslint-disable indent */
+ 
+ 
 import { CustomError } from "../../backend/utils/errors";
 import {
   deleteUserByEmail,

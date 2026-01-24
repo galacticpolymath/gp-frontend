@@ -1,7 +1,7 @@
-/* eslint-disable no-console */
-/* eslint-disable quotes */
  
-/* eslint-disable indent */
+ 
+ 
+ 
 
 import React from "react";
 import { useUserContext } from "../../../providers/UserProvider";

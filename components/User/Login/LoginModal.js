@@ -1,8 +1,8 @@
-/* eslint-disable react/jsx-curly-brace-presence */
-/* eslint-disable react/jsx-indent */
-/* eslint-disable indent */
  
-/* eslint-disable quotes */
+ 
+ 
+ 
+ 
 import { useContext, useState } from "react";
 import { CloseButton, Modal, ModalHeader, Spinner } from "react-bootstrap";
 import { MdOutlineMail } from "react-icons/md";

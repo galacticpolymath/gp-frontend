@@ -1,5 +1,5 @@
-/* eslint-disable react/jsx-max-props-per-line */
-/* eslint-disable quotes */
+ 
+ 
  
 import PropTypes from 'prop-types';
 import { useRef } from 'react';

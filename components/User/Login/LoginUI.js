@@ -1,8 +1,8 @@
-/* eslint-disable quotes */
-/* eslint-disable react/jsx-curly-brace-presence */
  
-/* eslint-disable indent */
-/* eslint-disable react/jsx-indent */
+ 
+ 
+ 
+ 
 
 import { useContext, useMemo, useState } from "react";
 import { ModalContext } from "../../../providers/ModalProvider";

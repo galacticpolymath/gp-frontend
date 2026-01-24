@@ -1,4 +1,4 @@
-/* eslint-disable quotes */
+ 
 
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";

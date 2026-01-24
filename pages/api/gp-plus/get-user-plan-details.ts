@@ -1,8 +1,8 @@
-/* eslint-disable quotes */
  
-/* eslint-disable semi */
  
-/* eslint-disable no-console */
+ 
+ 
+ 
 
 import { NextApiRequest, NextApiResponse } from "next";
 import { verifyJwt } from "../../../nondependencyFns";

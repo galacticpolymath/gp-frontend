@@ -1,4 +1,4 @@
-/* eslint-disable no-console */
+ 
 import { DeleteResult, ProjectionType } from 'mongoose';
 import { IJobTour } from '../models/JobTour';
 import JobTour from '../models/JobTour';
