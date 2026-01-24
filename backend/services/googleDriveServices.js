@@ -1,8 +1,8 @@
-/* eslint-disable no-console */
+ 
 
-/* eslint-disable comma-dangle */
-/* eslint-disable quotes */
-/* eslint-disable semi */
+ 
+ 
+ 
 import { waitWithExponentialBackOff } from "../../globalFns";
 import axios from "axios";
 import { GoogleAuthReqBody } from "../../pages/api/gp-plus/auth";

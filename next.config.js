@@ -1,4 +1,4 @@
-/* eslint-disable semi */
+ 
  
 /** @type {import('next').NextConfig} */
 

@@ -1,5 +1,5 @@
-/* eslint-disable no-console */
-/* eslint-disable indent */
+ 
+ 
 import { pbkdf2Sync } from 'pbkdf2';
 import { nanoid } from 'nanoid';
 import { sha256 } from 'js-sha256';

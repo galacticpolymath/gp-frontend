@@ -1,5 +1,5 @@
-/* eslint-disable no-console */
-/* eslint-disable indent */
+ 
+ 
 
 const ACCEPTABLE_URL_PROTOCALS = ['https:', 'http:', 'https', 'http', 'mailto:'];
 

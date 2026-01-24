@@ -1,5 +1,5 @@
-/* eslint-disable quotes */
-/* eslint-disable no-console */
+ 
+ 
 
 /**
  * Handles incoming API requests to retrieve the Brevo status.

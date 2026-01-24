@@ -1,6 +1,6 @@
-/* eslint-disable curly */
+ 
 
-/* eslint-disable quotes */
+ 
  
 const jobVizDataObj = require("../data/Jobviz/jobVizDataObj.json");
 

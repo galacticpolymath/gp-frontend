@@ -1,9 +1,9 @@
-/* eslint-disable indent */
  
-/* eslint-disable semi */
  
-/* eslint-disable no-undef */
-/* eslint-disable quotes */
+ 
+ 
+ 
+ 
 
 const getNewUrl = require("../../../helperFns/getNewUrl");
 let jobVizData;

@@ -1,5 +1,5 @@
-/* eslint-disable quotes */
-/* eslint-disable no-console */
+ 
+ 
 
 import { getMailingListContact } from "../../backend/services/emailServices";
 import { deleteMailingListConfirmationsByEmail } from "../../backend/services/mailingListConfirmationServices";

@@ -1,5 +1,5 @@
-/* eslint-disable indent */
-/* eslint-disable no-console */
+ 
+ 
 
 import { nanoid } from 'nanoid';
 import { createPasswordResetEmail } from '../../backend/emailTemplates/passwordReset';

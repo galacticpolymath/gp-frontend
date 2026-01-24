@@ -1,6 +1,6 @@
-/* eslint-disable quotes */
-/* eslint-disable semi */
-/* eslint-disable indent */
+ 
+ 
+ 
 
 import { useState, useMemo, useEffect } from "react";
 

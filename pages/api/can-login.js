@@ -1,5 +1,5 @@
-/* eslint-disable no-console */
-/* eslint-disable indent */
+ 
+ 
 import { getUserByEmail } from '../../backend/services/userServices';
 import { connectToMongodb } from '../../backend/utils/connection';
 import { CustomError } from '../../backend/utils/errors';

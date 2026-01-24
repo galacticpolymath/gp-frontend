@@ -1,6 +1,6 @@
-/* eslint-disable indent */
-/* eslint-disable quotes */
-/* eslint-disable no-console */
+ 
+ 
+ 
 
 import { createObj } from "./globalFns";
 

@@ -9,7 +9,7 @@ import { createDbProjections, getLiveUnits } from "../../shared/fns";
 import { INewUnitSchema } from "../../backend/models/Unit/types/unit";
 import sanitizeHtml from "sanitize-html";
 import RichText from "../../components/RichText";
-import GpLogo from "../../assets/img/gp_logo_white_transBG.png";
+import GpLogo from "../../public/GP_bubbleLogo300px.png";
 import {
   FrontEndUserStats,
   getFrontEndUserStats,
@@ -38,33 +38,24 @@ interface PreviewUnit {
   subjectConnections: string[];
 }
 
+interface BlogPost {
+  id: string;
+  title: string;
+  excerpt: string;
+  url: string;
+  dateLabel: string;
+  imageUrl: string | null;
+  categoryLabel: string;
+  authorName: string;
+}
+
 interface TeacherPortalPreviewProps {
   featuredUnits: PreviewUnit[];
   userStats: FrontEndUserStats;
+  blogPosts: BlogPost[];
 }
 
 const NAV_TABS = ["All", "Units", "Apps", "Videos", "Lessons"];
-
-const wizardTracks = [
-  {
-    title: "Showcase authentic science",
-    description: "Highlight diverse researchers and real-world inquiry.",
-    cta: "Start SciJourneys",
-    icon: MdOutlineSchool,
-  },
-  {
-    title: "Connect learning to careers",
-    description: "Use JobViz and career storylines to anchor lessons.",
-    cta: "Launch JobViz",
-    icon: FiCompass,
-  },
-  {
-    title: "Build question-asking skills",
-    description: "Guide students through observation and curiosity routines.",
-    cta: "Open FairyWrens",
-    icon: FiLayers,
-  },
-];
 
 const experiencePillars = [
   {
@@ -107,6 +98,7 @@ const quickFAQ = [
 
 const spotlightResources = [
   {
+    id: "starter",
     title: "GP Classroom Starter",
     eyebrow: "Teacher Orientation",
     description:
@@ -115,20 +107,64 @@ const spotlightResources = [
     icon: FiPlayCircle,
   },
   {
-    title: "JobViz Career Explorer",
-    eyebrow: "Interactive App",
+    id: "wizard",
+    title: "Not sure where to begin?",
+    eyebrow: "Easy Start Wizard",
     description:
-      "Help students map interests to real careers using curated job data.",
-    meta: "Live app · Student-friendly",
-    icon: FiCompass,
+      "Answer three quick prompts and we will route you to the best unit, app, or video to start today.",
+    meta: "3 prompts · Personalized",
+    icon: FiPlay,
   },
   {
+    id: "lesson",
     title: "SciJourneys Lesson 1",
     eyebrow: "Launch Lesson",
     description:
       "Introduce authentic science with diverse researchers and field stories.",
     meta: "1 class period · Free",
     icon: MdOutlineSchool,
+  },
+];
+
+const carouselImages = [
+  "/imgs/classroomImages/homeCarousel/1-IMG_9600-EDIT (1).jpg",
+  "/imgs/classroomImages/homeCarousel/2_18 Kids exited about nitrate tests.jpg",
+  "/imgs/classroomImages/homeCarousel/3-63dc0d10-7aa9-460a-a373-bdfcff9fc01e-EDIT.jpg",
+];
+
+const fallbackBlogPosts: BlogPost[] = [
+  {
+    id: "blog-fallback-1",
+    title: "Why Insects Belong in Every Classroom",
+    excerpt:
+      "Explore biodiversity, ecosystems, and the power of student observation with adaptable classroom stories.",
+    url: "https://www.galacticpolymath.com/blog",
+    dateLabel: "Dec 1, 2025",
+    imageUrl: "/imgs/classroomImages/homeCarousel/1-IMG_9600-EDIT (1).jpg",
+    categoryLabel: "Featured Scientist, Guest Contributors",
+    authorName: "GP Team",
+  },
+  {
+    id: "blog-fallback-2",
+    title: "Bring Authentic Science Into Your Classroom",
+    excerpt:
+      "Meet the scientists, the questions, and the multimedia resources that make inquiry feel real.",
+    url: "https://www.galacticpolymath.com/blog",
+    dateLabel: "Oct 16, 2025",
+    imageUrl: "/imgs/classroomImages/homeCarousel/2_18 Kids exited about nitrate tests.jpg",
+    categoryLabel: "GP Blog",
+    authorName: "Galactic Polymath",
+  },
+  {
+    id: "blog-fallback-3",
+    title: "Save Science: Share Your GP Story",
+    excerpt:
+      "Community highlights and ways educators are amplifying STEM learning through GP.",
+    url: "https://www.galacticpolymath.com/blog",
+    dateLabel: "Sep 24, 2025",
+    imageUrl: "/imgs/classroomImages/homeCarousel/3-63dc0d10-7aa9-460a-a373-bdfcff9fc01e-EDIT.jpg",
+    categoryLabel: "GP Blog",
+    authorName: "Galactic Polymath",
   },
 ];
 
@@ -267,6 +303,32 @@ const toPlainText = (value?: string | null) =>
         .trim()
     : "";
 
+const formatBlogDate = (value?: string | number | null) => {
+  if (!value) return "";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "";
+  return date.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+};
+
+const formatBlogMeta = (item: any) => {
+  const categories = Array.isArray(item?.categories) ? item.categories : [];
+  const categoryLabel = categories.length
+    ? categories.slice(0, 2).join(", ")
+    : item?.collection?.title || "GP Blog";
+  const authorName =
+    item?.author?.displayName ||
+    item?.author?.name ||
+    item?.authorName ||
+    item?.authorDisplayName ||
+    item?.author ||
+    "";
+  return { categoryLabel, authorName };
+};
+
 const getSponsorLogo = (logo?: string[] | string | null) => {
   if (Array.isArray(logo)) {
     return logo[0] ?? null;
@@ -387,6 +449,65 @@ export async function getStaticProps() {
       0,
       { ReleaseDate: -1 }
     );
+    const blogPosts: BlogPost[] = [];
+    try {
+      const response = await fetch(
+        "https://www.galacticpolymath.com/blog?format=json"
+      );
+      if (response.ok) {
+        const payload = await response.json();
+        const items = Array.isArray(payload?.items) ? payload.items : [];
+        blogPosts.push(
+          ...items.slice(0, 3).map((item: any, index: number) => {
+            const title = item?.title ?? "Untitled post";
+            const excerptSource =
+              item?.excerpt ||
+              item?.summary ||
+              item?.body ||
+              item?.content ||
+              item?.description ||
+              "";
+            const plainExcerpt = toPlainText(excerptSource);
+            const excerpt = (() => {
+              if (!plainExcerpt) return "";
+              const trimmed = plainExcerpt.trim();
+              const maxLength = 240;
+              const boundary = Math.min(trimmed.length, maxLength);
+              const cutoff = trimmed.lastIndexOf(".", boundary);
+              if (cutoff > 120) {
+                return `${trimmed.slice(0, cutoff + 1)}`;
+              }
+              return trimmed.length > maxLength
+                ? `${trimmed.slice(0, maxLength).trim()}...`
+                : trimmed;
+            })();
+            const url = item?.fullUrl || item?.url || "https://www.galacticpolymath.com/blog";
+            const dateLabel = formatBlogDate(
+              item?.publishedOn || item?.publishOn || item?.date
+            );
+            const imageUrl =
+              item?.assetUrl ||
+              item?.thumbnailUrl ||
+              item?.image ||
+              item?.itemImage?.url ||
+              null;
+            const { categoryLabel, authorName } = formatBlogMeta(item);
+            return {
+              id: item?.id || item?.systemDataId || `${title}-${index}`,
+              title,
+              excerpt,
+              url,
+              dateLabel,
+              imageUrl,
+              categoryLabel,
+              authorName,
+            };
+          })
+        );
+      }
+    } catch (error) {
+      console.warn("Failed to load GP blog posts.", error);
+    }
 
     const liveUnits = getLiveUnits(retrievedUnits ?? []);
     const featuredUnits = liveUnits.slice(0, 6).map((unit) => {
@@ -423,6 +544,7 @@ export async function getStaticProps() {
       props: {
         featuredUnits: featuredUnits.length ? featuredUnits : fallbackUnits,
         userStats,
+        blogPosts,
       },
       revalidate: 86_400,
     };
@@ -438,6 +560,7 @@ export async function getStaticProps() {
           otherCountries: 0,
           highlightedCountries: [],
         },
+        blogPosts: [],
       },
       revalidate: 86_400,
     };
@@ -447,6 +570,7 @@ export async function getStaticProps() {
 export default function TeacherPortalDesignPreview({
   featuredUnits,
   userStats,
+  blogPosts,
 }: TeacherPortalPreviewProps) {
   const [activeModal, setActiveModal] = useState<"wizard" | "media" | null>(
     null
@@ -458,6 +582,7 @@ export default function TeacherPortalDesignPreview({
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
   const mapInstanceRef = useRef<unknown>(null);
   const [showStatsDebug, setShowStatsDebug] = useState(false);
+  const [carouselIndex, setCarouselIndex] = useState(0);
   const statsSectionRef = useRef<HTMLElement | null>(null);
   const statsAnimationStarted = useRef(false);
   const [animatedStats, setAnimatedStats] = useState({
@@ -474,6 +599,7 @@ export default function TeacherPortalDesignPreview({
   });
   const newUnits = featuredUnits.filter((unit) => unit.isNew);
   const spotlightUnits = newUnits.length ? newUnits : featuredUnits.slice(0, 3);
+  const displayedBlogPosts = blogPosts.length ? blogPosts : fallbackBlogPosts;
   const handleOpenWizard = () => setActiveModal("wizard");
   const handleCloseModal = () => {
     setActiveModal(null);
@@ -689,6 +815,26 @@ export default function TeacherPortalDesignPreview({
       return;
     }
 
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+
+    if (prefersReducedMotion) {
+      return;
+    }
+
+    const interval = window.setInterval(() => {
+      setCarouselIndex((prev) => (prev + 1) % carouselImages.length);
+    }, 3600);
+
+    return () => window.clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
     setShowStatsDebug(window.location.search.includes("stats-debug=1"));
 
     const elements = Array.from(
@@ -725,48 +871,48 @@ export default function TeacherPortalDesignPreview({
         />
       </Head>
       <div className={styles.page}>
+        <nav className={styles.nav}>
+          <div className={styles.brand}>
+            <div className={styles.brandLogo}>
+              <Image src={GpLogo} alt="Galactic Polymath" priority />
+            </div>
+            <div>
+              <p className={styles.brandTitle}>GP Teacher Portal</p>
+              <p className={styles.brandSubtitle}>
+                Interdisciplinary science for grades 5-12+
+              </p>
+            </div>
+          </div>
+          <div className={styles.navRight}>
+            <div
+              className={styles.navTabs}
+              role="tablist"
+              aria-label="Resource types"
+            >
+              {NAV_TABS.map((tab, index) => (
+                <button
+                  key={tab}
+                  type="button"
+                  className={`${styles.navTab} ${
+                    index === 0 ? styles.navTabActive : ""
+                  }`}
+                >
+                  {tab}
+                </button>
+              ))}
+            </div>
+            <div className={styles.profileSlot}>
+              <span className={styles.profileAvatar} aria-hidden="true">
+                GP
+              </span>
+              <button className={styles.profileButton} type="button">
+                Log in
+              </button>
+            </div>
+          </div>
+        </nav>
         <header className={styles.hero}>
           <div className={styles.heroGlow} aria-hidden="true" />
-          <nav className={styles.nav}>
-            <div className={styles.brand}>
-              <div className={styles.brandLogo}>
-                <Image src={GpLogo} alt="Galactic Polymath" priority />
-              </div>
-              <div>
-                <p className={styles.brandTitle}>GP Teacher Portal</p>
-                <p className={styles.brandSubtitle}>
-                  Interdisciplinary science for grades 5-12+
-                </p>
-              </div>
-            </div>
-            <div className={styles.navRight}>
-              <div
-                className={styles.navTabs}
-                role="tablist"
-                aria-label="Resource types"
-              >
-                {NAV_TABS.map((tab, index) => (
-                  <button
-                    key={tab}
-                    type="button"
-                    className={`${styles.navTab} ${
-                      index === 0 ? styles.navTabActive : ""
-                    }`}
-                  >
-                    {tab}
-                  </button>
-                ))}
-              </div>
-              <div className={styles.profileSlot}>
-                <span className={styles.profileAvatar} aria-hidden="true">
-                  GP
-                </span>
-                <button className={styles.profileButton} type="button">
-                  Log in
-                </button>
-              </div>
-            </div>
-          </nav>
           <div className={styles.heroBody}>
             <div className={styles.heroCopy}>
               <p className={styles.kicker}>Open-access, expert-built science.</p>
@@ -803,7 +949,6 @@ export default function TeacherPortalDesignPreview({
             </div>
             <div className={styles.heroPanel}>
               <div className={styles.searchCard}>
-                <p className={styles.searchLabel}>Search the library</p>
                 <div className={styles.searchBar}>
                   <span className={styles.searchIcon} aria-hidden="true">
                     ⌕
@@ -814,28 +959,22 @@ export default function TeacherPortalDesignPreview({
                     aria-label="Search resources"
                   />
                 </div>
-                <div className={styles.filterNote}>
-                  Search is static in this mock; filters live on the library tab.
-                </div>
               </div>
-              <div className={`${styles.wizardTeaser} ${styles.reveal}`} data-animate>
-                <div className={styles.wizardTeaserTitle}>
-                  <span className={styles.wizardTeaserIcon}>
-                    <FiPlay />
-                  </span>
-                  <h2>Not sure where to begin?</h2>
+              <div className={styles.heroCarousel}>
+                {carouselImages.map((src, index) => (
+                  <img
+                    key={src}
+                    src={src}
+                    alt=""
+                    className={`${styles.heroCarouselImage} ${
+                      index === carouselIndex ? styles.heroCarouselActive : ""
+                    }`}
+                    loading={index === 0 ? "eager" : "lazy"}
+                  />
+                ))}
+                <div className={styles.heroCarouselCaption}>
+                  Real classrooms. Real scientists. Real curiosity.
                 </div>
-                <p>
-                  Answer three quick prompts and we will route you to the best
-                  unit, app, or video to start today.
-                </p>
-                <button
-                  className={styles.secondaryButton}
-                  type="button"
-                  onClick={handleOpenWizard}
-                >
-                  Open the Easy Start Wizard
-                </button>
               </div>
             </div>
           </div>
@@ -848,85 +987,89 @@ export default function TeacherPortalDesignPreview({
             data-animate
             ref={statsSectionRef}
           >
-            <div className={styles.sectionHeader}>
-              <div>
-                <p className={styles.sectionKicker}>Join The GP Global Classroom</p>
-                <h2>Science is for Everyone!</h2>
-                <p>
-                  A growing community of educators and students worldwide.
-                </p>
-              </div>
-            </div>
-            {showStatsDebug && userStats.debug && (
-              <div className={styles.statsDebug}>
-                <p className={styles.statsDebugTitle}>Stats debug</p>
-                <pre>{JSON.stringify(userStats.debug, null, 2)}</pre>
-              </div>
-            )}
-            <div className={styles.statsGrid}>
-              <div className={styles.statsCard}>
-                <div className={styles.statsPrimaryRow}>
-                  <div>
-                    <p className={styles.statsKicker}>Users</p>
-                    <p className={styles.statsValue}>
-                      {animatedStats.totalUsers.toLocaleString()}
-                    </p>
-                  </div>
-                  <div>
-                    <p className={styles.statsKicker}>Students</p>
-                    <p className={styles.statsValue}>
-                      {animatedStats.totalStudents.toLocaleString()}
-                    </p>
-                  </div>
-                </div>
-                <p className={styles.statsCaption}>
-                  Registered users and their total student reach.
-                </p>
-                <div className={styles.statsDivider} aria-hidden="true" />
-                <div className={styles.statsList}>
-                  <div
-                    className={
-                      statsVisibility.showCountries
-                        ? styles.statsRowVisible
-                        : styles.statsRowHidden
-                    }
-                  >
-                    <span>Countries</span>
-                    <strong>{animatedStats.totalCountries}</strong>
-                  </div>
-                  <div
-                    className={
-                      statsVisibility.showStates
-                        ? styles.statsRowVisible
-                        : styles.statsRowHidden
-                    }
-                  >
-                    <span>US states</span>
-                    <strong>{animatedStats.usStates}</strong>
-                  </div>
-                </div>
-              </div>
-              <div className={styles.mapWrap}>
-                <div
-                  className={`${styles.mapFrame} ${
-                    statsVisibility.showMap ? styles.mapVisible : styles.mapHidden
-                  }`}
-                  id="gp-world-map"
-                  ref={mapContainerRef}
-                >
-                  <p className={styles.mapCaption}>
-                    Highlighted countries show where GP teachers are located.
+            <div className={styles.sectionInner}>
+              <div className={styles.sectionHeader}>
+                <div>
+                  <p className={styles.sectionKicker}>Join The GP Global Classroom</p>
+                  <h2>Science is for Everyone!</h2>
+                  <p>
+                    A growing community of educators and students worldwide.
                   </p>
                 </div>
               </div>
-            </div>
-            <div className={styles.statsCtaRow}>
-              <a className={styles.primaryButton} href="/account">
-                Log in
-              </a>
-              <a className={styles.secondaryButton} href="/gp-plus">
-                Create free account
-              </a>
+              {showStatsDebug && userStats.debug && (
+                <div className={styles.statsDebug}>
+                  <p className={styles.statsDebugTitle}>Stats debug</p>
+                  <pre>{JSON.stringify(userStats.debug, null, 2)}</pre>
+                </div>
+              )}
+              <div className={styles.statsGrid}>
+                <div className={styles.statsCard}>
+                  <div className={styles.statsPrimaryRow}>
+                    <div>
+                      <p className={styles.statsKicker}>Users</p>
+                      <p className={styles.statsValue}>
+                        {animatedStats.totalUsers.toLocaleString()}
+                      </p>
+                    </div>
+                    <div>
+                      <p className={styles.statsKicker}>Students</p>
+                      <p className={styles.statsValue}>
+                        {animatedStats.totalStudents.toLocaleString()}
+                      </p>
+                    </div>
+                  </div>
+                  <p className={styles.statsCaption}>
+                    Registered users and their total student reach.
+                  </p>
+                  <div className={styles.statsDivider} aria-hidden="true" />
+                  <div className={styles.statsList}>
+                    <div
+                      className={
+                        statsVisibility.showCountries
+                          ? styles.statsRowVisible
+                          : styles.statsRowHidden
+                      }
+                    >
+                      <span>Countries</span>
+                      <strong>{animatedStats.totalCountries}</strong>
+                    </div>
+                    <div
+                      className={
+                        statsVisibility.showStates
+                          ? styles.statsRowVisible
+                          : styles.statsRowHidden
+                      }
+                    >
+                      <span>US states</span>
+                      <strong>{animatedStats.usStates}</strong>
+                    </div>
+                  </div>
+                </div>
+                <div className={styles.mapWrap}>
+                  <div
+                    className={`${styles.mapFrame} ${
+                      statsVisibility.showMap
+                        ? styles.mapVisible
+                        : styles.mapHidden
+                    }`}
+                    id="gp-world-map"
+                    ref={mapContainerRef}
+                  >
+                    <p className={styles.mapCaption}>
+                      Highlighted countries show where GP teachers are located.
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div className={styles.statsCtaRow}>
+                <a className={styles.primaryButton} href="/account">
+                  Log in
+                </a>
+                <a className={styles.secondaryButton} href="/gp-plus">
+                  Create free account
+                </a>
+              </div>
             </div>
           </section>
 
@@ -934,242 +1077,263 @@ export default function TeacherPortalDesignPreview({
             className={`${styles.section} ${styles.sectionOrientation} ${styles.reveal}`}
             data-animate
           >
-            <div className={styles.sectionHeader}>
-              <div>
-                <p className={styles.sectionKicker}>Start Here</p>
-                <h2>Pick your starting point</h2>
-                <p>
-                  Start with a guide, a data-rich app, or a ready-to-teach
-                  launch lesson.
-                </p>
-              </div>
-            </div>
-            <div className={styles.spotlightGrid}>
-              {spotlightResources.map((resource, index) => (
-                <article
-                  key={resource.title}
-                  className={`${styles.spotlightCard} ${styles.reveal}`}
-                  style={{ transitionDelay: `${index * 90}ms` }}
-                  data-animate
-                >
-                  <p className={styles.spotlightEyebrow}>
-                    {resource.eyebrow}
+            <div className={styles.sectionInner}>
+              <div className={styles.sectionHeader}>
+                <div>
+                  <p className={styles.sectionKicker}>Start Here</p>
+                  <h2>Pick your starting point</h2>
+                  <p>
+                    Start with a guide, a data-rich app, or a ready-to-teach
+                    launch lesson.
                   </p>
-                  <div className={styles.spotlightTitleRow}>
-                    <h3>{resource.title}</h3>
-                    <div className={styles.spotlightIcon}>
-                      <resource.icon />
+                </div>
+              </div>
+              <div className={styles.spotlightGrid}>
+                {spotlightResources.map((resource, index) => (
+                  <article
+                    key={resource.title}
+                    className={`${styles.spotlightCard} ${styles.reveal} ${
+                      resource.id === "wizard" ? styles.spotlightWizard : ""
+                    }`}
+                    style={{ transitionDelay: `${index * 90}ms` }}
+                    data-animate
+                  >
+                    <p className={styles.spotlightEyebrow}>
+                      {resource.eyebrow}
+                    </p>
+                    <div className={styles.spotlightTitleRow}>
+                      <h3>{resource.title}</h3>
+                      <div className={styles.spotlightIcon}>
+                        <resource.icon />
+                      </div>
                     </div>
-                  </div>
-                  <p>{resource.description}</p>
-                  <span className={styles.spotlightMeta}>{resource.meta}</span>
-                </article>
-              ))}
+                    <p>{resource.description}</p>
+                    <span className={styles.spotlightMeta}>{resource.meta}</span>
+                    {resource.id === "wizard" && (
+                      <button
+                        className={styles.secondaryButton}
+                        type="button"
+                        onClick={handleOpenWizard}
+                      >
+                        Open the Easy Start Wizard
+                      </button>
+                    )}
+                  </article>
+                ))}
+              </div>
             </div>
           </section>
 
-          <div
-            className={`${styles.sectionDivider} ${styles.sectionDividerFresh}`}
-            aria-hidden="true"
-          />
-
           <section className={`${styles.section} ${styles.sectionFresh}`}>
-            <div className={styles.sectionHeader}>
-              <div>
-                <p className={styles.sectionKicker}>New + noteworthy</p>
-                <h2>Hot off the Press</h2>
-                <p>
-                  Ready-to-go units that check all the boxes!
-                </p>
+            <div className={styles.sectionInner}>
+              <div className={styles.sectionHeader}>
+                <div>
+                  <p className={styles.sectionKicker}>New + noteworthy</p>
+                  <h2>Hot off the Press</h2>
+                  <p>
+                    Ready-to-go units that check all the boxes!
+                  </p>
+                </div>
               </div>
-            </div>
-            <div className={styles.newUnitGrid}>
-              {spotlightUnits.map((unit, index) => {
-                const mediaItems = unit.media ?? [];
-                const videoCount = mediaItems.filter(
-                  (item) => item.type === "Video"
-                ).length;
-                const appCount = mediaItems.filter((item) => item.type === "App")
-                  .length;
-                const subjectConnections = summarizeList(
-                  unit.subjectConnections,
-                  2
-                );
-                const targetStandards = summarizeList(unit.targetStandards, 1);
-                const careerConnections = summarizeList(
-                  unit.careerConnections,
-                  1
-                );
+              <div className={styles.newUnitGrid}>
+                {spotlightUnits.map((unit, index) => {
+                  const mediaItems = unit.media ?? [];
+                  const videoCount = mediaItems.filter(
+                    (item) => item.type === "Video"
+                  ).length;
+                  const appCount = mediaItems.filter((item) => item.type === "App")
+                    .length;
+                  const subjectConnections = summarizeList(
+                    unit.subjectConnections,
+                    2
+                  );
+                  const targetStandards = summarizeList(
+                    unit.targetStandards, 1
+                  );
+                  const careerConnections = summarizeList(
+                    unit.careerConnections,
+                    1
+                  );
 
-                return (
-                  <article
-                    key={unit.id}
-                    className={`${styles.newUnitCard} ${styles.reveal}`}
-                    style={{ transitionDelay: `${index * 110}ms` }}
-                    data-animate
-                  >
-                    <div className={styles.newUnitBody}>
-                      <div className={styles.unitHeaderRow}>
-                        <div className={styles.unitHeaderInfo}>
-                          <div className={styles.cardHeader}>
-                            <h3>{unit.title}</h3>
-                          </div>
-                          <p className={styles.cardSubtitle}>{unit.subtitle}</p>
-                          <div className={styles.cardMeta}>
-                            <span>{unit.subject}</span>
-                            <span>{unit.grades}</span>
-                            <span>
-                              {unit.lessons
-                                ? `${unit.lessons} lessons`
-                                : "Lessons"}
-                            </span>
-                          </div>
-                          <div className={styles.unitBannerWrap}>
-                            <img src={unit.bannerUrl} alt="" loading="lazy" />
-                            {unit.isNew && (
-                              <span className={styles.newBadge}>New</span>
-                            )}
-                          </div>
-                        </div>
-                        <div className={styles.sponsorPanel}>
-                          <p className={styles.sponsorTitle}>Sponsored by</p>
-                          {unit.sponsorLogo && (
-                            <div className={styles.sponsorLogo}>
-                              <img src={unit.sponsorLogo} alt="" />
+                  return (
+                    <article
+                      key={unit.id}
+                      className={`${styles.newUnitCard} ${styles.reveal}`}
+                      style={{ transitionDelay: `${index * 110}ms` }}
+                      data-animate
+                    >
+                      <div className={styles.newUnitBody}>
+                        <div className={styles.unitHeaderRow}>
+                          <div className={styles.unitHeaderInfo}>
+                            <div className={styles.cardHeader}>
+                              <h3>{unit.title}</h3>
                             </div>
-                          )}
-                          {unit.sponsorMarkdown ? (
-                            <RichText
-                              content={unit.sponsorMarkdown}
-                              className={styles.sponsorText}
-                            />
-                          ) : (
-                            <p className={styles.sponsorText}>
-                              {unit.sponsorText}
-                            </p>
-                          )}
-                        </div>
-                      </div>
-                      <div className={styles.unitOverview}>
-                        {unit.gistMarkdown ? (
-                          <div className={styles.gistBlock}>
-                            <p className={styles.gistLabel}>The Gist</p>
-                            <RichText content={unit.gistMarkdown} />
-                          </div>
-                        ) : null}
-                        <div className={styles.unitConnections}>
-                          <div className={styles.epauletteBlock}>
-                            <p className={styles.overviewLabel}>Epaulette</p>
-                            <div className={styles.epauletteWrap}>
-                              {unit.epaulette && (
-                                <img src={unit.epaulette} alt="" />
+                            <p className={styles.cardSubtitle}>{unit.subtitle}</p>
+                            <div className={styles.cardMeta}>
+                              <span>{unit.subject}</span>
+                              <span>{unit.grades}</span>
+                              <span>
+                                {unit.lessons
+                                  ? `${unit.lessons} lessons`
+                                  : "Lessons"}
+                              </span>
+                            </div>
+                            <div className={styles.unitBannerWrap}>
+                              <img src={unit.bannerUrl} alt="" loading="lazy" />
+                              {unit.isNew && (
+                                <span className={styles.newBadge}>New</span>
                               )}
                             </div>
                           </div>
-                          <div className={styles.unitConnectionsTextBlock}>
-                            <p className={styles.unitConnectionsLabel}>
-                              Quick connections
-                            </p>
-                            <p className={styles.unitConnectionsText}>
-                              <strong>Targets:</strong> {unit.targetSubject}
-                              .{" "}
-                              {subjectConnections
-                                ? `Connects to ${subjectConnections}.`
-                                : "Connects to additional subjects to be added."}
-                            </p>
-                            <p className={styles.unitConnectionsText}>
-                              <strong>Standards:</strong>{" "}
-                              {targetStandards ?? "Not listed yet."}
-                            </p>
-                            <p className={styles.unitConnectionsText}>
-                              <strong>Connected careers:</strong>{" "}
-                              {careerConnections ??
-                                "JobViz connections coming soon."}
-                            </p>
+                          <div className={styles.sponsorPanel}>
+                            <p className={styles.sponsorTitle}>Sponsored by</p>
+                            {unit.sponsorLogo && (
+                              <div className={styles.sponsorLogo}>
+                                <img src={unit.sponsorLogo} alt="" />
+                              </div>
+                            )}
+                            {unit.sponsorMarkdown ? (
+                              <RichText
+                                content={unit.sponsorMarkdown}
+                                className={styles.sponsorText}
+                              />
+                            ) : (
+                              <p className={styles.sponsorText}>
+                                {unit.sponsorText}
+                              </p>
+                            )}
                           </div>
                         </div>
-                      </div>
-                      <div className={styles.resourceBlock}>
-                        <p>Associated videos/apps</p>
-                        {mediaItems.length ? (
-                          <>
-                            <div className={styles.resourceSummary}>
-                              <span>{videoCount} videos</span>
-                              <span>{appCount} apps</span>
+                        <div className={styles.unitOverview}>
+                          {unit.gistMarkdown ? (
+                            <div className={styles.gistBlock}>
+                              <p className={styles.gistLabel}>The Gist</p>
+                              <RichText content={unit.gistMarkdown} />
                             </div>
-                            <div className={styles.mediaGrid}>
-                              {mediaItems.map((media) => (
-                                <button
-                                  key={`${unit.id}-${media.title}`}
-                                  type="button"
-                                  className={styles.mediaCard}
-                                  onClick={() => handleOpenMedia(media)}
-                                >
-                                  <div className={styles.mediaThumb}>
-                                    <img src={media.thumbnail} alt="" />
-                                    <span className={styles.mediaBadge}>
-                                      {media.type}
+                          ) : null}
+                          <div className={styles.unitConnections}>
+                            <div className={styles.epauletteBlock}>
+                              <p className={styles.overviewLabel}>Epaulette</p>
+                              <div className={styles.epauletteWrap}>
+                                {unit.epaulette && (
+                                  <img src={unit.epaulette} alt="" />
+                                )}
+                              </div>
+                            </div>
+                            <div className={styles.unitConnectionsTextBlock}>
+                              <p className={styles.unitConnectionsLabel}>
+                                Quick connections
+                              </p>
+                              <p className={styles.unitConnectionsText}>
+                                <strong>Targets:</strong> {unit.targetSubject}
+                                .{" "}
+                                {subjectConnections
+                                  ? `Connects to ${subjectConnections}.`
+                                  : "Connects to additional subjects to be added."}
+                              </p>
+                              <p className={styles.unitConnectionsText}>
+                                <strong>Standards:</strong>{" "}
+                                {targetStandards ?? "Not listed yet."}
+                              </p>
+                              <p className={styles.unitConnectionsText}>
+                                <strong>Connected careers:</strong>{" "}
+                                {careerConnections ??
+                                  "JobViz connections coming soon."}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                        <div className={styles.resourceBlock}>
+                          <p>Associated videos/apps</p>
+                          {mediaItems.length ? (
+                            <>
+                              <div className={styles.resourceSummary}>
+                                <span>{videoCount} videos</span>
+                                <span>{appCount} apps</span>
+                              </div>
+                              <div className={styles.mediaGrid}>
+                                {mediaItems.map((media) => (
+                                  <button
+                                    key={`${unit.id}-${media.title}`}
+                                    type="button"
+                                    className={styles.mediaCard}
+                                    onClick={() => handleOpenMedia(media)}
+                                  >
+                                    <div className={styles.mediaThumb}>
+                                      <img src={media.thumbnail} alt="" />
+                                      <span className={styles.mediaBadge}>
+                                        {media.type}
+                                      </span>
+                                    </div>
+                                    <span className={styles.mediaTitle}>
+                                      {media.title}
                                     </span>
-                                  </div>
-                                  <span className={styles.mediaTitle}>
-                                    {media.title}
-                                  </span>
-                                </button>
-                              ))}
-                            </div>
-                          </>
-                        ) : (
-                          <p className={styles.mediaEmpty}>
-                            Media previews are coming soon.
-                          </p>
-                        )}
+                                  </button>
+                                ))}
+                              </div>
+                            </>
+                          ) : (
+                            <p className={styles.mediaEmpty}>
+                              Media previews are coming soon.
+                            </p>
+                          )}
+                        </div>
+                        <div className={styles.cardActions}>
+                          <button className={styles.primaryButton} type="button">
+                            Take Me to the Unit
+                          </button>
+                        </div>
                       </div>
-                      <div className={styles.cardActions}>
-                        <button className={styles.primaryButton} type="button">
-                          Take Me to the Unit
-                        </button>
-                      </div>
-                    </div>
-                  </article>
-                );
-              })}
+                    </article>
+                  );
+                })}
+              </div>
             </div>
           </section>
 
-          <div
-            className={`${styles.sectionDivider} ${styles.sectionDividerAlt}`}
-            aria-hidden="true"
-          />
-
           <section className={`${styles.sectionAlt} ${styles.reveal}`} data-animate>
-            <div className={styles.sectionHeader}>
-              <div>
-                <p className={styles.sectionKicker}>Find your path fast</p>
-                <h2>Pick a starting track</h2>
-                <p>
-                  These curated pathways direct teachers to the right resources
-                  without the overwhelm.
-                </p>
+            <div className={styles.sectionInner}>
+              <div className={styles.sectionHeader}>
+                <div>
+                  <p className={styles.sectionKicker}>Latest from the GP Blog</p>
+                  <h2>Stories, research, and classroom sparks</h2>
+                  <p>
+                    Fresh ideas and standout stories from the Galactic Polymath
+                    community.
+                  </p>
+                </div>
               </div>
-            </div>
-            <div className={styles.trackGrid}>
-              {wizardTracks.map((track, index) => (
-                <article
-                  key={track.title}
-                  className={`${styles.trackCard} ${styles.reveal}`}
-                  style={{ transitionDelay: `${index * 120}ms` }}
-                  data-animate
-                >
-                  <div className={styles.trackIcon}>
-                    <track.icon />
-                  </div>
-                  <h3>{track.title}</h3>
-                  <p>{track.description}</p>
-                  <button className={styles.secondaryButton} type="button">
-                    {track.cta}
-                  </button>
-                </article>
-              ))}
+              <div className={styles.blogGrid}>
+                {displayedBlogPosts.map((post, index) => (
+                  <article
+                    key={post.id}
+                    className={`${styles.blogCard} ${styles.reveal}`}
+                    style={{ transitionDelay: `${index * 120}ms` }}
+                    data-animate
+                  >
+                    <a href={post.url} className={styles.blogCardLink}>
+                      <div className={styles.blogImage}>
+                        {post.imageUrl ? (
+                          <img src={post.imageUrl} alt="" loading="lazy" />
+                        ) : (
+                          <div className={styles.blogImageFallback} />
+                        )}
+                      </div>
+                      <div className={styles.blogBody}>
+                        <p className={styles.blogMeta}>
+                          {post.categoryLabel}
+                          {post.authorName ? ` | ${post.authorName}` : ""}
+                        </p>
+                        <h3>{post.title}</h3>
+                        <p className={styles.blogExcerpt}>
+                          {post.excerpt || "Read the latest from GP."}
+                        </p>
+                        <span className={styles.blogButton}>Read More</span>
+                      </div>
+                    </a>
+                  </article>
+                ))}
+              </div>
             </div>
           </section>
 
@@ -1179,23 +1343,25 @@ export default function TeacherPortalDesignPreview({
           />
 
           <section className={`${styles.section} ${styles.reveal}`} data-animate>
-            <div className={styles.sectionHeader}>
-              <div>
-                <p className={styles.sectionKicker}>What teachers ask</p>
-                <h2>FAQ</h2>
+            <div className={styles.sectionInner}>
+              <div className={styles.sectionHeader}>
+                <div>
+                  <p className={styles.sectionKicker}>What teachers ask</p>
+                  <h2>FAQ</h2>
+                </div>
               </div>
-            </div>
-            <div className={styles.faqList}>
-              {quickFAQ.map((item) => (
-                <details
-                  key={item.question}
-                  className={`${styles.faqItem} ${styles.reveal}`}
-                  data-animate
-                >
-                  <summary>{item.question}</summary>
-                  <p>{item.answer}</p>
-                </details>
-              ))}
+              <div className={styles.faqList}>
+                {quickFAQ.map((item) => (
+                  <details
+                    key={item.question}
+                    className={`${styles.faqItem} ${styles.reveal}`}
+                    data-animate
+                  >
+                    <summary>{item.question}</summary>
+                    <p>{item.answer}</p>
+                  </details>
+                ))}
+              </div>
             </div>
           </section>
         </main>

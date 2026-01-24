@@ -1,10 +1,10 @@
-/* eslint-disable no-multiple-empty-lines */
+ 
 
 
-/* eslint-disable quotes */
-/* eslint-disable semi */
+ 
+ 
 
-/* eslint-disable indent */
+ 
 
 const jobVizData = require("../data/Jobviz/jobVizData.json");
 

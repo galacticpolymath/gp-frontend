@@ -1,4 +1,4 @@
-/* eslint-disable indent */
+ 
 
 export const GOOGLE_DRIVE_PROJECT_CLIENT_ID = '1095510414161-7v7mlrakupjs18n2ml9brjoqs0rjkg4v.apps.googleusercontent.com';
 export const PASSWORD_RESET_CODE_VAR_NAME = 'password_reset_code';
