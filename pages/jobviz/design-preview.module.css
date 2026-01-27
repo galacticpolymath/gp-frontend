@@ -118,6 +118,11 @@
   color: #f0f4ff;
 }
 
+.brandTitleBreak {
+  display: inline;
+  margin-left: 6px;
+}
+
 .brandSubtitle {
   margin: 4px 0 0;
   font-size: 14px;
@@ -128,6 +133,25 @@
   display: flex;
   align-items: center;
   gap: 16px;
+}
+
+.navToggle {
+  display: none;
+  border: 1px solid rgba(240, 244, 255, 0.3);
+  background: rgba(240, 244, 255, 0.12);
+  color: #f0f4ff;
+  border-radius: 12px;
+  padding: 6px 10px;
+  cursor: pointer;
+}
+
+.navToggle svg {
+  width: 18px;
+  height: 18px;
+}
+
+.navRightOpen {
+  display: flex;
 }
 
 .navTabs {
@@ -154,18 +178,71 @@
 }
 
 .profileSlot {
-  display: flex;
+  display: inline-flex;
+  flex-direction: column;
   align-items: center;
-  gap: 10px;
+  gap: 0;
   background: rgba(240, 244, 255, 0.12);
-  padding: 6px 14px;
+  padding: 4px 10px;
   border-radius: 999px;
   border: 1px solid rgba(240, 244, 255, 0.2);
+  position: relative;
+  flex-wrap: wrap;
+  transition: border-radius 0.2s ease;
+  width: fit-content;
+  max-width: fit-content;
+  flex: 0 0 auto;
+  align-self: flex-start;
 }
 
-.profileAvatar {
-  width: 32px;
-  height: 32px;
+.profileToggle {
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  height: 44px;
+}
+
+.profileToggle {
+  border: 0;
+  background: transparent;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: inherit;
+  padding: 0;
+  cursor: pointer;
+  line-height: 1;
+  height: 40px;
+}
+
+.profileToggle:focus-visible {
+  outline: 2px solid rgba(240, 244, 255, 0.7);
+  outline-offset: 3px;
+  border-radius: 12px;
+}
+
+.profileAvatarRing {
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  padding: 3px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.profileAvatarFree {
+  background: #2c83c3;
+}
+
+.profileAvatarPlus {
+  background: linear-gradient(135deg, #2c83c3 0%, #ff3dac 45%, #1826bc 100%);
+}
+
+.profileAvatarImage,
+.profileAvatarFallback {
+  width: 100%;
+  height: 100%;
   border-radius: 50%;
   background: rgba(240, 244, 255, 0.2);
   color: #f0f4ff;
@@ -176,6 +253,11 @@
   font-weight: 700;
 }
 
+.profileAvatarImage {
+  object-fit: cover;
+  display: block;
+}
+
 .profileButton {
   border: 0;
   background: transparent;
@@ -183,6 +265,64 @@
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
+  line-height: 1.1;
+}
+
+.accountMenu {
+  width: 0;
+  max-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transform: translateY(-4px);
+  transition: max-height 0.22s ease, opacity 0.18s ease, transform 0.22s ease;
+  margin-top: 0;
+  padding-top: 0;
+  pointer-events: none;
+}
+
+.accountMenuItem {
+  display: flex;
+  width: 100%;
+  border: 0;
+  background: rgba(240, 244, 255, 0.08);
+  color: #f0f4ff;
+  padding: 8px 12px;
+  border-radius: 999px;
+  text-align: left;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.accountMenuItem:hover {
+  background: rgba(240, 244, 255, 0.18);
+}
+
+.accountMenuDivider {
+  width: 100%;
+  height: 1px;
+  background: rgba(240, 244, 255, 0.2);
+}
+
+.profileSlotOpen {
+  border-radius: 16px;
+  align-items: flex-start;
+}
+
+.profileSlotOpen .accountMenu {
+  max-height: 240px;
+  opacity: 1;
+  transform: translateY(0);
+  margin-top: 6px;
+  padding-top: 8px;
+  pointer-events: auto;
+  width: 100%;
+  max-width: 100%;
 }
 
 .heroBody {
@@ -2368,6 +2508,58 @@ details:not([open]) .filterSummary::after {
 }
 
 @media (max-width: 600px) {
+  .nav {
+    padding: 12px 18px;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .brandButton {
+    flex: 1;
+  }
+
+  .brandSubtitle {
+    display: none;
+  }
+
+  .brandTitle {
+    font-size: 16px;
+    line-height: 1.1;
+  }
+
+  .brandTitleBreak {
+    display: block;
+    margin-left: 0;
+  }
+
+  .navToggle {
+    display: inline-flex;
+    margin-left: auto;
+  }
+
+  .navRight {
+    display: none;
+    width: 100%;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    padding-top: 12px;
+  }
+
+  .navRightOpen {
+    display: flex;
+  }
+
+  .navTabs {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .profileSlot {
+    width: fit-content;
+    justify-content: flex-start;
+  }
   .navTabs {
     width: 100%;
     justify-content: space-between;

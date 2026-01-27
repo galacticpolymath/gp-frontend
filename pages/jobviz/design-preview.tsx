@@ -12,11 +12,13 @@ import {
   FiStar,
   FiUsers,
 } from "react-icons/fi";
-import { ListFilter, Search } from "lucide-react";
+import { useRouter } from "next/router";
+import useSiteSession from "../../customHooks/useSiteSession";
+import { ListFilter, Menu, Search } from "lucide-react";
 import type { IconType } from "react-icons";
 import { MdOutlineSchool } from "react-icons/md";
 import styles from "./design-preview.module.css";
-import { retrieveUnits } from "../../backend/services/unitServices";
+import { getUnitLessons, retrieveUnits } from "../../backend/services/unitServices";
 import { createDbProjections, getLiveUnits } from "../../shared/fns";
 import { INewUnitSchema } from "../../backend/models/Unit/types/unit";
 import sanitizeHtml from "sanitize-html";
@@ -26,6 +28,7 @@ import {
   FrontEndUserStats,
   getFrontEndUserStats,
 } from "../../backend/services/userStatsService";
+import { IUnitLesson } from "../../types/global";
 
 interface PreviewUnit {
   id: string;
@@ -64,12 +67,15 @@ interface BlogPost {
 
 interface TeacherPortalPreviewProps {
   featuredUnits: PreviewUnit[];
+  allUnits: PreviewUnit[];
+  lessons: IUnitLesson[];
   userStats: FrontEndUserStats;
   blogPosts: BlogPost[];
 }
 
 const NAV_TABS = ["All", "Units", "Apps", "Videos", "Lessons"];
 type NavTab = (typeof NAV_TABS)[number] | "Home";
+const QUERY_KEYS = ["q", "target", "aligned", "grade", "tag", "locale"] as const;
 
 type ResourceType = "Unit" | "Lesson" | "Video" | "App";
 
@@ -582,7 +588,8 @@ export async function getStaticProps() {
     }
 
     const liveUnits = getLiveUnits(retrievedUnits ?? []);
-    const featuredUnits = liveUnits.slice(0, 6).map((unit) => {
+    const lessons = getUnitLessons(liveUnits);
+    const allUnits = liveUnits.map((unit) => {
       const bannerUrl = getUnitBanner(unit);
       const targetSubject = unit.TargetSubject || "Science";
       const gistMarkdown = unit.Sections?.overview?.TheGist ?? "";
@@ -612,10 +619,13 @@ export async function getStaticProps() {
         locale: unit.locale ?? "en-US",
       };
     });
+    const featuredUnits = allUnits.slice(0, 6);
 
     return {
       props: {
         featuredUnits: featuredUnits.length ? featuredUnits : fallbackUnits,
+        allUnits: allUnits.length ? allUnits : fallbackUnits,
+        lessons,
         userStats,
         blogPosts,
       },
@@ -626,6 +636,8 @@ export async function getStaticProps() {
     return {
       props: {
         featuredUnits: fallbackUnits,
+        allUnits: fallbackUnits,
+        lessons: [],
         userStats: {
           totalUsers: 0,
           totalStudents: 0,
@@ -642,10 +654,13 @@ export async function getStaticProps() {
 
 export default function TeacherPortalDesignPreview({
   featuredUnits,
+  allUnits,
+  lessons = [],
   userStats,
   blogPosts,
 }: TeacherPortalPreviewProps) {
-  const [activeTab, setActiveTab] = useState<NavTab>("All");
+  const router = useRouter();
+  const [activeTab, setActiveTab] = useState<NavTab>("Home");
   const [activeModal, setActiveModal] = useState<"wizard" | "media" | null>(
     null
   );
@@ -690,6 +705,13 @@ export default function TeacherPortalDesignPreview({
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [selectedLocales, setSelectedLocales] = useState<string[]>([]);
   const [filtersCollapsed, setFiltersCollapsed] = useState(false);
+  const [navOpen, setNavOpen] = useState(false);
+  const { status, user, isGpPlusMember, logUserOut } = useSiteSession();
+  const isAuthenticated = status === "authenticated";
+  const avatarUrl = user?.image ?? null;
+  const isPlusMember = isGpPlusMember === true || isGpPlusMember === "true";
+  const [accountMenuOpen, setAccountMenuOpen] = useState(false);
+  const accountMenuRef = useRef<HTMLDivElement | null>(null);
   const handleOpenWizard = () => setActiveModal("wizard");
   const handleCloseModal = () => {
     setActiveModal(null);
@@ -720,8 +742,9 @@ export default function TeacherPortalDesignPreview({
     };
 
     const resources: PreviewResource[] = [];
+    const unitByTitle = new Map(allUnits.map((unit) => [unit.title, unit]));
 
-    featuredUnits.forEach((unit) => {
+    allUnits.forEach((unit) => {
       const tags = [
         ...unit.careerConnections,
         ...unit.subjectConnections,
@@ -773,8 +796,39 @@ export default function TeacherPortalDesignPreview({
       });
     });
 
+    lessons.forEach((lesson, index) => {
+      const unit = unitByTitle.get(lesson.unitTitle || "") ?? null;
+      const gradeLabel =
+        lesson.grades || lesson.gradesOrYears || unit?.grades || "Grades 6-12";
+      const gradeBandGroup = getGradeBandGroup(gradeLabel);
+      const alignedSubjects = unit?.subjectConnections ?? [];
+      const tags = lesson.tags ?? alignedSubjects;
+
+      resources.push({
+        id: `lesson-${lesson.lessonPartNum ?? index}`,
+        title: lesson.lessonPartTitle || "Lesson",
+        description: lesson.preface || `Lesson from ${lesson.unitTitle ?? "GP"}`,
+        type: "Lesson",
+        image:
+          lesson.tile ||
+          unit?.bannerUrl ||
+          "/imgs/gp-logos/GP_Stacked_logo+wordmark_gradient_whiteBG.jpg",
+        subject: lesson.subject || unit?.targetSubject,
+        alignedSubjects,
+        gradeBandGroup,
+        gradeBand: gradeLabel,
+        timeLabel: lesson.dur ? `${lesson.dur} min` : "Lesson",
+        tags: tags && tags.length ? tags.slice(0, 6) : ["Lesson"],
+        locale: unit?.locale ?? "en-US",
+        isNew: false,
+        isPlus: false,
+        accent: getAccent(unit?.targetSubject || unit?.subject),
+        icon: FiBookOpen,
+      });
+    });
+
     return resources;
-  }, [featuredUnits]);
+  }, [allUnits, lessons]);
 
   const targetSubjectOptions = useMemo(() => {
     const subjects = new Set<string>();
@@ -902,12 +956,12 @@ export default function TeacherPortalDesignPreview({
     selectedTags.length > 0 ||
     selectedLocales.length > 0;
   const resultsCount = hasActiveFilters ? filteredResources.length : totalResources;
-  const totalUnits = featuredUnits.length;
-  const totalVideos = featuredUnits.reduce(
+  const totalUnits = allUnits.length;
+  const totalVideos = allUnits.reduce(
     (count, unit) => count + (unit.media?.filter((item) => item.type === "Video").length ?? 0),
     0
   );
-  const totalApps = featuredUnits.reduce(
+  const totalApps = allUnits.reduce(
     (count, unit) => count + (unit.media?.filter((item) => item.type === "App").length ?? 0),
     0
   );
@@ -1169,6 +1223,138 @@ export default function TeacherPortalDesignPreview({
     return () => observer.disconnect();
   }, [activeTab]);
 
+  const parseQueryArray = (value: string | string[] | undefined) => {
+    if (!value) return [];
+    if (Array.isArray(value)) {
+      return value.map((item) => decodeURIComponent(item)).filter(Boolean);
+    }
+    return value
+      .split(",")
+      .map((item) => decodeURIComponent(item))
+      .filter(Boolean);
+  };
+
+  const buildQueryObject = (
+    params: Record<string, string | string[] | undefined>
+  ) => {
+    const query: Record<string, string | string[]> = {};
+    Object.entries(params).forEach(([key, value]) => {
+      if (Array.isArray(value)) {
+        if (value.length) {
+          query[key] = value;
+        }
+        return;
+      }
+      if (value) {
+        query[key] = value;
+      }
+    });
+    return query;
+  };
+
+  const normalizeQuery = (
+    query: Record<string, string | string[] | undefined>
+  ) => {
+    const normalized = QUERY_KEYS.map((key) => {
+      const value = query[key];
+      if (!value) return [key, []];
+      const arr = Array.isArray(value) ? value : [value];
+      return [key, arr.map(String).sort()];
+    });
+    return JSON.stringify(normalized);
+  };
+
+  useEffect(() => {
+    if (!router.isReady) return;
+    const query = router.query;
+    const queryText = Array.isArray(query.q) ? query.q[0] : query.q;
+    const nextSearch = typeof queryText === "string" ? queryText : "";
+    const nextTarget = parseQueryArray(query.target);
+    const nextAligned = parseQueryArray(query.aligned);
+    const nextGrade = parseQueryArray(query.grade);
+    const nextTag = parseQueryArray(query.tag);
+    const nextLocale = parseQueryArray(query.locale);
+    const hasQueryFilters =
+      nextSearch ||
+      nextTarget.length ||
+      nextAligned.length ||
+      nextGrade.length ||
+      nextTag.length ||
+      nextLocale.length;
+
+    setSearchQuery(nextSearch);
+    setSelectedTargetSubjects(nextTarget);
+    setSelectedAlignedSubjects(nextAligned);
+    setSelectedGradeBands(nextGrade);
+    setSelectedTags(nextTag);
+    setSelectedLocales(nextLocale);
+    setActiveTab(hasQueryFilters ? "All" : "Home");
+  }, [router.isReady, router.query]);
+
+  useEffect(() => {
+    if (!router.isReady) return;
+    if (!isAllView) {
+      const cleared = buildQueryObject({
+        q: undefined,
+        target: [],
+        aligned: [],
+        grade: [],
+        tag: [],
+        locale: [],
+      });
+      if (normalizeQuery(router.query) !== normalizeQuery(cleared)) {
+        router.replace({ pathname: router.pathname, query: cleared }, undefined, {
+          shallow: true,
+          scroll: false,
+        });
+      }
+      return;
+    }
+
+    const query = buildQueryObject({
+      q: searchQuery.trim() || undefined,
+      target: selectedTargetSubjects,
+      aligned: selectedAlignedSubjects,
+      grade: selectedGradeBands,
+      tag: selectedTags,
+      locale: selectedLocales,
+    });
+
+    if (normalizeQuery(router.query) === normalizeQuery(query)) {
+      return;
+    }
+
+    router.replace({ pathname: router.pathname, query }, undefined, {
+      shallow: true,
+      scroll: false,
+    });
+  }, [
+    router,
+    isAllView,
+    searchQuery,
+    selectedTargetSubjects,
+    selectedAlignedSubjects,
+    selectedGradeBands,
+    selectedTags,
+    selectedLocales,
+  ]);
+
+  useEffect(() => {
+    if (!accountMenuOpen) {
+      return;
+    }
+
+    const handleClickOutside = (event: MouseEvent) => {
+      if (!accountMenuRef.current) return;
+      if (!accountMenuRef.current.contains(event.target as Node)) {
+        setAccountMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [accountMenuOpen]);
+
   useEffect(() => {
     if (typeof window === "undefined") {
       return;
@@ -1203,14 +1389,26 @@ export default function TeacherPortalDesignPreview({
                 <Image src={GpLogo} alt="Galactic Polymath" priority />
               </div>
               <div>
-                <p className={styles.brandTitle}>GP Teacher Portal</p>
+                <p className={styles.brandTitle}>
+                  GP Teacher
+                  <span className={styles.brandTitleBreak}>Portal</span>
+                </p>
                 <p className={styles.brandSubtitle}>
                   Interdisciplinary science for grades 5-12+
                 </p>
               </div>
             </div>
           </button>
-          <div className={styles.navRight}>
+          <button
+            className={styles.navToggle}
+            type="button"
+            aria-label={navOpen ? "Close navigation menu" : "Open navigation menu"}
+            aria-expanded={navOpen}
+            onClick={() => setNavOpen((prev) => !prev)}
+          >
+            <Menu aria-hidden="true" />
+          </button>
+          <div className={`${styles.navRight} ${navOpen ? styles.navRightOpen : ""}`}>
             <div
               className={styles.navTabs}
               role="tablist"
@@ -1229,13 +1427,90 @@ export default function TeacherPortalDesignPreview({
                 </button>
               ))}
             </div>
-            <div className={styles.profileSlot}>
-              <span className={styles.profileAvatar} aria-hidden="true">
-                GP
-              </span>
-              <button className={styles.profileButton} type="button">
-                Log in
-              </button>
+            <div
+              className={`${styles.profileSlot} ${
+                accountMenuOpen ? styles.profileSlotOpen : ""
+              }`}
+              ref={accountMenuRef}
+            >
+              {isAuthenticated ? (
+                <button
+                  className={styles.profileToggle}
+                  type="button"
+                  aria-haspopup="menu"
+                  aria-expanded={accountMenuOpen}
+                  onClick={() => setAccountMenuOpen((prev) => !prev)}
+                >
+                  <div
+                    className={`${styles.profileAvatarRing} ${
+                      isPlusMember
+                        ? styles.profileAvatarPlus
+                        : styles.profileAvatarFree
+                    }`}
+                    aria-hidden="true"
+                  >
+                    {avatarUrl ? (
+                      <img
+                        src={avatarUrl}
+                        alt=""
+                        className={styles.profileAvatarImage}
+                      />
+                    ) : (
+                      <span className={styles.profileAvatarFallback}>GP</span>
+                    )}
+                  </div>
+                  <span className={styles.profileButton}>Account</span>
+                </button>
+              ) : (
+                <>
+                  <div
+                    className={`${styles.profileAvatarRing} ${
+                      isPlusMember
+                        ? styles.profileAvatarPlus
+                        : styles.profileAvatarFree
+                    }`}
+                    aria-hidden="true"
+                  >
+                    {avatarUrl ? (
+                      <img
+                        src={avatarUrl}
+                        alt=""
+                        className={styles.profileAvatarImage}
+                      />
+                    ) : (
+                      <span className={styles.profileAvatarFallback}>GP</span>
+                    )}
+                  </div>
+                  <Link className={styles.profileButton} href="/account">
+                    Log in
+                  </Link>
+                </>
+              )}
+              {isAuthenticated && (
+                <div
+                  className={styles.accountMenu}
+                  role="menu"
+                  aria-hidden={!accountMenuOpen}
+                >
+                  <div
+                    className={styles.accountMenuDivider}
+                    role="presentation"
+                  />
+                  <Link className={styles.accountMenuItem} href="/account">
+                    View Account
+                  </Link>
+                  <button
+                    className={styles.accountMenuItem}
+                    type="button"
+                    onClick={() => {
+                      setAccountMenuOpen(false);
+                      logUserOut();
+                    }}
+                  >
+                    Sign Out
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </nav>
