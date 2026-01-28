@@ -86,6 +86,26 @@
   display: flex;
 }
 
+.navTabsGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: center;
+  width: 100%;
+}
+
+.navTabsLabel {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(240, 244, 255, 0.6);
+  text-align: center;
+  width: 100%;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(240, 244, 255, 0.2);
+}
+
 .navTabs {
   display: flex;
   gap: 16px;
@@ -140,11 +160,23 @@
   border: 1px solid rgba(240, 244, 255, 0.2);
   position: relative;
   flex-wrap: wrap;
-  transition: border-radius 0.2s ease;
+  transition: border-radius 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
   width: fit-content;
   max-width: fit-content;
   flex: 0 0 auto;
   align-self: flex-start;
+}
+
+.profileSlot:hover {
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 0 1px rgba(173, 216, 255, 0.35),
+    0 0 12px rgba(120, 190, 255, 0.45);
+}
+
+.profileSlot a,
+.profileSlot a:hover,
+.profileSlot a:focus {
+  text-decoration: none;
 }
 
 .profileSlotOpen {
@@ -165,6 +197,7 @@
   cursor: pointer;
   line-height: 1;
   height: 44px;
+  text-decoration: none;
 }
 
 .profileToggle:focus-visible {
@@ -184,11 +217,11 @@
 }
 
 .profileAvatarFree {
-  background: #2c83c3;
+  background: linear-gradient(135deg, #2c83c3 0%, #4db4ff 55%, #1b6fb5 100%);
 }
 
 .profileAvatarPlus {
-  background: linear-gradient(135deg, #2c83c3 0%, #ff3dac 45%, #1826bc 100%);
+  background: linear-gradient(135deg, #2c83c3 0%, #36a6ff 45%, #0f5ea8 100%);
 }
 
 .profileAvatarImage,
@@ -223,7 +256,7 @@
 
 .profileButton:hover {
   color: #ffffff;
-  text-decoration: underline;
+  text-decoration: none;
 }
 
 .accountMenu {

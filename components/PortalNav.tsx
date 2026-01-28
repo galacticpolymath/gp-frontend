@@ -40,6 +40,8 @@ const PortalNav: React.FC<PortalNavProps> = ({
 
   const [navOpen, setNavOpen] = useState(false);
   const [accountMenuOpen, setAccountMenuOpen] = useState(false);
+  const [avatarError, setAvatarError] = useState(false);
+  const [isHydrated, setIsHydrated] = useState(false);
   const [isNavHidden, setIsNavHidden] = useState(false);
   const accountMenuRef = useRef<HTMLDivElement | null>(null);
   const lastScrollY = useRef(0);
@@ -48,6 +50,13 @@ const PortalNav: React.FC<PortalNavProps> = ({
   const isAuthenticated = status === "authenticated";
   const avatarUrl = user?.image ?? null;
   const isPlusMember = isGpPlusMember === true || isGpPlusMember === "true";
+  const effectiveIsAuthenticated = isHydrated ? isAuthenticated : false;
+  const effectiveIsPlusMember = isHydrated ? isPlusMember : false;
+  const effectiveAvatarUrl = isHydrated ? avatarUrl : null;
+
+  useEffect(() => {
+    setIsHydrated(true);
+  }, []);
 
   useEffect(() => {
     if (!accountMenuOpen) return;
@@ -135,25 +144,29 @@ const PortalNav: React.FC<PortalNavProps> = ({
         <Menu aria-hidden="true" />
       </button>
       <div className={`${styles.navRight} ${navOpen ? styles.navRightOpen : ""}`}>
-        <div className={styles.navTabs} role="tablist" aria-label="Resource types">
-          {NAV_TABS.map((tab) => (
-            <button
-              key={tab}
-              type="button"
-              className={`${styles.navTab} ${
-                activeTab === tab ? styles.navTabActive : ""
-              }`}
-              onClick={() => {
+        <div className={styles.navTabsGroup}>
+          <span className={styles.navTabsLabel}>Search + Explore</span>
+          <div className={styles.navTabs} role="tablist" aria-label="Resource types">
+            {NAV_TABS.map((tab) => (
+              <button
+                key={tab}
+                type="button"
+                className={`${styles.navTab} ${
+                  activeTab === tab ? styles.navTabActive : ""
+                }`}
+                onClick={() => {
                 if (onTabClick) {
                   onTabClick(tab);
                   return;
                 }
-                router.push({ pathname: "/", query: buildRootQueryForTab(tab) });
+                const pathname = tab === "All" ? "/search" : "/";
+                router.push({ pathname, query: buildRootQueryForTab(tab) });
               }}
             >
-              {tab}
-            </button>
-          ))}
+                {tab}
+              </button>
+            ))}
+          </div>
         </div>
         <div
           className={`${styles.profileSlot} ${
@@ -161,7 +174,7 @@ const PortalNav: React.FC<PortalNavProps> = ({
           }`}
           ref={accountMenuRef}
         >
-          {isAuthenticated ? (
+          {effectiveIsAuthenticated ? (
             <button
               className={styles.profileToggle}
               type="button"
@@ -171,15 +184,18 @@ const PortalNav: React.FC<PortalNavProps> = ({
             >
               <div
                 className={`${styles.profileAvatarRing} ${
-                  isPlusMember ? styles.profileAvatarPlus : styles.profileAvatarFree
+                  effectiveIsPlusMember
+                    ? styles.profileAvatarPlus
+                    : styles.profileAvatarFree
                 }`}
                 aria-hidden="true"
               >
-                {avatarUrl ? (
+                {effectiveAvatarUrl && !avatarError ? (
                   <img
-                    src={avatarUrl}
+                    src={effectiveAvatarUrl}
                     alt=""
                     className={styles.profileAvatarImage}
+                    onError={() => setAvatarError(true)}
                   />
                 ) : (
                   <span className={styles.profileAvatarFallback}>GP</span>
@@ -188,29 +204,30 @@ const PortalNav: React.FC<PortalNavProps> = ({
               <span className={styles.profileButton}>Account</span>
             </button>
           ) : (
-            <>
+            <Link className={styles.profileToggle} href="/account">
               <div
                 className={`${styles.profileAvatarRing} ${
-                  isPlusMember ? styles.profileAvatarPlus : styles.profileAvatarFree
+                  effectiveIsPlusMember
+                    ? styles.profileAvatarPlus
+                    : styles.profileAvatarFree
                 }`}
                 aria-hidden="true"
               >
-                {avatarUrl ? (
+                {effectiveAvatarUrl && !avatarError ? (
                   <img
-                    src={avatarUrl}
+                    src={effectiveAvatarUrl}
                     alt=""
                     className={styles.profileAvatarImage}
+                    onError={() => setAvatarError(true)}
                   />
                 ) : (
                   <span className={styles.profileAvatarFallback}>GP</span>
                 )}
               </div>
-              <Link className={styles.profileButton} href="/account">
-                Log in
-              </Link>
-            </>
+              <span className={styles.profileButton}>Log in</span>
+            </Link>
           )}
-          {isAuthenticated && (
+          {effectiveIsAuthenticated && (
             <div
               className={styles.accountMenu}
               role="menu"

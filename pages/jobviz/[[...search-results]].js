@@ -879,6 +879,7 @@ const JobVizSearchResults = ({
     keywords:
       "jobviz, job viz, career explorer, career exploration, career pathways, BLS jobs, career navigation",
     showNav: viewMode !== "student",
+    showFooter: viewMode !== "student",
     structuredData: datasetStructuredData,
   };
   const assignmentBannerOverrides = useMemo(() => {
