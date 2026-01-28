@@ -5,7 +5,7 @@ import { GpPlusBtn } from "../../../pages/gp-plus";
 import { useRouter, usePathname } from "next/navigation";
 import JobToursModal from "../Modals/JobToursModal";
 import { DISABLE_FOOTER_PARAM_NAME } from "../../../components/Footer";
-import { DISABLE_NAVBAR_PARAM_NAME } from "../../../components/Navbar";
+import { DISABLE_NAVBAR_PARAM_NAME } from "../../../components/PortalNav";
 import Image from "next/image";
 import CopyableTxt from "../../CopyableTxt";
 import { getSessionStorageItem } from "../../../shared/fns";

@@ -2,7 +2,7 @@
 
 import Head from "next/head";
 import Footer from "./Footer";
-import Navbar from "./Navbar";
+import PortalNav from "./PortalNav";
 import { useEffect, useMemo } from "react";
 import { removeLocalStorageItem } from "../shared/fns";
 import {
@@ -137,11 +137,7 @@ export default function Layout({
           />
         ))}
       </Head>
-      {showNav && (
-        <div style={{ height: "50px" }}>
-          <Navbar />
-        </div>
-      )}
+      {showNav && <PortalNav />}
       {imgSrc && (
         <img
           src={imgSrc}
