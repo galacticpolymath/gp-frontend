@@ -50,12 +50,38 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
 }
 
 .brandLogo img {
   width: 100%;
   height: 100%;
   object-fit: contain;
+}
+
+.brandHomeIcon {
+  position: absolute;
+  inset: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.brandHomeIcon svg {
+  width: 100%;
+  height: 100%;
+  background: rgba(10, 14, 28, 0.6);
+  border-radius: 50%;
+  padding: 18px;
+  box-sizing: border-box;
+}
+
+.brandButton:hover .brandHomeIcon,
+.brandButton:focus-visible .brandHomeIcon {
+  opacity: 1;
 }
 
 .brandTitle {
@@ -80,6 +106,7 @@
   display: flex;
   align-items: center;
   gap: 16px;
+  flex-wrap: nowrap;
 }
 
 .navRightOpen {
@@ -89,9 +116,10 @@
 .navTabsGroup {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 0;
   align-items: center;
-  width: 100%;
+  width: auto;
+  margin-left: 1rem;
 }
 
 .navTabsLabel {
@@ -101,7 +129,7 @@
   text-transform: uppercase;
   color: rgba(240, 244, 255, 0.6);
   text-align: center;
-  width: 100%;
+  width: auto;
   padding-bottom: 6px;
   border-bottom: 1px solid rgba(240, 244, 255, 0.2);
 }
@@ -109,7 +137,14 @@
 .navTabs {
   display: flex;
   gap: 16px;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+}
+
+@media (max-width: 600px) {
+  .navTabsGroup {
+    flex: 1 1 auto;
+    align-items: flex-start;
+  }
 }
 
 .navTab {
@@ -165,6 +200,7 @@
   max-width: fit-content;
   flex: 0 0 auto;
   align-self: flex-start;
+  margin-left: 1rem;
 }
 
 .profileSlot:hover {
@@ -311,7 +347,7 @@
   background: rgba(240, 244, 255, 0.18);
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 820px) {
   .nav {
     flex-direction: column;
     align-items: flex-start;
@@ -327,7 +363,7 @@
 
 @media (max-width: 600px) {
   .nav {
-    padding: 8px 18px;
+    padding: 6px 12px;
     flex-direction: row;
     align-items: center;
     flex-wrap: wrap;
@@ -359,10 +395,11 @@
   .navRight {
     display: none;
     width: 100%;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
-    padding-top: 12px;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding-top: 0;
   }
 
   .navRightOpen {
@@ -372,5 +409,15 @@
   .navTabs {
     width: 100%;
     justify-content: space-between;
+  }
+
+  .navTabsGroup {
+    flex: 0 0 auto;
+    align-items: center;
+    width: max-content;
+  }
+
+  .navTabsLabel {
+    width: 100%;
   }
 }

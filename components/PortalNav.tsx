@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useEffect, useRef, useState } from "react";
-import { ListFilter, Menu } from "lucide-react";
+import { Home, ListFilter, Menu } from "lucide-react";
 import useSiteSession from "../customHooks/useSiteSession";
 import styles from "./PortalNav.module.css";
 import GpLogo from "../public/GP_bubbleLogo300px.png";
@@ -19,9 +19,18 @@ interface PortalNavProps {
 export const DISABLE_NAVBAR_PARAM_NAME = "disableNavbar";
 
 const buildRootQueryForTab = (tab: NavTab) => {
-  if (tab === "All") return {};
-  const type = tab.toLowerCase().slice(0, -1);
-  return { type };
+  switch (tab) {
+    case "Units":
+      return { type: "units" };
+    case "Apps":
+      return { type: "apps" };
+    case "Videos":
+      return { type: "videos" };
+    case "Lessons":
+      return { type: "lessons" };
+    default:
+      return {};
+  }
 };
 
 const PortalNav: React.FC<PortalNavProps> = ({
@@ -46,6 +55,7 @@ const PortalNav: React.FC<PortalNavProps> = ({
   const accountMenuRef = useRef<HTMLDivElement | null>(null);
   const lastScrollY = useRef(0);
   const ticking = useRef(false);
+  const navOpenRef = useRef(false);
   const { status, user, isGpPlusMember, logUserOut } = useSiteSession();
   const isAuthenticated = status === "authenticated";
   const avatarUrl = user?.image ?? null;
@@ -75,9 +85,17 @@ const PortalNav: React.FC<PortalNavProps> = ({
   }
 
   useEffect(() => {
+    navOpenRef.current = navOpen;
+    if (navOpen) {
+      setIsNavHidden(false);
+    }
+  }, [navOpen]);
+
+  useEffect(() => {
     if (typeof window === "undefined") return;
 
     const handleScroll = () => {
+      if (navOpenRef.current) return;
       if (ticking.current) return;
       ticking.current = true;
       window.requestAnimationFrame(() => {
@@ -122,6 +140,9 @@ const PortalNav: React.FC<PortalNavProps> = ({
         <div className={styles.brand}>
           <div className={styles.brandLogo}>
             <Image src={GpLogo} alt="Galactic Polymath" priority />
+            <span className={styles.brandHomeIcon} aria-hidden="true">
+              <Home />
+            </span>
           </div>
           <div>
             <p className={styles.brandTitle}>
@@ -139,7 +160,10 @@ const PortalNav: React.FC<PortalNavProps> = ({
         type="button"
         aria-label={navOpen ? "Close navigation menu" : "Open navigation menu"}
         aria-expanded={navOpen}
-        onClick={() => setNavOpen((prev) => !prev)}
+        onClick={() => {
+          setIsNavHidden(false);
+          setNavOpen((prev) => !prev);
+        }}
       >
         <Menu aria-hidden="true" />
       </button>
@@ -159,8 +183,7 @@ const PortalNav: React.FC<PortalNavProps> = ({
                   onTabClick(tab);
                   return;
                 }
-                const pathname = tab === "All" ? "/search" : "/";
-                router.push({ pathname, query: buildRootQueryForTab(tab) });
+                router.push({ pathname: "/search", query: buildRootQueryForTab(tab) });
               }}
             >
                 {tab}

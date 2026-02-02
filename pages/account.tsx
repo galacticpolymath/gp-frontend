@@ -497,7 +497,7 @@ const AccountPg: React.FC = () => {
       <Layout
         className=""
         title="Galactic Polymath Teacher Portal | Login"
-        imgSrc="../assets/img/logo.png"
+        imgSrc="/imgs/gp-logos/GP_Stacked_logo+wordmark_gradient_whiteBG.jpg"
         url="https://teach.galacticpolymath.com/account"
         description="Log in to access the Galactic Polymath Teacher Portal, where you can view and download lesson plans, track student progress, and more. Get started today!"
         imgAlt="Galactic Polymath Logo"
@@ -521,7 +521,7 @@ const AccountPg: React.FC = () => {
       <Layout
         className=""
         title="Galactic Polymath Teacher Portal | Login"
-        imgSrc="../assets/img/logo.png"
+        imgSrc="/imgs/gp-logos/GP_Stacked_logo+wordmark_gradient_whiteBG.jpg"
         url="https://teach.galacticpolymath.com/account"
         description="Log in to access the Galactic Polymath Teacher Portal, where you can view and download lesson plans, track student progress, and more. Get started today!"
         imgAlt="Galactic Polymath Logo"
@@ -553,7 +553,7 @@ const AccountPg: React.FC = () => {
     <Layout
       className=""
       title="Galactic Polymath Teacher Portal | Login"
-      imgSrc="../assets/img/logo.png"
+      imgSrc="/imgs/gp-logos/GP_Stacked_logo+wordmark_gradient_whiteBG.jpg"
       url="https://teach.galacticpolymath.com/account"
       description="Log in to access the Galactic Polymath Teacher Portal, where you can view and download lesson plans, track student progress, and more. Get started today!"
       imgAlt="Galactic Polymath Logo"

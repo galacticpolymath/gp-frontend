@@ -2213,7 +2213,7 @@ details:not([open]) .filterSummary::after {
 .resourceCard {
   background: #ffffff;
   border-radius: 20px;
-  border: 1px solid rgba(44, 131, 195, 0.12);
+  border: 1px solid #363636;
   padding: 0;
   display: grid;
   grid-template-columns: minmax(0, 240px) minmax(0, 1fr) minmax(0, 240px);
@@ -2224,6 +2224,46 @@ details:not([open]) .filterSummary::after {
   border-top: 4px solid #363636;
   overflow: hidden;
   cursor: pointer;
+}
+
+.resourceCardList {
+  grid-template-columns: minmax(0, 96px) minmax(0, 1fr) minmax(0, 160px);
+  border-radius: 16px;
+}
+
+.resourceCardList .resourceMedia img {
+  object-fit: cover;
+}
+
+.resourceCardList .resourceContent {
+  padding: 10px 12px;
+  gap: 6px;
+}
+
+.resourceCardList .resourceContent h3 {
+  font-size: 16px;
+  margin-bottom: 4px;
+}
+
+.resourceCardList .resourceDescription {
+  font-size: 12px;
+  margin: 0;
+}
+
+.resourceCardList .resourceSide {
+  padding: 10px 12px;
+  gap: 6px;
+}
+
+.resourceCardList .resourceSideMeta {
+  font-size: 11px;
+  gap: 6px;
+  letter-spacing: 0.06em;
+}
+
+.resourceCardList .resourceTypePill {
+  font-size: 11px;
+  padding: 6px 10px;
 }
 
 .resourceCard:hover {

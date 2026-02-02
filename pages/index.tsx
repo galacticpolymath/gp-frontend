@@ -12,8 +12,8 @@ import {
 } from "react-icons/fi";
 import { useRouter } from "next/router";
 import {
+  AppWindow,
   Compass,
-  Laptop,
   CircleArrowLeft,
   CircleArrowRight,
   ListFilter,
@@ -62,6 +62,7 @@ interface PreviewUnit {
   targetSubject: string;
   subjectConnections: string[];
   unitTags: string[];
+  releaseDate?: string | null;
   locale: string;
 }
 
@@ -90,6 +91,21 @@ const QUERY_KEYS = ["q", "target", "aligned", "grade", "tag", "locale"] as const
 
 type ResourceType = "Unit" | "Lesson" | "Video" | "App";
 
+const buildRootQueryForTab = (tab: NavTab) => {
+  switch (tab) {
+    case "Units":
+      return { type: "units" };
+    case "Apps":
+      return { type: "apps" };
+    case "Videos":
+      return { type: "videos" };
+    case "Lessons":
+      return { type: "lessons" };
+    default:
+      return {};
+  }
+};
+
 interface PreviewResource {
   id: string;
   title: string;
@@ -108,6 +124,7 @@ interface PreviewResource {
   unitSubtitle?: string | null;
   mediaLink?: string | null;
   mediaLessonRelevance?: string | null;
+  releaseDate?: string | null;
   isNew?: boolean;
   isPlus?: boolean;
   accent: string;
@@ -663,6 +680,7 @@ export async function getStaticProps() {
         targetSubject,
         subjectConnections: getSubjectConnections(unit, targetSubject),
         unitTags,
+        releaseDate: unit.ReleaseDate ? String(unit.ReleaseDate) : null,
         locale: unit.locale ?? "en-US",
       };
     });
@@ -739,11 +757,10 @@ export default function HomePage({
   const spotlightUnits = newUnits.length ? newUnits : featuredUnits.slice(0, 3);
   const displayedBlogPosts = blogPosts.length ? blogPosts : fallbackBlogPosts;
   const isHomeView = activeTab === "Home";
-  const isAllView = activeTab === "All";
+  const isAllView = activeTab !== "Home";
   const handleTabClick = (tab: NavTab) => {
     setActiveTab(tab);
-    const pathname = tab === "All" ? "/search" : "/";
-    router.push({ pathname, query: buildRootQueryForTab(tab) });
+    router.push({ pathname: "/search", query: buildRootQueryForTab(tab) });
   };
   const handleHomeClick = () => setActiveTab("Home");
   const [searchQuery, setSearchQuery] = useState("");
@@ -758,6 +775,10 @@ export default function HomePage({
   const [selectedLocales, setSelectedLocales] = useState<string[]>([]);
   const [filtersCollapsed, setFiltersCollapsed] = useState(false);
   const [showAllTags, setShowAllTags] = useState(false);
+  const [resultsView, setResultsView] = useState<"grid" | "list">("grid");
+  const [sortOrder, setSortOrder] = useState<"relevant" | "newest" | "oldest">(
+    "relevant"
+  );
   const handleOpenWizard = () => setActiveModal("wizard");
   const handleCloseModal = () => {
     setActiveModal(null);
@@ -812,6 +833,7 @@ export default function HomePage({
         timeLabel: unit.lessons ? `${unit.lessons} lessons` : "Lessons",
         tags: tags.length ? tags : ["Standards-aligned", "Interdisciplinary"],
         locale: unit.locale ?? "en-US",
+        releaseDate: unit.releaseDate ?? null,
         isNew: unit.isNew,
         isPlus: false,
         accent: getAccent(unit.targetSubject || unit.subject),
@@ -837,10 +859,11 @@ export default function HomePage({
           locale: unit.locale ?? "en-US",
           mediaLink: media.link ?? null,
           mediaLessonRelevance: media.lessonRelevance ?? null,
+          releaseDate: unit.releaseDate ?? null,
           isNew: unit.isNew,
           isPlus: false,
           accent: getAccent(unit.targetSubject || unit.subject),
-          icon: media.type === "Video" ? FiPlayCircle : FiGrid,
+          icon: media.type === "Video" ? FiPlayCircle : AppWindow,
         });
       });
     });
@@ -873,6 +896,7 @@ export default function HomePage({
         timeLabel: lesson.dur ? `${lesson.dur} min` : "Lesson",
         tags: tags && tags.length ? tags.slice(0, 6) : ["Lesson"],
         locale: unit?.locale ?? "en-US",
+        releaseDate: unit?.releaseDate ?? null,
         isNew: false,
         isPlus: false,
         accent: getAccent(unit?.targetSubject || unit?.subject),
@@ -957,7 +981,20 @@ export default function HomePage({
 
   const filteredResources = useMemo(() => {
     const query = searchQuery.trim().toLowerCase();
+    const typeFilter =
+      activeTab === "Units"
+        ? "Unit"
+        : activeTab === "Apps"
+          ? "App"
+          : activeTab === "Videos"
+            ? "Video"
+            : activeTab === "Lessons"
+              ? "Lesson"
+              : null;
     return allResources.filter((resource) => {
+      if (typeFilter && resource.type !== typeFilter) {
+        return false;
+      }
       if (
         selectedTargetSubjects.length &&
         (!resource.subject || !selectedTargetSubjects.includes(resource.subject))
@@ -1004,6 +1041,7 @@ export default function HomePage({
     });
   }, [
     allResources,
+    activeTab,
     searchQuery,
     selectedTargetSubjects,
     selectedAlignedSubjects,
@@ -1011,6 +1049,18 @@ export default function HomePage({
     selectedTags,
     selectedLocales,
   ]);
+
+  const sortedResources = useMemo(() => {
+    if (sortOrder === "relevant") {
+      return filteredResources;
+    }
+    const sorted = [...filteredResources].sort((a, b) => {
+      const aTime = a.releaseDate ? new Date(a.releaseDate).getTime() : 0;
+      const bTime = b.releaseDate ? new Date(b.releaseDate).getTime() : 0;
+      return sortOrder === "newest" ? bTime - aTime : aTime - bTime;
+    });
+    return sorted;
+  }, [filteredResources, sortOrder]);
 
   const totalResources = allResources.length;
   const hasActiveFilters =
@@ -1026,7 +1076,7 @@ export default function HomePage({
     selectedGradeBands.length > 0 ||
     selectedTags.length > 0 ||
     selectedLocales.length > 0;
-  const resultsCount = hasActiveFilters ? filteredResources.length : totalResources;
+  const resultsCount = sortedResources.length;
   const totalUnits = allUnits.length;
   const totalVideos = allUnits.reduce(
     (count, unit) => count + (unit.media?.filter((item) => item.type === "Video").length ?? 0),
@@ -1036,6 +1086,14 @@ export default function HomePage({
     (count, unit) => count + (unit.media?.filter((item) => item.type === "App").length ?? 0),
     0
   );
+  const totalLessons = lessons.length;
+  const allHeroTitle = (() => {
+    if (activeTab === "Units") return `Explore ${totalUnits} Units`;
+    if (activeTab === "Apps") return `Explore ${totalApps} Apps`;
+    if (activeTab === "Videos") return `Explore ${totalVideos} Videos`;
+    if (activeTab === "Lessons") return `Explore ${totalLessons} Lessons`;
+    return `Explore ${totalResources} Resources`;
+  })();
 
   useEffect(() => {
     if (!activeModal) {
@@ -1338,6 +1396,17 @@ export default function HomePage({
   useEffect(() => {
     if (!router.isReady) return;
     const query = router.query;
+    const typeParam = Array.isArray(query.type) ? query.type[0] : query.type;
+    const nextTab =
+      typeParam === "units"
+        ? "Units"
+        : typeParam === "apps"
+          ? "Apps"
+          : typeParam === "videos"
+            ? "Videos"
+            : typeParam === "lessons"
+              ? "Lessons"
+              : "All";
     const queryText = Array.isArray(query.q) ? query.q[0] : query.q;
     const nextSearch = typeof queryText === "string" ? queryText : "";
     const nextTarget = parseQueryArray(query.target);
@@ -1359,13 +1428,15 @@ export default function HomePage({
     setSelectedGradeBands(nextGrade);
     setSelectedTags(nextTag);
     setSelectedLocales(nextLocale);
-    setActiveTab((prev) => {
-      if (hasQueryFilters) return "All";
-      if (initialTab === "All") {
-        return prev === "Home" ? "All" : prev;
-      }
-      return prev === "All" ? "All" : "Home";
-    });
+    if (typeParam) {
+      setActiveTab(nextTab);
+    } else if (hasQueryFilters) {
+      setActiveTab("All");
+    } else if (initialTab === "All") {
+      setActiveTab("All");
+    } else {
+      setActiveTab("Home");
+    }
   }, [router.isReady, router.query]);
 
   useEffect(() => {
@@ -1389,6 +1460,16 @@ export default function HomePage({
     }
 
     const query = buildQueryObject({
+      type:
+        activeTab === "Units"
+          ? "units"
+          : activeTab === "Apps"
+            ? "apps"
+            : activeTab === "Videos"
+              ? "videos"
+              : activeTab === "Lessons"
+                ? "lessons"
+                : undefined,
       q: searchQuery.trim() || undefined,
       target: selectedTargetSubjects,
       aligned: selectedAlignedSubjects,
@@ -1452,13 +1533,10 @@ export default function HomePage({
               <div className={styles.allHeroInner}>
                 <div className={styles.allHeroCopy}>
                   <p className={styles.kicker}>All resources</p>
-                  <h1 className={styles.allHeroTitle}>
-                    Search every unit, lesson, app, and video in one place.
-                  </h1>
+                  <h1 className={styles.allHeroTitle}>{allHeroTitle}</h1>
                   <p className={styles.allHeroLead}>
                     Filter by grade band, subject focus, and classroom format to
-                    find the best-fit resources fast. GP+ extras stay clearly
-                    labeled so you can plan with confidence.
+                    find the best-fit resources fast.
                   </p>
                   <div className={styles.allHeroStats}>
                     <div className={styles.allStatCard}>
@@ -1724,28 +1802,45 @@ export default function HomePage({
                       </div>
                       <div className={styles.resultsControls}>
                         <button
-                          className={styles.resultsControlActive}
+                          className={
+                            resultsView === "grid"
+                              ? styles.resultsControlActive
+                              : styles.resultsControl
+                          }
                           type="button"
+                          onClick={() => setResultsView("grid")}
                         >
                           <FiGrid aria-hidden="true" /> Grid
                         </button>
-                        <button className={styles.resultsControl} type="button">
+                        <button
+                          className={
+                            resultsView === "list"
+                              ? styles.resultsControlActive
+                              : styles.resultsControl
+                          }
+                          type="button"
+                          onClick={() => setResultsView("list")}
+                        >
                           List
                         </button>
                         <select
                           className={styles.resultsSelect}
                           aria-label="Sort all resources"
+                          value={sortOrder}
+                          onChange={(event) =>
+                            setSortOrder(event.target.value as typeof sortOrder)
+                          }
                         >
-                          <option>Most relevant</option>
-                          <option>Newest</option>
-                          <option>Most assigned</option>
-                          <option>Shortest prep</option>
+                          <option value="relevant">Most relevant</option>
+                          <option value="newest">Newest first ↑</option>
+                          <option value="oldest">Oldest first ↓</option>
                         </select>
                       </div>
                     </div>
                     <div className={styles.resultsKicker}>
                       <span>
-                        Showing {resultsCount} Results from All Resources
+                        Showing {resultsCount} Results from{" "}
+                        {activeTab === "All" ? "All Resources" : activeTab}
                       </span>
                     </div>
                   </div>
@@ -1772,7 +1867,7 @@ export default function HomePage({
                     ))}
                   </div>
                   <div className={styles.resourceGrid}>
-                    {filteredResources.map((resource) => {
+                    {sortedResources.map((resource) => {
                       const ResourceIcon = resource.icon;
                       const unitHref =
                         resource.type === "Unit" && resource.unitId
@@ -1783,7 +1878,9 @@ export default function HomePage({
                       return (
                         <article
                           key={resource.id}
-                          className={styles.resourceCard}
+                          className={`${styles.resourceCard} ${
+                            resultsView === "list" ? styles.resourceCardList : ""
+                          }`}
                           style={
                             {
                               "--card-accent": resource.accent,
@@ -1845,11 +1942,13 @@ export default function HomePage({
                                 {resource.description}
                               </p>
                             </div>
-                            <div className={styles.resourceTags}>
-                              {resource.tags.map((tag) => (
-                                <span key={tag}>{tag}</span>
-                              ))}
-                            </div>
+                            {resultsView === "grid" && (
+                              <div className={styles.resourceTags}>
+                                {resource.tags.map((tag) => (
+                                  <span key={tag}>{tag}</span>
+                                ))}
+                              </div>
+                            )}
                           </div>
                           <div className={styles.resourceSide}>
                             <span className={styles.resourceTypePill}>

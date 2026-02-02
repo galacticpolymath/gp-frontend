@@ -5,7 +5,6 @@
 const cspHeader = `
     script-src 'self' 'unsafe-eval' 'unsafe-inline' https://www.googletagmanager.com/ https://cdn.outseta.com/ https://js.stripe.com https://auth.magic.link/sdk https://apis.google.com https://accounts.google.com; object-src 'none';
     style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
-    object-src 'none';
     base-uri 'self';
     img-src * data: blob:;
     connect-src 'self'
