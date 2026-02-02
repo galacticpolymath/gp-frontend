@@ -14,6 +14,7 @@ import { useRouter } from "next/router";
 import {
   AppWindow,
   Compass,
+  CornerDownRight,
   CircleArrowLeft,
   CircleArrowRight,
   ListFilter,
@@ -87,7 +88,16 @@ interface HomePageProps {
 }
 
 type NavTab = "All" | "Units" | "Apps" | "Videos" | "Lessons" | "Home";
-const QUERY_KEYS = ["q", "target", "aligned", "grade", "tag", "locale"] as const;
+const QUERY_KEYS = [
+  "type",
+  "typeFilter",
+  "q",
+  "target",
+  "aligned",
+  "grade",
+  "tag",
+  "locale",
+] as const;
 
 type ResourceType = "Unit" | "Lesson" | "Video" | "App";
 
@@ -764,7 +774,11 @@ export default function HomePage({
   };
   const handleHomeClick = () => setActiveTab("Home");
   const [searchQuery, setSearchQuery] = useState("");
+  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
   const [selectedTargetSubjects, setSelectedTargetSubjects] = useState<string[]>(
+    []
+  );
+  const [selectedContentTypes, setSelectedContentTypes] = useState<string[]>(
     []
   );
   const [selectedAlignedSubjects, setSelectedAlignedSubjects] = useState<string[]>(
@@ -779,6 +793,8 @@ export default function HomePage({
   const [sortOrder, setSortOrder] = useState<"relevant" | "newest" | "oldest">(
     "relevant"
   );
+  const [resultsAnimationKey, setResultsAnimationKey] = useState(0);
+  const [queryHydrated, setQueryHydrated] = useState(false);
   const handleOpenWizard = () => setActiveModal("wizard");
   const handleCloseModal = () => {
     setActiveModal(null);
@@ -980,7 +996,7 @@ export default function HomePage({
   };
 
   const filteredResources = useMemo(() => {
-    const query = searchQuery.trim().toLowerCase();
+    const query = debouncedSearchQuery.trim().toLowerCase();
     const typeFilter =
       activeTab === "Units"
         ? "Unit"
@@ -993,6 +1009,12 @@ export default function HomePage({
               : null;
     return allResources.filter((resource) => {
       if (typeFilter && resource.type !== typeFilter) {
+        return false;
+      }
+      if (
+        selectedContentTypes.length &&
+        !selectedContentTypes.includes(resource.type)
+      ) {
         return false;
       }
       if (
@@ -1042,7 +1064,8 @@ export default function HomePage({
   }, [
     allResources,
     activeTab,
-    searchQuery,
+    debouncedSearchQuery,
+    selectedContentTypes,
     selectedTargetSubjects,
     selectedAlignedSubjects,
     selectedGradeBands,
@@ -1064,6 +1087,7 @@ export default function HomePage({
 
   const totalResources = allResources.length;
   const hasActiveFilters =
+    selectedContentTypes.length > 0 ||
     selectedTargetSubjects.length > 0 ||
     selectedAlignedSubjects.length > 0 ||
     selectedGradeBands.length > 0 ||
@@ -1071,6 +1095,7 @@ export default function HomePage({
     selectedLocales.length > 0 ||
     searchQuery.trim().length > 0;
   const hasActiveFilterChips =
+    selectedContentTypes.length > 0 ||
     selectedTargetSubjects.length > 0 ||
     selectedAlignedSubjects.length > 0 ||
     selectedGradeBands.length > 0 ||
@@ -1395,6 +1420,11 @@ export default function HomePage({
 
   useEffect(() => {
     if (!router.isReady) return;
+    const hasQueryInPath = router.asPath.includes("?");
+    const hasQueryValues = Object.keys(router.query).length > 0;
+    if (hasQueryInPath && !hasQueryValues) {
+      return;
+    }
     const query = router.query;
     const typeParam = Array.isArray(query.type) ? query.type[0] : query.type;
     const nextTab =
@@ -1409,6 +1439,7 @@ export default function HomePage({
               : "All";
     const queryText = Array.isArray(query.q) ? query.q[0] : query.q;
     const nextSearch = typeof queryText === "string" ? queryText : "";
+    const nextTypes = parseQueryArray(query.typeFilter);
     const nextTarget = parseQueryArray(query.target);
     const nextAligned = parseQueryArray(query.aligned);
     const nextGrade = parseQueryArray(query.grade);
@@ -1423,6 +1454,7 @@ export default function HomePage({
       nextLocale.length;
 
     setSearchQuery(nextSearch);
+    setSelectedContentTypes(nextTypes);
     setSelectedTargetSubjects(nextTarget);
     setSelectedAlignedSubjects(nextAligned);
     setSelectedGradeBands(nextGrade);
@@ -1437,12 +1469,15 @@ export default function HomePage({
     } else {
       setActiveTab("Home");
     }
-  }, [router.isReady, router.query]);
+    setQueryHydrated(true);
+  }, [router.isReady, router.query, router.asPath, initialTab]);
 
   useEffect(() => {
     if (!router.isReady) return;
+    if (!queryHydrated) return;
     if (!isAllView) {
       const cleared = buildQueryObject({
+        typeFilter: [],
         q: undefined,
         target: [],
         aligned: [],
@@ -1470,7 +1505,8 @@ export default function HomePage({
               : activeTab === "Lessons"
                 ? "lessons"
                 : undefined,
-      q: searchQuery.trim() || undefined,
+      typeFilter: selectedContentTypes,
+      q: debouncedSearchQuery.trim() || undefined,
       target: selectedTargetSubjects,
       aligned: selectedAlignedSubjects,
       grade: selectedGradeBands,
@@ -1489,7 +1525,9 @@ export default function HomePage({
   }, [
     router,
     isAllView,
-    searchQuery,
+    activeTab,
+    debouncedSearchQuery,
+    selectedContentTypes,
     selectedTargetSubjects,
     selectedAlignedSubjects,
     selectedGradeBands,
@@ -1500,11 +1538,33 @@ export default function HomePage({
   // nav handled by shared PortalNav component
 
   useEffect(() => {
+    const timeout = window.setTimeout(() => {
+      setDebouncedSearchQuery(searchQuery);
+    }, 250);
+    return () => window.clearTimeout(timeout);
+  }, [searchQuery]);
+
+  useEffect(() => {
+    setResultsAnimationKey((prev) => prev + 1);
+  }, [
+    sortOrder,
+    resultsView,
+    debouncedSearchQuery,
+    selectedContentTypes,
+    selectedTargetSubjects,
+    selectedAlignedSubjects,
+    selectedGradeBands,
+    selectedTags,
+    selectedLocales,
+    activeTab,
+  ]);
+
+  useEffect(() => {
     if (typeof window === "undefined") {
       return;
     }
 
-    const mediaQuery = window.matchMedia("(max-width: 900px)");
+    const mediaQuery = window.matchMedia("(max-width: 1024px)");
     const updateCollapse = () => setFiltersCollapsed(mediaQuery.matches);
     updateCollapse();
     mediaQuery.addEventListener("change", updateCollapse);
@@ -1632,6 +1692,31 @@ export default function HomePage({
                     </div>
                   </div>
                   <div className={styles.filterContent}>
+                    <details className={styles.filterGroup} open>
+                      <summary className={styles.filterSummary}>Content type</summary>
+                      <div className={styles.filterOptions}>
+                        {["Unit", "Lesson", "Video", "App"].map((option) => (
+                          <button
+                            key={option}
+                            type="button"
+                            className={
+                              selectedContentTypes.includes(option)
+                                ? styles.filterPillActive
+                                : styles.filterPill
+                            }
+                            onClick={() =>
+                              toggleSelection(
+                                option,
+                                selectedContentTypes,
+                                setSelectedContentTypes
+                              )
+                            }
+                          >
+                            {option}
+                          </button>
+                        ))}
+                      </div>
+                    </details>
                     <details className={styles.filterGroup} open>
                       <summary className={styles.filterSummary}>Target Subject</summary>
                       <div className={styles.filterOptions}>
@@ -1866,8 +1951,12 @@ export default function HomePage({
                       </span>
                     ))}
                   </div>
-                  <div className={styles.resourceGrid}>
-                    {sortedResources.map((resource) => {
+                  <div
+                    className={`${styles.resourceGrid} ${
+                      resultsView === "list" ? styles.resourceGridList : ""
+                    }`}
+                  >
+                    {sortedResources.map((resource, index) => {
                       const ResourceIcon = resource.icon;
                       const unitHref =
                         resource.type === "Unit" && resource.unitId
@@ -1875,20 +1964,38 @@ export default function HomePage({
                           : null;
                       const isClickable =
                         resource.type === "Video" || Boolean(unitHref);
-                      return (
-                        <article
-                          key={resource.id}
-                          className={`${styles.resourceCard} ${
-                            resultsView === "list" ? styles.resourceCardList : ""
-                          }`}
-                          style={
-                            {
-                              "--card-accent": resource.accent,
-                            } as React.CSSProperties
+                      const showLessons =
+                        (resource.type === "Unit" || resource.type === "Lesson") &&
+                        Boolean(resource.timeLabel?.trim());
+                      const animationDelay = Math.min(index, 12) * 30;
+                      const cardProps = {
+                        role: isClickable ? "button" : undefined,
+                        tabIndex: isClickable ? 0 : undefined,
+                        style: {
+                          animationDelay: `${animationDelay}ms`,
+                        } as React.CSSProperties,
+                        onClick: () => {
+                          if (resource.type === "Video") {
+                            handleOpenMedia({
+                              title: resource.title,
+                              type: "Video",
+                              thumbnail: resource.image,
+                              link: resource.mediaLink ?? null,
+                              lessonRelevance: resource.mediaLessonRelevance ?? null,
+                              unitTitle: resource.unitTitle ?? null,
+                              subtitle: resource.unitSubtitle ?? null,
+                              unitId: resource.unitId ?? null,
+                            });
+                            return;
                           }
-                          role={isClickable ? "button" : undefined}
-                          tabIndex={isClickable ? 0 : undefined}
-                          onClick={() => {
+                          if (unitHref) {
+                            router.push(unitHref);
+                          }
+                        },
+                        onKeyDown: (event: React.KeyboardEvent<HTMLElement>) => {
+                          if (!isClickable) return;
+                          if (event.key === "Enter" || event.key === " ") {
+                            event.preventDefault();
                             if (resource.type === "Video") {
                               handleOpenMedia({
                                 title: resource.title,
@@ -1905,29 +2012,98 @@ export default function HomePage({
                             if (unitHref) {
                               router.push(unitHref);
                             }
-                          }}
-                          onKeyDown={(event) => {
-                            if (!isClickable) return;
-                            if (event.key === "Enter" || event.key === " ") {
-                              event.preventDefault();
-                              if (resource.type === "Video") {
-                                handleOpenMedia({
-                                  title: resource.title,
-                                  type: "Video",
-                                  thumbnail: resource.image,
-                                  link: resource.mediaLink ?? null,
-                                  lessonRelevance: resource.mediaLessonRelevance ?? null,
-                                  unitTitle: resource.unitTitle ?? null,
-                                  subtitle: resource.unitSubtitle ?? null,
-                                  unitId: resource.unitId ?? null,
-                                });
-                                return;
-                              }
-                              if (unitHref) {
-                                router.push(unitHref);
-                              }
-                            }
-                          }}
+                          }
+                        },
+                      };
+
+                      if (resultsView === "list") {
+                        return (
+                          <article
+                            key={`${resource.id}-${resultsAnimationKey}`}
+                            className={`${styles.resourceRow} ${styles.resourceAnimate}`}
+                            {...cardProps}
+                          >
+                            <div className={styles.resourceRowMedia}>
+                              <img src={resource.image} alt="" loading="lazy" />
+                              <div className={styles.resourceMediaType}>
+                                <ResourceIcon aria-hidden="true" />
+                              </div>
+                            </div>
+                            <div className={styles.resourceRowContent}>
+                              <h3>{resource.title}</h3>
+                            <p className={styles.resourceRowSubtitle}>
+                              {resource.type === "Video" || resource.type === "App" ? (
+                                <span className={styles.resourceFromLine}>
+                                  <CornerDownRight aria-hidden="true" />
+                                  <span>
+                                    From{" "}
+                                    {resource.unitTitle ??
+                                      resource.description.replace(/^From\s+/i, "")}
+                                  </span>
+                                  <span className={styles.resourceFromPill}>Unit</span>
+                                </span>
+                              ) : (
+                                resource.description
+                              )}
+                            </p>
+                            </div>
+                            <div
+                              className={`${styles.resourceRowCol} ${styles.resourceRowColCenter}`}
+                            >
+                              <span className={styles.resourceRowColLabel}>
+                                <Compass aria-hidden="true" />
+                                Subject
+                              </span>
+                              <span className={styles.resourceRowColValue}>
+                                {resource.subject ?? "Science"}
+                              </span>
+                            </div>
+                            <div
+                              className={`${styles.resourceRowCol} ${styles.resourceRowColCenter}`}
+                            >
+                              <span className={styles.resourceRowColLabel}>
+                                <School aria-hidden="true" />
+                                Grade
+                              </span>
+                              <span className={styles.resourceRowColValue}>
+                                {resource.gradeBand.replace(/^Grades\s*/i, "")}
+                              </span>
+                            </div>
+                            <div
+                              className={`${styles.resourceRowCol} ${styles.resourceRowColCenter}`}
+                            >
+                              <span className={styles.resourceRowTypePill}>
+                                <ResourceIcon aria-hidden="true" />
+                                {resource.type.toLowerCase()}
+                              </span>
+                              {resource.type === "Unit" &&
+                                resource.timeLabel?.trim() && (
+                                  <span className={styles.resourceRowLessonCount}>
+                                    {resource.timeLabel}
+                                  </span>
+                                )}
+                              {(resource.isNew || resource.isPlus) && (
+                                <div className={styles.resourceBadges}>
+                                  {resource.isNew && (
+                                    <span className={styles.resourceBadge}>New</span>
+                                  )}
+                                  {resource.isPlus && (
+                                    <span className={styles.resourceBadgePlus}>
+                                      GP+
+                                    </span>
+                                  )}
+                                </div>
+                              )}
+                            </div>
+                          </article>
+                        );
+                      }
+
+                      return (
+                        <article
+                          key={`${resource.id}-${resultsAnimationKey}`}
+                          className={`${styles.resourceCard} ${styles.resourceAnimate}`}
+                          {...cardProps}
                         >
                           <div className={styles.resourceMedia}>
                             <img src={resource.image} alt="" loading="lazy" />
@@ -1936,19 +2112,29 @@ export default function HomePage({
                             </div>
                           </div>
                           <div className={styles.resourceContent}>
-                            <div>
-                              <h3>{resource.title}</h3>
-                              <p className={styles.resourceDescription}>
-                                {resource.description}
-                              </p>
-                            </div>
-                            {resultsView === "grid" && (
+                            <h3>{resource.title}</h3>
+                            <p className={styles.resourceDescription}>
+                              {resource.type === "Video" || resource.type === "App" ? (
+                                <span className={styles.resourceFromLine}>
+                                  <CornerDownRight aria-hidden="true" />
+                                  <span>
+                                    From{" "}
+                                    {resource.unitTitle ??
+                                      resource.description.replace(/^From\s+/i, "")}
+                                  </span>
+                                  <span className={styles.resourceFromPill}>Unit</span>
+                                </span>
+                              ) : (
+                                resource.description
+                              )}
+                            </p>
+                            {resource.tags?.length ? (
                               <div className={styles.resourceTags}>
                                 {resource.tags.map((tag) => (
                                   <span key={tag}>{tag}</span>
                                 ))}
                               </div>
-                            )}
+                            ) : null}
                           </div>
                           <div className={styles.resourceSide}>
                             <span className={styles.resourceTypePill}>
@@ -1958,9 +2144,7 @@ export default function HomePage({
                             {(resource.isNew || resource.isPlus) && (
                               <div className={styles.resourceBadges}>
                                 {resource.isNew && (
-                                  <span className={styles.resourceBadge}>
-                                    New
-                                  </span>
+                                  <span className={styles.resourceBadge}>New</span>
                                 )}
                                 {resource.isPlus && (
                                   <span className={styles.resourceBadgePlus}>
@@ -1976,16 +2160,15 @@ export default function HomePage({
                               </span>
                               <span>
                                 <School aria-hidden="true" />
-                                Grades {resource.gradeBand}
+                                {resource.gradeBand.replace(/^Grades\s*/i, "")}
                               </span>
-                              {resource.type === "Unit" || resource.type === "Lesson" ? (
-                                <span>
-                                  <NotebookPen aria-hidden="true" />
-                                  {resource.timeLabel}
-                                </span>
-                              ) : (
-                                <span className={styles.resourceSideBlank} />
-                              )}
+                              {(resource.type === "Unit" || resource.type === "Lesson") &&
+                                resource.timeLabel && (
+                                  <span>
+                                    <NotebookPen aria-hidden="true" />
+                                    {resource.timeLabel}
+                                  </span>
+                                )}
                             </div>
                           </div>
                         </article>

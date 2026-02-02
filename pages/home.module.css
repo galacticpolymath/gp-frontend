@@ -2210,60 +2210,28 @@ details:not([open]) .filterSummary::after {
   gap: 18px;
 }
 
+.resourceGridList {
+  gap: 0;
+}
+
+.resourceAnimate {
+  animation: fadeUp 200ms ease-out both;
+}
+
 .resourceCard {
   background: #ffffff;
   border-radius: 20px;
   border: 1px solid #363636;
   padding: 0;
   display: grid;
-  grid-template-columns: minmax(0, 240px) minmax(0, 1fr) minmax(0, 240px);
+  grid-template-columns: minmax(0, 240px) minmax(0, 1fr) minmax(0, 170px);
   gap: 0;
   box-shadow: 0 16px 30px rgba(12, 18, 48, 0.08);
   position: relative;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
-  border-top: 4px solid #363636;
+  border-top: 1px solid #363636;
   overflow: hidden;
   cursor: pointer;
-}
-
-.resourceCardList {
-  grid-template-columns: minmax(0, 96px) minmax(0, 1fr) minmax(0, 160px);
-  border-radius: 16px;
-}
-
-.resourceCardList .resourceMedia img {
-  object-fit: cover;
-}
-
-.resourceCardList .resourceContent {
-  padding: 10px 12px;
-  gap: 6px;
-}
-
-.resourceCardList .resourceContent h3 {
-  font-size: 16px;
-  margin-bottom: 4px;
-}
-
-.resourceCardList .resourceDescription {
-  font-size: 12px;
-  margin: 0;
-}
-
-.resourceCardList .resourceSide {
-  padding: 10px 12px;
-  gap: 6px;
-}
-
-.resourceCardList .resourceSideMeta {
-  font-size: 11px;
-  gap: 6px;
-  letter-spacing: 0.06em;
-}
-
-.resourceCardList .resourceTypePill {
-  font-size: 11px;
-  padding: 6px 10px;
 }
 
 .resourceCard:hover {
@@ -2313,6 +2281,52 @@ details:not([open]) .filterSummary::after {
   font-size: 22px;
 }
 
+.resourceDescription {
+  margin: 0;
+  color: #4f5875;
+  line-height: 1.5;
+}
+
+.resourceFromLine {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.resourceFromLine svg {
+  width: 14px;
+  height: 14px;
+  flex: 0 0 auto;
+  stroke: currentColor;
+}
+
+.resourceFromPill {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 6px;
+  border-radius: 999px;
+  background: rgba(54, 54, 54, 0.12);
+  color: #363636;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.resourceTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.resourceTags span {
+  padding: 4px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  background: rgba(44, 131, 195, 0.1);
+  color: #2c83c3;
+}
+
 .resourceTypePill {
   display: inline-flex;
   align-items: center;
@@ -2326,6 +2340,13 @@ details:not([open]) .filterSummary::after {
   background: rgba(44, 131, 195, 0.12);
   color: #2c83c3;
   white-space: nowrap;
+}
+
+.resourceTypePill svg {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 auto;
+  stroke: currentColor;
 }
 
 .resourceBadges {
@@ -2349,26 +2370,6 @@ details:not([open]) .filterSummary::after {
 .resourceBadgePlus {
   background: rgba(24, 38, 188, 0.16);
   color: #1826bc;
-}
-
-.resourceDescription {
-  margin: 0;
-  color: #4f5875;
-  line-height: 1.5;
-}
-
-.resourceTags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-
-.resourceTags span {
-  padding: 4px 8px;
-  border-radius: 999px;
-  font-size: 11px;
-  background: rgba(44, 131, 195, 0.1);
-  color: #2c83c3;
 }
 
 .resourceSide {
@@ -2407,6 +2408,146 @@ details:not([open]) .filterSummary::after {
 .resourceSideBlank {
   min-height: 16px;
 }
+
+.resourceRow {
+  background: #ffffff;
+  border-radius: 0;
+  border: 1px solid #363636;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 100px minmax(0, 1.6fr) 90px 90px 130px;
+  gap: 0;
+  box-shadow: 0 16px 30px rgba(12, 18, 48, 0.08);
+  position: relative;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border-top: 1px solid #363636;
+  overflow: hidden;
+  cursor: pointer;
+  align-items: stretch;
+}
+
+.resourceRow:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 20px 32px rgba(12, 18, 48, 0.12);
+}
+
+.resourceRowMedia {
+  background: #e9efff;
+  min-height: 100%;
+  position: relative;
+  align-self: stretch;
+  border-right: 1px solid rgba(54, 54, 54, 0.2);
+  display: flex;
+}
+
+.resourceRowMedia img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.resourceRowContent {
+  padding: 10px 12px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  border-right: 1px solid rgba(54, 54, 54, 0.2);
+  align-self: stretch;
+}
+
+.resourceRowContent h3 {
+  margin: 0 0 2px;
+  font-size: 15px;
+}
+
+.resourceRowSubtitle {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 400;
+  color: #5b5f6f;
+}
+
+.resourceRowLessonCount {
+  margin: 4px 0 0;
+  font-size: 11px;
+  font-weight: 400;
+  color: #2c83c3;
+  align-self: center;
+  text-align: center;
+}
+
+.resourceRowCol {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 8px 8px;
+  border-right: 1px solid rgba(54, 54, 54, 0.2);
+  gap: 4px;
+  align-self: stretch;
+}
+
+.resourceRowCol:last-child {
+  border-right: 0;
+  padding: 8px 8px;
+}
+
+.resourceRowColCenter {
+  align-items: center;
+  text-align: center;
+}
+
+.resourceRowColLabel {
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #5b5f6f;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+  text-align: center;
+}
+
+.resourceRowColLabel svg {
+  width: 12px;
+  height: 12px;
+  flex: 0 0 auto;
+  stroke: currentColor;
+}
+
+.resourceRowColValue {
+  font-size: 11px;
+  font-weight: 700;
+  color: #363636;
+}
+
+.resourceRowTypePill {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  border-radius: 999px;
+  padding: 5px 10px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: rgba(44, 131, 195, 0.12);
+  color: #2c83c3;
+  white-space: nowrap;
+  align-self: center;
+  justify-self: center;
+}
+
+.resourceRowTypePill svg {
+  width: 12px;
+  height: 12px;
+  flex: 0 0 auto;
+  stroke: currentColor;
+}
+
 
 .comingSoonMain {
   padding: 96px 24px;
@@ -2470,15 +2611,89 @@ details:not([open]) .filterSummary::after {
 
   .resourceCard {
     grid-template-columns: 1fr;
+    max-width: 400px;
+    margin: 0 auto;
+  }
+
+  .resourceRow {
+    grid-template-columns: 72px minmax(0, 1fr);
+    max-width: 500px;
+    margin: 0 auto;
+  }
+
+  .resourceCard .resourceContent {
+    gap: 6px;
+  }
+
+  .resourceCard .resourceContent h3 {
+    margin-bottom: 4px;
+    font-size: 18px;
+  }
+
+  .resourceCard .resourceDescription {
+    font-size: 16px;
+  }
+
+  .resourceCard .resourceTypePill {
+    font-size: 14px;
+    padding: 6px 12px;
+  }
+
+  .resourceCard .resourceTypePill svg {
+    width: 16px;
+    height: 16px;
   }
 
   .resourceMedia {
     max-height: 220px;
+    height: 220px;
+    overflow: hidden;
   }
 
+  .resourceMedia img {
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .resourceRowMedia {
+    max-height: 72px;
+  }
+
+  .resourceRowMedia img {
+    height: 72px;
+  }
+
+  .resourceMedia,
+  .resourceContent,
   .resourceSide {
     border-left: 0;
-    border-top: 1px solid rgba(44, 131, 195, 0.12);
+    border-right: 0;
+    border-top: 1px solid rgba(54, 54, 54, 0.2);
+  }
+
+  .resourceRowMedia,
+  .resourceRowContent,
+  .resourceRowCol {
+    border-right: 0;
+    border-top: 1px solid rgba(54, 54, 54, 0.2);
+  }
+
+  .resourceRowContent {
+    border-top: 0;
+    padding: 10px 12px 8px;
+  }
+
+  .resourceRowCol {
+    grid-column: 1 / -1;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 8px;
+    padding: 8px 12px;
+  }
+
+  .resourceRowColLabel {
+    font-size: 10px;
   }
 
   .sectionDivider {
@@ -2501,6 +2716,22 @@ details:not([open]) .filterSummary::after {
 
   .filterCollapseIconMobile {
     display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .resourceAnimate {
+    animation: none;
+  }
+}
+
+@media (min-width: 1400px) {
+  .resourceGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .resourceGridList {
+    grid-template-columns: 1fr;
   }
 }
 
