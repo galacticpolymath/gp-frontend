@@ -1,5 +1,5 @@
 import Head from "next/head";
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import {
   FiBookOpen,
@@ -17,6 +17,7 @@ import {
   CornerDownRight,
   CircleArrowLeft,
   CircleArrowRight,
+  X,
   ListFilter,
   NotebookPen,
   PartyPopper,
@@ -89,7 +90,6 @@ interface HomePageProps {
 
 type NavTab = "All" | "Units" | "Apps" | "Videos" | "Lessons" | "Home";
 const QUERY_KEYS = [
-  "type",
   "typeFilter",
   "q",
   "target",
@@ -99,18 +99,22 @@ const QUERY_KEYS = [
   "locale",
 ] as const;
 
+const CONTENT_TYPES = ["Unit", "Lesson", "Video", "App"] as const;
+const arraysEqual = (a: string[], b: string[]) =>
+  a.length === b.length && a.every((value, index) => value === b[index]);
+
 type ResourceType = "Unit" | "Lesson" | "Video" | "App";
 
 const buildRootQueryForTab = (tab: NavTab) => {
   switch (tab) {
     case "Units":
-      return { type: "units" };
+      return { typeFilter: ["Unit"] };
     case "Apps":
-      return { type: "apps" };
+      return { typeFilter: ["App"] };
     case "Videos":
-      return { type: "videos" };
+      return { typeFilter: ["Video"] };
     case "Lessons":
-      return { type: "lessons" };
+      return { typeFilter: ["Lesson"] };
     default:
       return {};
   }
@@ -393,7 +397,7 @@ const getGradeLabel = (unit: INewUnitSchema) =>
 const getGradeBandGroup = (gradeLabel: string) => {
   const normalized = gradeLabel.toLowerCase();
   if (normalized.includes("college")) {
-    return "Intro College";
+    return "College";
   }
 
   const numbers = Array.from(gradeLabel.matchAll(/\d+/g)).map((match) =>
@@ -417,7 +421,7 @@ const getGradeBandGroup = (gradeLabel: string) => {
     return "High School";
   }
   if (min >= 13) {
-    return "Intro College";
+    return "College";
   }
   if (min <= 5 && max <= 8) {
     return "Middle School";
@@ -587,6 +591,55 @@ const buildMediaItems = (
 
 export async function getStaticProps() {
   try {
+    const ogImageCache = new Map<string, string | null>();
+    const fetchOgImage = async (url?: string | null) => {
+      if (!url || !/^https?:\/\//i.test(url)) {
+        return null;
+      }
+      if (ogImageCache.has(url)) {
+        return ogImageCache.get(url) ?? null;
+      }
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 4000);
+      try {
+        const response = await fetch(url, {
+          signal: controller.signal,
+          headers: {
+            "User-Agent": "Mozilla/5.0 (GP Teacher Portal)",
+          },
+        });
+        if (!response.ok) {
+          ogImageCache.set(url, null);
+          return null;
+        }
+        const html = await response.text();
+        const ogMatch = html.match(
+          /<meta[^>]+property=["']og:image["'][^>]+content=["']([^"']+)["']/i
+        );
+        const twitterMatch = html.match(
+          /<meta[^>]+name=["']twitter:image["'][^>]+content=["']([^"']+)["']/i
+        );
+        const imageUrl = ogMatch?.[1] || twitterMatch?.[1] || null;
+        if (!imageUrl) {
+          ogImageCache.set(url, null);
+          return null;
+        }
+        const normalized =
+          imageUrl.startsWith("http") || imageUrl.startsWith("//")
+            ? imageUrl.startsWith("//")
+              ? `https:${imageUrl}`
+              : imageUrl
+            : new URL(imageUrl, url).toString();
+        ogImageCache.set(url, normalized);
+        return normalized;
+      } catch {
+        ogImageCache.set(url, null);
+        return null;
+      } finally {
+        clearTimeout(timeout);
+      }
+    };
+
     const userStats = await getFrontEndUserStats();
     const { data: retrievedUnits } = await retrieveUnits(
       {},
@@ -594,6 +647,30 @@ export async function getStaticProps() {
       0,
       { ReleaseDate: -1 }
     );
+    for (const unit of retrievedUnits) {
+      if (unit.media?.length) {
+        unit.media = await Promise.all(
+          unit.media.map(async (media) => {
+            if (media.type === "App" && !media.thumbnail) {
+              const ogImage = await fetchOgImage(media.link ?? null);
+              return ogImage ? { ...media, thumbnail: ogImage } : media;
+            }
+            return media;
+          })
+        );
+      }
+      if (unit.FeaturedMultimedia?.length) {
+        unit.FeaturedMultimedia = await Promise.all(
+          unit.FeaturedMultimedia.map(async (item) => {
+            if (item?.type === "web-app" && !item.webAppPreviewImg) {
+              const ogImage = await fetchOgImage(item.mainLink ?? null);
+              return ogImage ? { ...item, webAppPreviewImg: ogImage } : item;
+            }
+            return item;
+          })
+        );
+      }
+    }
     const blogPosts: BlogPost[] = [];
     try {
       const response = await fetch(
@@ -736,7 +813,6 @@ export default function HomePage({
   initialTab,
 }: HomePageProps) {
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState<NavTab>(initialTab ?? "Home");
   const [activeModal, setActiveModal] = useState<"wizard" | "media" | null>(
     null
   );
@@ -747,6 +823,9 @@ export default function HomePage({
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
   const mapInstanceRef = useRef<unknown>(null);
   const [showStatsDebug, setShowStatsDebug] = useState(false);
+  const isTypingRef = useRef(false);
+  const typingTimeoutRef = useRef<number | null>(null);
+  const isSearchRoute = router.pathname === "/search";
   const [carouselIndex, setCarouselIndex] = useState(0);
   const statsSectionRef = useRef<HTMLElement | null>(null);
   const statsAnimationStarted = useRef(false);
@@ -766,13 +845,33 @@ export default function HomePage({
   const newUnits = featuredUnits.filter((unit) => unit.isNew);
   const spotlightUnits = newUnits.length ? newUnits : featuredUnits.slice(0, 3);
   const displayedBlogPosts = blogPosts.length ? blogPosts : fallbackBlogPosts;
-  const isHomeView = activeTab === "Home";
-  const isAllView = activeTab !== "Home";
   const handleTabClick = (tab: NavTab) => {
-    setActiveTab(tab);
+    const nextTypes =
+      tab === "Units"
+        ? ["Unit"]
+        : tab === "Apps"
+          ? ["App"]
+          : tab === "Videos"
+            ? ["Video"]
+            : tab === "Lessons"
+              ? ["Lesson"]
+              : [...CONTENT_TYPES];
+    if (isAllView) {
+      triggerResultsAnimation();
+    }
+    setSelectedContentTypes(nextTypes);
     router.push({ pathname: "/search", query: buildRootQueryForTab(tab) });
   };
-  const handleHomeClick = () => setActiveTab("Home");
+  const handleHomeClick = () => {
+    setSearchQuery("");
+    setSelectedContentTypes([...CONTENT_TYPES]);
+    setSelectedTargetSubjects([]);
+    setSelectedAlignedSubjects([]);
+    setSelectedGradeBands([]);
+    setSelectedTags([]);
+    setSelectedLocales([]);
+    router.push("/");
+  };
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
   const [selectedTargetSubjects, setSelectedTargetSubjects] = useState<string[]>(
@@ -793,7 +892,62 @@ export default function HomePage({
   const [sortOrder, setSortOrder] = useState<"relevant" | "newest" | "oldest">(
     "relevant"
   );
-  const [resultsAnimationKey, setResultsAnimationKey] = useState(0);
+  const [animateResults, setAnimateResults] = useState(false);
+  const [resultsTransitioning, setResultsTransitioning] = useState(false);
+  const [shareCopied, setShareCopied] = useState(false);
+  const animateTimeoutRef = useRef<number | null>(null);
+
+  const triggerResultsAnimation = useCallback(() => {
+    if (animateTimeoutRef.current) {
+      window.clearTimeout(animateTimeoutRef.current);
+    }
+    setAnimateResults(true);
+    animateTimeoutRef.current = window.setTimeout(() => {
+      setAnimateResults(false);
+    }, 700);
+  }, []);
+
+  const transitionResultsView = useCallback(
+    (nextView: "grid" | "list") => {
+      if (nextView === resultsView) return;
+      setResultsTransitioning(true);
+      setResultsView(nextView);
+      if (typeof window === "undefined") {
+        triggerResultsAnimation();
+        setResultsTransitioning(false);
+        return;
+      }
+      window.requestAnimationFrame(() => {
+        window.requestAnimationFrame(() => {
+          triggerResultsAnimation();
+          setResultsTransitioning(false);
+        });
+      });
+    },
+    [resultsView, triggerResultsAnimation]
+  );
+
+  const handleRemoveChip = (chip: string) => {
+    if (selectedTargetSubjects.includes(chip)) {
+      setSelectedTargetSubjects((prev) => prev.filter((item) => item !== chip));
+      return;
+    }
+    if (selectedAlignedSubjects.includes(chip)) {
+      setSelectedAlignedSubjects((prev) => prev.filter((item) => item !== chip));
+      return;
+    }
+    if (selectedGradeBands.includes(chip)) {
+      setSelectedGradeBands((prev) => prev.filter((item) => item !== chip));
+      return;
+    }
+    if (selectedTags.includes(chip)) {
+      setSelectedTags((prev) => prev.filter((item) => item !== chip));
+      return;
+    }
+    if (selectedLocales.includes(chip)) {
+      setSelectedLocales((prev) => prev.filter((item) => item !== chip));
+    }
+  };
   const [queryHydrated, setQueryHydrated] = useState(false);
   const handleOpenWizard = () => setActiveModal("wizard");
   const handleCloseModal = () => {
@@ -942,7 +1096,7 @@ export default function HomePage({
   }, [allResources]);
 
   const gradeBandOptions = useMemo(
-    () => ["Upper Elementary", "Middle School", "High School", "Intro College"],
+    () => ["Upper Elementary", "Middle School", "High School", "College"],
     []
   );
 
@@ -997,22 +1151,10 @@ export default function HomePage({
 
   const filteredResources = useMemo(() => {
     const query = debouncedSearchQuery.trim().toLowerCase();
-    const typeFilter =
-      activeTab === "Units"
-        ? "Unit"
-        : activeTab === "Apps"
-          ? "App"
-          : activeTab === "Videos"
-            ? "Video"
-            : activeTab === "Lessons"
-              ? "Lesson"
-              : null;
     return allResources.filter((resource) => {
-      if (typeFilter && resource.type !== typeFilter) {
-        return false;
-      }
       if (
         selectedContentTypes.length &&
+        selectedContentTypes.length < CONTENT_TYPES.length &&
         !selectedContentTypes.includes(resource.type)
       ) {
         return false;
@@ -1063,7 +1205,6 @@ export default function HomePage({
     });
   }, [
     allResources,
-    activeTab,
     debouncedSearchQuery,
     selectedContentTypes,
     selectedTargetSubjects,
@@ -1086,8 +1227,11 @@ export default function HomePage({
   }, [filteredResources, sortOrder]);
 
   const totalResources = allResources.length;
+  const contentTypeFilterActive =
+    selectedContentTypes.length > 0 &&
+    selectedContentTypes.length < CONTENT_TYPES.length;
   const hasActiveFilters =
-    selectedContentTypes.length > 0 ||
+    contentTypeFilterActive ||
     selectedTargetSubjects.length > 0 ||
     selectedAlignedSubjects.length > 0 ||
     selectedGradeBands.length > 0 ||
@@ -1095,12 +1239,23 @@ export default function HomePage({
     selectedLocales.length > 0 ||
     searchQuery.trim().length > 0;
   const hasActiveFilterChips =
-    selectedContentTypes.length > 0 ||
+    contentTypeFilterActive ||
     selectedTargetSubjects.length > 0 ||
     selectedAlignedSubjects.length > 0 ||
     selectedGradeBands.length > 0 ||
     selectedTags.length > 0 ||
     selectedLocales.length > 0;
+  const hasQueryFilters =
+    searchQuery.trim().length > 0 ||
+    contentTypeFilterActive ||
+    selectedTargetSubjects.length > 0 ||
+    selectedAlignedSubjects.length > 0 ||
+    selectedGradeBands.length > 0 ||
+    selectedTags.length > 0 ||
+    selectedLocales.length > 0;
+  const isHomeView =
+    !isSearchRoute && !hasQueryFilters && initialTab !== "All";
+  const isAllView = !isHomeView;
   const resultsCount = sortedResources.length;
   const totalUnits = allUnits.length;
   const totalVideos = allUnits.reduce(
@@ -1112,11 +1267,23 @@ export default function HomePage({
     0
   );
   const totalLessons = lessons.length;
+  const resolvedTab =
+    contentTypeFilterActive && selectedContentTypes.length === 1
+      ? selectedContentTypes[0] === "Unit"
+        ? "Units"
+        : selectedContentTypes[0] === "App"
+          ? "Apps"
+          : selectedContentTypes[0] === "Video"
+            ? "Videos"
+            : selectedContentTypes[0] === "Lesson"
+              ? "Lessons"
+              : "All"
+      : "All";
   const allHeroTitle = (() => {
-    if (activeTab === "Units") return `Explore ${totalUnits} Units`;
-    if (activeTab === "Apps") return `Explore ${totalApps} Apps`;
-    if (activeTab === "Videos") return `Explore ${totalVideos} Videos`;
-    if (activeTab === "Lessons") return `Explore ${totalLessons} Lessons`;
+    if (resolvedTab === "Units") return `Explore ${totalUnits} Units`;
+    if (resolvedTab === "Apps") return `Explore ${totalApps} Apps`;
+    if (resolvedTab === "Videos") return `Explore ${totalVideos} Videos`;
+    if (resolvedTab === "Lessons") return `Explore ${totalLessons} Lessons`;
     return `Explore ${totalResources} Resources`;
   })();
 
@@ -1375,7 +1542,7 @@ export default function HomePage({
     elements.forEach((element) => observer.observe(element));
 
     return () => observer.disconnect();
-  }, [activeTab]);
+  }, [isAllView]);
 
   const parseQueryArray = (value: string | string[] | undefined) => {
     if (!value) return [];
@@ -1426,49 +1593,35 @@ export default function HomePage({
       return;
     }
     const query = router.query;
-    const typeParam = Array.isArray(query.type) ? query.type[0] : query.type;
-    const nextTab =
-      typeParam === "units"
-        ? "Units"
-        : typeParam === "apps"
-          ? "Apps"
-          : typeParam === "videos"
-            ? "Videos"
-            : typeParam === "lessons"
-              ? "Lessons"
-              : "All";
+    const typeFilterParam = parseQueryArray(query.typeFilter);
     const queryText = Array.isArray(query.q) ? query.q[0] : query.q;
     const nextSearch = typeof queryText === "string" ? queryText : "";
-    const nextTypes = parseQueryArray(query.typeFilter);
     const nextTarget = parseQueryArray(query.target);
     const nextAligned = parseQueryArray(query.aligned);
     const nextGrade = parseQueryArray(query.grade);
     const nextTag = parseQueryArray(query.tag);
     const nextLocale = parseQueryArray(query.locale);
-    const hasQueryFilters =
-      nextSearch ||
-      nextTarget.length ||
-      nextAligned.length ||
-      nextGrade.length ||
-      nextTag.length ||
-      nextLocale.length;
-
-    setSearchQuery(nextSearch);
-    setSelectedContentTypes(nextTypes);
-    setSelectedTargetSubjects(nextTarget);
-    setSelectedAlignedSubjects(nextAligned);
-    setSelectedGradeBands(nextGrade);
-    setSelectedTags(nextTag);
-    setSelectedLocales(nextLocale);
-    if (typeParam) {
-      setActiveTab(nextTab);
-    } else if (hasQueryFilters) {
-      setActiveTab("All");
-    } else if (initialTab === "All") {
-      setActiveTab("All");
-    } else {
-      setActiveTab("Home");
+    if (!isTypingRef.current && nextSearch !== searchQuery) {
+      setSearchQuery(nextSearch);
     }
+    const nextTypes =
+      typeFilterParam.length === 0 ? [...CONTENT_TYPES] : typeFilterParam;
+    setSelectedContentTypes((prev) =>
+      arraysEqual(prev, nextTypes) ? prev : nextTypes
+    );
+    setSelectedTargetSubjects((prev) =>
+      arraysEqual(prev, nextTarget) ? prev : nextTarget
+    );
+    setSelectedAlignedSubjects((prev) =>
+      arraysEqual(prev, nextAligned) ? prev : nextAligned
+    );
+    setSelectedGradeBands((prev) =>
+      arraysEqual(prev, nextGrade) ? prev : nextGrade
+    );
+    setSelectedTags((prev) => (arraysEqual(prev, nextTag) ? prev : nextTag));
+    setSelectedLocales((prev) =>
+      arraysEqual(prev, nextLocale) ? prev : nextLocale
+    );
     setQueryHydrated(true);
   }, [router.isReady, router.query, router.asPath, initialTab]);
 
@@ -1494,18 +1647,12 @@ export default function HomePage({
       return;
     }
 
+    const typeFilter =
+      selectedContentTypes.length === CONTENT_TYPES.length
+        ? []
+        : selectedContentTypes;
     const query = buildQueryObject({
-      type:
-        activeTab === "Units"
-          ? "units"
-          : activeTab === "Apps"
-            ? "apps"
-            : activeTab === "Videos"
-              ? "videos"
-              : activeTab === "Lessons"
-                ? "lessons"
-                : undefined,
-      typeFilter: selectedContentTypes,
+      typeFilter,
       q: debouncedSearchQuery.trim() || undefined,
       target: selectedTargetSubjects,
       aligned: selectedAlignedSubjects,
@@ -1525,7 +1672,6 @@ export default function HomePage({
   }, [
     router,
     isAllView,
-    activeTab,
     debouncedSearchQuery,
     selectedContentTypes,
     selectedTargetSubjects,
@@ -1545,19 +1691,12 @@ export default function HomePage({
   }, [searchQuery]);
 
   useEffect(() => {
-    setResultsAnimationKey((prev) => prev + 1);
-  }, [
-    sortOrder,
-    resultsView,
-    debouncedSearchQuery,
-    selectedContentTypes,
-    selectedTargetSubjects,
-    selectedAlignedSubjects,
-    selectedGradeBands,
-    selectedTags,
-    selectedLocales,
-    activeTab,
-  ]);
+    return () => {
+      if (animateTimeoutRef.current) {
+        window.clearTimeout(animateTimeoutRef.current);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     if (typeof window === "undefined") {
@@ -1582,7 +1721,7 @@ export default function HomePage({
       </Head>
       <div className={styles.page}>
         <PortalNav
-          activeTab={activeTab === "Home" ? null : activeTab}
+          activeTab={isHomeView ? null : resolvedTab}
           onBrandClick={handleHomeClick}
           onTabClick={(tab) => handleTabClick(tab)}
         />
@@ -1643,13 +1782,19 @@ export default function HomePage({
                 >
                   <div className={styles.filterHeader}>
                     <div>
-                      <h2>Filters</h2>
+                      <h3>Filters</h3>
                     </div>
                     <div className={styles.filterHeaderActions}>
                       <button
                         className={styles.filterReset}
                         type="button"
                         onClick={() => {
+                          setSelectedContentTypes([
+                            "Unit",
+                            "Lesson",
+                            "Video",
+                            "App",
+                          ]);
                           setSelectedTargetSubjects([]);
                           setSelectedAlignedSubjects([]);
                           setSelectedGradeBands([]);
@@ -1692,7 +1837,10 @@ export default function HomePage({
                     </div>
                   </div>
                   <div className={styles.filterContent}>
-                    <details className={styles.filterGroup} open>
+                    <details
+                      className={`${styles.filterGroup} ${styles.filterTagsGroup}`}
+                      open
+                    >
                       <summary className={styles.filterSummary}>Content type</summary>
                       <div className={styles.filterOptions}>
                         {["Unit", "Lesson", "Video", "App"].map((option) => (
@@ -1857,14 +2005,30 @@ export default function HomePage({
                         ))}
                       </div>
                     </details>
-                    <div className={styles.filterFooter}>
-                      <button className={styles.primaryButton} type="button">
-                        Apply filters
-                      </button>
-                      <button className={styles.ghostButton} type="button">
-                        Save view
-                      </button>
-                    </div>
+                  <div className={styles.filterFooter}>
+                    <button
+                      className={styles.ghostButton}
+                      type="button"
+                      onClick={async () => {
+                        if (typeof window === "undefined") return;
+                        try {
+                          await navigator.clipboard.writeText(window.location.href);
+                          setShareCopied(true);
+                          window.setTimeout(() => setShareCopied(false), 2000);
+                        } catch (error) {
+                          console.error("Failed to copy share link", error);
+                        }
+                      }}
+                    >
+                      Share View
+                    </button>
+                    {shareCopied && (
+                      <span className={styles.shareCopied} role="status">
+                        <SquareCheckBig aria-hidden="true" />
+                        Copied to clipboard
+                      </span>
+                    )}
+                  </div>
                   </div>
                 </aside>
                 <div className={styles.allResults}>
@@ -1878,10 +2042,32 @@ export default function HomePage({
                             placeholder="Search by title, standards, or skill..."
                             aria-label="Search all resources"
                             value={searchQuery}
-                            onChange={(event) => setSearchQuery(event.target.value)}
+                            onChange={(event) => {
+                              setSearchQuery(event.target.value);
+                              isTypingRef.current = true;
+                              if (typingTimeoutRef.current) {
+                                window.clearTimeout(typingTimeoutRef.current);
+                              }
+                              typingTimeoutRef.current = window.setTimeout(() => {
+                                isTypingRef.current = false;
+                              }, 500);
+                            }}
                           />
-                          <button className={styles.allSearchButton} type="button">
-                            Search
+                          <button
+                            className={`${styles.searchClearButton} ${
+                              searchQuery.trim()
+                                ? ""
+                                : styles.searchClearButtonHidden
+                            }`}
+                            type="button"
+                            aria-label="Clear search"
+                            onClick={() => {
+                              setSearchQuery("");
+                              isTypingRef.current = false;
+                            }}
+                            tabIndex={searchQuery.trim() ? 0 : -1}
+                          >
+                            <X aria-hidden="true" />
                           </button>
                         </div>
                       </div>
@@ -1893,7 +2079,9 @@ export default function HomePage({
                               : styles.resultsControl
                           }
                           type="button"
-                          onClick={() => setResultsView("grid")}
+                          onClick={() => {
+                            transitionResultsView("grid");
+                          }}
                         >
                           <FiGrid aria-hidden="true" /> Grid
                         </button>
@@ -1904,7 +2092,9 @@ export default function HomePage({
                               : styles.resultsControl
                           }
                           type="button"
-                          onClick={() => setResultsView("list")}
+                          onClick={() => {
+                            transitionResultsView("list");
+                          }}
                         >
                           List
                         </button>
@@ -1913,7 +2103,10 @@ export default function HomePage({
                           aria-label="Sort all resources"
                           value={sortOrder}
                           onChange={(event) =>
-                            setSortOrder(event.target.value as typeof sortOrder)
+                            {
+                              triggerResultsAnimation();
+                              setSortOrder(event.target.value as typeof sortOrder);
+                            }
                           }
                         >
                           <option value="relevant">Most relevant</option>
@@ -1925,7 +2118,7 @@ export default function HomePage({
                     <div className={styles.resultsKicker}>
                       <span>
                         Showing {resultsCount} Results from{" "}
-                        {activeTab === "All" ? "All Resources" : activeTab}
+                        {resolvedTab === "All" ? "All Resources" : resolvedTab}
                       </span>
                     </div>
                   </div>
@@ -1946,15 +2139,56 @@ export default function HomePage({
                       ...selectedTags,
                       ...selectedLocales,
                     ].map((chip) => (
-                      <span key={chip} className={styles.activeChip}>
-                        {chip}
-                      </span>
+                      <button
+                        key={chip}
+                        type="button"
+                        className={styles.activeChip}
+                        onClick={() => handleRemoveChip(chip)}
+                      >
+                        <span>{chip}</span>
+                        <X aria-hidden="true" />
+                      </button>
                     ))}
                   </div>
-                  <div
+                  {resultsView === "list" && (
+                    <div className={styles.resourceRowHeader} aria-hidden="true">
+                      <div
+                        className={`${styles.resourceRowHeaderCell} ${styles.resourceRowHeaderCellThumb}`}
+                      >
+                        <div className={styles.resourceRowHeaderThumb} />
+                      </div>
+                      <div
+                        className={`${styles.resourceRowHeaderCell} ${styles.resourceRowHeaderCellTitle}`}
+                      >
+                        <div className={styles.resourceRowHeaderTitle}>Title</div>
+                      </div>
+                      <div className={styles.resourceRowHeaderCell}>
+                        <div className={styles.resourceRowHeaderCol}>
+                          <Compass
+                            className={styles.resourceRowHeaderIcon}
+                            aria-hidden="true"
+                          />
+                          Subject
+                        </div>
+                      </div>
+                      <div className={styles.resourceRowHeaderCell}>
+                        <div className={styles.resourceRowHeaderCol}>
+                          <School
+                            className={`${styles.resourceRowHeaderIcon} ${styles.resourceRowHeaderIconGrade}`}
+                            aria-hidden="true"
+                          />
+                          Grade
+                        </div>
+                      </div>
+                      <div className={styles.resourceRowHeaderCell}>
+                        <div className={styles.resourceRowHeaderCol}>Type</div>
+                      </div>
+                    </div>
+                  )}
+                    <div
                     className={`${styles.resourceGrid} ${
                       resultsView === "list" ? styles.resourceGridList : ""
-                    }`}
+                    } ${resultsTransitioning ? styles.resourceGridTransitioning : ""}`}
                   >
                     {sortedResources.map((resource, index) => {
                       const ResourceIcon = resource.icon;
@@ -1967,7 +2201,8 @@ export default function HomePage({
                       const showLessons =
                         (resource.type === "Unit" || resource.type === "Lesson") &&
                         Boolean(resource.timeLabel?.trim());
-                      const animationDelay = Math.min(index, 12) * 30;
+                      const animationDelay =
+                        resultsView === "list" ? 0 : Math.min(index, 10) * 25;
                       const cardProps = {
                         role: isClickable ? "button" : undefined,
                         tabIndex: isClickable ? 0 : undefined,
@@ -2017,10 +2252,15 @@ export default function HomePage({
                       };
 
                       if (resultsView === "list") {
+                        const hasSubtitle = Boolean(resource.description?.trim());
+                        const isUnit = resource.type === "Unit";
                         return (
                           <article
-                            key={`${resource.id}-${resultsAnimationKey}`}
-                            className={`${styles.resourceRow} ${styles.resourceAnimate}`}
+                            key={resource.id}
+                            className={`${styles.resourceRow} ${
+                              animateResults ? styles.resourceAnimate : ""
+                            }`}
+                            data-type={resource.type}
                             {...cardProps}
                           >
                             <div className={styles.resourceRowMedia}>
@@ -2030,30 +2270,47 @@ export default function HomePage({
                               </div>
                             </div>
                             <div className={styles.resourceRowContent}>
-                              <h3>{resource.title}</h3>
-                            <p className={styles.resourceRowSubtitle}>
-                              {resource.type === "Video" || resource.type === "App" ? (
-                                <span className={styles.resourceFromLine}>
-                                  <CornerDownRight aria-hidden="true" />
-                                  <span>
-                                    From{" "}
-                                    {resource.unitTitle ??
-                                      resource.description.replace(/^From\s+/i, "")}
-                                  </span>
-                                  <span className={styles.resourceFromPill}>Unit</span>
+                              <p className={styles.resourceRowTitleLine}>
+                                <span className={styles.resourceRowTitleText}>
+                                  {resource.title}
                                 </span>
-                              ) : (
-                                resource.description
-                              )}
-                            </p>
+                                {hasSubtitle && (
+                                  <span
+                                    className={
+                                      isUnit
+                                        ? styles.resourceRowSubtitleWithColon
+                                        : styles.resourceRowSubtitle
+                                    }
+                                  >
+                                    {resource.type === "Video" ||
+                                    resource.type === "App" ? (
+                                      <span
+                                        className={styles.resourceFromLine}
+                                        style={{ display: "block" }}
+                                      >
+                                        <CornerDownRight aria-hidden="true" />
+                                        <span>
+                                          From{" "}
+                                          {resource.unitTitle ??
+                                            resource.description.replace(
+                                              /^From\s+/i,
+                                              ""
+                                            )}
+                                        </span>
+                                        <span className={styles.resourceFromPill}>
+                                          Unit
+                                        </span>
+                                      </span>
+                                    ) : (
+                                      resource.description
+                                    )}
+                                  </span>
+                                )}
+                              </p>
                             </div>
                             <div
                               className={`${styles.resourceRowCol} ${styles.resourceRowColCenter}`}
                             >
-                              <span className={styles.resourceRowColLabel}>
-                                <Compass aria-hidden="true" />
-                                Subject
-                              </span>
                               <span className={styles.resourceRowColValue}>
                                 {resource.subject ?? "Science"}
                               </span>
@@ -2061,20 +2318,15 @@ export default function HomePage({
                             <div
                               className={`${styles.resourceRowCol} ${styles.resourceRowColCenter}`}
                             >
-                              <span className={styles.resourceRowColLabel}>
-                                <School aria-hidden="true" />
-                                Grade
-                              </span>
                               <span className={styles.resourceRowColValue}>
                                 {resource.gradeBand.replace(/^Grades\s*/i, "")}
                               </span>
                             </div>
                             <div
-                              className={`${styles.resourceRowCol} ${styles.resourceRowColCenter}`}
+                              className={`${styles.resourceRowCol} ${styles.resourceRowColCenter} ${styles.resourceRowTypeCol}`}
                             >
-                              <span className={styles.resourceRowTypePill}>
-                                <ResourceIcon aria-hidden="true" />
-                                {resource.type.toLowerCase()}
+                              <span className={styles.resourceRowTypeText}>
+                                {resource.type}
                               </span>
                               {resource.type === "Unit" &&
                                 resource.timeLabel?.trim() && (
@@ -2101,8 +2353,10 @@ export default function HomePage({
 
                       return (
                         <article
-                          key={`${resource.id}-${resultsAnimationKey}`}
-                          className={`${styles.resourceCard} ${styles.resourceAnimate}`}
+                          key={resource.id}
+                          className={`${styles.resourceCard} ${
+                            animateResults ? styles.resourceAnimate : ""
+                          }`}
                           {...cardProps}
                         >
                           <div className={styles.resourceMedia}>
@@ -2225,8 +2479,14 @@ export default function HomePage({
                       value={searchQuery}
                       onChange={(event) => {
                         setSearchQuery(event.target.value);
-                        if (activeTab !== "All") {
-                          setActiveTab("All");
+                        setSelectedContentTypes([...CONTENT_TYPES]);
+                        if (!isSearchRoute) {
+                          router.push({
+                            pathname: "/search",
+                            query: buildQueryObject({
+                              q: event.target.value.trim() || undefined,
+                            }),
+                          });
                         }
                       }}
                     />
@@ -2584,25 +2844,6 @@ export default function HomePage({
           </>
         )}
 
-        {!isAllView && !isHomeView && (
-          <main className={styles.comingSoonMain}>
-            <div className={styles.comingSoonCard}>
-              <p className={styles.sectionKicker}>Preview in progress</p>
-              <h2>{activeTab} content</h2>
-              <p>
-                We are building dedicated browse pages for every format. The All
-                view shows the full filter system in the meantime.
-              </p>
-              <button
-                className={styles.primaryButton}
-                type="button"
-                onClick={() => handleTabClick("All")}
-              >
-                Back to All resources
-              </button>
-            </div>
-          </main>
-        )}
       </div>
       <Footer />
       {activeModal && (
@@ -2652,7 +2893,7 @@ export default function HomePage({
                     <span className={styles.pill}>Upper Elementary</span>
                     <span className={styles.pillActive}>Middle School</span>
                     <span className={styles.pill}>High School</span>
-                    <span className={styles.pill}>Intro College</span>
+                    <span className={styles.pill}>College</span>
                   </div>
                 </div>
                 <div className={styles.wizardStep}>

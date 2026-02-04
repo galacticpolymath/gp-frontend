@@ -118,7 +118,7 @@
   flex-direction: column;
   gap: 0;
   align-items: center;
-  width: auto;
+  width: max-content;
   margin-left: 1rem;
 }
 
@@ -129,7 +129,7 @@
   text-transform: uppercase;
   color: rgba(240, 244, 255, 0.6);
   text-align: center;
-  width: auto;
+  width: 100%;
   padding-bottom: 6px;
   border-bottom: 1px solid rgba(240, 244, 255, 0.2);
 }
@@ -138,6 +138,7 @@
   display: flex;
   gap: 16px;
   flex-wrap: nowrap;
+  width: max-content;
 }
 
 @media (max-width: 600px) {

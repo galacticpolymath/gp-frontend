@@ -21,13 +21,13 @@ export const DISABLE_NAVBAR_PARAM_NAME = "disableNavbar";
 const buildRootQueryForTab = (tab: NavTab) => {
   switch (tab) {
     case "Units":
-      return { type: "units" };
+      return { typeFilter: ["Unit"] };
     case "Apps":
-      return { type: "apps" };
+      return { typeFilter: ["App"] };
     case "Videos":
-      return { type: "videos" };
+      return { typeFilter: ["Video"] };
     case "Lessons":
-      return { type: "lessons" };
+      return { typeFilter: ["Lesson"] };
     default:
       return {};
   }
