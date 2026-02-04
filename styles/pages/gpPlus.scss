@@ -562,6 +562,47 @@ $gpGroup: #1ca9e5;
   width: 95vw;
 }
 
+.o--Widget--popupBg {
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 24px !important;
+}
+
+.o--Widget--popup {
+  position: fixed !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  margin: 0 !important;
+  width: min(92vw, 980px);
+  max-height: 90vh;
+  overflow: auto;
+  border-radius: 14px;
+  box-shadow: 0 20px 60px rgba(13, 20, 33, 0.25);
+}
+
+.o--App--widgetContent {
+  margin: 0 auto;
+}
+
+.o--Widget--widget,
+.o--Widget--widget * {
+  font-family: "Noto Sans", "Helvetica Neue", Arial, sans-serif;
+  font-size: 16px;
+}
+
+.o--Widget--widget h1,
+.o--Widget--widget h2,
+.o--Widget--widget h3,
+.o--Widget--widget h4,
+.o--Widget--widget h5 {
+  font-weight: 600;
+}
+
+.o--Widget--widget .o--Button--button {
+  font-weight: 600;
+}
+
 .avatar-ring {
   width: 37px; /* adjust as needed */
   height: 37px;

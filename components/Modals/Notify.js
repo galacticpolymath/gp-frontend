@@ -217,6 +217,7 @@ const Notify = () => {
             show={notifyModal.isDisplayed}
             onHide={closeModal}
             aria-labelledby="example-modal-sizes-title-sm"
+            centered
         >
             <Modal.Header>
                 <Modal.Title

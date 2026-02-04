@@ -205,11 +205,12 @@ const AccountPg: React.FC = () => {
       ) {
         setNotifyModal({
           isDisplayed: true,
-          headerTxt: "GP Plus data retrieval error",
+          headerTxt: "GP+ account access failed",
           bodyTxt: (
             <>
-              Unable to retrieve your GP Plus email. If this error persists,
-              please contact{" "}
+              We couldn&apos;t find your GP+ subscription email for this account.
+              Please sign out, sign back in, and try again. If this keeps
+              happening, contact{" "}
               <CustomLink
                 hrefStr={CONTACT_SUPPORT_EMAIL}
                 className="ms-1 mt-2 text-break"
@@ -233,11 +234,13 @@ const AccountPg: React.FC = () => {
       if (!("Outseta" in window)) {
         setNotifyModal({
           isDisplayed: true,
-          headerTxt: "GP Plus data retrieval error",
+          headerTxt: "GP+ billing portal didn’t load",
           bodyTxt: (
             <>
-              An error in loading your GP Plus data. Please refresh the page. If
-              this error persists, please contact{" "}
+              The GP+ billing portal didn&apos;t load on this page. Please
+              refresh and try again. If you use an ad blocker or strict privacy
+              settings, allow the portal to load and retry. If the issue
+              persists, contact{" "}
               <CustomLink
                 hrefStr={CONTACT_SUPPORT_EMAIL}
                 className="ms-1 mt-2 text-break"
@@ -262,9 +265,40 @@ const AccountPg: React.FC = () => {
       let idToken = outseta.getAccessToken() as string | null;
 
       if (!idToken) {
-        const magic = new Magic(
-          process.env.NEXT_PUBLIC_MAGIC_LINK_PK as string
-        );
+        const magicPublicKey = process.env.NEXT_PUBLIC_MAGIC_LINK_PK;
+        if (!magicPublicKey) {
+          setNotifyModal({
+            isDisplayed: true,
+            headerTxt: "GP+ magic link is not configured",
+            bodyElements: (
+              <div className="d-flex flex-column align-items-center gap-2">
+                <p className="mb-0 text-center">
+                  We can&apos;t send a login code because the Magic public key is
+                  missing for this environment.
+                </p>
+                <div className="w-100 text-start">
+                  <div className="fw-semibold">Fix</div>
+                  <code className="d-inline-block mt-1 px-2 py-1 bg-light border rounded">
+                    NEXT_PUBLIC_MAGIC_LINK_PK=&lt;your-public-key&gt;
+                  </code>
+                </div>
+                <p className="mb-0 text-center">
+                  After saving, reload the page and try again.
+                </p>
+              </div>
+            ),
+            handleOnHide: () => {
+              setNotifyModal((state) => ({
+                ...state,
+                isDisplayed: false,
+              }));
+            },
+          });
+          setWasGpPlusBtnClicked(false);
+          return;
+        }
+
+        const magic = new Magic(magicPublicKey);
         idToken = await magic.auth.loginWithEmailOTP({
           email: gpPlusSub.person.Email,
         });
@@ -281,7 +315,30 @@ const AccountPg: React.FC = () => {
         gpPlusAnchorElementRef.current?.click();
       }, 500);
     } catch (error) {
-      console.error("Failed to display gp plus account modal: ", error);
+      console.error("Failed to open GP+ account portal: ", error);
+      setNotifyModal({
+        isDisplayed: true,
+        headerTxt: "GP+ account access failed",
+        bodyTxt: (
+          <>
+            We couldn&apos;t open your GP+ account portal. Please refresh and try
+            again. If this keeps happening, contact{" "}
+            <CustomLink
+              hrefStr={CONTACT_SUPPORT_EMAIL}
+              className="ms-1 mt-2 text-break"
+            >
+              feedback@galacticpolymath.com
+            </CustomLink>
+            .
+          </>
+        ),
+        handleOnHide: () => {
+          setNotifyModal((state) => ({
+            ...state,
+            isDisplayed: false,
+          }));
+        },
+      });
     } finally {
       if (!wasGpPlusAccountRetrievalSuccessful) {
         setWasGpPlusBtnClicked(false);
