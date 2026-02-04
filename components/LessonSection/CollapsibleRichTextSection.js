@@ -41,7 +41,7 @@ const CollapsibleRichTextSection = ({
             />
           ) : (
             <p className='mt-1'>
-              The content for '{sectionTitle}' cannot be displayed.
+              The content for &quot;{sectionTitle}&quot; cannot be displayed.
             </p>
           )}
         </div>
@@ -64,7 +64,7 @@ const CollapsibleRichTextSection = ({
         )
           : (
             <p className='mt-1'>
-              The content for '{sectionTitle}' cannot be displayed.
+              The content for &quot;{sectionTitle}&quot; cannot be displayed.
             </p>
           )}
       </div>

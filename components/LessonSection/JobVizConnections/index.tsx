@@ -198,7 +198,7 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
         >
           JobViz connects classroom learning to the real world—helping students
           see how knowledge links to jobs, industries, and the wider economy.
-          With data on 1,000+ occupations, it's a springboard for systems
+          With data on 1,000+ occupations, it&apos;s a springboard for systems
           thinking and exploring the full landscape of opportunity.
         </div>
       </div>

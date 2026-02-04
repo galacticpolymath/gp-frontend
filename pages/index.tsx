@@ -17,6 +17,7 @@ import {
   CornerDownRight,
   CircleArrowLeft,
   CircleArrowRight,
+  Laptop,
   X,
   ListFilter,
   NotebookPen,
@@ -1038,6 +1039,28 @@ export default function HomePage({
       });
     });
 
+    const jobvizGradeBand = "Grades 6-12";
+    resources.push({
+      id: "jobviz-app",
+      title: "JobViz Career Explorer",
+      description: "Explore 800+ careers and connect classroom learning to real-world jobs.",
+      type: "App",
+      image: "/imgs/jobViz/jobviz_icon.png",
+      subject: "Careers",
+      alignedSubjects: [],
+      gradeBandGroup: getGradeBandGroup(jobvizGradeBand),
+      gradeBand: jobvizGradeBand,
+      timeLabel: "App",
+      tags: ["Careers", "Exploration", "Interactive"],
+      locale: "en-US",
+      mediaLink: "/jobviz",
+      releaseDate: null,
+      isNew: false,
+      isPlus: false,
+      accent: getAccent("careers"),
+      icon: AppWindow,
+    });
+
     lessons.forEach((lesson, index) => {
       const unit = unitByTitle.get(lesson.unitTitle || "") ?? null;
       const gradeLabel =
@@ -1214,19 +1237,6 @@ export default function HomePage({
     selectedLocales,
   ]);
 
-  const sortedResources = useMemo(() => {
-    if (sortOrder === "relevant") {
-      return filteredResources;
-    }
-    const sorted = [...filteredResources].sort((a, b) => {
-      const aTime = a.releaseDate ? new Date(a.releaseDate).getTime() : 0;
-      const bTime = b.releaseDate ? new Date(b.releaseDate).getTime() : 0;
-      return sortOrder === "newest" ? bTime - aTime : aTime - bTime;
-    });
-    return sorted;
-  }, [filteredResources, sortOrder]);
-
-  const totalResources = allResources.length;
   const contentTypeFilterActive =
     selectedContentTypes.length > 0 &&
     selectedContentTypes.length < CONTENT_TYPES.length;
@@ -1238,6 +1248,31 @@ export default function HomePage({
     selectedTags.length > 0 ||
     selectedLocales.length > 0 ||
     searchQuery.trim().length > 0;
+
+  const sortedResources = useMemo(() => {
+    if (sortOrder === "relevant") {
+      if (!hasActiveFilters) {
+        const pinnedIndex = filteredResources.findIndex(
+          (resource) => resource.id === "jobviz-app"
+        );
+        if (pinnedIndex > 0) {
+          const reordered = [...filteredResources];
+          const [pinned] = reordered.splice(pinnedIndex, 1);
+          reordered.unshift(pinned);
+          return reordered;
+        }
+      }
+      return filteredResources;
+    }
+    const sorted = [...filteredResources].sort((a, b) => {
+      const aTime = a.releaseDate ? new Date(a.releaseDate).getTime() : 0;
+      const bTime = b.releaseDate ? new Date(b.releaseDate).getTime() : 0;
+      return sortOrder === "newest" ? bTime - aTime : aTime - bTime;
+    });
+    return sorted;
+  }, [filteredResources, sortOrder, hasActiveFilters]);
+
+  const totalResources = allResources.length;
   const hasActiveFilterChips =
     contentTypeFilterActive ||
     selectedTargetSubjects.length > 0 ||
@@ -2197,7 +2232,9 @@ export default function HomePage({
                           ? buildUnitPath(resource.unitId)
                           : null;
                       const isClickable =
-                        resource.type === "Video" || Boolean(unitHref);
+                        resource.type === "Video" ||
+                        resource.type === "App" ||
+                        Boolean(unitHref);
                       const showLessons =
                         (resource.type === "Unit" || resource.type === "Lesson") &&
                         Boolean(resource.timeLabel?.trim());
@@ -2223,6 +2260,14 @@ export default function HomePage({
                             });
                             return;
                           }
+                          if (resource.type === "App" && resource.mediaLink) {
+                            if (resource.mediaLink.startsWith("/")) {
+                              router.push(resource.mediaLink);
+                            } else {
+                              window.open(resource.mediaLink, "_blank");
+                            }
+                            return;
+                          }
                           if (unitHref) {
                             router.push(unitHref);
                           }
@@ -2242,6 +2287,14 @@ export default function HomePage({
                                 subtitle: resource.unitSubtitle ?? null,
                                 unitId: resource.unitId ?? null,
                               });
+                              return;
+                            }
+                            if (resource.type === "App" && resource.mediaLink) {
+                              if (resource.mediaLink.startsWith("/")) {
+                                router.push(resource.mediaLink);
+                              } else {
+                                window.open(resource.mediaLink, "_blank");
+                              }
                               return;
                             }
                             if (unitHref) {
@@ -2414,7 +2467,9 @@ export default function HomePage({
                               </span>
                               <span>
                                 <School aria-hidden="true" />
-                                {resource.gradeBand.replace(/^Grades\s*/i, "")}
+                                {resource.gradeBand
+                                  .replace(/^Grades\s*/i, "")
+                                  .replace(/university/gi, "College")}
                               </span>
                               {(resource.type === "Unit" || resource.type === "Lesson") &&
                                 resource.timeLabel && (

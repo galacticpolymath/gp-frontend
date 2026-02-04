@@ -80,18 +80,16 @@ const PortalNav: React.FC<PortalNavProps> = ({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [accountMenuOpen]);
 
-  if (disableNavbar) {
-    return null;
-  }
-
   useEffect(() => {
+    if (disableNavbar) return;
     navOpenRef.current = navOpen;
     if (navOpen) {
       setIsNavHidden(false);
     }
-  }, [navOpen]);
+  }, [disableNavbar, navOpen]);
 
   useEffect(() => {
+    if (disableNavbar) return;
     if (typeof window === "undefined") return;
 
     const handleScroll = () => {
@@ -118,7 +116,11 @@ const PortalNav: React.FC<PortalNavProps> = ({
 
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [disableNavbar]);
+
+  if (disableNavbar) {
+    return null;
+  }
 
   return (
     <nav

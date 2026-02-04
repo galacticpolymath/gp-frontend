@@ -126,6 +126,7 @@
     "@types/js-cookie": "^3.0.6",
     "@types/lodash.throttle": "^4.1.9",
     "@types/sanitize-html": "^2.16.0",
+    "baseline-browser-mapping": "^2.9.19",
     "cypress": "^15.9.0",
     "eslint": "9.39.2",
     "eslint-config-next": "^16.1.1",

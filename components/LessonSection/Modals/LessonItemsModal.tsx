@@ -698,7 +698,10 @@ const LessonItemsModal: React.FC = () => {
               })
 
               return (
-                <CarouselItem backgroundColor={LESSON_ITEMS_MODAL_BG_COLOR}>
+                <CarouselItem
+                  key={item.itemId ?? item._id ?? index}
+                  backgroundColor={LESSON_ITEMS_MODAL_BG_COLOR}
+                >
                   <div className="position-relative h-100 w-100">
                     {!canShowTeacherItems && isTeacherItem && (
                       <div className="w-100 h-100 position-absolute d-flex justify-content-center align-items-center">

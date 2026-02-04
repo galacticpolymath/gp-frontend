@@ -630,7 +630,7 @@ const AccountPg: React.FC = () => {
               classNameStr="rounded border shadow mt-2"
             >
               <span style={{ fontWeight: 410 }} className="text-black">
-                View 'About Me' form
+                View &quot;About Me&quot; form
               </span>
             </Button>
             <Button

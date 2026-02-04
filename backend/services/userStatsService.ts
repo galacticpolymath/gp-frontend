@@ -57,7 +57,6 @@ const COUNTRY_CODE_ALIASES: Record<string, string> = {
   syria: "SY",
   "czech republic": "CZ",
   czechia: "CZ",
-  vietnam: "VN",
   laos: "LA",
   bolivia: "BO",
   tanzania: "TZ",
@@ -84,7 +83,6 @@ const COUNTRY_CODE_ALIASES: Record<string, string> = {
   "virgin islands u s": "VI",
   "virgin islands u.s.": "VI",
   "virgin islands u.s": "VI",
-  vietnam: "VN",
 };
 
 const normalizeCountryName = (value?: string | null) =>
