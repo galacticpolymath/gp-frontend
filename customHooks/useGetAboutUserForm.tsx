@@ -262,8 +262,9 @@ export const useGetAboutUserForm = (
   willSetEmailNewsletterSignUpModal?: boolean
 ) => {
   const { status, data } = useSession();
-  const { _aboutUserForm } = useUserContext();
+  const { _aboutUserForm, _isGpPlusMember } = useUserContext();
   const [aboutUserForm, setAboutUserForm] = _aboutUserForm;
+  const [, setIsGpPlusMember] = _isGpPlusMember;
   const { setAppCookie } = useCustomCookies();
   const {
     _emailNewsletterSignUpModal: [, setEmailNewsletterSignUpModal],
@@ -391,7 +392,8 @@ export const useGetAboutUserForm = (
 
           if (typeof isGpPlusMember === "boolean") {
             setSessionStorageItem("isGpPlusUser", isGpPlusMember);
-            setAppCookie("isGpPlusMember", isGpPlusMember);
+            setAppCookie("isGpPlusMember", isGpPlusMember, { path: "/" });
+            setIsGpPlusMember(isGpPlusMember);
             userAccountForClient = {
               ...userAccountForClient,
               isGpPlusMember,

@@ -14,6 +14,19 @@ const useSiteSession = () => {
     "gdriveAccessTokenExp",
     "isGpPlusMember",
   ]);
+  const storedGpPlusMember = (() => {
+    if (typeof window === "undefined") return undefined;
+    const value = window.sessionStorage.getItem("isGpPlusUser");
+    if (value === null) return undefined;
+    return value === "true";
+  })();
+  const resolvedIsGpPlusMember =
+    gdriveTokensInfo.isGpPlusMember ?? storedGpPlusMember;
+  if (typeof window !== "undefined") {
+    console.log("[GP+ debug] useSiteSession cookies:", gdriveTokensInfo);
+    console.log("[GP+ debug] useSiteSession sessionStorage isGpPlusUser:", storedGpPlusMember);
+    console.log("[GP+ debug] useSiteSession resolved isGpPlusMember:", resolvedIsGpPlusMember);
+  }
 
   const logUserOut = () => {
     localStorage.clear();
@@ -24,6 +37,7 @@ const useSiteSession = () => {
 
   return {
     ...gdriveTokensInfo,
+    isGpPlusMember: resolvedIsGpPlusMember,
     user,
     token,
     status,

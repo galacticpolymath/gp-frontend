@@ -41,6 +41,10 @@ interface AssignmentBannerProps {
   assignmentUnitLabelOverride?: string | null;
   assignmentCopyOverride?: string | null;
   teacherCtaCopy?: string | null;
+  mode?: "assignment" | "tour-editor";
+  headerActions?: React.ReactNode;
+  editorFields?: React.ReactNode;
+  markerLabelOverride?: string | null;
 }
 
 const ASSIGNMENT_LOGO = "/plus/gp-plus-submark.png";
@@ -63,6 +67,10 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
   assignmentUnitLabelOverride,
   assignmentCopyOverride,
   teacherCtaCopy,
+  mode = "assignment",
+  headerActions,
+  editorFields,
+  markerLabelOverride,
 }) => {
   const router = useRouter();
   const modalContext = useModalContext();
@@ -152,6 +160,10 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
     ? assignmentCopyOverrideValue
     : defaultAssignmentCopyNode;
   const resolvedTeacherCtaCopy = teacherCtaCopy?.trim() || null;
+  const shouldShowRatings = mode === "assignment";
+  const markerLabel =
+    markerLabelOverride?.trim() ||
+    (mode === "tour-editor" ? "JobViz+ | TOUR BUILDER" : "JobViz+ | ASSIGNMENT");
   const { ratings, clearRatings } = useJobRatings();
   const normalizedRatings = React.useMemo<JobRatingsMap>(() => {
     const next: JobRatingsMap = {};
@@ -880,7 +892,7 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
           className={styles.assignmentDockCollapsedLabel}
           aria-hidden="true"
         >
-          <span>Assignment</span>
+          <span>{mode === "tour-editor" ? "Tour Builder" : "Assignment"}</span>
         </div>
       )}
       {showAssignmentPanel && (
@@ -918,7 +930,7 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
                     />
                   </span>
                 </button>
-                {!mobileCollapsed && (
+                {!mobileCollapsed && shouldShowRatings && (
                   <button
                     type="button"
                     className={`${styles.assignmentClearButton} ${styles.assignmentClearButtonInline}`}
@@ -937,10 +949,19 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
                 data-hidden={hideInfoSection ? "true" : "false"}
                 ref={infoBlockRef}
               >
-                {resolvedUnitLabel && (
-                  <span className={styles.assignmentUnitLabelInline}>
-                    <span>{resolvedUnitLabel}</span>
-                  </span>
+                {(resolvedUnitLabel || headerActions) && (
+                  <div className={styles.assignmentHeaderRow}>
+                    {resolvedUnitLabel && (
+                      <span className={styles.assignmentUnitLabelInline}>
+                        <span>{resolvedUnitLabel}</span>
+                      </span>
+                    )}
+                    {headerActions && (
+                      <div className={styles.assignmentHeaderActions}>
+                        {headerActions}
+                      </div>
+                    )}
+                  </div>
                 )}
                 <div className={styles.assignmentMarker}>
                 <span className={styles.assignmentMarkerLabel}>
@@ -951,7 +972,7 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
                     width={26}
                     height={26}
                   />
-                  JobViz+ | ASSIGNMENT
+                  {markerLabel}
                 </span>
                   <p className={styles.assignmentCopy}>{resolvedAssignmentCopy}</p>
                   {resolvedTeacherCtaCopy && (
@@ -960,7 +981,8 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
                 </div>
               </div>
             )}
-            {assignmentSocCodes.length > 0 &&
+            {shouldShowRatings &&
+              assignmentSocCodes.length > 0 &&
               (shouldShowAssignmentBody || isMobile) &&
               (isAssignmentComplete ? (
                 variant === "mobile" ? (
@@ -1019,6 +1041,11 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
                     : undefined
                 }
               >
+              {editorFields && (
+                <div className={styles.assignmentEditorFields}>
+                  {editorFields}
+                </div>
+              )}
               {variant === "desktop" && splitJobs.length > 0 && (
                 <div className={styles.assignmentListWrap}>
                   {splitJobs.map((jobGroup, idx) => (

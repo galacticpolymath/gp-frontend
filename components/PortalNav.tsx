@@ -7,7 +7,7 @@ import useSiteSession from "../customHooks/useSiteSession";
 import styles from "./PortalNav.module.css";
 import GpLogo from "../public/GP_bubbleLogo300px.png";
 
-const NAV_TABS = ["All", "Units", "Apps", "Videos", "Lessons"] as const;
+const NAV_TABS = ["All", "Units", "Apps", "Videos", "Lessons", "JobViz"] as const;
 export type NavTab = (typeof NAV_TABS)[number];
 
 interface PortalNavProps {
@@ -28,6 +28,8 @@ const buildRootQueryForTab = (tab: NavTab) => {
       return { typeFilter: ["Video"] };
     case "Lessons":
       return { typeFilter: ["Lesson"] };
+    case "JobViz":
+      return { typeFilter: ["Job Tour"] };
     default:
       return {};
   }
@@ -56,6 +58,7 @@ const PortalNav: React.FC<PortalNavProps> = ({
   const lastScrollY = useRef(0);
   const ticking = useRef(false);
   const navOpenRef = useRef(false);
+  const accountMenuOpenRef = useRef(false);
   const { status, user, isGpPlusMember, logUserOut } = useSiteSession();
   const isAuthenticated = status === "authenticated";
   const avatarUrl = user?.image ?? null;
@@ -69,6 +72,17 @@ const PortalNav: React.FC<PortalNavProps> = ({
   }, []);
 
   useEffect(() => {
+    if (!isHydrated) return;
+    console.log("[GP+ debug] PortalNav", {
+      isGpPlusMember,
+      isPlusMember,
+      effectiveIsPlusMember,
+      isAuthenticated,
+      effectiveIsAuthenticated,
+    });
+  }, [isHydrated, isGpPlusMember, isPlusMember, effectiveIsPlusMember, isAuthenticated, effectiveIsAuthenticated]);
+
+  useEffect(() => {
     if (!accountMenuOpen) return;
     const handleClickOutside = (event: MouseEvent) => {
       if (!accountMenuRef.current) return;
@@ -78,6 +92,13 @@ const PortalNav: React.FC<PortalNavProps> = ({
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [accountMenuOpen]);
+
+  useEffect(() => {
+    accountMenuOpenRef.current = accountMenuOpen;
+    if (accountMenuOpen) {
+      setIsNavHidden(false);
+    }
   }, [accountMenuOpen]);
 
   useEffect(() => {
@@ -94,6 +115,7 @@ const PortalNav: React.FC<PortalNavProps> = ({
 
     const handleScroll = () => {
       if (navOpenRef.current) return;
+      if (accountMenuOpenRef.current) return;
       if (ticking.current) return;
       ticking.current = true;
       window.requestAnimationFrame(() => {
@@ -205,7 +227,10 @@ const PortalNav: React.FC<PortalNavProps> = ({
               type="button"
               aria-haspopup="menu"
               aria-expanded={accountMenuOpen}
-              onClick={() => setAccountMenuOpen((prev) => !prev)}
+              onClick={() => {
+                setIsNavHidden(false);
+                setAccountMenuOpen((prev) => !prev);
+              }}
             >
               <div
                 className={`${styles.profileAvatarRing} ${
@@ -226,7 +251,18 @@ const PortalNav: React.FC<PortalNavProps> = ({
                   <span className={styles.profileAvatarFallback}>GP</span>
                 )}
               </div>
-              <span className={styles.profileButton}>Account</span>
+              <span className={styles.profileButton}>
+                Account
+                <span
+                  className={
+                    effectiveIsPlusMember
+                      ? styles.profileBadgePlus
+                      : styles.profileBadgeFree
+                  }
+                >
+                  {effectiveIsPlusMember ? "GP+" : "Free"}
+                </span>
+              </span>
             </button>
           ) : (
             <Link className={styles.profileToggle} href="/account">
@@ -249,7 +285,10 @@ const PortalNav: React.FC<PortalNavProps> = ({
                   <span className={styles.profileAvatarFallback}>GP</span>
                 )}
               </div>
-              <span className={styles.profileButton}>Log in</span>
+              <span className={styles.profileButton}>
+                Log in
+                <span className={styles.profileBadgeFree}>Free</span>
+              </span>
             </Link>
           )}
           {effectiveIsAuthenticated && (

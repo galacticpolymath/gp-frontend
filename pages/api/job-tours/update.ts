@@ -36,8 +36,8 @@ export default async function handler(
             throw new CustomError('No updates provided; the `updates` object must have at least one property.', 400);
         }
 
-        if ("_id" in updates || "userId" in updates || "isGp" in updates || "lastEdited" in updates || "createdDate" in updates) {
-            throw new CustomError('Modifying the fields `_id`, `userId`, `isGp`, `lastEdited`, or `createdDate` is not allowed.', 400);
+        if ("_id" in updates || "userId" in updates || "isGp" in updates || "lastEdited" in updates || "createdDate" in updates || "ownerName" in updates) {
+            throw new CustomError('Modifying the fields `_id`, `userId`, `isGp`, `ownerName`, `lastEdited`, or `createdDate` is not allowed.', 400);
         }
 
         const { wasSuccessful: wasConnectionSuccessful } = await connectToMongodb(

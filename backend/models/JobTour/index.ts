@@ -4,6 +4,7 @@ import { Model, Schema, model, models } from 'mongoose';
 export interface IJobTour {
     _id: string;
     userId: string; // User ID
+    ownerName?: string; // Display name at time of creation
     createdDate: Date;
     lastEdited: Date;
     version: string; // Format: MAJOR.MINOR.YYYYMMDD (e.g., 1.4.20250528)
@@ -26,6 +27,7 @@ if (!JobTour) {
     const JobTourSchema = new Schema<IJobTour>(
         {
             userId: { type: String, required: true },
+            ownerName: { type: String, required: false },
             createdDate: { type: Date, required: true, default: Date.now },
             lastEdited: { type: Date, required: true, default: Date.now },
             version: {

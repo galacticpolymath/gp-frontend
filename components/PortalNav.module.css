@@ -258,7 +258,7 @@
 }
 
 .profileAvatarPlus {
-  background: linear-gradient(135deg, #2c83c3 0%, #36a6ff 45%, #0f5ea8 100%);
+  background: linear-gradient(-43deg, #e536a8 0%, #5c24cf 59%, #0aace8 100%);
 }
 
 .profileAvatarImage,
@@ -289,11 +289,36 @@
   cursor: pointer;
   text-decoration: none;
   line-height: 1.1;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .profileButton:hover {
   color: #ffffff;
   text-decoration: none;
+}
+
+.profileBadgePlus,
+.profileBadgeFree {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 2px 6px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+}
+
+.profileBadgePlus {
+  background: rgba(24, 38, 188, 0.12);
+  border-color: rgba(24, 38, 188, 0.45);
+  color: #e6ebff;
+}
+
+.profileBadgeFree {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.25);
+  color: #f0f4ff;
 }
 
 .accountMenu {

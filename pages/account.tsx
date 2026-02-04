@@ -660,6 +660,22 @@ const AccountPg: React.FC = () => {
                 Explore Lessons
               </span>
             </BootstrapButton>
+            <BootstrapButton
+              onClick={() =>
+                router.push("/search?typeFilter=Job%20Tour&mine=1")
+              }
+              variant="outline-primary"
+              size="sm"
+              className="p-1 mt-2"
+              style={{ width: "210px" }}
+            >
+              <span
+                style={{ fontSize: "18px", textTransform: "none" }}
+                className=""
+              >
+                My JobViz Tours
+              </span>
+            </BootstrapButton>
           </section>
         </section>
       </div>

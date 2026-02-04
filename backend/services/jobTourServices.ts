@@ -72,10 +72,11 @@ const retrieveJobTours = async (
             );
         }
 
-        const isFilterObjValid = "userId" in filterObj || "heading" in filterObj
+        const isFilterObjValid =
+            "userId" in filterObj || "heading" in filterObj || "_id" in filterObj
 
         if (!isFilterObjValid) {
-            throw new Error('Retrieval is only allowed when filtering by userId or heading.');
+            throw new Error('Retrieval is only allowed when filtering by userId, heading, or _id.');
         }
 
         if ("heading" in filterObj) {
@@ -86,6 +87,18 @@ const retrieveJobTours = async (
             }
 
             const jobTours = await JobTour.find(filterObjCustom, projectionObj)
+                .sort(sort ?? {})
+                .limit(limit)
+                .lean();
+
+            return { wasSuccessful: true, data: jobTours as IJobTour[] };
+        }
+
+        if ("_id" in filterObj) {
+            const jobTours = await JobTour.find(
+                { _id: filterObj._id },
+                projectionObj
+            )
                 .sort(sort ?? {})
                 .limit(limit)
                 .lean();

@@ -82,9 +82,17 @@ export default async function handler(
             throw new CustomError('No user found for the provided email address.', 404);
         }
 
+        const resolvedOwnerName = (() => {
+            const first = targetUser.firstName ?? targetUser?.name?.first ?? "";
+            const last = targetUser.lastName ?? targetUser?.name?.last ?? "";
+            const full = `${first} ${last}`.trim();
+            return full.length ? full : undefined;
+        })();
+
         const _newJobTour: TJobTourToInsert = {
             ...newJobTour,
-            userId: targetUser._id
+            userId: targetUser._id,
+            ownerName: resolvedOwnerName,
         }
         const { status, msg, _id } = await insertJobTour(_newJobTour);
 

@@ -30,6 +30,7 @@ import {
 } from "../JobViz/infoModalContent";
 import type { JobRatingValue } from "../JobViz/jobRatingsStore";
 import { ratingOptions, useJobRatings } from "../JobViz/jobRatingsStore";
+import { useJobTourEditorOptional } from "../JobViz/jobTourEditorContext";
 
 const { Body } = Modal;
 const DATA_END_YR = jobVizDataObj.data_end_yr?.[0] ?? 2034;
@@ -514,6 +515,13 @@ const SelectedJob: React.FC = () => {
       ]
     : [];
   const disableExploreRelated = isFocusAssignmentView;
+  const jobTourEditor = useJobTourEditorOptional();
+  const canBookmark =
+    Boolean(jobTourEditor?.isEditing) && Boolean(visibleJob?.soc_code);
+  const isBookmarked =
+    canBookmark && visibleJob?.soc_code
+      ? jobTourEditor?.isSelected(visibleJob.soc_code)
+      : false;
 
   return (
     <>
@@ -544,14 +552,42 @@ const SelectedJob: React.FC = () => {
                 <p className={styles.modalEyebrow}>
                   Job detail <span className={styles.modalSocCodeInline}>(SOC {visibleJob.soc_code})</span>
                 </p>
-                <button
-                  type="button"
-                  className={styles.modalCloseButton}
-                  onClick={handleOnHide}
-                  aria-label="Close job details"
-                >
-                  <LucideIcon name="X" />
-                </button>
+                <div className={styles.modalHeaderActions}>
+                  {canBookmark && visibleJob?.soc_code && (
+                    <button
+                      type="button"
+                      className={`${styles.jobvizBookmarkButton} ${styles.jobvizBookmarkButtonInline} ${
+                        isBookmarked ? styles.jobvizBookmarkButtonActive : ""
+                      }`}
+                      aria-label={
+                        isBookmarked
+                          ? "Remove job from tour"
+                          : "Click to add job to tour"
+                      }
+                      title={
+                        isBookmarked ? "Remove from tour" : "Click to add job to tour"
+                      }
+                      data-active={isBookmarked ? "true" : "false"}
+                      onClick={() => {
+                        jobTourEditor?.toggleJob(visibleJob.soc_code);
+                      }}
+                    >
+                      <span
+                        className={styles.jobvizBookmarkDot}
+                        aria-hidden="true"
+                        data-active={isBookmarked ? "true" : "false"}
+                      />
+                    </button>
+                  )}
+                  <button
+                    type="button"
+                    className={styles.modalCloseButton}
+                    onClick={handleOnHide}
+                    aria-label="Close job details"
+                  >
+                    <LucideIcon name="X" />
+                  </button>
+                </div>
               </div>
               <div className={styles.modalIdentityRow}>
                 <div className={`${styles.iconBadge} ${styles.modalIcon}`}>

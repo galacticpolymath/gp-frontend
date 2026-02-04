@@ -101,6 +101,9 @@ const HAS_MEMBERSHIP_STATUSES: Set<TAccountStageLabel> = new Set([
   'Cancelling',
   'Subscribing',
   'Past due',
+  'Active',
+  'Trialing',
+  'Trial',
 ] as TAccountStageLabel[]);
 
 const LiContentWithImg: React.FC<{ children: ReactNode }> = ({ children }) => {

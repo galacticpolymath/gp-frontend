@@ -130,6 +130,9 @@ const EmailNewsletterSignUp: React.FC = () => {
     isDisplayed,
     handleOnHide: onHide,
   } = emailNewsletterSignUpModal ?? {};
+  if (!isDisplayed) {
+    return null;
+  }
   const wasDoubleOptEmailSent = userEmailNewsLetterStatus === "double-opt-sent";
   const [
     willNotShowEmailNewsLetterSignUpModalAgin,
