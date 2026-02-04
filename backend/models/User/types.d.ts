@@ -100,7 +100,7 @@ export type TUserSchemaV2 = IUserSchemaBaseProps &
     unitGDriveLessons: IUnitGDriveLesson[];
     gdriveAuthEmails: string[];
     willShowGpPlusCopyLessonHelperModal: boolean;
-    displayName: string
+    displayName?: string
     willNotShowEmailNewsLetterSignUpModal: boolean;
   };
 
