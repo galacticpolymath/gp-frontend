@@ -199,6 +199,7 @@ export default async function handler(
         return response.json({});
       }
 
+      // GOAL: check if the user had already retrieved the target email about cancelation
       const { wasSuccessful: wasEmailGpSubCanceledEmailSentSuccessfully } =
         await sendGpPlusSubCanceledEmail(
           reqBody.Name,
@@ -228,15 +229,15 @@ export default async function handler(
             subject: "GP Plus subscription cancelation, but no drive auth.",
             html: `
             <p>There was an error canceling a user's GP Plus subscription. They had the following gdrive auth emails: ${user.gdriveAuthEmails.join(
-    ", "
-  )}</p>
+              ", "
+            )}</p>
             <p>Can you please cancel their subscription for them?</p>
           `,
             text: `
             There was an error canceling a user's GP Plus subscription. 
             They had the following gdrive auth emails: ${user.gdriveAuthEmails.join(
-    ", "
-  )}
+              ", "
+            )}
             Can you please cancel their subscription for them?
           `,
           });

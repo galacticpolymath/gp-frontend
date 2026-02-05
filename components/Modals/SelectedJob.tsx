@@ -368,11 +368,15 @@ const SelectedJob: React.FC = () => {
       setJobvizReturnPath(null);
     } else {
       const segmentsSource = router.query?.["search-results"];
-      const segments = Array.isArray(segmentsSource)
+      const rawSegments = Array.isArray(segmentsSource)
         ? [...segmentsSource]
         : typeof segmentsSource === "string"
           ? segmentsSource.split("/").filter(Boolean)
           : [];
+      const safeSegmentRegex = /^[a-zA-Z0-9._~-]+$/;
+      const segments = rawSegments.filter(
+        (segment) => typeof segment === "string" && safeSegmentRegex.test(segment),
+      );
       if (segments.length >= 2) {
         const lastSegment = segments[segments.length - 1];
         const shouldTrimLast =
@@ -474,7 +478,7 @@ const SelectedJob: React.FC = () => {
     visibleJob?.soc_title ?? visibleJob?.title ?? "Job overview";
   const definition =
     visibleJob?.def &&
-    visibleJob.def.toLowerCase() !==
+      visibleJob.def.toLowerCase() !==
       "no definition found for this summary category."
       ? visibleJob.def
       : null;
@@ -485,34 +489,34 @@ const SelectedJob: React.FC = () => {
 
   const stats = visibleJob
     ? [
-        {
-          id: "median",
-          label: "Median wage",
-          value: formatCurrency(visibleJob.median_annual_wage),
-          infoType: "wage" as InfoModalType,
-          descriptor: null,
-        },
-        {
-          id: "growth",
-          label: "10-year change",
-          value: formatPercent(visibleJob.employment_change_percent),
-          infoType: "growth" as InfoModalType,
-          descriptor: resolveTierLabel(
-            "growth",
-            visibleJob.employment_change_percent ?? null
-          ),
-        },
-        {
-          id: "jobs",
-          label: `Jobs by ${DATA_END_YR}`,
-          value: formatNumber(visibleJob.employment_end_yr),
-          infoType: "jobs" as InfoModalType,
-          descriptor: resolveTierLabel(
-            "jobs",
-            visibleJob.employment_end_yr ?? null
-          ),
-        },
-      ]
+      {
+        id: "median",
+        label: "Median wage",
+        value: formatCurrency(visibleJob.median_annual_wage),
+        infoType: "wage" as InfoModalType,
+        descriptor: null,
+      },
+      {
+        id: "growth",
+        label: "10-year change",
+        value: formatPercent(visibleJob.employment_change_percent),
+        infoType: "growth" as InfoModalType,
+        descriptor: resolveTierLabel(
+          "growth",
+          visibleJob.employment_change_percent ?? null
+        ),
+      },
+      {
+        id: "jobs",
+        label: `Jobs by ${DATA_END_YR}`,
+        value: formatNumber(visibleJob.employment_end_yr),
+        infoType: "jobs" as InfoModalType,
+        descriptor: resolveTierLabel(
+          "jobs",
+          visibleJob.employment_end_yr ?? null
+        ),
+      },
+    ]
     : [];
   const disableExploreRelated = isFocusAssignmentView;
   const jobTourEditor = useJobTourEditorOptional();
@@ -529,9 +533,8 @@ const SelectedJob: React.FC = () => {
         show={!!visibleJob}
         onHide={handleOnHide}
         contentClassName="selectedJobModal"
-        dialogClassName={`dialogJobVizModal py-2 d-sm-flex justify-content-center align-items-center ${
-          hasAssignmentParams ? "" : "dialogJobVizModalCentered"
-        }`}
+        dialogClassName={`dialogJobVizModal py-2 d-sm-flex justify-content-center align-items-center ${hasAssignmentParams ? "" : "dialogJobVizModalCentered"
+          }`}
         backdropClassName="selectedJobBackdrop"
         fullscreen="md-down"
         container={isMobileViewport ? modalContainer ?? undefined : undefined}
@@ -646,11 +649,10 @@ const SelectedJob: React.FC = () => {
                       <button
                         type="button"
                         key={option.value}
-                        className={`${styles.modalRatingButton} ${
-                          currentRating === option.value
-                            ? styles.modalRatingButtonActive
-                            : ""
-                        }`}
+                        className={`${styles.modalRatingButton} ${currentRating === option.value
+                          ? styles.modalRatingButtonActive
+                          : ""
+                          }`}
                         onClick={() => handleRatingSelect(option.value)}
                         aria-pressed={currentRating === option.value}
                       >
@@ -756,7 +758,7 @@ const SelectedJob: React.FC = () => {
                   On-the-job training:{" "}
                   {describe(
                     visibleJob[
-                      "typical_on-the-job_training_needed_to_attain_competency_in_the_occupation"
+                    "typical_on-the-job_training_needed_to_attain_competency_in_the_occupation"
                     ]
                   )}
                 </li>
@@ -784,9 +786,8 @@ const SelectedJob: React.FC = () => {
                 )}
                 <button
                   type="button"
-                  className={`${styles.primaryButton} ${
-                    didCopyLink ? styles.copySuccess : ""
-                  }`}
+                  className={`${styles.primaryButton} ${didCopyLink ? styles.copySuccess : ""
+                    }`}
                   onClick={handleCopyLink}
                   aria-live="polite"
                 >
