@@ -16,7 +16,9 @@ import Image from "next/image";
 import {
   getBillingTerm,
   getLocalStorageItem,
+  getSessionStorageItem,
   removeLocalStorageItem,
+  removeSessionStorageItem,
   setLocalStorageItem,
 } from "../shared/fns";
 import { Magic } from "magic-sdk";
@@ -30,6 +32,7 @@ import useOutsetaInputValidation from "../customHooks/useOutsetaInputValidation"
 import { useHandleGpPlusCheckoutSessionModal } from "../customHooks/useHandleGpPlusCheckoutSessionModal";
 import EmailNewsletterSignUp from "../components/User/Modals/EmailNewsletterSignUp";
 import { ToastContainer } from "react-toastify";
+import { FiArrowLeft } from "react-icons/fi";
 
 export const getUserAccountData = async (
   token: string,
@@ -137,6 +140,7 @@ const AccountPg: React.FC = () => {
   const [wasGpPlusBtnClicked, setWasGpPlusBtnClicked] = useState(false);
   const [isGpPlusSignUpModalDisplayed, setIsGpPlusSignUpModalDisplayed] =
     _isGpPlusSignUpModalDisplayed;
+  const [backHref, setBackHref] = useState<string | null>(null);
   const [gpPlusBillingPeriod, setGpPlusBillingPeriod] = useState<
     "month" | "year"
   >("year");
@@ -549,6 +553,27 @@ const AccountPg: React.FC = () => {
 
   useOutsetaInputValidation();
 
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const storedRedirect = getSessionStorageItem("userEntryRedirectUrl");
+    const stored =
+      typeof storedRedirect === "string" ? storedRedirect : storedRedirect ?? null;
+    const referrer =
+      typeof document !== "undefined" ? document.referrer : "";
+    const origin = window.location.origin;
+    let candidate = stored;
+    if (!candidate && referrer && referrer.startsWith(origin)) {
+      candidate = referrer;
+    }
+    if (candidate && candidate.includes("/account")) {
+      candidate = null;
+    }
+    if (candidate && candidate === window.location.href) {
+      candidate = null;
+    }
+    setBackHref(candidate ?? null);
+  }, []);
+
   if (status === "loading" || isRetrievingUserData) {
     return (
       <Layout
@@ -590,6 +615,19 @@ const AccountPg: React.FC = () => {
           style={{ minHeight: "100vh" }}
           className="container pt-4 pt-sm-5 pb-2 pt-md-4"
         >
+          {backHref && (
+            <button
+              type="button"
+              className="account-back-btn"
+              onClick={() => {
+                removeSessionStorageItem("userEntryRedirectUrl");
+                window.location.href = backHref;
+              }}
+            >
+              <FiArrowLeft aria-hidden="true" />
+              Back
+            </button>
+          )}
           <LoginUI
             className="pt-3 pt-sm-5 pt-md-3"
             headingTitleClassName="text-center text-black my-2"
@@ -622,6 +660,19 @@ const AccountPg: React.FC = () => {
         style={{ minHeight: "90vh", paddingTop: "10px" }}
         className="container pt-5 pt-sm-4"
       >
+        {backHref && (
+          <button
+            type="button"
+            className="account-back-btn"
+            onClick={() => {
+              removeSessionStorageItem("userEntryRedirectUrl");
+              window.location.href = backHref;
+            }}
+          >
+            <FiArrowLeft aria-hidden="true" />
+            Back
+          </button>
+        )}
         <ToastContainer stacked position="top-center" />
         <section className="row border-bottom pb-4">
           <section className="col-12 d-flex justify-content-center align-items-center pt-4">

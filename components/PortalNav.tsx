@@ -242,7 +242,6 @@ const PortalNav: React.FC<PortalNavProps> = ({
                 )}
               </div>
               <span className={styles.profileButton}>
-                Account
                 <span
                   className={
                     effectiveIsPlusMember

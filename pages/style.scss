@@ -443,17 +443,45 @@ ol li {
   }
 }
 
+.account-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid rgba(44, 131, 195, 0.25);
+  color: #2c83c3;
+  background: rgba(44, 131, 195, 0.08);
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 12px;
+}
+
+.account-back-btn:hover,
+.account-back-btn:focus-visible {
+  background: rgba(44, 131, 195, 0.16);
+  color: #1b6fb5;
+}
+
 .account-action-btn {
   border-width: 2px;
   font-weight: 600;
   letter-spacing: 0.02em;
 }
 
-.account-action-btn--jobviz {
-  background: #ffffff;
-  border-color: #1c28bd;
-  color: #1c28bd;
+.account-action-btn--jobviz,
+.account-action-btn--jobviz.btn,
+.account-action-btn--jobviz.btn-outline-primary {
+  background: #ffffff !important;
+  border-color: #1c28bd !important;
+  color: #1c28bd !important;
   box-shadow: 0 10px 20px rgba(28, 40, 189, 0.12);
+}
+
+.account-action-btn--jobviz span {
+  color: inherit !important;
 }
 
 .account-action-btn--jobviz:hover,
