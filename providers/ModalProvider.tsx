@@ -20,6 +20,7 @@ interface IModal {
 export interface INotifyModalVal extends IModal {
   isDisplayed: boolean;
   bodyTxt: string | ReactNode;
+  bodyElements?: ReactNode;
   headerTxt: string;
   closeBtnTxt?: string;
 }

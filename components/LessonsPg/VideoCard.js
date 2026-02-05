@@ -1,7 +1,7 @@
-/* eslint-disable react/jsx-wrap-multilines */
-/* eslint-disable react/jsx-indent-props */
-/* eslint-disable react/jsx-indent */
-/* eslint-disable indent */
+ 
+ 
+ 
+ 
 // import Image from 'next/image';
 import CardTitle from '../LessonsPg/CardTitle';
 import EllipsisTxt from '../Text/EllipsisTxt';

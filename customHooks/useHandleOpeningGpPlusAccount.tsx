@@ -133,11 +133,6 @@ const useHandleOpeningGpPlusAccount = (
       const outseta = (window as any).Outseta;
       let idToken = outseta.getAccessToken() as string | null;
 
-      console.log(
-        'userAccount?.gpPlusSubscription, sup there: ',
-        userAccount?.gpPlusSubscription
-      );
-
       if (
         !idToken &&
         userAccount &&
@@ -188,7 +183,6 @@ const useHandleOpeningGpPlusAccount = (
       (gpPlusSubscription?.membership?.AccountStageLabel === 'Subscribing' ||
         gpPlusSubscription?.membership?.AccountStageLabel === 'Cancelling')
     ) {
-      console.log('hi there will click the gp plus button...');
       setWasGpPlusBtnClicked(true);
 
       setTimeout(() => {

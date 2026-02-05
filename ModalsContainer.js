@@ -1,8 +1,8 @@
-/* eslint-disable quotes */
+ 
 
-/* eslint-disable react/jsx-indent-props */
-/* eslint-disable indent */
-/* eslint-disable react/jsx-indent */
+ 
+ 
+ 
 
 import { useContext } from "react";
 import { ModalContext } from "./providers/ModalProvider";

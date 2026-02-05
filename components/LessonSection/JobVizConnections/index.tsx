@@ -5,7 +5,7 @@ import { GpPlusBtn } from "../../../pages/gp-plus";
 import { useRouter, usePathname } from "next/navigation";
 import JobToursModal from "../Modals/JobToursModal";
 import { DISABLE_FOOTER_PARAM_NAME } from "../../../components/Footer";
-import { DISABLE_NAVBAR_PARAM_NAME } from "../../../components/Navbar";
+import { DISABLE_NAVBAR_PARAM_NAME } from "../../../components/PortalNav";
 import Image from "next/image";
 import CopyableTxt from "../../CopyableTxt";
 import { getSessionStorageItem } from "../../../shared/fns";
@@ -198,7 +198,7 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
         >
           JobViz connects classroom learning to the real world—helping students
           see how knowledge links to jobs, industries, and the wider economy.
-          With data on 1,000+ occupations, it's a springboard for systems
+          With data on 1,000+ occupations, it&apos;s a springboard for systems
           thinking and exploring the full landscape of opportunity.
         </div>
       </div>

@@ -210,7 +210,6 @@ export const useHandleGpPlusCheckoutSessionModal = () => {
           ? (emailInput as HTMLInputElement).value
           : '';
 
-        console.log('outsetaEmail, sup there: ', outsetaEmail);
 
         if (!outsetaEmail) {
           setNotifyModal({
@@ -275,7 +274,7 @@ export const useHandleGpPlusCheckoutSessionModal = () => {
             headerTxt: 'An error has occurred',
             bodyTxt: (
               <>
-                An error has occurred while trying to update the user's email.
+                An error has occurred while trying to update the user&apos;s email.
                 If this error persists, please contact{' '}
                 <CustomLink
                   hrefStr={CONTACT_SUPPORT_EMAIL}

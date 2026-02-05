@@ -1,4 +1,4 @@
-/* eslint-disable quotes */
+ 
 
 import React from "react";
 import { TAboutUserFormForUI } from "../../../../providers/UserProvider";

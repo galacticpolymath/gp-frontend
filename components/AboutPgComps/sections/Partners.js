@@ -1,9 +1,9 @@
-/* eslint-disable react/jsx-indent */
  
-/* eslint-disable indent */
  
-/* eslint-disable semi */
-/* eslint-disable quotes */
+ 
+ 
+ 
+ 
  
 import CompanyPartners from '../../../data/AboutPg/Partners.json';
 import Image from 'next/image'

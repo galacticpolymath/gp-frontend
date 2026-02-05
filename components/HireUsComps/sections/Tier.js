@@ -1,15 +1,15 @@
-/* eslint-disable react/jsx-indent-props */
-/* eslint-disable react/jsx-wrap-multilines */
-/* eslint-disable semi */
-/* eslint-disable react/jsx-closing-tag-location */
  
-/* eslint-disable comma-dangle */
-/* eslint-disable quotes */
  
-/* eslint-disable react/jsx-max-props-per-line */
  
-/* eslint-disable indent */
-/* eslint-disable react/jsx-indent */
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
 
 import Image from 'next/image';
 import { Card } from "react-bootstrap"

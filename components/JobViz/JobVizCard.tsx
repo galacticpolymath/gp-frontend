@@ -3,6 +3,7 @@ import styles from "../../styles/jobvizBurst.module.scss";
 import { LucideIcon } from "./LucideIcon";
 import { ratingEmoji, useJobRatings } from "./jobRatingsStore";
 import type { JobRatingValue } from "./jobRatingsStore";
+import { useJobTourEditorOptional } from "./jobTourEditorContext";
 
 type CardAnimationStyle = React.CSSProperties & {
   "--card-stagger-delay"?: string;
@@ -93,6 +94,7 @@ export const JobVizCard: React.FC<JobVizCardProps> = ({
 }) => {
   const [isHovered, setHover] = React.useState(false);
   const [isClient, setIsClient] = React.useState(false);
+  const jobTourEditor = useJobTourEditorOptional();
   React.useEffect(() => setIsClient(true), []);
   const cardRef = React.useRef<HTMLElement | null>(null);
   const containerClass = level === 1 ? styles.categoryCard : styles.jobCard;
@@ -140,6 +142,10 @@ export const JobVizCard: React.FC<JobVizCardProps> = ({
       }
     : undefined;
   const isInteractive = Boolean(onClick || onCardAction);
+  const canBookmark =
+    Boolean(jobTourEditor?.isEditing) && level === 2 && Boolean(socCode);
+  const isBookmarked =
+    canBookmark && socCode ? jobTourEditor?.isSelected(socCode) : false;
   const emitCardAction = React.useCallback(() => {
     const rect = cardRef.current?.getBoundingClientRect() ?? null;
     if (onCardAction) {
@@ -187,6 +193,29 @@ export const JobVizCard: React.FC<JobVizCardProps> = ({
       aria-label={level === 1 ? "Click to view jobs" : "Click for job details"}
       aria-describedby={isHovered ? tooltipId : undefined}
     >
+      {canBookmark && socCode && (
+        <button
+          type="button"
+          className={`${styles.jobvizBookmarkButton} ${
+            isBookmarked ? styles.jobvizBookmarkButtonActive : ""
+          }`}
+          aria-label={
+            isBookmarked ? "Remove job from tour" : "Click to add job to tour"
+          }
+          title={isBookmarked ? "Remove from tour" : "Click to add job to tour"}
+          data-active={isBookmarked ? "true" : "false"}
+          onClick={(event) => {
+            event.stopPropagation();
+            jobTourEditor?.toggleJob(socCode);
+          }}
+        >
+          <span
+            className={styles.jobvizBookmarkDot}
+            aria-hidden="true"
+            data-active={isBookmarked ? "true" : "false"}
+          />
+        </button>
+      )}
       {level === 1 ? (
         <>
           <div className={styles.categoryTop}>

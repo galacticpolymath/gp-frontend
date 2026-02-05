@@ -30,6 +30,7 @@ import {
 } from "../JobViz/infoModalContent";
 import type { JobRatingValue } from "../JobViz/jobRatingsStore";
 import { ratingOptions, useJobRatings } from "../JobViz/jobRatingsStore";
+import { useJobTourEditorOptional } from "../JobViz/jobTourEditorContext";
 
 const { Body } = Modal;
 const DATA_END_YR = jobVizDataObj.data_end_yr?.[0] ?? 2034;
@@ -518,6 +519,13 @@ const SelectedJob: React.FC = () => {
     ]
     : [];
   const disableExploreRelated = isFocusAssignmentView;
+  const jobTourEditor = useJobTourEditorOptional();
+  const canBookmark =
+    Boolean(jobTourEditor?.isEditing) && Boolean(visibleJob?.soc_code);
+  const isBookmarked =
+    canBookmark && visibleJob?.soc_code
+      ? jobTourEditor?.isSelected(visibleJob.soc_code)
+      : false;
 
   return (
     <>
@@ -543,10 +551,37 @@ const SelectedJob: React.FC = () => {
               data-jobviz-active-soc={visibleJob.soc_code}
             >
               <header className={styles.modalHeader}>
-                <div className={styles.modalHeaderTop}>
-                  <p className={styles.modalEyebrow}>
-                    Job detail <span className={styles.modalSocCodeInline}>(SOC {visibleJob.soc_code})</span>
-                  </p>
+              <div className={styles.modalHeaderTop}>
+                <p className={styles.modalEyebrow}>
+                  Job detail <span className={styles.modalSocCodeInline}>(SOC {visibleJob.soc_code})</span>
+                </p>
+                <div className={styles.modalHeaderActions}>
+                  {canBookmark && visibleJob?.soc_code && (
+                    <button
+                      type="button"
+                      className={`${styles.jobvizBookmarkButton} ${styles.jobvizBookmarkButtonInline} ${
+                        isBookmarked ? styles.jobvizBookmarkButtonActive : ""
+                      }`}
+                      aria-label={
+                        isBookmarked
+                          ? "Remove job from tour"
+                          : "Click to add job to tour"
+                      }
+                      title={
+                        isBookmarked ? "Remove from tour" : "Click to add job to tour"
+                      }
+                      data-active={isBookmarked ? "true" : "false"}
+                      onClick={() => {
+                        jobTourEditor?.toggleJob(visibleJob.soc_code);
+                      }}
+                    >
+                      <span
+                        className={styles.jobvizBookmarkDot}
+                        aria-hidden="true"
+                        data-active={isBookmarked ? "true" : "false"}
+                      />
+                    </button>
+                  )}
                   <button
                     type="button"
                     className={styles.modalCloseButton}
@@ -556,26 +591,27 @@ const SelectedJob: React.FC = () => {
                     <LucideIcon name="X" />
                   </button>
                 </div>
-                <div className={styles.modalIdentityRow}>
-                  <div className={`${styles.iconBadge} ${styles.modalIcon}`}>
-                    <LucideIcon name={categoryIcon} />
-                    {jobIcon && (
-                      <span className={styles.nestedIcon}>
-                        <LucideIcon name={jobIcon} />
-                      </span>
-                    )}
-                  </div>
-                  <div className={styles.modalTitleGroup}>
-                    <h3 className={styles.modalTitle}>{jobTitle}</h3>
-                    {isAssignmentJob && (
-                      <span
-                        className={styles.assignmentBadgeDot}
-                        title="Part of this assignment"
-                        aria-label="Part of this assignment"
-                      />
-                    )}
-                  </div>
+              </div>
+              <div className={styles.modalIdentityRow}>
+                <div className={`${styles.iconBadge} ${styles.modalIcon}`}>
+                  <LucideIcon name={categoryIcon} />
+                  {jobIcon && (
+                    <span className={styles.nestedIcon}>
+                      <LucideIcon name={jobIcon} />
+                    </span>
+                  )}
                 </div>
+                <div className={styles.modalTitleGroup}>
+                  <h3 className={styles.modalTitle}>{jobTitle}</h3>
+                  {isAssignmentJob && (
+                    <span
+                      className={styles.assignmentBadgeDot}
+                      title="Part of this assignment"
+                      aria-label="Part of this assignment"
+                    />
+                  )}
+                </div>
+              </div>
               </header>
               <p className={styles.modalSummary}>
                 {definition ?? "Definition unavailable from the BLS feed."}

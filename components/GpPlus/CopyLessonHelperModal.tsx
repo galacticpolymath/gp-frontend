@@ -1,4 +1,4 @@
-/* eslint-disable quotes */
+ 
 
 import React, { useState, useEffect } from "react";
 import { Button, Modal } from "react-bootstrap";
@@ -149,7 +149,7 @@ const CopyLessonHelperModal: React.FC<ThankYouModalProps> = ({ onClose }) => {
             onClick={handleDontShowAgainToggle}
             className="text-muted underline-on-hover"
           >
-            Don't show me this modal again.
+            Don&apos;t show me this modal again.
           </span>
         </div>
       </Modal.Body>

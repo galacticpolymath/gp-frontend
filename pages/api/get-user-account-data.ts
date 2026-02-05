@@ -1,5 +1,5 @@
-/* eslint-disable quotes */
-/* eslint-disable no-console */
+ 
+ 
 
 import { getMailingListContact } from "../../backend/services/emailServices";
 import {
@@ -17,6 +17,7 @@ import {
 } from "../../backend/models/User/types";
 import {
   getGpPlusMembership,
+  isActiveGpPlusMembership,
   TAccountStageLabel,
 } from "../../backend/services/outsetaServices";
 import { findMailingListConfirmationByEmail, findMailingListConfirmationsByEmails } from "../../backend/services/mailingListConfirmationServices";
@@ -25,6 +26,10 @@ import { TMailingListConfirmation } from "../../backend/models/MailingListConfir
 export const HAS_MEMBERSHIP_STATUSES: Set<TAccountStageLabel> = new Set([
   "Cancelling",
   "Subscribing",
+  "Past due",
+  "Active",
+  "Trialing",
+  "Trial",
 ] as TAccountStageLabel[]);
 const PROJECTIONS: Partial<
   Record<keyof (TUserSchemaV2 & IUserSchema), 0 | 1 | undefined>
@@ -78,7 +83,6 @@ export default async function handler(
     }
 
     const jwtVerified = await verifyJwt(authSplit[1]);
-    console.log("bacon sauce, jwtVerified: ", jwtVerified);
     const { payload } = jwtVerified;
     const { email, userId } = payload;
     const { wasSuccessful } = await connectToMongodb(15_000, 0, true);
@@ -103,16 +107,17 @@ export default async function handler(
       throw new CustomError("User not found.", 404);
     }
 
-    if (userAccount.outsetaAccountEmail) {
-      const gpPlusMembership = await getGpPlusMembership(
-        userAccount.outsetaAccountEmail
-      );
+    const gpPlusLookupEmail =
+      userAccount.outsetaAccountEmail || userAccount.email || email;
+    if (gpPlusLookupEmail) {
+      const gpPlusMembership = await getGpPlusMembership(gpPlusLookupEmail);
       console.log("gpPlusMembership: ", gpPlusMembership);
       userAccount = {
         ...userAccount,
-        isGpPlusMember: HAS_MEMBERSHIP_STATUSES.has(
-          gpPlusMembership.AccountStageLabel as TAccountStageLabel
-        ),
+        isGpPlusMember:
+          HAS_MEMBERSHIP_STATUSES.has(
+            gpPlusMembership.AccountStageLabel as TAccountStageLabel
+          ) || isActiveGpPlusMembership(gpPlusMembership),
         gpPlusSubscription: gpPlusMembership,
       };
     }

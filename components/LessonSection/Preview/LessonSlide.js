@@ -1,4 +1,4 @@
-/* eslint-disable quotes */
+ 
 import styles from './index.module.scss';
 import RichText from '../../RichText';
 import Link from 'next/link';

@@ -14,6 +14,14 @@ const useSiteSession = () => {
     "gdriveAccessTokenExp",
     "isGpPlusMember",
   ]);
+  const storedGpPlusMember = (() => {
+    if (typeof window === "undefined") return undefined;
+    const value = window.sessionStorage.getItem("isGpPlusUser");
+    if (value === null) return undefined;
+    return value === "true";
+  })();
+  const resolvedIsGpPlusMember =
+    gdriveTokensInfo.isGpPlusMember ?? storedGpPlusMember;
 
   const logUserOut = () => {
     localStorage.clear();
@@ -24,6 +32,7 @@ const useSiteSession = () => {
 
   return {
     ...gdriveTokensInfo,
+    isGpPlusMember: resolvedIsGpPlusMember,
     user,
     token,
     status,

@@ -1,4 +1,4 @@
-/* eslint-disable quotes */
+ 
 
 import React, { CSSProperties, useState } from "react";
 import { HiOutlineXMark } from "react-icons/hi2";

@@ -1,5 +1,5 @@
-/* eslint-disable indent */
-/* eslint-disable quotes */
+ 
+ 
 
 import { FaUserAlt } from "react-icons/fa";
 import React, { useEffect, useMemo, useRef, useState } from "react";
@@ -45,6 +45,9 @@ const HAS_MEMBERSHIP_STATUSES: Set<TAccountStageLabel> = new Set([
   "Cancelling",
   "Subscribing",
   "Past due",
+  "Active",
+  "Trialing",
+  "Trial",
 ] as TAccountStageLabel[]);
 
 export const revokeGoogleAuthToken = async (token: string) => {

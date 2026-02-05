@@ -1,4 +1,4 @@
-/* eslint-disable no-console */
+ 
 const { apiInfo, generateHeaders } = require('../apiData');
 const { default: axios } = require('axios');
 const { mainRoute, insertLessonRoute } = apiInfo;

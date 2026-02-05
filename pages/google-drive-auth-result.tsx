@@ -1,6 +1,6 @@
 // @ts-nocheck
-/* eslint-disable no-console */
-/* eslint-disable quotes */
+ 
+ 
  
 import Layout from "../components/Layout";
 import { useQuery } from "@tanstack/react-query";
@@ -131,7 +131,6 @@ const GoogleDriveAuthResult = () => {
         path: "/",
       });
 
-      console.log("COOKIES, sup there: ", Object.entries(cookies));
 
       if (gpPlusFeatureLocation) {
         setWillRedirectUser(true);

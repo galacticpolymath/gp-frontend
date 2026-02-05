@@ -1,4 +1,4 @@
-/* eslint-disable quotes */
+ 
 
 import React from "react";
 import { useRouter } from "next/router";
@@ -28,7 +28,6 @@ const GpSignUpResult: React.FC = () => {
   const gpPlusFeatureLocation = getLocalStorageItem("gpPlusFeatureLocation");
 
   if (status === "authenticated" && access_token) {
-    console.log("gpPlusFeatureLocation, yo there: ", gpPlusFeatureLocation);
 
     resultJsx = (
       <>

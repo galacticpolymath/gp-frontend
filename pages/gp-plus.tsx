@@ -101,6 +101,9 @@ const HAS_MEMBERSHIP_STATUSES: Set<TAccountStageLabel> = new Set([
   'Cancelling',
   'Subscribing',
   'Past due',
+  'Active',
+  'Trialing',
+  'Trial',
 ] as TAccountStageLabel[]);
 
 const LiContentWithImg: React.FC<{ children: ReactNode }> = ({ children }) => {
@@ -167,7 +170,6 @@ const GpPlus: React.FC<IProps> = ({ liveUnitsTotal, plusPlanPercentSaved }) => {
   const yearlyPrice = 60;
   const monthlyEquivalent = yearlyPrice / 12; // $5/month when paid yearly
   const gpPlusBtnTxt: 'Manage account' | 'Sign up' = useMemo(() => {
-    console.log('gpPlusSubscription, sup there: ', gpPlusSubscription);
     const hasMemeberhsip =
       gpPlusSubscription?.membership?.AccountStageLabel &&
       HAS_MEMBERSHIP_STATUSES.has(
@@ -181,7 +183,6 @@ const GpPlus: React.FC<IProps> = ({ liveUnitsTotal, plusPlanPercentSaved }) => {
     return 'Sign up';
   }, [gpPlusSubscription, isFetching]);
   const gpLiteBtnTxt = useMemo(() => {
-    console.log('gpPlusSubscription, sup there: ', gpPlusSubscription);
 
     if (status === 'authenticated') {
       return 'ACCOUNT CREATED';
@@ -248,7 +249,6 @@ const GpPlus: React.FC<IProps> = ({ liveUnitsTotal, plusPlanPercentSaved }) => {
         : null;
 
     console.log('siteSession: ', siteSession);
-    console.log('emailInput, yo there: ', emailInput);
 
     if (status === 'authenticated' && emailInput) {
       emailInput.value = user?.email || '';
@@ -361,7 +361,6 @@ const GpPlus: React.FC<IProps> = ({ liveUnitsTotal, plusPlanPercentSaved }) => {
           ? (emailInput as HTMLInputElement).value
           : '';
 
-        console.log('outsetaEmail, sup there: ', outsetaEmail);
 
         if (!outsetaEmail) {
           setNotifyModal({
@@ -426,7 +425,7 @@ const GpPlus: React.FC<IProps> = ({ liveUnitsTotal, plusPlanPercentSaved }) => {
             headerTxt: 'An error has occurred',
             bodyTxt: (
               <>
-                An error has occurred while trying to update the user's email.
+                An error has occurred while trying to update the user&apos;s email.
                 If this error persists, please contact{' '}
                 <CustomLink
                   hrefStr={CONTACT_SUPPORT_EMAIL}

@@ -1,8 +1,8 @@
-/* eslint-disable indent */
-/* eslint-disable react/jsx-indent */
-/* eslint-disable react/jsx-indent-props */
  
-/* eslint-disable semi */
+ 
+ 
+ 
+ 
 
 const WebAppCard = ({
     webApp,

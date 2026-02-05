@@ -53,13 +53,28 @@ import {
   UNIT_NAME_PARAM_NAME,
 } from "../../components/LessonSection/JobVizConnections";
 import { getUnitRelatedJobs } from "../../helperFns/filterUnitRelatedJobs";
-import { verifyJwt } from "../../backend/utils/security";
 import { ModalContext } from "../../providers/ModalProvider";
 import { useHeroStatAction } from "../../components/JobViz/useHeroStatAction";
 import {
   JOBVIZ_CATEGORIES_ANCHOR_ID,
   JOBVIZ_HIERARCHY_HEADING_ID,
 } from "../../components/JobViz/jobvizDomIds";
+import useSiteSession from "../../customHooks/useSiteSession";
+import { useUserContext } from "../../providers/UserProvider";
+import { JobTourEditorProvider } from "../../components/JobViz/jobTourEditorContext";
+import {
+  createJobTour,
+  getJobTours,
+  updateJobTour,
+} from "../../components/JobViz/JobTours/jobTourApi";
+import JobTourUpgradeModal from "../../components/JobViz/JobTours/JobTourUpgradeModal";
+import JobTourEditorFields from "../../components/JobViz/JobTours/JobTourEditorFields";
+import {
+  DEFAULT_JOB_TOUR_ASSIGNMENT,
+  DEFAULT_JOB_TOUR_VERSION_PREFIX,
+  CLASS_SUBJECT_OPTIONS,
+} from "../../components/JobViz/JobTours/jobTourConstants";
+import { toast } from "react-hot-toast";
 
 const JOBVIZ_DESCRIPTION =
   "Explore the full BLS hierarchy with the JobViz glass UI—glass cards, glowing breadcrumbs, and animated explore links keyed to real SOC data.";
@@ -72,7 +87,7 @@ const JobVizSearchResults = ({
   metaDescription,
   unitName,
   jobTitleAndSocCodePairs,
-  hasGpPlusMembership,
+  isGpPlusMember: isGpPlusMemberFromCookie,
 }) => {
   const router = useRouter();
   const modalContext = useContext(ModalContext);
@@ -84,33 +99,76 @@ const JobVizSearchResults = ({
   const [jobvizReturnPath, setJobvizReturnPath] =
     modalContext._jobvizReturnPath;
   const [, setJobvizSummaryModal] = modalContext._jobvizSummaryModal;
+  const { user, token, status, isGpPlusMember: gpPlusCookie } = useSiteSession();
+  const {
+    _isUserTeacher: [isUserTeacher],
+    _isGpPlusMember: [isGpPlusMember],
+  } = useUserContext();
+  const userId = user?.userId ?? null;
+  const isGpPlusCookieValue =
+    gpPlusCookie === true || gpPlusCookie === "true";
+  const hasGpPlusMembership =
+    status === "authenticated" &&
+    (isGpPlusMember || isGpPlusCookieValue || isGpPlusMemberFromCookie);
 
   const parsed = useMemo(
     () => parseJobvizPath(router.query?.["search-results"]),
     [router.query]
   );
 
-  const assignmentSocCodes = useMemo(() => {
-    const param = router.query?.[SOC_CODES_PARAM_NAME];
-    const value = Array.isArray(param) ? param.join(",") : param;
+  const tourIdParam =
+    typeof router.query?.tourId === "string" ? router.query.tourId : null;
+  const isCopyMode =
+    typeof router.query?.copy === "string" &&
+    ["1", "true", "copy"].includes(router.query.copy.toLowerCase());
+  const [activeTour, setActiveTour] = useState(null);
+  const [tourLoadState, setTourLoadState] = useState({
+    isLoading: false,
+    error: null,
+  });
+  const [showTourUpgradeModal, setShowTourUpgradeModal] = useState(false);
+  const socCodesParam = router.query?.[SOC_CODES_PARAM_NAME];
+  const hasSocCodesParam = Array.isArray(socCodesParam)
+    ? socCodesParam.some(Boolean)
+    : Boolean(socCodesParam);
 
-    if (!value) return null;
-
-    return new Set(value.split(",").filter(Boolean));
-  }, [router.query]);
+  useEffect(() => {
+    if (!tourIdParam) {
+      setActiveTour(null);
+      setTourLoadState({ isLoading: false, error: null });
+      return;
+    }
+    let isMounted = true;
+    setTourLoadState({ isLoading: true, error: null });
+    getJobTours({ filterObj: { _id: tourIdParam }, limit: 1 })
+      .then((tours) => {
+        if (!isMounted) return;
+        setActiveTour(tours?.[0] ?? null);
+        setTourLoadState({ isLoading: false, error: null });
+      })
+      .catch((error) => {
+        if (!isMounted) return;
+        setTourLoadState({
+          isLoading: false,
+          error:
+            error?.response?.data?.msg ||
+            error?.message ||
+            "Unable to load this tour.",
+        });
+      });
+    return () => {
+      isMounted = false;
+    };
+  }, [tourIdParam]);
 
   const preservedUnitName =
     unitName ?? (router.query?.[UNIT_NAME_PARAM_NAME]?.toString() || null);
 
-  const assignmentParams = useMemo(
-    () => ({
-      socCodes: assignmentSocCodes ?? undefined,
-      unitName: preservedUnitName,
-    }),
-    [assignmentSocCodes, preservedUnitName]
-  );
   const shouldRenderAssignment =
-    Boolean(preservedUnitName) || Boolean(jobTitleAndSocCodePairs?.length);
+    Boolean(preservedUnitName) ||
+    Boolean(jobTitleAndSocCodePairs?.length) ||
+    Boolean(activeTour?.selectedJobs?.length) ||
+    hasSocCodesParam;
   const rawEditParam = router.query?.edit;
   const wantsTeacherEditMode =
     typeof rawEditParam === "string" &&
@@ -127,6 +185,150 @@ const JobVizSearchResults = ({
   const isStudentMode = viewMode === "student";
   const isTeacherEditMode = viewMode === "teacher-edit";
   const lastReportParamRef = useRef(null);
+  const [selectedTourJobs, setSelectedTourJobs] = useState(new Set());
+  const [lastToggledSoc, setLastToggledSoc] = useState(null);
+  const [unitOptions, setUnitOptions] = useState([]);
+  const [isSavingTour, setIsSavingTour] = useState(false);
+  const [saveError, setSaveError] = useState(null);
+  const [lastSavedSnapshot, setLastSavedSnapshot] = useState(null);
+  const [tourForm, setTourForm] = useState({
+    heading: "",
+    whoCanSee: "me",
+    classSubject: "",
+    classSubjectCustom: "",
+    gradeLevel: "",
+    tags: "",
+    gpUnitsAssociated: [],
+    explanation: "",
+    assignment: DEFAULT_JOB_TOUR_ASSIGNMENT,
+  });
+
+  const assignmentSocCodes = useMemo(() => {
+    if (isTeacherEditMode && selectedTourJobs.size) {
+      return new Set(selectedTourJobs);
+    }
+    if (activeTour?.selectedJobs?.length) {
+      return new Set(activeTour.selectedJobs.filter(Boolean));
+    }
+    const param = router.query?.[SOC_CODES_PARAM_NAME];
+    const value = Array.isArray(param) ? param.join(",") : param;
+
+    if (!value) return null;
+
+    return new Set(value.split(",").filter(Boolean));
+  }, [activeTour, isTeacherEditMode, router.query, selectedTourJobs]);
+
+  const assignmentParams = useMemo(
+    () => ({
+      socCodes: assignmentSocCodes ?? undefined,
+      unitName: preservedUnitName,
+    }),
+    [assignmentSocCodes, preservedUnitName]
+  );
+
+  useEffect(() => {
+    if (!isTeacherEditMode) return;
+    const fallbackJobs = assignmentSocCodes
+      ? Array.from(assignmentSocCodes)
+      : [];
+    const nextJobs = activeTour?.selectedJobs?.length
+      ? activeTour.selectedJobs
+      : fallbackJobs;
+    setSelectedTourJobs(new Set(nextJobs));
+  }, [assignmentSocCodes, activeTour, isTeacherEditMode]);
+
+  useEffect(() => {
+    if (!isTeacherEditMode) return;
+    if (!activeTour) {
+      setTourForm((prev) => ({
+        ...prev,
+        heading:
+          prev.heading || preservedUnitName
+            ? prev.heading || `${preservedUnitName} JobViz Tour`
+            : prev.heading,
+        assignment: prev.assignment || DEFAULT_JOB_TOUR_ASSIGNMENT,
+      }));
+      return;
+    }
+    const isDefaultSubject = CLASS_SUBJECT_OPTIONS.includes(
+      activeTour.classSubject
+    );
+    setTourForm({
+      heading: activeTour.heading ?? "",
+      whoCanSee: activeTour.whoCanSee ?? "me",
+      classSubject: isDefaultSubject ? activeTour.classSubject : "Other",
+      classSubjectCustom: isDefaultSubject ? "" : activeTour.classSubject ?? "",
+      gradeLevel: activeTour.gradeLevel ?? "",
+      tags: (activeTour.tags ?? []).join(", "),
+      gpUnitsAssociated: activeTour.gpUnitsAssociated ?? [],
+      explanation: activeTour.explanation ?? "",
+      assignment: activeTour.assignment ?? DEFAULT_JOB_TOUR_ASSIGNMENT,
+    });
+    setLastSavedSnapshot({
+      heading: activeTour.heading ?? "",
+      whoCanSee: activeTour.whoCanSee ?? "me",
+      classSubject: CLASS_SUBJECT_OPTIONS.includes(activeTour.classSubject)
+        ? activeTour.classSubject
+        : activeTour.classSubject ?? "",
+      gradeLevel: activeTour.gradeLevel ?? "",
+      tags: (activeTour.tags ?? [])
+        .map((tag) => tag.trim())
+        .filter(Boolean),
+      gpUnitsAssociated: [...(activeTour.gpUnitsAssociated ?? [])].sort(),
+      explanation: activeTour.explanation ?? "",
+      assignment: activeTour.assignment ?? DEFAULT_JOB_TOUR_ASSIGNMENT,
+      selectedJobs: [...(activeTour.selectedJobs ?? [])].sort(),
+    });
+  }, [activeTour, isTeacherEditMode]);
+
+  useEffect(() => {
+    if (!isTeacherEditMode) return;
+    let isMounted = true;
+    const params = new URLSearchParams();
+    params.set(
+      "projectionsObj",
+      JSON.stringify({ Title: 1, numID: 1, locale: 1 })
+    );
+    fetch(`/api/get-units?${params.toString()}`)
+      .then((response) => response.json())
+      .then((payload) => {
+        if (!isMounted) return;
+        const units = Array.isArray(payload?.units) ? payload.units : [];
+        const options = units
+          .map((unit) => ({
+            id: `${unit.numID ?? unit._id ?? unit.Title}`,
+            title: unit.Title ?? "Untitled unit",
+          }))
+          .filter((unit) => unit.id && unit.title)
+          .sort((a, b) => a.title.localeCompare(b.title));
+        setUnitOptions(options);
+      })
+      .catch(() => {
+        if (!isMounted) return;
+        setUnitOptions([]);
+      });
+    return () => {
+      isMounted = false;
+    };
+  }, [isTeacherEditMode]);
+
+  const toggleTourJob = useCallback((socCode) => {
+    setSelectedTourJobs((prev) => {
+      const next = new Set(prev);
+      if (next.has(socCode)) {
+        next.delete(socCode);
+      } else {
+        next.add(socCode);
+      }
+      return next;
+    });
+    setLastToggledSoc(socCode);
+  }, []);
+
+  const isTourJobSelected = useCallback(
+    (socCode) => selectedTourJobs.has(socCode),
+    [selectedTourJobs]
+  );
 
   const chainNodes = useMemo(
     () => getChainFromIds(parsed.idPath),
@@ -155,7 +357,25 @@ const JobVizSearchResults = ({
     () => collectAssignmentAncestorIds(assignmentSocCodes ?? undefined),
     [assignmentSocCodes]
   );
-  const hasAssignmentList = Boolean(assignmentSocCodes?.size);
+  const resolvedSocCodesForBanner = isTeacherEditMode
+    ? selectedTourJobs
+    : assignmentSocCodes;
+  const resolvedJobTitleAndSocCodePairs = useMemo(() => {
+    const source = resolvedSocCodesForBanner
+      ? Array.from(resolvedSocCodesForBanner)
+      : [];
+    if (!source.length) {
+      return jobTitleAndSocCodePairs ?? null;
+    }
+    const pairs = source
+      .map((soc) => {
+        const job = jobVizData.find((item) => item.soc_code === soc);
+        return job ? [job.title, soc] : null;
+      })
+      .filter(Boolean);
+    return pairs.length ? pairs : jobTitleAndSocCodePairs ?? null;
+  }, [jobTitleAndSocCodePairs, resolvedSocCodesForBanner]);
+  const hasAssignmentList = Boolean(resolvedSocCodesForBanner?.size);
   const [showAssignmentOnly, setShowAssignmentOnly] = useState(
     () => isStudentMode && hasAssignmentList
   );
@@ -781,7 +1001,7 @@ const JobVizSearchResults = ({
   }, [activeViewingHeader, viewingHeaderData]);
 
   const assignmentJobCount =
-    jobTitleAndSocCodePairs?.length ?? assignmentSocCodes?.size ?? 0;
+    resolvedJobTitleAndSocCodePairs?.length ?? assignmentSocCodes?.size ?? 0;
   const baseHeroSubtitle =
     "A tool for grades 6 to adult to explore career possibilities!";
   const assignmentCountLabel = assignmentJobCount
@@ -879,230 +1099,484 @@ const JobVizSearchResults = ({
     keywords:
       "jobviz, job viz, career explorer, career exploration, career pathways, BLS jobs, career navigation",
     showNav: viewMode !== "student",
+    showFooter: viewMode !== "student",
     structuredData: datasetStructuredData,
   };
   const assignmentBannerOverrides = useMemo(() => {
-    if (viewMode !== "student") return null;
-    const unitLabel = preservedUnitName
-      ? `Jobs connected to the "${preservedUnitName}" lesson`
-      : "Jobs your teacher wants you to explore first";
+    const overrides = {};
+    if (activeTour?.heading) {
+      overrides.assignmentUnitLabelOverride = activeTour.heading;
+    }
+    if (activeTour?.assignment) {
+      overrides.assignmentCopyOverride = activeTour.assignment;
+    }
+    if (viewMode === "student" && !activeTour) {
+      const unitLabel = preservedUnitName
+        ? `Jobs connected to the "${preservedUnitName}" lesson`
+        : "Jobs your teacher wants you to explore first";
+      overrides.assignmentUnitLabelOverride = unitLabel;
+      overrides.assignmentCopyOverride =
+        "Explore each job, note how interested you are, and be ready to explain your rating using the data shown here.";
+    }
+    return Object.keys(overrides).length ? overrides : null;
+  }, [activeTour, preservedUnitName, viewMode]);
+
+  const isTourOwner =
+    Boolean(activeTour?._id) && Boolean(userId) && activeTour?.userId === userId;
+  const isTeacherLoggedIn = status === "authenticated" && isUserTeacher;
+  const shouldShowTourActions =
+    shouldRenderAssignment &&
+    !isTeacherEditMode &&
+    !tourLoadState.isLoading &&
+    (isTeacherLoggedIn || hasGpPlusMembership);
+  const tourActionLabel =
+    isTourOwner && hasGpPlusMembership ? "Edit tour" : "Copy and edit";
+
+  const buildEditUrl = useCallback(
+    ({ copy, tourIdOverride } = {}) => {
+      const params = new URLSearchParams();
+      if (assignmentSocCodes?.size) {
+        params.set(SOC_CODES_PARAM_NAME, Array.from(assignmentSocCodes).join(","));
+      }
+      if (preservedUnitName) {
+        params.set(UNIT_NAME_PARAM_NAME, preservedUnitName);
+      }
+      const resolvedTourId = tourIdOverride ?? activeTour?._id;
+      if (resolvedTourId) {
+        params.set("tourId", resolvedTourId);
+      }
+      params.set("edit", "1");
+      if (copy) {
+        params.set("copy", "1");
+      }
+      const queryString = params.toString();
+      return queryString ? `/jobviz?${queryString}` : "/jobviz?edit=1";
+    },
+    [activeTour, assignmentSocCodes, preservedUnitName]
+  );
+
+  const handleTourActionClick = () => {
+    if (!hasGpPlusMembership) {
+      setShowTourUpgradeModal(true);
+      return;
+    }
+    if (isTourOwner) {
+      router.push(buildEditUrl({ copy: false }));
+      return;
+    }
+    router.push(buildEditUrl({ copy: true }));
+  };
+
+  const assignmentHeaderActions = shouldShowTourActions ? (
+    <button
+      type="button"
+      className={styles.tourActionButton}
+      onClick={handleTourActionClick}
+    >
+      <img src="/plus/plus.png" alt="GP+" className={styles.tourActionIcon} />
+      {tourActionLabel}
+    </button>
+  ) : null;
+
+  const getVersionString = () => {
+    const now = new Date();
+    const month = String(now.getMonth() + 1).padStart(2, "0");
+    const day = String(now.getDate()).padStart(2, "0");
+    return `${DEFAULT_JOB_TOUR_VERSION_PREFIX}.${now.getFullYear()}${month}${day}`;
+  };
+
+  const resolvedClassSubject =
+    tourForm.classSubject === "Other"
+      ? tourForm.classSubjectCustom.trim()
+      : tourForm.classSubject.trim();
+
+  const selectedTourJobsArray = useMemo(
+    () => Array.from(selectedTourJobs),
+    [selectedTourJobs]
+  );
+
+  const validationErrors = useMemo(() => {
+    if (!isTeacherEditMode) return [];
+    const errors = [];
+    const isPublic = tourForm.whoCanSee === "everyone";
+    if (!tourForm.heading.trim()) {
+      errors.push("Title required");
+    }
+    if (selectedTourJobsArray.length === 0) {
+      errors.push("Add at least one job");
+    }
+    if (isPublic) {
+      if (!resolvedClassSubject) {
+        errors.push("Class subject required");
+      }
+      if (!tourForm.gradeLevel.trim()) {
+        errors.push("Grade level required");
+      }
+      if (!tourForm.assignment.trim()) {
+        errors.push("Assignment required");
+      }
+      if (!tourForm.explanation.trim()) {
+        errors.push("Context required");
+      }
+    }
+    return errors;
+  }, [
+    isTeacherEditMode,
+    resolvedClassSubject,
+    selectedTourJobsArray.length,
+    tourForm.assignment,
+    tourForm.explanation,
+    tourForm.gradeLevel,
+    tourForm.heading,
+    tourForm.whoCanSee,
+  ]);
+
+  const saveErrors = useMemo(
+    () => (saveError ? [...validationErrors, saveError] : validationErrors),
+    [saveError, validationErrors]
+  );
+
+  const buildSnapshot = useCallback(() => {
+    const normalizedSubject =
+      tourForm.classSubject === "Other"
+        ? tourForm.classSubjectCustom.trim()
+        : tourForm.classSubject.trim();
     return {
-      assignmentUnitLabelOverride: unitLabel,
-      assignmentCopyOverride:
-        "Explore each job, note how interested you are, and be ready to explain your rating using the data shown here.",
+      heading: tourForm.heading.trim(),
+      whoCanSee: tourForm.whoCanSee,
+      classSubject: normalizedSubject || "Other",
+      gradeLevel: tourForm.gradeLevel.trim() || "Middle school",
+      tags: tourForm.tags
+        .split(",")
+        .map((tag) => tag.trim())
+        .filter(Boolean),
+      gpUnitsAssociated: [...tourForm.gpUnitsAssociated].sort(),
+      explanation: tourForm.explanation.trim(),
+      assignment:
+        tourForm.assignment.trim() || DEFAULT_JOB_TOUR_ASSIGNMENT,
+      selectedJobs: Array.from(selectedTourJobs).sort(),
     };
-  }, [preservedUnitName, viewMode]);
+  }, [
+    selectedTourJobs,
+    tourForm.assignment,
+    tourForm.classSubject,
+    tourForm.classSubjectCustom,
+    tourForm.explanation,
+    tourForm.gradeLevel,
+    tourForm.gpUnitsAssociated,
+    tourForm.heading,
+    tourForm.tags,
+    tourForm.whoCanSee,
+  ]);
+
+  const hasUnsavedChanges = useMemo(() => {
+    if (!isTeacherEditMode) return false;
+    const snapshot = buildSnapshot();
+    if (!lastSavedSnapshot) return true;
+    return (
+      snapshot.heading !== lastSavedSnapshot.heading ||
+      snapshot.whoCanSee !== lastSavedSnapshot.whoCanSee ||
+      snapshot.classSubject !== lastSavedSnapshot.classSubject ||
+      snapshot.gradeLevel !== lastSavedSnapshot.gradeLevel ||
+      snapshot.explanation !== lastSavedSnapshot.explanation ||
+      snapshot.assignment !== lastSavedSnapshot.assignment ||
+      snapshot.tags.join("|") !== lastSavedSnapshot.tags.join("|") ||
+      snapshot.gpUnitsAssociated.join("|") !==
+        lastSavedSnapshot.gpUnitsAssociated.join("|") ||
+      snapshot.selectedJobs.join("|") !==
+        lastSavedSnapshot.selectedJobs.join("|")
+    );
+  }, [
+    buildSnapshot,
+    isTeacherEditMode,
+    lastSavedSnapshot,
+  ]);
+
+  const handleSaveTour = async () => {
+    if (!isTeacherEditMode) return;
+    setSaveError(null);
+    if (validationErrors.length) {
+      setSaveError("Please complete the required fields.");
+      return;
+    }
+    if (!token) {
+      setSaveError("Please sign in to save.");
+      return;
+    }
+    const snapshot = buildSnapshot();
+    const payload = {
+      ...snapshot,
+      gpUnitsAssociated: snapshot.gpUnitsAssociated,
+      selectedJobs: snapshot.selectedJobs,
+      version: getVersionString(),
+      publishedDate:
+        snapshot.whoCanSee === "everyone" ? new Date().toISOString() : null,
+    };
+    try {
+      setIsSavingTour(true);
+      if (activeTour?._id && !isCopyMode) {
+        await updateJobTour(activeTour._id, payload);
+        toast.success("Tour updated!");
+      } else {
+        const result = await createJobTour(payload, token);
+        toast.success("Tour saved!");
+        if (result?.jobTourId) {
+          router.replace(
+            buildEditUrl({ copy: false, tourIdOverride: result.jobTourId })
+          );
+        }
+      }
+      setLastSavedSnapshot(snapshot);
+    } catch (error) {
+      const message =
+        error?.response?.data?.msg || error?.message || "Unable to save tour.";
+      if (tourForm.whoCanSee === "everyone" && /explanation/i.test(message)) {
+        setSaveError(
+          'Classroom Context is required when visibility is "Everyone".'
+        );
+      } else {
+        setSaveError(message);
+      }
+    } finally {
+      setIsSavingTour(false);
+    }
+  };
+
+  const editorFields = isTeacherEditMode ? (
+    <JobTourEditorFields
+      value={tourForm}
+      unitOptions={unitOptions}
+      onChange={setTourForm}
+      onSave={handleSaveTour}
+      isSaving={isSavingTour}
+      isSaved={!hasUnsavedChanges}
+      validationErrors={saveErrors}
+      selectedJobsCount={selectedTourJobsArray.length}
+    />
+  ) : null;
 
   return (
-    <Layout {...layoutProps}>
-      {shouldRenderAssignment && (
-        <>
-          <AssignmentBanner
-            variant="mobile"
-            unitName={preservedUnitName}
-            jobs={jobTitleAndSocCodePairs}
-            assignmentParams={assignmentParams}
-            onJobClick={handleAssignmentJobClick}
-            {...(assignmentBannerOverrides ?? {})}
-          />
-          <div id="jobviz-mobile-modal-anchor" />
-        </>
-      )}
-      <div
-        className={styles.jobvizPageShell}
-        data-has-assignment={shouldRenderAssignment}
-      >
-        <div className={styles.jobvizMainColumn}>
-          <JobVizLayout
-            heroTitle={heroTitle}
-            heroSubtitle={heroSubtitle}
-            heroSlot={heroSlot}
-            heroEyebrow={heroEyebrow}
-            onStatAction={handleHeroStatAction}
-          >
-            {teacherEditDenied && (
-              <div className={styles.jobvizNotice} role="alert">
-                <strong>Looking for edit controls?</strong> GP+ members can turn on tour editing to build and save custom JobViz+ assignments. Sign in with a GP+ account or remove the <code>?edit=1</code> parameter to preview the student view.
-              </div>
-            )}
-            {isTeacherEditMode && !teacherEditDenied && (
-              <div className={styles.tourBuilderPlaceholder}>
-                <h3>Tour Builder preview</h3>
-                <p>
-                  This editing surface will soon let you rename the assignment, customize the hero copy, and click assignment dots to add jobs to your tour. We&apos;ll store these plans in GP+ so you can reuse or share them.
-                </p>
-                <p>
-                  In the meantime, explore the assignment flow below to see what your students experience.
-                </p>
-              </div>
-            )}
-            {showIntroHeading && (
-              <h2 className={styles.jobvizSectionHeading}>{sectionHeading}</h2>
-            )}
-            <h3 className={styles.jobvizSearchAppeal}>
-              Explore the true diversity of career opportunities.
-            </h3>
-
-            <JobVizSearch
+    <JobTourEditorProvider
+      isEditing={isTeacherEditMode}
+      selectedJobs={selectedTourJobs}
+      toggleJob={toggleTourJob}
+      isSelected={isTourJobSelected}
+      lastToggled={lastToggledSoc}
+    >
+      <Layout {...layoutProps}>
+        {shouldRenderAssignment && (
+          <>
+            <AssignmentBanner
+              variant="mobile"
+              unitName={preservedUnitName}
+              jobs={resolvedJobTitleAndSocCodePairs}
               assignmentParams={assignmentParams}
-              extraQueryParams={sortQueryParams}
+              onJobClick={handleAssignmentJobClick}
+              mode={isTeacherEditMode ? "tour-editor" : "assignment"}
+              headerActions={assignmentHeaderActions}
+              editorFields={editorFields}
+              {...(assignmentBannerOverrides ?? {})}
             />
-            <div id={JOBVIZ_BRACKET_SEARCH_ID} />
-            <div className={styles.jobvizContextZone}>
-              <div
-                className={styles.jobvizGridWrap}
-                id={JOBVIZ_CATEGORIES_ANCHOR_ID}
-              >
-                <div className={styles.pathHeader}>
-                  <div className={styles.gridContextLabel}>Current Path</div>
-                  {isShowingAssignmentScope ? (
-                    <div className={styles.assignedScopeMessage}>
-                      <LucideIcon name="Sparkles" />
-                      Showing assigned jobs across multiple categories
-                    </div>
-                  ) : (
-                    <JobVizBreadcrumb segments={breadcrumbs} />
-                  )}
+            <div id="jobviz-mobile-modal-anchor" />
+          </>
+        )}
+        <div
+          className={styles.jobvizPageShell}
+          data-has-assignment={shouldRenderAssignment}
+        >
+          <div className={styles.jobvizMainColumn}>
+            <JobVizLayout
+              heroTitle={heroTitle}
+              heroSubtitle={heroSubtitle}
+              heroSlot={heroSlot}
+              heroEyebrow={heroEyebrow}
+              onStatAction={handleHeroStatAction}
+            >
+              {tourLoadState.error && (
+                <div className={styles.jobvizNotice} role="alert">
+                  <strong>Tour unavailable:</strong> {tourLoadState.error}
                 </div>
-                <div className={styles.viewingHeader}>
-                  {outgoingViewingHeader && (
+              )}
+              {teacherEditDenied && (
+                <div className={styles.jobvizNotice} role="alert">
+                  <strong>Looking for edit controls?</strong> GP+ members can turn on tour editing to build and save custom JobViz+ assignments. Sign in with a GP+ account or remove the <code>?edit=1</code> parameter to preview the student view.
+                </div>
+              )}
+              {showIntroHeading && (
+                <h2 className={styles.jobvizSectionHeading}>{sectionHeading}</h2>
+              )}
+              <h3 className={styles.jobvizSearchAppeal}>
+                Explore the true diversity of career opportunities.
+              </h3>
+
+              <JobVizSearch
+                assignmentParams={assignmentParams}
+                extraQueryParams={sortQueryParams}
+              />
+              <div id={JOBVIZ_BRACKET_SEARCH_ID} />
+              <div className={styles.jobvizContextZone}>
+                <div
+                  className={styles.jobvizGridWrap}
+                  id={JOBVIZ_CATEGORIES_ANCHOR_ID}
+                >
+                  <div className={styles.pathHeader}>
+                    <div className={styles.gridContextLabel}>Current Path</div>
+                    {isShowingAssignmentScope ? (
+                      <div className={styles.assignedScopeMessage}>
+                        <LucideIcon name="Sparkles" />
+                        Showing assigned jobs across multiple categories
+                      </div>
+                    ) : (
+                      <JobVizBreadcrumb segments={breadcrumbs} />
+                    )}
+                  </div>
+                  <div className={styles.viewingHeader}>
+                    {outgoingViewingHeader && (
+                      <div
+                        className={`${styles.viewingHeaderLayer} ${styles.viewingHeaderLayerOutgoing}`}
+                        aria-hidden="true"
+                      >
+                        <div className={styles.viewingIdentity}>
+                          <span className={styles.viewingIcon}>
+                            <LucideIcon name={outgoingViewingHeader.iconName} />
+                          </span>
+                          <div>
+                            <h3 className={styles.viewingTitle}>
+                              {outgoingViewingHeader.title}
+                            </h3>
+                            <p className={styles.viewingMeta}>
+                              {outgoingViewingHeader.meta}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    )}
                     <div
-                      className={`${styles.viewingHeaderLayer} ${styles.viewingHeaderLayerOutgoing}`}
-                      aria-hidden="true"
+                      className={`${styles.viewingHeaderLayer} ${
+                        isViewingHeaderTransitioning
+                          ? styles.viewingHeaderLayerIncoming
+                          : ""
+                      }`}
                     >
                       <div className={styles.viewingIdentity}>
                         <span className={styles.viewingIcon}>
-                          <LucideIcon name={outgoingViewingHeader.iconName} />
+                          <LucideIcon name={activeViewingHeader.iconName} />
                         </span>
                         <div>
-                          <h3 className={styles.viewingTitle}>
-                            {outgoingViewingHeader.title}
+                          <h3
+                            id={JOBVIZ_HIERARCHY_HEADING_ID}
+                            className={styles.viewingTitle}
+                          >
+                            {activeViewingHeader.title}
                           </h3>
                           <p className={styles.viewingMeta}>
-                            {outgoingViewingHeader.meta}
+                            {activeViewingHeader.meta}
                           </p>
                         </div>
                       </div>
                     </div>
-                  )}
-                  <div
-                    className={`${styles.viewingHeaderLayer} ${
-                      isViewingHeaderTransitioning
-                        ? styles.viewingHeaderLayerIncoming
-                        : ""
-                    }`}
-                  >
-                    <div className={styles.viewingIdentity}>
-                      <span className={styles.viewingIcon}>
-                        <LucideIcon name={activeViewingHeader.iconName} />
-                      </span>
-                      <div>
-                        <h3
-                          id={JOBVIZ_HIERARCHY_HEADING_ID}
-                          className={styles.viewingTitle}
-                        >
-                          {activeViewingHeader.title}
-                        </h3>
-                        <p className={styles.viewingMeta}>
-                          {activeViewingHeader.meta}
-                        </p>
-                      </div>
-                    </div>
                   </div>
-                </div>
-                <div className={styles.gridFilterRow}>
-                  {hasAssignmentList && (
-                    <div className={styles.gridFilterActions}>
-                      <button
-                        type="button"
-                        className={`${styles.assignedToggleButton} ${
-                          isShowingAssignmentScope
-                            ? styles.assignedToggleButtonActive
-                            : ""
-                        }`}
-                        onClick={() => setShowAssignmentOnly((prev) => !prev)}
-                        aria-pressed={isShowingAssignmentScope}
-                      >
-                        <span
-                          className={styles.assignedToggleIndicator}
-                          aria-hidden="true"
-                        />
-                        Show only assigned jobs
-                      </button>
-                      {isStudentMode && !isShowingAssignmentScope && (
+                  <div className={styles.gridFilterRow}>
+                    {hasAssignmentList && (
+                      <div className={styles.gridFilterActions}>
                         <button
                           type="button"
-                          className={styles.assignmentReturnButton}
-                          onClick={() => setShowAssignmentOnly(true)}
+                          className={`${styles.assignedToggleButton} ${
+                            isShowingAssignmentScope
+                              ? styles.assignedToggleButtonActive
+                              : ""
+                          }`}
+                          onClick={() => setShowAssignmentOnly((prev) => !prev)}
+                          aria-pressed={isShowingAssignmentScope}
                         >
-                          Back to assignment
+                          <span
+                            className={styles.assignedToggleIndicator}
+                            aria-hidden="true"
+                          />
+                          Show only assigned jobs
                         </button>
-                      )}
-                    </div>
-                  )}
-                  <JobVizSortControl
-                    activeOptionId={sortOptionId}
-                    onChange={handleSortControlChange}
-                    options={JOBVIZ_SORT_OPTIONS}
+                        {isStudentMode && !isShowingAssignmentScope && (
+                          <button
+                            type="button"
+                            className={styles.assignmentReturnButton}
+                            onClick={() => setShowAssignmentOnly(true)}
+                          >
+                            Back to assignment
+                          </button>
+                        )}
+                      </div>
+                    )}
+                    <JobVizSortControl
+                      activeOptionId={sortOptionId}
+                      onChange={handleSortControlChange}
+                      options={JOBVIZ_SORT_OPTIONS}
+                    />
+                  </div>
+                  <JobVizGrid
+                    items={renderedGridItems}
+                    onItemClick={handleGridItemClick}
+                    navigationHint={navigationHint}
+                    onExitComplete={handleGridExitComplete}
                   />
                 </div>
-                <JobVizGrid
-                  items={renderedGridItems}
-                  onItemClick={handleGridItemClick}
-                  navigationHint={navigationHint}
-                  onExitComplete={handleGridExitComplete}
-                />
-              </div>
 
-              <p className={`${styles.jobvizSource} ${styles.jobvizSourceFixed}`}>
-                Data source:{" "}
-                <a href={JOBVIZ_DATA_SOURCE} target="_blank" rel="noreferrer">
-                  US Bureau of Labor Statistics
-                </a>
-                {activeNode?.BLS_link && (
-                  <>
-                    {"  "}•{" "}
-                    <a href={activeNode.BLS_link} target="_blank" rel="noreferrer">
-                      View on BLS
-                    </a>
-                  </>
-                )}
-              </p>
-              {showGpPlusUpsell && (
-                <div className={styles.jobvizUpsellCard}>
-                  <div>
-                    <p className={styles.jobvizUpsellEyebrow}>For Teachers</p>
-                    <h3>Want to connect this resource to your classroom?</h3>
-                    <p>
-                      Unlock curated JobViz+ career tours, assignment tools, and ready-to-use lesson
-                      integrations with a GP+ subscription.
-                    </p>
-                  </div>
-                  <a
-                    href="https://www.galacticpolymath.com/plus"
-                    target="_blank"
-                    rel="noreferrer"
-                    className={styles.jobvizUpsellButton}
-                  >
-                    Explore GP+
+                <p className={`${styles.jobvizSource} ${styles.jobvizSourceFixed}`}>
+                  Data source:{" "}
+                  <a href={JOBVIZ_DATA_SOURCE} target="_blank" rel="noreferrer">
+                    US Bureau of Labor Statistics
                   </a>
-                </div>
-              )}
-            </div>
-          </JobVizLayout>
+                  {activeNode?.BLS_link && (
+                    <>
+                      {"  "}•{" "}
+                      <a href={activeNode.BLS_link} target="_blank" rel="noreferrer">
+                        View on BLS
+                      </a>
+                    </>
+                  )}
+                </p>
+                {showGpPlusUpsell && (
+                  <div className={styles.jobvizUpsellCard}>
+                    <div>
+                      <p className={styles.jobvizUpsellEyebrow}>For Teachers</p>
+                      <h3>Want to connect this resource to your classroom?</h3>
+                      <p>
+                        Unlock curated JobViz+ career tours, assignment tools, and ready-to-use lesson
+                        integrations with a GP+ subscription.
+                      </p>
+                    </div>
+                    <a
+                      href="https://www.galacticpolymath.com/plus"
+                      target="_blank"
+                      rel="noreferrer"
+                      className={styles.jobvizUpsellButton}
+                    >
+                      Explore GP+
+                    </a>
+                  </div>
+                )}
+              </div>
+            </JobVizLayout>
+          </div>
+          {shouldRenderAssignment && (
+            <AssignmentBanner
+              variant="desktop"
+              unitName={preservedUnitName}
+              jobs={resolvedJobTitleAndSocCodePairs}
+              assignmentParams={assignmentParams}
+              onJobClick={handleAssignmentJobClick}
+              mode={isTeacherEditMode ? "tour-editor" : "assignment"}
+              headerActions={assignmentHeaderActions}
+              editorFields={editorFields}
+              {...(assignmentBannerOverrides ?? {})}
+            />
+          )}
         </div>
-        {shouldRenderAssignment && (
-          <AssignmentBanner
-            variant="desktop"
-            unitName={preservedUnitName}
-            jobs={jobTitleAndSocCodePairs}
-            assignmentParams={assignmentParams}
-            onJobClick={handleAssignmentJobClick}
-            {...(assignmentBannerOverrides ?? {})}
-          />
-        )}
-      </div>
-    </Layout>
+      </Layout>
+      <JobTourUpgradeModal
+        show={showTourUpgradeModal}
+        onClose={() => setShowTourUpgradeModal(false)}
+      />
+    </JobTourEditorProvider>
   );
 };
 
@@ -1117,21 +1591,11 @@ export const getServerSideProps = async ({ query, req, resolvedUrl }) => {
       ])
     : null;
   let metaDescription = null;
-  const sessionToken =
-    req.cookies["next-auth.session-token"] ||
-    req.cookies["__Secure-next-auth.session-token"] ||
-    null;
-  let hasGpPlusMembership = req?.cookies?.["isGpPlusMember"];
+  let isGpPlusMember = req?.cookies?.["isGpPlusMember"];
 
-  if (typeof hasGpPlusMembership === "string") {
-    hasGpPlusMembership = hasGpPlusMembership === "true";
-  } else if (!hasGpPlusMembership && sessionToken) {
-    hasGpPlusMembership = !!(await verifyJwt(sessionToken))?.payload
-      ?.hasGpPlusMembership;
+  if (typeof isGpPlusMember === "string") {
+    isGpPlusMember = isGpPlusMember === "true";
   }
-
-  const isAuthenticated = Boolean(sessionToken);
-  hasGpPlusMembership = Boolean(isAuthenticated && hasGpPlusMembership);
 
   const pathWithoutQuery = resolvedUrl.split("?")[0];
   const pathSegments = pathWithoutQuery.split("/").slice(2);
@@ -1152,7 +1616,7 @@ export const getServerSideProps = async ({ query, req, resolvedUrl }) => {
       metaDescription,
       unitName,
       jobTitleAndSocCodePairs,
-      hasGpPlusMembership,
+      isGpPlusMember,
     },
   };
 };

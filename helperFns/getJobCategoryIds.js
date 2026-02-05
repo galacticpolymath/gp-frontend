@@ -1,6 +1,6 @@
-/* eslint-disable semi */
  
-/* eslint-disable indent */
+ 
+ 
 
 export const getJobCategoryIds = (_jobCategoryIds, currentJobsCategoryId) => {
     let jobCategoryIds = [..._jobCategoryIds]

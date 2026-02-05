@@ -1,9 +1,9 @@
-/* eslint-disable react/jsx-curly-brace-presence */
-/* eslint-disable no-console */
-/* eslint-disable react/jsx-indent */
-/* eslint-disable quotes */
-/* eslint-disable react/jsx-indent-props */
-/* eslint-disable indent */
+ 
+ 
+ 
+ 
+ 
+ 
 import { useContext, useEffect } from "react";
 import CustomButton from '../../components/General/Button';
 import { Button, Modal } from "react-bootstrap";
@@ -217,6 +217,7 @@ const Notify = () => {
             show={notifyModal.isDisplayed}
             onHide={closeModal}
             aria-labelledby="example-modal-sizes-title-sm"
+            centered
         >
             <Modal.Header>
                 <Modal.Title

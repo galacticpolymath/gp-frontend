@@ -532,8 +532,6 @@ export default async function handler(
       throw new Error(errMsg);
     }
 
-    console.log("yo there refresh token: ", gdriveRefreshToken);
-    console.log("yo there refresh token, typeof: ", typeof gdriveRefreshToken);
 
     if (
       !gdriveRefreshToken ||
@@ -906,11 +904,6 @@ export default async function handler(
       const gdriveItemRetrievedRes = await getGDriveItem(
         targetUser.unitCopiesFolderId,
         gdriveAccessToken as string
-      );
-
-      console.log(
-        "gdriveItemRetrievedRes, sup there: ",
-        gdriveItemRetrievedRes
       );
 
       if (

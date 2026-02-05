@@ -57,6 +57,7 @@ Implement layouts via CSS grid + flex utilities; prefer container queries for co
 - **Unit detail:** Sidebar (md+) houses lesson navigation and supporting assets toggles. On xs-sm, convert sidebar into a top sticky segmented control. Keep download CTAs persistent but dimmed for non-GP+ users with inline explanations.
 - **JobViz explorer:** Left/center column shows hierarchy, right column (lg+) can host assignment or detail pane. On mobile, use modal overlays for job details; ensure modals are full-height with swipe-to-close gestures.
 - **Modals and drawers:** Always trap focus, supply top-right close button + bottom CTA, and use consistent padding (24px desktop, 16px mobile). Panel backgrounds adopt theme colors with 92-96% opacity so motion remains subtle.
+- **Section spacing:** Use `6.6vmax` for top and bottom padding on full-width marketing-style sections to mirror the Squarespace rhythm.
 
 ## Color & Theming
 | Token | Hex | Role | Light Mode | Dark Mode |

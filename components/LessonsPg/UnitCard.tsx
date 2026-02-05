@@ -1,5 +1,5 @@
-/* eslint-disable quotes */
-/* eslint-disable react/jsx-indent */
+ 
+ 
 
 import Image from "next/image";
 import Link from "next/link";

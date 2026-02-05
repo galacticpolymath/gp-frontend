@@ -1,6 +1,6 @@
-/* eslint-disable react/jsx-indent-props */
-/* eslint-disable react/jsx-indent */
-/* eslint-disable indent */
+ 
+ 
+ 
 
 import { useContext } from 'react';
 import { Modal } from 'react-bootstrap';

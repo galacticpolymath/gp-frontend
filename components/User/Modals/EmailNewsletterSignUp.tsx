@@ -138,6 +138,10 @@ const EmailNewsletterSignUp: React.FC = () => {
   const wasUserAddedToMailingListRef = useRef(false);
   const [isBtnSpinnerDisplayed, setIsBtnSpinnerDisplayed] = useState(false);
 
+  if (!isDisplayed) {
+    return null;
+  }
+
   const handleSendInviteBtnClick = async () => {
     try {
       setIsBtnSpinnerDisplayed(true);
@@ -234,7 +238,6 @@ const EmailNewsletterSignUp: React.FC = () => {
         token
       );
 
-      console.log("responseBody, bacon: ", responseBody);
 
       if (!responseBody?.wasSuccessful) {
         console.error(
@@ -291,6 +294,7 @@ const EmailNewsletterSignUp: React.FC = () => {
                 alt="Galactic Polymath Logo"
                 width={120}
                 height={120}
+                priority
                 className="img-fluid"
               />
             </div>

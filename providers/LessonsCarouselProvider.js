@@ -1,9 +1,9 @@
-/* eslint-disable quotes */
  
-/* eslint-disable semi */
  
-/* eslint-disable indent */
-/* eslint-disable react/jsx-indent */
+ 
+ 
+ 
+ 
 import { createContext, useState } from "react";
 
 export const LessonsCarouselContext = createContext(null);

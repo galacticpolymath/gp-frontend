@@ -295,7 +295,6 @@ const LessonItemsModal: React.FC = () => {
 
     return null;
   }, [currentIndex, isDisplayed])
-  console.log("itmeUrl, yo there: ", itemUrl);
   console.log("currentLessonItem: ", currentLessonItem);
   const isTeacherItem = currentLessonItemName ? currentLessonItemName.toLowerCase().includes('teacher') : false;
 
@@ -698,7 +697,16 @@ const LessonItemsModal: React.FC = () => {
               })
 
               return (
-                <CarouselItem backgroundColor={LESSON_ITEMS_MODAL_BG_COLOR}>
+                <CarouselItem
+                  key={
+                    item.gpGDriveItemId ??
+                    item.gdriveRoot ??
+                    item.externalUrl ??
+                    item.itemTitle ??
+                    index
+                  }
+                  backgroundColor={LESSON_ITEMS_MODAL_BG_COLOR}
+                >
                   <div className="position-relative h-100 w-100">
                     {!canShowTeacherItems && isTeacherItem && (
                       <div className="w-100 h-100 position-absolute d-flex justify-content-center align-items-center">

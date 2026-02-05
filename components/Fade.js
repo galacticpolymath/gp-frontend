@@ -1,5 +1,5 @@
-/* eslint-disable curly */
-/* eslint-disable quotes */
+ 
+ 
 import React, { useEffect, useState } from "react";
 
 // if the search input field is in view, then don't show the button 

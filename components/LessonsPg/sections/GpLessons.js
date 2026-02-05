@@ -1,9 +1,9 @@
-/* eslint-disable react/jsx-wrap-multilines */
  
-/* eslint-disable quotes */
-/* eslint-disable react/jsx-indent-props */
-/* eslint-disable react/jsx-indent */
-/* eslint-disable indent */
+ 
+ 
+ 
+ 
+ 
 import Image from 'next/image';
 import GpLessonSvg from '../../../assets/img/gp-lesson-icon.svg';
 import IndividualLesson from '../IndividualLesson';

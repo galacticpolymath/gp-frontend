@@ -1,4 +1,4 @@
-/* eslint-disable indent */
+ 
 import { CONTACT_SUPPORT_EMAIL } from '../../globalVars';
 
 export const createPasswordResetEmail = (recipientName, passwordResetUrl, imgOrigin) => {

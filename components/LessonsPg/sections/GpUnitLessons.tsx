@@ -1,4 +1,4 @@
-/* eslint-disable quotes */
+ 
 
 import Image from "next/image";
 import GpLessonSvg from "../../../assets/img/gp-lesson-icon.svg";

@@ -1,4 +1,4 @@
-/* eslint-disable quotes */
+ 
 
 import { TWebAppForUI } from "../../../backend/models/WebApp";
 

@@ -1,6 +1,6 @@
-/* eslint-disable no-console */
  
-/* eslint-disable quotes */
+ 
+ 
 import { NextApiRequest, NextApiResponse } from "next";
 import { CustomError } from "../../../backend/utils/errors";
 import { updateUser, updateUserCustom } from "../../../backend/services/userServices";

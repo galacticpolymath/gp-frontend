@@ -1,4 +1,4 @@
-/* eslint-disable quotes */
+ 
 
 import Image from "next/image";
 import UnitIconSvg from "../../assets/img/gp-unit-icon.svg";

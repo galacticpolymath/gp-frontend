@@ -61,6 +61,9 @@ const VALID_CLIENT_DOMAINS = new Set([
 const OUTSETA_WEBHOOK_PATHS = new Set([
   '/api/gp-plus/outseta/account-updated',
 ]);
+const PUBLIC_API_ROUTES = new Set([
+  '/api/job-tours/get',
+]);
 
 /** @param {import('next/server').NextRequest} request */
 export default async function proxy(request) {
@@ -285,6 +288,10 @@ export default async function proxy(request) {
     }
 
     if (isGettingJwtToken) {
+      return NextResponse.next();
+    }
+
+    if (nextUrl.pathname && PUBLIC_API_ROUTES.has(nextUrl.pathname)) {
       return NextResponse.next();
     }
 

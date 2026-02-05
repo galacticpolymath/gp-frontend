@@ -1,7 +1,7 @@
-/* eslint-disable quotes */
-/* eslint-disable react/jsx-indent */
-/* eslint-disable indent */
-/* eslint-disable react/jsx-indent-props */
+ 
+ 
+ 
+ 
 import { FcGoogle } from "react-icons/fc";
 import Button from "../General/Button";
 import { signIn } from "next-auth/react";

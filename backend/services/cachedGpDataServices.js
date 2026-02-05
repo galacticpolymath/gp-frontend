@@ -1,7 +1,7 @@
-/* eslint-disable semi */
-/* eslint-disable quotes */
-/* eslint-disable no-console */
-/* eslint-disable indent */
+ 
+ 
+ 
+ 
 import { nanoid } from "nanoid";
 import { createPaginationArr, getGpLessons, getGpVids, getShowableUnits } from "../../globalFns";
 import { getGpDataGetterFn, getIndividualLessonsNumForUnitObj } from "../helperFns/cachedGpDataFns";

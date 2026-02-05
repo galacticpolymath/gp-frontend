@@ -1,5 +1,5 @@
-/* eslint-disable quotes */
-/* eslint-disable no-console */
+ 
+ 
 import { useRouter } from "next/router";
 import LiNavDot from "./NavDots/LiNavDot";
 import { useState, useEffect } from "react";

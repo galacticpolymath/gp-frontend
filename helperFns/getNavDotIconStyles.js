@@ -1,5 +1,5 @@
-/* eslint-disable indent */
-/* eslint-disable no-multiple-empty-lines */
+ 
+ 
 
 
 export const getNavDotIconStyles = (isHighlighted, sectionId) => {

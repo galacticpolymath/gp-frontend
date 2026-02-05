@@ -1,5 +1,5 @@
-/* eslint-disable no-console */
-/* eslint-disable indent */
+ 
+ 
 import { PROJECTED_LESSONS_FIELDS } from '../../globalVars';
 import Lessons from '../models/lesson';
 import { connectToMongodb } from '../utils/connection';

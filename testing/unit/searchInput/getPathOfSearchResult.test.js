@@ -1,8 +1,8 @@
-/* eslint-disable indent */
-/* eslint-disable semi */
-/* eslint-disable no-undef */
-/* eslint-disable quotes */
-/* eslint-disable no-multiple-empty-lines */
+ 
+ 
+ 
+ 
+ 
 
 const {
   getPathsOfSearchResult,

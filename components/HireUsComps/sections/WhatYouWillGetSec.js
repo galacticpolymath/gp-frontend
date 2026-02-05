@@ -1,8 +1,8 @@
-/* eslint-disable semi */
  
-/* eslint-disable react/jsx-max-props-per-line */
  
-/* eslint-disable react/jsx-indent */
+ 
+ 
+ 
 import whatYouWillGetTxts from '../../../data/HireUsPg/whatYouWillGetTxts.json'
 import HireUsCardFirstSecMobile from '../HireUsCardFirstSecMobile'
 

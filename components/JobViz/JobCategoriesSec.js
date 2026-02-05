@@ -1,13 +1,13 @@
-/* eslint-disable react/jsx-indent-props */
+ 
 
-/* eslint-disable react/jsx-max-props-per-line */
+ 
 
-/* eslint-disable quotes */
-/* eslint-disable react/jsx-wrap-multilines */
-/* eslint-disable react/jsx-indent */
-/* eslint-disable indent */
-/* eslint-disable no-multiple-empty-lines */
-/* eslint-disable semi */
+ 
+ 
+ 
+ 
+ 
+ 
 import { Button } from "react-bootstrap";
 import { MdAccountTree } from "react-icons/md";
 import { useRouter } from "next/router";

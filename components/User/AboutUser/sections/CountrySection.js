@@ -1,7 +1,7 @@
-/* eslint-disable react/jsx-indent */
-/* eslint-disable quotes */
-/* eslint-disable react/jsx-indent-props */
-/* eslint-disable indent */
+ 
+ 
+ 
+ 
 import { useContext, useState } from "react";
 import Button from "../../../General/Button";
 import { UserContext } from "../../../../providers/UserProvider";

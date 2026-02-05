@@ -1,7 +1,7 @@
-/* eslint-disable react/jsx-indent-props */
-/* eslint-disable quotes */
-/* eslint-disable react/jsx-indent */
-/* eslint-disable indent */
+ 
+ 
+ 
+ 
  
 import VideoCard from "../VideoCard";
 import { useGetGpDataStates } from "../../../customHooks/useGetGpDataStates";

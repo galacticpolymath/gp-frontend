@@ -1,4 +1,8 @@
-import React, { createContext, PropsWithChildren, useContext, useState } from 'react';
+import React, { createContext, PropsWithChildren, useContext, useEffect, useRef, useState } from 'react';
+import cookies from 'js-cookie';
+import { useSession } from 'next-auth/react';
+import axios from 'axios';
+import { IUserSession } from '../types/global';
 import { TUseStateReturnVal } from '../types/global';
 import {
   TAboutUserForm,
@@ -85,6 +89,10 @@ export interface TAccountForm {
 export const UserContext = createContext<TUserProviderValue | null>(null);
 
 export const UserProvider: React.FC<PropsWithChildren> = ({ children }) => {
+  const { data, status } = useSession();
+  const sessionData = data as IUserSession | null;
+  const authToken = sessionData?.token ?? null;
+  const didAttemptGpPlusFetch = useRef(false);
   const [aboutUserForm, setAboutUserForm] = useState(userAccountDefault);
   const [isCopyUnitBtnDisabled, setIsCopyUnitBtnDisabled] = useState(true);
   const [accountForm, setAccountForm] = useState({
@@ -103,6 +111,42 @@ export const UserProvider: React.FC<PropsWithChildren> = ({ children }) => {
   ] = useState(false);
   const [isUserTeacher, setIsUserTeacher] = useState(false);
   const [isGpPlusMember, setIsGpPlusMember] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const cookieValue = cookies.get('isGpPlusMember');
+    const sessionValue = window.sessionStorage.getItem('isGpPlusUser');
+    const resolved =
+      cookieValue === 'true' || sessionValue === 'true' ? true : false;
+    if (resolved !== isGpPlusMember) {
+      setIsGpPlusMember(resolved);
+    }
+  }, [isGpPlusMember]);
+
+  useEffect(() => {
+    if (status !== 'authenticated') return;
+    if (!authToken) return;
+    if (didAttemptGpPlusFetch.current) return;
+    const cookieValue = cookies.get('isGpPlusMember');
+    const sessionValue = window.sessionStorage.getItem('isGpPlusUser');
+    if (cookieValue || sessionValue) return;
+    didAttemptGpPlusFetch.current = true;
+    axios
+      .get('/api/get-user-account-data', {
+        headers: { Authorization: `Bearer ${authToken}` },
+      })
+      .then((response) => {
+        const isGpPlus = response?.data?.isGpPlusMember;
+        if (typeof isGpPlus === 'boolean') {
+          window.sessionStorage.setItem('isGpPlusUser', String(isGpPlus));
+          cookies.set('isGpPlusMember', String(isGpPlus), { path: '/' });
+          setIsGpPlusMember(isGpPlus);
+        }
+      })
+      .catch(() => {
+        didAttemptGpPlusFetch.current = false;
+      });
+  }, [authToken, status]);
   const value: TUserProviderValue = {
     _aboutUserForm: [aboutUserForm, setAboutUserForm],
     _willShowGpPlusCopyLessonHelperModal: [

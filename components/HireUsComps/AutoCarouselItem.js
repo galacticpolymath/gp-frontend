@@ -1,22 +1,22 @@
-/* eslint-disable react/jsx-curly-brace-presence */
  
-/* eslint-disable no-multiple-empty-lines */
-/* eslint-disable prefer-template */
-/* eslint-disable react/jsx-wrap-multilines */
+ 
+ 
+ 
+ 
 /* eslint-disable react/no-unescaped-entities */
-/* eslint-disable react/jsx-closing-tag-location */
-/* eslint-disable quotes */
  
  
  
  
-/* eslint-disable semi */
  
  
  
  
-/* eslint-disable indent */
-/* eslint-disable react/jsx-indent */
+ 
+ 
+ 
+ 
+ 
 
 
 const AutoCarouselItem = ({ itemCarouselStylesCustom, index, feedbackSecClassNames, feedBackClassName, carouselItem, quoteInfo }) => {

@@ -1,6 +1,6 @@
-/* eslint-disable no-console */
-/* eslint-disable indent */
-/* eslint-disable quotes */
+ 
+ 
+ 
 import { getUserByEmail } from "../../backend/services/userServices";
 import { connectToMongodb } from "../../backend/utils/connection";
 import { CustomError } from "../../backend/utils/errors";

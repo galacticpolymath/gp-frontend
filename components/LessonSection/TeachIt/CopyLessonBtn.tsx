@@ -573,7 +573,6 @@ const CopyLessonBtn: React.FC<
 
             // TODO: get all of the file ids to copy the lesson again if the user clicks on the retry button
 
-            console.log('data, yo there: ', data);
             console.log('First document ID, data?.docs: ', data?.docs);
             const fileIds = data.docs.map((file) => file.id);
             const fileNames = data.docs.map((file) => file.name);
@@ -1146,7 +1145,6 @@ const CopyLessonBtn: React.FC<
                 return;
               }
 
-              console.log('data, yo there: ', data);
               console.log('First document ID, data?.docs: ', data?.docs);
 
               const fileIds = data.docs.map((file) => file.id);

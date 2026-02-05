@@ -1,6 +1,6 @@
-/* eslint-disable no-console */
  
-/* eslint-disable quotes */
+ 
+ 
 import axios from "axios";
 import { signIn } from "next-auth/react";
 import { ChangeEvent, useState } from "react";

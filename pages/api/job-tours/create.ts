@@ -1,4 +1,4 @@
-/* eslint-disable quotes */
+ 
 
 import { NextApiRequest, NextApiResponse } from 'next';
 import { connectToMongodb } from '../../../backend/utils/connection';
@@ -8,24 +8,15 @@ import { insertJobTour, TJobTourToInsert } from '../../../backend/services/jobTo
 import { verifyJwt } from '../../../nondependencyFns';
 import { getUser, getUserByEmail } from '../../../backend/services/userServices';
 
-const VALID_GP_USERS = process.env.GP_JOB_TOURS_USERS ? new Set(process.env.GP_JOB_TOURS_USERS.split(",")) : null;
+const VALID_GP_USERS = process.env.GP_JOB_TOURS_USERS
+    ? new Set(process.env.GP_JOB_TOURS_USERS.split(","))
+    : null;
+const GP_EMAIL_DOMAIN = "@galacticpolymath.com";
 
 export default async function handler(
     request: NextApiRequest,
     response: NextApiResponse
 ) {
-
-    if (!VALID_GP_USERS) {
-        return response.status(500).json({
-            msg: 'Valid GP job tour users are not set on the server. The environment variable `GP_JOB_TOURS_USERS` is missing or empty. Cannot create job tour.'
-        });
-    }
-
-    if (!VALID_GP_USERS?.size) {
-        return response.status(500).json({
-            msg: 'Valid GP job tour users are not set on the server. The array has a length of zero. Cannot create job tour.'
-        });
-    }
 
     try {
         if (
@@ -61,7 +52,30 @@ export default async function handler(
         const userEmail = jwtVerified.payload.email;
         const newJobTour: Omit<TJobTourToInsert, "userId"> = request?.body?.jobTour;
 
-        if (VALID_GP_USERS.has(userEmail)) {
+        const isGpEmail = userEmail.toLowerCase().endsWith(GP_EMAIL_DOMAIN);
+        const isAllowlisted = VALID_GP_USERS?.has(userEmail) ?? false;
+
+        if (!isGpEmail) {
+            if (!VALID_GP_USERS) {
+                return response.status(500).json({
+                    msg: 'Valid GP job tour users are not set on the server. The environment variable `GP_JOB_TOURS_USERS` is missing or empty. Cannot create job tour.'
+                });
+            }
+
+            if (!VALID_GP_USERS?.size) {
+                return response.status(500).json({
+                    msg: 'Valid GP job tour users are not set on the server. The array has a length of zero. Cannot create job tour.'
+                });
+            }
+
+            if (!isAllowlisted) {
+                return response.status(403).json({
+                    msg: 'Only GP team members can create JobViz tours.'
+                });
+            }
+        }
+
+        if (isGpEmail || isAllowlisted) {
             newJobTour.isGP = true;
         }
 
@@ -82,9 +96,17 @@ export default async function handler(
             throw new CustomError('No user found for the provided email address.', 404);
         }
 
+        const resolvedOwnerName = (() => {
+            const first = targetUser.firstName ?? "";
+            const last = targetUser.lastName ?? "";
+            const full = `${first} ${last}`.trim();
+            return full.length ? full : undefined;
+        })();
+
         const _newJobTour: TJobTourToInsert = {
             ...newJobTour,
-            userId: targetUser._id
+            userId: String(targetUser._id),
+            ownerName: resolvedOwnerName,
         }
         const { status, msg, _id } = await insertJobTour(_newJobTour);
 

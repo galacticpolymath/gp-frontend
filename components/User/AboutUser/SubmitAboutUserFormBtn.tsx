@@ -1,7 +1,7 @@
-/* eslint-disable no-console */
-/* eslint-disable quotes */
  
-/* eslint-disable indent */
+ 
+ 
+ 
 
 import React from "react";
 import { useUserContext } from "../../../providers/UserProvider";
@@ -124,7 +124,6 @@ const SubmitAboutUserFormBtn: React.FC<IProps> = ({
         errors.set("schoolType", "This field is required.");
       }
 
-      console.log("subjectsTaughtCustom, sup there: ", subjectsTaughtCustom);
 
       if (isTeacher && !gradesType) {
         errors.set(

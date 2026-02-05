@@ -1,6 +1,6 @@
-/* eslint-disable quotes */
  
-/* eslint-disable indent */
+ 
+ 
  
 import Modal from "react-bootstrap/Modal";
 import { GiCancel } from "react-icons/gi";

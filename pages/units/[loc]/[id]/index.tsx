@@ -445,7 +445,6 @@ const getSectionDotsDefaultVal = <T extends TSectionsForUI>(
   sectionComps: (T | null)[]
 ) =>
   sectionComps.map((section, index: number) => {
-    console.log('section, sup there: ', section);
     const _sectionTitle = `${index}. ${section && 'SectionTitle' in section ? section.SectionTitle : 'Overview'
       }`;
     const sectionId = _sectionTitle.replace(/[\s!]/gi, '_').toLowerCase();
@@ -468,7 +467,6 @@ const getLessonSections = <T extends TSectionsForUI>(
   sectionComps.map((section: TSectionsForUI | null, index: number) => {
     const sectionClassNameForTesting = 'section-testing';
 
-    console.log('section, sup there: ', section);
 
     return {
       ...section,
@@ -601,7 +599,6 @@ const LessonDetails: React.FC<IProps> = ({ lesson, unit }) => {
 
   useMemo(() => {
     if (unit?.Sections) {
-      console.log('unit.Sections: ', unit.Sections);
       const unitSections = Object.entries(unit.Sections).reduce(
         (
           sections: TSectionsForUI,
@@ -612,7 +609,6 @@ const LessonDetails: React.FC<IProps> = ({ lesson, unit }) => {
             object
           ];
 
-          console.log('sectionKey: ', sectionKey);
 
           if (
             SECTIONS_TO_FILTER_OUT.size &&
@@ -625,7 +621,6 @@ const LessonDetails: React.FC<IProps> = ({ lesson, unit }) => {
 
 
           if (updateSectionFn) {
-            console.log(`Will update '${sectionKey}' section.`);
 
             sectionVal = updateSectionFn(sectionVal, unit);
 
@@ -691,7 +686,6 @@ const LessonDetails: React.FC<IProps> = ({ lesson, unit }) => {
         localStorage.setItem('isWithinLessons', 'true');
       });
       lessonsContainer.addEventListener('mouseleave', (event) => {
-        console.log('left element');
         localStorage.setItem('isWithinLessons', 'false');
       });
     }
@@ -889,7 +883,6 @@ const LessonDetails: React.FC<IProps> = ({ lesson, unit }) => {
       any | null
     ][];
 
-    console.log('unitSectionAndTitlePairs: ', unitSectionAndTitlePairs);
 
     unitSectionAndTitlePairs.sort(([sectionAName], [sectionBName]) => {
       const sectionASortNum = SECTION_SORT_ORDER[sectionAName];
@@ -951,15 +944,12 @@ const LessonDetails: React.FC<IProps> = ({ lesson, unit }) => {
       window.innerWidth || 0
     );
 
-    console.log('viewPortWidth: ', viewPortWidth);
     const isNavElementClicked = NAV_CLASSNAMES_SET.has(
       (event.target as HTMLElement).className
     );
 
-    console.log('isNavElementClicked: ', isNavElementClicked);
 
     if (!isNavElementClicked && viewPortWidth <= 767) {
-      console.log('will make updates');
       setUnitSectionDots((sectionDots) => {
         const _sectionDots = {
           ...sectionDots,
@@ -1080,7 +1070,6 @@ const LessonDetails: React.FC<IProps> = ({ lesson, unit }) => {
             },
           };
 
-          console.log('paramsAndHeaders: ', paramsAndHeaders);
 
           const { status, data } = await axios.get<TUserSchemaForClient>(
             '/api/get-user-account-data',
@@ -1093,7 +1082,6 @@ const LessonDetails: React.FC<IProps> = ({ lesson, unit }) => {
             );
           }
 
-          console.log('data, from server: ', data);
 
           setIsUserTeacher(!!data?.isTeacher);
           setIsGpPlusMember(!!data?.isGpPlusMember);
@@ -1162,7 +1150,6 @@ const LessonDetails: React.FC<IProps> = ({ lesson, unit }) => {
   }, []);
 
   useEffect(() => {
-    console.log('_unitSections: ', _unitSections);
   });
 
   if (!unit && !lesson && typeof window === 'undefined') {
@@ -1387,12 +1374,6 @@ export const getStaticProps = async (arg: {
         throw new Error('Unit is not found.');
       }
 
-      console.log(
-        'Will get the child items of the target unit in google drive'
-      );
-
-      console.log('targetUnit.GdrivePublicID: ', targetUnit.GdrivePublicID);
-
       const unitGDriveChildItemsAll = (
         await getUnitGDriveChildItems(targetUnit.GdrivePublicID!)
       );
@@ -1485,7 +1466,6 @@ export const getStaticProps = async (arg: {
           ?.length &&
         resources?.length
       ) {
-        console.log('unitGDriveChildItems, second: ', unitGDriveChildItems);
 
         const resourcesForUIPromises = resources.map(async (resource) => {
           if (resource?.lessons?.length) {
@@ -1573,12 +1553,6 @@ export const getStaticProps = async (arg: {
                     lesson.title &&
                     lessonName.toLowerCase() === lessonTitle
                   ) {
-                    console.log('lesson, hi there: ', lesson.title);
-                    console.log(
-                      'lessonsFolder found, sup there: ',
-                      unitGDriveChildItem.name
-                    );
-
                     const targetUnitGDriveChildItem =
                       unitGDriveChildItems.find((item) => {
                         if (lessonTitle === 'assessments') {
@@ -1590,11 +1564,6 @@ export const getStaticProps = async (arg: {
                           item.id === unitGDriveChildItem.parentFolderId
                         );
                       }) ?? {};
-
-                    console.log(
-                      'targetUnitGDriveChildItem, sup there: ',
-                      targetUnitGDriveChildItem
-                    );
 
                     const { name, id } = targetUnitGDriveChildItem;
                     lessonsFolder =
@@ -1621,13 +1590,11 @@ export const getStaticProps = async (arg: {
                     );
                   })
                   ?.map((itemA) => {
-                    console.log('item, sup there: ', itemA);
 
                     const lessonsFolder = unitGDriveChildItems.find((itemB) => {
                       return itemB.id === itemA.parentFolderId;
                     });
 
-                    console.log('lessonsFolder, python: ', lessonsFolder);
 
                     // if lessonsFolder.pathFile === '', then the item is located at the root of the google drive folder
                     const parentFolder = lessonsFolder
@@ -1644,11 +1611,6 @@ export const getStaticProps = async (arg: {
                     };
                   });
 
-              console.log(
-                'targetGDriveLessonFolder: ',
-                targetGDriveSharedLessonFolders
-              );
-
               if (targetGDriveSharedLessonFolders?.length) {
                 lesson = {
                   ...lesson,
@@ -1658,7 +1620,6 @@ export const getStaticProps = async (arg: {
                 };
               }
 
-              console.log('lesson status: ', lesson.status);
 
               if (!lesson.tile && lesson.status === 'Upcoming') {
                 lesson = {
@@ -1796,7 +1757,6 @@ export const getStaticProps = async (arg: {
               }
             }
 
-            console.log(`section ${sectionKey} after updates: `, section);
 
             delete section.rootFieldsToRetrieveForUI;
 
@@ -1838,11 +1798,6 @@ export const getStaticProps = async (arg: {
 
       targetUnitForUI.Sections = sectionsUpdated;
     }
-
-    console.log(
-      'Only the target unit is available. Sections: ',
-      targetUnitForUI
-    );
 
     if (targetUnitForUI) {
       return {

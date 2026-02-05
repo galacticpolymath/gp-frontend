@@ -1,16 +1,16 @@
-/* eslint-disable react/jsx-indent-props */
- 
-/* eslint-disable react/jsx-tag-spacing */
- 
-/* eslint-disable no-multiple-empty-lines */
- 
-/* eslint-disable semi */
  
  
  
  
-/* eslint-disable indent */
-/* eslint-disable react/jsx-indent */
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
 import tiers from '../../../data/HireUsPg/tiers.json'
 import Tier from './Tier';
 

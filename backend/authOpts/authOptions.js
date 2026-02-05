@@ -1,6 +1,6 @@
-/* eslint-disable quotes */
+ 
 
-/* eslint-disable no-console */
+ 
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import getCanUserWriteToDb from "../services/dbAuthService";
@@ -29,7 +29,7 @@ import NodeCache from "node-cache";
 import { addUserToEmailList } from "../services/emailServices";
 import User from "../models/User/index";
 import { getGpPlusMembership } from "../services/outsetaServices";
-import { HAS_MEMBERSHIP_STATUSES } from "../../pages/api/get-user-account-data";
+import { isActiveGpPlusMembership } from "../services/outsetaServices";
 
 const VALID_FORMS = ["createAccount", "login"];
 export const cache = new NodeCache({ stdTTL: 60 * 60 * 3 });
@@ -374,12 +374,12 @@ export const authOptions = {
         }
 
         const canUserWriteToDb = await getCanUserWriteToDb(email);
-        const gpPlusMembership = await getGpPlusMembership(
-          targetUser.outsetaAccountEmail
-        );
-        const hasGpPlusMembership = HAS_MEMBERSHIP_STATUSES.has(
-          gpPlusMembership.AccountStageLabel
-        );
+        const gpPlusLookupEmail =
+          targetUser.outsetaAccountEmail || targetUser.email || email;
+        const gpPlusMembership = gpPlusLookupEmail
+          ? await getGpPlusMembership(gpPlusLookupEmail)
+          : { AccountStageLabel: "NonMember" };
+        const hasGpPlusMembership = isActiveGpPlusMembership(gpPlusMembership);
 
         console.log("hasGpPlusMembership: ", hasGpPlusMembership);
 

@@ -1,7 +1,7 @@
-/* eslint-disable indent */
  
-/* eslint-disable semi */
-/* eslint-disable quotes */
+ 
+ 
+ 
  
 import { useEffect, useState } from "react";
 import { useInViewport } from 'react-in-viewport';
