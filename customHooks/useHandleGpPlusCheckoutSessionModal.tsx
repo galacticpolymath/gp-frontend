@@ -210,7 +210,6 @@ export const useHandleGpPlusCheckoutSessionModal = () => {
           ? (emailInput as HTMLInputElement).value
           : '';
 
-        console.log('outsetaEmail, sup there: ', outsetaEmail);
 
         if (!outsetaEmail) {
           setNotifyModal({

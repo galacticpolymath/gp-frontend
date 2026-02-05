@@ -445,7 +445,6 @@ const getSectionDotsDefaultVal = <T extends TSectionsForUI>(
   sectionComps: (T | null)[]
 ) =>
   sectionComps.map((section, index: number) => {
-    console.log('section, sup there: ', section);
     const _sectionTitle = `${index}. ${section && 'SectionTitle' in section ? section.SectionTitle : 'Overview'
       }`;
     const sectionId = _sectionTitle.replace(/[\s!]/gi, '_').toLowerCase();
@@ -468,7 +467,6 @@ const getLessonSections = <T extends TSectionsForUI>(
   sectionComps.map((section: TSectionsForUI | null, index: number) => {
     const sectionClassNameForTesting = 'section-testing';
 
-    console.log('section, sup there: ', section);
 
     return {
       ...section,
@@ -1573,12 +1571,6 @@ export const getStaticProps = async (arg: {
                     lesson.title &&
                     lessonName.toLowerCase() === lessonTitle
                   ) {
-                    console.log('lesson, hi there: ', lesson.title);
-                    console.log(
-                      'lessonsFolder found, sup there: ',
-                      unitGDriveChildItem.name
-                    );
-
                     const targetUnitGDriveChildItem =
                       unitGDriveChildItems.find((item) => {
                         if (lessonTitle === 'assessments') {
@@ -1590,11 +1582,6 @@ export const getStaticProps = async (arg: {
                           item.id === unitGDriveChildItem.parentFolderId
                         );
                       }) ?? {};
-
-                    console.log(
-                      'targetUnitGDriveChildItem, sup there: ',
-                      targetUnitGDriveChildItem
-                    );
 
                     const { name, id } = targetUnitGDriveChildItem;
                     lessonsFolder =
@@ -1621,7 +1608,6 @@ export const getStaticProps = async (arg: {
                     );
                   })
                   ?.map((itemA) => {
-                    console.log('item, sup there: ', itemA);
 
                     const lessonsFolder = unitGDriveChildItems.find((itemB) => {
                       return itemB.id === itemA.parentFolderId;

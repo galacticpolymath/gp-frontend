@@ -251,11 +251,6 @@ const TeachItUI = <
       console.log('Fetching lesson parts...');
 
 
-      console.log(
-        "gpGoogleDriveItemIdsOfLessonsRef.current, sup there: ",
-        gpGoogleDriveItemIdsOfLessons
-      );
-
       if (
         status === "authenticated" &&
         isGpPlusMember &&
@@ -300,7 +295,6 @@ const TeachItUI = <
                       return "gpGDriveItemId" in item && item.gpGDriveItemId === userGDriveItemIdOfLessonFolder.originalLessonItemIdInGpGoogleDrive;
                     });
 
-                    console.log("targetItem, yo there: ", targetItem);
 
                     return (targetItem ? {
                       ...item,
@@ -329,7 +323,6 @@ const TeachItUI = <
                 };
               });
 
-              console.log("_parts, yo there meng: ", _parts);
 
 
               return _parts

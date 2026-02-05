@@ -36,7 +36,6 @@ const GpSignUpResult: React.FC = () => {
 
   useEffect(() => {
     const observer = new MutationObserver((element) => {
-      console.log("element, yo there: ", element[0]);
 
       const outsetaModal = document.querySelector(".o--App--authWidget");
 

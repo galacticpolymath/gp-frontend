@@ -124,7 +124,6 @@ const SubmitAboutUserFormBtn: React.FC<IProps> = ({
         errors.set("schoolType", "This field is required.");
       }
 
-      console.log("subjectsTaughtCustom, sup there: ", subjectsTaughtCustom);
 
       if (isTeacher && !gradesType) {
         errors.set(

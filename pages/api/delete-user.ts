@@ -102,7 +102,6 @@ export default async function handler(
       let didDeleteAccount = false;
       let didDeletePerson = false;
 
-      console.log("gpPlusMembership, sup there: ", gpPlusMembership);
 
       if (gpPlusMembership.Uid) {
         didDeleteAccount = (await deleteAccount(gpPlusMembership.Uid)).wasSuccessful;        

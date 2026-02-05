@@ -131,7 +131,6 @@ const GoogleDriveAuthResult = () => {
         path: "/",
       });
 
-      console.log("COOKIES, sup there: ", Object.entries(cookies));
 
       if (gpPlusFeatureLocation) {
         setWillRedirectUser(true);

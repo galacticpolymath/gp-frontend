@@ -60,7 +60,6 @@ export default async function handler(request: NextApiRequest, response: NextApi
       willSendEmailListingSubConfirmationEmail,
     } = request.body as IUpdatedUserReqBody;
 
-    console.log("updatedUser, sup there: ", updatedUser);
 
     const { wasSuccessful: wasConnectionSuccessful } = await connectToMongodb(
       15_000,

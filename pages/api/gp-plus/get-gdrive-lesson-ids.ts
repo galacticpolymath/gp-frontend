@@ -113,7 +113,6 @@ const getUserLessonDriveFolders = async (lessonDriveIds: ILessonGDriveId[], grad
         clientOrigin
       );
 
-      console.log('gdriveItem, sup there: ', gdriveItem);
 
       if (
         !('id' in gdriveItem && gdriveItem.id && !gdriveItem.labels.trashed)

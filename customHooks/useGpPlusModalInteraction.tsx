@@ -17,7 +17,6 @@ export const useGpPlusModalInteraction = (
   const mutationOberserverRef = useRef<MutationObserver | null>(null);
 
   const handleOnClickPlanChangeLogic = (event: MouseEvent) => {
-    console.log('Event, sup there: ', event.target);
 
     const _target = event.target as HTMLElement;
 

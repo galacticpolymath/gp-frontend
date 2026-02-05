@@ -116,7 +116,6 @@ export const getAboutUserFormForClient = (
     };
   }
 
-  console.log("institution, sup there: ", institution);
 
   if (institution || institution == null) {
     userAccountForClient = {
@@ -442,7 +441,6 @@ export const useGetAboutUserForm = (
             };
           }
 
-          console.log("institution, sup there: ", institution);
 
           if (institution || institution == null) {
             userAccountForClient = {

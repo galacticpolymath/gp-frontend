@@ -295,7 +295,6 @@ const LessonItemsModal: React.FC = () => {
 
     return null;
   }, [currentIndex, isDisplayed])
-  console.log("itmeUrl, yo there: ", itemUrl);
   console.log("currentLessonItem: ", currentLessonItem);
   const isTeacherItem = currentLessonItemName ? currentLessonItemName.toLowerCase().includes('teacher') : false;
 

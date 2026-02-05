@@ -356,7 +356,6 @@ const AccountPg: React.FC = () => {
       (gpPlusSub?.AccountStageLabel === "Subscribing" ||
         gpPlusSub?.AccountStageLabel === "Cancelling")
     ) {
-      console.log("hi there will click the gp plus button...");
       setWasGpPlusBtnClicked(true);
 
       setTimeout(() => {

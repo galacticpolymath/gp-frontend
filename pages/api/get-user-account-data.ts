@@ -83,7 +83,6 @@ export default async function handler(
     }
 
     const jwtVerified = await verifyJwt(authSplit[1]);
-    console.log("bacon sauce, jwtVerified: ", jwtVerified);
     const { payload } = jwtVerified;
     const { email, userId } = payload;
     const { wasSuccessful } = await connectToMongodb(15_000, 0, true);

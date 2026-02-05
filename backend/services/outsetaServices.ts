@@ -191,7 +191,6 @@ export const getGpPlusMembership = async (
         'Content-Type': 'application/json',
       },
     });
-    console.log('data, bacon: ', data);
 
     const currentSubscription = data.items?.[0];
 

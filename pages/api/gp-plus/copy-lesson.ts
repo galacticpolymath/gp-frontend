@@ -341,7 +341,6 @@ export default async function handler(
 
     console.log("Will check if the target unit and lesson exist...");
 
-    console.log("gpPlusFolderId, hi there: ", gpPlusFolderId);
 
     console.log(
       `unitGDriveLessonsObjs?.length: ${unitGDriveLessonsObjs?.length}`
@@ -655,11 +654,6 @@ export default async function handler(
         );
 
         console.log("unitFolderChildItems: ", unitFolderChildItems);
-        console.log(
-          "targetLessonsFolderInUserDrive, yo there: ",
-          targetLessonsFolderInUserDrive
-        );
-
         if (
           targetLessonsFolderInUserDrive &&
           targetLessonsFolderInUserDrive.id &&
@@ -1140,10 +1134,6 @@ export default async function handler(
       gDriveRefreshToken,
       clientOrigin
     );
-    console.log(
-      "targetFolderStructureArrInUserDrive, yo there: ",
-      targetFolderStructureArrInUserDrive
-    );
     const targetLessonFolderInUserDrive =
       targetFolderStructureArrInUserDrive.find((folder) => {
         return (
@@ -1152,11 +1142,6 @@ export default async function handler(
           folder.originalFileId === reqQueryParams.lessonSharedGDriveFolderId
         );
       });
-
-    console.log(
-      "targetLessonFolderInUserDrive, hey there: ",
-      targetLessonFolderInUserDrive
-    );
 
     if (!targetLessonFolderInUserDrive?.id || !targetLessonFolderInUserDrive) {
       throw new CustomError(
@@ -1241,10 +1226,6 @@ export default async function handler(
       );
     }
 
-    console.log(
-      "targetFolderStructureArrInUserDrive, yo there: ",
-      targetFolderStructureArrInUserDrive
-    );
     // get the parent folder id of the files to copy
     const parentFolderIdInSharedGDrive = (
       await drive.files.get({
@@ -1263,8 +1244,6 @@ export default async function handler(
     console.log("Will share the parent folder with the target user.");
 
     const result = await shareFileWithUser(parentFolderIdInSharedGDrive, email);
-
-    console.log("share result, sup: ", result);
 
     // throw new Error("python, yo");
 

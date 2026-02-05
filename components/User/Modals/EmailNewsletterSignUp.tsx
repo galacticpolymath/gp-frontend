@@ -238,7 +238,6 @@ const EmailNewsletterSignUp: React.FC = () => {
         token
       );
 
-      console.log("responseBody, bacon: ", responseBody);
 
       if (!responseBody?.wasSuccessful) {
         console.error(
