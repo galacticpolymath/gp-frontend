@@ -2623,8 +2623,9 @@ details:not([open]) .filterSummary::after {
 }
 
 .resourceSideMeta {
-  display: grid;
-  gap: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
   font-size: 13px;
   font-weight: 600;
   color: #363636;
@@ -2637,6 +2638,7 @@ details:not([open]) .filterSummary::after {
   display: inline-flex;
   align-items: center;
   gap: 8px;
+  white-space: nowrap;
 }
 
 .resourceSideMeta svg {
@@ -3188,38 +3190,17 @@ details:not([open]) .filterSummary::after {
   }
 }
 
-@media (max-width: 900px) {
-  .jobTourRow {
-    grid-template-columns: 1fr;
-  }
-
-  .jobTourRowActions {
-    justify-content: flex-start;
-    padding: 12px 16px;
-  }
-}
-
 .jobTourCard {
-  background: linear-gradient(135deg, rgba(44, 131, 195, 0.08), rgba(255, 61, 172, 0.08));
-  border: 1px solid rgba(44, 131, 195, 0.2);
-  position: relative;
-  overflow: hidden;
+  border-color: rgba(44, 131, 195, 0.35);
 }
 
-.jobTourCard::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(circle at top right, rgba(108, 45, 130, 0.2), transparent 55%);
-  pointer-events: none;
+.jobTourCard .resourceSide {
+  background: rgba(44, 131, 195, 0.05);
 }
 
-.jobTourCardHeader {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+.jobTourCard .resourceTypePill {
+  background: rgba(108, 45, 130, 0.12);
+  color: #6c2d82;
 }
 
 .jobTourBadgeRow {
@@ -3265,103 +3246,39 @@ details:not([open]) .filterSummary::after {
   text-decoration: none;
 }
 
-.jobTourCardDescription {
-  position: relative;
-  z-index: 1;
-  margin-top: 12px;
-  color: #363636;
-}
-
-.jobTourCardMeta {
-  position: relative;
-  z-index: 1;
+.jobTourJobs {
   display: flex;
-  gap: 12px;
+  gap: 6px;
   flex-wrap: wrap;
-  font-size: 13px;
-  color: #4f4f4f;
-  margin-top: 16px;
+  margin-top: 6px;
 }
 
-.jobTourTags {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  margin-top: 12px;
-}
-
-.jobTourTags span {
+.jobTourAuthorLine {
+  margin: 0;
   font-size: 12px;
-  padding: 4px 10px;
-  border-radius: 999px;
-  background: rgba(104, 18, 209, 0.12);
-  color: #6812d1;
-}
-
-.jobTourCardAction {
-  position: relative;
-  z-index: 1;
-  margin-top: 18px;
   font-weight: 600;
   color: #2c83c3;
   text-transform: uppercase;
-  font-size: 12px;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
+}
+
+.jobTourJobs span {
+  font-size: 11px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: rgba(108, 45, 130, 0.12);
+  color: #6c2d82;
 }
 
 .jobTourRow {
-  background: rgba(240, 244, 255, 0.75);
-  border: 1px solid rgba(44, 131, 195, 0.12);
-  grid-template-columns: 140px minmax(0, 1fr) 140px;
-}
-
-.jobTourRowMedia {
-  position: relative;
-}
-
-.jobTourRowMedia img {
-  border-radius: 12px;
-}
-
-.jobTourRowBadge {
-  position: absolute;
-  left: 12px;
-  bottom: 12px;
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  background: rgba(255, 255, 255, 0.9);
-  padding: 4px 10px;
-  border-radius: 999px;
-  color: #1826bc;
-}
-
-.jobTourRowContent {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+  background: rgba(244, 246, 255, 0.85);
+  border-color: rgba(44, 131, 195, 0.35);
 }
 
 .jobTourRowTitleLine {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-}
-
-.jobTourRowDescription {
-  color: #363636;
-  margin: 0;
-}
-
-.jobTourRowMeta {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-  font-size: 13px;
-  color: #4f4f4f;
+  gap: 4px;
 }
 
 .jobTourGpInline {
@@ -3371,21 +3288,23 @@ details:not([open]) .filterSummary::after {
   vertical-align: middle;
 }
 
-.jobTourRowActions {
-  display: flex;
+.jobTourRowMetaLine {
+  font-size: 11px;
+  color: #4f4f4f;
+  display: inline-flex;
   align-items: center;
-  justify-content: flex-end;
-  font-size: 12px;
-  font-weight: 600;
-  color: #2c83c3;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
+  gap: 6px;
+  flex-wrap: wrap;
 }
 
-.jobTourRowAction {
-  background: rgba(44, 131, 195, 0.12);
-  padding: 6px 12px;
-  border-radius: 999px;
+.jobTourRowJobsLine {
+  font-size: 11px;
+  color: #5b5f6f;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .jobvizToursSection {

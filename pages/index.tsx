@@ -23,6 +23,7 @@ import {
   ListFilter,
   NotebookPen,
   PartyPopper,
+  Rocket,
   School,
   Search,
   SquareCheckBig,
@@ -56,6 +57,7 @@ import type { JobTourRecord } from "../components/JobViz/JobTours/jobTourTypes";
 import {
   DEFAULT_JOB_TOUR_ASSIGNMENT,
 } from "../components/JobViz/JobTours/jobTourConstants";
+import { getDisplayTitle, getNodeBySocCode } from "../components/JobViz/jobvizUtils";
 
 interface PreviewUnit {
   id: string;
@@ -176,6 +178,19 @@ const buildJobTourUrl = (resource: PreviewResource) => {
     return `/jobviz?${params.toString()}`;
   }
   return "/jobviz";
+};
+
+const getJobTitleFromSocCode = (socCode: string) => {
+  const node = getNodeBySocCode(socCode);
+  return node ? getDisplayTitle(node) : socCode;
+};
+
+const getJobTitlesForTour = (socCodes?: string[] | null, limit = 6) => {
+  if (!socCodes?.length) return [];
+  return socCodes
+    .map((socCode) => getJobTitleFromSocCode(socCode))
+    .filter(Boolean)
+    .slice(0, limit);
 };
 
 interface PreviewResource {
@@ -1178,7 +1193,7 @@ export default function HomePage({
         return {
           id: `job-tour-unit-${unit.id}`,
           title: tourTitle,
-          description: unit.subtitle || "Curated jobs linked to this unit.",
+          description: `From ${unit.title}`,
           type: "Job Tour" as const,
           image: unit.bannerUrl || "/imgs/jobViz/jobviz_icon.png",
           subject: unit.targetSubject || unit.subject,
@@ -2661,23 +2676,36 @@ export default function HomePage({
                         const hasSubtitle = Boolean(resource.description?.trim());
                         const isUnit = resource.type === "Unit";
                         if (resource.type === "Job Tour") {
+                          const jobTitles = getJobTitlesForTour(resource.selectedJobs);
+                          const jobTitlesLine = jobTitles.length
+                            ? `Jobs: ${jobTitles.join(", ")}`
+                            : null;
+                          const jobTourTitle =
+                            resource.tourSource === "unit" && resource.tourUnitId
+                              ? `Jobs related to GP Unit ${resource.tourUnitId}`
+                              : resource.title;
                           return (
                             <article
                               key={resource.id}
                               className={`${styles.resourceRow} ${styles.jobTourRow} ${
                                 animateResults ? styles.resourceAnimate : ""
                               }`}
+                              data-type={resource.type}
                               {...cardProps}
                             >
-                              <div className={styles.jobTourRowMedia}>
+                              <div className={styles.resourceRowMedia}>
                                 <img src={resource.image} alt="" loading="lazy" />
-                                <span className={styles.jobTourRowBadge}>
-                                  JobViz Tour
-                                </span>
+                                <div className={styles.resourceMediaType}>
+                                  <ResourceIcon aria-hidden="true" />
+                                </div>
                               </div>
-                              <div className={styles.jobTourRowContent}>
-                                <div className={styles.jobTourRowTitleLine}>
-                                  <h3>{resource.title}</h3>
+                              <div className={styles.resourceRowContent}>
+                                <div
+                                  className={`${styles.resourceRowTitleLine} ${styles.jobTourRowTitleLine}`}
+                                >
+                                  <span className={styles.resourceRowTitleText}>
+                                    {jobTourTitle}
+                                  </span>
                                   {resource.tourUnitId && resource.tourUnitTitle && (
                                     <Link
                                       href={buildUnitPath(resource.tourUnitId)}
@@ -2686,12 +2714,17 @@ export default function HomePage({
                                       From {resource.tourUnitTitle}
                                     </Link>
                                   )}
-                                </div>
-                                <p className={styles.jobTourRowDescription}>
-                                  {resource.description}
-                                </p>
-                                <div className={styles.jobTourRowMeta}>
-                                  <span>
+                                  {hasSubtitle && (
+                                    <span className={styles.resourceRowSubtitle}>
+                                      {resource.description}
+                                    </span>
+                                  )}
+                                  {jobTitlesLine && (
+                                    <span className={styles.jobTourRowJobsLine}>
+                                      {jobTitlesLine}
+                                    </span>
+                                  )}
+                                  <span className={styles.jobTourRowMetaLine}>
                                     Made by: {madeByLabel}
                                     {resource.tourIsGp && (
                                       <img
@@ -2700,16 +2733,43 @@ export default function HomePage({
                                         aria-hidden="true"
                                         className={styles.jobTourGpInline}
                                       />
-                                    )}
+                                    )}{" "}
+                                    • {resource.timeLabel}
                                   </span>
-                                  {visibilityLabel && <span>{visibilityLabel}</span>}
-                                  <span>{resource.timeLabel}</span>
                                 </div>
                               </div>
-                              <div className={styles.jobTourRowActions}>
-                                <span className={styles.jobTourRowAction}>
-                                  Open tour
+                              <div
+                                className={`${styles.resourceRowCol} ${styles.resourceRowColCenter}`}
+                              >
+                                <span className={styles.resourceRowColValue}>
+                                  {resource.subject ?? "Science"}
                                 </span>
+                              </div>
+                              <div
+                                className={`${styles.resourceRowCol} ${styles.resourceRowColCenter}`}
+                              >
+                                <span className={styles.resourceRowColValue}>
+                                  {resource.gradeBand.replace(/^Grades\s*/i, "")}
+                                </span>
+                              </div>
+                              <div
+                                className={`${styles.resourceRowCol} ${styles.resourceRowColCenter} ${styles.resourceRowTypeCol}`}
+                              >
+                                <span className={styles.resourceRowTypeText}>
+                                  {resource.type}
+                                </span>
+                                {(resource.isNew || resource.isPlus) && (
+                                  <div className={styles.resourceBadges}>
+                                    {resource.isNew && (
+                                      <span className={styles.resourceBadge}>New</span>
+                                    )}
+                                    {resource.isPlus && (
+                                      <span className={styles.resourceBadgePlus}>
+                                        GP+
+                                      </span>
+                                    )}
+                                  </div>
+                                )}
                               </div>
                             </article>
                           );
@@ -2812,6 +2872,7 @@ export default function HomePage({
                       }
 
                       if (resource.type === "Job Tour") {
+                        const jobTitles = getJobTitlesForTour(resource.selectedJobs);
                         return (
                           <article
                             key={resource.id}
@@ -2820,9 +2881,15 @@ export default function HomePage({
                             }`}
                             {...cardProps}
                           >
-                            <div className={styles.jobTourCardHeader}>
+                            <div className={styles.resourceMedia}>
+                              <img src={resource.image} alt="" loading="lazy" />
+                              <div className={styles.resourceMediaType}>
+                                <ResourceIcon aria-hidden="true" />
+                              </div>
+                            </div>
+                            <div className={styles.resourceContent}>
                               <div className={styles.jobTourBadgeRow}>
-                                <span className={styles.jobTourBadge}>JobViz Tour</span>
+                                <span className={styles.jobTourBadge}>Job Tour</span>
                                 {resource.tourIsGp && (
                                   <span className={styles.jobTourGpBadge}>
                                     <img
@@ -2843,24 +2910,53 @@ export default function HomePage({
                                   From {resource.tourUnitTitle}
                                 </Link>
                               )}
+                              <p className={styles.resourceDescription}>
+                                {resource.description}
+                              </p>
+                              <p className={styles.jobTourAuthorLine}>
+                                By {madeByLabel}
+                              </p>
+                              {jobTitles.length ? (
+                                <div className={styles.jobTourJobs}>
+                                  {jobTitles.map((title) => (
+                                    <span key={title}>{title}</span>
+                                  ))}
+                                </div>
+                              ) : null}
                             </div>
-                            <p className={styles.jobTourCardDescription}>
-                              {resource.description}
-                            </p>
-                            <div className={styles.jobTourCardMeta}>
-                              <span>Made by: {madeByLabel}</span>
-                              {visibilityLabel && <span>{visibilityLabel}</span>}
-                              <span>{resource.timeLabel}</span>
-                            </div>
-                            {resource.tags?.length ? (
-                              <div className={styles.jobTourTags}>
-                                {resource.tags.slice(0, 4).map((tag) => (
-                                  <span key={tag}>{tag}</span>
-                                ))}
+                            <div className={styles.resourceSide}>
+                              <span className={styles.resourceTypePill}>
+                                <ResourceIcon aria-hidden="true" />
+                                {resource.type.toLowerCase()}
+                              </span>
+                              {(resource.isNew || resource.isPlus) && (
+                                <div className={styles.resourceBadges}>
+                                  {resource.isNew && (
+                                    <span className={styles.resourceBadge}>New</span>
+                                  )}
+                                  {resource.isPlus && (
+                                    <span className={styles.resourceBadgePlus}>
+                                      GP+
+                                    </span>
+                                  )}
+                                </div>
+                              )}
+                              <div className={styles.resourceSideMeta}>
+                                <span>
+                                  <Compass aria-hidden="true" />
+                                  {resource.subject ?? "Science"}
+                                </span>
+                                <span>
+                                  <School aria-hidden="true" />
+                                  {resource.gradeBand
+                                    .replace(/^Grades\s*/i, "")
+                                    .replace(/university/gi, "College")}
+                                </span>
+                                <span>
+                                  <Rocket aria-hidden="true" />
+                                  {resource.timeLabel}
+                                </span>
                               </div>
-                            ) : null}
-                            <div className={styles.jobTourCardAction}>
-                              <span>Open tour</span>
                             </div>
                           </article>
                         );
