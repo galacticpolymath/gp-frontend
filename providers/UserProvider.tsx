@@ -118,11 +118,6 @@ export const UserProvider: React.FC<PropsWithChildren> = ({ children }) => {
     const sessionValue = window.sessionStorage.getItem('isGpPlusUser');
     const resolved =
       cookieValue === 'true' || sessionValue === 'true' ? true : false;
-    console.log('[GP+ debug] UserProvider hydrate', {
-      cookieValue,
-      sessionValue,
-      resolved,
-    });
     if (resolved !== isGpPlusMember) {
       setIsGpPlusMember(resolved);
     }
@@ -142,11 +137,9 @@ export const UserProvider: React.FC<PropsWithChildren> = ({ children }) => {
       })
       .then((response) => {
         const isGpPlus = response?.data?.isGpPlusMember;
-        console.log('[GP+ debug] get-user-account-data response', response?.data);
         if (typeof isGpPlus === 'boolean') {
           window.sessionStorage.setItem('isGpPlusUser', String(isGpPlus));
           cookies.set('isGpPlusMember', String(isGpPlus), { path: '/' });
-          console.log('[GP+ debug] sync isGpPlusMember', isGpPlus);
           setIsGpPlusMember(isGpPlus);
         }
       })

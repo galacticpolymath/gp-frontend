@@ -190,6 +190,7 @@ const JobVizSearchResults = ({
   const [unitOptions, setUnitOptions] = useState([]);
   const [isSavingTour, setIsSavingTour] = useState(false);
   const [saveError, setSaveError] = useState(null);
+  const [lastSavedSnapshot, setLastSavedSnapshot] = useState(null);
   const [tourForm, setTourForm] = useState({
     heading: "",
     whoCanSee: "me",
@@ -262,6 +263,21 @@ const JobVizSearchResults = ({
       gpUnitsAssociated: activeTour.gpUnitsAssociated ?? [],
       explanation: activeTour.explanation ?? "",
       assignment: activeTour.assignment ?? DEFAULT_JOB_TOUR_ASSIGNMENT,
+    });
+    setLastSavedSnapshot({
+      heading: activeTour.heading ?? "",
+      whoCanSee: activeTour.whoCanSee ?? "me",
+      classSubject: CLASS_SUBJECT_OPTIONS.includes(activeTour.classSubject)
+        ? activeTour.classSubject
+        : activeTour.classSubject ?? "",
+      gradeLevel: activeTour.gradeLevel ?? "",
+      tags: (activeTour.tags ?? [])
+        .map((tag) => tag.trim())
+        .filter(Boolean),
+      gpUnitsAssociated: [...(activeTour.gpUnitsAssociated ?? [])].sort(),
+      explanation: activeTour.explanation ?? "",
+      assignment: activeTour.assignment ?? DEFAULT_JOB_TOUR_ASSIGNMENT,
+      selectedJobs: [...(activeTour.selectedJobs ?? [])].sort(),
     });
   }, [activeTour, isTeacherEditMode]);
 
@@ -1105,18 +1121,6 @@ const JobVizSearchResults = ({
     return Object.keys(overrides).length ? overrides : null;
   }, [activeTour, preservedUnitName, viewMode]);
 
-  const editorFields = isTeacherEditMode ? (
-    <JobTourEditorFields
-      value={tourForm}
-      unitOptions={unitOptions}
-      onChange={setTourForm}
-      onSave={handleSaveTour}
-      isSaving={isSavingTour}
-      validationErrors={saveErrors}
-      selectedJobsCount={selectedTourJobsArray.length}
-    />
-  ) : null;
-
   const isTourOwner =
     Boolean(activeTour?._id) && Boolean(userId) && activeTour?.userId === userId;
   const isTeacherLoggedIn = status === "authenticated" && isUserTeacher;
@@ -1152,10 +1156,6 @@ const JobVizSearchResults = ({
   );
 
   const handleTourActionClick = () => {
-    if (!isTeacherLoggedIn) {
-      setShowTourUpgradeModal(true);
-      return;
-    }
     if (!hasGpPlusMembership) {
       setShowTourUpgradeModal(true);
       return;
@@ -1198,13 +1198,14 @@ const JobVizSearchResults = ({
   const validationErrors = useMemo(() => {
     if (!isTeacherEditMode) return [];
     const errors = [];
+    const isPublic = tourForm.whoCanSee === "everyone";
     if (!tourForm.heading.trim()) {
       errors.push("Title required");
     }
     if (selectedTourJobsArray.length === 0) {
       errors.push("Add at least one job");
     }
-    if (tourForm.whoCanSee !== "me") {
+    if (isPublic) {
       if (!resolvedClassSubject) {
         errors.push("Class subject required");
       }
@@ -1235,6 +1236,62 @@ const JobVizSearchResults = ({
     [saveError, validationErrors]
   );
 
+  const buildSnapshot = useCallback(() => {
+    const normalizedSubject =
+      tourForm.classSubject === "Other"
+        ? tourForm.classSubjectCustom.trim()
+        : tourForm.classSubject.trim();
+    return {
+      heading: tourForm.heading.trim(),
+      whoCanSee: tourForm.whoCanSee,
+      classSubject: normalizedSubject || "Other",
+      gradeLevel: tourForm.gradeLevel.trim() || "Middle school",
+      tags: tourForm.tags
+        .split(",")
+        .map((tag) => tag.trim())
+        .filter(Boolean),
+      gpUnitsAssociated: [...tourForm.gpUnitsAssociated].sort(),
+      explanation: tourForm.explanation.trim(),
+      assignment:
+        tourForm.assignment.trim() || DEFAULT_JOB_TOUR_ASSIGNMENT,
+      selectedJobs: Array.from(selectedTourJobs).sort(),
+    };
+  }, [
+    selectedTourJobs,
+    tourForm.assignment,
+    tourForm.classSubject,
+    tourForm.classSubjectCustom,
+    tourForm.explanation,
+    tourForm.gradeLevel,
+    tourForm.gpUnitsAssociated,
+    tourForm.heading,
+    tourForm.tags,
+    tourForm.whoCanSee,
+  ]);
+
+  const hasUnsavedChanges = useMemo(() => {
+    if (!isTeacherEditMode) return false;
+    const snapshot = buildSnapshot();
+    if (!lastSavedSnapshot) return true;
+    return (
+      snapshot.heading !== lastSavedSnapshot.heading ||
+      snapshot.whoCanSee !== lastSavedSnapshot.whoCanSee ||
+      snapshot.classSubject !== lastSavedSnapshot.classSubject ||
+      snapshot.gradeLevel !== lastSavedSnapshot.gradeLevel ||
+      snapshot.explanation !== lastSavedSnapshot.explanation ||
+      snapshot.assignment !== lastSavedSnapshot.assignment ||
+      snapshot.tags.join("|") !== lastSavedSnapshot.tags.join("|") ||
+      snapshot.gpUnitsAssociated.join("|") !==
+        lastSavedSnapshot.gpUnitsAssociated.join("|") ||
+      snapshot.selectedJobs.join("|") !==
+        lastSavedSnapshot.selectedJobs.join("|")
+    );
+  }, [
+    buildSnapshot,
+    isTeacherEditMode,
+    lastSavedSnapshot,
+  ]);
+
   const handleSaveTour = async () => {
     if (!isTeacherEditMode) return;
     setSaveError(null);
@@ -1246,22 +1303,14 @@ const JobVizSearchResults = ({
       setSaveError("Please sign in to save.");
       return;
     }
+    const snapshot = buildSnapshot();
     const payload = {
-      heading: tourForm.heading.trim(),
-      whoCanSee: tourForm.whoCanSee,
-      classSubject: resolvedClassSubject || "Other",
-      gradeLevel: tourForm.gradeLevel.trim() || "Middle school",
-      tags: tourForm.tags
-        .split(",")
-        .map((tag) => tag.trim())
-        .filter(Boolean),
-      gpUnitsAssociated: tourForm.gpUnitsAssociated,
-      explanation: tourForm.explanation.trim(),
-      assignment: tourForm.assignment.trim() || DEFAULT_JOB_TOUR_ASSIGNMENT,
-      selectedJobs: selectedTourJobsArray,
+      ...snapshot,
+      gpUnitsAssociated: snapshot.gpUnitsAssociated,
+      selectedJobs: snapshot.selectedJobs,
       version: getVersionString(),
       publishedDate:
-        tourForm.whoCanSee === "everyone" ? new Date().toISOString() : null,
+        snapshot.whoCanSee === "everyone" ? new Date().toISOString() : null,
     };
     try {
       setIsSavingTour(true);
@@ -1277,14 +1326,34 @@ const JobVizSearchResults = ({
           );
         }
       }
+      setLastSavedSnapshot(snapshot);
     } catch (error) {
       const message =
         error?.response?.data?.msg || error?.message || "Unable to save tour.";
-      setSaveError(message);
+      if (tourForm.whoCanSee === "everyone" && /explanation/i.test(message)) {
+        setSaveError(
+          'Classroom Context is required when visibility is "Everyone".'
+        );
+      } else {
+        setSaveError(message);
+      }
     } finally {
       setIsSavingTour(false);
     }
   };
+
+  const editorFields = isTeacherEditMode ? (
+    <JobTourEditorFields
+      value={tourForm}
+      unitOptions={unitOptions}
+      onChange={setTourForm}
+      onSave={handleSaveTour}
+      isSaving={isSavingTour}
+      isSaved={!hasUnsavedChanges}
+      validationErrors={saveErrors}
+      selectedJobsCount={selectedTourJobsArray.length}
+    />
+  ) : null;
 
   return (
     <JobTourEditorProvider

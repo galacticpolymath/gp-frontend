@@ -502,6 +502,9 @@ const getTourGradeBands = (gradeLevel?: string | null) => {
   const fallback = "Middle school";
   const raw = gradeLevel?.trim() || fallback;
   const normalized = raw.toLowerCase();
+  if (normalized === "all" || normalized.includes("all")) {
+    return { gradeBandGroup: "All", gradeBand: "All" };
+  }
   if (normalized.includes("upper")) {
     return { gradeBandGroup: "Upper Elementary", gradeBand: "Upper elementary" };
   }
@@ -1228,7 +1231,7 @@ export default function HomePage({
         isPlus: true,
         accent: getAccent("careers"),
         icon: FiLayers,
-        ownerId: tour.userId,
+        ownerId: tour.userId ? String(tour.userId) : null,
         ownerName: tour.ownerName ?? null,
         tourSource: "user",
         tourId: tour._id,
@@ -1392,6 +1395,7 @@ export default function HomePage({
       }
       if (
         selectedGradeBands.length &&
+        resource.gradeBandGroup !== "All" &&
         !selectedGradeBands.includes(resource.gradeBandGroup)
       ) {
         return false;

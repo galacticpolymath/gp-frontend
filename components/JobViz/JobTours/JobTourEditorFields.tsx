@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo, useState } from "react";
 import styles from "../../../styles/jobvizBurst.module.scss";
 import {
   CLASS_SUBJECT_OPTIONS,
@@ -26,6 +26,7 @@ export interface JobTourEditorFieldsProps {
   isSaving?: boolean;
   validationErrors?: string[];
   selectedJobsCount: number;
+  isSaved?: boolean;
 }
 
 const JobTourEditorFields: React.FC<JobTourEditorFieldsProps> = ({
@@ -36,14 +37,24 @@ const JobTourEditorFields: React.FC<JobTourEditorFieldsProps> = ({
   isSaving = false,
   validationErrors = [],
   selectedJobsCount,
+  isSaved = false,
 }) => {
   const hasErrors = validationErrors.length > 0;
   const showCustomSubject = value.classSubject === "Other";
+  const requiresClassDetails = value.whoCanSee === "everyone";
+  const [isUnitsOpen, setIsUnitsOpen] = useState(false);
+  const selectedUnits = useMemo(
+    () =>
+      unitOptions.filter((unit) => value.gpUnitsAssociated.includes(unit.id)),
+    [unitOptions, value.gpUnitsAssociated]
+  );
   return (
     <div className={styles.tourEditorFields}>
       <div className={styles.tourEditorMeta}>
         <div className={styles.tourEditorField}>
-          <label htmlFor="tour-title">Title</label>
+          <label htmlFor="tour-title">
+            Title <span className={styles.tourEditorRequired}>*</span>
+          </label>
           <input
             id="tour-title"
             type="text"
@@ -72,7 +83,12 @@ const JobTourEditorFields: React.FC<JobTourEditorFieldsProps> = ({
           </select>
         </div>
         <div className={styles.tourEditorField}>
-          <label htmlFor="tour-subject">Class subject</label>
+          <label htmlFor="tour-subject">
+            Class subject{" "}
+            {requiresClassDetails && (
+              <span className={styles.tourEditorRequired}>*</span>
+            )}
+          </label>
           <select
             id="tour-subject"
             value={value.classSubject}
@@ -100,7 +116,12 @@ const JobTourEditorFields: React.FC<JobTourEditorFieldsProps> = ({
           )}
         </div>
         <div className={styles.tourEditorField}>
-          <label htmlFor="tour-grade">Grade level</label>
+          <label htmlFor="tour-grade">
+            Grade level{" "}
+            {requiresClassDetails && (
+              <span className={styles.tourEditorRequired}>*</span>
+            )}
+          </label>
           <select
             id="tour-grade"
             value={value.gradeLevel}
@@ -117,7 +138,12 @@ const JobTourEditorFields: React.FC<JobTourEditorFieldsProps> = ({
           </select>
         </div>
         <div className={styles.tourEditorFieldFull}>
-          <label htmlFor="tour-context">Classroom Context</label>
+          <label htmlFor="tour-context">
+            Classroom Context{" "}
+            {requiresClassDetails && (
+              <span className={styles.tourEditorRequired}>*</span>
+            )}
+          </label>
           <textarea
             id="tour-context"
             placeholder="(Optional) When in the school year or how might this be useful to implement?"
@@ -140,7 +166,12 @@ const JobTourEditorFields: React.FC<JobTourEditorFieldsProps> = ({
           />
         </div>
         <div className={styles.tourEditorFieldFull}>
-          <label htmlFor="tour-assignment">Assignment</label>
+          <label htmlFor="tour-assignment">
+            Assignment{" "}
+            {requiresClassDetails && (
+              <span className={styles.tourEditorRequired}>*</span>
+            )}
+          </label>
           <textarea
             id="tour-assignment"
             placeholder="Describe for students what you want them to do"
@@ -151,31 +182,71 @@ const JobTourEditorFields: React.FC<JobTourEditorFieldsProps> = ({
           />
         </div>
         <div className={styles.tourEditorFieldFull}>
-          <label>GP units associated</label>
-          <div className={styles.tourEditorUnits}>
-            {unitOptions.length ? (
-              unitOptions.map((unit) => (
-                <label key={unit.id} className={styles.tourEditorUnitOption}>
-                  <input
-                    type="checkbox"
-                    checked={value.gpUnitsAssociated.includes(unit.id)}
-                    onChange={(event) => {
-                      const next = event.target.checked
-                        ? [...value.gpUnitsAssociated, unit.id]
-                        : value.gpUnitsAssociated.filter((id) => id !== unit.id);
-                      onChange({ ...value, gpUnitsAssociated: next });
-                    }}
-                  />
-                  <span>{unit.title}</span>
-                </label>
-              ))
-            ) : (
-              <p className={styles.tourEditorHelper}>
-                Unit list is loading. You can still save your tour now.
-              </p>
-            )}
-          </div>
+          <label>Associated GP Units</label>
+          {unitOptions.length ? (
+            <>
+              <div className={styles.tourEditorDropdown}>
+                <button
+                  type="button"
+                  className={styles.tourEditorDropdownButton}
+                  onClick={() => setIsUnitsOpen((prev) => !prev)}
+                  aria-expanded={isUnitsOpen}
+                >
+                  {selectedUnits.length
+                    ? `${selectedUnits.length} unit${
+                        selectedUnits.length === 1 ? "" : "s"
+                      } selected`
+                    : "Select GP units"}
+                  <span className={styles.tourEditorDropdownCaret} />
+                </button>
+                {isUnitsOpen && (
+                  <div className={styles.tourEditorDropdownMenu}>
+                    {unitOptions.map((unit) => (
+                      <label
+                        key={unit.id}
+                        className={styles.tourEditorUnitOption}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={value.gpUnitsAssociated.includes(unit.id)}
+                          onChange={(event) => {
+                            const next = event.target.checked
+                              ? [...value.gpUnitsAssociated, unit.id]
+                              : value.gpUnitsAssociated.filter(
+                                  (id) => id !== unit.id
+                                );
+                            onChange({ ...value, gpUnitsAssociated: next });
+                          }}
+                        />
+                        <span>{unit.title}</span>
+                      </label>
+                    ))}
+                  </div>
+                )}
+              </div>
+              {selectedUnits.length ? (
+                <div className={styles.tourEditorSelectedUnits}>
+                  {selectedUnits.map((unit) => (
+                    <span
+                      key={unit.id}
+                      className={styles.tourEditorSelectedUnit}
+                    >
+                      {unit.title}
+                    </span>
+                  ))}
+                </div>
+              ) : null}
+            </>
+          ) : (
+            <p className={styles.tourEditorHelper}>
+              Unit list is loading. You can still save your tour now.
+            </p>
+          )}
         </div>
+        <p className={styles.tourEditorRequiredNote}>
+          <span className={styles.tourEditorRequired}>*</span> Required fields.
+          Classroom details are required only when visibility is &quot;Everyone.&quot;
+        </p>
       </div>
       <div className={styles.tourEditorFooter}>
         <div className={styles.tourEditorStatus}>
@@ -190,9 +261,10 @@ const JobTourEditorFields: React.FC<JobTourEditorFieldsProps> = ({
           type="button"
           className={styles.tourEditorSaveButton}
           onClick={onSave}
-          disabled={isSaving}
+          disabled={isSaving || isSaved}
+          data-variant={isSaved ? "saved" : "default"}
         >
-          {isSaving ? "Saving..." : "Save tour"}
+          {isSaving ? "Saving..." : isSaved ? "Saved" : "Save tour"}
         </button>
       </div>
     </div>

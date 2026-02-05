@@ -4,7 +4,7 @@ export default function Document() {
   const outsetaDomain =
     process.env.NEXT_PUBLIC_OUTSETA_DOMAIN || "galactic-polymath.outseta.com";
   return (
-    <Html lang="en">
+    <Html lang="en" data-scroll-behavior="smooth">
       <Head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
@@ -18,7 +18,7 @@ export default function Document() {
             __html: `
               var o_options = {
                 domain: '${outsetaDomain}',
-                load: 'auth,customForm,emailList,leadCapture,nocode,profile,support',
+                load: 'auth,customForm,emailList,leadCapture,profile,support',
                 monitorDom: true,
               };
             `,

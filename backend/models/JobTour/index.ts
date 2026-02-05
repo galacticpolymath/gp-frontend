@@ -54,7 +54,13 @@ if (!JobTour) {
             gradeLevel: { type: String, required: true },
             tags: { type: [String], required: true, default: [] },
             gpUnitsAssociated: { type: [String], required: true, default: [] },
-            explanation: { type: String, required: true },
+            explanation: {
+                type: String,
+                required: function (this: IJobTour) {
+                    return this.whoCanSee === 'everyone';
+                },
+                default: '',
+            },
             heading: { type: String, required: true },
             assignment: { type: String, required: true },
             selectedJobs: { type: [String], required: true, default: [] },

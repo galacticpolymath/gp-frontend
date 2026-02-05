@@ -22,11 +22,6 @@ const useSiteSession = () => {
   })();
   const resolvedIsGpPlusMember =
     gdriveTokensInfo.isGpPlusMember ?? storedGpPlusMember;
-  if (typeof window !== "undefined") {
-    console.log("[GP+ debug] useSiteSession cookies:", gdriveTokensInfo);
-    console.log("[GP+ debug] useSiteSession sessionStorage isGpPlusUser:", storedGpPlusMember);
-    console.log("[GP+ debug] useSiteSession resolved isGpPlusMember:", resolvedIsGpPlusMember);
-  }
 
   const logUserOut = () => {
     localStorage.clear();

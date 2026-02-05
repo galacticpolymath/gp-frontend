@@ -71,16 +71,6 @@ const PortalNav: React.FC<PortalNavProps> = ({
     setIsHydrated(true);
   }, []);
 
-  useEffect(() => {
-    if (!isHydrated) return;
-    console.log("[GP+ debug] PortalNav", {
-      isGpPlusMember,
-      isPlusMember,
-      effectiveIsPlusMember,
-      isAuthenticated,
-      effectiveIsAuthenticated,
-    });
-  }, [isHydrated, isGpPlusMember, isPlusMember, effectiveIsPlusMember, isAuthenticated, effectiveIsAuthenticated]);
 
   useEffect(() => {
     if (!accountMenuOpen) return;

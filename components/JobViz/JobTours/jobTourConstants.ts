@@ -11,6 +11,7 @@ export const CLASS_SUBJECT_OPTIONS = [
 ] as const;
 
 export const GRADE_LEVEL_OPTIONS = [
+  "All",
   "Upper elementary",
   "Middle school",
   "High school",

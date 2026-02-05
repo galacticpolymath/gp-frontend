@@ -130,9 +130,6 @@ const EmailNewsletterSignUp: React.FC = () => {
     isDisplayed,
     handleOnHide: onHide,
   } = emailNewsletterSignUpModal ?? {};
-  if (!isDisplayed) {
-    return null;
-  }
   const wasDoubleOptEmailSent = userEmailNewsLetterStatus === "double-opt-sent";
   const [
     willNotShowEmailNewsLetterSignUpModalAgin,
@@ -140,6 +137,10 @@ const EmailNewsletterSignUp: React.FC = () => {
   ] = useState(false);
   const wasUserAddedToMailingListRef = useRef(false);
   const [isBtnSpinnerDisplayed, setIsBtnSpinnerDisplayed] = useState(false);
+
+  if (!isDisplayed) {
+    return null;
+  }
 
   const handleSendInviteBtnClick = async () => {
     try {
@@ -294,6 +295,7 @@ const EmailNewsletterSignUp: React.FC = () => {
                 alt="Galactic Polymath Logo"
                 width={120}
                 height={120}
+                priority
                 className="img-fluid"
               />
             </div>

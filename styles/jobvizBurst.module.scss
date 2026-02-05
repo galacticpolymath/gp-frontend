@@ -1,4 +1,8 @@
-$assignment-layer-z: 1500; // keep assignment UI above main layout, above blur, but below modals
+$assignment-layer-z: 1500; // base layer for assignment UI (below toasts/modals)
+$assignment-progress-z: $assignment-layer-z + 5;
+$assignment-tooltip-z: $assignment-layer-z + 10;
+$assignment-scrolltip-z: $assignment-layer-z + 15;
+$assignment-card-tooltip-z: $assignment-layer-z + 12;
 $jobviz-nav-height: 64px;
 
 :root {
@@ -1620,7 +1624,7 @@ $jobviz-nav-height: 64px;
 .assignmentScrollTipOverlay {
   position: fixed;
   transform: translateY(-100%);
-  z-index: 1600;
+  z-index: $assignment-scrolltip-z;
   pointer-events: none;
 }
 
@@ -1649,7 +1653,7 @@ $jobviz-nav-height: 64px;
   margin: 0.15rem 0 0.35rem;
   position: sticky;
   top: 0;
-  z-index: 4;
+  z-index: $assignment-progress-z;
   overflow: visible;
   background: linear-gradient(180deg, rgba(5, 9, 29, 0.96), rgba(5, 9, 29, 0.75));
   padding: 0.35rem 0.4rem 0.5rem;
@@ -2096,7 +2100,8 @@ $jobviz-nav-height: 64px;
   letter-spacing: 0.02em;
   animation: hintBounce 1s ease-in-out infinite;
   box-shadow: 0 8px 18px rgba(0, 0, 0, 0.25);
-  z-index: 4;
+  z-index: $assignment-tooltip-z;
+  isolation: isolate;
   pointer-events: none;
 }
 
@@ -3767,6 +3772,7 @@ $jobviz-nav-height: 64px;
   left: 50%;
   top: -1.5rem;
   transform: translate(-50%, -100%);
+  z-index: $assignment-card-tooltip-z;
   background: rgba(7, 18, 44, 0.95);
   color: #f8fbff;
   padding: 0.35rem 0.75rem;
@@ -5460,6 +5466,74 @@ $jobviz-nav-height: 64px;
   font-size: 0.85rem;
 }
 
+.tourEditorRequired {
+  color: #cb1f83;
+  font-weight: 700;
+}
+
+.tourEditorRequiredNote {
+  margin: 4px 0 0;
+  font-size: 0.8rem;
+  color: #4f4f4f;
+}
+
+.tourEditorDropdown {
+  position: relative;
+}
+
+.tourEditorDropdownButton {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  border-radius: 10px;
+  border: 1px solid rgba(54, 54, 54, 0.2);
+  padding: 10px 12px;
+  font-size: 0.95rem;
+  background: #fff;
+  color: #363636;
+}
+
+.tourEditorDropdownCaret {
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 7px solid #2c2c2c;
+}
+
+.tourEditorDropdownMenu {
+  position: absolute;
+  z-index: 50;
+  width: 100%;
+  margin-top: 6px;
+  padding: 12px;
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid rgba(44, 131, 195, 0.2);
+  box-shadow: 0 12px 30px rgba(18, 40, 80, 0.12);
+  display: grid;
+  gap: 8px;
+  max-height: 220px;
+  overflow: auto;
+}
+
+.tourEditorSelectedUnits {
+  margin-top: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tourEditorSelectedUnit {
+  background: rgba(44, 131, 195, 0.12);
+  border-radius: 999px;
+  padding: 6px 10px;
+  font-size: 0.82rem;
+  color: #1f3f5c;
+}
+
 .tourEditorHelper {
   font-size: 0.85rem;
   color: #4f4f4f;
@@ -5493,6 +5567,14 @@ $jobviz-nav-height: 64px;
   color: #ffffff;
   font-weight: 600;
   padding: 10px 18px;
+  transition: background 0.2s ease, color 0.2s ease, opacity 0.2s ease;
+  cursor: pointer;
+}
+
+.tourEditorSaveButton[data-variant="saved"] {
+  background: rgba(24, 38, 188, 0.25);
+  color: #1c2a63;
+  cursor: default;
 }
 
 .jobvizUpgradeModal {
