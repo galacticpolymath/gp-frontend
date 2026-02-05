@@ -288,6 +288,12 @@ const PortalNav: React.FC<PortalNavProps> = ({
               aria-hidden={!accountMenuOpen}
             >
               <div className={styles.accountMenuDivider} role="presentation" />
+              <Link
+                className={styles.accountMenuItem}
+                href="/search?typeFilter=Job%20Tour&mine=1"
+              >
+                My JobViz Tours
+              </Link>
               <Link className={styles.accountMenuItem} href="/account">
                 View Account
               </Link>

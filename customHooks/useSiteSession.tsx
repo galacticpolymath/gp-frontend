@@ -6,6 +6,17 @@ const useSiteSession = () => {
   const session = useSession();
   const { data, status } = session ?? {};
   const { user, token } = (data ?? {}) as IUserSession;
+  const normalizedUser = user
+    ? {
+        ...user,
+        userId:
+          typeof user.userId === "string"
+            ? user.userId
+            : user.userId
+              ? String(user.userId)
+              : undefined,
+      }
+    : user;
   const { clearCookies, getCookies } = useCustomCookies();
   const gdriveTokensInfo = getCookies([
     "gdriveAccessToken",
@@ -41,7 +52,7 @@ const useSiteSession = () => {
   return {
     ...gdriveTokensInfo,
     isGpPlusMember: resolvedIsGpPlusMember,
-    user,
+    user: normalizedUser,
     token,
     status,
     logUserOut,

@@ -2608,8 +2608,18 @@ details:not([open]) .filterSummary::after {
 }
 
 .resourceBadgePlus {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   background: rgba(24, 38, 188, 0.16);
   color: #1826bc;
+}
+
+.resourceBadgePlus img {
+  width: 12px;
+  height: 12px;
+  object-fit: contain;
+  aspect-ratio: 1 / 1;
 }
 
 .resourceSide {
@@ -2836,6 +2846,39 @@ details:not([open]) .filterSummary::after {
   }
 }
 
+@media (max-width: 1440px) {
+  .jobTourCard {
+    grid-template-columns: minmax(0, 200px) minmax(0, 1fr) minmax(0, 150px);
+  }
+
+  .jobTourCard .resourceContent {
+    padding: 14px 16px 16px;
+    gap: 10px;
+  }
+
+  .jobTourCard .resourceContent h3 {
+    font-size: 20px;
+  }
+
+  .jobTourCard .resourceDescription {
+    font-size: 14px;
+  }
+
+  .jobTourJobs span {
+    font-size: 10px;
+    padding: 3px 7px;
+  }
+
+  .jobTourCard .resourceSide {
+    padding: 14px 14px 16px;
+  }
+
+  .jobTourCard .resourceSideMeta {
+    font-size: 11px;
+    letter-spacing: 0.06em;
+  }
+}
+
 @media (max-width: 1024px) {
   .heroBody {
     grid-template-columns: 1fr;
@@ -2898,6 +2941,23 @@ details:not([open]) .filterSummary::after {
   .resourceCard .resourceTypePill svg {
     width: 16px;
     height: 16px;
+  }
+
+  .resourceCard .resourceSide {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .resourceCard .resourceBadges {
+    margin-left: 4px;
+  }
+
+  .resourceCard .resourceSideMeta {
+    width: 100%;
+    padding-left: 0;
+    margin-top: 6px;
   }
 
   .resourceMedia {
@@ -3201,6 +3261,8 @@ details:not([open]) .filterSummary::after {
 .jobTourCard .resourceTypePill {
   background: rgba(108, 45, 130, 0.12);
   color: #6c2d82;
+  font-size: 14px;
+  padding: 7px 12px;
 }
 
 .jobTourBadgeRow {
@@ -3251,6 +3313,7 @@ details:not([open]) .filterSummary::after {
   gap: 6px;
   flex-wrap: wrap;
   margin-top: 6px;
+  max-width: 100%;
 }
 
 .jobTourAuthorLine {
@@ -3260,6 +3323,9 @@ details:not([open]) .filterSummary::after {
   color: #2c83c3;
   text-transform: uppercase;
   letter-spacing: 0.08em;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .jobTourJobs span {
@@ -3268,6 +3334,46 @@ details:not([open]) .filterSummary::after {
   border-radius: 999px;
   background: rgba(108, 45, 130, 0.12);
   color: #6c2d82;
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.jobTourJobsMore {
+  background: rgba(44, 131, 195, 0.14);
+  color: #2c83c3;
+}
+
+.jobTourFromLine {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #5b5f6f;
+  margin-top: -2px;
+}
+
+.jobTourFromLine svg {
+  width: 14px;
+  height: 14px;
+  flex: 0 0 auto;
+  stroke: currentColor;
+}
+
+.jobTourAuthorPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: rgba(44, 131, 195, 0.12);
+  color: #2c83c3;
+}
+
+.jobTourAuthorPill img {
+  width: 14px;
+  height: 14px;
+  object-fit: contain;
+  aspect-ratio: 1 / 1;
 }
 
 .jobTourRow {

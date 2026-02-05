@@ -723,7 +723,7 @@ const AccountPg: React.FC = () => {
               }
               variant="outline-primary"
               size="sm"
-              className="p-1 mt-2"
+              className="p-1 mt-2 account-action-btn account-action-btn--jobviz"
               style={{ width: "210px" }}
             >
               <span

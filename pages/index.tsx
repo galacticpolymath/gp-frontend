@@ -193,6 +193,11 @@ const getJobTitlesForTour = (socCodes?: string[] | null, limit = 6) => {
     .slice(0, limit);
 };
 
+const truncateJobTitle = (title: string, maxLength = 28) => {
+  if (title.length <= maxLength) return title;
+  return `${title.slice(0, maxLength - 3).trim()}...`;
+};
+
 interface PreviewResource {
   id: string;
   title: string;
@@ -2765,6 +2770,11 @@ export default function HomePage({
                                     )}
                                     {resource.isPlus && (
                                       <span className={styles.resourceBadgePlus}>
+                                        <img
+                                          src="/plus/plus.png"
+                                          alt=""
+                                          aria-hidden="true"
+                                        />
                                         GP+
                                       </span>
                                     )}
@@ -2861,6 +2871,11 @@ export default function HomePage({
                                   )}
                                   {resource.isPlus && (
                                     <span className={styles.resourceBadgePlus}>
+                                      <img
+                                        src="/plus/plus.png"
+                                        alt=""
+                                        aria-hidden="true"
+                                      />
                                       GP+
                                     </span>
                                   )}
@@ -2872,7 +2887,18 @@ export default function HomePage({
                       }
 
                       if (resource.type === "Job Tour") {
-                        const jobTitles = getJobTitlesForTour(resource.selectedJobs);
+                        const jobTitlesRaw = getJobTitlesForTour(
+                          resource.selectedJobs,
+                          4
+                        );
+                        const jobTitles = jobTitlesRaw.map((title) =>
+                          truncateJobTitle(title)
+                        );
+                        const remainingJobs = Math.max(
+                          (resource.selectedJobs?.length ?? 0) - jobTitlesRaw.length,
+                          0
+                        );
+                        const isUnitTour = resource.tourSource === "unit";
                         return (
                           <article
                             key={resource.id}
@@ -2888,39 +2914,40 @@ export default function HomePage({
                               </div>
                             </div>
                             <div className={styles.resourceContent}>
-                              <div className={styles.jobTourBadgeRow}>
-                                <span className={styles.jobTourBadge}>Job Tour</span>
-                                {resource.tourIsGp && (
-                                  <span className={styles.jobTourGpBadge}>
-                                    <img
-                                      src="/imgs/gp-logos/gp_submark.png"
-                                      alt=""
-                                      aria-hidden="true"
-                                    />
-                                    GP Team
-                                  </span>
-                                )}
-                              </div>
-                              <h3>{resource.title}</h3>
-                              {resource.tourUnitId && resource.tourUnitTitle && (
-                                <Link
-                                  href={buildUnitPath(resource.tourUnitId)}
-                                  className={styles.jobTourFromUnit}
-                                >
-                                  From {resource.tourUnitTitle}
-                                </Link>
-                              )}
+                              <h3>
+                                {isUnitTour
+                                  ? "Jobs Related to GP Unit:"
+                                  : resource.title}
+                              </h3>
                               <p className={styles.resourceDescription}>
-                                {resource.description}
+                                {isUnitTour ? (
+                                  <span className={styles.jobTourFromLine}>
+                                    <CornerDownRight aria-hidden="true" />
+                                    <span>
+                                      from{" "}
+                                      {resource.description.replace(/^From\s+/i, "")}
+                                    </span>
+                                  </span>
+                                ) : (
+                                  resource.description
+                                )}
                               </p>
                               <p className={styles.jobTourAuthorLine}>
-                                By {madeByLabel}
+                                By{" "}
+                                <span className={styles.jobTourAuthorPill}>
+                                  {madeByLabel}
+                                </span>
                               </p>
                               {jobTitles.length ? (
                                 <div className={styles.jobTourJobs}>
                                   {jobTitles.map((title) => (
                                     <span key={title}>{title}</span>
                                   ))}
+                                  {remainingJobs > 0 && (
+                                    <span className={styles.jobTourJobsMore}>
+                                      + {remainingJobs} more
+                                    </span>
+                                  )}
                                 </div>
                               ) : null}
                             </div>
@@ -2936,6 +2963,11 @@ export default function HomePage({
                                   )}
                                   {resource.isPlus && (
                                     <span className={styles.resourceBadgePlus}>
+                                      <img
+                                        src="/plus/plus.png"
+                                        alt=""
+                                        aria-hidden="true"
+                                      />
                                       GP+
                                     </span>
                                   )}
@@ -3012,6 +3044,11 @@ export default function HomePage({
                                 )}
                                 {resource.isPlus && (
                                   <span className={styles.resourceBadgePlus}>
+                                    <img
+                                      src="/plus/plus.png"
+                                      alt=""
+                                      aria-hidden="true"
+                                    />
                                     GP+
                                   </span>
                                 )}

@@ -190,6 +190,7 @@
   flex-direction: column;
   align-items: center;
   gap: 0;
+  --profile-contrast-text: #eef3ff;
   background: rgba(240, 244, 255, 0.12);
   padding: 4px 10px;
   border-radius: 999px;
@@ -294,6 +295,10 @@
   gap: 8px;
 }
 
+.profileSlotOpen .profileButton {
+  color: var(--profile-contrast-text);
+}
+
 .profileButton:hover {
   color: #ffffff;
   text-decoration: none;
@@ -364,13 +369,21 @@
   border-radius: 999px;
   text-align: left;
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 500;
   cursor: pointer;
   text-decoration: none;
 }
 
-.accountMenuItem:hover {
+.accountMenuItem:hover,
+.accountMenuItem:focus-visible {
   background: rgba(240, 244, 255, 0.18);
+  color: var(--profile-contrast-text);
+  font-weight: 700;
+}
+
+.profileSlotOpen .accountMenuItem:hover,
+.profileSlotOpen .accountMenuItem:focus-visible {
+  color: var(--profile-contrast-text) !important;
 }
 
 @media (max-width: 820px) {

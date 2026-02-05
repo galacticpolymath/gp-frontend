@@ -443,6 +443,26 @@ ol li {
   }
 }
 
+.account-action-btn {
+  border-width: 2px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.account-action-btn--jobviz {
+  background: #ffffff;
+  border-color: #1c28bd;
+  color: #1c28bd;
+  box-shadow: 0 10px 20px rgba(28, 40, 189, 0.12);
+}
+
+.account-action-btn--jobviz:hover,
+.account-action-btn--jobviz:focus-visible {
+  background: #1c28bd;
+  color: #ffffff;
+  border-color: #1c28bd;
+}
+
 .google-sign-in-btn {
   min-width: 195px;
 
