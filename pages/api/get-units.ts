@@ -19,13 +19,6 @@ export default async function handler(
   response: NextApiResponse
 ) {
   try {
-    console.log("Incoming request:", {
-      method: request.method,
-      query: request.query,
-      headers: request.headers,
-      body: request.body,
-    });
-
     const { method, query } = request;
 
     if (method !== "GET") {

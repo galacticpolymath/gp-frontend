@@ -11,9 +11,7 @@ const CollapsibleRichTextSection = ({
 }) => {
   const { _sectionDots, SectionTitle, sectionClassNameForTesting, sectionTitleFromDb } = props;
 
-  console.log('CollapsibleRichTextSection props: ', props);
 
-  console.log('sectionTitleFromDb: ', sectionTitleFromDb);
 
 
   const ref = useRef();
@@ -22,8 +20,6 @@ const CollapsibleRichTextSection = ({
   useLessonElementInView(_sectionDots, SectionTitle, ref);
 
   if (sectionTitleFromDb === 'JobViz Career Connections') {
-    console.log('jobvizConnections Content: ', Content);
-    console.log('jobviz props: ', props);
 
     return (
       <CollapsibleLessonSection initiallyExpanded={Content ? InitiallyExpanded : false} {...props}>
