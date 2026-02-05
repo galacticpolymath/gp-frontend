@@ -160,7 +160,7 @@ const normalizeJobVizConnections = (
       if (!title || !soc) return null;
       return { job_title: title, soc_code: soc };
     })
-    .filter(Boolean);
+    .filter((item): item is IConnectionJobViz => Boolean(item));
 };
 
 const buildJobTourUrl = (resource: PreviewResource) => {
@@ -738,10 +738,12 @@ export async function getStaticProps() {
       0,
       { ReleaseDate: -1 }
     );
-    for (const unit of retrievedUnits) {
-      if (unit.media?.length) {
-        unit.media = await Promise.all(
-          unit.media.map(async (media) => {
+    const units = retrievedUnits ?? [];
+    for (const unit of units) {
+      const unitMedia = (unit as { media?: any[] }).media;
+      if (unitMedia?.length) {
+        (unit as { media?: any[] }).media = await Promise.all(
+          unitMedia.map(async (media) => {
             if (media.type === "App" && !media.thumbnail) {
               const ogImage = await fetchOgImage(media.link ?? null);
               return ogImage ? { ...media, thumbnail: ogImage } : media;
@@ -1177,7 +1179,7 @@ export default function HomePage({
           id: `job-tour-unit-${unit.id}`,
           title: tourTitle,
           description: unit.subtitle || "Curated jobs linked to this unit.",
-          type: "Job Tour",
+          type: "Job Tour" as const,
           image: unit.bannerUrl || "/imgs/jobViz/jobviz_icon.png",
           subject: unit.targetSubject || unit.subject,
           alignedSubjects: unit.subjectConnections ?? [],
@@ -1204,11 +1206,11 @@ export default function HomePage({
           selectedJobs,
         };
       })
-      .filter(Boolean);
+      .filter(Boolean) as PreviewResource[];
 
     resources.push(...unitTourResources);
 
-    const userTourResources = jobTourRecords.map((tour) => {
+    const userTourResources: PreviewResource[] = jobTourRecords.map((tour) => {
       const gradeBands = getTourGradeBands(tour.gradeLevel);
       const gpUnitTitle = tour.gpUnitsAssociated?.length
         ? unitById.get(tour.gpUnitsAssociated[0])?.title ?? null
@@ -1217,7 +1219,7 @@ export default function HomePage({
         id: tour._id,
         title: tour.heading,
         description: tour.explanation || "Teacher-built JobViz tour.",
-        type: "Job Tour",
+        type: "Job Tour" as const,
         image: "/imgs/jobViz/jobviz_icon.png",
         subject: tour.classSubject,
         alignedSubjects: [],

@@ -97,8 +97,8 @@ export default async function handler(
         }
 
         const resolvedOwnerName = (() => {
-            const first = targetUser.firstName ?? targetUser?.name?.first ?? "";
-            const last = targetUser.lastName ?? targetUser?.name?.last ?? "";
+            const first = targetUser.firstName ?? "";
+            const last = targetUser.lastName ?? "";
             const full = `${first} ${last}`.trim();
             return full.length ? full : undefined;
         })();

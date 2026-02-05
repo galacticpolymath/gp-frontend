@@ -7,7 +7,7 @@
     "start": "next dev --turbopack",
     "prod": "next build --turbopack && next start",
     "lint": "next lint",
-    "lint_fix": "eslint --fix --ext .js,.jsx,.ts,.tsx .",
+    "lint_fix": "tsc --noEmit && eslint --fix --ext .js,.jsx,.ts,.tsx .",
     "ci": "start-server-and-test 'npm run start-server' http://localhost:3000 'npm run test:integration'",
     "start-server": "next dev -p 3000 --turbopack",
     "test:integration": "jest --roots testing/integration",

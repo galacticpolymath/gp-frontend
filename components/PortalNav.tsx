@@ -62,7 +62,7 @@ const PortalNav: React.FC<PortalNavProps> = ({
   const { status, user, isGpPlusMember, logUserOut } = useSiteSession();
   const isAuthenticated = status === "authenticated";
   const avatarUrl = user?.image ?? null;
-  const isPlusMember = isGpPlusMember === true || isGpPlusMember === "true";
+  const isPlusMember = isGpPlusMember === true;
   const effectiveIsAuthenticated = isHydrated ? isAuthenticated : false;
   const effectiveIsPlusMember = isHydrated ? isPlusMember : false;
   const effectiveAvatarUrl = isHydrated ? avatarUrl : null;

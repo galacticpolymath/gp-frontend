@@ -27,6 +27,8 @@ export interface FrontEndUserStats {
   };
 }
 
+type DebugSampleUser = NonNullable<FrontEndUserStats["debug"]>["sampleUsers"][number];
+
 const DEFAULT_STATS: FrontEndUserStats = {
   totalUsers: 0,
   totalStudents: 0,
@@ -125,7 +127,11 @@ const normalizeZip = (value?: string | number | null) => {
 export const getFrontEndUserStats =
   async (): Promise<FrontEndUserStats> => {
     try {
-      const statsDbType = process.env.GP_STATS_DB_TYPE ?? "production";
+      const rawStatsDbType = process.env.GP_STATS_DB_TYPE;
+      const statsDbType =
+        rawStatsDbType === "production" || rawStatsDbType === "dev"
+          ? rawStatsDbType
+          : "production";
       const { wasSuccessful } = await connectToMongodb(
         10_000,
         0,
@@ -144,7 +150,6 @@ export const getFrontEndUserStats =
           roles: 1,
           isNotTeaching: 1,
           classSize: 1,
-          classroomSize: 1,
         }
       );
 
@@ -162,7 +167,7 @@ export const getFrontEndUserStats =
       let usersWithClassroomSize = 0;
       let usersWithZip = 0;
       let usersWithCountry = 0;
-      const sampleUsers: FrontEndUserStats["debug"]["sampleUsers"] = [];
+      const sampleUsers: DebugSampleUser[] = [];
 
       activeUsers.forEach((user) => {
         const classSize =

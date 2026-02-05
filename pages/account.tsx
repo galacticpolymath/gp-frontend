@@ -270,6 +270,7 @@ const AccountPg: React.FC = () => {
           setNotifyModal({
             isDisplayed: true,
             headerTxt: "GP+ magic link is not configured",
+            bodyTxt: "",
             bodyElements: (
               <div className="d-flex flex-column align-items-center gap-2">
                 <p className="mb-0 text-center">

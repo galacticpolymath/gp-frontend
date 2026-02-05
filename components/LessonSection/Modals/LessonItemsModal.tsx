@@ -699,7 +699,13 @@ const LessonItemsModal: React.FC = () => {
 
               return (
                 <CarouselItem
-                  key={item.itemId ?? item._id ?? index}
+                  key={
+                    item.gpGDriveItemId ??
+                    item.gdriveRoot ??
+                    item.externalUrl ??
+                    item.itemTitle ??
+                    index
+                  }
                   backgroundColor={LESSON_ITEMS_MODAL_BG_COLOR}
                 >
                   <div className="position-relative h-100 w-100">
