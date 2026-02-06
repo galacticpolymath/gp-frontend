@@ -3440,6 +3440,10 @@ details:not([open]) .filterSummary::after {
   align-items: center;
 }
 
+.jobvizToursLogo {
+  width: clamp(160px, 22vw, 240px);
+}
+
 .jobvizToursCopy {
   display: flex;
   flex-direction: column;
@@ -3450,6 +3454,18 @@ details:not([open]) .filterSummary::after {
   display: flex;
   gap: 12px;
   flex-wrap: wrap;
+}
+
+.jobvizToursActionPill {
+  margin-left: 10px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #1a1d4a;
+  background: rgba(26, 29, 74, 0.12);
+  padding: 4px 8px;
+  border-radius: 999px;
 }
 
 .jobvizToursShowcase {
@@ -3465,6 +3481,21 @@ details:not([open]) .filterSummary::after {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  position: relative;
+}
+
+.jobvizToursPillPlus {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #1826bc;
+  background: rgba(24, 38, 188, 0.15);
+  padding: 4px 9px;
+  border-radius: 999px;
 }
 
 .jobvizToursTileKicker {

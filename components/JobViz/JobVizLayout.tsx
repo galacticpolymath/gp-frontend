@@ -1,4 +1,5 @@
 import * as React from "react";
+import Image from "next/image";
 import styles from "../../styles/jobvizBurst.module.scss";
 import {
   averageLineItemGrowth,
@@ -108,6 +109,16 @@ export const JobVizLayout: React.FC<JobVizLayoutProps> = ({
           <section className={styles.jobvizHero} data-tone="burst">
             <div className={styles.jobvizHeroContent}>
               <div className={styles.jobvizHeroInner}>
+                <div className={styles.jobvizHeroLogo}>
+                  <Image
+                    src="/imgs/jobViz/jobviz_rocket_logo_white.svg"
+                    alt="JobViz logo"
+                    width={240}
+                    height={80}
+                    priority
+                    style={{ width: "100%", height: "auto" }}
+                  />
+                </div>
                 <p className={styles.heroEyebrow}>{heroEyebrow}</p>
                 <h1 className={styles.heroTitle}>{heroTitle}</h1>
                 <p className={styles.heroSubtitle}>{effectiveSubtitle}</p>

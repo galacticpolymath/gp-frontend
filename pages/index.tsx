@@ -1,5 +1,6 @@
 import Head from "next/head";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import {
   FiBookOpen,
@@ -3468,34 +3469,41 @@ export default function HomePage({
                 <div className={styles.jobvizToursBg} aria-hidden="true" />
                 <div className={styles.jobvizToursInner}>
                   <div className={styles.jobvizToursCopy}>
-                    <p className={styles.sectionKicker}>JobViz Tours</p>
-                    <h2>Build career tours that match your classroom</h2>
+                    <div className={styles.jobvizToursLogo}>
+                      <Image
+                        src="/imgs/jobViz/jobviz_rocket_logo_color.svg"
+                        alt="JobViz logo"
+                        width={240}
+                        height={80}
+                        style={{ width: "100%", height: "auto" }}
+                      />
+                    </div>
+                    <p className={styles.sectionKicker}>JobViz Career Tours</p>
+                    <h2>Connect Abstract Concepts to Future Opportunities!</h2>
                     <p>
-                      Curate jobs from the full JobViz database, add your own
-                      context, and share tours with other teachers.
+                      When we say &quot;You can do anything with your life if you work hard&quot;, let's
+                      unpack what that means! Let your students explore basic details and
+                      stats for 800+ jobs.
                     </p>
                     <div className={styles.jobvizToursActions}>
-                      <Link
-                        href="/search?typeFilter=Job%20Tour"
-                        className={styles.primaryButton}
-                      >
-                        Explore JobViz Tours
-                      </Link>
                       <Link href="/jobviz" className={styles.secondaryButton}>
                         Open JobViz Explorer
+                        <span className={styles.jobvizToursActionPill}>FREE</span>
                       </Link>
                     </div>
                   </div>
                   <div className={styles.jobvizToursShowcase}>
                     <div className={styles.jobvizToursTile}>
+                      <span className={styles.jobvizToursPillPlus}>GP+</span>
                       <p className={styles.jobvizToursTileKicker}>GP Team Tours</p>
-                      <h3>Unit-aligned career journeys</h3>
+                      <h3>Unit-aligned job tours</h3>
                       <p>
-                        Launch students into careers connected to the units you
-                        already teach.
+                        All our units have a pre-built tour of 6-8 jobs connected to the
+                        standards-aligned content.
                       </p>
                     </div>
                     <div className={styles.jobvizToursTile}>
+                      <span className={styles.jobvizToursPillPlus}>GP+</span>
                       <p className={styles.jobvizToursTileKicker}>Teacher Templates</p>
                       <h3>Copy, remix, share</h3>
                       <p>

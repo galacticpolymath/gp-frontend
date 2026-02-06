@@ -435,6 +435,10 @@ $jobviz-nav-height: 64px;
   min-width: 0;
 }
 
+.jobvizHeroLogo {
+  width: clamp(150px, 22vw, 240px);
+}
+
 .heroEyebrow,
 .jobvizHeroEyebrow {
   margin: 0;
