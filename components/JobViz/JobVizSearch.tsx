@@ -26,16 +26,21 @@ export const JobVizSearch: React.FC<JobVizSearchProps> = ({
   const listboxId = React.useId();
   const resultRefs = React.useRef<(HTMLButtonElement | null)[]>([]);
 
+  const normalizeSearchValue = (value: string) =>
+    value.toLowerCase().replace(/\s+/g, "");
   const normalizedQuery = query.trim().toLowerCase();
+  const compactQuery = normalizeSearchValue(query.trim());
 
   const results = React.useMemo(() => {
     if (!normalizedQuery) return [];
 
     return jobVizData
       .filter((node) => {
-        const titleMatch = (node.title || node.soc_title || "")
-          .toLowerCase()
-          .includes(normalizedQuery);
+        const titleText = (node.title || node.soc_title || "").toLowerCase();
+        const titleMatch =
+          titleText.includes(normalizedQuery) ||
+          (compactQuery &&
+            normalizeSearchValue(titleText).includes(compactQuery));
         const socMatch =
           typeof node.soc_code === "string" &&
           node.soc_code.toLowerCase().includes(normalizedQuery);
@@ -43,7 +48,7 @@ export const JobVizSearch: React.FC<JobVizSearchProps> = ({
         return titleMatch || socMatch;
       })
       .slice(0, 12);
-  }, [normalizedQuery]);
+  }, [compactQuery, normalizedQuery]);
 
   React.useEffect(() => {
     setActiveIndex(-1);

@@ -1710,6 +1710,36 @@
   gap: 16px;
 }
 
+.mediaModalActions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.mediaCopyButton {
+  border: 1px solid rgba(240, 244, 255, 0.35);
+  background: rgba(255, 255, 255, 0.08);
+  color: #f0f4ff;
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.mediaCopyButton:hover,
+.mediaCopyButton:focus-visible {
+  background: rgba(255, 255, 255, 0.16);
+  border-color: rgba(240, 244, 255, 0.6);
+}
+
+.mediaCopyButton svg {
+  width: 16px;
+  height: 16px;
+}
+
 .mediaPlayer {
   border-radius: 16px;
   overflow: hidden;
@@ -2507,6 +2537,28 @@ details:not([open]) .filterSummary::after {
   backdrop-filter: blur(6px);
 }
 
+.resourceMediaType img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
+
+.resourceCard[data-type="Job Tour"] .resourceMediaType,
+.resourceRow[data-type="Job Tour"] .resourceMediaType {
+  border: none;
+  background: rgba(15, 20, 45, 0.55);
+  overflow: hidden;
+}
+
+.resourceCard[data-type="Job Tour"] .resourceMediaType img,
+.resourceRow[data-type="Job Tour"] .resourceMediaType img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  transform: scale(1.02);
+}
+
 .resourceContent {
   padding: 18px 20px 20px;
   display: flex;
@@ -2570,9 +2622,9 @@ details:not([open]) .filterSummary::after {
 .resourceTypePill {
   display: inline-flex;
   align-items: center;
-  gap: 9px;
+  gap: 6px;
   border-radius: 999px;
-  padding: 9px 18px;
+  padding: 6px 14px;
   font-size: 18px;
   font-weight: 700;
   text-transform: uppercase;
@@ -2587,6 +2639,13 @@ details:not([open]) .filterSummary::after {
   height: 18px;
   flex: 0 0 auto;
   stroke: currentColor;
+}
+
+.resourceTypePill img {
+  width: 22px;
+  height: 22px;
+  flex: 0 0 auto;
+  object-fit: contain;
 }
 
 .resourceBadges {
@@ -2813,6 +2872,13 @@ details:not([open]) .filterSummary::after {
   height: 12px;
   flex: 0 0 auto;
   stroke: currentColor;
+}
+
+.resourceRowTypePill img {
+  width: 12px;
+  height: 12px;
+  flex: 0 0 auto;
+  object-fit: contain;
 }
 
 
@@ -3488,14 +3554,6 @@ details:not([open]) .filterSummary::after {
   position: absolute;
   top: 16px;
   right: 16px;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: #1826bc;
-  background: rgba(24, 38, 188, 0.15);
-  padding: 4px 9px;
-  border-radius: 999px;
 }
 
 .jobvizToursTileKicker {

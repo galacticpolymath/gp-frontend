@@ -8,6 +8,7 @@ import {
   FiLayers,
   FiPlay,
   FiPlayCircle,
+  FiShare2,
   FiStar,
   FiUsers,
 } from "react-icons/fi";
@@ -24,14 +25,16 @@ import {
   ListFilter,
   NotebookPen,
   PartyPopper,
+  Briefcase,
   Rocket,
   School,
   Search,
   SquareCheckBig,
   Youtube,
 } from "lucide-react";
-import type { IconType } from "react-icons";
+import type { IconBaseProps, IconType } from "react-icons";
 import { MdOutlineSchool } from "react-icons/md";
+import { toast } from "react-hot-toast";
 import styles from "./home.module.css";
 import { getUnitLessons, retrieveUnits } from "../backend/services/unitServices";
 import { createDbProjections, getLiveUnits } from "../shared/fns";
@@ -86,6 +89,18 @@ interface PreviewUnit {
   locale: string;
   jobvizConnections?: IJobVizConnection[] | IConnectionJobViz[] | null;
 }
+
+const JobTourIcon: React.FC<IconBaseProps> = ({ className, size, ...rest }) => (
+  <img
+    src="/imgs/jobViz/jobviz_rocket_logo_color.svg"
+    alt=""
+    aria-hidden="true"
+    className={className}
+    width={typeof size === "number" ? size : undefined}
+    height={typeof size === "number" ? size : undefined}
+    {...rest}
+  />
+);
 
 interface BlogPost {
   id: string;
@@ -660,6 +675,33 @@ const getYoutubeId = (url?: string | null) => {
   return null;
 };
 
+const buildShareableMediaLink = (link?: string | null) => {
+  if (!link) return "";
+  try {
+    const url = new URL(link, typeof window === "undefined" ? undefined : window.location.origin);
+    const hostname = url.hostname.replace(/^www\./, "");
+    if (hostname.includes("youtube") || hostname === "youtu.be") {
+      const id = getYoutubeId(url.toString());
+      const time = url.searchParams.get("t") || url.searchParams.get("start");
+      if (id) {
+        return `https://youtu.be/${id}${time ? `?t=${time}` : ""}`;
+      }
+    }
+    if (hostname.includes("vimeo.com")) {
+      const videoId =
+        url.pathname.split("/video/")[1]?.split("/")[0] ??
+        url.pathname.replace("/", "").split("/")[0];
+      if (videoId) {
+        return `https://vimeo.com/${videoId}`;
+      }
+    }
+    url.searchParams.delete("autoplay");
+    return url.toString();
+  } catch (error) {
+    return link;
+  }
+};
+
 const getDriveThumbnail = (url?: string | null) => {
   if (!url || !url.includes("drive.google")) return null;
   const idMatch = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
@@ -1174,7 +1216,7 @@ export default function HomePage({
       title: "JobViz Career Explorer",
       description: "Explore 800+ careers and connect classroom learning to real-world jobs.",
       type: "App",
-      image: "/imgs/jobViz/jobviz_icon.png",
+      image: "/imgs/jobViz/jobviz_rocket_logo_color.svg",
       subject: "Careers",
       alignedSubjects: [],
       gradeBandGroup: getGradeBandGroup(jobvizGradeBand),
@@ -1213,7 +1255,7 @@ export default function HomePage({
           isNew: false,
           isPlus: true,
           accent: getAccent("careers"),
-          icon: FiLayers,
+          icon: JobTourIcon,
           ownerId: null,
           ownerName: "GP Team",
           tourSource: "unit",
@@ -1253,7 +1295,7 @@ export default function HomePage({
         isNew: false,
         isPlus: true,
         accent: getAccent("careers"),
-        icon: FiLayers,
+        icon: JobTourIcon,
         ownerId: tour.userId ? String(tour.userId) : null,
         ownerName: tour.ownerName ?? null,
         tourSource: "user",
@@ -1387,8 +1429,12 @@ export default function HomePage({
     );
   };
 
+  const normalizeSearchValue = (value: string) =>
+    value.toLowerCase().replace(/\s+/g, "");
+
   const filteredResources = useMemo(() => {
     const query = debouncedSearchQuery.trim().toLowerCase();
+    const compactQuery = normalizeSearchValue(debouncedSearchQuery.trim());
     return allResources.filter((resource) => {
       if (
         selectedContentTypes.length &&
@@ -1445,7 +1491,14 @@ export default function HomePage({
         .filter(Boolean)
         .join(" ")
         .toLowerCase();
-      return haystack.includes(query);
+      if (haystack.includes(query)) {
+        return true;
+      }
+      if (!compactQuery) {
+        return false;
+      }
+      const compactHaystack = normalizeSearchValue(haystack);
+      return compactHaystack.includes(compactQuery);
     });
   }, [
     allResources,
@@ -2682,14 +2735,13 @@ export default function HomePage({
                         const hasSubtitle = Boolean(resource.description?.trim());
                         const isUnit = resource.type === "Unit";
                         if (resource.type === "Job Tour") {
-                          const jobTitles = getJobTitlesForTour(resource.selectedJobs);
-                          const jobTitlesLine = jobTitles.length
-                            ? `Jobs: ${jobTitles.join(", ")}`
-                            : null;
                           const jobTourTitle =
                             resource.tourSource === "unit" && resource.tourUnitId
                               ? `Jobs related to GP Unit ${resource.tourUnitId}`
                               : resource.title;
+                          const fromUnitLabel =
+                            resource.tourUnitTitle ??
+                            resource.description.replace(/^From\s+/i, "");
                           return (
                             <article
                               key={resource.id}
@@ -2702,7 +2754,11 @@ export default function HomePage({
                               <div className={styles.resourceRowMedia}>
                                 <img src={resource.image} alt="" loading="lazy" />
                                 <div className={styles.resourceMediaType}>
-                                  <ResourceIcon aria-hidden="true" />
+                                  <img
+                                    src="/imgs/jobViz/jobviz_rocket_logo_white.svg"
+                                    alt=""
+                                    aria-hidden="true"
+                                  />
                                 </div>
                               </div>
                               <div className={styles.resourceRowContent}>
@@ -2710,38 +2766,21 @@ export default function HomePage({
                                   className={`${styles.resourceRowTitleLine} ${styles.jobTourRowTitleLine}`}
                                 >
                                   <span className={styles.resourceRowTitleText}>
-                                    {jobTourTitle}
+                                    {resource.tourSource === "unit"
+                                      ? "Jobs related to:"
+                                      : jobTourTitle}
                                   </span>
-                                  {resource.tourUnitId && resource.tourUnitTitle && (
-                                    <Link
-                                      href={buildUnitPath(resource.tourUnitId)}
-                                      className={styles.jobTourFromUnit}
-                                    >
-                                      From {resource.tourUnitTitle}
-                                    </Link>
-                                  )}
-                                  {hasSubtitle && (
+                                  {fromUnitLabel ? (
                                     <span className={styles.resourceRowSubtitle}>
-                                      {resource.description}
+                                      &quot;{truncateUnitTitle(fromUnitLabel)}&quot;
                                     </span>
+                                  ) : (
+                                    hasSubtitle && (
+                                      <span className={styles.resourceRowSubtitle}>
+                                        {resource.description}
+                                      </span>
+                                    )
                                   )}
-                                  {jobTitlesLine && (
-                                    <span className={styles.jobTourRowJobsLine}>
-                                      {jobTitlesLine}
-                                    </span>
-                                  )}
-                                  <span className={styles.jobTourRowMetaLine}>
-                                    Made by: {madeByLabel}
-                                    {resource.tourIsGp && (
-                                      <img
-                                        src="/imgs/gp-logos/gp_submark.png"
-                                        alt=""
-                                        aria-hidden="true"
-                                        className={styles.jobTourGpInline}
-                                      />
-                                    )}{" "}
-                                    • {resource.timeLabel}
-                                  </span>
                                 </div>
                               </div>
                               <div
@@ -2873,7 +2912,11 @@ export default function HomePage({
                                   {resource.isPlus && (
                                     <span className={styles.resourceBadgePlus}>
                                       <img
-                                        src="/plus/plus.png"
+                                        src={
+                                          resource.type === "Job Tour"
+                                            ? "/imgs/jobViz/jobviz_rocket_logo_purple_bold.svg"
+                                            : "/plus/plus.png"
+                                        }
                                         alt=""
                                         aria-hidden="true"
                                       />
@@ -2906,12 +2949,17 @@ export default function HomePage({
                             className={`${styles.resourceCard} ${styles.jobTourCard} ${
                               animateResults ? styles.resourceAnimate : ""
                             }`}
+                            data-type={resource.type}
                             {...cardProps}
                           >
                             <div className={styles.resourceMedia}>
                               <img src={resource.image} alt="" loading="lazy" />
                               <div className={styles.resourceMediaType}>
-                                <ResourceIcon aria-hidden="true" />
+                                <img
+                                  src="/imgs/jobViz/jobviz_rocket_logo_white_bold.svg"
+                                  alt=""
+                                  aria-hidden="true"
+                                />
                               </div>
                             </div>
                             <div className={styles.resourceContent}>
@@ -2965,7 +3013,7 @@ export default function HomePage({
                                   {resource.isPlus && (
                                     <span className={styles.resourceBadgePlus}>
                                       <img
-                                        src="/plus/plus.png"
+                                        src="/imgs/jobViz/jobviz_rocket_logo_purple_bold.svg"
                                         alt=""
                                         aria-hidden="true"
                                       />
@@ -2986,7 +3034,7 @@ export default function HomePage({
                                     .replace(/university/gi, "College")}
                                 </span>
                                 <span>
-                                  <Rocket aria-hidden="true" />
+                                  <Briefcase aria-hidden="true" />
                                   {resource.timeLabel}
                                 </span>
                               </div>
@@ -3473,8 +3521,8 @@ export default function HomePage({
                       <Image
                         src="/imgs/jobViz/jobviz_rocket_logo_color.svg"
                         alt="JobViz logo"
-                        width={240}
-                        height={80}
+                        width={120}
+                        height={120}
                         style={{ width: "100%", height: "auto" }}
                       />
                     </div>
@@ -3494,7 +3542,12 @@ export default function HomePage({
                   </div>
                   <div className={styles.jobvizToursShowcase}>
                     <div className={styles.jobvizToursTile}>
-                      <span className={styles.jobvizToursPillPlus}>GP+</span>
+                      <span
+                        className={`${styles.resourceBadgePlus} ${styles.jobvizToursPillPlus}`}
+                      >
+                        <img src="/plus/plus.png" alt="" aria-hidden="true" />
+                        GP+
+                      </span>
                       <p className={styles.jobvizToursTileKicker}>GP Team Tours</p>
                       <h3>Unit-aligned job tours</h3>
                       <p>
@@ -3503,7 +3556,12 @@ export default function HomePage({
                       </p>
                     </div>
                     <div className={styles.jobvizToursTile}>
-                      <span className={styles.jobvizToursPillPlus}>GP+</span>
+                      <span
+                        className={`${styles.resourceBadgePlus} ${styles.jobvizToursPillPlus}`}
+                      >
+                        <img src="/plus/plus.png" alt="" aria-hidden="true" />
+                        GP+
+                      </span>
                       <p className={styles.jobvizToursTileKicker}>Teacher Templates</p>
                       <h3>Copy, remix, share</h3>
                       <p>
@@ -3633,6 +3691,39 @@ export default function HomePage({
             )}
             {activeModal === "media" && activeMedia && (
               <div className={styles.mediaModalBody}>
+                <div className={styles.mediaModalActions}>
+                  <button
+                    type="button"
+                    className={styles.mediaCopyButton}
+                    onClick={async () => {
+                      const shareLink = buildShareableMediaLink(activeMedia.link);
+                      if (!shareLink) return;
+                      try {
+                        await navigator.clipboard.writeText(shareLink);
+                        toast.success("Link Copied");
+                        return;
+                      } catch (error) {
+                        // Fall back to a basic copy method.
+                      }
+                      try {
+                        const textarea = document.createElement("textarea");
+                        textarea.value = shareLink;
+                        textarea.style.position = "fixed";
+                        textarea.style.opacity = "0";
+                        document.body.appendChild(textarea);
+                        textarea.select();
+                        document.execCommand("copy");
+                        document.body.removeChild(textarea);
+                        toast.success("Link Copied");
+                      } catch (error) {
+                        toast.error("Unable to copy link");
+                      }
+                    }}
+                  >
+                    <FiShare2 aria-hidden="true" />
+                    Copy Link to Clipboard
+                  </button>
+                </div>
                 <div className={styles.mediaPlayer}>
                   {activeMedia.link && getYoutubeId(activeMedia.link) ? (
                     <iframe

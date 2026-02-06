@@ -274,12 +274,18 @@ export const useUserEntry = () => {
       "gdriveAccessTokenExp",
       "gdriveRefreshToken",
     ]);
+    const resolvedCallbackUrl =
+      callbackUrl ||
+      (typeof window === "undefined"
+        ? ""
+        : (getSessionStorageItem("userEntryRedirectUrl") ||
+            window.location.href));
     sendFormToServer("login", "credentials", {
       login: {
         email,
         password,
       },
-      callbackUrl,
+      callbackUrl: resolvedCallbackUrl,
     });
   };
 

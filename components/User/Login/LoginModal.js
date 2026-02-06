@@ -3,7 +3,7 @@
  
  
  
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { CloseButton, Modal, ModalHeader, Spinner } from "react-bootstrap";
 import { MdOutlineMail } from "react-icons/md";
 import { FaLock } from "react-icons/fa";
@@ -18,6 +18,7 @@ import {
 import { FcGoogle } from "react-icons/fc";
 import { CustomInput } from "../formElements";
 import { validateEmail } from "../../../globalFns";
+import { getSessionStorageItem, setSessionStorageItem } from "../../../shared/fns";
 
 const LoginModal = () => {
   const {
@@ -35,6 +36,18 @@ const LoginModal = () => {
     useState(false);
   const [errors, setErrors] = useState(new Map());
   const [loginForm, setLoginForm] = _loginForm;
+  const redirectUrl =
+    typeof window === "undefined"
+      ? ""
+      : (getSessionStorageItem("userEntryRedirectUrl") || window.location.href);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const existing = getSessionStorageItem("userEntryRedirectUrl");
+    if (!existing) {
+      setSessionStorageItem("userEntryRedirectUrl", window.location.href);
+    }
+  }, []);
 
   const handleOnInputChange = (event) => {
     const { name, value } = event.target;
@@ -108,6 +121,7 @@ const LoginModal = () => {
         email,
         password,
       },
+      callbackUrl: redirectUrl,
     });
   };
 
@@ -152,9 +166,7 @@ const LoginModal = () => {
       <div className="py-3 py-sm-2">
         <section className="d-flex justify-content-center align-items-center pt-3">
           <GoogleSignIn
-            callbackUrl={
-              typeof window !== "undefined" ? window.location.href : ""
-            }
+            callbackUrl={redirectUrl}
             className="rounded shadow px-3 py-2 w-75 py-sm-4 px-sm-5 border position-relative"
             isLoggingIn
             executeExtraBtnClickLogic={() => {
