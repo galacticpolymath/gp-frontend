@@ -395,8 +395,32 @@
 
   .navRight {
     width: 100%;
-    justify-content: space-between;
-    flex-wrap: wrap;
+    justify-content: flex-end;
+    flex-wrap: nowrap;
+    gap: 10px;
+    min-width: 0;
+  }
+
+  .navTabsGroup {
+    margin-left: 0;
+    min-width: 0;
+  }
+
+  .navTabs {
+    gap: 10px;
+  }
+
+  .profileSlot {
+    margin-left: 0;
+    padding: 4px 6px;
+  }
+
+  .profileToggle {
+    gap: 0;
+  }
+
+  .profileButton {
+    display: none;
   }
 }
 
@@ -436,9 +460,11 @@
     width: 100%;
     flex-direction: row;
     align-items: center;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
+    justify-content: space-between;
     gap: 8px;
     padding-top: 0;
+    overflow-x: auto;
   }
 
   .navRightOpen {
@@ -446,17 +472,25 @@
   }
 
   .navTabs {
-    width: 100%;
-    justify-content: space-between;
+    width: auto;
+    justify-content: flex-start;
+    gap: 8px;
   }
 
   .navTabsGroup {
-    flex: 0 0 auto;
-    align-items: center;
-    width: max-content;
+    margin-left: 0;
+    flex: 1 1 auto;
+    min-width: 0;
+    align-items: flex-start;
+    width: auto;
   }
 
   .navTabsLabel {
-    width: 100%;
+    width: auto;
+    text-align: left;
+  }
+
+  .profileSlot {
+    margin-left: 0;
   }
 }

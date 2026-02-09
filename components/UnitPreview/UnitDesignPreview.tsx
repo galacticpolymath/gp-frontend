@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import Image from 'next/image';
 import { format } from 'date-fns';
 import RichText from '../RichText';
@@ -17,15 +17,13 @@ const TAB_MATERIALS = 'materials';
 const TAB_STANDARDS = 'standards';
 const TAB_BACKGROUND = 'background';
 const TAB_CREDITS = 'credits';
-const TAB_VERSIONS = 'versions';
 
 type TTabKey =
   | typeof TAB_OVERVIEW
   | typeof TAB_MATERIALS
   | typeof TAB_STANDARDS
   | typeof TAB_BACKGROUND
-  | typeof TAB_CREDITS
-  | typeof TAB_VERSIONS;
+  | typeof TAB_CREDITS;
 
 type TSearchEntry = {
   id: string;
@@ -276,8 +274,8 @@ const buildSearchEntries = (
   if (versionsText) {
     entries.push({
       id: 'versions',
-      tab: TAB_VERSIONS,
-      title: 'Version Notes',
+      tab: TAB_CREDITS,
+      title: 'Major Release Updates',
       excerpt: buildExcerpt(versionsText),
       content: normalize(versionsText),
     });
@@ -316,12 +314,10 @@ const UnitDesignPreview: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
         {
           key: TAB_CREDITS,
           label: 'Credits',
-          isVisible: !!unit.Sections?.acknowledgements || !!unit.Sections?.credits,
-        },
-        {
-          key: TAB_VERSIONS,
-          label: 'Version Notes',
-          isVisible: !!unit.Sections?.versionNotes,
+          isVisible:
+            !!unit.Sections?.acknowledgements ||
+            !!unit.Sections?.credits ||
+            !!unit.Sections?.versionNotes?.Data?.length,
         },
       ].filter((tab) => tab.isVisible),
     [lessons.length, unit.TargetStandardsCodes, unit.Sections]
@@ -342,6 +338,11 @@ const UnitDesignPreview: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
     [unit, lessons]
   );
   const [searchTerm, setSearchTerm] = useState('');
+  const [isSearchExpanded, setIsSearchExpanded] = useState(false);
+  const searchInputRef = useRef<HTMLInputElement>(null);
+  const versionNotesAnchorRef = useRef<HTMLDivElement>(null);
+  const [shouldScrollToVersionNotes, setShouldScrollToVersionNotes] =
+    useState(false);
 
   const searchResults = useMemo(() => {
     const term = normalize(searchTerm.trim());
@@ -434,7 +435,37 @@ const UnitDesignPreview: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
       handleTabChange(entry.tab);
     }
     setSearchTerm('');
+    setIsSearchExpanded(false);
   };
+
+  const handleSearchToggle = () => {
+    setIsSearchExpanded((current) => {
+      if (current) {
+        setSearchTerm('');
+      }
+      return !current;
+    });
+  };
+
+  useEffect(() => {
+    if (!isSearchExpanded) {
+      return;
+    }
+    searchInputRef.current?.focus();
+  }, [isSearchExpanded]);
+
+  useEffect(() => {
+    if (activeTab !== TAB_CREDITS || !shouldScrollToVersionNotes) {
+      return;
+    }
+    window.requestAnimationFrame(() => {
+      versionNotesAnchorRef.current?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+      });
+      setShouldScrollToVersionNotes(false);
+    });
+  }, [activeTab, shouldScrollToVersionNotes]);
 
   const activeLessonIndex = lessons.findIndex(
     (lesson, index) => getLessonIdentifier(lesson, index) === activeLessonId
@@ -448,8 +479,75 @@ const UnitDesignPreview: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
   const availLocs = unit.Sections?.overview?.availLocs ?? [];
   const locale = unit.locale ?? 'en-US';
   const numID = unit.numID ?? undefined;
+  const alignedSubjects = useMemo(() => {
+    const standardsData = unit.Sections?.standards?.Data;
+    const subjectsFromStandards = Array.isArray(standardsData)
+      ? standardsData
+          .map((subjectGroup) => {
+            const subjectName =
+              typeof subjectGroup?.subject === 'string'
+                ? subjectGroup.subject.trim()
+                : '';
+            if (!subjectName) {
+              return null;
+            }
+            const hasAlignedStandards = (subjectGroup?.sets ?? []).some((set) =>
+              (set?.dimensions ?? []).some((dimension) =>
+                (dimension?.standardsGroup ?? []).some(
+                  (group) => (group?.standardsGroup ?? []).length > 0
+                )
+              )
+            );
+            return hasAlignedStandards ? subjectName : null;
+          })
+          .filter((subject): subject is string => !!subject)
+      : [];
+
+    const subjectsSource = subjectsFromStandards.length
+      ? subjectsFromStandards
+      : (unit.TargetStandardsCodes ?? [])
+          .map((standard) => {
+            if (typeof standard?.subject === 'string') {
+              return standard.subject.trim();
+            }
+            if (typeof standard?.set === 'string') {
+              return standard.set.trim();
+            }
+            return '';
+          })
+          .filter(Boolean);
+
+    return Array.from(new Set(subjectsSource));
+  }, [unit.Sections?.standards?.Data, unit.TargetStandardsCodes]);
+
+  const additionalAlignedSubjects = useMemo(() => {
+    const targetSubject = overview?.TargetSubject?.trim().toLowerCase();
+    return alignedSubjects.filter(
+      (subject) => subject.toLowerCase() !== targetSubject
+    );
+  }, [alignedSubjects, overview?.TargetSubject]);
+  const versionReleases = unit.Sections?.versionNotes?.Data ?? [];
+  const latestSubRelease = versionReleases
+    .flatMap((release) => release.sub_releases ?? [])
+    .find((subRelease) => !!subRelease?.version) ?? null;
+  const unitVersionLabel = latestSubRelease?.version ?? null;
+  const updatedDate = latestSubRelease?.date
+    ? !Number.isNaN(new Date(latestSubRelease.date).getTime())
+      ? format(new Date(latestSubRelease.date), 'MMM d, yyyy')
+      : latestSubRelease.date
+    : null;
+  const unitVersionText = unitVersionLabel
+    ? updatedDate
+      ? `ver. ${unitVersionLabel} (${updatedDate})`
+      : `ver. ${unitVersionLabel}`
+    : null;
   const { _isGpPlusModalDisplayed } = useModalContext();
   const [, setIsGpPlusModalDisplayed] = _isGpPlusModalDisplayed;
+
+  const handleVersionInfoClick = () => {
+    setShouldScrollToVersionNotes(true);
+    handleTabChange(TAB_CREDITS);
+  };
 
   return (
     <div className={styles.unitPage}>
@@ -457,7 +555,6 @@ const UnitDesignPreview: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
         <div className={styles.unitStickyInner}>
           <div className={styles.unitStickyTopRow}>
             <div className={styles.unitStickyTitle}>
-              <span className={styles.unitStickyLabel}>Title</span>
               <span className={styles.unitStickyText}>
                 {unitTitle}
                 {unitSubtitle ? `: ${unitSubtitle}` : ''}
@@ -466,23 +563,65 @@ const UnitDesignPreview: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
           </div>
           <div className={styles.unitSearch}>
             <div className={styles.unitSearchRow}>
-              <div className={styles.unitSearchInputWrap}>
-                <span className={styles.unitSearchIcon} aria-hidden="true">
+              <div
+                className={
+                  isSearchExpanded
+                    ? `${styles.unitSearchInputWrap} ${styles.unitSearchInputWrapExpanded}`
+                    : `${styles.unitSearchInputWrap} ${styles.unitSearchInputWrapCollapsed}`
+                }
+              >
+                <button
+                  type="button"
+                  className={styles.unitSearchIcon}
+                  aria-label={
+                    isSearchExpanded ? 'Collapse unit search' : 'Expand unit search'
+                  }
+                  aria-controls="unit-search"
+                  aria-expanded={isSearchExpanded}
+                  onClick={handleSearchToggle}
+                >
                   <i className="bi bi-search" />
-                </span>
+                </button>
                 <input
                   id="unit-search"
-                  className={styles.unitSearchInput}
+                  ref={searchInputRef}
+                  className={
+                    isSearchExpanded
+                      ? `${styles.unitSearchInput} ${styles.unitSearchInputExpanded}`
+                      : `${styles.unitSearchInput} ${styles.unitSearchInputCollapsed}`
+                  }
                   type="search"
                   placeholder="Search lessons, steps, resources"
                   value={searchTerm}
                   onChange={(event) => setSearchTerm(event.target.value)}
+                  onKeyDown={(event) => {
+                    if (event.key === 'Escape') {
+                      setSearchTerm('');
+                      setIsSearchExpanded(false);
+                    }
+                  }}
+                  tabIndex={isSearchExpanded ? 0 : -1}
                 />
               </div>
               {availLocs.length > 0 && numID != null && (
-                <div className={styles.unitLocaleSwitcher}>
-                  <LocDropdown availLocs={availLocs} loc={locale} id={numID} />
+                <div className={styles.unitLocaleActions}>
+                  <div className={styles.unitLocaleSwitcher}>
+                    <LocDropdown availLocs={availLocs} loc={locale} id={numID} />
+                  </div>
+                  <button
+                    className={styles.stickyShareAction}
+                    type="button"
+                  >
+                    <i className="bi bi-share" aria-hidden="true" />
+                    Share
+                  </button>
                 </div>
+              )}
+              {!(availLocs.length > 0 && numID != null) && (
+                <button className={styles.stickyShareAction} type="button">
+                  <i className="bi bi-share" aria-hidden="true" />
+                  Share
+                </button>
               )}
             </div>
           </div>
@@ -502,7 +641,7 @@ const UnitDesignPreview: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
               </button>
             ))}
           </div>
-          {searchTerm.length > 1 && (
+          {isSearchExpanded && searchTerm.length > 1 && (
             <div className={styles.unitSearchResults}>
               {searchResults.length ? (
                 searchResults.map((entry) => (
@@ -533,40 +672,6 @@ const UnitDesignPreview: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
       {activeTab === TAB_OVERVIEW && (
         <section className={styles.unitHero}>
           <div className={styles.unitHeroGrid}>
-            <div className={styles.unitHeroHeader}>
-              <p className={styles.unitEyebrow}>Galactic Polymath · Unit</p>
-              <h1 className={styles.unitTitle}>{unitTitle}</h1>
-              {unitSubtitle && (
-                <p className={styles.unitSubtitle}>{unitSubtitle}</p>
-              )}
-              <div className={styles.unitMetaRow}>
-                {overview?.EstUnitTime && (
-                  <span className={styles.unitMetaItem}>
-                    {overview.EstUnitTime} total
-                  </span>
-                )}
-                {unit.ForGrades && (
-                  <span className={styles.unitMetaItem}>
-                    Grades {unit.ForGrades}
-                  </span>
-                )}
-                {overview?.TargetSubject && (
-                  <span className={styles.unitMetaItem}>
-                    {overview.TargetSubject}
-                  </span>
-                )}
-                {unit.LastUpdated && (
-                  <span className={styles.unitMetaItem}>
-                    Updated {format(new Date(unit.LastUpdated), 'MMM d, yyyy')}
-                  </span>
-                )}
-              </div>
-              <div className={styles.unitActionRow}>
-                <button className={styles.ghostAction} type="button">
-                  Share
-                </button>
-              </div>
-            </div>
             <div className={styles.unitHeroMedia}>
               {unitBanner ? (
                 <div className={styles.unitBanner}>
@@ -584,6 +689,33 @@ const UnitDesignPreview: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                 </div>
               )}
             </div>
+            <div className={styles.unitHeroHeader}>
+              <div className={styles.unitEyebrowRow}>
+                <p className={styles.unitEyebrow}>Galactic Polymath · Unit</p>
+                {unitVersionText && (
+                  <button
+                    type="button"
+                    className={styles.unitVersionInfo}
+                    onClick={handleVersionInfoClick}
+                  >
+                    {unitVersionText}
+                  </button>
+                )}
+              </div>
+              <h1 className={styles.unitTitle}>{unitTitle}</h1>
+              {unitSubtitle && (
+                <p className={styles.unitSubtitle}>{unitSubtitle}</p>
+              )}
+              {!!overview?.UnitTags?.length && (
+                <div className={styles.unitTagList}>
+                  {overview.UnitTags.map((tag) => (
+                    <span key={tag} className={styles.unitTag}>
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         </section>
       )}
@@ -591,15 +723,11 @@ const UnitDesignPreview: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
       <main className={styles.unitMain}>
         {activeTab === TAB_OVERVIEW && (
           <section className={styles.unitSection}>
-            <div className={styles.unitSectionHeader}>
-              <p>
-                Combine the unit summary with curated previews and quick
-                links.
-              </p>
-            </div>
             <div className={styles.unitOverviewGrid}>
-              <div className={styles.unitOverviewCard}>
-                <h3>At a glance</h3>
+              <div
+                className={`${styles.unitOverviewCard} ${styles.unitOverviewCardPrimary}`}
+              >
+                <h3>The Gist</h3>
                 {overview?.TheGist && (
                   <p className={styles.unitLead}>{overview.TheGist}</p>
                 )}
@@ -614,70 +742,72 @@ const UnitDesignPreview: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                   </div>
                 )}
               </div>
-              <div className={styles.unitOverviewCard}>
-                <h3>Quick details</h3>
-                <div className={styles.unitDetailsList}>
+              <div
+                className={`${styles.unitOverviewCard} ${styles.unitOverviewCardCompact}`}
+              >
+                <h3>At a glance</h3>
+                <div className={styles.atGlanceGrid}>
                   {overview?.EstUnitTime && (
-                    <div>
-                      <span>Estimated time</span>
-                      <strong>{overview.EstUnitTime}</strong>
+                    <div className={styles.atGlanceItem}>
+                      <span className={styles.atGlanceIcon} aria-hidden="true">
+                        <i className="bi bi-clock-history" />
+                      </span>
+                      <div className={styles.atGlanceContent}>
+                        <span className={styles.atGlanceLabel}>Estimated time</span>
+                        <strong className={styles.atGlanceValue}>
+                          {overview.EstUnitTime}
+                        </strong>
+                      </div>
                     </div>
                   )}
                   {unit.ForGrades && (
-                    <div>
-                      <span>Grades</span>
-                      <strong>{unit.ForGrades}</strong>
+                    <div className={styles.atGlanceItem}>
+                      <span className={styles.atGlanceIcon} aria-hidden="true">
+                        <i className="bi bi-mortarboard-fill" />
+                      </span>
+                      <div className={styles.atGlanceContent}>
+                        <span className={styles.atGlanceLabel}>Grades</span>
+                        <strong className={styles.atGlanceValue}>{unit.ForGrades}</strong>
+                      </div>
                     </div>
                   )}
                   {overview?.TargetSubject && (
-                    <div>
-                      <span>Subject focus</span>
-                      <strong>{overview.TargetSubject}</strong>
-                    </div>
-                  )}
-                  {overview?.SteamEpaulette && (
-                    <div>
-                      <span>STEAM</span>
-                      <strong>{overview.SteamEpaulette}</strong>
-                    </div>
+                    <button
+                      type="button"
+                      className={`${styles.atGlanceItem} ${styles.atGlanceItemAction}`}
+                      onClick={() => handleTabChange(TAB_STANDARDS)}
+                    >
+                      <span className={styles.atGlanceIcon} aria-hidden="true">
+                        <i className="bi bi-journal-richtext" />
+                      </span>
+                      <div className={styles.atGlanceContent}>
+                        <span className={styles.atGlanceLabel}>Subject focus</span>
+                        <strong className={styles.atGlanceValue}>
+                          {overview.TargetSubject}
+                        </strong>
+                      </div>
+                      {overview?.SteamEpaulette && (
+                        <div className={styles.learningEpaulette}>
+                          <Image
+                            src={overview.SteamEpaulette}
+                            alt="GP learning epaulette"
+                            width={240}
+                            height={240}
+                            style={{ width: '100%', height: 'auto' }}
+                          />
+                        </div>
+                      )}
+                      {!!additionalAlignedSubjects.length && (
+                        <span className={styles.alignedSubjectsText}>
+                          Also aligned to {additionalAlignedSubjects.join(', ')}
+                        </span>
+                      )}
+                    </button>
                   )}
                 </div>
-                {!!overview?.UnitTags?.length && (
-                  <div className={styles.unitTagList}>
-                    {overview.UnitTags.map((tag) => (
-                      <span key={tag} className={styles.unitTag}>
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                )}
-                {(overview?.SteamEpaulette || overview?.SteamEpaulette_vert) && (
-                  <div className={styles.epauletteRow}>
-                    {overview?.SteamEpaulette && (
-                      <div className={styles.epauletteCard}>
-                        <Image
-                          src={overview.SteamEpaulette}
-                          alt="GP learning epaulette"
-                          width={240}
-                          height={240}
-                        />
-                      </div>
-                    )}
-                    {overview?.SteamEpaulette_vert && (
-                      <div className={styles.epauletteCard}>
-                        <Image
-                          src={overview.SteamEpaulette_vert}
-                          alt="GP learning epaulette"
-                          width={240}
-                          height={240}
-                        />
-                      </div>
-                    )}
-                  </div>
-                )}
               </div>
               <div className={styles.unitOverviewCardWide}>
-                <h3>Preview media</h3>
+                <h3>Supporting Multimedia</h3>
                 {unit.FeaturedMultimedia?.length ? (
                   <div className={styles.previewCarousel}>
                     <LessonsCarousel mediaItems={unit.FeaturedMultimedia} />
@@ -694,13 +824,10 @@ const UnitDesignPreview: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
 
         {activeTab === TAB_MATERIALS && (
           <section className={styles.unitSection}>
-            <div className={styles.unitSectionHeader}>
-              <h2>Teaching materials</h2>
-              <p>
-                Jump between lessons and keep the detailed procedure
-                within reach.
-              </p>
-            </div>
+            <h2 className={styles.sectionTitle}>Teaching materials</h2>
+            <p className={styles.sectionIntro}>
+              Jump between lessons and keep the detailed procedure within reach.
+            </p>
             <div className={styles.gpPlusBannerWrap}>
               <div className={styles.gpPlusBanner}>
                 <div className={styles.gpPlusLogo}>
@@ -816,21 +943,29 @@ const UnitDesignPreview: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                       )}
                       <div className={styles.unitDetailsList}>
                         {activeLesson.lsnDur && (
-                          <div>
-                            <span>Lesson duration</span>
-                            <strong>{activeLesson.lsnDur} min</strong>
+                          <div className={styles.unitDetailItem}>
+                            <span className={styles.unitDetailLabel}>
+                              Lesson duration
+                            </span>
+                            <strong className={styles.unitDetailValue}>
+                              {activeLesson.lsnDur} min
+                            </strong>
                           </div>
                         )}
                         {activeLesson.updated_date && (
-                          <div>
-                            <span>Last updated</span>
-                            <strong>{activeLesson.updated_date}</strong>
+                          <div className={styles.unitDetailItem}>
+                            <span className={styles.unitDetailLabel}>Last updated</span>
+                            <strong className={styles.unitDetailValue}>
+                              {activeLesson.updated_date}
+                            </strong>
                           </div>
                         )}
                         {activeLesson.status && (
-                          <div>
-                            <span>Status</span>
-                            <strong>{activeLesson.status}</strong>
+                          <div className={styles.unitDetailItem}>
+                            <span className={styles.unitDetailLabel}>Status</span>
+                            <strong className={styles.unitDetailValue}>
+                              {activeLesson.status}
+                            </strong>
                           </div>
                         )}
                       </div>
@@ -928,10 +1063,10 @@ const UnitDesignPreview: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
 
         {activeTab === TAB_STANDARDS && (
           <section className={styles.unitSection}>
-            <div className={styles.unitSectionHeader}>
-              <h2>Standards alignment</h2>
-              <p>All target and connected standards in one place.</p>
-            </div>
+            <h2 className={styles.sectionTitle}>Standards alignment</h2>
+            <p className={styles.sectionIntro}>
+              All target and connected standards in one place.
+            </p>
             <div className={styles.unitOverviewCardWide}>
               {!!unit.TargetStandardsCodes?.length ? (
                 <ul className={styles.standardsList}>
@@ -958,10 +1093,10 @@ const UnitDesignPreview: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
 
         {activeTab === TAB_BACKGROUND && (
           <section className={styles.unitSection}>
-            <div className={styles.unitSectionHeader}>
-              <h2>Background</h2>
-              <p>Context and real-world connections for this unit.</p>
-            </div>
+            <h2 className={styles.sectionTitle}>Background</h2>
+            <p className={styles.sectionIntro}>
+              Context and real-world connections for this unit.
+            </p>
             <div className={styles.unitOverviewCardWide}>
               {unit.Sections?.background?.Content ? (
                 <div className={styles.richTextBlock}>
@@ -978,13 +1113,14 @@ const UnitDesignPreview: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
 
         {activeTab === TAB_CREDITS && (
           <section className={styles.unitSection}>
-            <div className={styles.unitSectionHeader}>
-              <h2>Credits & acknowledgments</h2>
-              <p>Partners, collaborators, and credits.</p>
-            </div>
+            <h2 className={styles.sectionTitle}>Credits & acknowledgments</h2>
+            <p className={styles.sectionIntro}>
+              Partners, collaborators, and credits.
+            </p>
             <div className={styles.unitOverviewCardWide}>
               {unit.Sections?.acknowledgements?.Data?.length ||
-              unit.Sections?.credits?.Content ? (
+              unit.Sections?.credits?.Content ||
+              versionReleases.length ? (
                 <div className={styles.acknowledgmentsList}>
                   {unit.Sections?.credits?.Content && (
                     <div className={styles.richTextBlock}>
@@ -1009,48 +1145,42 @@ const UnitDesignPreview: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                       ) : null}
                     </div>
                   ))}
+                  <div
+                    ref={versionNotesAnchorRef}
+                    id="major-release-updates"
+                    className={styles.versionNotes}
+                  >
+                    <h4>Major release updates</h4>
+                    {versionReleases.length ? (
+                      versionReleases.map((release, index) => (
+                        <div key={`${release.major_release}-${index}`}>
+                          <strong>{release.major_release}</strong>
+                          {release.sub_releases?.length ? (
+                            <ul>
+                              {release.sub_releases.map((sub, idx) => (
+                                <li key={`${sub.version}-${idx}`}>
+                                  <span>
+                                    {sub.version ?? 'Unlabeled version'}
+                                    {sub.date ? ` · ${sub.date}` : ''}
+                                  </span>
+                                  {sub.summary ? <p>{sub.summary}</p> : null}
+                                  {sub.notes ? <p>{sub.notes}</p> : null}
+                                </li>
+                              ))}
+                            </ul>
+                          ) : null}
+                        </div>
+                      ))
+                    ) : (
+                      <p className={styles.unitMutedText}>
+                        Version notes will appear here.
+                      </p>
+                    )}
+                  </div>
                 </div>
               ) : (
                 <p className={styles.unitMutedText}>
                   Credits and acknowledgments will appear here.
-                </p>
-              )}
-            </div>
-          </section>
-        )}
-
-        {activeTab === TAB_VERSIONS && (
-          <section className={styles.unitSection}>
-            <div className={styles.unitSectionHeader}>
-              <h2>Version notes</h2>
-              <p>Track the latest updates across lesson releases.</p>
-            </div>
-            <div className={styles.unitOverviewCardWide}>
-              {unit.Sections?.versionNotes?.Data?.length ? (
-                <div className={styles.versionNotes}>
-                  {unit.Sections.versionNotes.Data.map((release, index) => (
-                    <div key={`${release.major_release}-${index}`}>
-                      <h4>{release.major_release}</h4>
-                      {release.sub_releases?.length ? (
-                        <ul>
-                          {release.sub_releases.map((sub, idx) => (
-                            <li key={`${sub.version}-${idx}`}>
-                              <strong>
-                                {sub.version}
-                                {sub.date ? ` · ${sub.date}` : ''}
-                              </strong>
-                              {sub.summary && <p>{sub.summary}</p>}
-                              {sub.notes && <p>{sub.notes}</p>}
-                            </li>
-                          ))}
-                        </ul>
-                      ) : null}
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <p className={styles.unitMutedText}>
-                  Version notes will appear here.
                 </p>
               )}
             </div>

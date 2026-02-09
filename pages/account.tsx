@@ -555,23 +555,39 @@ const AccountPg: React.FC = () => {
 
   useEffect(() => {
     if (typeof window === "undefined") return;
+    const params = new URLSearchParams(window.location.search);
+    const fromParam = params.get("from");
     const storedRedirect = getSessionStorageItem("userEntryRedirectUrl");
-    const stored =
-      typeof storedRedirect === "string" ? storedRedirect : storedRedirect ?? null;
+    const stored = typeof storedRedirect === "string"
+      ? storedRedirect
+      : storedRedirect ?? null;
     const referrer =
       typeof document !== "undefined" ? document.referrer : "";
     const origin = window.location.origin;
-    let candidate = stored;
-    if (!candidate && referrer && referrer.startsWith(origin)) {
-      candidate = referrer;
+    const isValidReturnUrl = (value?: string | null) =>
+      !!value &&
+      value.startsWith(origin) &&
+      !value.includes("/account") &&
+      value !== window.location.href;
+
+    let fromUrl: string | null = null;
+    if (fromParam) {
+      try {
+        fromUrl = decodeURIComponent(fromParam);
+      } catch {
+        fromUrl = null;
+      }
     }
-    if (candidate && candidate.includes("/account")) {
-      candidate = null;
-    }
-    if (candidate && candidate === window.location.href) {
-      candidate = null;
-    }
-    setBackHref(candidate ?? null);
+
+    const candidate = isValidReturnUrl(fromUrl)
+      ? fromUrl
+      : isValidReturnUrl(stored)
+      ? stored
+      : isValidReturnUrl(referrer)
+      ? referrer
+      : null;
+
+    setBackHref(candidate);
   }, []);
 
   if (status === "loading" || isRetrievingUserData) {

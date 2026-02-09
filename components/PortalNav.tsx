@@ -6,6 +6,7 @@ import { Home, ListFilter, Menu } from "lucide-react";
 import useSiteSession from "../customHooks/useSiteSession";
 import styles from "./PortalNav.module.css";
 import GpLogo from "../public/GP_bubbleLogo300px.png";
+import { setSessionStorageItem } from "../shared/fns";
 
 const NAV_TABS = ["All", "Units", "Apps", "Videos", "Lessons", "JobViz"] as const;
 export type NavTab = (typeof NAV_TABS)[number];
@@ -54,6 +55,7 @@ const PortalNav: React.FC<PortalNavProps> = ({
   const [avatarError, setAvatarError] = useState(false);
   const [isHydrated, setIsHydrated] = useState(false);
   const [isNavHidden, setIsNavHidden] = useState(false);
+  const navRef = useRef<HTMLElement | null>(null);
   const accountMenuRef = useRef<HTMLDivElement | null>(null);
   const lastScrollY = useRef(0);
   const ticking = useRef(false);
@@ -130,12 +132,52 @@ const PortalNav: React.FC<PortalNavProps> = ({
     return () => window.removeEventListener("scroll", handleScroll);
   }, [disableNavbar]);
 
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const root = document.documentElement;
+
+    if (disableNavbar) {
+      root.style.removeProperty("--portal-nav-offset");
+      return;
+    }
+
+    const syncOffset = () => {
+      const navHeight = navRef.current?.getBoundingClientRect().height ?? 0;
+      const offset = isNavHidden ? 0 : Math.max(0, Math.round(navHeight));
+      root.style.setProperty("--portal-nav-offset", `${offset}px`);
+    };
+
+    syncOffset();
+    window.addEventListener("resize", syncOffset);
+
+    const observer =
+      typeof ResizeObserver !== "undefined"
+        ? new ResizeObserver(() => syncOffset())
+        : null;
+    if (observer && navRef.current) {
+      observer.observe(navRef.current);
+    }
+
+    return () => {
+      window.removeEventListener("resize", syncOffset);
+      observer?.disconnect();
+    };
+  }, [disableNavbar, isNavHidden, navOpen, accountMenuOpen]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return undefined;
+    return () => {
+      document.documentElement.style.removeProperty("--portal-nav-offset");
+    };
+  }, []);
+
   if (disableNavbar) {
     return null;
   }
 
   return (
     <nav
+      ref={navRef}
       className={`${styles.nav} ${isNavHidden ? styles.navHidden : ""}`}
       data-nav-hidden={isNavHidden ? "true" : "false"}
     >
@@ -254,7 +296,20 @@ const PortalNav: React.FC<PortalNavProps> = ({
               </span>
             </button>
           ) : (
-            <Link className={styles.profileToggle} href="/account">
+            <Link
+              className={styles.profileToggle}
+              href="/account"
+              onClick={(event) => {
+                if (typeof window === "undefined") {
+                  return;
+                }
+                const returnUrl = window.location.href;
+                setSessionStorageItem("userEntryRedirectUrl", returnUrl);
+                const accountUrl = `/account?from=${encodeURIComponent(returnUrl)}`;
+                event.preventDefault();
+                router.push(accountUrl);
+              }}
+            >
               <div
                 className={`${styles.profileAvatarRing} ${
                   effectiveIsPlusMember
