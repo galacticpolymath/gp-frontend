@@ -127,7 +127,7 @@
     "@types/lodash.throttle": "^4.1.9",
     "@types/sanitize-html": "^2.16.0",
     "cypress": "^15.10.0",
-    "eslint": "9.39.2",
+    "eslint": "10.0.0",
     "eslint-config-next": "^16.1.6",
     "eslint-plugin-react": "^7.37.5",
     "globals": "^17.3.0",
