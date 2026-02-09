@@ -67,6 +67,149 @@ const getLessonDisplayTitle = (lesson: INewUnitLesson, index: number) => {
   return `Lesson ${identifier}: ${title}`;
 };
 
+type TPreviewItem = {
+  links?: { url: string[] | string | null }[] | null;
+  externalUrl?: string | null;
+  gdriveRoot?: string | null;
+  itemType?: string | null;
+  itemCat?: string | null;
+  fileType?: string | null;
+};
+
+const getFirstItemUrl = (item?: TPreviewItem) => {
+  if (item?.externalUrl) {
+    return item.externalUrl;
+  }
+  const urlValue = item?.links?.[0]?.url;
+  if (Array.isArray(urlValue)) {
+    return urlValue[0] ?? null;
+  }
+  if (typeof urlValue === 'string') {
+    return urlValue;
+  }
+  return null;
+};
+
+const isImageUrl = (value: string) =>
+  /\.(png|jpe?g|gif|webp|svg)(\?.*)?$/i.test(value);
+
+const isPdfUrl = (value: string) => /\.pdf(\?.*)?$/i.test(value);
+
+const getGoogleDocBase = (value: string) => {
+  const match = value.match(
+    /https?:\/\/docs\.google\.com\/(presentation|document|spreadsheets)\/d\/([^/]+)/i
+  );
+  if (!match?.[1] || !match?.[2]) {
+    return null;
+  }
+  return `https://docs.google.com/${match[1]}/d/${match[2]}`;
+};
+
+const getGoogleDriveFileBase = (value: string) => {
+  const fileMatch = value.match(/drive\.google\.com\/file\/d\/([^/]+)/i);
+  if (fileMatch?.[1]) {
+    return `https://drive.google.com/file/d/${fileMatch[1]}`;
+  }
+  const openMatch = value.match(/[?&]id=([^&]+)/i);
+  if (openMatch?.[1]) {
+    return `https://drive.google.com/file/d/${openMatch[1]}`;
+  }
+  return null;
+};
+
+const withGoogleSuffix = (value: string, suffix: 'view' | 'preview') => {
+  const docBase = getGoogleDocBase(value);
+  if (docBase) {
+    return `${docBase}/${suffix}`;
+  }
+  const driveBase = getGoogleDriveFileBase(value);
+  if (driveBase) {
+    return `${driveBase}/${suffix}`;
+  }
+  return null;
+};
+
+const toGoogleDrivePreviewUrl = (value: string) =>
+  withGoogleSuffix(value, 'preview');
+
+const toGoogleDriveViewUrl = (value: string) => withGoogleSuffix(value, 'view');
+
+const getNormalizedGDriveRoot = (value: string) => {
+  const docBase = getGoogleDocBase(value);
+  if (docBase) {
+    return docBase;
+  }
+  const driveBase = getGoogleDriveFileBase(value);
+  if (driveBase) {
+    return driveBase;
+  }
+  const cleaned = value.replace(/\/(preview|view|edit)(\?.*)?$/i, '');
+  return cleaned;
+};
+
+const getMaterialUrls = (item?: TPreviewItem) => {
+  const baseUrl = getFirstItemUrl(item);
+  const itemType = item?.itemType?.toLowerCase() ?? '';
+  const itemCat = item?.itemCat?.toLowerCase() ?? '';
+  const fileType = item?.fileType?.toLowerCase() ?? '';
+  const isWebResource = itemCat === 'web resource' || fileType === 'web resource';
+  const isPresentationType = itemType === 'presentation';
+  const isPresentationFileType = fileType === 'presentation';
+
+  if (isWebResource) {
+    return {
+      openUrl: baseUrl,
+      previewUrl: baseUrl,
+    };
+  }
+
+  if (item?.gdriveRoot) {
+    const gdriveRoot = getNormalizedGDriveRoot(item.gdriveRoot);
+    if (isPresentationType) {
+      return {
+        openUrl: `${gdriveRoot}/view`,
+        previewUrl: `${gdriveRoot}/view`,
+      };
+    }
+    if (isPresentationFileType) {
+      return {
+        openUrl: `${gdriveRoot}/view`,
+        previewUrl: `${gdriveRoot}/preview`,
+      };
+    }
+    return {
+      openUrl: `${gdriveRoot}/view`,
+      previewUrl: `${gdriveRoot}/preview`,
+    };
+  }
+
+  if (!baseUrl) {
+    return {
+      openUrl: null,
+      previewUrl: null,
+    };
+  }
+
+  if (isPresentationType) {
+    return {
+      openUrl: toGoogleDriveViewUrl(baseUrl) ?? baseUrl,
+      previewUrl: toGoogleDriveViewUrl(baseUrl) ?? baseUrl,
+    };
+  }
+
+  if (isPresentationFileType) {
+    return {
+      openUrl: toGoogleDriveViewUrl(baseUrl) ?? baseUrl,
+      previewUrl: toGoogleDrivePreviewUrl(baseUrl) ?? baseUrl,
+    };
+  }
+
+  return {
+    openUrl: baseUrl,
+    previewUrl: toGoogleDrivePreviewUrl(baseUrl) ?? baseUrl,
+  };
+};
+
 const getFirstLessonResource = (
   resources?: IResource<INewUnitLesson>[] | null
 ) => {
@@ -339,6 +482,7 @@ const UnitDesignPreview: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
   );
   const [searchTerm, setSearchTerm] = useState('');
   const [isSearchExpanded, setIsSearchExpanded] = useState(false);
+  const [activeMaterialIndex, setActiveMaterialIndex] = useState(0);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const versionNotesAnchorRef = useRef<HTMLDivElement>(null);
   const [shouldScrollToVersionNotes, setShouldScrollToVersionNotes] =
@@ -481,6 +625,7 @@ const UnitDesignPreview: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
   );
   const activeLesson =
     activeLessonIndex >= 0 ? lessons[activeLessonIndex] : undefined;
+  const activeLessonItems = activeLesson?.itemList ?? [];
   const activeTabIndex = availableTabs.findIndex((tab) => tab.key === activeTab);
   const nextTab =
     activeTabIndex >= 0 && activeTabIndex < availableTabs.length - 1
@@ -556,6 +701,10 @@ const UnitDesignPreview: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
       : `ver. ${unitVersionLabel}`
     : null;
   const { _isGpPlusModalDisplayed } = useModalContext();
+
+  useEffect(() => {
+    setActiveMaterialIndex(0);
+  }, [activeLessonId]);
   const [, setIsGpPlusModalDisplayed] = _isGpPlusModalDisplayed;
 
   const handleVersionInfoClick = () => {
@@ -952,28 +1101,43 @@ const UnitDesignPreview: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                   <div className={styles.lessonMaterialsGrid}>
                     <div className={styles.lessonResourcesCard}>
                       <h4>Materials & downloads</h4>
-                      {!!activeLesson.itemList?.length ? (
+                      {!!activeLessonItems.length ? (
                         <div className={styles.lessonDownloadButtons}>
-                          {activeLesson.itemList.map((item, idx) => {
-                            const firstLink = item.links?.[0]?.url?.[0] ?? null;
-                            return firstLink ? (
-                              <a
-                                key={`${item.itemTitle}-${idx}`}
-                                className={styles.materialDownloadButton}
-                                href={firstLink}
-                                target="_blank"
-                                rel="noreferrer"
-                              >
-                                <strong>{item.itemTitle ?? `Resource ${idx + 1}`}</strong>
-                                {item.itemDescription && <span>{item.itemDescription}</span>}
-                              </a>
-                            ) : (
+                          {activeLessonItems.map((item, idx) => {
+                            const { openUrl } = getMaterialUrls(
+                              item as TPreviewItem
+                            );
+                            const isActive = idx === activeMaterialIndex;
+                            return (
                               <div
                                 key={`${item.itemTitle}-${idx}`}
-                                className={styles.materialDownloadButtonDisabled}
+                                className={styles.materialDownloadItem}
                               >
-                                <strong>{item.itemTitle ?? `Resource ${idx + 1}`}</strong>
-                                {item.itemDescription && <span>{item.itemDescription}</span>}
+                                <button
+                                  type="button"
+                                  className={`${styles.materialDownloadButton} ${
+                                    isActive ? styles.materialDownloadButtonActive : ''
+                                  }`}
+                                  onClick={() => setActiveMaterialIndex(idx)}
+                                  aria-pressed={isActive}
+                                >
+                                  <strong>{item.itemTitle ?? `Resource ${idx + 1}`}</strong>
+                                  {item.itemDescription && <span>{item.itemDescription}</span>}
+                                </button>
+                                {openUrl ? (
+                                  <a
+                                    className={styles.materialOpenLink}
+                                    href={openUrl}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                  >
+                                    Open <i className="bi bi-box-arrow-up-right" aria-hidden="true" />
+                                  </a>
+                                ) : (
+                                  <span className={styles.materialOpenLinkDisabled}>
+                                    No file
+                                  </span>
+                                )}
                               </div>
                             );
                           })}
@@ -986,21 +1150,77 @@ const UnitDesignPreview: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                     </div>
                     <div className={styles.lessonPreviewsCard}>
                       <h4>Item previews</h4>
-                      {!!activeLesson.itemList?.length ? (
-                        <div className={styles.lessonPreviewList}>
-                          {activeLesson.itemList.map((item, idx) => (
-                            <article
-                              key={`${item.itemTitle}-preview-${idx}`}
-                              className={styles.lessonPreviewItem}
-                            >
-                              <strong>{item.itemTitle ?? `Resource ${idx + 1}`}</strong>
-                              <p>
-                                {item.itemDescription ??
-                                  'Preview details will appear for this material.'}
-                              </p>
+                      {!!activeLessonItems.length ? (
+                        (() => {
+                          const safeIndex =
+                            activeMaterialIndex > activeLessonItems.length - 1
+                              ? 0
+                              : activeMaterialIndex;
+                          const selectedItem = activeLessonItems[safeIndex];
+                          const { openUrl, previewUrl } = getMaterialUrls(
+                            selectedItem as TPreviewItem
+                          );
+                          const previewImg =
+                            (
+                              selectedItem as {
+                                filePreviewImg?: string;
+                              }
+                            )?.filePreviewImg ?? null;
+                          const previewTitle =
+                            selectedItem?.itemTitle ?? `Resource ${safeIndex + 1}`;
+                          const previewDescription =
+                            selectedItem?.itemDescription ??
+                            'Preview details will appear for this material.';
+
+                          return (
+                            <article className={styles.lessonPreviewItem}>
+                              <div className={styles.lessonPreviewSurface}>
+                                {previewImg ? (
+                                  <img
+                                    src={previewImg}
+                                    alt={`${previewTitle} preview`}
+                                    loading="lazy"
+                                  />
+                                ) : previewUrl && isImageUrl(previewUrl) ? (
+                                  <img
+                                    src={previewUrl}
+                                    alt={`${previewTitle} preview`}
+                                    loading="lazy"
+                                  />
+                                ) : previewUrl && isPdfUrl(previewUrl) ? (
+                                  <iframe
+                                    title={`${previewTitle} preview`}
+                                    src={previewUrl}
+                                  />
+                                ) : previewUrl ? (
+                                  <iframe title={`${previewTitle} preview`} src={previewUrl} />
+                                ) : (
+                                  <p className={styles.unitMutedText}>
+                                    Preview unavailable for this file type.
+                                  </p>
+                                )}
+                              </div>
+                              <div className={styles.lessonPreviewMeta}>
+                                <strong>{previewTitle}</strong>
+                                <p>{previewDescription}</p>
+                                {openUrl ? (
+                                  <a
+                                    className={styles.materialOpenLink}
+                                    href={openUrl}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                  >
+                                    Open <i className="bi bi-box-arrow-up-right" aria-hidden="true" />
+                                  </a>
+                                ) : (
+                                  <span className={styles.materialOpenLinkDisabled}>
+                                    No file link available
+                                  </span>
+                                )}
+                              </div>
                             </article>
-                          ))}
-                        </div>
+                          );
+                        })()
                       ) : (
                         <p className={styles.unitMutedText}>
                           Item previews will appear here.
