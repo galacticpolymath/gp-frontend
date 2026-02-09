@@ -417,15 +417,24 @@ const UnitDesignPreview: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
     window.location.hash = params.toString();
   };
 
+  const scrollToTop = () => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   const handleTabChange = (tab: TTabKey) => {
     setActiveTab(tab);
     updateHash(tab, tab === TAB_MATERIALS ? activeLessonId : null);
+    scrollToTop();
   };
 
   const handleLessonChange = (lessonId: number) => {
     setActiveLessonId(lessonId);
     setActiveTab(TAB_MATERIALS);
     updateHash(TAB_MATERIALS, lessonId);
+    scrollToTop();
   };
 
   const handleSearchSelect = (entry: TSearchEntry) => {
@@ -472,6 +481,11 @@ const UnitDesignPreview: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
   );
   const activeLesson =
     activeLessonIndex >= 0 ? lessons[activeLessonIndex] : undefined;
+  const activeTabIndex = availableTabs.findIndex((tab) => tab.key === activeTab);
+  const nextTab =
+    activeTabIndex >= 0 && activeTabIndex < availableTabs.length - 1
+      ? availableTabs[activeTabIndex + 1]
+      : null;
 
   const unitTitle = unit.Title ?? 'Unit';
   const unitSubtitle = unit.Subtitle ?? '';
@@ -641,6 +655,43 @@ const UnitDesignPreview: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
               </button>
             ))}
           </div>
+          {activeTab === TAB_MATERIALS && lessons.length > 0 && (
+            <div className={styles.lessonSubtabBar}>
+              <span className={styles.lessonSubtabLabel}>Lessons:</span>
+              <div className={styles.lessonSubtabList}>
+                {lessons.map((lesson, index) => {
+                  const lessonId = getLessonIdentifier(lesson, index);
+                  const isActive = lessonId === activeLessonId;
+                  return (
+                    <button
+                      key={`sticky-lesson-tab-${lessonId}`}
+                      type="button"
+                      className={
+                        isActive
+                          ? `${styles.lessonSubtabButton} ${styles.lessonSubtabButtonActive}`
+                          : styles.lessonSubtabButton
+                      }
+                      onClick={() => handleLessonChange(lessonId)}
+                    >
+                      <span className={styles.lessonSubtabThumb} aria-hidden="true">
+                        {lesson.tile ? (
+                          <Image
+                            src={lesson.tile}
+                            alt=""
+                            width={22}
+                            height={22}
+                          />
+                        ) : (
+                          <i className="bi bi-image" />
+                        )}
+                      </span>
+                      <span>{lessonId}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
           {isSearchExpanded && searchTerm.length > 1 && (
             <div className={styles.unitSearchResults}>
               {searchResults.length ? (
@@ -824,151 +875,20 @@ const UnitDesignPreview: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
 
         {activeTab === TAB_MATERIALS && (
           <section className={styles.unitSection}>
-            <h2 className={styles.sectionTitle}>Teaching materials</h2>
-            <p className={styles.sectionIntro}>
-              Jump between lessons and keep the detailed procedure within reach.
-            </p>
-            <div className={styles.gpPlusBannerWrap}>
-              <div className={styles.gpPlusBanner}>
-                <div className={styles.gpPlusLogo}>
-                  <Image
-                    alt="GP+ logo"
-                    width={88}
-                    height={88}
-                    src="/imgs/gp-logos/gp_submark.png"
-                  />
-                </div>
-                <div className={styles.gpPlusCopy}>
-                  <div className={styles.gpPlusHeadline}>
-                    Download &amp; Edit lessons in one-click
-                  </div>
-                  <div className={styles.gpPlusSubhead}>Get 50% off GP+</div>
-                </div>
-                <button
-                  type="button"
-                  className={styles.gpPlusCta}
-                  onClick={() => setIsGpPlusModalDisplayed(true)}
-                >
-                  <span className={styles.gpPlusCtaIcon}>
-                    <Image
-                      alt="GP+ icon"
-                      width={48}
-                      height={48}
-                      src="/plus/plus.png"
-                    />
-                  </span>
-                  <span>Upgrade to GP+</span>
-                </button>
-              </div>
-            </div>
             <div className={styles.materialsLayout}>
-              <div className={styles.lessonTabColumn}>
-                <h3 className={styles.lessonTabHeading}>Lessons</h3>
-                <div className={styles.lessonTabList}>
-                  {lessons.map((lesson, index) => {
-                    const lessonId = getLessonIdentifier(lesson, index);
-                    const isActive = lessonId === activeLessonId;
-                    const tags = lesson.lsnTags ?? lesson.tags ?? [];
-                    return (
-                      <button
-                        key={`lesson-tab-${lessonId}`}
-                        type="button"
-                        className={
-                          isActive
-                            ? `${styles.lessonTabButton} ${styles.lessonTabButtonActive}`
-                            : styles.lessonTabButton
-                        }
-                        onClick={() => handleLessonChange(lessonId)}
-                      >
-                        <div className={styles.lessonTileCard}>
-                          <div className={styles.lessonTileMedia}>
-                            {lesson.tile ? (
-                              <Image
-                                src={lesson.tile}
-                                alt={`${lesson.title ?? 'Lesson'} tile`}
-                                width={72}
-                                height={72}
-                              />
-                            ) : (
-                              <div className={styles.lessonTilePlaceholder} />
-                            )}
-                          </div>
-                          <div className={styles.lessonTileContent}>
-                            <div className={styles.lessonTileTitle}>
-                              {lessonId}. {lesson.title ?? 'Untitled lesson'}
-                            </div>
-                            {!!tags?.length && (
-                              <div className={styles.lessonTileTags}>
-                                {tags.map((tag, tagIndex) => (
-                                  <span
-                                    key={`${tag}-${tagIndex}`}
-                                    className={styles.lessonTileTag}
-                                  >
-                                    {tag}
-                                  </span>
-                                ))}
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      </button>
-                    );
-                  })}
-                </div>
-                {lessonResources?.links?.url && lessonResources?.links?.linkText && (
-                  <a
-                    className={styles.lessonFolderLink}
-                    href={lessonResources.links.url?.[0] ?? '#'}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    {lessonResources.links.linkText}
-                  </a>
-                )}
-              </div>
-              <div className={styles.lessonContent}>
-                {activeLesson ? (
-                  <div className={styles.lessonLayout}>
-                    <div className={styles.lessonSummaryCard}>
-                      <h3>
-                        {getLessonDisplayTitle(activeLesson, activeLessonIndex)}
-                      </h3>
-                      {activeLesson.preface && (
-                        <p className={styles.unitLead}>{activeLesson.preface}</p>
-                      )}
+              {activeLesson ? (
+                <div className={styles.lessonLayout}>
+                  <div className={styles.lessonSummaryCard}>
+                    <div className={styles.lessonSummaryMain}>
+                      <p className={styles.lessonEyebrow}>
+                        Lesson {getLessonIdentifier(activeLesson, activeLessonIndex)}
+                      </p>
+                      <h3>{activeLesson.title ?? 'Untitled lesson'}</h3>
                       {activeLesson.lsnPreface && (
-                        <p className={styles.unitSummaryText}>
+                        <p className={styles.lessonPreface}>
                           {activeLesson.lsnPreface}
                         </p>
                       )}
-                      <div className={styles.unitDetailsList}>
-                        {activeLesson.lsnDur && (
-                          <div className={styles.unitDetailItem}>
-                            <span className={styles.unitDetailLabel}>
-                              Lesson duration
-                            </span>
-                            <strong className={styles.unitDetailValue}>
-                              {activeLesson.lsnDur} min
-                            </strong>
-                          </div>
-                        )}
-                        {activeLesson.updated_date && (
-                          <div className={styles.unitDetailItem}>
-                            <span className={styles.unitDetailLabel}>Last updated</span>
-                            <strong className={styles.unitDetailValue}>
-                              {activeLesson.updated_date}
-                            </strong>
-                          </div>
-                        )}
-                        {activeLesson.status && (
-                          <div className={styles.unitDetailItem}>
-                            <span className={styles.unitDetailLabel}>Status</span>
-                            <strong className={styles.unitDetailValue}>
-                              {activeLesson.status}
-                            </strong>
-                          </div>
-                        )}
-                      </div>
                       {!!activeLesson.learningObj?.length && (
                         <div className={styles.lessonObjectives}>
                           <h4>Learning objectives</h4>
@@ -979,32 +899,116 @@ const UnitDesignPreview: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                           </ul>
                         </div>
                       )}
-                      {activeLesson.lsnPrep && (
-                        <div className={styles.lessonPrepCard}>
-                          <h4>Teacher prep</h4>
-                          <p>
-                            {activeLesson.lsnPrep.prepQuickDescription ||
-                              activeLesson.lsnPrep.prepTitle}
-                          </p>
-                          {activeLesson.lsnPrep.prepDetails && (
-                            <p>{activeLesson.lsnPrep.prepDetails}</p>
+                    </div>
+                    <div className={styles.lessonSummaryMeta}>
+                      <div className={styles.lessonTileMediaLarge}>
+                        {activeLesson.tile ? (
+                          <Image
+                            src={activeLesson.tile}
+                            alt={`${activeLesson.title ?? 'Lesson'} tile`}
+                            width={180}
+                            height={180}
+                          />
+                        ) : (
+                          <div className={styles.lessonTilePlaceholder} />
+                        )}
+                      </div>
+                      {typeof activeLesson.lsnDur === 'number' && (
+                        <div className={styles.lessonDuration}>
+                          <i className="bi bi-clock-history" aria-hidden="true" />
+                          <span>{activeLesson.lsnDur} min</span>
+                        </div>
+                      )}
+                      {activeLesson.status &&
+                        ['beta', 'upcoming'].includes(
+                          activeLesson.status.toLowerCase()
+                        ) && (
+                          <span
+                            className={`${styles.lessonStatusPill} ${
+                              activeLesson.status.toLowerCase() === 'beta'
+                                ? styles.lessonStatusPillBeta
+                                : styles.lessonStatusPillUpcoming
+                            }`}
+                          >
+                            {activeLesson.status}
+                          </span>
+                        )}
+                      {!!(activeLesson.lsnTags ?? activeLesson.tags ?? []).length && (
+                        <div className={styles.lessonTileTags}>
+                          {(activeLesson.lsnTags ?? activeLesson.tags ?? []).map(
+                            (tag, tagIndex) => (
+                              <span
+                                key={`${tag}-${tagIndex}`}
+                                className={styles.lessonTileTag}
+                              >
+                                {tag}
+                              </span>
+                            )
                           )}
                         </div>
                       )}
-                      {!!activeLesson.itemList?.length && (
-                        <div className={styles.lessonResourceList}>
-                          <h4>Materials & downloads</h4>
-                          {activeLesson.itemList.map((item, idx) => (
-                            <div key={`${item.itemTitle}-${idx}`}>
-                              <strong>{item.itemTitle}</strong>
-                              {item.itemDescription && (
-                                <p>{item.itemDescription}</p>
-                              )}
-                            </div>
-                          ))}
+                    </div>
+                  </div>
+                  <div className={styles.lessonMaterialsGrid}>
+                    <div className={styles.lessonResourcesCard}>
+                      <h4>Materials & downloads</h4>
+                      {!!activeLesson.itemList?.length ? (
+                        <div className={styles.lessonDownloadButtons}>
+                          {activeLesson.itemList.map((item, idx) => {
+                            const firstLink = item.links?.[0]?.url?.[0] ?? null;
+                            return firstLink ? (
+                              <a
+                                key={`${item.itemTitle}-${idx}`}
+                                className={styles.materialDownloadButton}
+                                href={firstLink}
+                                target="_blank"
+                                rel="noreferrer"
+                              >
+                                <strong>{item.itemTitle ?? `Resource ${idx + 1}`}</strong>
+                                {item.itemDescription && <span>{item.itemDescription}</span>}
+                              </a>
+                            ) : (
+                              <div
+                                key={`${item.itemTitle}-${idx}`}
+                                className={styles.materialDownloadButtonDisabled}
+                              >
+                                <strong>{item.itemTitle ?? `Resource ${idx + 1}`}</strong>
+                                {item.itemDescription && <span>{item.itemDescription}</span>}
+                              </div>
+                            );
+                          })}
                         </div>
+                      ) : (
+                        <p className={styles.unitMutedText}>
+                          Materials will appear here once added.
+                        </p>
                       )}
                     </div>
+                    <div className={styles.lessonPreviewsCard}>
+                      <h4>Item previews</h4>
+                      {!!activeLesson.itemList?.length ? (
+                        <div className={styles.lessonPreviewList}>
+                          {activeLesson.itemList.map((item, idx) => (
+                            <article
+                              key={`${item.itemTitle}-preview-${idx}`}
+                              className={styles.lessonPreviewItem}
+                            >
+                              <strong>{item.itemTitle ?? `Resource ${idx + 1}`}</strong>
+                              <p>
+                                {item.itemDescription ??
+                                  'Preview details will appear for this material.'}
+                              </p>
+                            </article>
+                          ))}
+                        </div>
+                      ) : (
+                        <p className={styles.unitMutedText}>
+                          Item previews will appear here.
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                  <div className={styles.lessonProcedureCardFull}>
                     <div className={styles.lessonProcedureCard}>
                       <details>
                         <summary>
@@ -1051,11 +1055,54 @@ const UnitDesignPreview: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                       </details>
                     </div>
                   </div>
-                ) : (
-                  <p className={styles.unitMutedText}>
-                    Choose a lesson to explore teaching materials.
-                  </p>
-                )}
+                </div>
+              ) : (
+                <p className={styles.unitMutedText}>
+                  Choose a lesson to explore teaching materials.
+                </p>
+              )}
+              {lessonResources?.links?.url && lessonResources?.links?.linkText && (
+                <a
+                  className={styles.lessonFolderLink}
+                  href={lessonResources.links.url?.[0] ?? '#'}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  {lessonResources.links.linkText}
+                </a>
+              )}
+              <div className={styles.gpPlusBannerWrap}>
+                <div className={styles.gpPlusBanner}>
+                  <div className={styles.gpPlusLogo}>
+                    <Image
+                      alt="GP+ logo"
+                      width={88}
+                      height={88}
+                      src="/imgs/gp-logos/gp_submark.png"
+                    />
+                  </div>
+                  <div className={styles.gpPlusCopy}>
+                    <div className={styles.gpPlusHeadline}>
+                      Download &amp; Edit lessons in one-click
+                    </div>
+                    <div className={styles.gpPlusSubhead}>Get 50% off GP+</div>
+                  </div>
+                  <button
+                    type="button"
+                    className={styles.gpPlusCta}
+                    onClick={() => setIsGpPlusModalDisplayed(true)}
+                  >
+                    <span className={styles.gpPlusCtaIcon}>
+                      <Image
+                        alt="GP+ icon"
+                        width={48}
+                        height={48}
+                        src="/plus/plus.png"
+                      />
+                    </span>
+                    <span>Upgrade to GP+</span>
+                  </button>
+                </div>
               </div>
             </div>
           </section>
@@ -1185,6 +1232,17 @@ const UnitDesignPreview: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
               )}
             </div>
           </section>
+        )}
+        {activeTab !== TAB_CREDITS && nextTab && (
+          <div className={styles.nextTabCtaWrap}>
+            <button
+              type="button"
+              className={styles.nextTabCta}
+              onClick={() => handleTabChange(nextTab.key as TTabKey)}
+            >
+              Next: {nextTab.label}
+            </button>
+          </div>
         )}
       </main>
     </div>
