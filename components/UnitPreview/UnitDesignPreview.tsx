@@ -3,6 +3,7 @@ import Image from 'next/image';
 import { format } from 'date-fns';
 import RichText from '../RichText';
 import styles from './UnitDesignPreview.module.css';
+import { Blocks, Filter, Network, Target } from 'lucide-react';
 import { TUnitForUI } from '../../backend/models/Unit/types/unit';
 import {
   IItem,
@@ -54,13 +55,44 @@ type TFlatStandard = {
   grades: string[];
 };
 
+type TMergedStandardLine = {
+  code: string;
+  statement: string;
+  alignmentNote: string;
+};
+
+type TMergedStandardByDimension = {
+  id: string;
+  dimensionName: string;
+  grades: string[];
+  lines: TMergedStandardLine[];
+};
+
 const STANDARDS_GRADE_BANDS: { key: TGradeBand; label: string }[] = [
   { key: 'all', label: 'All grade bands' },
-  { key: 'k-2', label: 'K-2' },
-  { key: '3-5', label: '3-5' },
+  { key: '3-5', label: 'advanced 5' },
   { key: '6-8', label: '6-8' },
   { key: '9-12', label: '9-12' },
 ];
+const STANDARD_BAND_OPTIONS = STANDARDS_GRADE_BANDS.filter(
+  (band) => band.key !== 'all'
+);
+
+const SUBJECT_COLOR_MAP: Record<string, string> = {
+  math: '#DB4125',
+  ela: '#ECA14D',
+  extra: '#F4F0D9',
+  science: '#B798E8',
+  'social studies': '#633A9A',
+  'social-studies': '#633A9A',
+  socialstudies: '#633A9A',
+  sustainability: '#349964',
+  sel: '#0070DA',
+  technology: '#0070DA',
+};
+
+const getSubjectColor = (subject: string) =>
+  SUBJECT_COLOR_MAP[subject.trim().toLowerCase()] ?? '#B798E8';
 
 const CONSENT_STORAGE_KEY = 'gp_cookie_consent_v1';
 
@@ -212,10 +244,23 @@ const formatStepVocab = (value?: string | null) => {
 
 const flattenStandards = (standardsData?: ISubject[] | null): TFlatStandard[] => {
   if (!Array.isArray(standardsData)) {
-    return [];
+    if (standardsData && typeof standardsData === 'object') {
+      standardsData = Object.values(standardsData as Record<string, ISubject>);
+    } else {
+      return [];
+    }
   }
 
   const flat: TFlatStandard[] = [];
+  const toList = <T,>(value: T[] | Record<string, T> | null | undefined): T[] => {
+    if (Array.isArray(value)) {
+      return value;
+    }
+    if (value && typeof value === 'object') {
+      return Object.values(value);
+    }
+    return [];
+  };
 
   standardsData.forEach((subjectGroup, subjectIndex) => {
     const subject = subjectGroup?.subject?.trim();
@@ -223,12 +268,15 @@ const flattenStandards = (standardsData?: ISubject[] | null): TFlatStandard[] =>
       return;
     }
 
-    (subjectGroup?.sets ?? []).forEach((set, setIndex) => {
+    toList(subjectGroup?.sets as any).forEach((set: any, setIndex) => {
       const setName = set?.name?.trim() || `Set ${setIndex + 1}`;
-      (set?.dimensions ?? []).forEach((dimension, dimIndex) => {
+      toList(set?.dimensions).forEach((dimension: any, dimIndex) => {
         const dimensionName = dimension?.name?.trim() || `Dimension ${dimIndex + 1}`;
-        (dimension?.standardsGroup ?? []).forEach((group, groupIndex) => {
-          const standards = group?.standardsGroup ?? [];
+        toList(dimension?.standardsGroup).forEach(
+          (groupOrStandard: any, groupIndex) => {
+            const standards: any[] = toList(groupOrStandard?.standardsGroup).length
+              ? toList(groupOrStandard?.standardsGroup)
+              : [groupOrStandard];
           standards.forEach((standard, standardIndex) => {
             const codes = Array.isArray(standard?.codes)
               ? standard.codes.filter(Boolean)
@@ -258,12 +306,130 @@ const flattenStandards = (standardsData?: ISubject[] | null): TFlatStandard[] =>
               grades,
             });
           });
-        });
+          }
+        );
       });
     });
   });
 
   return flat;
+};
+
+const groupStandardsBySubject = (standards: TFlatStandard[]) => {
+  const grouped = standards.reduce((accum, standard) => {
+    if (!accum[standard.subject]) {
+      accum[standard.subject] = [];
+    }
+    accum[standard.subject].push(standard);
+    return accum;
+  }, {} as Record<string, TFlatStandard[]>);
+
+  return Object.entries(grouped)
+    .map(([subject, subjectStandards]) => ({
+      subject,
+      standards: subjectStandards,
+      sets: Array.from(new Set(subjectStandards.map((item) => item.setName))),
+    }))
+    .sort((a, b) => a.subject.localeCompare(b.subject));
+};
+
+const getNgssDimensionOrder = (dimensionName: string) => {
+  const normalized = dimensionName
+    .toLowerCase()
+    .replace(/&/g, 'and')
+    .replace(/-/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  const NGSS_DIMENSION_ORDER: Record<string, number> = {
+    'performance expectation': 0,
+    'disciplinary core ideas': 1,
+    'disciplinary core idea': 1,
+    'science and engineering practices': 2,
+    'science and engineering practice': 2,
+    'cross cutting concepts': 3,
+    'cross cutting concept': 3,
+  };
+
+  return NGSS_DIMENSION_ORDER[normalized];
+};
+
+const mergeStandardsByDimension = (
+  standards: TFlatStandard[],
+  setNames: string[]
+): TMergedStandardByDimension[] => {
+  const groupedByDimension = standards.reduce((accum, standard) => {
+    const dimensionKey = standard.dimensionName?.trim() || 'Unspecified dimension';
+    if (!accum[dimensionKey]) {
+      accum[dimensionKey] = {
+        id: `${dimensionKey}-${standard.subject}`.replace(/\s+/g, '-').toLowerCase(),
+        dimensionName: dimensionKey,
+        grades: [],
+        lines: [],
+      };
+    }
+
+    const lineCount = Math.max(standard.codes.length, standard.statements.length, 1);
+    for (let idx = 0; idx < lineCount; idx += 1) {
+      const code =
+        standard.codes[idx] ?? standard.codes[0] ?? 'Code not specified';
+      const statement = standard.statements[idx] ?? standard.statements[0] ?? '';
+
+      accum[dimensionKey].lines.push({
+        code,
+        statement,
+        alignmentNote: standard.alignmentNotes?.trim() ?? '',
+      });
+    }
+
+    accum[dimensionKey].grades.push(...standard.grades);
+
+    return accum;
+  }, {} as Record<string, TMergedStandardByDimension>);
+
+  const isNgssAligned = setNames.some(
+    (setName) => setName.trim().toLowerCase() === 'ngss'
+  );
+
+  return Object.values(groupedByDimension)
+    .map((entry) => ({
+      ...entry,
+      grades: Array.from(new Set(entry.grades)),
+      lines: entry.lines
+        .sort((a, b) =>
+          `${a.code} ${a.statement} ${a.alignmentNote}`.localeCompare(
+            `${b.code} ${b.statement} ${b.alignmentNote}`
+          )
+        )
+        .filter(
+          (line, index, arr) =>
+            arr.findIndex(
+              (item) =>
+                item.code === line.code &&
+                item.statement === line.statement &&
+                item.alignmentNote === line.alignmentNote
+            ) === index
+        ),
+    }))
+    .sort((a, b) => {
+      if (!isNgssAligned) {
+        return a.dimensionName.localeCompare(b.dimensionName);
+      }
+
+      const orderA = getNgssDimensionOrder(a.dimensionName);
+      const orderB = getNgssDimensionOrder(b.dimensionName);
+
+      if (typeof orderA === 'number' && typeof orderB === 'number') {
+        return orderA - orderB;
+      }
+      if (typeof orderA === 'number') {
+        return -1;
+      }
+      if (typeof orderB === 'number') {
+        return 1;
+      }
+      return a.dimensionName.localeCompare(b.dimensionName);
+    });
 };
 
 const stripHtml = (value?: string | null) => {
@@ -741,9 +907,12 @@ const UnitDesignPreview: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [isSearchExpanded, setIsSearchExpanded] = useState(false);
   const [activeMaterialIndex, setActiveMaterialIndex] = useState(0);
-  const [selectedGradeBand, setSelectedGradeBand] = useState<TGradeBand>('all');
-  const [selectedSubject, setSelectedSubject] =
-    useState<TStandardsSubjectFilter>('all');
+  const [selectedGradeBands, setSelectedGradeBands] = useState<TGradeBand[]>([
+    'all',
+  ]);
+  const [selectedSubjects, setSelectedSubjects] = useState<
+    TStandardsSubjectFilter[]
+  >(['all']);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const versionNotesAnchorRef = useRef<HTMLDivElement>(null);
   const [shouldScrollToVersionNotes, setShouldScrollToVersionNotes] =
@@ -764,24 +933,99 @@ const UnitDesignPreview: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
     return Array.from(new Set(subjects)).sort((a, b) => a.localeCompare(b));
   }, [flatStandards]);
 
+  const availableSubjects = useMemo(() => {
+    const gradeFiltered = flatStandards.filter((standard) => {
+      if (selectedGradeBands.includes('all')) {
+        return true;
+      }
+      return selectedGradeBands.some((band) =>
+        isStandardInBand(standard.grades, band)
+      );
+    });
+
+    return new Set(gradeFiltered.map((standard) => standard.subject));
+  }, [flatStandards, selectedGradeBands]);
+
+  const availableGradeBands = useMemo(() => {
+    const subjectFiltered = flatStandards.filter((standard) => {
+      if (selectedSubjects.includes('all')) {
+        return true;
+      }
+      return selectedSubjects.includes(standard.subject);
+    });
+
+    return new Set(
+      STANDARD_BAND_OPTIONS.filter((band) =>
+        subjectFiltered.some((standard) =>
+          isStandardInBand(standard.grades, band.key)
+        )
+      ).map((band) => band.key)
+    );
+  }, [flatStandards, selectedSubjects]);
+
+  const activeSubjects = useMemo(() => {
+    if (selectedSubjects.includes('all')) {
+      return standardSubjects;
+    }
+    return selectedSubjects.filter((subject) => subject !== 'all');
+  }, [selectedSubjects, standardSubjects]);
+
+  const activeGradeBands = useMemo(() => {
+    if (selectedGradeBands.includes('all')) {
+      return STANDARD_BAND_OPTIONS.map((band) => band.key);
+    }
+    return selectedGradeBands.filter((band) => band !== 'all');
+  }, [selectedGradeBands]);
+
   const filteredStandards = useMemo(
     () =>
       flatStandards.filter((standard) => {
         const subjectMatches =
-          selectedSubject === 'all' || standard.subject === selectedSubject;
-        const gradeBandMatches = isStandardInBand(
-          standard.grades,
-          selectedGradeBand
-        );
+          activeSubjects.length === 0 || activeSubjects.includes(standard.subject);
+        const gradeBandMatches =
+          activeGradeBands.length === 0 ||
+          activeGradeBands.some((band) => isStandardInBand(standard.grades, band));
         return subjectMatches && gradeBandMatches;
       }),
-    [flatStandards, selectedGradeBand, selectedSubject]
+    [activeGradeBands, activeSubjects, flatStandards]
   );
 
   const targetStandards = filteredStandards.filter((standard) => standard.target);
   const connectedStandards = filteredStandards.filter(
     (standard) => !standard.target
   );
+  const targetStandardsBySubject = useMemo(
+    () => groupStandardsBySubject(targetStandards),
+    [targetStandards]
+  );
+  const connectedStandardsBySubject = useMemo(
+    () => groupStandardsBySubject(connectedStandards),
+    [connectedStandards]
+  );
+
+  useEffect(() => {
+    setSelectedSubjects((current) => {
+      if (current.includes('all')) {
+        return current;
+      }
+
+      const filtered = current.filter((subject) => availableSubjects.has(subject));
+
+      return filtered.length ? filtered : ['all'];
+    });
+  }, [availableSubjects]);
+
+  useEffect(() => {
+    setSelectedGradeBands((current) => {
+      if (current.includes('all')) {
+        return current;
+      }
+
+      const filtered = current.filter((band) => availableGradeBands.has(band));
+
+      return filtered.length ? filtered : ['all'];
+    });
+  }, [availableGradeBands]);
 
   const applyHashState = () => {
     if (typeof window === 'undefined') {
@@ -1041,13 +1285,40 @@ const UnitDesignPreview: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
   };
 
   const handleGradeBandFilter = (gradeBand: TGradeBand) => {
-    setSelectedGradeBand(gradeBand);
+    setSelectedGradeBands((current) => {
+      if (gradeBand === 'all') {
+        return ['all'];
+      }
+
+      const base = current.includes('all')
+        ? []
+        : current.filter((band) => band !== 'all');
+
+      const next = base.includes(gradeBand)
+        ? base.filter((band) => band !== gradeBand)
+        : [...base, gradeBand];
+
+      return next.length ? next : ['all'];
+    });
     trackUnitEvent('unit_standards_grade_filter', { grade_band: gradeBand });
   };
 
-  const handleSubjectFilter = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const subject = event.target.value;
-    setSelectedSubject(subject);
+  const handleSubjectToggle = (subject: TStandardsSubjectFilter) => {
+    setSelectedSubjects((current) => {
+      if (subject === 'all') {
+        return ['all'];
+      }
+
+      const base = current.includes('all')
+        ? []
+        : current.filter((item) => item !== 'all');
+
+      const next = base.includes(subject)
+        ? base.filter((item) => item !== subject)
+        : [...base, subject];
+
+      return next.length ? next : ['all'];
+    });
     trackUnitEvent('unit_standards_subject_filter', { subject });
   };
 
@@ -1727,72 +1998,190 @@ const UnitDesignPreview: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
 
         {activeTab === TAB_STANDARDS && (
           <section className={styles.unitSection}>
-            <h2 className={styles.sectionTitle}>Standards alignment</h2>
-            <p className={styles.sectionIntro}>
-              All target and connected standards in one place.
-            </p>
             <div className={styles.unitOverviewCardWide}>
+              <h2 className={styles.sectionTitle}>Interdisciplinary by Design</h2>
+              <p className={styles.sectionIntro}>
+                We align to standards across subjects for easy STEM, team
+                teaching, and project based learning (PBLs)
+              </p>
               {!!flatStandards.length ? (
                 <div className={styles.standardsLayout}>
+                  <div className={styles.standardsIntroPanel}>
+                    {overview?.SteamEpaulette && (
+                      <div className={styles.standardsEpaulette}>
+                        <Image
+                          src={overview.SteamEpaulette}
+                          alt="STEAM standards alignment epaulette"
+                          width={280}
+                          height={120}
+                          unoptimized
+                        />
+                      </div>
+                    )}
+                    <p className={styles.standardsIntroCopy}>
+                      This unit is interdisciplinary by design. This figure
+                      visualizes this STEAM learning experience as the
+                      percentages of standards aligned to each subject.
+                    </p>
+                  </div>
                   <div className={styles.standardsFilters}>
+                    <div className={styles.standardsFiltersHeader}>
+                      <Filter size={15} aria-hidden="true" />
+                      <span>Filter standards</span>
+                    </div>
                     <div className={styles.standardsGradeFilters}>
                       {STANDARDS_GRADE_BANDS.map((band) => (
+                        (() => {
+                          const isSelected = selectedGradeBands.includes(band.key);
+                          const isUnavailable =
+                            band.key !== 'all' && !availableGradeBands.has(band.key);
+                          return (
                         <button
                           key={band.key}
                           type="button"
                           className={
-                            selectedGradeBand === band.key
+                            isSelected
                               ? `${styles.standardsFilterButton} ${styles.standardsFilterButtonActive}`
+                              : isUnavailable
+                              ? `${styles.standardsFilterButton} ${styles.standardsFilterButtonDisabled}`
                               : styles.standardsFilterButton
                           }
+                          disabled={isUnavailable}
                           onClick={() => handleGradeBandFilter(band.key)}
                         >
                           {band.label}
                         </button>
+                          );
+                        })()
                       ))}
                     </div>
-                    <label className={styles.standardsSubjectFilter}>
-                      <span>Subject</span>
-                      <select value={selectedSubject} onChange={handleSubjectFilter}>
-                        <option value="all">All subjects</option>
-                        {standardSubjects.map((subject) => (
-                          <option key={subject} value={subject}>
-                            {subject}
-                          </option>
-                        ))}
-                      </select>
-                    </label>
+                    <div className={styles.standardsSubjectFilters}>
+                      <button
+                        type="button"
+                        className={
+                          selectedSubjects.includes('all')
+                            ? `${styles.standardsFilterButton} ${styles.standardsFilterButtonActive}`
+                            : styles.standardsFilterButton
+                        }
+                        onClick={() => handleSubjectToggle('all')}
+                      >
+                        All subjects
+                      </button>
+                      {standardSubjects.map((subject) => (
+                        (() => {
+                          const isSelected = selectedSubjects.includes(subject);
+                          const isUnavailable = !availableSubjects.has(subject);
+                          return (
+                        <button
+                          key={subject}
+                          type="button"
+                          className={
+                            isSelected
+                              ? `${styles.standardsFilterButton} ${styles.standardsFilterButtonActive}`
+                              : isUnavailable
+                              ? `${styles.standardsFilterButton} ${styles.standardsFilterButtonDisabled}`
+                              : styles.standardsFilterButton
+                          }
+                          disabled={isUnavailable}
+                          onClick={() => handleSubjectToggle(subject)}
+                        >
+                          <span
+                            className={styles.subjectColorChip}
+                            style={{ backgroundColor: getSubjectColor(subject) }}
+                            aria-hidden="true"
+                          />
+                          <span>{subject}</span>
+                        </button>
+                          );
+                        })()
+                      ))}
+                    </div>
                   </div>
                   <div className={styles.standardsSection}>
                     <h3>
+                      <Target size={16} aria-hidden="true" />
                       Target standards
                       <span>{targetStandards.length}</span>
                     </h3>
-                    {targetStandards.length ? (
+                    <p className={styles.sectionIntro}>
+                      Skills and concepts directly taught or reinforced by this
+                      lesson.
+                    </p>
+                    {targetStandardsBySubject.length ? (
                       <div className={styles.standardsList}>
-                        {targetStandards.map((standard) => (
-                          <article key={standard.id} className={styles.standardCard}>
-                            <header>
-                              <strong>{standard.subject}</strong>
-                              <span>{standard.setName}</span>
-                              <span>{standard.dimensionName}</span>
-                            </header>
-                            <p className={styles.standardCodes}>
-                              {standard.codes.join(', ') || 'Code not specified'}
-                            </p>
-                            <p className={styles.standardStatements}>
-                              {standard.statements.join(' ')}
-                            </p>
-                            {!!standard.alignmentNotes && (
-                              <div className={styles.standardAlignmentNotes}>
-                                <RichText content={standard.alignmentNotes} />
+                        {targetStandardsBySubject.map((subjectGroup) => {
+                          const mergedByDimension = mergeStandardsByDimension(
+                            subjectGroup.standards,
+                            subjectGroup.sets
+                          );
+
+                          return (
+                            <section
+                              key={`target-${subjectGroup.subject}`}
+                              className={styles.standardSubjectGroup}
+                              style={
+                                {
+                                  '--subject-color': getSubjectColor(
+                                    subjectGroup.subject
+                                  ),
+                                } as React.CSSProperties
+                              }
+                            >
+                              <header className={styles.standardSubjectHeader}>
+                                <div className={styles.subjectHeadingWrap}>
+                                  <span
+                                    className={styles.subjectColorChip}
+                                    style={{
+                                      backgroundColor: getSubjectColor(
+                                        subjectGroup.subject
+                                      ),
+                                    }}
+                                    aria-hidden="true"
+                                  />
+                                  <h4>{subjectGroup.subject}</h4>
+                                  {subjectGroup.sets.map((setName) => (
+                                    <span key={setName} className={styles.standardSetPill}>
+                                      {setName}
+                                    </span>
+                                  ))}
+                                </div>
+                              </header>
+                              <div className={styles.standardRows}>
+                                {mergedByDimension.map((standard) => (
+                                  <article key={standard.id} className={styles.standardRow}>
+                                    <div className={styles.standardMetaRow}>
+                                      <p className={styles.standardDimensionText}>
+                                        <Blocks size={14} aria-hidden="true" />
+                                        <span>{standard.dimensionName}</span>
+                                      </p>
+                                      <p className={styles.standardGradeText}>
+                                        <i className="bi bi-mortarboard-fill" aria-hidden="true" />
+                                        <span>{formatGradeValue(standard.grades)}</span>
+                                      </p>
+                                    </div>
+                                    <div className={styles.standardStatementWrap}>
+                                      {standard.lines.map((line, idx) => (
+                                        <div key={`${standard.id}-line-${idx}`}>
+                                          <p className={styles.standardStatementLine}>
+                                            <span className={styles.standardCode}>
+                                              {line.code}:
+                                            </span>{' '}
+                                            <span>{line.statement}</span>
+                                          </p>
+                                          {!!line.alignmentNote && (
+                                            <div className={styles.standardAlignmentNotes}>
+                                              <RichText content={line.alignmentNote} />
+                                            </div>
+                                          )}
+                                        </div>
+                                      ))}
+                                    </div>
+                                  </article>
+                                ))}
                               </div>
-                            )}
-                            <p className={styles.standardGradeText}>
-                              {formatGradeValue(standard.grades)}
-                            </p>
-                          </article>
-                        ))}
+                            </section>
+                          );
+                        })}
                       </div>
                     ) : (
                       <p className={styles.unitMutedText}>
@@ -1802,34 +2191,89 @@ const UnitDesignPreview: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                   </div>
                   <div className={styles.standardsSection}>
                     <h3>
+                      <Network size={16} aria-hidden="true" />
                       Connected standards
                       <span>{connectedStandards.length}</span>
                     </h3>
-                    {connectedStandards.length ? (
+                    <p className={styles.sectionIntro}>
+                      Skills and concepts reviewed or hinted at in this lesson
+                      (for building upon).
+                    </p>
+                    {connectedStandardsBySubject.length ? (
                       <div className={styles.standardsList}>
-                        {connectedStandards.map((standard) => (
-                          <article key={standard.id} className={styles.standardCard}>
-                            <header>
-                              <strong>{standard.subject}</strong>
-                              <span>{standard.setName}</span>
-                              <span>{standard.dimensionName}</span>
-                            </header>
-                            <p className={styles.standardCodes}>
-                              {standard.codes.join(', ') || 'Code not specified'}
-                            </p>
-                            <p className={styles.standardStatements}>
-                              {standard.statements.join(' ')}
-                            </p>
-                            {!!standard.alignmentNotes && (
-                              <div className={styles.standardAlignmentNotes}>
-                                <RichText content={standard.alignmentNotes} />
+                        {connectedStandardsBySubject.map((subjectGroup) => {
+                          const mergedByDimension = mergeStandardsByDimension(
+                            subjectGroup.standards,
+                            subjectGroup.sets
+                          );
+
+                          return (
+                            <section
+                              key={`connected-${subjectGroup.subject}`}
+                              className={styles.standardSubjectGroup}
+                              style={
+                                {
+                                  '--subject-color': getSubjectColor(
+                                    subjectGroup.subject
+                                  ),
+                                } as React.CSSProperties
+                              }
+                            >
+                              <header className={styles.standardSubjectHeader}>
+                                <div className={styles.subjectHeadingWrap}>
+                                  <span
+                                    className={styles.subjectColorChip}
+                                    style={{
+                                      backgroundColor: getSubjectColor(
+                                        subjectGroup.subject
+                                      ),
+                                    }}
+                                    aria-hidden="true"
+                                  />
+                                  <h4>{subjectGroup.subject}</h4>
+                                  {subjectGroup.sets.map((setName) => (
+                                    <span key={setName} className={styles.standardSetPill}>
+                                      {setName}
+                                    </span>
+                                  ))}
+                                </div>
+                              </header>
+                              <div className={styles.standardRows}>
+                                {mergedByDimension.map((standard) => (
+                                  <article key={standard.id} className={styles.standardRow}>
+                                    <div className={styles.standardMetaRow}>
+                                      <p className={styles.standardDimensionText}>
+                                        <Blocks size={14} aria-hidden="true" />
+                                        <span>{standard.dimensionName}</span>
+                                      </p>
+                                      <p className={styles.standardGradeText}>
+                                        <i className="bi bi-mortarboard-fill" aria-hidden="true" />
+                                        <span>{formatGradeValue(standard.grades)}</span>
+                                      </p>
+                                    </div>
+                                    <div className={styles.standardStatementWrap}>
+                                      {standard.lines.map((line, idx) => (
+                                        <div key={`${standard.id}-line-${idx}`}>
+                                          <p className={styles.standardStatementLine}>
+                                            <span className={styles.standardCode}>
+                                              {line.code}:
+                                            </span>{' '}
+                                            <span>{line.statement}</span>
+                                          </p>
+                                          {!!line.alignmentNote && (
+                                            <div className={styles.standardAlignmentNotes}>
+                                              <RichText content={line.alignmentNote} />
+                                            </div>
+                                          )}
+                                        </div>
+                                      ))}
+                                    </div>
+                                  </article>
+                                ))}
                               </div>
-                            )}
-                            <p className={styles.standardGradeText}>
-                              {formatGradeValue(standard.grades)}
-                            </p>
-                          </article>
-                        ))}
+                            </section>
+                          );
+                        })}
                       </div>
                     ) : (
                       <p className={styles.unitMutedText}>
