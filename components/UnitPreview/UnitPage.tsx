@@ -133,6 +133,16 @@ const suppressPortalNavReveal = (durationMs = 700) => {
   );
 };
 
+const isPortalNavHidden = () => {
+  if (typeof window === 'undefined') {
+    return false;
+  }
+  const portalNav = document.querySelector(
+    'nav[data-nav-hidden]'
+  ) as HTMLElement | null;
+  return portalNav?.dataset.navHidden === 'true';
+};
+
 const scrollToTop = () => {
   if (typeof window === 'undefined') {
     return;
@@ -141,8 +151,8 @@ const scrollToTop = () => {
     'nav[data-nav-hidden]'
   ) as HTMLElement | null;
   const isNavHidden = portalNav?.dataset.navHidden === 'true';
-  const navHeight = portalNav?.getBoundingClientRect().height ?? 0;
-  const targetTop = isNavHidden ? Math.max(0, Math.ceil(navHeight)) : 0;
+  const navLayoutHeight = portalNav?.offsetHeight ?? 0;
+  const targetTop = isNavHidden ? navLayoutHeight : 0;
   window.scrollTo({ top: targetTop, behavior: 'auto' });
 };
 
@@ -1151,7 +1161,9 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
   };
 
   const handleTabChange = (tab: TTabKey) => {
-    suppressPortalNavReveal(1200);
+    if (isPortalNavHidden()) {
+      suppressPortalNavReveal(1200);
+    }
     setActiveTab(tab);
     updateHash(tab, tab === TAB_MATERIALS ? activeLessonId : null);
     trackUnitEvent('unit_tab_selected', { tab });
@@ -1159,7 +1171,9 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
   };
 
   const handleLessonChange = (lessonId: number) => {
-    suppressPortalNavReveal();
+    if (isPortalNavHidden()) {
+      suppressPortalNavReveal();
+    }
     setActiveLessonId(lessonId);
     setActiveTab(TAB_MATERIALS);
     updateHash(TAB_MATERIALS, lessonId);

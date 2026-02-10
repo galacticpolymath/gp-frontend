@@ -61,6 +61,7 @@ const PortalNav: React.FC<PortalNavProps> = ({
   const ticking = useRef(false);
   const navOpenRef = useRef(false);
   const accountMenuOpenRef = useRef(false);
+  const navHiddenRef = useRef(false);
   const suppressUnhideUntil = useRef(0);
   const { status, user, isGpPlusMember, logUserOut } = useSiteSession();
   const isAuthenticated = status === "authenticated";
@@ -95,6 +96,10 @@ const PortalNav: React.FC<PortalNavProps> = ({
   }, [accountMenuOpen]);
 
   useEffect(() => {
+    navHiddenRef.current = isNavHidden;
+  }, [isNavHidden]);
+
+  useEffect(() => {
     if (disableNavbar) return;
     navOpenRef.current = navOpen;
     if (navOpen) {
@@ -105,6 +110,13 @@ const PortalNav: React.FC<PortalNavProps> = ({
   useEffect(() => {
     if (disableNavbar) return;
     if (typeof window === "undefined") return;
+    const root = document.documentElement;
+
+    const applyOffset = (hidden: boolean) => {
+      const navHeight = navRef.current?.getBoundingClientRect().height ?? 0;
+      const offset = hidden ? 0 : Math.max(0, Math.round(navHeight));
+      root.style.setProperty("--portal-nav-offset", `${offset}px`);
+    };
 
     const handleScroll = () => {
       if (navOpenRef.current) return;
@@ -119,13 +131,23 @@ const PortalNav: React.FC<PortalNavProps> = ({
 
         if (currentY < 80) {
           if (!isUnhideSuppressed) {
+            navHiddenRef.current = false;
             setIsNavHidden(false);
+            applyOffset(false);
+          } else {
+            applyOffset(navHiddenRef.current);
           }
         } else if (delta > 5) {
+          navHiddenRef.current = true;
           setIsNavHidden(true);
+          applyOffset(true);
         } else if (delta < -5) {
           if (!isUnhideSuppressed) {
+            navHiddenRef.current = false;
             setIsNavHidden(false);
+            applyOffset(false);
+          } else {
+            applyOffset(navHiddenRef.current);
           }
         }
 
@@ -141,6 +163,7 @@ const PortalNav: React.FC<PortalNavProps> = ({
   useEffect(() => {
     if (disableNavbar) return;
     if (typeof window === "undefined") return;
+    const root = document.documentElement;
 
     const handleSuppressNavUnhide = (event: Event) => {
       const customEvent = event as CustomEvent<{ durationMs?: number }>;
@@ -149,6 +172,9 @@ const PortalNav: React.FC<PortalNavProps> = ({
           ? customEvent.detail.durationMs
           : 700;
       suppressUnhideUntil.current = Date.now() + Math.max(0, durationMs);
+      if (navHiddenRef.current) {
+        root.style.setProperty("--portal-nav-offset", "0px");
+      }
     };
 
     window.addEventListener(
