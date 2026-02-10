@@ -3,7 +3,7 @@ import Image from 'next/image';
 import { format } from 'date-fns';
 import RichText from '../RichText';
 import styles from './UnitPage.module.css';
-import { Blocks, Filter, Network, Target, X } from 'lucide-react';
+import { Blocks, Filter, Network, NotebookPen, Target, X } from 'lucide-react';
 import { TUnitForUI } from '../../backend/models/Unit/types/unit';
 import {
   IItem,
@@ -491,6 +491,21 @@ const getLessonDisplayTitle = <TItem extends IItem = IItemForUI>(
   const identifier = getLessonIdentifier(lesson, index);
   const title = lesson?.title ?? 'Untitled lesson';
   return `Lesson ${identifier}: ${title}`;
+};
+
+const isAssessmentLesson = <TItem extends IItem = IItemForUI>(
+  lesson: INewUnitLesson<TItem> | undefined,
+  index: number
+) => {
+  if (!lesson) {
+    return false;
+  }
+  const identifier = getLessonIdentifier(lesson, index);
+  if (identifier === 100) {
+    return true;
+  }
+  const title = lesson?.title?.trim().toLowerCase() ?? '';
+  return title.includes('assessment');
 };
 
 type TPreviewItem = {
@@ -1299,6 +1314,11 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
   const unitTitle = unit.Title ?? 'Unit';
   const unitSubtitle = unit.Subtitle ?? '';
   const unitBanner = unit.UnitBanner ?? '';
+  const creditsContent = unit.Sections?.credits?.Content?.trim() ?? '';
+  const acknowledgmentsEntries = unit.Sections?.acknowledgments?.Data ?? [];
+  const hasCreditsTabContent = Boolean(
+    creditsContent || acknowledgmentsEntries.length || versionReleases.length
+  );
   const availLocs = unit.Sections?.overview?.availLocs ?? [];
   const locale = unit.locale ?? 'en-US';
   const numID = unit.numID ?? undefined;
@@ -1556,6 +1576,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                 {lessons.map((lesson, index) => {
                   const lessonId = getLessonIdentifier(lesson, index);
                   const isActive = lessonId === activeLessonId;
+                  const isAssessment = isAssessmentLesson(lesson, index);
                   return (
                     <button
                       key={`sticky-lesson-tab-${lessonId}`}
@@ -1567,7 +1588,14 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                       }
                       onClick={() => handleLessonChange(lessonId)}
                     >
-                      {lesson.tile ? (
+                      {isAssessment ? (
+                        <span
+                          className={`${styles.lessonSubtabThumb} ${styles.lessonSubtabThumbAssessment}`}
+                          aria-hidden="true"
+                        >
+                          <NotebookPen size={13} />
+                        </span>
+                      ) : lesson.tile ? (
                         <span className={styles.lessonSubtabThumb} aria-hidden="true">
                           <Image
                             src={lesson.tile}
@@ -1577,7 +1605,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                           />
                         </span>
                       ) : null}
-                      <span>{lessonId}</span>
+                      <span>{isAssessment ? 'Assess' : lessonId}</span>
                     </button>
                   );
                 })}
@@ -1614,6 +1642,20 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
 
       {activeTab === TAB_OVERVIEW && (
         <section className={styles.unitHero}>
+          <div className={styles.unitHeroIntro}>
+            <div className={styles.unitEyebrowRow}>
+              <p className={styles.unitEyebrow}>Galactic Polymath · Unit</p>
+              {unitVersionText && (
+                <button
+                  type="button"
+                  className={styles.unitVersionInfo}
+                  onClick={handleVersionInfoClick}
+                >
+                  {unitVersionText}
+                </button>
+              )}
+            </div>
+          </div>
           <div className={styles.unitHeroGrid}>
             <div className={styles.unitHeroMedia}>
               {unitBanner ? (
@@ -1633,18 +1675,6 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
               )}
             </div>
             <div className={styles.unitHeroHeader}>
-              <div className={styles.unitEyebrowRow}>
-                <p className={styles.unitEyebrow}>Galactic Polymath · Unit</p>
-                {unitVersionText && (
-                  <button
-                    type="button"
-                    className={styles.unitVersionInfo}
-                    onClick={handleVersionInfoClick}
-                  >
-                    {unitVersionText}
-                  </button>
-                )}
-              </div>
               <h1 className={styles.unitTitle}>{unitTitle}</h1>
               {unitSubtitle && (
                 <p className={styles.unitSubtitle}>{unitSubtitle}</p>
@@ -1797,9 +1827,11 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                 <div className={styles.lessonLayout}>
                   <div className={styles.lessonSummaryCard}>
                     <div className={styles.lessonSummaryMain}>
-                      <p className={styles.lessonEyebrow}>
-                        Lesson {getLessonIdentifier(activeLesson, activeLessonIndex)}
-                      </p>
+                      {!isAssessmentLesson(activeLesson, activeLessonIndex) && (
+                        <p className={styles.lessonEyebrow}>
+                          Lesson {getLessonIdentifier(activeLesson, activeLessonIndex)}
+                        </p>
+                      )}
                       <h3>{activeLesson.title ?? 'Untitled lesson'}</h3>
                       {activeLesson.lsnPreface && (
                         <p className={styles.lessonPreface}>
@@ -2534,74 +2566,133 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
 
         {activeTab === TAB_CREDITS && (
           <section className={styles.unitSection}>
-            <h2 className={styles.sectionTitle}>Credits & acknowledgments</h2>
+            <h2 className={styles.sectionTitle}>Credits, Acknowledgments, and Versions</h2>
             <p className={styles.sectionIntro}>
-              Partners, collaborators, and credits.
+              This unit was made possible by hundreds of hours of work by tons of
+              people. Thank you!
             </p>
             <div className={styles.unitOverviewCardWide}>
-              {unit.Sections?.acknowledgments?.Data?.length ||
-              unit.Sections?.credits?.Content ||
-              versionReleases.length ? (
-                <div className={styles.acknowledgmentsList}>
-                  {unit.Sections?.credits?.Content && (
-                    <div className={styles.richTextBlock}>
-                      <RichText content={unit.Sections.credits.Content} />
-                    </div>
+              {hasCreditsTabContent ? (
+                <div className={styles.creditsLayout}>
+                  {!!creditsContent && (
+                    <section className={styles.creditsPanel}>
+                      <h3>Credits</h3>
+                      <div className={styles.richTextBlock}>
+                        <RichText content={creditsContent} />
+                      </div>
+                    </section>
                   )}
-                  {unit.Sections?.acknowledgments?.Data?.map((entry: any, index: number) => (
-                    <div key={`${entry.role}-${index}`}>
-                      <h4>{entry.role}</h4>
-                      {entry.def && <p>{entry.def}</p>}
-                      {entry.records?.length ? (
-                        <ul>
-                          {entry.records.map((record: any, idx: number) => (
-                            <li key={`${record.name}-${idx}`}>
-                              <strong>{record.name}</strong>
-                              {record.title ? ` · ${record.title}` : ''}
-                              {record.affiliation ? `, ${record.affiliation}` : ''}
-                              {record.location ? ` (${record.location})` : ''}
-                            </li>
-                          ))}
-                        </ul>
-                      ) : null}
-                    </div>
-                  ))}
-                  <div
+                  {!!acknowledgmentsEntries.length && (
+                    <section className={styles.creditsPanel}>
+                      <h3>Acknowledgments</h3>
+                      <div className={styles.acknowledgmentsList}>
+                        {acknowledgmentsEntries.map((entry: any, index: number) => (
+                          <article
+                            key={`${entry.role}-${index}`}
+                            className={styles.acknowledgmentEntry}
+                          >
+                            <h4>{entry.role}</h4>
+                            {entry.def && (
+                              <div className={styles.richTextBlock}>
+                                <RichText content={entry.def} />
+                              </div>
+                            )}
+                            {entry.records?.length ? (
+                              <ul>
+                                {entry.records
+                                  .map((record: any, idx: number) => {
+                                    const name = record?.name?.trim?.() ?? '';
+                                    const title = record?.title?.trim?.() ?? '';
+                                    const affiliation =
+                                      record?.affiliation?.trim?.() ?? '';
+                                    const location = record?.location?.trim?.() ?? '';
+
+                                    if (!name && !title && !affiliation && !location) {
+                                      return null;
+                                    }
+
+                                    const recordMarkdown = `${name}${
+                                      title ? `${name ? ' · ' : ''}${title}` : ''
+                                    }${
+                                      affiliation
+                                        ? `${name || title ? ', ' : ''}${affiliation}`
+                                        : ''
+                                    }${location ? ` (${location})` : ''}`;
+
+                                    return (
+                                      <li key={`${name || 'record'}-${idx}`}>
+                                        <div className={styles.richTextBlock}>
+                                          <RichText content={recordMarkdown} />
+                                        </div>
+                                      </li>
+                                    );
+                                  })
+                                  .filter(Boolean)}
+                              </ul>
+                            ) : null}
+                          </article>
+                        ))}
+                      </div>
+                    </section>
+                  )}
+                  <section
                     ref={versionNotesAnchorRef}
                     id="major-release-updates"
-                    className={styles.versionNotes}
+                    className={styles.creditsPanel}
                   >
-                    <h4>Major release updates</h4>
+                    <h3>Versions</h3>
                     {versionReleases.length ? (
-                      versionReleases.map((release: any, index: number) => (
-                        <div key={`${release.major_release}-${index}`}>
-                          <strong>{release.major_release}</strong>
-                          {release.sub_releases?.length ? (
-                            <ul>
-                              {release.sub_releases.map((sub: any, idx: number) => (
-                                <li key={`${sub.version}-${idx}`}>
-                                  <span>
-                                    {sub.version ?? 'Unlabeled version'}
-                                    {sub.date ? ` · ${sub.date}` : ''}
-                                  </span>
-                                  {sub.summary ? <p>{sub.summary}</p> : null}
-                                  {sub.notes ? <p>{sub.notes}</p> : null}
-                                </li>
-                              ))}
-                            </ul>
-                          ) : null}
-                        </div>
-                      ))
+                      <div className={styles.versionNotes}>
+                        {versionReleases.map((release: any, index: number) => (
+                          <article
+                            key={`${release.major_release}-${index}`}
+                            className={styles.versionEntry}
+                          >
+                            <h4>{release.major_release}</h4>
+                            {release.sub_releases?.length ? (
+                              <ul>
+                                {release.sub_releases.map((sub: any, idx: number) => (
+                                  <li key={`${sub.version}-${idx}`}>
+                                    <p className={styles.versionMeta}>
+                                      {sub.version ?? 'Unlabeled version'}
+                                      {sub.date ? ` · ${sub.date}` : ''}
+                                    </p>
+                                    {sub.summary ? (
+                                      <div className={styles.richTextBlock}>
+                                        <RichText content={sub.summary} />
+                                      </div>
+                                    ) : null}
+                                    {sub.notes ? (
+                                      <div className={styles.richTextBlock}>
+                                        <RichText content={sub.notes} />
+                                      </div>
+                                    ) : null}
+                                    {sub.acknowledgments ? (
+                                      <div className={styles.richTextBlock}>
+                                        <RichText content={sub.acknowledgments} />
+                                      </div>
+                                    ) : null}
+                                  </li>
+                                ))}
+                              </ul>
+                            ) : (
+                              <p className={styles.unitMutedText}>
+                                Version details will appear here.
+                              </p>
+                            )}
+                          </article>
+                        ))}
+                      </div>
                     ) : (
                       <p className={styles.unitMutedText}>
                         Version notes will appear here.
                       </p>
                     )}
-                  </div>
+                  </section>
                 </div>
               ) : (
                 <p className={styles.unitMutedText}>
-                  Credits and acknowledgments will appear here.
+                  Credits, acknowledgments, and version notes will appear here.
                 </p>
               )}
             </div>

@@ -10,6 +10,11 @@
   padding: 32px 16px 20px;
 }
 
+.unitHeroIntro {
+  max-width: 1280px;
+  margin: 0 auto 12px;
+}
+
 .unitHeroGrid {
   display: grid;
   gap: 24px;
@@ -27,6 +32,8 @@
   gap: 12px;
   grid-area: header;
   position: relative;
+  height: 100%;
+  align-content: start;
 }
 
 .unitEyebrow {
@@ -114,11 +121,14 @@
   justify-content: center;
   width: 100%;
   grid-area: media;
+  height: 100%;
+  align-self: stretch;
 }
 
 .unitBanner,
 .unitBannerFallback {
   width: 100%;
+  height: 100%;
   border-radius: 18px;
   overflow: hidden;
   border: 1px solid rgba(44, 131, 195, 0.18);
@@ -498,6 +508,11 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+.lessonSubtabThumbAssessment {
+  background: #450c54;
+  color: #f7fbff;
 }
 
 .unitSearchResult {
@@ -1088,6 +1103,9 @@
 .lessonStatusPill {
   margin-top: 8px;
   display: inline-flex;
+  width: fit-content;
+  justify-self: start;
+  align-self: start;
   align-items: center;
   padding: 4px 10px;
   border-radius: 999px;
@@ -1370,21 +1388,68 @@
   font-size: 13px;
 }
 
+.creditsLayout {
+  display: grid;
+  gap: 14px;
+}
+
+.creditsPanel {
+  display: grid;
+  gap: 10px;
+  border: 1px solid rgba(44, 131, 195, 0.14);
+  border-radius: 12px;
+  background: rgba(240, 244, 255, 0.66);
+  padding: 12px;
+}
+
+.creditsPanel h3 {
+  margin: 0;
+  font-size: 17px;
+  color: #1f355a;
+}
+
 .acknowledgmentsList,
 .versionNotes {
   display: grid;
-  gap: 16px;
+  gap: 12px;
+}
+
+.acknowledgmentEntry,
+.versionEntry {
+  display: grid;
+  gap: 8px;
+  border: 1px solid rgba(44, 131, 195, 0.12);
+  border-radius: 10px;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.78);
+}
+
+.acknowledgmentEntry h4,
+.versionEntry h4 {
+  margin: 0;
+  font-size: 15px;
+  color: #1f355a;
 }
 
 .acknowledgmentsList ul,
 .versionNotes ul {
+  margin: 0;
   padding-left: 18px;
   color: #4c5269;
 }
 
-.versionNotes li p {
-  margin: 6px 0 0;
+.acknowledgmentsList li,
+.versionNotes li {
+  margin-bottom: 6px;
   color: #4c5269;
+  font-size: 14px;
+}
+
+.versionMeta {
+  margin: 0;
+  color: #1f355a;
+  font-size: 13px;
+  font-weight: 700;
 }
 
 .standardsLayout {
@@ -1791,10 +1856,27 @@
     padding: 48px 24px 24px;
   }
 
+  .unitHeroIntro {
+    margin-bottom: 14px;
+  }
+
   .unitHeroGrid {
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     grid-template-areas: 'header media';
-    align-items: start;
+    align-items: stretch;
+  }
+
+  .unitTitle {
+    font-size: clamp(24px, 2.6vw, 36px);
+  }
+
+  .unitSubtitle {
+    font-size: clamp(14px, 1.6vw, 18px);
+  }
+
+  .unitBanner img {
+    height: 100%;
+    object-fit: contain;
   }
 
   .unitStickyInner {
@@ -1876,6 +1958,10 @@
 }
 
 @media (max-width: 767px) {
+  .unitStickyHeader {
+    backdrop-filter: blur(9px);
+  }
+
   .unitStickyInner {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
@@ -1885,11 +1971,23 @@
       'tabs'
       'results';
     align-items: start;
+    padding: 6px 12px 5px;
+    gap: 5px;
   }
 
   .unitStickyTopRow {
     padding-right: 0;
     grid-area: title;
+  }
+
+  .unitStickyTitle {
+    gap: 2px;
+  }
+
+  .unitStickyText {
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 1.25;
   }
 
   .unitSearch {
@@ -1911,6 +2009,40 @@
     align-items: flex-start;
     justify-content: flex-end;
     width: auto;
+  }
+
+  .unitTabList {
+    gap: 10px;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 2px;
+  }
+
+  .unitTabButton {
+    border: 0;
+    border-bottom: 2px solid transparent;
+    border-radius: 0;
+    padding: 2px 0;
+    min-height: 0;
+    background: transparent;
+    color: rgba(220, 233, 255, 0.9);
+    font-size: 14px;
+    font-weight: 600;
+    white-space: nowrap;
+    text-decoration: none;
+  }
+
+  .unitTabButton:hover,
+  .unitTabButton:focus-visible {
+    color: #f7fbff;
+    border-bottom-color: rgba(240, 244, 255, 0.75);
+    background: transparent;
+  }
+
+  .unitTabButtonActive {
+    background: transparent;
+    color: #f7fbff;
+    border-color: rgba(240, 244, 255, 0.95);
   }
 
   .unitLocaleSwitcher {
