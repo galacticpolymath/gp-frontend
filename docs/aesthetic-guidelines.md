@@ -93,6 +93,7 @@ Use these as subtle accents in standards-alignment UI (chips, borders, icons), n
 ## Typography & Iconography
 - **Primary font:** Noto Sans Light/Regular/SemiBold with system fallbacks (`"Noto Sans", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif`).
 - Heading scale: H1 40/44, H2 32/36, H3 24/28, Body 18/28 for portal readability; tighten to 16/24 for dense tables.
+- Minimum readable sizes: body-like instructional text should be at least 14px on mobile and 15-16px on desktop; reserve 12-13px for short labels/chips only.
 - Use stacked icon pairs for JobViz job cards: outer glyph = category, inner = specific job. Maintain 24px outer, 16px inner, 2px stroke.
 - Emoji ratings should render with consistent line height and include aria-labels describing the rating meaning.
 - Navigation and filter icons follow mono-line style at 1.5px stroke; avoid mixing filled and outline icons within a single component.

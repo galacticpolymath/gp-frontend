@@ -173,6 +173,7 @@
 .unitStickyTitle {
   display: grid;
   gap: 4px;
+  min-width: 0;
 }
 
 .unitStickyTopRow {
@@ -230,6 +231,8 @@
 }
 
 .unitStickyText {
+  display: block;
+  max-width: 100%;
   font-size: 14px;
   font-weight: 600;
   color: rgba(240, 244, 255, 0.96);
@@ -1195,9 +1198,17 @@
 }
 
 .lessonObjectives ul {
+  margin: 0;
   padding-left: 16px;
   color: #4c5269;
   font-size: 14px;
+}
+
+.lessonObjectivesLead {
+  margin: 0 0 4px;
+  font-size: 13px;
+  line-height: 1.45;
+  color: #6b7387;
 }
 
 .lessonObjectives li {
@@ -1351,12 +1362,45 @@
 }
 
 .standardsIntroPanel {
+  position: relative;
   display: grid;
-  gap: 10px;
-  border: 1px solid rgba(44, 131, 195, 0.14);
-  background: rgba(240, 244, 255, 0.66);
-  border-radius: 12px;
-  padding: 12px;
+  gap: 12px;
+  border: 1px solid rgba(107, 122, 177, 0.28);
+  background:
+    radial-gradient(
+      circle at 12% 18%,
+      rgba(183, 152, 232, 0.26),
+      transparent 38%
+    ),
+    linear-gradient(
+      135deg,
+      rgba(241, 246, 255, 0.98),
+      rgba(248, 246, 255, 0.98)
+    );
+  border-radius: 14px;
+  padding: 14px;
+  box-shadow: 0 10px 24px rgba(40, 52, 89, 0.14);
+}
+
+.standardsIntroHeading {
+  display: grid;
+  gap: 6px;
+}
+
+.standardsIntroTitle {
+  margin: 0;
+  font-size: clamp(22px, 4vw, 30px);
+  line-height: 1.14;
+  letter-spacing: -0.015em;
+  color: #1a2748;
+}
+
+.standardsIntroLead {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.45;
+  color: #354669;
+  max-width: 74ch;
 }
 
 .standardsEpaulette {
@@ -1372,13 +1416,42 @@
 
 .standardsIntroCopy {
   margin: 0;
-  font-size: 13px;
-  color: #1f355a;
+  font-size: 14px;
+  color: #2f4165;
   line-height: 1.45;
 }
 
+.mobileFilterDockTrigger {
+  width: fit-content;
+  border: 1px solid rgba(44, 131, 195, 0.28);
+  border-radius: 999px;
+  min-height: 40px;
+  padding: 0 12px;
+  background: rgba(255, 255, 255, 0.92);
+  color: #1f355a;
+  font-size: 13px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.mobileFilterCount {
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: #1f355a;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 20px;
+  text-align: center;
+}
+
 .standardsFilters {
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: 10px;
   border: 1px solid rgba(44, 131, 195, 0.14);
   background: rgba(240, 244, 255, 0.66);
@@ -1387,12 +1460,48 @@
 }
 
 .standardsFiltersHeader {
-  display: inline-flex;
+  display: flex;
+  justify-content: space-between;
   align-items: center;
   gap: 6px;
   color: #1f355a;
   font-size: 13px;
   font-weight: 700;
+}
+
+.standardsFiltersTitle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.standardsFiltersReset {
+  border: 1px solid rgba(120, 130, 150, 0.35);
+  border-radius: 999px;
+  min-height: 28px;
+  padding: 0 10px;
+  background: #ffffff;
+  color: #1f355a;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.standardsFiltersClose {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  border: 1px solid rgba(120, 130, 150, 0.35);
+  background: #fff;
+  color: #1f355a;
+}
+
+.standardsFiltersBody {
+  display: grid;
+  gap: 10px;
+  align-content: start;
 }
 
 .standardsGradeFilters {
@@ -1413,6 +1522,9 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
+  flex: 0 0 auto;
+  min-height: 40px;
+  white-space: nowrap;
 }
 
 .standardsFilterButtonActive {
@@ -1532,7 +1644,7 @@
 .standardDimensionText,
 .standardGradeText {
   margin: 0;
-  font-size: 13px;
+  font-size: 14px;
   color: #4c5269;
   font-weight: 600;
   display: inline-flex;
@@ -1545,13 +1657,18 @@
   gap: 4px;
 }
 
+.standardStatementBlock {
+  display: grid;
+  gap: 6px;
+}
+
 .standardStatementWrap > div + div {
   margin-top: 6px;
 }
 
 .standardStatementLine {
   margin: 0;
-  font-size: 13px;
+  font-size: 14px;
   color: #4c5269;
 }
 
@@ -1561,13 +1678,81 @@
 }
 
 .standardAlignmentNotes {
-  border-left: 3px solid rgba(117, 126, 147, 0.35);
+  border-left: 3px solid #586074;
   padding-left: 8px;
 }
 
 .standardAlignmentNotes :global(p) {
   margin: 0 0 6px;
-  font-size: 12px;
+  font-size: 14px;
+  line-height: 1.45;
+  color: #586074;
+  font-weight: 500;
+}
+
+@media (max-width: 1023px) {
+  .mobileFilterDockTrigger {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .mobileFilterDockBackdrop {
+    position: fixed;
+    inset: 0;
+    border: 0;
+    background: rgba(17, 23, 35, 0.45);
+    backdrop-filter: blur(2px);
+    z-index: 29;
+  }
+
+  .standardsFilters {
+    position: fixed;
+    left: 8px;
+    right: 8px;
+    bottom: 8px;
+    top: auto;
+    height: min(62dvh, 500px);
+    width: auto;
+    border-radius: 16px;
+    border: 1px solid rgba(112, 126, 160, 0.35);
+    padding: 0;
+    z-index: 30;
+    background: #ffffff;
+    box-shadow: 0 18px 44px rgba(16, 24, 40, 0.28);
+    transform: translateY(100%);
+    transition: transform 220ms ease;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .standardsFiltersOpen {
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  .standardsFiltersHeader {
+    padding: 8px 12px;
+    border-bottom: 1px solid rgba(44, 131, 195, 0.2);
+    background: #ffffff;
+    flex: 0 0 auto;
+  }
+
+  .standardsFiltersTitle {
+    line-height: 1.2;
+  }
+
+  .standardsFiltersClose {
+    width: 24px;
+    height: 24px;
+  }
+
+  .standardsFiltersBody {
+    overflow-y: auto;
+    max-height: calc(min(62dvh, 500px) - 44px);
+    padding: 10px 12px 14px;
+    align-content: start;
+    background: #ffffff;
+  }
 }
 
 @media (min-width: 768px) {
@@ -1629,22 +1814,72 @@
   }
 }
 
+@media (min-width: 1024px) {
+  .mobileFilterDockTrigger,
+  .mobileFilterDockBackdrop,
+  .standardsFiltersClose {
+    display: none;
+  }
+
+  .standardsFilters {
+    position: static;
+    width: 100%;
+    height: auto;
+    transform: none;
+    transition: none;
+    overflow: visible;
+    pointer-events: auto;
+    display: grid;
+  }
+
+  .standardStatementBlock {
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+    align-items: start;
+    column-gap: 12px;
+  }
+
+  .standardStatementLine,
+  .standardAlignmentNotes :global(p) {
+    font-size: 15px;
+  }
+}
+
 @media (max-width: 767px) {
+  .unitStickyInner {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      'search'
+      'title'
+      'tabs'
+      'results';
+    align-items: start;
+  }
+
   .unitStickyTopRow {
-    padding-right: clamp(140px, 52vw, 300px);
+    padding-right: 0;
+    grid-area: title;
   }
 
   .unitSearch {
-    top: 10px;
-    right: 12px;
+    position: static;
+    top: auto;
+    right: auto;
     max-width: calc(100% - 24px);
+    width: auto;
+    margin-top: 0;
+    grid-area: search;
+    justify-self: end;
+    align-self: start;
   }
 
   .unitSearchRow {
     --locale-width: 120px;
     --search-expanded-width: 300px;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
     align-items: flex-start;
+    justify-content: flex-end;
+    width: auto;
   }
 
   .unitLocaleSwitcher {

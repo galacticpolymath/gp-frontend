@@ -3,7 +3,7 @@ import Image from 'next/image';
 import { format } from 'date-fns';
 import RichText from '../RichText';
 import styles from './UnitDesignPreview.module.css';
-import { Blocks, Filter, Network, Target } from 'lucide-react';
+import { Blocks, Filter, Network, Target, X } from 'lucide-react';
 import { TUnitForUI } from '../../backend/models/Unit/types/unit';
 import {
   IItem,
@@ -122,6 +122,28 @@ const trackUnitEvent = (name: string, params: TGtagParams = {}) => {
     page_type: 'unit',
     ...params,
   });
+};
+
+const suppressPortalNavReveal = (durationMs = 700) => {
+  if (typeof window === 'undefined') {
+    return;
+  }
+  window.dispatchEvent(
+    new CustomEvent('gp:suppress-nav-unhide', { detail: { durationMs } })
+  );
+};
+
+const scrollToTop = () => {
+  if (typeof window === 'undefined') {
+    return;
+  }
+  const portalNav = document.querySelector(
+    'nav[data-nav-hidden]'
+  ) as HTMLElement | null;
+  const isNavHidden = portalNav?.dataset.navHidden === 'true';
+  const navHeight = portalNav?.getBoundingClientRect().height ?? 0;
+  const targetTop = isNavHidden ? Math.max(0, Math.ceil(navHeight)) : 0;
+  window.scrollTo({ top: targetTop, behavior: 'auto' });
 };
 
 const parseGradesFromString = (value: string) => {
@@ -907,6 +929,8 @@ const UnitDesignPreview: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [isSearchExpanded, setIsSearchExpanded] = useState(false);
   const [activeMaterialIndex, setActiveMaterialIndex] = useState(0);
+  const [isStandardsFilterDockOpen, setIsStandardsFilterDockOpen] =
+    useState(false);
   const [selectedGradeBands, setSelectedGradeBands] = useState<TGradeBand[]>([
     'all',
   ]);
@@ -976,6 +1000,17 @@ const UnitDesignPreview: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
     }
     return selectedGradeBands.filter((band) => band !== 'all');
   }, [selectedGradeBands]);
+
+  const activeFilterCount = useMemo(() => {
+    const subjectCount = selectedSubjects.includes('all')
+      ? 0
+      : selectedSubjects.length;
+    const gradeBandCount = selectedGradeBands.includes('all')
+      ? 0
+      : selectedGradeBands.length;
+
+    return subjectCount + gradeBandCount;
+  }, [selectedGradeBands, selectedSubjects]);
 
   const filteredStandards = useMemo(
     () =>
@@ -1087,17 +1122,13 @@ const UnitDesignPreview: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
     if (tab === TAB_MATERIALS && lessonId != null) {
       params.set('lesson', String(lessonId));
     }
-    window.location.hash = params.toString();
-  };
-
-  const scrollToTop = () => {
-    if (typeof window === 'undefined') {
-      return;
-    }
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    const nextHash = params.toString();
+    const nextUrl = `${window.location.pathname}${window.location.search}#${nextHash}`;
+    window.history.replaceState(null, '', nextUrl);
   };
 
   const handleTabChange = (tab: TTabKey) => {
+    suppressPortalNavReveal(1200);
     setActiveTab(tab);
     updateHash(tab, tab === TAB_MATERIALS ? activeLessonId : null);
     trackUnitEvent('unit_tab_selected', { tab });
@@ -1105,11 +1136,11 @@ const UnitDesignPreview: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
   };
 
   const handleLessonChange = (lessonId: number) => {
+    suppressPortalNavReveal();
     setActiveLessonId(lessonId);
     setActiveTab(TAB_MATERIALS);
     updateHash(TAB_MATERIALS, lessonId);
     trackUnitEvent('unit_lesson_selected', { lesson_id: lessonId });
-    scrollToTop();
   };
 
   const handleSearchSelect = (entry: TSearchEntry) => {
@@ -1156,6 +1187,12 @@ const UnitDesignPreview: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
       setShouldScrollToVersionNotes(false);
     });
   }, [activeTab, shouldScrollToVersionNotes]);
+
+  useEffect(() => {
+    if (activeTab !== TAB_STANDARDS && isStandardsFilterDockOpen) {
+      setIsStandardsFilterDockOpen(false);
+    }
+  }, [activeTab, isStandardsFilterDockOpen]);
 
   const activeLessonIndex = lessons.findIndex(
     (lesson, index) => getLessonIdentifier(lesson, index) === activeLessonId
@@ -1322,6 +1359,12 @@ const UnitDesignPreview: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
     trackUnitEvent('unit_standards_subject_filter', { subject });
   };
 
+  const handleResetStandardsFilters = () => {
+    setSelectedGradeBands(['all']);
+    setSelectedSubjects(['all']);
+    trackUnitEvent('unit_standards_filters_reset');
+  };
+
   return (
     <div className={styles.unitPage}>
       <div className={styles.unitStickyHeader}>
@@ -1437,18 +1480,16 @@ const UnitDesignPreview: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                       }
                       onClick={() => handleLessonChange(lessonId)}
                     >
-                      <span className={styles.lessonSubtabThumb} aria-hidden="true">
-                        {lesson.tile ? (
+                      {lesson.tile ? (
+                        <span className={styles.lessonSubtabThumb} aria-hidden="true">
                           <Image
                             src={lesson.tile}
                             alt=""
                             width={22}
                             height={22}
                           />
-                        ) : (
-                          <i className="bi bi-image" />
-                        )}
-                      </span>
+                        </span>
+                      ) : null}
                       <span>{lessonId}</span>
                     </button>
                   );
@@ -1655,7 +1696,10 @@ const UnitDesignPreview: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                       )}
                       {!!activeLesson.learningObj?.length && (
                         <div className={styles.lessonObjectives}>
-                          <h4>Learning objectives</h4>
+                          <h4>Learning Objectives</h4>
+                          <p className={styles.lessonObjectivesLead}>
+                            Students will be able to:
+                          </p>
                           <ul>
                             {activeLesson.learningObj.map((item, idx) => (
                               <li key={`${item}-${idx}`}>{item}</li>
@@ -1665,7 +1709,7 @@ const UnitDesignPreview: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                       )}
                     </div>
                     <div className={styles.lessonSummaryMeta}>
-                      <div className={styles.lessonTileMediaLarge}>
+                      <div className={styles.lessonTileMediaLarge} aria-hidden={!activeLesson.tile}>
                         {activeLesson.tile ? (
                           <Image
                             src={activeLesson.tile}
@@ -1673,9 +1717,7 @@ const UnitDesignPreview: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                             width={180}
                             height={180}
                           />
-                        ) : (
-                          <div className={styles.lessonTilePlaceholder} />
-                        )}
+                        ) : null}
                       </div>
                       {typeof activeLesson.lsnDur === 'number' && (
                         <div className={styles.lessonDuration}>
@@ -1999,14 +2041,19 @@ const UnitDesignPreview: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
         {activeTab === TAB_STANDARDS && (
           <section className={styles.unitSection}>
             <div className={styles.unitOverviewCardWide}>
-              <h2 className={styles.sectionTitle}>Interdisciplinary by Design</h2>
-              <p className={styles.sectionIntro}>
-                We align to standards across subjects for easy STEM, team
-                teaching, and project based learning (PBLs)
-              </p>
               {!!flatStandards.length ? (
                 <div className={styles.standardsLayout}>
                   <div className={styles.standardsIntroPanel}>
+                    <div className={styles.standardsIntroHeading}>
+                      <h2 className={styles.standardsIntroTitle}>
+                        Interdisciplinary by Design
+                      </h2>
+                      <p className={styles.standardsIntroLead}>
+                        We align to standards across subjects. Our units are
+                        ready for STEAM or team teaching, and project based
+                        learning (PBLs) with no modification!
+                      </p>
+                    </div>
                     {overview?.SteamEpaulette && (
                       <div className={styles.standardsEpaulette}>
                         <Image
@@ -2019,17 +2066,60 @@ const UnitDesignPreview: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                       </div>
                     )}
                     <p className={styles.standardsIntroCopy}>
-                      This unit is interdisciplinary by design. This figure
-                      visualizes this STEAM learning experience as the
-                      percentages of standards aligned to each subject.
+                      This figure visualizes the percentages of standards aligned to each subject.
                     </p>
                   </div>
-                  <div className={styles.standardsFilters}>
+                  <button
+                    type="button"
+                    className={styles.mobileFilterDockTrigger}
+                    onClick={() => setIsStandardsFilterDockOpen(true)}
+                  >
+                    <Filter size={15} aria-hidden="true" />
+                    <span>Filter standards</span>
+                    {!isStandardsFilterDockOpen && activeFilterCount > 0 && (
+                      <span className={styles.mobileFilterCount}>
+                        {activeFilterCount}
+                      </span>
+                    )}
+                  </button>
+                  {isStandardsFilterDockOpen && (
+                    <button
+                      type="button"
+                      className={styles.mobileFilterDockBackdrop}
+                      aria-label="Close standards filters"
+                      onClick={() => setIsStandardsFilterDockOpen(false)}
+                    />
+                  )}
+                  <div
+                    className={`${styles.standardsFilters} ${
+                      isStandardsFilterDockOpen ? styles.standardsFiltersOpen : ''
+                    }`}
+                  >
                     <div className={styles.standardsFiltersHeader}>
-                      <Filter size={15} aria-hidden="true" />
-                      <span>Filter standards</span>
+                      <div className={styles.standardsFiltersTitle}>
+                        <Filter size={15} aria-hidden="true" />
+                        <span>Filter standards</span>
+                      </div>
+                      {activeFilterCount > 0 && (
+                        <button
+                          type="button"
+                          className={styles.standardsFiltersReset}
+                          onClick={handleResetStandardsFilters}
+                        >
+                          Reset
+                        </button>
+                      )}
+                      <button
+                        type="button"
+                        className={styles.standardsFiltersClose}
+                        aria-label="Close standards filters"
+                        onClick={() => setIsStandardsFilterDockOpen(false)}
+                      >
+                        <X size={15} aria-hidden="true" />
+                      </button>
                     </div>
-                    <div className={styles.standardsGradeFilters}>
+                    <div className={styles.standardsFiltersBody}>
+                      <div className={styles.standardsGradeFilters}>
                       {STANDARDS_GRADE_BANDS.map((band) => (
                         (() => {
                           const isSelected = selectedGradeBands.includes(band.key);
@@ -2054,8 +2144,8 @@ const UnitDesignPreview: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                           );
                         })()
                       ))}
-                    </div>
-                    <div className={styles.standardsSubjectFilters}>
+                      </div>
+                      <div className={styles.standardsSubjectFilters}>
                       <button
                         type="button"
                         className={
@@ -2095,6 +2185,7 @@ const UnitDesignPreview: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                           );
                         })()
                       ))}
+                      </div>
                     </div>
                   </div>
                   <div className={styles.standardsSection}>
@@ -2161,7 +2252,10 @@ const UnitDesignPreview: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                                     </div>
                                     <div className={styles.standardStatementWrap}>
                                       {standard.lines.map((line, idx) => (
-                                        <div key={`${standard.id}-line-${idx}`}>
+                                        <div
+                                          key={`${standard.id}-line-${idx}`}
+                                          className={styles.standardStatementBlock}
+                                        >
                                           <p className={styles.standardStatementLine}>
                                             <span className={styles.standardCode}>
                                               {line.code}:
@@ -2253,7 +2347,10 @@ const UnitDesignPreview: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                                     </div>
                                     <div className={styles.standardStatementWrap}>
                                       {standard.lines.map((line, idx) => (
-                                        <div key={`${standard.id}-line-${idx}`}>
+                                        <div
+                                          key={`${standard.id}-line-${idx}`}
+                                          className={styles.standardStatementBlock}
+                                        >
                                           <p className={styles.standardStatementLine}>
                                             <span className={styles.standardCode}>
                                               {line.code}:
@@ -2283,9 +2380,21 @@ const UnitDesignPreview: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                   </div>
                 </div>
               ) : (
-                <p className={styles.unitMutedText}>
-                  Standards will appear here once aligned.
-                </p>
+                <div className={styles.standardsIntroPanel}>
+                  <div className={styles.standardsIntroHeading}>
+                    <h2 className={styles.standardsIntroTitle}>
+                      Interdisciplinary by Design
+                    </h2>
+                    <p className={styles.standardsIntroLead}>
+                      We align to standards across subjects. Our units are ready
+                      for STEAM or team teaching, and project based learning
+                      (PBLs) with no modification!
+                    </p>
+                  </div>
+                  <p className={styles.unitMutedText}>
+                    Standards will appear here once aligned.
+                  </p>
+                </div>
               )}
             </div>
           </section>

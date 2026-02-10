@@ -61,6 +61,7 @@ const PortalNav: React.FC<PortalNavProps> = ({
   const ticking = useRef(false);
   const navOpenRef = useRef(false);
   const accountMenuOpenRef = useRef(false);
+  const suppressUnhideUntil = useRef(0);
   const { status, user, isGpPlusMember, logUserOut } = useSiteSession();
   const isAuthenticated = status === "authenticated";
   const avatarUrl = user?.image ?? null;
@@ -114,13 +115,18 @@ const PortalNav: React.FC<PortalNavProps> = ({
         const currentY = window.scrollY || 0;
         const previousY = lastScrollY.current;
         const delta = currentY - previousY;
+        const isUnhideSuppressed = Date.now() < suppressUnhideUntil.current;
 
         if (currentY < 80) {
-          setIsNavHidden(false);
+          if (!isUnhideSuppressed) {
+            setIsNavHidden(false);
+          }
         } else if (delta > 5) {
           setIsNavHidden(true);
         } else if (delta < -5) {
-          setIsNavHidden(false);
+          if (!isUnhideSuppressed) {
+            setIsNavHidden(false);
+          }
         }
 
         lastScrollY.current = currentY;
@@ -130,6 +136,32 @@ const PortalNav: React.FC<PortalNavProps> = ({
 
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
+  }, [disableNavbar]);
+
+  useEffect(() => {
+    if (disableNavbar) return;
+    if (typeof window === "undefined") return;
+
+    const handleSuppressNavUnhide = (event: Event) => {
+      const customEvent = event as CustomEvent<{ durationMs?: number }>;
+      const durationMs =
+        typeof customEvent.detail?.durationMs === "number"
+          ? customEvent.detail.durationMs
+          : 700;
+      suppressUnhideUntil.current = Date.now() + Math.max(0, durationMs);
+    };
+
+    window.addEventListener(
+      "gp:suppress-nav-unhide",
+      handleSuppressNavUnhide as EventListener
+    );
+
+    return () => {
+      window.removeEventListener(
+        "gp:suppress-nav-unhide",
+        handleSuppressNavUnhide as EventListener
+      );
+    };
   }, [disableNavbar]);
 
   useEffect(() => {

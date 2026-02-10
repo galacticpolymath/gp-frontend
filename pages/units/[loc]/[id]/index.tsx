@@ -1227,7 +1227,7 @@ const LessonDetails: React.FC<IProps> = ({ lesson, unit }) => {
     imgSrc: unitBanner,
     url: canonicalUrl,
     imgAlt: `${_unit.Title} cover image`,
-    className: 'overflow-hidden selected-unit-pg',
+    className: 'selected-unit-pg',
     canonicalLink: canonicalUrl,
     defaultLink: defaultLocaleUrl,
     langLinks: _unit.headLinks ?? ([] as TUnitForUI['headLinks']),
