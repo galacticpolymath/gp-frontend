@@ -549,7 +549,7 @@
 .unitMain {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 14px 16px 56px;
+  padding: 14px 16px 112px;
   display: grid;
   gap: 18px;
 }
@@ -1030,6 +1030,8 @@
 .lessonMaterialsGrid {
   display: grid;
   gap: 12px;
+  align-items: start;
+  grid-template-columns: minmax(0, 0.86fr) minmax(0, 1.14fr);
 }
 
 .lessonSummaryCard,
@@ -1059,6 +1061,15 @@
 
 .lessonProcedureCardFull {
   grid-column: 1 / -1;
+}
+
+.lessonCardHeading {
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 15px;
+  color: #1f355a;
 }
 
 .lessonEyebrow {
@@ -1122,55 +1133,106 @@
   background: rgba(44, 131, 195, 0.16);
 }
 
-.lessonDownloadButtons {
+.lessonDownloadList {
   display: grid;
-  gap: 10px;
+  gap: 7px;
 }
 
-.materialDownloadItem {
-  display: grid;
-  gap: 6px;
+.materialRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  border: 1px solid rgba(44, 131, 195, 0.2);
+  border-radius: 10px;
+  background: rgba(240, 244, 255, 0.55);
+  padding: 6px 8px;
 }
 
-.materialDownloadButton {
-  display: grid;
-  width: 100%;
-  gap: 4px;
-  padding: 10px 12px;
-  border-radius: 12px;
-  border: 1px solid rgba(44, 131, 195, 0.24);
-  background: rgba(240, 244, 255, 0.6);
-  text-decoration: none;
-  text-align: left;
-  cursor: pointer;
+.materialRowActive {
+  border-color: rgba(75, 58, 168, 0.52);
+  background: rgba(75, 58, 168, 0.1);
+}
+
+.materialSelectButton {
+  appearance: none;
+  border: 0;
+  background: transparent;
   font: inherit;
+  text-align: left;
+  width: 100%;
+  min-width: 0;
+  cursor: pointer;
+  display: grid;
+  gap: 8px;
+  align-items: center;
+  grid-template-columns: auto minmax(0, 1fr);
+  padding: 0;
 }
 
-.materialDownloadButton strong {
+.materialRowIcon {
+  width: 26px;
+  height: 26px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: rgba(44, 131, 195, 0.16);
   color: #1f355a;
 }
 
-.materialDownloadButton span {
-  font-size: 13px;
-  color: #4c5269;
+.materialRowMain {
+  display: grid;
+  gap: 1px;
+  min-width: 0;
 }
 
-.materialDownloadButtonActive {
-  border-color: rgba(75, 58, 168, 0.55);
-  background: rgba(75, 58, 168, 0.12);
+.materialRowMain strong {
+  font-size: 13px;
+  line-height: 1.25;
+  color: #1f355a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.materialRowMain span {
+  font-size: 11px;
+  color: #5d647c;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.materialRowLinks {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex: 0 0 auto;
 }
 
 .materialOpenLink,
 .materialOpenLinkDisabled {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
   color: #4b3aa8;
+  white-space: nowrap;
 }
 
 .materialOpenLink {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+}
+
+.materialPdfLink {
+  display: inline-flex;
+  align-items: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: #1f355a;
+  border: 1px solid rgba(44, 131, 195, 0.26);
+  border-radius: 999px;
+  padding: 2px 7px;
+  background: rgba(255, 255, 255, 0.85);
 }
 
 .materialOpenLinkDisabled {
@@ -1183,19 +1245,27 @@
 }
 
 .lessonPreviewItem {
-  border-radius: 12px;
-  border: 1px solid rgba(44, 131, 195, 0.18);
-  background: rgba(240, 244, 255, 0.55);
-  padding: 10px 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(44, 131, 195, 0.16);
+  background: rgba(255, 255, 255, 0.75);
+  padding: 12px;
   display: grid;
+  gap: 12px;
+}
+
+.lessonPreviewHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   gap: 10px;
+  flex-wrap: wrap;
 }
 
 .lessonPreviewSurface {
   border-radius: 10px;
   overflow: hidden;
-  min-height: 220px;
-  max-height: 460px;
+  min-height: 360px;
+  max-height: 620px;
   border: 1px solid rgba(44, 131, 195, 0.2);
   background: rgba(255, 255, 255, 0.88);
   display: flex;
@@ -1207,14 +1277,14 @@
 .lessonPreviewSurface iframe {
   width: 100%;
   height: 100%;
-  min-height: 220px;
+  min-height: 360px;
   border: 0;
   object-fit: contain;
 }
 
 .lessonPreviewMeta {
   display: grid;
-  gap: 6px;
+  gap: 4px;
 }
 
 .lessonPreviewItem p {
@@ -1223,11 +1293,18 @@
   color: #4c5269;
 }
 
+.lessonPreviewType {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #4c5269;
+}
+
 .lessonSummaryCard,
 .lessonProcedureCard {
   background: rgba(255, 255, 255, 0.92);
   border-radius: 18px;
-  padding: 18px;
+  padding: 14px;
   border: 1px solid rgba(44, 131, 195, 0.12);
 }
 
@@ -1280,42 +1357,48 @@
   gap: 4px;
 }
 
-.lessonProcedureHeader h4 {
-  margin: 0;
-  font-size: 18px;
-  color: #1f355a;
-}
-
 .lessonProcedureHeader span {
   font-size: 13px;
   color: #4c5269;
 }
 
 .lessonProcedureContent {
-  margin-top: 12px;
+  margin-top: 8px;
   display: grid;
-  gap: 12px;
+  gap: 10px;
 }
 
 .lessonChunk {
-  padding: 12px;
+  padding: 10px;
   border-radius: 12px;
   background: rgba(255, 255, 255, 0.8);
   border: 1px solid rgba(44, 131, 195, 0.16);
   display: grid;
-  gap: 10px;
+  gap: 8px;
+}
+
+.lessonChunkTimeline {
+  display: grid;
+  gap: 0;
 }
 
 .lessonChunkHeader {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 8px;
+  justify-content: flex-start;
+  gap: 2px;
+  flex-wrap: wrap;
+}
+
+.lessonChunkHeaderOverGraph {
+  margin-bottom: -8px;
+  z-index: 1;
+  position: relative;
 }
 
 .lessonChunkHeader h5 {
   margin: 0;
-  font-size: 16px;
+  font-size: 14px;
   color: #1f355a;
 }
 
@@ -1323,20 +1406,20 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 3px;
   border-radius: 999px;
-  padding: 3px 10px;
-  font-size: 12px;
+  padding: 2px 6px;
+  font-size: 14px;
+  font-weight: 700;
   color: #1f355a;
-  background: rgba(44, 131, 195, 0.12);
+  background: rgba(255, 255, 255, 0.9);
 }
 
 .lessonChunkGraph {
-  width: 100%;
+  width: min(100%, 400px);
   max-width: 100%;
   overflow: hidden;
-  border-radius: 12px;
-  background: rgba(240, 244, 255, 0.75);
-  padding: 4px 8px;
+  padding: 2px 6px;
 }
 
 .lessonChunkGraph :global(svg) {
@@ -1345,44 +1428,130 @@
 }
 
 .lessonStep {
-  margin-top: 10px;
+  margin-top: 4px;
   display: grid;
-  gap: 8px;
-  border-left: 3px solid rgba(44, 131, 195, 0.2);
-  padding-left: 10px;
+  gap: 10px;
+  padding-left: 6px;
+}
+
+.lessonStepMain {
+  display: grid;
+  gap: 6px;
+}
+
+.lessonStepTitleRow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.lessonStepTitleRow strong {
+  font-size: 14px;
+  color: #1f355a;
+}
+
+.lessonStepDuration {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 1px 8px;
+  background: rgba(44, 131, 195, 0.12);
+  color: #1f355a;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.lessonStepQuickDescription :global(p) {
+  margin: 0;
+  font-size: 13px;
+  color: #40506f;
 }
 
 .lessonStepDetails :global(p) {
-  margin-bottom: 6px;
+  margin: 0 0 6px;
+  font-size: 12px;
+  line-height: 1.45;
 }
 
-.stepTeacherNotesGrid {
+.lessonStepDetails :global(li) {
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.lessonStepDetails :global(ul),
+.lessonStepDetails :global(ol) {
+  margin: 0 0 6px;
+  padding-left: 16px;
+}
+
+.lessonStepDetails :global(h1),
+.lessonStepDetails :global(h2),
+.lessonStepDetails :global(h3),
+.lessonStepDetails :global(h4) {
+  margin: 2px 0 6px;
+  font-size: 13px;
+  line-height: 1.3;
+}
+
+.stepVocabList {
+  margin: 2px 0 0;
   display: grid;
+  gap: 6px;
+}
+
+.stepVocabEntry {
+  display: grid;
+  grid-template-columns: minmax(88px, 124px) minmax(0, 1fr);
   gap: 8px;
+  align-items: start;
+}
+
+.stepVocabEntry dt {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 700;
+  color: #1f355a;
+}
+
+.stepVocabEntry dd {
+  margin: 0;
+}
+
+.stepVocabEntry dd :global(p) {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.4;
+  color: #4c5269;
+}
+
+.lessonStepAside {
+  display: grid;
+  gap: 6px;
 }
 
 .stepInfoBlock {
   border: 1px solid rgba(44, 131, 195, 0.14);
-  border-radius: 10px;
+  border-radius: 8px;
   background: rgba(240, 244, 255, 0.66);
-  padding: 8px 10px;
+  padding: 7px 9px;
 }
 
 .stepInfoBlock h6 {
-  margin: 0 0 6px;
+  margin: 0 0 4px;
   color: #1f355a;
-  font-size: 13px;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
-.stepInfoBlock ul {
-  margin: 0;
-  padding-left: 16px;
-}
-
-.stepInfoBlock li {
-  margin-bottom: 4px;
+.stepInfoBlock :global(p),
+.stepInfoBlock :global(li) {
+  margin: 0 0 4px;
   color: #4c5269;
-  font-size: 13px;
+  font-size: 12px;
+  line-height: 1.45;
 }
 
 .creditsLayout {
@@ -1783,6 +1952,46 @@
   font-weight: 500;
 }
 
+.licenseBanner {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 40;
+  border-top: 1px solid rgba(31, 53, 90, 0.18);
+  background: rgba(248, 251, 255, 0.97);
+  backdrop-filter: blur(8px);
+}
+
+.licenseBannerInner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 8px 16px calc(8px + env(safe-area-inset-bottom, 0px));
+  display: grid;
+  gap: 8px;
+  align-items: center;
+}
+
+.licenseBannerText {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.35;
+  color: #1f355a;
+}
+
+.licenseBannerText strong {
+  color: #0f294a;
+}
+
+.licenseBannerLink {
+  width: fit-content;
+  font-size: 12px;
+  font-weight: 700;
+  color: #1f355a;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
 @media (max-width: 1023px) {
   .mobileFilterDockTrigger {
     width: 100%;
@@ -1892,22 +2101,19 @@
     grid-template-columns: minmax(0, 3fr) minmax(0, 1fr);
   }
 
-  .lessonMaterialsGrid {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  }
-
   .lessonSummaryCard {
     grid-template-columns: minmax(0, 1fr) minmax(220px, 280px);
     align-items: start;
     gap: 16px;
   }
 
-  .stepTeacherNotesGrid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
   .lessonSummaryMeta {
     margin-top: 0;
+  }
+
+  .licenseBannerInner {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: 14px;
   }
 
   .unitOverviewCardPrimary {
@@ -1950,6 +2156,41 @@
 }
 
 @media (max-width: 767px) {
+  .unitMain {
+    padding-bottom: 132px;
+  }
+
+  .lessonMaterialsGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .lessonPreviewSurface,
+  .lessonPreviewSurface iframe,
+  .lessonPreviewSurface img {
+    min-height: 280px;
+  }
+
+  .lessonChunkGraph {
+    width: 100%;
+  }
+
+  .lessonChunkHeaderOverGraph {
+    margin-bottom: -6px;
+  }
+
+  .materialRow {
+    padding: 8px;
+  }
+
+  .stepVocabEntry {
+    grid-template-columns: 1fr;
+    gap: 3px;
+  }
+
+  .licenseBannerText {
+    font-size: 11px;
+  }
+
   .unitStickyHeader {
     backdrop-filter: blur(9px);
   }
@@ -2063,7 +2304,16 @@
   }
 
   .lessonMaterialsGrid {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1.45fr);
+    grid-template-columns: minmax(0, 0.72fr) minmax(0, 1.28fr);
+  }
+
+  .lessonStep {
+    grid-template-columns: minmax(0, 1.45fr) minmax(220px, 0.55fr);
+    align-items: start;
+  }
+
+  .lessonStepMain {
+    padding-right: 8px;
   }
 }
 
@@ -2073,7 +2323,7 @@
   }
 
   .unitMain {
-    padding: 18px 0 64px;
+    padding: 18px 0 118px;
   }
 }
 
