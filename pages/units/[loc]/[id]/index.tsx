@@ -55,6 +55,7 @@ import FailedCopiedFilesReportModal from '../../../../components/GpPlus/FailedCo
 import WelcomeNewUserModal from '../../../../components/Modals/WelcomeNewUserModal';
 import { IOverviewProps } from '../../../../components/LessonSection/Overview';
 import { buildUnitUrl, DEFAULT_LOCALE, getSiteUrl } from '../../../../shared/seo';
+import UnitDesignPreview from '../../../../components/UnitPreview/UnitDesignPreview';
 
 const IS_ON_PROD = process.env.NODE_ENV === 'production';
 const GOOGLE_DRIVE_THUMBNAIL_URL = 'https://drive.google.com/thumbnail?id=';
@@ -1242,52 +1243,81 @@ const LessonDetails: React.FC<IProps> = ({ lesson, unit }) => {
         autoClose={false}
         position="bottom-right"
       />
-      {_unit.PublicationStatus === 'Beta' && (
-        <SendFeedback
-          closeBtnDynamicStyles={{
-            position: 'absolute',
-            top: '30px',
-            right: '5px',
-            fontSize: '28px',
-          }}
-          containerClassName="mt-4"
-          parentDivStyles={{
-            backgroundColor: '#EBD0FF',
-            width: '100vw',
-          }}
-        />
-      )}
-      <LessonsSecsNavDots
-        _sectionDots={[unitSectionDots, setUnitSectionDots]}
-        setIsScrollListenerOn={setIsScrollListenerOn as TSetter<boolean>}
-        isScrollListenerOn={isScrollListenerOn as boolean}
-      />
-      <ShareWidget {...shareWidgetFixedProps} />
-      <div className="col-12 col-lg-10 col-xxl-12 px-3 px-xxl-0 container min-vh-100">
-        <div className="p-sm-3 pt-0">
-          {_unitSections ? (
-            _unitSections.map((section: any, index: number) => (
-              <ParentLessonSection
-                key={index}
-                section={section}
-                ForGrades={_unit.ForGrades}
-                index={index}
-                _sectionDots={[unitSectionDots, setUnitSectionDots]}
-              />
-            ))
-          ) : (
-            <span className="mt-5">
-              DEVELOPMENT ERROR: No sections to display.
-            </span>
+      {unit ? (
+        <>
+          {_unit.PublicationStatus === 'Beta' && (
+            <SendFeedback
+              closeBtnDynamicStyles={{
+                position: 'absolute',
+                top: '30px',
+                right: '5px',
+                fontSize: '28px',
+              }}
+              containerClassName="mt-4"
+              parentDivStyles={{
+                backgroundColor: '#EBD0FF',
+                width: '100vw',
+              }}
+            />
           )}
-        </div>
-      </div>
-      <GpPlusModal />
-      <LessonItemsModal />
-      <ThankYouModal />
-      <CopyLessonHelperModal />
-      <FailedCopiedFilesReportModal />
-      <WelcomeNewUserModal />
+          <UnitDesignPreview unit={unit} />
+          <GpPlusModal />
+          <LessonItemsModal />
+          <ThankYouModal />
+          <CopyLessonHelperModal />
+          <FailedCopiedFilesReportModal />
+          <WelcomeNewUserModal />
+        </>
+      ) : (
+        <>
+          {_unit.PublicationStatus === 'Beta' && (
+            <SendFeedback
+              closeBtnDynamicStyles={{
+                position: 'absolute',
+                top: '30px',
+                right: '5px',
+                fontSize: '28px',
+              }}
+              containerClassName="mt-4"
+              parentDivStyles={{
+                backgroundColor: '#EBD0FF',
+                width: '100vw',
+              }}
+            />
+          )}
+          <LessonsSecsNavDots
+            _sectionDots={[unitSectionDots, setUnitSectionDots]}
+            setIsScrollListenerOn={setIsScrollListenerOn as TSetter<boolean>}
+            isScrollListenerOn={isScrollListenerOn as boolean}
+          />
+          <ShareWidget {...shareWidgetFixedProps} />
+          <div className="col-12 col-lg-10 col-xxl-12 px-3 px-xxl-0 container min-vh-100">
+            <div className="p-sm-3 pt-0">
+              {_unitSections ? (
+                _unitSections.map((section: any, index: number) => (
+                  <ParentLessonSection
+                    key={index}
+                    section={section}
+                    ForGrades={_unit.ForGrades}
+                    index={index}
+                    _sectionDots={[unitSectionDots, setUnitSectionDots]}
+                  />
+                ))
+              ) : (
+                <span className="mt-5">
+                  DEVELOPMENT ERROR: No sections to display.
+                </span>
+              )}
+            </div>
+          </div>
+          <GpPlusModal />
+          <LessonItemsModal />
+          <ThankYouModal />
+          <CopyLessonHelperModal />
+          <FailedCopiedFilesReportModal />
+          <WelcomeNewUserModal />
+        </>
+      )}
     </Layout>
   );
 };

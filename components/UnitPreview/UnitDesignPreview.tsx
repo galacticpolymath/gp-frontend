@@ -5,12 +5,16 @@ import RichText from '../RichText';
 import styles from './UnitDesignPreview.module.css';
 import { TUnitForUI } from '../../backend/models/Unit/types/unit';
 import {
+  IItem,
+  IItemForUI,
   INewUnitLesson,
   IResource,
 } from '../../backend/models/Unit/types/teachingMaterials';
 import LessonsCarousel from '../LessonSection/Preview/LessonsCarousel';
 import { useModalContext } from '../../providers/ModalProvider';
 import LocDropdown from '../LocDropdown';
+import ChunkGraph from '../LessonSection/TeachIt/ChunkGraph';
+import { ISubject } from '../../backend/models/Unit/types/standards';
 
 const TAB_OVERVIEW = 'overview';
 const TAB_MATERIALS = 'materials';
@@ -34,6 +38,234 @@ type TSearchEntry = {
   lessonId?: number | null;
 };
 
+type TGradeBand = 'all' | 'k-2' | '3-5' | '6-8' | '9-12';
+
+type TStandardsSubjectFilter = 'all' | string;
+
+type TFlatStandard = {
+  id: string;
+  target: boolean;
+  subject: string;
+  setName: string;
+  dimensionName: string;
+  codes: string[];
+  statements: string[];
+  alignmentNotes: string;
+  grades: string[];
+};
+
+const STANDARDS_GRADE_BANDS: { key: TGradeBand; label: string }[] = [
+  { key: 'all', label: 'All grade bands' },
+  { key: 'k-2', label: 'K-2' },
+  { key: '3-5', label: '3-5' },
+  { key: '6-8', label: '6-8' },
+  { key: '9-12', label: '9-12' },
+];
+
+const CONSENT_STORAGE_KEY = 'gp_cookie_consent_v1';
+
+type TGtagParams = Record<string, string | number | boolean | null | undefined>;
+
+const trackUnitEvent = (name: string, params: TGtagParams = {}) => {
+  if (typeof window === 'undefined') {
+    return;
+  }
+
+  const consent = window.localStorage.getItem(CONSENT_STORAGE_KEY);
+  if (consent !== 'granted') {
+    return;
+  }
+
+  const gtag = (
+    window as typeof window & {
+      gtag?: (...args: unknown[]) => void;
+    }
+  ).gtag;
+
+  if (typeof gtag !== 'function') {
+    return;
+  }
+
+  gtag('event', name, {
+    page_type: 'unit',
+    ...params,
+  });
+};
+
+const parseGradesFromString = (value: string) => {
+  const lowered = value.trim().toLowerCase();
+  if (!lowered) {
+    return [];
+  }
+
+  if (lowered.includes('k')) {
+    return [0];
+  }
+
+  const numericTokens = lowered.match(/\d+/g);
+  if (!numericTokens?.length) {
+    return [];
+  }
+
+  if (numericTokens.length === 1) {
+    const grade = Number.parseInt(numericTokens[0], 10);
+    return Number.isNaN(grade) ? [] : [grade];
+  }
+
+  const start = Number.parseInt(numericTokens[0], 10);
+  const end = Number.parseInt(numericTokens[1], 10);
+  if (Number.isNaN(start) || Number.isNaN(end) || end < start) {
+    return [];
+  }
+
+  return Array.from({ length: end - start + 1 }, (_, index) => start + index);
+};
+
+const parseGrades = (grades: string[]) =>
+  grades
+    .flatMap((grade) => parseGradesFromString(grade))
+    .filter((grade, index, arr) => arr.indexOf(grade) === index)
+    .sort((a, b) => a - b);
+
+const isStandardInBand = (grades: string[], gradeBand: TGradeBand) => {
+  if (gradeBand === 'all') {
+    return true;
+  }
+
+  const parsed = parseGrades(grades);
+  if (!parsed.length) {
+    return false;
+  }
+
+  const range =
+    gradeBand === 'k-2'
+      ? [0, 2]
+      : gradeBand === '3-5'
+      ? [3, 5]
+      : gradeBand === '6-8'
+      ? [6, 8]
+      : [9, 12];
+
+  return parsed.some((grade) => grade >= range[0] && grade <= range[1]);
+};
+
+const formatGradeValue = (grades: string[]) => {
+  const parsed = parseGrades(grades);
+  if (!parsed.length) {
+    return 'Grade band not specified';
+  }
+
+  const labels = parsed.map((grade) => (grade === 0 ? 'K' : `${grade}`));
+  return labels.length === 1
+    ? `Grade ${labels[0]}`
+    : `Grades ${labels[0]}-${labels[labels.length - 1]}`;
+};
+
+const getStepNotes = (value?: string | null) => {
+  if (!value) {
+    return [];
+  }
+
+  return value
+    .split(/\n|;|•|-/g)
+    .map((item) => item.trim())
+    .filter(Boolean);
+};
+
+const escapeHtml = (value: string) =>
+  value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+
+const formatStepVocab = (value?: string | null) => {
+  if (!value) {
+    return '';
+  }
+
+  const entries = value
+    .split(/\n|;|•/g)
+    .map((entry) => entry.trim())
+    .filter(Boolean);
+
+  if (!entries.length) {
+    return '';
+  }
+
+  return entries
+    .map((entry) => {
+      const [term, ...definitionParts] = entry.split(':');
+      if (!term) {
+        return '';
+      }
+      const safeTerm = escapeHtml(term.trim());
+      const safeDefinition = escapeHtml(definitionParts.join(':').trim());
+      return safeDefinition
+        ? `<p><strong>${safeTerm}</strong>: ${safeDefinition}</p>`
+        : `<p><strong>${safeTerm}</strong></p>`;
+    })
+    .filter(Boolean)
+    .join('');
+};
+
+const flattenStandards = (standardsData?: ISubject[] | null): TFlatStandard[] => {
+  if (!Array.isArray(standardsData)) {
+    return [];
+  }
+
+  const flat: TFlatStandard[] = [];
+
+  standardsData.forEach((subjectGroup, subjectIndex) => {
+    const subject = subjectGroup?.subject?.trim();
+    if (!subject) {
+      return;
+    }
+
+    (subjectGroup?.sets ?? []).forEach((set, setIndex) => {
+      const setName = set?.name?.trim() || `Set ${setIndex + 1}`;
+      (set?.dimensions ?? []).forEach((dimension, dimIndex) => {
+        const dimensionName = dimension?.name?.trim() || `Dimension ${dimIndex + 1}`;
+        (dimension?.standardsGroup ?? []).forEach((group, groupIndex) => {
+          const standards = group?.standardsGroup ?? [];
+          standards.forEach((standard, standardIndex) => {
+            const codes = Array.isArray(standard?.codes)
+              ? standard.codes.filter(Boolean)
+              : standard?.codes
+              ? [standard.codes]
+              : [];
+            const statements = Array.isArray(standard?.statements)
+              ? standard.statements.filter(Boolean)
+              : standard?.statements
+              ? [standard.statements]
+              : [];
+            const grades = Array.isArray(standard?.grades)
+              ? standard.grades.filter(Boolean)
+              : standard?.grades
+              ? [standard.grades]
+              : [];
+
+            flat.push({
+              id: `${subjectIndex}-${setIndex}-${dimIndex}-${groupIndex}-${standardIndex}`,
+              target: !!subjectGroup?.target,
+              subject,
+              setName,
+              dimensionName,
+              codes,
+              statements,
+              alignmentNotes: standard?.alignmentNotes ?? '',
+              grades,
+            });
+          });
+        });
+      });
+    });
+  });
+
+  return flat;
+};
+
 const stripHtml = (value?: string | null) => {
   if (!value) {
     return '';
@@ -50,7 +282,10 @@ const buildExcerpt = (value: string, length = 140) => {
   return `${value.slice(0, length).trim()}…`;
 };
 
-const getLessonIdentifier = (lesson: INewUnitLesson, index: number) => {
+const getLessonIdentifier = <TItem extends IItem = IItemForUI>(
+  lesson: INewUnitLesson<TItem>,
+  index: number
+) => {
   if (typeof lesson?.lsn === 'number') {
     return lesson.lsn;
   }
@@ -61,7 +296,10 @@ const getLessonIdentifier = (lesson: INewUnitLesson, index: number) => {
   return index + 1;
 };
 
-const getLessonDisplayTitle = (lesson: INewUnitLesson, index: number) => {
+const getLessonDisplayTitle = <TItem extends IItem = IItemForUI>(
+  lesson: INewUnitLesson<TItem>,
+  index: number
+) => {
   const identifier = getLessonIdentifier(lesson, index);
   const title = lesson?.title ?? 'Untitled lesson';
   return `Lesson ${identifier}: ${title}`;
@@ -211,7 +449,7 @@ const getMaterialUrls = (item?: TPreviewItem) => {
 };
 
 const getFirstLessonResource = (
-  resources?: IResource<INewUnitLesson>[] | null
+  resources?: IResource<INewUnitLesson<IItemForUI>>[] | null
 ) => {
   if (!resources?.length) {
     return null;
@@ -221,7 +459,7 @@ const getFirstLessonResource = (
 
 const buildSearchEntries = (
   unit: TUnitForUI,
-  lessons: INewUnitLesson[]
+  lessons: INewUnitLesson<IItemForUI>[]
 ): TSearchEntry[] => {
   const entries: TSearchEntry[] = [];
   const overview = unit.Sections?.overview;
@@ -231,8 +469,7 @@ const buildSearchEntries = (
     [
       overview?.TheGist,
       overview?.Text,
-      overview?.Description,
-      overview?.LearningSummary,
+      (overview as { Description?: string })?.Description,
       overview?.EstUnitTime,
       overview?.TargetSubject,
       overview?.SteamEpaulette,
@@ -308,6 +545,7 @@ const buildSearchEntries = (
                     step?.StepDetails,
                     step?.Vocab,
                     step?.TeachingTips,
+                    step?.VariantNotes,
                   ]
                     .filter(Boolean)
                     .join(' ')
@@ -371,15 +609,15 @@ const buildSearchEntries = (
     });
   }
 
-  const acknowledgements = unit.Sections?.acknowledgements;
+  const acknowledgments = unit.Sections?.acknowledgments;
   const acknowledgementsText = stripHtml(
-    acknowledgements?.Data?.map((entry) =>
+    acknowledgments?.Data?.map((entry: any) =>
       [
         entry?.role,
         entry?.def,
         entry?.records
           ?.map(
-            (rec) =>
+            (rec: any) =>
               `${rec?.name} ${rec?.title} ${rec?.affiliation} ${rec?.location}`
           )
           .join(' '),
@@ -407,8 +645,19 @@ const buildSearchEntries = (
   }
 
   const versionsText = stripHtml(
-    unit.Sections?.versionNotes?.Data?.map((release) =>
-      [release?.major_release, release?.sub_releases?.map((sub) => `${sub?.version} ${sub?.date} ${sub?.summary} ${sub?.notes} ${sub?.acknowledgments}`).join(' ')].join(' ')
+    (
+      unit.Sections?.versions?.Data ??
+      ((unit.Sections as { versionNotes?: { Data?: any[] } })?.versionNotes?.Data ?? [])
+    )?.map((release: any) =>
+      [
+        release?.major_release,
+        release?.sub_releases
+          ?.map(
+            (sub: any) =>
+              `${sub?.version} ${sub?.date} ${sub?.summary} ${sub?.notes} ${sub?.acknowledgments}`
+          )
+          .join(' '),
+      ].join(' ')
     )
       .filter(Boolean)
       .join(' ') || ''
@@ -430,43 +679,52 @@ const buildSearchEntries = (
 const UnitDesignPreview: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
   const overview = unit.Sections?.overview;
   const teachingMaterials = unit.Sections?.teachingMaterials;
+  const standardsData = (unit.Sections?.standards?.Data ?? []) as ISubject[];
+  const flatStandards = useMemo(
+    () => flattenStandards(standardsData),
+    [standardsData]
+  );
+  const versionReleases =
+    unit.Sections?.versions?.Data ??
+    ((unit.Sections as { versionNotes?: { Data?: any[] } })?.versionNotes?.Data ??
+      []);
   const lessonResources = getFirstLessonResource(
     teachingMaterials?.classroom?.resources
   );
-  const lessons = lessonResources?.lessons ?? [];
+  const lessons: INewUnitLesson<IItemForUI>[] = lessonResources?.lessons ?? [];
 
-  const availableTabs = useMemo(
+  const availableTabs = useMemo<{ key: TTabKey; label: string; isVisible: boolean }[]>(
     () =>
       [
-        { key: TAB_OVERVIEW, label: 'Overview', isVisible: true },
+        { key: TAB_OVERVIEW as TTabKey, label: 'Overview', isVisible: true },
         {
-          key: TAB_MATERIALS,
+          key: TAB_MATERIALS as TTabKey,
           label: 'Teaching Materials',
           isVisible: lessons.length > 0,
         },
         {
-          key: TAB_STANDARDS,
+          key: TAB_STANDARDS as TTabKey,
           label: 'Standards',
-          isVisible: !!unit.TargetStandardsCodes?.length,
+          isVisible: flatStandards.length > 0 || !!unit.TargetStandardsCodes?.length,
         },
         {
-          key: TAB_BACKGROUND,
+          key: TAB_BACKGROUND as TTabKey,
           label: 'Background',
           isVisible: !!unit.Sections?.background,
         },
         {
-          key: TAB_CREDITS,
+          key: TAB_CREDITS as TTabKey,
           label: 'Credits',
           isVisible:
-            !!unit.Sections?.acknowledgements ||
+            !!unit.Sections?.acknowledgments ||
             !!unit.Sections?.credits ||
-            !!unit.Sections?.versionNotes?.Data?.length,
+            !!versionReleases.length,
         },
       ].filter((tab) => tab.isVisible),
-    [lessons.length, unit.TargetStandardsCodes, unit.Sections]
+    [flatStandards.length, lessons.length, unit.TargetStandardsCodes, unit.Sections, versionReleases.length]
   );
 
-  const defaultTab = availableTabs[0]?.key ?? TAB_OVERVIEW;
+  const defaultTab = (availableTabs[0]?.key ?? TAB_OVERVIEW) as TTabKey;
   const [activeTab, setActiveTab] = useState<TTabKey>(defaultTab);
 
   const [activeLessonId, setActiveLessonId] = useState<number | null>(() => {
@@ -483,6 +741,9 @@ const UnitDesignPreview: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [isSearchExpanded, setIsSearchExpanded] = useState(false);
   const [activeMaterialIndex, setActiveMaterialIndex] = useState(0);
+  const [selectedGradeBand, setSelectedGradeBand] = useState<TGradeBand>('all');
+  const [selectedSubject, setSelectedSubject] =
+    useState<TStandardsSubjectFilter>('all');
   const searchInputRef = useRef<HTMLInputElement>(null);
   const versionNotesAnchorRef = useRef<HTMLDivElement>(null);
   const [shouldScrollToVersionNotes, setShouldScrollToVersionNotes] =
@@ -497,6 +758,30 @@ const UnitDesignPreview: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
       .filter((entry) => entry.content.includes(term))
       .slice(0, 8);
   }, [searchEntries, searchTerm]);
+
+  const standardSubjects = useMemo(() => {
+    const subjects = flatStandards.map((standard) => standard.subject.trim());
+    return Array.from(new Set(subjects)).sort((a, b) => a.localeCompare(b));
+  }, [flatStandards]);
+
+  const filteredStandards = useMemo(
+    () =>
+      flatStandards.filter((standard) => {
+        const subjectMatches =
+          selectedSubject === 'all' || standard.subject === selectedSubject;
+        const gradeBandMatches = isStandardInBand(
+          standard.grades,
+          selectedGradeBand
+        );
+        return subjectMatches && gradeBandMatches;
+      }),
+    [flatStandards, selectedGradeBand, selectedSubject]
+  );
+
+  const targetStandards = filteredStandards.filter((standard) => standard.target);
+  const connectedStandards = filteredStandards.filter(
+    (standard) => !standard.target
+  );
 
   const applyHashState = () => {
     if (typeof window === 'undefined') {
@@ -571,6 +856,7 @@ const UnitDesignPreview: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
   const handleTabChange = (tab: TTabKey) => {
     setActiveTab(tab);
     updateHash(tab, tab === TAB_MATERIALS ? activeLessonId : null);
+    trackUnitEvent('unit_tab_selected', { tab });
     scrollToTop();
   };
 
@@ -578,6 +864,7 @@ const UnitDesignPreview: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
     setActiveLessonId(lessonId);
     setActiveTab(TAB_MATERIALS);
     updateHash(TAB_MATERIALS, lessonId);
+    trackUnitEvent('unit_lesson_selected', { lesson_id: lessonId });
     scrollToTop();
   };
 
@@ -589,6 +876,11 @@ const UnitDesignPreview: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
     }
     setSearchTerm('');
     setIsSearchExpanded(false);
+    trackUnitEvent('unit_search_result_selected', {
+      result_id: entry.id,
+      result_tab: entry.tab,
+      lesson_id: entry.lessonId ?? null,
+    });
   };
 
   const handleSearchToggle = () => {
@@ -596,6 +888,7 @@ const UnitDesignPreview: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
       if (current) {
         setSearchTerm('');
       }
+      trackUnitEvent('unit_search_toggled', { expanded: !current });
       return !current;
     });
   };
@@ -626,6 +919,9 @@ const UnitDesignPreview: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
   const activeLesson =
     activeLessonIndex >= 0 ? lessons[activeLessonIndex] : undefined;
   const activeLessonItems = activeLesson?.itemList ?? [];
+  const chunkDurations = (activeLesson?.chunks ?? [])
+    .map((chunk) => chunk?.chunkDur ?? 0)
+    .filter((duration): duration is number => typeof duration === 'number' && duration > 0);
   const activeTabIndex = availableTabs.findIndex((tab) => tab.key === activeTab);
   const nextTab =
     activeTabIndex >= 0 && activeTabIndex < availableTabs.length - 1
@@ -685,10 +981,9 @@ const UnitDesignPreview: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
       (subject) => subject.toLowerCase() !== targetSubject
     );
   }, [alignedSubjects, overview?.TargetSubject]);
-  const versionReleases = unit.Sections?.versionNotes?.Data ?? [];
   const latestSubRelease = versionReleases
-    .flatMap((release) => release.sub_releases ?? [])
-    .find((subRelease) => !!subRelease?.version) ?? null;
+    .flatMap((release: any) => release.sub_releases ?? [])
+    .find((subRelease: any) => !!subRelease?.version) ?? null;
   const unitVersionLabel = latestSubRelease?.version ?? null;
   const updatedDate = latestSubRelease?.date
     ? !Number.isNaN(new Date(latestSubRelease.date).getTime())
@@ -710,6 +1005,50 @@ const UnitDesignPreview: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
   const handleVersionInfoClick = () => {
     setShouldScrollToVersionNotes(true);
     handleTabChange(TAB_CREDITS);
+  };
+
+  const handleShare = async () => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    const shareUrl = window.location.href;
+    const shareTitle = `${unitTitle}${unitSubtitle ? `: ${unitSubtitle}` : ''}`;
+    const sharePayload = {
+      title: shareTitle,
+      text: `Explore this Galactic Polymath unit: ${shareTitle}`,
+      url: shareUrl,
+    };
+
+    if (navigator.share) {
+      try {
+        await navigator.share(sharePayload);
+        trackUnitEvent('unit_shared', { share_method: 'web_share' });
+        return;
+      } catch (error) {
+        if ((error as Error)?.name === 'AbortError') {
+          return;
+        }
+      }
+    }
+
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      trackUnitEvent('unit_shared', { share_method: 'clipboard' });
+    } catch (error) {
+      trackUnitEvent('unit_share_failed', { reason: 'clipboard_write_failed' });
+    }
+  };
+
+  const handleGradeBandFilter = (gradeBand: TGradeBand) => {
+    setSelectedGradeBand(gradeBand);
+    trackUnitEvent('unit_standards_grade_filter', { grade_band: gradeBand });
+  };
+
+  const handleSubjectFilter = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const subject = event.target.value;
+    setSelectedSubject(subject);
+    trackUnitEvent('unit_standards_subject_filter', { subject });
   };
 
   return (
@@ -774,6 +1113,7 @@ const UnitDesignPreview: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                   <button
                     className={styles.stickyShareAction}
                     type="button"
+                    onClick={handleShare}
                   >
                     <i className="bi bi-share" aria-hidden="true" />
                     Share
@@ -781,7 +1121,11 @@ const UnitDesignPreview: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                 </div>
               )}
               {!(availLocs.length > 0 && numID != null) && (
-                <button className={styles.stickyShareAction} type="button">
+                <button
+                  className={styles.stickyShareAction}
+                  type="button"
+                  onClick={handleShare}
+                >
                   <i className="bi bi-share" aria-hidden="true" />
                   Share
                 </button>
@@ -931,9 +1275,9 @@ const UnitDesignPreview: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                 {overview?.TheGist && (
                   <p className={styles.unitLead}>{overview.TheGist}</p>
                 )}
-                {overview?.LearningSummary && (
+                {(overview as { Description?: string })?.Description && (
                   <p className={styles.unitSummaryText}>
-                    {overview.LearningSummary}
+                    {(overview as { Description?: string }).Description}
                   </p>
                 )}
                 {overview?.Text && (
@@ -1118,7 +1462,15 @@ const UnitDesignPreview: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                                   className={`${styles.materialDownloadButton} ${
                                     isActive ? styles.materialDownloadButtonActive : ''
                                   }`}
-                                  onClick={() => setActiveMaterialIndex(idx)}
+                                  onClick={() => {
+                                    setActiveMaterialIndex(idx);
+                                    trackUnitEvent('unit_material_selected', {
+                                      lesson_id: activeLessonId ?? null,
+                                      material_index: idx,
+                                      material_title:
+                                        item.itemTitle ?? `Resource ${idx + 1}`,
+                                    });
+                                  }}
                                   aria-pressed={isActive}
                                 >
                                   <strong>{item.itemTitle ?? `Resource ${idx + 1}`}</strong>
@@ -1230,19 +1582,37 @@ const UnitDesignPreview: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                   </div>
                   <div className={styles.lessonProcedureCardFull}>
                     <div className={styles.lessonProcedureCard}>
-                      <details>
-                        <summary>
-                          Detailed procedure
-                          <span>View step-by-step guidance</span>
-                        </summary>
-                        <div className={styles.lessonProcedureContent}>
-                          {activeLesson.chunks?.map((chunk, index) => (
-                            <div
-                              key={`${chunk.chunkTitle}-${index}`}
-                              className={styles.lessonChunk}
-                            >
-                              <h4>{chunk.chunkTitle ?? 'Lesson segment'}</h4>
-                              {chunk.steps?.map((step, idx) => (
+                      <div className={styles.lessonProcedureHeader}>
+                        <h4>Detailed procedure</h4>
+                        <span>Chunk-by-chunk guidance with vocab and teacher notes.</span>
+                      </div>
+                      <div className={styles.lessonProcedureContent}>
+                        {activeLesson.chunks?.map((chunk, index) => (
+                          <article
+                            key={`${chunk.chunkTitle}-${index}`}
+                            className={styles.lessonChunk}
+                          >
+                            <header className={styles.lessonChunkHeader}>
+                              <h5>{chunk.chunkTitle ?? 'Lesson segment'}</h5>
+                              {typeof chunk.chunkDur === 'number' && (
+                                <span className={styles.lessonChunkDuration}>
+                                  {chunk.chunkDur} min
+                                </span>
+                              )}
+                            </header>
+                            {!!chunkDurations.length && (
+                              <ChunkGraph
+                                className={styles.lessonChunkGraph}
+                                durList={chunkDurations}
+                                chunkNum={index}
+                              />
+                            )}
+                            {chunk.steps?.map((step, idx) => {
+                              const teachingTips = getStepNotes(step.TeachingTips);
+                              const variantNotes = getStepNotes(step.VariantNotes);
+                              const vocabHtml = formatStepVocab(step.Vocab);
+
+                              return (
                                 <div
                                   key={`${step.StepTitle}-${idx}`}
                                   className={styles.lessonStep}
@@ -1255,24 +1625,51 @@ const UnitDesignPreview: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                                     <p>{step.StepQuickDescription}</p>
                                   )}
                                   {step.StepDetails && (
-                                    <p>{step.StepDetails}</p>
+                                    <div className={styles.lessonStepDetails}>
+                                      <RichText content={step.StepDetails} />
+                                    </div>
                                   )}
-                                  {step.TeachingTips && (
-                                    <p className={styles.unitMutedText}>
-                                      Tip: {step.TeachingTips}
-                                    </p>
+                                  {!!vocabHtml && (
+                                    <div className={styles.stepInfoBlock}>
+                                      <h6>Vocabulary</h6>
+                                      <RichText content={vocabHtml} />
+                                    </div>
+                                  )}
+                                  {!!(teachingTips.length || variantNotes.length) && (
+                                    <div className={styles.stepTeacherNotesGrid}>
+                                      {!!teachingTips.length && (
+                                        <div className={styles.stepInfoBlock}>
+                                          <h6>Teaching tips</h6>
+                                          <ul>
+                                            {teachingTips.map((tip) => (
+                                              <li key={tip}>{tip}</li>
+                                            ))}
+                                          </ul>
+                                        </div>
+                                      )}
+                                      {!!variantNotes.length && (
+                                        <div className={styles.stepInfoBlock}>
+                                          <h6>Variant notes</h6>
+                                          <ul>
+                                            {variantNotes.map((note) => (
+                                              <li key={note}>{note}</li>
+                                            ))}
+                                          </ul>
+                                        </div>
+                                      )}
+                                    </div>
                                   )}
                                 </div>
-                              ))}
-                            </div>
-                          ))}
-                          {!activeLesson.chunks?.length && (
-                            <p className={styles.unitMutedText}>
-                              Detailed steps will appear here once added.
-                            </p>
-                          )}
-                        </div>
-                      </details>
+                              );
+                            })}
+                          </article>
+                        ))}
+                        {!activeLesson.chunks?.length && (
+                          <p className={styles.unitMutedText}>
+                            Detailed steps will appear here once added.
+                          </p>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -1335,20 +1732,112 @@ const UnitDesignPreview: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
               All target and connected standards in one place.
             </p>
             <div className={styles.unitOverviewCardWide}>
-              {!!unit.TargetStandardsCodes?.length ? (
-                <ul className={styles.standardsList}>
-                  {unit.TargetStandardsCodes.map((standard, index) => (
-                    <li key={`${standard.code}-${index}`}>
-                      <strong>{standard.subject}</strong>
-                      <span>{standard.code}</span>
-                      {standard.dim && (
-                        <span className={styles.unitMutedText}>
-                          {standard.dim}
-                        </span>
-                      )}
-                    </li>
-                  ))}
-                </ul>
+              {!!flatStandards.length ? (
+                <div className={styles.standardsLayout}>
+                  <div className={styles.standardsFilters}>
+                    <div className={styles.standardsGradeFilters}>
+                      {STANDARDS_GRADE_BANDS.map((band) => (
+                        <button
+                          key={band.key}
+                          type="button"
+                          className={
+                            selectedGradeBand === band.key
+                              ? `${styles.standardsFilterButton} ${styles.standardsFilterButtonActive}`
+                              : styles.standardsFilterButton
+                          }
+                          onClick={() => handleGradeBandFilter(band.key)}
+                        >
+                          {band.label}
+                        </button>
+                      ))}
+                    </div>
+                    <label className={styles.standardsSubjectFilter}>
+                      <span>Subject</span>
+                      <select value={selectedSubject} onChange={handleSubjectFilter}>
+                        <option value="all">All subjects</option>
+                        {standardSubjects.map((subject) => (
+                          <option key={subject} value={subject}>
+                            {subject}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                  </div>
+                  <div className={styles.standardsSection}>
+                    <h3>
+                      Target standards
+                      <span>{targetStandards.length}</span>
+                    </h3>
+                    {targetStandards.length ? (
+                      <div className={styles.standardsList}>
+                        {targetStandards.map((standard) => (
+                          <article key={standard.id} className={styles.standardCard}>
+                            <header>
+                              <strong>{standard.subject}</strong>
+                              <span>{standard.setName}</span>
+                              <span>{standard.dimensionName}</span>
+                            </header>
+                            <p className={styles.standardCodes}>
+                              {standard.codes.join(', ') || 'Code not specified'}
+                            </p>
+                            <p className={styles.standardStatements}>
+                              {standard.statements.join(' ')}
+                            </p>
+                            {!!standard.alignmentNotes && (
+                              <div className={styles.standardAlignmentNotes}>
+                                <RichText content={standard.alignmentNotes} />
+                              </div>
+                            )}
+                            <p className={styles.standardGradeText}>
+                              {formatGradeValue(standard.grades)}
+                            </p>
+                          </article>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className={styles.unitMutedText}>
+                        No target standards match these filters.
+                      </p>
+                    )}
+                  </div>
+                  <div className={styles.standardsSection}>
+                    <h3>
+                      Connected standards
+                      <span>{connectedStandards.length}</span>
+                    </h3>
+                    {connectedStandards.length ? (
+                      <div className={styles.standardsList}>
+                        {connectedStandards.map((standard) => (
+                          <article key={standard.id} className={styles.standardCard}>
+                            <header>
+                              <strong>{standard.subject}</strong>
+                              <span>{standard.setName}</span>
+                              <span>{standard.dimensionName}</span>
+                            </header>
+                            <p className={styles.standardCodes}>
+                              {standard.codes.join(', ') || 'Code not specified'}
+                            </p>
+                            <p className={styles.standardStatements}>
+                              {standard.statements.join(' ')}
+                            </p>
+                            {!!standard.alignmentNotes && (
+                              <div className={styles.standardAlignmentNotes}>
+                                <RichText content={standard.alignmentNotes} />
+                              </div>
+                            )}
+                            <p className={styles.standardGradeText}>
+                              {formatGradeValue(standard.grades)}
+                            </p>
+                          </article>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className={styles.unitMutedText}>
+                        No connected standards match these filters.
+                      </p>
+                    )}
+                  </div>
+                </div>
               ) : (
                 <p className={styles.unitMutedText}>
                   Standards will appear here once aligned.
@@ -1385,7 +1874,7 @@ const UnitDesignPreview: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
               Partners, collaborators, and credits.
             </p>
             <div className={styles.unitOverviewCardWide}>
-              {unit.Sections?.acknowledgements?.Data?.length ||
+              {unit.Sections?.acknowledgments?.Data?.length ||
               unit.Sections?.credits?.Content ||
               versionReleases.length ? (
                 <div className={styles.acknowledgmentsList}>
@@ -1394,13 +1883,13 @@ const UnitDesignPreview: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                       <RichText content={unit.Sections.credits.Content} />
                     </div>
                   )}
-                  {unit.Sections?.acknowledgements?.Data?.map((entry, index) => (
+                  {unit.Sections?.acknowledgments?.Data?.map((entry: any, index: number) => (
                     <div key={`${entry.role}-${index}`}>
                       <h4>{entry.role}</h4>
                       {entry.def && <p>{entry.def}</p>}
                       {entry.records?.length ? (
                         <ul>
-                          {entry.records.map((record, idx) => (
+                          {entry.records.map((record: any, idx: number) => (
                             <li key={`${record.name}-${idx}`}>
                               <strong>{record.name}</strong>
                               {record.title ? ` · ${record.title}` : ''}
@@ -1419,12 +1908,12 @@ const UnitDesignPreview: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                   >
                     <h4>Major release updates</h4>
                     {versionReleases.length ? (
-                      versionReleases.map((release, index) => (
+                      versionReleases.map((release: any, index: number) => (
                         <div key={`${release.major_release}-${index}`}>
                           <strong>{release.major_release}</strong>
                           {release.sub_releases?.length ? (
                             <ul>
-                              {release.sub_releases.map((sub, idx) => (
+                              {release.sub_releases.map((sub: any, idx: number) => (
                                 <li key={`${sub.version}-${idx}`}>
                                   <span>
                                     {sub.version ?? 'Unlabeled version'}
