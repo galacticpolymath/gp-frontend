@@ -55,7 +55,7 @@ import FailedCopiedFilesReportModal from '../../../../components/GpPlus/FailedCo
 import WelcomeNewUserModal from '../../../../components/Modals/WelcomeNewUserModal';
 import { IOverviewProps } from '../../../../components/LessonSection/Overview';
 import { buildUnitUrl, DEFAULT_LOCALE, getSiteUrl } from '../../../../shared/seo';
-import UnitDesignPreview from '../../../../components/UnitPreview/UnitDesignPreview';
+import UnitPage from '../../../../components/UnitPreview/UnitPage';
 
 const IS_ON_PROD = process.env.NODE_ENV === 'production';
 const GOOGLE_DRIVE_THUMBNAIL_URL = 'https://drive.google.com/thumbnail?id=';
@@ -1260,7 +1260,7 @@ const LessonDetails: React.FC<IProps> = ({ lesson, unit }) => {
               }}
             />
           )}
-          <UnitDesignPreview unit={unit} />
+          <UnitPage unit={unit} />
           <GpPlusModal />
           <LessonItemsModal />
           <ThankYouModal />

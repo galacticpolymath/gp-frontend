@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import Image from 'next/image';
 import { format } from 'date-fns';
 import RichText from '../RichText';
-import styles from './UnitDesignPreview.module.css';
+import styles from './UnitPage.module.css';
 import { Blocks, Filter, Network, Target, X } from 'lucide-react';
 import { TUnitForUI } from '../../backend/models/Unit/types/unit';
 import {
@@ -864,7 +864,7 @@ const buildSearchEntries = (
   return entries;
 };
 
-const UnitDesignPreview: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
+const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
   const overview = unit.Sections?.overview;
   const teachingMaterials = unit.Sections?.teachingMaterials;
   const standardsData = (unit.Sections?.standards?.Data ?? []) as ISubject[];
@@ -928,6 +928,8 @@ const UnitDesignPreview: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
   );
   const [searchTerm, setSearchTerm] = useState('');
   const [isSearchExpanded, setIsSearchExpanded] = useState(false);
+  const [isTagListExpanded, setIsTagListExpanded] = useState(false);
+  const [visibleTagCount, setVisibleTagCount] = useState(0);
   const [activeMaterialIndex, setActiveMaterialIndex] = useState(0);
   const [isStandardsFilterDockOpen, setIsStandardsFilterDockOpen] =
     useState(false);
@@ -938,6 +940,8 @@ const UnitDesignPreview: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
     TStandardsSubjectFilter[]
   >(['all']);
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const unitTagListRef = useRef<HTMLDivElement>(null);
+  const unitTagMeasureRefs = useRef<Array<HTMLSpanElement | null>>([]);
   const versionNotesAnchorRef = useRef<HTMLDivElement>(null);
   const [shouldScrollToVersionNotes, setShouldScrollToVersionNotes] =
     useState(false);
@@ -951,6 +955,10 @@ const UnitDesignPreview: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
       .filter((entry) => entry.content.includes(term))
       .slice(0, 8);
   }, [searchEntries, searchTerm]);
+  const heroUnitTags = useMemo(
+    () => (overview?.UnitTags ?? []).filter(Boolean),
+    [overview?.UnitTags]
+  );
 
   const standardSubjects = useMemo(() => {
     const subjects = flatStandards.map((standard) => standard.subject.trim());
@@ -1174,6 +1182,85 @@ const UnitDesignPreview: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
     }
     searchInputRef.current?.focus();
   }, [isSearchExpanded]);
+
+  useEffect(() => {
+    setIsTagListExpanded(false);
+  }, [heroUnitTags]);
+
+  useEffect(() => {
+    if (!heroUnitTags.length) {
+      setVisibleTagCount(0);
+      return;
+    }
+
+    const measureTagRows = () => {
+      const container = unitTagListRef.current;
+      if (!container) {
+        return;
+      }
+      const measureTags = unitTagMeasureRefs.current
+        .slice(0, heroUnitTags.length)
+        .filter(Boolean) as HTMLSpanElement[];
+
+      if (!measureTags.length) {
+        setVisibleTagCount(0);
+        return;
+      }
+
+      const rows: number[] = [];
+      let nextVisibleCount = 0;
+
+      measureTags.forEach((tag) => {
+        const top = tag.offsetTop;
+        let rowIndex = rows.findIndex((rowTop) => Math.abs(rowTop - top) <= 1);
+        if (rowIndex === -1) {
+          rows.push(top);
+          rowIndex = rows.length - 1;
+        }
+
+        if (rowIndex < 2) {
+          nextVisibleCount += 1;
+        }
+      });
+
+      const hasOverflow = nextVisibleCount < measureTags.length;
+      const adjustedVisibleCount = hasOverflow
+        ? Math.max(0, nextVisibleCount - 1)
+        : nextVisibleCount;
+
+      setVisibleTagCount(adjustedVisibleCount);
+    };
+
+    const rafId = window.requestAnimationFrame(measureTagRows);
+    window.addEventListener('resize', measureTagRows);
+
+    const resizeObserver =
+      typeof ResizeObserver !== 'undefined'
+        ? new ResizeObserver(() => measureTagRows())
+        : null;
+
+    if (resizeObserver && unitTagListRef.current) {
+      resizeObserver.observe(unitTagListRef.current);
+    }
+
+    return () => {
+      window.cancelAnimationFrame(rafId);
+      window.removeEventListener('resize', measureTagRows);
+      resizeObserver?.disconnect();
+    };
+  }, [heroUnitTags]);
+
+  const tagsToDisplay = useMemo(() => {
+    if (isTagListExpanded) {
+      return heroUnitTags;
+    }
+    if (visibleTagCount <= 0) {
+      return heroUnitTags;
+    }
+    return heroUnitTags.slice(0, visibleTagCount);
+  }, [heroUnitTags, isTagListExpanded, visibleTagCount]);
+
+  const hiddenTagCount = Math.max(0, heroUnitTags.length - tagsToDisplay.length);
 
   useEffect(() => {
     if (activeTab !== TAB_CREDITS || !shouldScrollToVersionNotes) {
@@ -1562,14 +1649,39 @@ const UnitDesignPreview: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
               {unitSubtitle && (
                 <p className={styles.unitSubtitle}>{unitSubtitle}</p>
               )}
-              {!!overview?.UnitTags?.length && (
-                <div className={styles.unitTagList}>
-                  {overview.UnitTags.map((tag) => (
-                    <span key={tag} className={styles.unitTag}>
-                      {tag}
-                    </span>
-                  ))}
-                </div>
+              {!!heroUnitTags.length && (
+                <>
+                  <div ref={unitTagListRef} className={styles.unitTagList}>
+                    {tagsToDisplay.map((tag, index) => (
+                      <span key={`${tag}-${index}`} className={styles.unitTag}>
+                        {tag}
+                      </span>
+                    ))}
+                    {hiddenTagCount > 0 && (
+                      <button
+                        type="button"
+                        className={`${styles.unitTag} ${styles.unitTagToggle}`}
+                        aria-expanded={isTagListExpanded}
+                        onClick={() => setIsTagListExpanded((current) => !current)}
+                      >
+                        {isTagListExpanded ? 'Show fewer' : `+${hiddenTagCount} more`}
+                      </button>
+                    )}
+                  </div>
+                  <div className={styles.unitTagMeasureList} aria-hidden="true">
+                    {heroUnitTags.map((tag, index) => (
+                      <span
+                        key={`measure-${tag}-${index}`}
+                        className={styles.unitTag}
+                        ref={(element) => {
+                          unitTagMeasureRefs.current[index] = element;
+                        }}
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                </>
               )}
             </div>
           </div>
@@ -2511,4 +2623,4 @@ const UnitDesignPreview: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
   );
 };
 
-export default UnitDesignPreview;
+export default UnitPage;

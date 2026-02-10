@@ -26,6 +26,7 @@
   display: grid;
   gap: 12px;
   grid-area: header;
+  position: relative;
 }
 
 .unitEyebrow {
@@ -723,6 +724,13 @@
   text-underline-offset: 2px;
 }
 
+.unitTagListWrap {
+  display: grid;
+  justify-items: start;
+  gap: 8px;
+  margin-top: 12px;
+}
+
 .unitTagList {
   display: flex;
   flex-wrap: wrap;
@@ -763,6 +771,29 @@
   color: #7c1a4c;
   font-size: 12px;
   font-weight: 600;
+}
+
+.unitTagToggle {
+  border: 1px dashed rgba(44, 131, 195, 0.4);
+  background: rgba(44, 131, 195, 0.08);
+  color: #1f355a;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.unitTagMeasureList {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  visibility: hidden;
+  pointer-events: none;
+  z-index: -1;
 }
 
 .unitMediaGrid {
