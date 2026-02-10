@@ -45,7 +45,7 @@
     "crypto-js": "^4.2.0",
     "d3": "^7.9.0",
     "date-fns": "^4.1.0",
-    "dotenv": "^17.2.3",
+    "dotenv": "^17.2.4",
     "event-source-polyfill": "^1.0.31",
     "exceljs": "^4.4.0",
     "font-awesome": "^4.7.0",
