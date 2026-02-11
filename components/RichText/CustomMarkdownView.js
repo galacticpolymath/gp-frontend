@@ -26,7 +26,7 @@ const components = {
     if (!/^(https?:)?(\/\/)?(www\.)?galacticpolymath\.com/.test(props.href)) {
       LinkComponent = 'a';
       linkProps.target = '_blank';
-      linkProps.rel = 'nooopener noreferrer';
+      linkProps.rel = 'noopener noreferrer';
     }
 
     return <LinkComponent {...props} {...linkProps}></LinkComponent>;

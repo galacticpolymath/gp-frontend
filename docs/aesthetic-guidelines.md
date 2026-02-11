@@ -77,9 +77,23 @@ Guidelines:
 - GP+ zones require at least one persistent signal (Plus Blue highlight, badge, or background gradient) but should not obscure content.
 - Minimum contrast ratio 4.5:1 for text; lighten/darken tokens using auto-calculated steps (`brand-hydro-blue-100`, `-200`, etc.) derived from the base palette.
 
+### Standards Subject Colors
+Use these as subtle accents in standards-alignment UI (chips, borders, icons), not full-surface fills.
+
+| Subject | Hex | RGB | Token |
+|---------|-----|-----|-------|
+| Math | `#DB4125` | `219, 65, 37` | `subject-math` |
+| ELA | `#ECA14D` | `236, 161, 77` | `subject-ela` |
+| Extra | `#F4F0D9` | `244, 240, 217` | `subject-extra` |
+| Science | `#B798E8` | `183, 152, 232` | `subject-science` |
+| Social Studies | `#633A9A` | `99, 58, 154` | `subject-social-studies` |
+| Sustainability | `#349964` | `52, 153, 100` | `subject-sustainability` |
+| SEL | `#0070DA` | `0, 70, 218` | `subject-sel` |
+
 ## Typography & Iconography
 - **Primary font:** Noto Sans Light/Regular/SemiBold with system fallbacks (`"Noto Sans", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif`).
 - Heading scale: H1 40/44, H2 32/36, H3 24/28, Body 18/28 for portal readability; tighten to 16/24 for dense tables.
+- Minimum readable sizes: body-like instructional text should be at least 14px on mobile and 15-16px on desktop; reserve 12-13px for short labels/chips only.
 - Use stacked icon pairs for JobViz job cards: outer glyph = category, inner = specific job. Maintain 24px outer, 16px inner, 2px stroke.
 - Emoji ratings should render with consistent line height and include aria-labels describing the rating meaning.
 - Navigation and filter icons follow mono-line style at 1.5px stroke; avoid mixing filled and outline icons within a single component.
@@ -122,6 +136,15 @@ Guidelines:
       "sparkleWhite": "#F0F4FF",
       "plusBlue": "#1826BC",
       "freeBlue": "#00ACEB"
+    },
+    "subject": {
+      "math": "#DB4125",
+      "ela": "#ECA14D",
+      "extra": "#F4F0D9",
+      "science": "#B798E8",
+      "socialStudies": "#633A9A",
+      "sustainability": "#349964",
+      "sel": "#0070DA"
     }
   },
   "typography": {
@@ -159,6 +182,13 @@ Guidelines:
   --color-brand-sparkle-white: #f0f4ff;
   --color-brand-plus-blue: #1826bc;
   --color-brand-free-blue: #00aceb;
+  --color-subject-math: #db4125;
+  --color-subject-ela: #eca14d;
+  --color-subject-extra: #f4f0d9;
+  --color-subject-science: #b798e8;
+  --color-subject-social-studies: #633a9a;
+  --color-subject-sustainability: #349964;
+  --color-subject-sel: #0070da;
   --font-family-base: "Noto Sans","Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
   --radius-soft: 12px;
 }

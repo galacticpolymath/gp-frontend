@@ -4,7 +4,7 @@
  
  
 
-import { useContext, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { ModalContext } from "../../../providers/ModalProvider";
 import Button from "../../General/Button";
 import GoogleSignIn from "../GoogleSignIn";
@@ -15,7 +15,7 @@ import Link from "next/link";
 import { TROUBLE_LOGGING_IN_LINK } from "../../../globalVars";
 import { useRouter } from "next/router";
 import { useUserEntry } from "../../../customHooks/useUserEntry";
-import { getSessionStorageItem } from "../../../shared/fns";
+import { getSessionStorageItem, setSessionStorageItem } from "../../../shared/fns";
 import Image from "next/image";
 
 const LoginUI = ({
@@ -71,6 +71,14 @@ const LoginUI = ({
     }
 
     return typeof window === "undefined" ? "" : window.location.href;
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const existing = getSessionStorageItem("userEntryRedirectUrl");
+    if (!existing) {
+      setSessionStorageItem("userEntryRedirectUrl", window.location.href);
+    }
   }, []);
 
   return (

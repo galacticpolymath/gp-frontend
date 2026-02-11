@@ -1,5 +1,6 @@
 import Head from "next/head";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import {
   FiBookOpen,
@@ -7,6 +8,7 @@ import {
   FiLayers,
   FiPlay,
   FiPlayCircle,
+  FiShare2,
   FiStar,
   FiUsers,
 } from "react-icons/fi";
@@ -23,13 +25,16 @@ import {
   ListFilter,
   NotebookPen,
   PartyPopper,
+  Briefcase,
+  Rocket,
   School,
   Search,
   SquareCheckBig,
   Youtube,
 } from "lucide-react";
-import type { IconType } from "react-icons";
+import type { IconBaseProps } from "react-icons";
 import { MdOutlineSchool } from "react-icons/md";
+import { toast } from "react-hot-toast";
 import styles from "./home.module.css";
 import { getUnitLessons, retrieveUnits } from "../backend/services/unitServices";
 import { createDbProjections, getLiveUnits } from "../shared/fns";
@@ -56,6 +61,7 @@ import type { JobTourRecord } from "../components/JobViz/JobTours/jobTourTypes";
 import {
   DEFAULT_JOB_TOUR_ASSIGNMENT,
 } from "../components/JobViz/JobTours/jobTourConstants";
+import { getDisplayTitle, getNodeBySocCode } from "../components/JobViz/jobvizUtils";
 
 interface PreviewUnit {
   id: string;
@@ -71,6 +77,7 @@ interface PreviewUnit {
   epaulette: string | null;
   epauletteVert: string | null;
   targetStandards: string[];
+  connectedStandards: string[];
   careerConnections: string[];
   sponsorText: string;
   sponsorMarkdown: string;
@@ -83,6 +90,17 @@ interface PreviewUnit {
   locale: string;
   jobvizConnections?: IJobVizConnection[] | IConnectionJobViz[] | null;
 }
+
+const JobTourIcon: React.FC<IconBaseProps> = ({ className, size }) => (
+  <img
+    src="/imgs/jobViz/jobviz_rocket_logo_color.svg"
+    alt=""
+    aria-hidden="true"
+    className={className}
+    width={typeof size === "number" ? size : undefined}
+    height={typeof size === "number" ? size : undefined}
+  />
+);
 
 interface BlogPost {
   id: string;
@@ -114,6 +132,7 @@ const QUERY_KEYS = [
   "tag",
   "locale",
   "mine",
+  "tourScope",
 ] as const;
 
 const CONTENT_TYPES = ["Unit", "Lesson", "Video", "App", "Job Tour"] as const;
@@ -178,6 +197,29 @@ const buildJobTourUrl = (resource: PreviewResource) => {
   return "/jobviz";
 };
 
+const getJobTitleFromSocCode = (socCode: string) => {
+  const node = getNodeBySocCode(socCode);
+  return node ? getDisplayTitle(node) : socCode;
+};
+
+const getJobTitlesForTour = (socCodes?: string[] | null, limit = 6) => {
+  if (!socCodes?.length) return [];
+  return socCodes
+    .map((socCode) => getJobTitleFromSocCode(socCode))
+    .filter(Boolean)
+    .slice(0, limit);
+};
+
+const truncateJobTitle = (title: string, maxLength = 28) => {
+  if (title.length <= maxLength) return title;
+  return `${title.slice(0, maxLength - 3).trim()}...`;
+};
+
+const truncateUnitTitle = (title: string, maxLength = 64) => {
+  if (title.length <= maxLength) return title;
+  return `${title.slice(0, maxLength - 3).trim()}...`;
+};
+
 interface PreviewResource {
   id: string;
   title: string;
@@ -200,7 +242,7 @@ interface PreviewResource {
   isNew?: boolean;
   isPlus?: boolean;
   accent: string;
-  icon: IconType;
+  icon: React.ComponentType<any>;
   ownerId?: string | null;
   ownerName?: string | null;
   tourSource?: "unit" | "user";
@@ -212,6 +254,22 @@ interface PreviewResource {
   tourUnitId?: string | null;
   tourUnitTitle?: string | null;
   selectedJobs?: string[];
+  searchTargetStandards?: string[];
+  searchConnectedStandards?: string[];
+  searchCareerConnections?: string[];
+  searchGist?: string;
+  searchFeaturedMedia?: string[];
+  searchLessonDetails?: string[];
+}
+
+interface ResourceSearchMatchCategory {
+  label: string;
+  values: string[];
+}
+
+interface ResourceSearchMatchResult {
+  queryMatches: boolean;
+  hiddenCategories: ResourceSearchMatchCategory[];
 }
 
 const experiencePillars = [
@@ -362,6 +420,7 @@ const fallbackUnits: PreviewUnit[] = [
     epaulette: null,
     epauletteVert: null,
     targetStandards: ["NGSS MS-LS1-4", "NGSS SEP"],
+    connectedStandards: [],
     careerConnections: ["Field Biologist", "Research Assistant"],
     sponsorText: "Supported by the GP community of scientists and teachers.",
     sponsorMarkdown:
@@ -405,6 +464,7 @@ const fallbackUnits: PreviewUnit[] = [
     epaulette: null,
     epauletteVert: null,
     targetStandards: ["NGSS MS-ESS3-3", "NGSS ETS1"],
+    connectedStandards: [],
     careerConnections: ["Food Scientist", "Sustainability Analyst"],
     sponsorText: "Sponsored by mission-aligned partners.",
     sponsorMarkdown: "Sponsored by mission-aligned partners.",
@@ -453,6 +513,7 @@ const PROJECTED_UNITS_FIELDS = [
   "Sections.overview.SteamEpaulette_vert",
   "Sections.overview.UnitTags",
   "Sections.overview.Tags",
+  "Sections.standards.Data",
   "Sections.jobvizConnections.Content",
 ] as string[];
 
@@ -582,6 +643,38 @@ const getTargetStandards = (unit: INewUnitSchema) => {
   return Array.from(new Set(standards));
 };
 
+const getConnectedStandards = (unit: INewUnitSchema) => {
+  const standardsData = unit.Sections?.standards?.Data as
+    | Array<{
+        target?: boolean;
+        sets?: Array<{
+          dimensions?: Array<{
+            standardsGroup?: Array<{ codes?: string | null }>;
+          }>;
+        }>;
+      }>
+    | undefined;
+  if (!Array.isArray(standardsData)) {
+    return [];
+  }
+  const codes = standardsData
+    .filter((subjectGroup) => subjectGroup?.target === false)
+    .flatMap((subjectGroup) =>
+      (subjectGroup?.sets ?? []).flatMap((setGroup) =>
+        (setGroup?.dimensions ?? []).flatMap((dimension) =>
+          (dimension?.standardsGroup ?? [])
+            .map((standard) =>
+              typeof standard?.codes === "string"
+                ? standard.codes.trim()
+                : ""
+            )
+            .filter(Boolean)
+        )
+      )
+    );
+  return Array.from(new Set(codes));
+};
+
 const getSubjectConnections = (unit: INewUnitSchema, targetSubject?: string) => {
   if (!Array.isArray(unit.TargetStandardsCodes)) {
     return [];
@@ -637,6 +730,33 @@ const getYoutubeId = (url?: string | null) => {
   const shortsMatch = url.match(/shorts\/([a-zA-Z0-9_-]+)/);
   if (shortsMatch?.[1]) return shortsMatch[1];
   return null;
+};
+
+const buildShareableMediaLink = (link?: string | null) => {
+  if (!link) return "";
+  try {
+    const url = new URL(link, typeof window === "undefined" ? undefined : window.location.origin);
+    const hostname = url.hostname.replace(/^www\./, "");
+    if (hostname.includes("youtube") || hostname === "youtu.be") {
+      const id = getYoutubeId(url.toString());
+      const time = url.searchParams.get("t") || url.searchParams.get("start");
+      if (id) {
+        return `https://youtu.be/${id}${time ? `?t=${time}` : ""}`;
+      }
+    }
+    if (hostname.includes("vimeo.com")) {
+      const videoId =
+        url.pathname.split("/video/")[1]?.split("/")[0] ??
+        url.pathname.replace("/", "").split("/")[0];
+      if (videoId) {
+        return `https://vimeo.com/${videoId}`;
+      }
+    }
+    url.searchParams.delete("autoplay");
+    return url.toString();
+  } catch (error) {
+    return link;
+  }
 };
 
 const getDriveThumbnail = (url?: string | null) => {
@@ -835,6 +955,8 @@ export async function getStaticProps() {
         unit.Sections?.overview?.UnitTags ??
         unit.Sections?.overview?.Tags?.map((tag) => tag?.Value).filter(Boolean) ??
         [];
+      const targetStandards = getTargetStandards(unit);
+      const connectedStandards = getConnectedStandards(unit);
       const unitId = `${unit.numID ?? unit._id ?? unit.Title}`;
       const unitTitle = unit.Title || "Untitled unit";
       return {
@@ -851,7 +973,8 @@ export async function getStaticProps() {
         gistMarkdown,
         epaulette: unit.Sections?.overview?.SteamEpaulette ?? null,
         epauletteVert: unit.Sections?.overview?.SteamEpaulette_vert ?? null,
-        targetStandards: getTargetStandards(unit).slice(0, 4),
+        targetStandards,
+        connectedStandards,
         careerConnections: getCareerConnections(unit).slice(0, 4),
         sponsorText: toPlainText(sponsorMarkdown) || "Sponsored by partners.",
         sponsorMarkdown,
@@ -918,9 +1041,9 @@ export default function HomePage({
   const lastFocusedRef = useRef<HTMLElement | null>(null);
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
   const mapInstanceRef = useRef<unknown>(null);
-  const [showStatsDebug, setShowStatsDebug] = useState(false);
   const isTypingRef = useRef(false);
   const typingTimeoutRef = useRef<number | null>(null);
+  const [showStatsDebug, setShowStatsDebug] = useState(false);
   const isSearchRoute = router.pathname === "/search";
   const [carouselIndex, setCarouselIndex] = useState(0);
   const statsSectionRef = useRef<HTMLElement | null>(null);
@@ -945,6 +1068,7 @@ export default function HomePage({
   const [jobTourLoading, setJobTourLoading] = useState(false);
   const [jobTourError, setJobTourError] = useState<string | null>(null);
   const [showOnlyMyContent, setShowOnlyMyContent] = useState(false);
+  const [tourScope, setTourScope] = useState<"" | "unit" | "community">("");
   const handleTabClick = (tab: NavTab) => {
     const nextTypes =
       tab === "Units"
@@ -958,15 +1082,13 @@ export default function HomePage({
               : tab === "JobViz"
                 ? ["Job Tour"]
                 : [...CONTENT_TYPES];
-    if (isAllView) {
-      triggerResultsAnimation();
-    }
     setSelectedContentTypes(nextTypes);
     setShowOnlyMyContent(false);
     router.push({ pathname: "/search", query: buildRootQueryForTab(tab) });
   };
   const handleHomeClick = () => {
     setSearchQuery("");
+    setSearchInputValue("");
     setSelectedContentTypes([...CONTENT_TYPES]);
     setSelectedTargetSubjects([]);
     setSelectedAlignedSubjects([]);
@@ -974,9 +1096,11 @@ export default function HomePage({
     setSelectedTags([]);
     setSelectedLocales([]);
     setShowOnlyMyContent(false);
+    setTourScope("");
     router.push("/");
   };
   const [searchQuery, setSearchQuery] = useState("");
+  const [searchInputValue, setSearchInputValue] = useState("");
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
   const [selectedTargetSubjects, setSelectedTargetSubjects] = useState<string[]>(
     []
@@ -999,7 +1123,10 @@ export default function HomePage({
   const [animateResults, setAnimateResults] = useState(false);
   const [resultsTransitioning, setResultsTransitioning] = useState(false);
   const [shareCopied, setShareCopied] = useState(false);
+  const [isSearchTransitioning, setIsSearchTransitioning] = useState(false);
   const animateTimeoutRef = useRef<number | null>(null);
+  const previousResultsSignatureRef = useRef<string | null>(null);
+  const hasSeenInitialResultsRef = useRef(false);
 
   const triggerResultsAnimation = useCallback(() => {
     if (animateTimeoutRef.current) {
@@ -1029,6 +1156,58 @@ export default function HomePage({
       });
     },
     [resultsView, triggerResultsAnimation]
+  );
+
+  const highlightText = useCallback((text: string, queryValue: string) => {
+    const source = text ?? "";
+    const query = queryValue.trim();
+    if (!query) return source;
+    const tokens = tokenizeSearch(query).filter((token) => token.length >= 2);
+    if (!tokens.length) return source;
+    const escaped = tokens
+      .map((token) => token.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))
+      .join("|");
+    if (!escaped) return source;
+    const regex = new RegExp(`(${escaped})`, "ig");
+    const parts = source.split(regex);
+    return parts.map((part, index) =>
+      tokens.some((token) => token.toLowerCase() === part.toLowerCase()) ? (
+        <mark key={`${part}-${index}`} className={styles.searchHighlight}>
+          {part}
+        </mark>
+      ) : (
+        <React.Fragment key={`${part}-${index}`}>{part}</React.Fragment>
+      )
+    );
+  }, []);
+
+  const summarizeCategoryValues = useCallback((values: string[], limit = 3) => {
+    if (!values.length) return [];
+    if (values.length <= limit) return values;
+    return [...values.slice(0, limit), `+${values.length - limit} more`];
+  }, []);
+
+  const handleHomeSearchSubmit = useCallback(
+    async (event?: React.FormEvent<HTMLFormElement>) => {
+      event?.preventDefault();
+      const nextQuery = searchInputValue.trim();
+      setSelectedContentTypes([...CONTENT_TYPES]);
+      setSearchQuery(nextQuery);
+      setSearchInputValue(nextQuery);
+      setIsSearchTransitioning(true);
+      try {
+        await new Promise((resolve) => window.setTimeout(resolve, 160));
+        await router.push({
+          pathname: "/search",
+          query: buildQueryObject({
+            q: nextQuery || undefined,
+          }),
+        });
+      } finally {
+        setIsSearchTransitioning(false);
+      }
+    },
+    [router, searchInputValue]
   );
 
   const handleRemoveChip = (chip: string) => {
@@ -1094,6 +1273,7 @@ export default function HomePage({
       const tags = (unit.unitTags ?? []).filter(Boolean).slice(0, 6);
       const gradeBand = unit.grades;
       const gradeBandGroup = getGradeBandGroup(gradeBand);
+      const unitFeaturedMedia = (unit.media ?? []).map((item) => item.title);
 
       resources.push({
         id: unit.id,
@@ -1117,6 +1297,12 @@ export default function HomePage({
         isPlus: false,
         accent: getAccent(unit.targetSubject || unit.subject),
         icon: FiBookOpen,
+        searchTargetStandards: unit.targetStandards ?? [],
+        searchConnectedStandards: unit.connectedStandards ?? [],
+        searchCareerConnections: unit.careerConnections ?? [],
+        searchGist: unit.gist ?? "",
+        searchFeaturedMedia: unitFeaturedMedia,
+        searchLessonDetails: [],
       });
 
       unit.media?.forEach((media, index) => {
@@ -1143,6 +1329,12 @@ export default function HomePage({
           isPlus: false,
           accent: getAccent(unit.targetSubject || unit.subject),
           icon: media.type === "Video" ? FiPlayCircle : AppWindow,
+          searchTargetStandards: unit.targetStandards ?? [],
+          searchConnectedStandards: unit.connectedStandards ?? [],
+          searchCareerConnections: unit.careerConnections ?? [],
+          searchGist: unit.gist ?? "",
+          searchFeaturedMedia: unitFeaturedMedia,
+          searchLessonDetails: [],
         });
       });
     });
@@ -1153,7 +1345,7 @@ export default function HomePage({
       title: "JobViz Career Explorer",
       description: "Explore 800+ careers and connect classroom learning to real-world jobs.",
       type: "App",
-      image: "/imgs/jobViz/jobviz_icon.png",
+      image: "/imgs/jobViz/jobviz_rocket_logo_color.svg",
       subject: "Careers",
       alignedSubjects: [],
       gradeBandGroup: getGradeBandGroup(jobvizGradeBand),
@@ -1167,6 +1359,12 @@ export default function HomePage({
       isPlus: false,
       accent: getAccent("careers"),
       icon: AppWindow,
+      searchTargetStandards: [],
+      searchConnectedStandards: [],
+      searchCareerConnections: [],
+      searchGist: "",
+      searchFeaturedMedia: [],
+      searchLessonDetails: [],
     });
 
     const unitTourResources = allUnits
@@ -1178,7 +1376,7 @@ export default function HomePage({
         return {
           id: `job-tour-unit-${unit.id}`,
           title: tourTitle,
-          description: unit.subtitle || "Curated jobs linked to this unit.",
+          description: `From ${unit.title}`,
           type: "Job Tour" as const,
           image: unit.bannerUrl || "/imgs/jobViz/jobviz_icon.png",
           subject: unit.targetSubject || unit.subject,
@@ -1192,7 +1390,7 @@ export default function HomePage({
           isNew: false,
           isPlus: true,
           accent: getAccent("careers"),
-          icon: FiLayers,
+          icon: JobTourIcon,
           ownerId: null,
           ownerName: "GP Team",
           tourSource: "unit",
@@ -1204,6 +1402,12 @@ export default function HomePage({
           tourUnitId: unit.id,
           tourUnitTitle: unit.title,
           selectedJobs,
+          searchTargetStandards: unit.targetStandards ?? [],
+          searchConnectedStandards: unit.connectedStandards ?? [],
+          searchCareerConnections: unit.careerConnections ?? [],
+          searchGist: unit.gist ?? "",
+          searchFeaturedMedia: (unit.media ?? []).map((item) => item.title),
+          searchLessonDetails: [],
         };
       })
       .filter(Boolean) as PreviewResource[];
@@ -1212,9 +1416,10 @@ export default function HomePage({
 
     const userTourResources: PreviewResource[] = jobTourRecords.map((tour) => {
       const gradeBands = getTourGradeBands(tour.gradeLevel);
-      const gpUnitTitle = tour.gpUnitsAssociated?.length
-        ? unitById.get(tour.gpUnitsAssociated[0])?.title ?? null
+      const associatedUnit = tour.gpUnitsAssociated?.length
+        ? unitById.get(tour.gpUnitsAssociated[0]) ?? null
         : null;
+      const gpUnitTitle = associatedUnit?.title ?? null;
       return {
         id: tour._id,
         title: tour.heading,
@@ -1232,7 +1437,7 @@ export default function HomePage({
         isNew: false,
         isPlus: true,
         accent: getAccent("careers"),
-        icon: FiLayers,
+        icon: JobTourIcon,
         ownerId: tour.userId ? String(tour.userId) : null,
         ownerName: tour.ownerName ?? null,
         tourSource: "user",
@@ -1244,6 +1449,13 @@ export default function HomePage({
         tourUnitId: tour.gpUnitsAssociated?.[0] ?? null,
         tourUnitTitle: gpUnitTitle,
         selectedJobs: tour.selectedJobs ?? [],
+        searchTargetStandards: associatedUnit?.targetStandards ?? [],
+        searchConnectedStandards: associatedUnit?.connectedStandards ?? [],
+        searchCareerConnections: associatedUnit?.careerConnections ?? [],
+        searchGist: associatedUnit?.gist ?? "",
+        searchFeaturedMedia:
+          associatedUnit ? (associatedUnit.media ?? []).map((item) => item.title) : [],
+        searchLessonDetails: [],
       };
     });
 
@@ -1282,6 +1494,19 @@ export default function HomePage({
         isPlus: false,
         accent: getAccent(unit?.targetSubject || unit?.subject),
         icon: FiBookOpen,
+        searchTargetStandards: unit?.targetStandards ?? [],
+        searchConnectedStandards: unit?.connectedStandards ?? [],
+        searchCareerConnections: unit?.careerConnections ?? [],
+        searchGist: unit?.gist ?? "",
+        searchFeaturedMedia: (unit?.media ?? []).map((item) => item.title),
+        searchLessonDetails: [
+          lesson.lessonPartPath ?? "",
+          lesson.unitTitle ?? "",
+          lesson.status ?? "",
+          lesson.sortByDate ?? "",
+          lesson.lessonPartNum ? `Part ${lesson.lessonPartNum}` : "",
+          lesson.dur ? `${lesson.dur} minutes` : "",
+        ].filter(Boolean),
       });
     });
 
@@ -1366,8 +1591,170 @@ export default function HomePage({
     );
   };
 
+  const normalizeSearchValue = (value: string) =>
+    value.toLowerCase().replace(/\s+/g, "");
+
+  const tokenizeSearch = (value: string) =>
+    value
+      .toLowerCase()
+      .split(/[\s,;|/]+/)
+      .map((token) => token.trim())
+      .filter(Boolean);
+
+  const fuzzyTokenMatch = (token: string, text: string) => {
+    const normalizedText = text.toLowerCase();
+    if (!token || !normalizedText) return false;
+
+    if (token.length <= 2) {
+      const boundaryRegex = new RegExp(`\\b${token.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b`, "i");
+      return boundaryRegex.test(normalizedText);
+    }
+
+    if (normalizedText.includes(token)) return true;
+    const compactToken = normalizeSearchValue(token);
+    const compactText = normalizeSearchValue(normalizedText);
+    return compactToken.length >= 4 && compactText.includes(compactToken);
+  };
+
+  const getMatchedValues = (tokens: string[], values: string[]) => {
+    if (!tokens.length || !values.length) return [];
+    return values.filter((value) =>
+      tokens.some((token) => fuzzyTokenMatch(token, value))
+    );
+  };
+
+  const getSnippet = (text: string, query: string) => {
+    if (!text || !query) return "";
+    const loweredText = text.toLowerCase();
+    const loweredQuery = query.toLowerCase();
+    const hitIndex = loweredText.indexOf(loweredQuery);
+    if (hitIndex < 0) {
+      const firstToken = tokenizeSearch(query)[0] ?? "";
+      const tokenIndex = firstToken ? loweredText.indexOf(firstToken) : -1;
+      if (tokenIndex < 0) {
+        return text.length > 90 ? `${text.slice(0, 90).trim()}...` : text;
+      }
+      const startFromToken = Math.max(tokenIndex - 28, 0);
+      const endFromToken = Math.min(tokenIndex + firstToken.length + 36, text.length);
+      const prefixFromToken = startFromToken > 0 ? "..." : "";
+      const suffixFromToken = endFromToken < text.length ? "..." : "";
+      return `${prefixFromToken}${text.slice(startFromToken, endFromToken).trim()}${suffixFromToken}`;
+    }
+    const start = Math.max(hitIndex - 28, 0);
+    const end = Math.min(hitIndex + loweredQuery.length + 36, text.length);
+    const prefix = start > 0 ? "..." : "";
+    const suffix = end < text.length ? "..." : "";
+    return `${prefix}${text.slice(start, end).trim()}${suffix}`;
+  };
+
+  const buildSearchMatchResult = (
+    resource: PreviewResource,
+    queryValue: string
+  ): ResourceSearchMatchResult => {
+    const query = queryValue.trim().toLowerCase();
+    if (!query) {
+      return { queryMatches: true, hiddenCategories: [] };
+    }
+
+    const tokens = tokenizeSearch(query);
+    const visibleFields = [
+      resource.title,
+      resource.description,
+      resource.subject,
+      resource.gradeBand,
+      resource.tags.join(" "),
+    ]
+      .filter(Boolean)
+      .join(" ");
+
+    const hiddenCategories: ResourceSearchMatchCategory[] = [];
+    const targetStandardsMatches = getMatchedValues(
+      tokens,
+      resource.searchTargetStandards ?? []
+    );
+    if (targetStandardsMatches.length) {
+      hiddenCategories.push({
+        label: "Target standards",
+        values: targetStandardsMatches,
+      });
+    }
+
+    const connectedStandardsMatches = getMatchedValues(
+      tokens,
+      resource.searchConnectedStandards ?? []
+    );
+    if (connectedStandardsMatches.length) {
+      hiddenCategories.push({
+        label: "Connected standards",
+        values: connectedStandardsMatches,
+      });
+    }
+
+    const jobsMatches = getMatchedValues(tokens, resource.searchCareerConnections ?? []);
+    if (jobsMatches.length) {
+      hiddenCategories.push({
+        label: "Featured jobs",
+        values: jobsMatches,
+      });
+    }
+
+    const mediaMatches = getMatchedValues(tokens, resource.searchFeaturedMedia ?? []);
+    if (mediaMatches.length) {
+      hiddenCategories.push({
+        label: "Featured media",
+        values: mediaMatches,
+      });
+    }
+
+    const lessonDetailsMatches = getMatchedValues(
+      tokens,
+      resource.searchLessonDetails ?? []
+    );
+    if (lessonDetailsMatches.length) {
+      hiddenCategories.push({
+        label: "Lesson details",
+        values: lessonDetailsMatches,
+      });
+    }
+
+    const gistText = resource.searchGist ?? "";
+    const gistMatched = tokens.some((token) => fuzzyTokenMatch(token, gistText));
+    if (gistMatched) {
+      const snippet = getSnippet(gistText, query);
+      hiddenCategories.push({
+        label: "Gist",
+        values: snippet ? [snippet] : [gistText],
+      });
+    }
+
+    const searchableFields = [
+      visibleFields,
+      ...(resource.searchTargetStandards ?? []),
+      ...(resource.searchConnectedStandards ?? []),
+      ...(resource.searchCareerConnections ?? []),
+      ...(resource.searchFeaturedMedia ?? []),
+      ...(resource.searchLessonDetails ?? []),
+      gistText,
+    ].filter(Boolean);
+    const tokenCoverage = tokens.every((token) =>
+      searchableFields.some((field) => fuzzyTokenMatch(token, field))
+    );
+    return {
+      queryMatches: tokenCoverage,
+      hiddenCategories,
+    };
+  };
+
+  const searchMatchByResourceId = useMemo(() => {
+    const map = new Map<string, ResourceSearchMatchResult>();
+    allResources.forEach((resource) => {
+      map.set(resource.id, buildSearchMatchResult(resource, searchQuery));
+    });
+    return map;
+  }, [allResources, searchQuery]);
+
   const filteredResources = useMemo(() => {
-    const query = debouncedSearchQuery.trim().toLowerCase();
+    const query = searchQuery.trim().toLowerCase();
     return allResources.filter((resource) => {
       if (
         selectedContentTypes.length &&
@@ -1378,6 +1765,17 @@ export default function HomePage({
       }
       if (showOnlyMyContent) {
         if (!userId || resource.ownerId !== userId) {
+          return false;
+        }
+      }
+      if (resource.type === "Job Tour" && tourScope) {
+        if (tourScope === "unit" && resource.tourSource !== "unit") {
+          return false;
+        }
+        if (
+          tourScope === "community" &&
+          (resource.tourSource !== "user" || resource.tourVisibility !== "everyone")
+        ) {
           return false;
         }
       }
@@ -1414,28 +1812,20 @@ export default function HomePage({
       if (!query) {
         return true;
       }
-      const haystack = [
-        resource.title,
-        resource.description,
-        resource.subject,
-        resource.gradeBand,
-        resource.tags.join(" "),
-      ]
-        .filter(Boolean)
-        .join(" ")
-        .toLowerCase();
-      return haystack.includes(query);
+      return searchMatchByResourceId.get(resource.id)?.queryMatches ?? false;
     });
   }, [
     allResources,
-    debouncedSearchQuery,
+    searchQuery,
     selectedContentTypes,
     selectedTargetSubjects,
     selectedAlignedSubjects,
     selectedGradeBands,
     selectedTags,
     selectedLocales,
+    searchMatchByResourceId,
     showOnlyMyContent,
+    tourScope,
     userId,
   ]);
 
@@ -1450,6 +1840,7 @@ export default function HomePage({
     selectedTags.length > 0 ||
     selectedLocales.length > 0 ||
     showOnlyMyContent ||
+    Boolean(tourScope) ||
     searchQuery.trim().length > 0;
 
   const sortedResources = useMemo(() => {
@@ -1486,7 +1877,8 @@ export default function HomePage({
     selectedGradeBands.length > 0 ||
     selectedTags.length > 0 ||
     selectedLocales.length > 0 ||
-    showOnlyMyContent;
+    showOnlyMyContent ||
+    Boolean(tourScope);
   const hasQueryFilters =
     searchQuery.trim().length > 0 ||
     contentTypeFilterActive ||
@@ -1495,12 +1887,18 @@ export default function HomePage({
     selectedGradeBands.length > 0 ||
     selectedTags.length > 0 ||
     selectedLocales.length > 0 ||
-    showOnlyMyContent;
+    showOnlyMyContent ||
+    Boolean(tourScope);
   const isHomeView =
     !isSearchRoute && !hasQueryFilters && initialTab !== "All";
+  const hasCommittedSearch = searchQuery.trim().length > 0;
   const isAllView = !isHomeView;
   const deferResults = isSearchRoute && !queryHydrated;
   const resultsCount = sortedResources.length;
+  const resultsSignature = useMemo(
+    () => sortedResources.map((resource) => resource.id).join("|"),
+    [sortedResources]
+  );
   const totalUnits = allUnits.length;
   const totalVideos = allUnits.reduce(
     (count, unit) => count + (unit.media?.filter((item) => item.type === "Video").length ?? 0),
@@ -1533,6 +1931,20 @@ export default function HomePage({
     if (resolvedTab === "JobViz") return `Explore ${totalJobTours} JobViz Tours`;
     return `Explore ${totalResources} Resources`;
   })();
+
+  useEffect(() => {
+    if (!isAllView || deferResults) return;
+    if (!hasSeenInitialResultsRef.current) {
+      hasSeenInitialResultsRef.current = true;
+      previousResultsSignatureRef.current = resultsSignature;
+      return;
+    }
+    if (previousResultsSignatureRef.current === resultsSignature) {
+      return;
+    }
+    previousResultsSignatureRef.current = resultsSignature;
+    triggerResultsAnimation();
+  }, [deferResults, isAllView, resultsSignature, triggerResultsAnimation]);
 
   useEffect(() => {
     if (!activeModal) {
@@ -1833,6 +2245,14 @@ export default function HomePage({
   };
 
   useEffect(() => {
+    return () => {
+      if (typingTimeoutRef.current) {
+        window.clearTimeout(typingTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
     if (!router.isReady) return;
     const hasQueryInPath = router.asPath.includes("?");
     const hasQueryValues = Object.keys(router.query).length > 0;
@@ -1848,12 +2268,21 @@ export default function HomePage({
     const nextGrade = parseQueryArray(query.grade);
     const nextTag = parseQueryArray(query.tag);
     const nextLocale = parseQueryArray(query.locale);
+    const nextTourScopeRaw = Array.isArray(query.tourScope)
+      ? query.tourScope[0]
+      : query.tourScope;
+    const nextTourScope =
+      nextTourScopeRaw === "unit" || nextTourScopeRaw === "community"
+        ? nextTourScopeRaw
+        : "";
     const nextMine =
       query.mine === "1" ||
       query.mine === "true" ||
       (Array.isArray(query.mine) && query.mine.includes("1"));
-    if (!isTypingRef.current && nextSearch !== searchQuery) {
+    if (!isTypingRef.current) {
       setSearchQuery(nextSearch);
+      setSearchInputValue(nextSearch);
+      setDebouncedSearchQuery(nextSearch);
     }
     const nextTypes =
       typeFilterParam.length === 0 ? [...CONTENT_TYPES] : typeFilterParam;
@@ -1874,6 +2303,7 @@ export default function HomePage({
       arraysEqual(prev, nextLocale) ? prev : nextLocale
     );
     setShowOnlyMyContent(nextMine);
+    setTourScope(nextTourScope);
     setQueryHydrated(true);
   }, [router.isReady, router.query, router.asPath, initialTab]);
 
@@ -1890,6 +2320,7 @@ export default function HomePage({
         tag: [],
         locale: [],
         mine: undefined,
+        tourScope: undefined,
       });
       if (normalizeQuery(router.query) !== normalizeQuery(cleared)) {
         router.replace({ pathname: router.pathname, query: cleared }, undefined, {
@@ -1906,13 +2337,14 @@ export default function HomePage({
         : selectedContentTypes;
     const query = buildQueryObject({
       typeFilter,
-      q: debouncedSearchQuery.trim() || undefined,
+      q: (isSearchRoute ? debouncedSearchQuery : searchQuery).trim() || undefined,
       target: selectedTargetSubjects,
       aligned: selectedAlignedSubjects,
       grade: selectedGradeBands,
       tag: selectedTags,
       locale: selectedLocales,
       mine: showOnlyMyContent ? "1" : undefined,
+      tourScope: tourScope || undefined,
     });
 
     if (normalizeQuery(router.query) === normalizeQuery(query)) {
@@ -1926,7 +2358,9 @@ export default function HomePage({
   }, [
     router,
     isAllView,
+    searchQuery,
     debouncedSearchQuery,
+    isSearchRoute,
     selectedContentTypes,
     selectedTargetSubjects,
     selectedAlignedSubjects,
@@ -1934,7 +2368,26 @@ export default function HomePage({
     selectedTags,
     selectedLocales,
     showOnlyMyContent,
+    tourScope,
   ]);
+
+  useEffect(() => {
+    if (!isSearchRoute) return;
+    const timeout = window.setTimeout(() => {
+      setDebouncedSearchQuery(searchInputValue);
+    }, 250);
+    return () => window.clearTimeout(timeout);
+  }, [isSearchRoute, searchInputValue]);
+
+  const hasSyncedDebouncedQueryRef = useRef(false);
+  useEffect(() => {
+    if (!isSearchRoute || !queryHydrated) return;
+    if (!hasSyncedDebouncedQueryRef.current) {
+      hasSyncedDebouncedQueryRef.current = true;
+      return;
+    }
+    setSearchQuery(debouncedSearchQuery);
+  }, [debouncedSearchQuery, isSearchRoute, queryHydrated]);
 
   useEffect(() => {
     const shouldLoadTours =
@@ -1943,7 +2396,7 @@ export default function HomePage({
     let isMounted = true;
     setJobTourLoading(true);
     setJobTourError(null);
-    const headingQuery = debouncedSearchQuery.trim();
+    const headingQuery = searchQuery.trim();
     const requests = [
       getJobTours({
         filterObj: { heading: headingQuery || "" },
@@ -1993,7 +2446,7 @@ export default function HomePage({
       isMounted = false;
     };
   }, [
-    debouncedSearchQuery,
+    searchQuery,
     selectedContentTypes,
     showOnlyMyContent,
     status,
@@ -2001,13 +2454,6 @@ export default function HomePage({
   ]);
 
   // nav handled by shared PortalNav component
-
-  useEffect(() => {
-    const timeout = window.setTimeout(() => {
-      setDebouncedSearchQuery(searchQuery);
-    }, 250);
-    return () => window.clearTimeout(timeout);
-  }, [searchQuery]);
 
   useEffect(() => {
     return () => {
@@ -2044,7 +2490,11 @@ export default function HomePage({
           content="Preview the next-generation Galactic Polymath teacher portal with onboarding, search, and curated resources."
         />
       </Head>
-      <div className={styles.page}>
+      <div
+        className={`${styles.page} ${
+          isSearchTransitioning ? styles.pageSearchTransitioning : ""
+        }`}
+      >
         <PortalNav
           activeTab={isHomeView ? null : resolvedTab}
           onBrandClick={handleHomeClick}
@@ -2386,9 +2836,9 @@ export default function HomePage({
                                 type="text"
                                 placeholder="Search by title, standards, or skill..."
                                 aria-label="Search all resources"
-                                value={searchQuery}
+                                value={searchInputValue}
                                 onChange={(event) => {
-                                  setSearchQuery(event.target.value);
+                                  setSearchInputValue(event.target.value);
                                   isTypingRef.current = true;
                                   if (typingTimeoutRef.current) {
                                     window.clearTimeout(typingTimeoutRef.current);
@@ -2400,17 +2850,22 @@ export default function HomePage({
                               />
                               <button
                                 className={`${styles.searchClearButton} ${
-                                  searchQuery.trim()
+                                  searchInputValue.trim()
                                     ? ""
                                     : styles.searchClearButtonHidden
                                 }`}
                                 type="button"
                                 aria-label="Clear search"
                                 onClick={() => {
+                                  setSearchInputValue("");
                                   setSearchQuery("");
+                                  setDebouncedSearchQuery("");
                                   isTypingRef.current = false;
+                                  if (typingTimeoutRef.current) {
+                                    window.clearTimeout(typingTimeoutRef.current);
+                                  }
                                 }}
-                                tabIndex={searchQuery.trim() ? 0 : -1}
+                                tabIndex={searchInputValue.trim() ? 0 : -1}
                               >
                                 <X aria-hidden="true" />
                               </button>
@@ -2449,7 +2904,6 @@ export default function HomePage({
                               value={sortOrder}
                               onChange={(event) =>
                                 {
-                                  triggerResultsAnimation();
                                   setSortOrder(event.target.value as typeof sortOrder);
                                 }
                               }
@@ -2510,7 +2964,7 @@ export default function HomePage({
                           </button>
                         ))}
                       </div>
-                      {resultsView === "list" && (
+                      {resultsCount > 0 && resultsView === "list" && (
                         <div className={styles.resourceRowHeader} aria-hidden="true">
                           <div
                             className={`${styles.resourceRowHeaderCell} ${styles.resourceRowHeaderCellThumb}`}
@@ -2545,12 +2999,18 @@ export default function HomePage({
                           </div>
                         </div>
                       )}
+                      {resultsCount === 0 ? (
+                        <div className={styles.resultsNotice} role="status" aria-live="polite">
+                          ¯\_(ツ)_/¯ We didn&apos;t find anything. Try searching for synonyms and
+                          check your filters.
+                        </div>
+                      ) : (
                         <div
-                        className={`${styles.resourceGrid} ${
-                          resultsView === "list" ? styles.resourceGridList : ""
-                        } ${resultsTransitioning ? styles.resourceGridTransitioning : ""}`}
-                      >
-                        {sortedResources.map((resource, index) => {
+                          className={`${styles.resourceGrid} ${
+                            resultsView === "list" ? styles.resourceGridList : ""
+                          } ${resultsTransitioning ? styles.resourceGridTransitioning : ""}`}
+                        >
+                          {sortedResources.map((resource, index) => {
                       const ResourceIcon = resource.icon;
                       const unitHref =
                         resource.type === "Unit" && resource.unitId
@@ -2585,6 +3045,15 @@ export default function HomePage({
                             : resource.tourVisibility === "everyone"
                               ? "Public"
                               : null;
+                      const searchMatch =
+                        searchMatchByResourceId.get(resource.id) ??
+                        ({
+                          queryMatches: true,
+                          hiddenCategories: [],
+                        } as ResourceSearchMatchResult);
+                      const hiddenMatchCategories = hasCommittedSearch
+                        ? searchMatch.hiddenCategories
+                        : [];
                       const cardProps = {
                         role: isClickable ? "button" : undefined,
                         tabIndex: isClickable ? 0 : undefined,
@@ -2661,55 +3130,112 @@ export default function HomePage({
                         const hasSubtitle = Boolean(resource.description?.trim());
                         const isUnit = resource.type === "Unit";
                         if (resource.type === "Job Tour") {
+                          const jobTourTitle =
+                            resource.tourSource === "unit" && resource.tourUnitId
+                              ? `Jobs related to GP Unit ${resource.tourUnitId}`
+                              : resource.title;
+                          const fromUnitLabel =
+                            resource.tourUnitTitle ??
+                            resource.description.replace(/^From\s+/i, "");
                           return (
                             <article
                               key={resource.id}
                               className={`${styles.resourceRow} ${styles.jobTourRow} ${
                                 animateResults ? styles.resourceAnimate : ""
                               }`}
+                              data-type={resource.type}
                               {...cardProps}
                             >
-                              <div className={styles.jobTourRowMedia}>
+                              <div className={styles.resourceRowMedia}>
                                 <img src={resource.image} alt="" loading="lazy" />
-                                <span className={styles.jobTourRowBadge}>
-                                  JobViz Tour
-                                </span>
+                                <div className={styles.resourceMediaType}>
+                                  <img
+                                    src="/imgs/jobViz/jobviz_rocket_logo_white.svg"
+                                    alt=""
+                                    aria-hidden="true"
+                                  />
+                                </div>
                               </div>
-                              <div className={styles.jobTourRowContent}>
-                                <div className={styles.jobTourRowTitleLine}>
-                                  <h3>{resource.title}</h3>
-                                  {resource.tourUnitId && resource.tourUnitTitle && (
-                                    <Link
-                                      href={buildUnitPath(resource.tourUnitId)}
-                                      className={styles.jobTourFromUnit}
-                                    >
-                                      From {resource.tourUnitTitle}
-                                    </Link>
+                              <div className={styles.resourceRowContent}>
+                                <div
+                                  className={`${styles.resourceRowTitleLine} ${styles.jobTourRowTitleLine}`}
+                                >
+                                  <span className={styles.resourceRowTitleText}>
+                                    {resource.tourSource === "unit"
+                                      ? "Jobs related to:"
+                                      : highlightText(jobTourTitle, searchQuery)}
+                                  </span>
+                                  {fromUnitLabel ? (
+                                    <span className={styles.resourceRowSubtitle}>
+                                      &quot;
+                                      {highlightText(
+                                        truncateUnitTitle(fromUnitLabel),
+                                        searchQuery
+                                      )}
+                                      &quot;
+                                    </span>
+                                  ) : (
+                                    hasSubtitle && (
+                                      <span className={styles.resourceRowSubtitle}>
+                                        {highlightText(resource.description, searchQuery)}
+                                      </span>
+                                    )
                                   )}
                                 </div>
-                                <p className={styles.jobTourRowDescription}>
-                                  {resource.description}
-                                </p>
-                                <div className={styles.jobTourRowMeta}>
-                                  <span>
-                                    Made by: {madeByLabel}
-                                    {resource.tourIsGp && (
-                                      <img
-                                        src="/imgs/gp-logos/gp_submark.png"
-                                        alt=""
-                                        aria-hidden="true"
-                                        className={styles.jobTourGpInline}
-                                      />
-                                    )}
-                                  </span>
-                                  {visibilityLabel && <span>{visibilityLabel}</span>}
-                                  <span>{resource.timeLabel}</span>
-                                </div>
+                                {hiddenMatchCategories.length > 0 && (
+                                  <div className={styles.rowMatchArea}>
+                                    <span className={styles.searchMatchLabel}>
+                                      Search also matches
+                                    </span>
+                                    {hiddenMatchCategories.slice(0, 2).map((category) => (
+                                      <span
+                                        key={`${resource.id}-${category.label}`}
+                                        className={styles.rowMatchLine}
+                                      >
+                                        <strong>{category.label}:</strong>{" "}
+                                        {summarizeCategoryValues(category.values, 2).join(", ")}
+                                      </span>
+                                    ))}
+                                  </div>
+                                )}
                               </div>
-                              <div className={styles.jobTourRowActions}>
-                                <span className={styles.jobTourRowAction}>
-                                  Open tour
+                              <div
+                                className={`${styles.resourceRowCol} ${styles.resourceRowColCenter}`}
+                              >
+                                <span className={styles.resourceRowColValue}>
+                                  {resource.subject ?? "Science"}
                                 </span>
+                              </div>
+                              <div
+                                className={`${styles.resourceRowCol} ${styles.resourceRowColCenter}`}
+                              >
+                                <span className={styles.resourceRowColValue}>
+                                  {resource.gradeBand.replace(/^Grades\s*/i, "")}
+                                </span>
+                              </div>
+                              <div
+                                className={`${styles.resourceRowCol} ${styles.resourceRowColCenter} ${styles.resourceRowTypeCol}`}
+                              >
+                                <span className={styles.resourceRowTypeText}>
+                                  {resource.type}
+                                </span>
+                                {(resource.isNew || resource.isPlus) && (
+                                  <div className={styles.resourceBadges}>
+                                    {resource.isNew && (
+                                      <span className={styles.resourceBadge}>New</span>
+                                    )}
+                                    {resource.isPlus && (
+                                      <span className={styles.resourceBadgePlus}>
+                                        <img
+                                          src="/plus/plus.png"
+                                          alt=""
+                                          aria-hidden="true"
+                                        />
+                                        GP+
+                                      </span>
+                                    )}
+                                  </div>
+                                )}
                               </div>
                             </article>
                           );
@@ -2732,7 +3258,7 @@ export default function HomePage({
                             <div className={styles.resourceRowContent}>
                               <p className={styles.resourceRowTitleLine}>
                                 <span className={styles.resourceRowTitleText}>
-                                  {resource.title}
+                                  {highlightText(resource.title, searchQuery)}
                                 </span>
                                 {hasSubtitle && (
                                   <span
@@ -2751,22 +3277,38 @@ export default function HomePage({
                                         <CornerDownRight aria-hidden="true" />
                                         <span>
                                           From{" "}
-                                          {resource.unitTitle ??
-                                            resource.description.replace(
-                                              /^From\s+/i,
-                                              ""
-                                            )}
+                                          {highlightText(
+                                            resource.unitTitle ??
+                                              resource.description.replace(/^From\s+/i, ""),
+                                            searchQuery
+                                          )}
                                         </span>
                                         <span className={styles.resourceFromPill}>
                                           Unit
                                         </span>
                                       </span>
                                     ) : (
-                                      resource.description
+                                      highlightText(resource.description, searchQuery)
                                     )}
                                   </span>
                                 )}
                               </p>
+                              {hiddenMatchCategories.length > 0 && (
+                                <div className={styles.rowMatchArea}>
+                                  <span className={styles.searchMatchLabel}>
+                                    Search also matches
+                                  </span>
+                                  {hiddenMatchCategories.slice(0, 2).map((category) => (
+                                    <span
+                                      key={`${resource.id}-${category.label}`}
+                                      className={styles.rowMatchLine}
+                                    >
+                                      <strong>{category.label}:</strong>{" "}
+                                      {summarizeCategoryValues(category.values, 2).join(", ")}
+                                    </span>
+                                  ))}
+                                </div>
+                              )}
                             </div>
                             <div
                               className={`${styles.resourceRowCol} ${styles.resourceRowColCenter}`}
@@ -2801,6 +3343,11 @@ export default function HomePage({
                                   )}
                                   {resource.isPlus && (
                                     <span className={styles.resourceBadgePlus}>
+                                      <img
+                                        src="/plus/plus.png"
+                                        alt=""
+                                        aria-hidden="true"
+                                      />
                                       GP+
                                     </span>
                                   )}
@@ -2812,56 +3359,140 @@ export default function HomePage({
                       }
 
                       if (resource.type === "Job Tour") {
+                        const jobTitlesRaw = getJobTitlesForTour(
+                          resource.selectedJobs,
+                          4
+                        );
+                        const jobTitles = jobTitlesRaw.map((title) =>
+                          truncateJobTitle(title)
+                        );
+                        const remainingJobs = Math.max(
+                          (resource.selectedJobs?.length ?? 0) - jobTitlesRaw.length,
+                          0
+                        );
+                        const isUnitTour = resource.tourSource === "unit";
                         return (
                           <article
                             key={resource.id}
                             className={`${styles.resourceCard} ${styles.jobTourCard} ${
                               animateResults ? styles.resourceAnimate : ""
                             }`}
+                            data-type={resource.type}
                             {...cardProps}
                           >
-                            <div className={styles.jobTourCardHeader}>
-                              <div className={styles.jobTourBadgeRow}>
-                                <span className={styles.jobTourBadge}>JobViz Tour</span>
-                                {resource.tourIsGp && (
-                                  <span className={styles.jobTourGpBadge}>
-                                    <img
-                                      src="/imgs/gp-logos/gp_submark.png"
-                                      alt=""
-                                      aria-hidden="true"
-                                    />
-                                    GP Team
-                                  </span>
-                                )}
+                            <div className={styles.resourceMedia}>
+                              <img src={resource.image} alt="" loading="lazy" />
+                              <div className={styles.resourceMediaType}>
+                                <img
+                                  src="/imgs/jobViz/jobviz_rocket_logo_white_bold.svg"
+                                  alt=""
+                                  aria-hidden="true"
+                                />
                               </div>
-                              <h3>{resource.title}</h3>
-                              {resource.tourUnitId && resource.tourUnitTitle && (
-                                <Link
-                                  href={buildUnitPath(resource.tourUnitId)}
-                                  className={styles.jobTourFromUnit}
-                                >
-                                  From {resource.tourUnitTitle}
-                                </Link>
+                            </div>
+                            <div className={styles.resourceContent}>
+                              <h3>
+                                {isUnitTour
+                                  ? "Jobs Related to GP Unit:"
+                                  : highlightText(resource.title, searchQuery)}
+                              </h3>
+                              <p className={styles.resourceDescription}>
+                                {isUnitTour ? (
+                                  <span className={styles.jobTourFromLine}>
+                                    <CornerDownRight aria-hidden="true" />
+                                    <span>
+                                      from{" "}
+                                      {highlightText(
+                                        resource.description.replace(/^From\s+/i, ""),
+                                        searchQuery
+                                      )}
+                                    </span>
+                                  </span>
+                                ) : (
+                                  highlightText(resource.description, searchQuery)
+                                )}
+                              </p>
+                              <p className={styles.jobTourAuthorLine}>
+                                By{" "}
+                                <span className={styles.jobTourAuthorPill}>
+                                  {madeByLabel}
+                                </span>
+                              </p>
+                              {jobTitles.length ? (
+                                <div className={styles.jobTourJobs}>
+                                  {jobTitles.map((title) => (
+                                    <span key={title}>{highlightText(title, searchQuery)}</span>
+                                  ))}
+                                  {remainingJobs > 0 && (
+                                    <span className={styles.jobTourJobsMore}>
+                                      + {remainingJobs} more
+                                    </span>
+                                  )}
+                                </div>
+                              ) : null}
+                            </div>
+                            <div className={styles.resourceSide}>
+                              <span className={styles.resourceTypePill}>
+                                <ResourceIcon aria-hidden="true" />
+                                {resource.type.toLowerCase()}
+                              </span>
+                              {(resource.isNew || resource.isPlus) && (
+                                <div className={styles.resourceBadges}>
+                                  {resource.isNew && (
+                                    <span className={styles.resourceBadge}>New</span>
+                                  )}
+                                  {resource.isPlus && (
+                                    <span className={styles.resourceBadgePlus}>
+                                      <img
+                                        src="/plus/plus.png"
+                                        alt=""
+                                        aria-hidden="true"
+                                      />
+                                      GP+
+                                    </span>
+                                  )}
+                                </div>
                               )}
+                              <div className={styles.resourceSideMeta}>
+                                <span>
+                                  <Compass aria-hidden="true" />
+                                  {resource.subject ?? "Science"}
+                                </span>
+                                <span>
+                                  <School aria-hidden="true" />
+                                  {resource.gradeBand
+                                    .replace(/^Grades\s*/i, "")
+                                    .replace(/university/gi, "College")}
+                                </span>
+                                <span>
+                                  <Briefcase aria-hidden="true" />
+                                  {resource.timeLabel}
+                                </span>
+                              </div>
                             </div>
-                            <p className={styles.jobTourCardDescription}>
-                              {resource.description}
-                            </p>
-                            <div className={styles.jobTourCardMeta}>
-                              <span>Made by: {madeByLabel}</span>
-                              {visibilityLabel && <span>{visibilityLabel}</span>}
-                              <span>{resource.timeLabel}</span>
-                            </div>
-                            {resource.tags?.length ? (
-                              <div className={styles.jobTourTags}>
-                                {resource.tags.slice(0, 4).map((tag) => (
-                                  <span key={tag}>{tag}</span>
+                            {hiddenMatchCategories.length > 0 && (
+                              <div className={styles.searchMatchArea}>
+                                <p className={styles.searchMatchLabel}>
+                                  Search also matches
+                                </p>
+                                {hiddenMatchCategories.map((category) => (
+                                  <p
+                                    key={`${resource.id}-${category.label}`}
+                                    className={styles.searchMatchLine}
+                                  >
+                                    <strong>{category.label}:</strong>{" "}
+                                    {summarizeCategoryValues(category.values).map(
+                                      (value, idx) => (
+                                        <React.Fragment key={`${value}-${idx}`}>
+                                          {idx > 0 ? ", " : ""}
+                                          {highlightText(value, searchQuery)}
+                                        </React.Fragment>
+                                      )
+                                    )}
+                                  </p>
                                 ))}
                               </div>
-                            ) : null}
-                            <div className={styles.jobTourCardAction}>
-                              <span>Open tour</span>
-                            </div>
+                            )}
                           </article>
                         );
                       }
@@ -2871,6 +3502,7 @@ export default function HomePage({
                           className={`${styles.resourceCard} ${
                             animateResults ? styles.resourceAnimate : ""
                           }`}
+                          data-type={resource.type}
                           {...cardProps}
                         >
                           <div className={styles.resourceMedia}>
@@ -2880,26 +3512,29 @@ export default function HomePage({
                             </div>
                           </div>
                           <div className={styles.resourceContent}>
-                            <h3>{resource.title}</h3>
+                            <h3>{highlightText(resource.title, searchQuery)}</h3>
                             <p className={styles.resourceDescription}>
                               {resource.type === "Video" || resource.type === "App" ? (
                                 <span className={styles.resourceFromLine}>
                                   <CornerDownRight aria-hidden="true" />
                                   <span>
                                     From{" "}
-                                    {resource.unitTitle ??
-                                      resource.description.replace(/^From\s+/i, "")}
+                                    {highlightText(
+                                      resource.unitTitle ??
+                                        resource.description.replace(/^From\s+/i, ""),
+                                      searchQuery
+                                    )}
                                   </span>
                                   <span className={styles.resourceFromPill}>Unit</span>
                                 </span>
                               ) : (
-                                resource.description
+                                highlightText(resource.description, searchQuery)
                               )}
                             </p>
                             {resource.tags?.length ? (
                               <div className={styles.resourceTags}>
                                 {resource.tags.map((tag) => (
-                                  <span key={tag}>{tag}</span>
+                                  <span key={tag}>{highlightText(tag, searchQuery)}</span>
                                 ))}
                               </div>
                             ) : null}
@@ -2916,6 +3551,11 @@ export default function HomePage({
                                 )}
                                 {resource.isPlus && (
                                   <span className={styles.resourceBadgePlus}>
+                                    <img
+                                      src="/plus/plus.png"
+                                      alt=""
+                                      aria-hidden="true"
+                                    />
                                     GP+
                                   </span>
                                 )}
@@ -2941,10 +3581,34 @@ export default function HomePage({
                                 )}
                             </div>
                           </div>
+                          {hiddenMatchCategories.length > 0 && (
+                            <div className={styles.searchMatchArea}>
+                              <p className={styles.searchMatchLabel}>
+                                Search also matches
+                              </p>
+                              {hiddenMatchCategories.map((category) => (
+                                <p
+                                  key={`${resource.id}-${category.label}`}
+                                  className={styles.searchMatchLine}
+                                >
+                                  <strong>{category.label}:</strong>{" "}
+                                  {summarizeCategoryValues(category.values).map(
+                                    (value, idx) => (
+                                      <React.Fragment key={`${value}-${idx}`}>
+                                        {idx > 0 ? ", " : ""}
+                                        {highlightText(value, searchQuery)}
+                                      </React.Fragment>
+                                    )
+                                  )}
+                                </p>
+                              ))}
+                            </div>
+                          )}
                         </article>
                       );
-                        })}
-                      </div>
+                          })}
+                        </div>
+                      )}
                     </>
                   )}
                 </div>
@@ -2988,27 +3652,19 @@ export default function HomePage({
                 </div>
                 <div className={styles.heroPanel}>
                   <div className={styles.searchCard}>
-                  <div className={styles.searchBar}>
+                  <form className={styles.searchBar} onSubmit={handleHomeSearchSubmit}>
                     <Search className={styles.searchIcon} aria-hidden="true" />
                     <input
                       type="text"
                       placeholder="Search by title, topic, standards, or skill..."
                       aria-label="Search resources"
-                      value={searchQuery}
-                      onChange={(event) => {
-                        setSearchQuery(event.target.value);
-                        setSelectedContentTypes([...CONTENT_TYPES]);
-                        if (!isSearchRoute) {
-                          router.push({
-                            pathname: "/search",
-                            query: buildQueryObject({
-                              q: event.target.value.trim() || undefined,
-                            }),
-                          });
-                        }
-                      }}
+                      value={searchInputValue}
+                      onChange={(event) => setSearchInputValue(event.target.value)}
                     />
-                  </div>
+                    <button className={styles.searchSubmitButton} type="submit">
+                      Search
+                    </button>
+                  </form>
                   </div>
                   <div className={styles.heroCarousel}>
                     {carouselImages.map((src, index) => (
@@ -3335,41 +3991,64 @@ export default function HomePage({
                 <div className={styles.jobvizToursBg} aria-hidden="true" />
                 <div className={styles.jobvizToursInner}>
                   <div className={styles.jobvizToursCopy}>
-                    <p className={styles.sectionKicker}>JobViz Tours</p>
-                    <h2>Build career tours that match your classroom</h2>
+                    <div className={styles.jobvizToursLogo}>
+                      <Image
+                        src="/imgs/jobViz/jobviz_rocket_logo_color.svg"
+                        alt="JobViz logo"
+                        width={120}
+                        height={120}
+                        style={{ width: "100%", height: "auto" }}
+                      />
+                    </div>
+                    <p className={styles.sectionKicker}>JobViz Career Tours</p>
+                    <h2>Connect Abstract Concepts to Future Opportunities!</h2>
                     <p>
-                      Curate jobs from the full JobViz database, add your own
-                      context, and share tours with other teachers.
+                      When we say &quot;You can do anything with your life if you work hard&quot;, let&apos;s
+                      unpack what that means! Let your students explore basic details and
+                      stats for 800+ jobs.
                     </p>
                     <div className={styles.jobvizToursActions}>
-                      <Link
-                        href="/search?typeFilter=Job%20Tour"
-                        className={styles.primaryButton}
-                      >
-                        Explore JobViz Tours
-                      </Link>
                       <Link href="/jobviz" className={styles.secondaryButton}>
                         Open JobViz Explorer
+                        <span className={styles.jobvizToursActionPill}>FREE</span>
                       </Link>
                     </div>
                   </div>
                   <div className={styles.jobvizToursShowcase}>
-                    <div className={styles.jobvizToursTile}>
+                    <Link
+                      href="/search?typeFilter=Job%20Tour&tourScope=unit"
+                      className={styles.jobvizToursTile}
+                    >
+                      <span
+                        className={`${styles.resourceBadgePlus} ${styles.jobvizToursPillPlus}`}
+                      >
+                        <img src="/plus/plus.png" alt="" aria-hidden="true" />
+                        GP+
+                      </span>
                       <p className={styles.jobvizToursTileKicker}>GP Team Tours</p>
-                      <h3>Unit-aligned career journeys</h3>
+                      <h3>Unit-aligned job tours</h3>
                       <p>
-                        Launch students into careers connected to the units you
-                        already teach.
+                        All our units have a pre-built tour of 6-8 jobs connected to the
+                        standards-aligned content.
                       </p>
-                    </div>
-                    <div className={styles.jobvizToursTile}>
+                    </Link>
+                    <Link
+                      href="/search?typeFilter=Job%20Tour&tourScope=community"
+                      className={styles.jobvizToursTile}
+                    >
+                      <span
+                        className={`${styles.resourceBadgePlus} ${styles.jobvizToursPillPlus}`}
+                      >
+                        <img src="/plus/plus.png" alt="" aria-hidden="true" />
+                        GP+
+                      </span>
                       <p className={styles.jobvizToursTileKicker}>Teacher Templates</p>
                       <h3>Copy, remix, share</h3>
                       <p>
                         Start from community tours or build one from scratch
                         with GP+ editing tools.
                       </p>
-                    </div>
+                    </Link>
                   </div>
                 </div>
               </section>
@@ -3492,6 +4171,39 @@ export default function HomePage({
             )}
             {activeModal === "media" && activeMedia && (
               <div className={styles.mediaModalBody}>
+                <div className={styles.mediaModalActions}>
+                  <button
+                    type="button"
+                    className={styles.mediaCopyButton}
+                    onClick={async () => {
+                      const shareLink = buildShareableMediaLink(activeMedia.link);
+                      if (!shareLink) return;
+                      try {
+                        await navigator.clipboard.writeText(shareLink);
+                        toast.success("Link Copied");
+                        return;
+                      } catch (error) {
+                        // Fall back to a basic copy method.
+                      }
+                      try {
+                        const textarea = document.createElement("textarea");
+                        textarea.value = shareLink;
+                        textarea.style.position = "fixed";
+                        textarea.style.opacity = "0";
+                        document.body.appendChild(textarea);
+                        textarea.select();
+                        document.execCommand("copy");
+                        document.body.removeChild(textarea);
+                        toast.success("Link Copied");
+                      } catch (error) {
+                        toast.error("Unable to copy link");
+                      }
+                    }}
+                  >
+                    <FiShare2 aria-hidden="true" />
+                    Copy Link to Clipboard
+                  </button>
+                </div>
                 <div className={styles.mediaPlayer}>
                   {activeMedia.link && getYoutubeId(activeMedia.link) ? (
                     <iframe

@@ -6,6 +6,17 @@ const useSiteSession = () => {
   const session = useSession();
   const { data, status } = session ?? {};
   const { user, token } = (data ?? {}) as IUserSession;
+  const normalizedUser = user
+    ? {
+        ...user,
+        userId:
+          typeof user.userId === "string"
+            ? user.userId
+            : user.userId
+              ? String(user.userId)
+              : undefined,
+      }
+    : user;
   const { clearCookies, getCookies } = useCustomCookies();
   const gdriveTokensInfo = getCookies([
     "gdriveAccessToken",
@@ -14,6 +25,12 @@ const useSiteSession = () => {
     "gdriveAccessTokenExp",
     "isGpPlusMember",
   ]);
+  const normalizedCookieGpPlus = (() => {
+    const value = gdriveTokensInfo.isGpPlusMember;
+    if (typeof value === "boolean") return value;
+    if (typeof value === "string") return value === "true";
+    return undefined;
+  })();
   const storedGpPlusMember = (() => {
     if (typeof window === "undefined") return undefined;
     const value = window.sessionStorage.getItem("isGpPlusUser");
@@ -21,7 +38,9 @@ const useSiteSession = () => {
     return value === "true";
   })();
   const resolvedIsGpPlusMember =
-    gdriveTokensInfo.isGpPlusMember ?? storedGpPlusMember;
+    typeof normalizedCookieGpPlus === "boolean"
+      ? normalizedCookieGpPlus
+      : storedGpPlusMember;
 
   const logUserOut = () => {
     localStorage.clear();
@@ -33,7 +52,7 @@ const useSiteSession = () => {
   return {
     ...gdriveTokensInfo,
     isGpPlusMember: resolvedIsGpPlusMember,
-    user,
+    user: normalizedUser,
     token,
     status,
     logUserOut,

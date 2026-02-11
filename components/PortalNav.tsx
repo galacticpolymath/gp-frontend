@@ -6,6 +6,7 @@ import { Home, ListFilter, Menu } from "lucide-react";
 import useSiteSession from "../customHooks/useSiteSession";
 import styles from "./PortalNav.module.css";
 import GpLogo from "../public/GP_bubbleLogo300px.png";
+import { setSessionStorageItem } from "../shared/fns";
 
 const NAV_TABS = ["All", "Units", "Apps", "Videos", "Lessons", "JobViz"] as const;
 export type NavTab = (typeof NAV_TABS)[number];
@@ -54,11 +55,14 @@ const PortalNav: React.FC<PortalNavProps> = ({
   const [avatarError, setAvatarError] = useState(false);
   const [isHydrated, setIsHydrated] = useState(false);
   const [isNavHidden, setIsNavHidden] = useState(false);
+  const navRef = useRef<HTMLElement | null>(null);
   const accountMenuRef = useRef<HTMLDivElement | null>(null);
   const lastScrollY = useRef(0);
   const ticking = useRef(false);
   const navOpenRef = useRef(false);
   const accountMenuOpenRef = useRef(false);
+  const navHiddenRef = useRef(false);
+  const suppressUnhideUntil = useRef(0);
   const { status, user, isGpPlusMember, logUserOut } = useSiteSession();
   const isAuthenticated = status === "authenticated";
   const avatarUrl = user?.image ?? null;
@@ -92,6 +96,10 @@ const PortalNav: React.FC<PortalNavProps> = ({
   }, [accountMenuOpen]);
 
   useEffect(() => {
+    navHiddenRef.current = isNavHidden;
+  }, [isNavHidden]);
+
+  useEffect(() => {
     if (disableNavbar) return;
     navOpenRef.current = navOpen;
     if (navOpen) {
@@ -102,6 +110,13 @@ const PortalNav: React.FC<PortalNavProps> = ({
   useEffect(() => {
     if (disableNavbar) return;
     if (typeof window === "undefined") return;
+    const root = document.documentElement;
+
+    const applyOffset = (hidden: boolean) => {
+      const navHeight = navRef.current?.getBoundingClientRect().height ?? 0;
+      const offset = hidden ? 0 : Math.max(0, Math.round(navHeight));
+      root.style.setProperty("--portal-nav-offset", `${offset}px`);
+    };
 
     const handleScroll = () => {
       if (navOpenRef.current) return;
@@ -112,13 +127,28 @@ const PortalNav: React.FC<PortalNavProps> = ({
         const currentY = window.scrollY || 0;
         const previousY = lastScrollY.current;
         const delta = currentY - previousY;
+        const isUnhideSuppressed = Date.now() < suppressUnhideUntil.current;
 
         if (currentY < 80) {
-          setIsNavHidden(false);
+          if (!isUnhideSuppressed) {
+            navHiddenRef.current = false;
+            setIsNavHidden(false);
+            applyOffset(false);
+          } else {
+            applyOffset(navHiddenRef.current);
+          }
         } else if (delta > 5) {
+          navHiddenRef.current = true;
           setIsNavHidden(true);
+          applyOffset(true);
         } else if (delta < -5) {
-          setIsNavHidden(false);
+          if (!isUnhideSuppressed) {
+            navHiddenRef.current = false;
+            setIsNavHidden(false);
+            applyOffset(false);
+          } else {
+            applyOffset(navHiddenRef.current);
+          }
         }
 
         lastScrollY.current = currentY;
@@ -130,12 +160,82 @@ const PortalNav: React.FC<PortalNavProps> = ({
     return () => window.removeEventListener("scroll", handleScroll);
   }, [disableNavbar]);
 
+  useEffect(() => {
+    if (disableNavbar) return;
+    if (typeof window === "undefined") return;
+    const root = document.documentElement;
+
+    const handleSuppressNavUnhide = (event: Event) => {
+      const customEvent = event as CustomEvent<{ durationMs?: number }>;
+      const durationMs =
+        typeof customEvent.detail?.durationMs === "number"
+          ? customEvent.detail.durationMs
+          : 700;
+      suppressUnhideUntil.current = Date.now() + Math.max(0, durationMs);
+      if (navHiddenRef.current) {
+        root.style.setProperty("--portal-nav-offset", "0px");
+      }
+    };
+
+    window.addEventListener(
+      "gp:suppress-nav-unhide",
+      handleSuppressNavUnhide as EventListener
+    );
+
+    return () => {
+      window.removeEventListener(
+        "gp:suppress-nav-unhide",
+        handleSuppressNavUnhide as EventListener
+      );
+    };
+  }, [disableNavbar]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const root = document.documentElement;
+
+    if (disableNavbar) {
+      root.style.removeProperty("--portal-nav-offset");
+      return;
+    }
+
+    const syncOffset = () => {
+      const navHeight = navRef.current?.getBoundingClientRect().height ?? 0;
+      const offset = isNavHidden ? 0 : Math.max(0, Math.round(navHeight));
+      root.style.setProperty("--portal-nav-offset", `${offset}px`);
+    };
+
+    syncOffset();
+    window.addEventListener("resize", syncOffset);
+
+    const observer =
+      typeof ResizeObserver !== "undefined"
+        ? new ResizeObserver(() => syncOffset())
+        : null;
+    if (observer && navRef.current) {
+      observer.observe(navRef.current);
+    }
+
+    return () => {
+      window.removeEventListener("resize", syncOffset);
+      observer?.disconnect();
+    };
+  }, [disableNavbar, isNavHidden, navOpen, accountMenuOpen]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return undefined;
+    return () => {
+      document.documentElement.style.removeProperty("--portal-nav-offset");
+    };
+  }, []);
+
   if (disableNavbar) {
     return null;
   }
 
   return (
     <nav
+      ref={navRef}
       className={`${styles.nav} ${isNavHidden ? styles.navHidden : ""}`}
       data-nav-hidden={isNavHidden ? "true" : "false"}
     >
@@ -242,7 +342,6 @@ const PortalNav: React.FC<PortalNavProps> = ({
                 )}
               </div>
               <span className={styles.profileButton}>
-                Account
                 <span
                   className={
                     effectiveIsPlusMember
@@ -255,7 +354,20 @@ const PortalNav: React.FC<PortalNavProps> = ({
               </span>
             </button>
           ) : (
-            <Link className={styles.profileToggle} href="/account">
+            <Link
+              className={styles.profileToggle}
+              href="/account"
+              onClick={(event) => {
+                if (typeof window === "undefined") {
+                  return;
+                }
+                const returnUrl = window.location.href;
+                setSessionStorageItem("userEntryRedirectUrl", returnUrl);
+                const accountUrl = `/account?from=${encodeURIComponent(returnUrl)}`;
+                event.preventDefault();
+                router.push(accountUrl);
+              }}
+            >
               <div
                 className={`${styles.profileAvatarRing} ${
                   effectiveIsPlusMember
@@ -288,6 +400,12 @@ const PortalNav: React.FC<PortalNavProps> = ({
               aria-hidden={!accountMenuOpen}
             >
               <div className={styles.accountMenuDivider} role="presentation" />
+              <Link
+                className={styles.accountMenuItem}
+                href="/search?typeFilter=Job%20Tour&mine=1"
+              >
+                My JobViz Tours
+              </Link>
               <Link className={styles.accountMenuItem} href="/account">
                 View Account
               </Link>
