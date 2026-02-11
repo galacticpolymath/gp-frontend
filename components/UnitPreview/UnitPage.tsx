@@ -2136,19 +2136,20 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                   </div>
                   <div className={styles.lessonProcedureCardFull}>
                     <div className={styles.lessonProcedureCard}>
-                      <div className={styles.lessonProcedureHeader}>
-                        <h4 className={styles.lessonCardHeading}>
-                          <NotebookPen size={16} aria-hidden="true" />
-                          <span>Detailed procedure</span>
-                        </h4>
-                        <span>Chunk-by-chunk guidance with vocab and teacher notes.</span>
-                      </div>
-                      <div className={styles.lessonProcedureContent}>
-                        {activeLesson.chunks?.map((chunk, index) => (
-                          <article
-                            key={`${chunk.chunkTitle}-${index}`}
-                            className={styles.lessonChunk}
-                          >
+                      <div className={styles.lessonProcedureInner}>
+                        <div className={styles.lessonProcedureHeader}>
+                          <h4 className={styles.lessonCardHeading}>
+                            <NotebookPen size={16} aria-hidden="true" />
+                            <span>Detailed procedure</span>
+                          </h4>
+                          <span>Chunk-by-chunk guidance with vocab and teacher notes.</span>
+                        </div>
+                        <div className={styles.lessonProcedureContent}>
+                          {activeLesson.chunks?.map((chunk, index) => (
+                            <article
+                              key={`${chunk.chunkTitle}-${index}`}
+                              className={styles.lessonChunk}
+                            >
                             <div className={styles.lessonChunkTimeline}>
                               <div
                                 className={`${styles.lessonChunkHeader} ${
@@ -2251,13 +2252,14 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                                 );
                               });
                             })()}
-                          </article>
-                        ))}
-                        {!activeLesson.chunks?.length && (
-                          <p className={styles.unitMutedText}>
-                            Detailed steps will appear here once added.
-                          </p>
-                        )}
+                            </article>
+                          ))}
+                          {!activeLesson.chunks?.length && (
+                            <p className={styles.unitMutedText}>
+                              Detailed steps will appear here once added.
+                            </p>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </div>
