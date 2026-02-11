@@ -118,7 +118,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.3",
-    "@eslint/js": "^9.38.0",
+    "@eslint/js": "^10.0.1",
     "@types/crypto-js": "^4.2.2",
     "@types/d3": "^7.4.3",
     "@types/event-source-polyfill": "^1.0.5",
