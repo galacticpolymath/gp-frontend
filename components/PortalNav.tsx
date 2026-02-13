@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useEffect, useRef, useState } from "react";
 import { Home, ListFilter, Menu } from "lucide-react";
+import axios from "axios";
 import useSiteSession from "../customHooks/useSiteSession";
 import styles from "./PortalNav.module.css";
 import GpLogo from "../public/GP_bubbleLogo300px.png";
@@ -53,6 +54,7 @@ const PortalNav: React.FC<PortalNavProps> = ({
   const [navOpen, setNavOpen] = useState(false);
   const [accountMenuOpen, setAccountMenuOpen] = useState(false);
   const [avatarError, setAvatarError] = useState(false);
+  const [profileAvatarUrl, setProfileAvatarUrl] = useState<string | null>(null);
   const [isHydrated, setIsHydrated] = useState(false);
   const [isNavHidden, setIsNavHidden] = useState(false);
   const navRef = useRef<HTMLElement | null>(null);
@@ -63,9 +65,9 @@ const PortalNav: React.FC<PortalNavProps> = ({
   const accountMenuOpenRef = useRef(false);
   const navHiddenRef = useRef(false);
   const suppressUnhideUntil = useRef(0);
-  const { status, user, isGpPlusMember, logUserOut } = useSiteSession();
+  const { status, user, token, isGpPlusMember, logUserOut } = useSiteSession();
   const isAuthenticated = status === "authenticated";
-  const avatarUrl = user?.image ?? null;
+  const avatarUrl = user?.image ?? profileAvatarUrl ?? null;
   const isPlusMember = isGpPlusMember === true;
   const effectiveIsAuthenticated = isHydrated ? isAuthenticated : false;
   const effectiveIsPlusMember = isHydrated ? isPlusMember : false;
@@ -74,6 +76,65 @@ const PortalNav: React.FC<PortalNavProps> = ({
   useEffect(() => {
     setIsHydrated(true);
   }, []);
+
+  useEffect(() => {
+    setAvatarError(false);
+  }, [effectiveAvatarUrl]);
+
+  useEffect(() => {
+    if (!isHydrated || !isAuthenticated) return;
+    if (user?.image) return;
+
+    const localAvatarUrl = (() => {
+      if (typeof window === "undefined") return null;
+
+      try {
+        const raw = window.localStorage.getItem("userAccount");
+
+        if (!raw) return null;
+        const parsed = JSON.parse(raw);
+
+        return typeof parsed?.picture === "string" && parsed.picture
+          ? parsed.picture
+          : null;
+      } catch {
+        return null;
+      }
+    })();
+
+    if (localAvatarUrl) {
+      setProfileAvatarUrl(localAvatarUrl);
+      return;
+    }
+
+    if (!token) return;
+
+    let isCancelled = false;
+    (async () => {
+      try {
+        const { data } = await axios.get<{ picture?: string }>(
+          "/api/get-user-account-data",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (isCancelled) return;
+
+        if (typeof data?.picture === "string" && data.picture) {
+          setProfileAvatarUrl(data.picture);
+        }
+      } catch {
+        // no-op: fallback initials remain visible
+      }
+    })();
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [isHydrated, isAuthenticated, token, user?.image]);
 
 
   useEffect(() => {

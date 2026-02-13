@@ -275,8 +275,6 @@ const LessonItemsModal: React.FC = () => {
     });
   }
 
-  console.log("lessonItems, hey there; ", lessonItems);
-
   const currentLessonItem = lessonItems[currentIndex] ?? {};
   const {
     docUrl: currentLessonItemDocUrl,
@@ -295,7 +293,6 @@ const LessonItemsModal: React.FC = () => {
 
     return null;
   }, [currentIndex, isDisplayed])
-  console.log("currentLessonItem: ", currentLessonItem);
   const isTeacherItem = currentLessonItemName ? currentLessonItemName.toLowerCase().includes('teacher') : false;
 
   const handleDownloadPdfBtnClick = () => {
@@ -353,15 +350,11 @@ const LessonItemsModal: React.FC = () => {
   const leftBtnRef = useRef<HTMLButtonElement | null>(null);
 
   const handleKeyDown = (event: KeyboardEvent) => {
-    console.log("Key pressed: ", event.key);
-
     if (event.key === "ArrowRight") {
-      console.log("Pressed right arrow key");
       rightBtnRef?.current?.click();
     }
 
     if (event.key === "ArrowLeft") {
-      console.log("Pressed left arrow key");
       leftBtnRef?.current?.click();
     }
   };

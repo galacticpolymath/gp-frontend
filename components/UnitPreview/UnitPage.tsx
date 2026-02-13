@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import { format } from 'date-fns';
 import RichText from '../RichText';
@@ -2206,28 +2207,28 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                                     </p>
                                     {isPreviewLockedLoggedOut ? (
                                       <div className={styles.lessonPreviewGateActions}>
-                                        <a
+                                        <Link
                                           href="/gp-plus"
                                           className={styles.lessonPreviewGateButton}
                                           onClick={handleGateNavigateToGpPlus}
                                         >
                                           Create a Free Account
-                                        </a>
-                                        <a
+                                        </Link>
+                                        <Link
                                           href="/account"
                                           className={styles.lessonPreviewGateButton}
                                           onClick={handleGateNavigateToAccount}
                                         >
                                           Sign In
-                                        </a>
+                                        </Link>
                                       </div>
                                     ) : (
-                                      <a
+                                      <Link
                                         href="/account?show_about_user_form=true"
                                         className={styles.lessonPreviewGateButton}
                                       >
                                         Update your account
-                                      </a>
+                                      </Link>
                                     )}
                                   </div>
                                 )}
