@@ -5,12 +5,9 @@ $assignment-scrolltip-z: $assignment-layer-z + 15;
 $assignment-card-tooltip-z: $assignment-layer-z + 12;
 $jobviz-nav-height: 64px;
 
-:root {
+.previewPage {
   --jobviz-horizontal-gutter: clamp(1rem, 3vw, 2.75rem);
   --jobviz-desktop-gap: clamp(0.75rem, 2vw, 2rem);
-}
-
-.previewPage {
   --preview-blue-950: #020812;
   --preview-blue-900: #061327;
   --preview-blue-800: #0b2645;

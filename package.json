@@ -3,13 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "build": "next build --turbopack",
-    "start": "next dev --turbopack",
-    "prod": "next build --turbopack && next start",
+    "build": "next build --webpack",
+    "start": "next dev --webpack",
+    "prod": "next build --webpack && next start",
     "lint": "next lint",
     "lint_fix": "tsc --noEmit && eslint --fix --ext .js,.jsx,.ts,.tsx .",
     "ci": "start-server-and-test 'npm run start-server' http://localhost:3000 'npm run test:integration'",
-    "start-server": "next dev -p 3000 --turbopack",
+    "start-server": "next dev -p 3000 --webpack",
     "test:integration": "jest --roots testing/integration",
     "test": "jest"
   },

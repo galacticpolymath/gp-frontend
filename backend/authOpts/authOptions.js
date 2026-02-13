@@ -372,6 +372,7 @@ export const authOptions = {
         if (!targetUser) {
           throw new Error("The target user doesn't exist.");
         }
+        const resolvedPicture = picture ?? targetUser?.picture ?? "";
 
         const canUserWriteToDb = await getCanUserWriteToDb(email);
         const gpPlusLookupEmail =
@@ -391,7 +392,7 @@ export const authOptions = {
             hasGpPlusMembership,
             roles: allowedRoles,
             name,
-            picture,
+            picture: resolvedPicture,
             userId: targetUser._id,
           },
           secret,
@@ -403,7 +404,7 @@ export const authOptions = {
             hasGpPlusMembership,
             roles: allowedRoles,
             name,
-            picture,
+            picture: resolvedPicture,
             userId: targetUser._id,
           },
           secret,
@@ -647,7 +648,10 @@ export const authOptions = {
       /**
        * @type {{ email: string, roles: string[], name: { first: string, last: string }, picture: string }}
        */
-      let { email, roles, name, picture } = token.payload;
+      let { email, roles, name, picture } = token?.payload ?? {};
+      if (!email) {
+        return Promise.resolve(session);
+      }
       const targetUser = cache.get(email) ?? {};
       let isTeacher = false;
       let occupation = null;
@@ -655,6 +659,7 @@ export const authOptions = {
 
       if (targetUser && targetUser.occupation && targetUser.name) {
         occupation = targetUser.occupation;
+        picture = picture ?? targetUser.picture ?? "";
         name = {
           first: targetUser.firstName ?? targetUser?.name?.first,
           last: targetUser.lastName ?? targetUser?.name?.last,
@@ -670,6 +675,7 @@ export const authOptions = {
         }
 
         occupation = dbUser.occupation ?? null;
+        picture = picture ?? dbUser.picture ?? "";
         name =
           {
             first: dbUser.firstName ?? dbUser?.name?.first,

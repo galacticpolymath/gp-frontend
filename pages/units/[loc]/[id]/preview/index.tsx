@@ -1,5 +1,6 @@
 import { format } from 'date-fns';
 import Image from 'next/image';
+import Head from 'next/head';
 import RichText from '../../../../../components/RichText';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
@@ -108,31 +109,40 @@ const LessonPreview: React.FC<IProps> = ({ lesson, unit }) => {
     }
 
     return (
-      <UnitPreviewUI
-        areTargetStandardsValid={areTargetStandardsValid}
-        jobVizCareerConnections={jobVizCareerConnections}
-        standards={standards}
-        TargetStandardsCodes={targetStandardCodes ?? undefined}
-        latestSubRelease={latestSubRelease}
-        Title={unit?.Title}
-        Subtitle={unit?.Subtitle}
-        URL={unit?.URL}
-        lessonBannerUrl={unit?.UnitBanner}
-        EstLessonTime={unit?.Sections?.overview?.EstUnitTime}
-        ForGrades={unit?.ForGrades}
-        LearningSummary={unit?.Sections?.overview?.TheGist}
-        TargetSubject={unit?.TargetSubject}
-        SteamEpaulette={unit?.Sections?.overview?.SteamEpaulette}
-        SteamEpaulette_vert={unit?.Sections?.overview?.SteamEpaulette_vert}
-        lessonUrl={unit?.URL}
-        shortUrl={unit?.ShortURL}
-        isLesson4={isLesson4}
-        SponsoredBy={unit?.SponsoredBy}
-        sponsorLogoImgUrl={unit?.SponsorLogo}
-        lessonParts={
-          unit?.Sections?.teachingMaterials?.classroom?.resources?.[0]?.lessons
-        }
-      />
+      <>
+        <Head>
+          <title>{`${unit?.Title ?? 'Unit'} Preview | GP`}</title>
+          <meta
+            name="description"
+            content={`Preview for ${unit?.Title ?? 'this unit'} in the Galactic Polymath portal.`}
+          />
+        </Head>
+        <UnitPreviewUI
+          areTargetStandardsValid={areTargetStandardsValid}
+          jobVizCareerConnections={jobVizCareerConnections}
+          standards={standards}
+          TargetStandardsCodes={targetStandardCodes ?? undefined}
+          latestSubRelease={latestSubRelease}
+          Title={unit?.Title}
+          Subtitle={unit?.Subtitle}
+          URL={unit?.URL}
+          lessonBannerUrl={unit?.UnitBanner}
+          EstLessonTime={unit?.Sections?.overview?.EstUnitTime}
+          ForGrades={unit?.ForGrades}
+          LearningSummary={unit?.Sections?.overview?.TheGist}
+          TargetSubject={unit?.TargetSubject}
+          SteamEpaulette={unit?.Sections?.overview?.SteamEpaulette}
+          SteamEpaulette_vert={unit?.Sections?.overview?.SteamEpaulette_vert}
+          lessonUrl={unit?.URL}
+          shortUrl={unit?.ShortURL}
+          isLesson4={isLesson4}
+          SponsoredBy={unit?.SponsoredBy}
+          sponsorLogoImgUrl={unit?.SponsorLogo}
+          lessonParts={
+            unit?.Sections?.teachingMaterials?.classroom?.resources?.[0]?.lessons
+          }
+        />
+      </>
     );
   }
 
@@ -177,6 +187,13 @@ const LessonPreview: React.FC<IProps> = ({ lesson, unit }) => {
 
   return (
     <div>
+      <Head>
+        <title>{`${lesson?.Title ?? 'Lesson'} Preview | GP`}</title>
+        <meta
+          name="description"
+          content={`Preview for ${lesson?.Title ?? 'this lesson'} in the Galactic Polymath portal.`}
+        />
+      </Head>
       <div
         style={{ backgroundColor: '#252525' }}
         className="w-100 d-flex justify-content-center align-items-center py-2"

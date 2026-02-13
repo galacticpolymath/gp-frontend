@@ -1931,6 +1931,13 @@ export default function HomePage({
     if (resolvedTab === "JobViz") return `Explore ${totalJobTours} JobViz Tours`;
     return `Explore ${totalResources} Resources`;
   })();
+  const pageTitle = isHomeView
+    ? "Home | GP Portal"
+    : hasCommittedSearch
+      ? `Search: ${searchQuery.trim().slice(0, 40)} | GP Portal`
+      : resolvedTab === "All"
+        ? "All Resources | GP Portal"
+        : `${resolvedTab} | GP Portal`;
 
   useEffect(() => {
     if (!isAllView || deferResults) return;
@@ -2484,7 +2491,7 @@ export default function HomePage({
   return (
     <>
       <Head>
-        <title>Teacher Portal Preview | Galactic Polymath</title>
+        <title>{pageTitle}</title>
         <meta
           name="description"
           content="Preview the next-generation Galactic Polymath teacher portal with onboarding, search, and curated resources."

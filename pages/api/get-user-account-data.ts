@@ -46,6 +46,7 @@ const PROJECTIONS: Partial<
   isTeacher: 1,
   firstName: 1,
   lastName: 1,
+  picture: 1,
   willNotShowEmailNewsLetterSignUpModal: 1,
   mailingListConfirmationEmailId: 1,
   name: 1,

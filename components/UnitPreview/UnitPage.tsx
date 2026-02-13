@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { format } from 'date-fns';
 import RichText from '../RichText';
 import styles from './UnitPage.module.css';
@@ -12,6 +13,7 @@ import {
   Filter,
   Network,
   NotebookPen,
+  SquareArrowOutUpRight,
   Target,
   X,
 } from 'lucide-react';
@@ -27,6 +29,8 @@ import { useModalContext } from '../../providers/ModalProvider';
 import LocDropdown from '../LocDropdown';
 import ChunkGraph from '../LessonSection/TeachIt/ChunkGraph';
 import { ISubject } from '../../backend/models/Unit/types/standards';
+import { setSessionStorageItem } from '../../shared/fns';
+import useSiteSession from '../../customHooks/useSiteSession';
 
 const TAB_OVERVIEW = 'overview';
 const TAB_MATERIALS = 'materials';
@@ -642,10 +646,11 @@ const getMaterialUrls = (item?: TPreviewItem & { mimeType?: string | null }) => 
   if (item?.gdriveRoot) {
     const gdriveRoot = getNormalizedGDriveRoot(item.gdriveRoot);
     if (isPresentation) {
+      const viewUrl = toGoogleDriveViewUrl(gdriveRoot) ?? `${gdriveRoot}/view`;
       return {
-        openUrl: `${gdriveRoot}/view`,
-        previewUrl: `${gdriveRoot}/view`,
-        embedUrl: `${gdriveRoot}/view`,
+        openUrl: viewUrl,
+        previewUrl: viewUrl,
+        embedUrl: viewUrl,
         pdfDownloadUrl: null,
       };
     }
@@ -922,6 +927,12 @@ const buildSearchEntries = (
 };
 
 const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
+  const { status, user, isGpPlusMember } = useSiteSession();
+  const isAuthenticated = status === 'authenticated';
+  const isUserTeacher = Boolean(
+    (user as { isTeacher?: boolean } | undefined)?.isTeacher
+  );
+  const isGpPlusUser = isGpPlusMember === true;
   const overview = unit.Sections?.overview;
   const teachingMaterials = unit.Sections?.teachingMaterials;
   const standardsData = (unit.Sections?.standards?.Data ?? []) as ISubject[];
@@ -988,6 +999,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
   const [isTagListExpanded, setIsTagListExpanded] = useState(false);
   const [visibleTagCount, setVisibleTagCount] = useState(0);
   const [activeMaterialIndex, setActiveMaterialIndex] = useState(0);
+  const [isGpPlusBannerDismissed, setIsGpPlusBannerDismissed] = useState(false);
   const [isStandardsFilterDockOpen, setIsStandardsFilterDockOpen] =
     useState(false);
   const [selectedGradeBands, setSelectedGradeBands] = useState<TGradeBand[]>([
@@ -1441,6 +1453,33 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
     handleTabChange(TAB_CREDITS);
   };
 
+  const getCurrentUnitUrl = () => {
+    if (typeof window === 'undefined') {
+      return '';
+    }
+    return window.location.href;
+  };
+
+  const handleGateNavigateToAccount = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    event.preventDefault();
+    const currentUrl = getCurrentUnitUrl();
+    if (!currentUrl) {
+      window.location.assign('/account');
+      return;
+    }
+    setSessionStorageItem('userEntryRedirectUrl', currentUrl);
+    window.location.assign(`/account?from=${encodeURIComponent(currentUrl)}`);
+  };
+
+  const handleGateNavigateToGpPlus = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    event.preventDefault();
+    const currentUrl = getCurrentUnitUrl();
+    if (currentUrl) {
+      setSessionStorageItem('userEntryRedirectUrl', currentUrl);
+    }
+    window.location.assign('/gp-plus');
+  };
+
   const handleShare = async () => {
     if (typeof window === 'undefined') {
       return;
@@ -1773,12 +1812,14 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
               >
                 <h3>The Gist</h3>
                 {overview?.TheGist && (
-                  <p className={styles.unitLead}>{overview.TheGist}</p>
+                  <div className={`${styles.richTextBlock} ${styles.unitLeadMarkdown}`}>
+                    <RichText content={overview.TheGist} />
+                  </div>
                 )}
                 {(overview as { Description?: string })?.Description && (
-                  <p className={styles.unitSummaryText}>
-                    {(overview as { Description?: string }).Description}
-                  </p>
+                  <div className={`${styles.richTextBlock} ${styles.unitSummaryMarkdown}`}>
+                    <RichText content={(overview as { Description?: string }).Description ?? ''} />
+                  </div>
                 )}
                 {overview?.Text && (
                   <div className={styles.richTextBlock}>
@@ -1946,11 +1987,55 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                     </div>
                   </div>
                   <div className={styles.lessonMaterialsGrid}>
+                    {!isGpPlusUser && !isGpPlusBannerDismissed && (
+                      <div className={styles.gpPlusBannerWrapInGrid}>
+                        <div className={styles.gpPlusBanner}>
+                          <button
+                            type="button"
+                            className={styles.gpPlusBannerClose}
+                            aria-label="Dismiss GP+ upgrade banner"
+                            onClick={() => setIsGpPlusBannerDismissed(true)}
+                          >
+                            <X size={16} aria-hidden="true" />
+                          </button>
+                          <div className={styles.gpPlusLogo}>
+                            <Image
+                              alt="GP+ logo"
+                              width={88}
+                              height={88}
+                              src="/imgs/gp-logos/gp_submark.png"
+                            />
+                          </div>
+                          <div className={styles.gpPlusCopy}>
+                            <div className={styles.gpPlusHeadline}>
+                              Download &amp; Edit lessons in one-click
+                            </div>
+                            <div className={styles.gpPlusSubhead}>Get 50% off GP+</div>
+                          </div>
+                          <button
+                            type="button"
+                            className={styles.gpPlusCta}
+                            onClick={() => setIsGpPlusModalDisplayed(true)}
+                          >
+                            <span className={styles.gpPlusCtaIcon}>
+                              <Image
+                                alt="GP+ icon"
+                                width={48}
+                                height={48}
+                                src="/plus/plus.png"
+                              />
+                            </span>
+                            <span>Upgrade to GP+</span>
+                          </button>
+                        </div>
+                      </div>
+                    )}
                     <div className={styles.lessonResourcesCard}>
                       <h4 className={styles.lessonCardHeading}>
                         <Download size={16} aria-hidden="true" />
                         <span>Materials and downloads</span>
                       </h4>
+                      <p className={styles.materialsHelperText}>Click an item to preview.</p>
                       {!!activeLessonItems.length ? (
                         <div className={styles.lessonDownloadList}>
                           {activeLessonItems.map((item, idx) => {
@@ -1961,6 +2046,13 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                             const isActive = idx === activeMaterialIndex;
                             const resourceTitle =
                               item.itemTitle ?? `Resource ${idx + 1}`;
+                            const isTeacherOnlyItem =
+                              typeof item.itemTitle === 'string' &&
+                              item.itemTitle.toLowerCase().includes('teacher');
+                            const isTeacherLocked =
+                              isAuthenticated && !isUserTeacher && isTeacherOnlyItem;
+                            const canOpenResource = !!openUrl && !isTeacherLocked && isAuthenticated;
+                            const canAccessPdf = !!pdfDownloadUrl && !isTeacherLocked && isAuthenticated;
 
                             return (
                               <article
@@ -1969,57 +2061,69 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                                   isActive ? styles.materialRowActive : ''
                                 }`}
                               >
-                                <button
-                                  type="button"
-                                  className={styles.materialSelectButton}
-                                  onClick={() => {
-                                    setActiveMaterialIndex(idx);
-                                    trackUnitEvent('unit_material_selected', {
-                                      lesson_id: activeLessonId ?? null,
-                                      material_index: idx,
-                                      material_title:
-                                        item.itemTitle ?? `Resource ${idx + 1}`,
-                                    });
-                                  }}
-                                  aria-pressed={isActive}
-                                >
-                                  <span className={styles.materialRowIcon} aria-hidden="true">
-                                    <FileText size={15} />
-                                  </span>
-                                  <span className={styles.materialRowMain}>
-                                    <strong>{resourceTitle}</strong>
-                                    {(previewItem.itemType || previewItem.itemCat) && (
-                                      <span>
-                                        {(previewItem.itemType ?? previewItem.itemCat ?? '').toString()}
+                                <div className={styles.materialRowTop}>
+                                  <button
+                                    type="button"
+                                    className={styles.materialSelectButton}
+                                    onClick={() => {
+                                      setActiveMaterialIndex(idx);
+                                      trackUnitEvent('unit_material_selected', {
+                                        lesson_id: activeLessonId ?? null,
+                                        material_index: idx,
+                                        material_title:
+                                          item.itemTitle ?? `Resource ${idx + 1}`,
+                                      });
+                                    }}
+                                    aria-pressed={isActive}
+                                  >
+                                    <span className={styles.materialRowIcon} aria-hidden="true">
+                                      <FileText size={15} />
+                                    </span>
+                                    <span className={styles.materialRowMain}>
+                                      <strong>{resourceTitle}</strong>
+                                      {(previewItem.itemType || previewItem.itemCat) && (
+                                        <span>
+                                          {(previewItem.itemType ?? previewItem.itemCat ?? '').toString()}
+                                        </span>
+                                      )}
+                                    </span>
+                                  </button>
+
+                                  <div className={styles.materialRowLinks}>
+                                    {canOpenResource ? (
+                                      <a
+                                        className={styles.materialOpenLink}
+                                        href={openUrl}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                      >
+                                        View
+                                      </a>
+                                    ) : (
+                                      <span className={styles.materialOpenLinkDisabled}>
+                                        {isTeacherLocked || !isAuthenticated ? 'Restricted' : 'No file'}
                                       </span>
                                     )}
-                                  </span>
-                                </button>
-
-                                <div className={styles.materialRowLinks}>
-                                  {openUrl ? (
-                                    <a
-                                      className={styles.materialOpenLink}
-                                      href={openUrl}
-                                      target="_blank"
-                                      rel="noreferrer"
-                                    >
-                                      Open
-                                    </a>
-                                  ) : (
-                                    <span className={styles.materialOpenLinkDisabled}>No file</span>
-                                  )}
-                                  {pdfDownloadUrl && (
-                                    <a
-                                      className={styles.materialPdfLink}
-                                      href={pdfDownloadUrl}
-                                      target="_blank"
-                                      rel="noreferrer"
-                                    >
-                                      PDF
-                                    </a>
-                                  )}
+                                  </div>
                                 </div>
+                                {pdfDownloadUrl && (
+                                  <div className={styles.materialRowPdfWrap}>
+                                    {canAccessPdf ? (
+                                      <a
+                                        className={styles.materialPdfLink}
+                                        href={pdfDownloadUrl}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                      >
+                                        Download PDF
+                                      </a>
+                                    ) : (
+                                      <span className={styles.materialPdfLinkDisabled}>
+                                        PDF download unavailable
+                                      </span>
+                                    )}
+                                  </div>
+                                )}
                               </article>
                             );
                           })}
@@ -2029,6 +2133,28 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                           Materials will appear here once added.
                         </p>
                       )}
+                      {isAuthenticated &&
+                        isGpPlusUser &&
+                        lessonResources?.links?.url &&
+                        lessonResources?.links?.linkText && (
+                          <a
+                            className={styles.lessonFolderLink}
+                            href={lessonResources.links.url?.[0] ?? '#'}
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            <span className={styles.lessonFolderLinkIcon}>
+                              <Image
+                                src="/plus/plus.png"
+                                alt=""
+                                aria-hidden="true"
+                                width={20}
+                                height={20}
+                              />
+                            </span>
+                            <span>{lessonResources.links.linkText}</span>
+                          </a>
+                        )}
                     </div>
                     <div className={styles.lessonPreviewsCard}>
                       {!!activeLessonItems.length ? (
@@ -2056,8 +2182,17 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                             'Preview details will appear for this material.';
                           const itemTypeLabel =
                             selectedPreviewItem?.itemType?.toLowerCase() ?? '';
+                          const selectedIsTeacherOnly =
+                            typeof selectedItem?.itemTitle === 'string' &&
+                            selectedItem.itemTitle.toLowerCase().includes('teacher');
                           const isPresentation = itemTypeLabel === 'presentation';
-                          const frameSrc = isPresentation ? openUrl : embedUrl ?? previewUrl;
+                          const frameSrc = isPresentation ? embedUrl ?? previewUrl ?? openUrl : embedUrl ?? previewUrl;
+                          const isPreviewLockedLoggedOut = !isAuthenticated;
+                          const isPreviewLockedTeacher =
+                            isAuthenticated && !isUserTeacher && selectedIsTeacherOnly;
+                          const isPreviewLocked =
+                            isPreviewLockedLoggedOut || isPreviewLockedTeacher;
+                          const canOpenSelected = !!openUrl && !isPreviewLocked;
 
                           return (
                             <article className={styles.lessonPreviewItem}>
@@ -2066,40 +2201,85 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                                   <Eye size={16} aria-hidden="true" />
                                   <span>Item preview</span>
                                 </h4>
-                                {openUrl ? (
+                                {canOpenSelected ? (
                                   <a
                                     className={styles.materialOpenLink}
                                     href={openUrl}
                                     target="_blank"
                                     rel="noreferrer"
                                   >
-                                    Open in new tab
+                                    <span>Open in new tab</span>
+                                    <SquareArrowOutUpRight size={13} aria-hidden="true" />
                                   </a>
-                                ) : (
+                                ) : isPreviewLocked ? null : (
                                   <span className={styles.materialOpenLinkDisabled}>
                                     No file link
                                   </span>
                                 )}
                               </header>
-                              <div className={styles.lessonPreviewSurface}>
-                                {frameSrc ? (
-                                  <iframe title={`${previewTitle} preview`} src={frameSrc} />
-                                ) : previewImg ? (
-                                  <img
-                                    src={previewImg}
-                                    alt={`${previewTitle} preview`}
-                                    loading="lazy"
-                                  />
-                                ) : previewUrl && isImageUrl(previewUrl) ? (
-                                  <img
-                                    src={previewUrl}
-                                    alt={`${previewTitle} preview`}
-                                    loading="lazy"
-                                  />
-                                ) : (
-                                  <p className={styles.unitMutedText}>
-                                    Preview unavailable for this file type.
-                                  </p>
+                              <div
+                                className={`${styles.lessonPreviewSurface} ${
+                                  isPreviewLocked ? styles.lessonPreviewSurfaceLocked : ''
+                                }`}
+                              >
+                                <div
+                                  className={`${styles.lessonPreviewMedia} ${
+                                    isPreviewLocked ? styles.lessonPreviewMediaBlurred : ''
+                                  }`}
+                                >
+                                  {frameSrc ? (
+                                    <iframe title={`${previewTitle} preview`} src={frameSrc} />
+                                  ) : previewImg ? (
+                                    <img
+                                      src={previewImg}
+                                      alt={`${previewTitle} preview`}
+                                      loading="lazy"
+                                    />
+                                  ) : previewUrl && isImageUrl(previewUrl) ? (
+                                    <img
+                                      src={previewUrl}
+                                      alt={`${previewTitle} preview`}
+                                      loading="lazy"
+                                    />
+                                  ) : (
+                                    <p className={styles.unitMutedText}>
+                                      Preview unavailable for this file type.
+                                    </p>
+                                  )}
+                                </div>
+                                {isPreviewLocked && (
+                                  <div className={styles.lessonPreviewGate}>
+                                    <p>
+                                      {isPreviewLockedLoggedOut
+                                        ? 'Must Be Logged in to View Teaching Materials'
+                                        : 'Only viewable by teachers. If you are a teacher, please update your account.'}
+                                    </p>
+                                    {isPreviewLockedLoggedOut ? (
+                                      <div className={styles.lessonPreviewGateActions}>
+                                        <Link
+                                          href="/gp-plus"
+                                          className={styles.lessonPreviewGateButton}
+                                          onClick={handleGateNavigateToGpPlus}
+                                        >
+                                          Create a Free Account
+                                        </Link>
+                                        <Link
+                                          href="/account"
+                                          className={styles.lessonPreviewGateButton}
+                                          onClick={handleGateNavigateToAccount}
+                                        >
+                                          Sign In
+                                        </Link>
+                                      </div>
+                                    ) : (
+                                      <Link
+                                        href="/account?show_about_user_form=true"
+                                        className={styles.lessonPreviewGateButton}
+                                      >
+                                        Update your account
+                                      </Link>
+                                    )}
+                                  </div>
                                 )}
                               </div>
                               <div className={styles.lessonPreviewMeta}>
@@ -2113,7 +2293,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                                       '').toString()}
                                   </span>
                                 )}
-                                {pdfDownloadUrl && (
+                                {pdfDownloadUrl && isAuthenticated && !isPreviewLockedTeacher && (
                                   <a
                                     className={styles.materialPdfLink}
                                     href={pdfDownloadUrl}
@@ -2269,49 +2449,6 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                   Choose a lesson to explore teaching materials.
                 </p>
               )}
-              {lessonResources?.links?.url && lessonResources?.links?.linkText && (
-                <a
-                  className={styles.lessonFolderLink}
-                  href={lessonResources.links.url?.[0] ?? '#'}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  {lessonResources.links.linkText}
-                </a>
-              )}
-              <div className={styles.gpPlusBannerWrap}>
-                <div className={styles.gpPlusBanner}>
-                  <div className={styles.gpPlusLogo}>
-                    <Image
-                      alt="GP+ logo"
-                      width={88}
-                      height={88}
-                      src="/imgs/gp-logos/gp_submark.png"
-                    />
-                  </div>
-                  <div className={styles.gpPlusCopy}>
-                    <div className={styles.gpPlusHeadline}>
-                      Download &amp; Edit lessons in one-click
-                    </div>
-                    <div className={styles.gpPlusSubhead}>Get 50% off GP+</div>
-                  </div>
-                  <button
-                    type="button"
-                    className={styles.gpPlusCta}
-                    onClick={() => setIsGpPlusModalDisplayed(true)}
-                  >
-                    <span className={styles.gpPlusCtaIcon}>
-                      <Image
-                        alt="GP+ icon"
-                        width={48}
-                        height={48}
-                        src="/plus/plus.png"
-                      />
-                    </span>
-                    <span>Upgrade to GP+</span>
-                  </button>
-                </div>
-              </div>
             </div>
           </section>
         )}
@@ -2843,30 +2980,30 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
             </button>
           </div>
         )}
+        <aside className={styles.licenseBanner} aria-label="Creative Commons license notice">
+          <div className={styles.licenseBannerInner}>
+            <Image
+              src="/imgs/creative-commons_by-nc-sa.svg"
+              alt=""
+              aria-hidden="true"
+              width={126}
+              height={44}
+            />
+            <p className={styles.licenseBannerText}>
+              <strong>CC BY-SA 4.0.</strong> Use and adapt with attribution. If you share
+              changes, use the same license.
+            </p>
+            <a
+              href="https://creativecommons.org/licenses/by-sa/4.0/"
+              target="_blank"
+              rel="noreferrer"
+              className={styles.licenseBannerLink}
+            >
+              License details
+            </a>
+          </div>
+        </aside>
       </main>
-      <aside className={styles.licenseBanner} aria-label="Creative Commons license notice">
-        <div className={styles.licenseBannerInner}>
-          <Image
-            src="/imgs/creative-commons_by-nc-sa.svg"
-            alt=""
-            aria-hidden="true"
-            width={126}
-            height={44}
-          />
-          <p className={styles.licenseBannerText}>
-            <strong>CC BY-SA 4.0.</strong> Use and adapt with attribution. If you share
-            changes, use the same license.
-          </p>
-          <a
-            href="https://creativecommons.org/licenses/by-sa/4.0/"
-            target="_blank"
-            rel="noreferrer"
-            className={styles.licenseBannerLink}
-          >
-            License details
-          </a>
-        </div>
-      </aside>
     </div>
   );
 };

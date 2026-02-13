@@ -29,8 +29,13 @@ module.exports = {
     MONGODB_DB_NAME: process.env.MONGODB_DB_NAME,
   },
   reactStrictMode: true,
+  devIndicators: false,
   turbopack: {
     root: __dirname,
+  },
+  sassOptions: {
+    quietDeps: true,
+    silenceDeprecations: ['import', 'global-builtin', 'color-functions', 'if-function'],
   },
   images: {
     remotePatterns: [

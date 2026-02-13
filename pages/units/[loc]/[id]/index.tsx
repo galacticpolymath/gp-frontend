@@ -857,10 +857,6 @@ const LessonDetails: React.FC<IProps> = ({ lesson, unit }) => {
     });
 
     if (teachingMaterialsSecIndex === -1 || feedbackSecIndex === -1) {
-      console.error(
-        "Can't find the Teacher Materials section or the feedback section."
-      );
-
       return sectionCompsCopy;
     }
 
@@ -1220,7 +1216,7 @@ const LessonDetails: React.FC<IProps> = ({ lesson, unit }) => {
   );
 
   const layoutProps: Record<string, unknown> = {
-    title: `Mini-Unit: ${_unit.Title}`,
+    title: `${_unit.Title} | GP Unit`,
     description: _unit?.Sections?.overview?.TheGist
       ? sanitizeHtml(_unit.Sections.overview.TheGist)
       : `Description for ${_unit.Title}.`,

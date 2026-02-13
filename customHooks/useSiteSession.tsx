@@ -9,6 +9,13 @@ const useSiteSession = () => {
   const normalizedUser = user
     ? {
         ...user,
+        image:
+          typeof user.image === "string" && user.image
+            ? user.image
+            : typeof (user as any).picture === "string" &&
+                (user as any).picture
+              ? (user as any).picture
+              : undefined,
         userId:
           typeof user.userId === "string"
             ? user.userId

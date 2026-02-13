@@ -60,14 +60,16 @@ const UnitsPg: React.FC<ICurrentUnits & { didErrorOccur?: boolean }> = ({
     refetchOnWindowFocus: false,
     queryKey: [status],
     queryFn: async () => {
+      if (typeof window === "undefined") {
+        return null;
+      }
+
       if (
         status === "authenticated" &&
         searchParams.get(PRESENT_WELCOME_MODAL_PARAM_NAME) === "true" &&
         token
       ) {
         try {
-          console.log("Fetching user name for welcome modal");
-
           const { data } = await axios.get<
             | {
                 firstName: string;
@@ -81,8 +83,6 @@ const UnitsPg: React.FC<ICurrentUnits & { didErrorOccur?: boolean }> = ({
             },
           });
 
-          console.log("User name data: ", data);
-
           if ("firstName" in data && data.firstName) {
             setUserFirstName(data.firstName);
           }
@@ -93,6 +93,8 @@ const UnitsPg: React.FC<ICurrentUnits & { didErrorOccur?: boolean }> = ({
           console.error("Failed to display welcome modal. Reason: ", error);
         }
       }
+
+      return null;
     },
   });
 
