@@ -1220,7 +1220,7 @@ const LessonDetails: React.FC<IProps> = ({ lesson, unit }) => {
   );
 
   const layoutProps: Record<string, unknown> = {
-    title: `Mini-Unit: ${_unit.Title}`,
+    title: `${_unit.Title} | GP Unit`,
     description: _unit?.Sections?.overview?.TheGist
       ? sanitizeHtml(_unit.Sections.overview.TheGist)
       : `Description for ${_unit.Title}.`,

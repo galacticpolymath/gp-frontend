@@ -574,11 +574,15 @@
 
 .unitOverviewCard,
 .unitOverviewCardWide {
-  background: rgba(255, 255, 255, 0.9);
-  border-radius: 14px;
-  padding: 12px;
-  border: 1px solid rgba(44, 131, 195, 0.12);
-  box-shadow: 0 8px 16px rgba(24, 30, 61, 0.07);
+  background:
+    linear-gradient(140deg, rgba(255, 255, 255, 0.86), rgba(247, 252, 255, 0.76));
+  border-radius: 16px;
+  padding: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  box-shadow:
+    0 12px 30px rgba(24, 30, 61, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
   min-width: 0;
 }
 
@@ -601,6 +605,27 @@
 }
 
 .unitSummaryText {
+  font-size: 14px;
+  color: #4c5269;
+  line-height: 1.5;
+}
+
+.unitOverviewCardPrimary {
+  border-color: rgba(108, 45, 130, 0.18);
+  background:
+    radial-gradient(circle at top left, rgba(108, 45, 130, 0.11), transparent 42%),
+    linear-gradient(140deg, rgba(255, 255, 255, 0.88), rgba(248, 253, 255, 0.8));
+}
+
+.unitLeadMarkdown :global(p) {
+  margin: 0 0 8px;
+  font-size: 14px;
+  color: #1f355a;
+  line-height: 1.5;
+}
+
+.unitSummaryMarkdown :global(p) {
+  margin: 0 0 8px;
   font-size: 14px;
   color: #4c5269;
   line-height: 1.5;
@@ -774,6 +799,50 @@
   width: 100%;
   max-height: 30vh;
   object-fit: contain;
+}
+
+.previewCarousel :global(.autoCarouselContainer) {
+  border-radius: 14px;
+  padding: 8px;
+  border: 1px solid rgba(108, 45, 130, 0.16);
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.76), rgba(246, 250, 255, 0.78));
+  box-shadow: 0 10px 20px rgba(22, 34, 56, 0.09);
+}
+
+.previewCarousel :global(.autoCarouselContainer h5) {
+  margin-bottom: 5px;
+  font-size: 15px;
+}
+
+.previewCarousel :global(.autoCarouselContainer p) {
+  margin-bottom: 4px;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.previewCarousel :global(.thumbnailLi) {
+  border-radius: 10px;
+}
+
+.previewCarousel :global(.lessonSlideBody) {
+  margin-top: 6px !important;
+  padding-left: 6px !important;
+  padding-right: 6px !important;
+}
+
+.previewCarousel :global(.lessonSlideBody h6) {
+  font-size: 13px;
+  line-height: 1.3;
+}
+
+.previewCarousel :global(.lessonSlideBody .lessonRelevanceTxt) {
+  font-size: 12px;
+  margin-bottom: 6px !important;
+}
+
+.previewCarousel :global(.bi-arrow-left-circle-fill),
+.previewCarousel :global(.bi-arrow-right-circle-fill) {
+  font-size: 1.45rem !important;
 }
 
 .unitTag {
@@ -1156,20 +1225,31 @@
   gap: 7px;
 }
 
+.materialsHelperText {
+  margin: 4px 0 10px;
+  font-size: 12px;
+  color: #6e7890;
+}
+
 .materialRow {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
+  display: grid;
+  gap: 7px;
   border: 1px solid rgba(44, 131, 195, 0.2);
-  border-radius: 10px;
-  background: rgba(240, 244, 255, 0.55);
-  padding: 6px 8px;
+  border-radius: 12px;
+  background: rgba(246, 250, 255, 0.68);
+  padding: 8px 9px;
 }
 
 .materialRowActive {
   border-color: rgba(75, 58, 168, 0.52);
-  background: rgba(75, 58, 168, 0.1);
+  background: rgba(75, 58, 168, 0.09);
+}
+
+.materialRowTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
 }
 
 .materialSelectButton {
@@ -1206,12 +1286,11 @@
 }
 
 .materialRowMain strong {
-  font-size: 13px;
+  font-size: 12px;
   line-height: 1.25;
   color: #1f355a;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  white-space: normal;
+  overflow: visible;
 }
 
 .materialRowMain span {
@@ -1239,6 +1318,7 @@
 .materialOpenLink {
   display: inline-flex;
   align-items: center;
+  gap: 5px;
 }
 
 .materialPdfLink {
@@ -1253,8 +1333,24 @@
   background: rgba(255, 255, 255, 0.85);
 }
 
+.materialPdfLinkDisabled {
+  display: inline-flex;
+  align-items: center;
+  font-size: 11px;
+  color: #81899e;
+  border: 1px dashed rgba(120, 130, 150, 0.44);
+  border-radius: 999px;
+  padding: 2px 7px;
+  background: rgba(255, 255, 255, 0.62);
+}
+
 .materialOpenLinkDisabled {
   color: #7a8094;
+}
+
+.materialRowPdfWrap {
+  display: flex;
+  justify-content: flex-end;
 }
 
 .lessonPreviewList {
@@ -1280,6 +1376,7 @@
 }
 
 .lessonPreviewSurface {
+  position: relative;
   border-radius: 10px;
   overflow: hidden;
   min-height: 360px;
@@ -1291,6 +1388,11 @@
   justify-content: center;
 }
 
+.lessonPreviewMedia {
+  width: 100%;
+  height: 100%;
+}
+
 .lessonPreviewSurface img,
 .lessonPreviewSurface iframe {
   width: 100%;
@@ -1298,6 +1400,77 @@
   min-height: 360px;
   border: 0;
   object-fit: contain;
+}
+
+.lessonPreviewSurfaceLocked {
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.lessonPreviewMediaBlurred {
+  filter: blur(9px) saturate(0.8);
+  transform: scale(1.01);
+}
+
+.lessonPreviewGate {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 10px;
+  padding: 18px;
+  text-align: center;
+  background: rgba(245, 250, 255, 0.34);
+  backdrop-filter: blur(8px);
+}
+
+.lessonPreviewGate p {
+  margin: 0;
+  max-width: 44ch;
+  font-size: 13px;
+  font-weight: 600;
+  color: #1d2f54;
+  background: rgba(255, 255, 255, 0.78);
+  border: 1px solid rgba(44, 131, 195, 0.2);
+  border-radius: 10px;
+  padding: 8px 10px;
+}
+
+.lessonPreviewGateActions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.lessonPreviewGateButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 34px;
+  padding: 0 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(44, 131, 195, 0.35);
+  background: rgba(255, 255, 255, 0.9);
+  color: #1f355a;
+  font-size: 12px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: transform 140ms ease, box-shadow 140ms ease, background-color 140ms ease;
+}
+
+.lessonPreviewGateButton:visited,
+.lessonPreviewGateButton:active {
+  color: #1f355a;
+}
+
+.lessonPreviewGateButton:hover,
+.lessonPreviewGateButton:focus {
+  color: #1f355a;
+  background: #ffffff;
+  box-shadow: 0 8px 16px rgba(21, 47, 84, 0.14);
+  transform: translateY(-1px);
 }
 
 .lessonPreviewMeta {
@@ -2228,7 +2401,18 @@
   }
 
   .materialRow {
-    padding: 8px;
+    min-height: 92px;
+    padding: 10px 9px;
+  }
+
+  .lessonResourcesCard {
+    max-width: 410px;
+    margin: 0 auto;
+    min-height: 420px;
+  }
+
+  .materialRowPdfWrap {
+    justify-content: flex-start;
   }
 
   .lessonStep {

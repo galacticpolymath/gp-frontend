@@ -238,6 +238,7 @@
   overflow: hidden;
   aspect-ratio: 450 / 585;
   min-height: 320px;
+  width: 100%;
   border: 1px solid rgba(240, 244, 255, 0.25);
   box-shadow: 0 18px 32px rgba(15, 20, 48, 0.35);
 }
@@ -3163,6 +3164,13 @@ details:not([open]) .filterSummary::after {
     gap: 16px;
   }
 
+  .heroCarousel {
+    width: min(100%, 560px);
+    margin: 0 auto;
+    aspect-ratio: 5 / 6;
+    min-height: 280px;
+  }
+
   .statsGrid {
     grid-template-columns: 1fr;
   }
@@ -3426,6 +3434,11 @@ details:not([open]) .filterSummary::after {
 
   .heroPanel {
     justify-content: flex-start;
+  }
+
+  .heroCarousel {
+    width: 100%;
+    min-height: 260px;
   }
 
   .sectionStats {
