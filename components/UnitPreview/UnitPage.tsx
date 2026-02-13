@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useSession } from 'next-auth/react';
 import { format } from 'date-fns';
 import RichText from '../RichText';
 import styles from './UnitPage.module.css';
@@ -31,6 +30,7 @@ import LocDropdown from '../LocDropdown';
 import ChunkGraph from '../LessonSection/TeachIt/ChunkGraph';
 import { ISubject } from '../../backend/models/Unit/types/standards';
 import { setSessionStorageItem } from '../../shared/fns';
+import useSiteSession from '../../customHooks/useSiteSession';
 
 const TAB_OVERVIEW = 'overview';
 const TAB_MATERIALS = 'materials';
@@ -583,15 +583,6 @@ const toGoogleDrivePreviewUrl = (value: string) =>
 
 const toGoogleDriveViewUrl = (value: string) => withGoogleSuffix(value, 'view');
 
-const toGooglePresentationEmbedUrl = (value: string) => {
-  const docMatch = value.match(/https?:\/\/docs\.google\.com\/presentation\/d\/([^/]+)/i);
-  if (docMatch?.[1]) {
-    return `https://docs.google.com/presentation/d/${docMatch[1]}/embed?rm=minimal`;
-  }
-  const previewUrl = toGoogleDrivePreviewUrl(value);
-  return previewUrl ?? null;
-};
-
 const toGooglePdfExportUrl = (value: string) => {
   const docMatch = value.match(
     /https?:\/\/docs\.google\.com\/(presentation|document|spreadsheets)\/d\/([^/]+)/i
@@ -655,11 +646,11 @@ const getMaterialUrls = (item?: TPreviewItem & { mimeType?: string | null }) => 
   if (item?.gdriveRoot) {
     const gdriveRoot = getNormalizedGDriveRoot(item.gdriveRoot);
     if (isPresentation) {
-      const embedUrl = toGooglePresentationEmbedUrl(gdriveRoot) ?? `${gdriveRoot}/preview`;
+      const viewUrl = toGoogleDriveViewUrl(gdriveRoot) ?? `${gdriveRoot}/view`;
       return {
-        openUrl: `${gdriveRoot}/view`,
-        previewUrl: embedUrl,
-        embedUrl,
+        openUrl: viewUrl,
+        previewUrl: viewUrl,
+        embedUrl: viewUrl,
         pdfDownloadUrl: null,
       };
     }
@@ -685,11 +676,10 @@ const getMaterialUrls = (item?: TPreviewItem & { mimeType?: string | null }) => 
 
   if (isPresentation) {
     const viewUrl = toGoogleDriveViewUrl(baseUrl) ?? baseUrl;
-    const embedUrl = toGooglePresentationEmbedUrl(baseUrl) ?? viewUrl;
     return {
       openUrl: viewUrl,
-      previewUrl: embedUrl,
-      embedUrl,
+      previewUrl: viewUrl,
+      embedUrl: viewUrl,
       pdfDownloadUrl: null,
     };
   }
@@ -937,19 +927,12 @@ const buildSearchEntries = (
 };
 
 const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
-  const session = useSession();
-  const isAuthenticated = session.status === 'authenticated';
+  const { status, user, isGpPlusMember } = useSiteSession();
+  const isAuthenticated = status === 'authenticated';
   const isUserTeacher = Boolean(
-    (
-      session.data as
-        | {
-            user?: {
-              isTeacher?: boolean;
-            };
-          }
-        | null
-    )?.user?.isTeacher
+    (user as { isTeacher?: boolean } | undefined)?.isTeacher
   );
+  const isGpPlusUser = isGpPlusMember === true;
   const overview = unit.Sections?.overview;
   const teachingMaterials = unit.Sections?.teachingMaterials;
   const standardsData = (unit.Sections?.standards?.Data ?? []) as ISubject[];
@@ -1016,6 +999,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
   const [isTagListExpanded, setIsTagListExpanded] = useState(false);
   const [visibleTagCount, setVisibleTagCount] = useState(0);
   const [activeMaterialIndex, setActiveMaterialIndex] = useState(0);
+  const [isGpPlusBannerDismissed, setIsGpPlusBannerDismissed] = useState(false);
   const [isStandardsFilterDockOpen, setIsStandardsFilterDockOpen] =
     useState(false);
   const [selectedGradeBands, setSelectedGradeBands] = useState<TGradeBand[]>([
@@ -2003,6 +1987,49 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                     </div>
                   </div>
                   <div className={styles.lessonMaterialsGrid}>
+                    {!isGpPlusUser && !isGpPlusBannerDismissed && (
+                      <div className={styles.gpPlusBannerWrapInGrid}>
+                        <div className={styles.gpPlusBanner}>
+                          <button
+                            type="button"
+                            className={styles.gpPlusBannerClose}
+                            aria-label="Dismiss GP+ upgrade banner"
+                            onClick={() => setIsGpPlusBannerDismissed(true)}
+                          >
+                            <X size={16} aria-hidden="true" />
+                          </button>
+                          <div className={styles.gpPlusLogo}>
+                            <Image
+                              alt="GP+ logo"
+                              width={88}
+                              height={88}
+                              src="/imgs/gp-logos/gp_submark.png"
+                            />
+                          </div>
+                          <div className={styles.gpPlusCopy}>
+                            <div className={styles.gpPlusHeadline}>
+                              Download &amp; Edit lessons in one-click
+                            </div>
+                            <div className={styles.gpPlusSubhead}>Get 50% off GP+</div>
+                          </div>
+                          <button
+                            type="button"
+                            className={styles.gpPlusCta}
+                            onClick={() => setIsGpPlusModalDisplayed(true)}
+                          >
+                            <span className={styles.gpPlusCtaIcon}>
+                              <Image
+                                alt="GP+ icon"
+                                width={48}
+                                height={48}
+                                src="/plus/plus.png"
+                              />
+                            </span>
+                            <span>Upgrade to GP+</span>
+                          </button>
+                        </div>
+                      </div>
+                    )}
                     <div className={styles.lessonResourcesCard}>
                       <h4 className={styles.lessonCardHeading}>
                         <Download size={16} aria-hidden="true" />
@@ -2106,6 +2133,28 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                           Materials will appear here once added.
                         </p>
                       )}
+                      {isAuthenticated &&
+                        isGpPlusUser &&
+                        lessonResources?.links?.url &&
+                        lessonResources?.links?.linkText && (
+                          <a
+                            className={styles.lessonFolderLink}
+                            href={lessonResources.links.url?.[0] ?? '#'}
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            <span className={styles.lessonFolderLinkIcon}>
+                              <Image
+                                src="/plus/plus.png"
+                                alt=""
+                                aria-hidden="true"
+                                width={20}
+                                height={20}
+                              />
+                            </span>
+                            <span>{lessonResources.links.linkText}</span>
+                          </a>
+                        )}
                     </div>
                     <div className={styles.lessonPreviewsCard}>
                       {!!activeLessonItems.length ? (
@@ -2400,49 +2449,6 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                   Choose a lesson to explore teaching materials.
                 </p>
               )}
-              {lessonResources?.links?.url && lessonResources?.links?.linkText && (
-                <a
-                  className={styles.lessonFolderLink}
-                  href={lessonResources.links.url?.[0] ?? '#'}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  {lessonResources.links.linkText}
-                </a>
-              )}
-              <div className={styles.gpPlusBannerWrap}>
-                <div className={styles.gpPlusBanner}>
-                  <div className={styles.gpPlusLogo}>
-                    <Image
-                      alt="GP+ logo"
-                      width={88}
-                      height={88}
-                      src="/imgs/gp-logos/gp_submark.png"
-                    />
-                  </div>
-                  <div className={styles.gpPlusCopy}>
-                    <div className={styles.gpPlusHeadline}>
-                      Download &amp; Edit lessons in one-click
-                    </div>
-                    <div className={styles.gpPlusSubhead}>Get 50% off GP+</div>
-                  </div>
-                  <button
-                    type="button"
-                    className={styles.gpPlusCta}
-                    onClick={() => setIsGpPlusModalDisplayed(true)}
-                  >
-                    <span className={styles.gpPlusCtaIcon}>
-                      <Image
-                        alt="GP+ icon"
-                        width={48}
-                        height={48}
-                        src="/plus/plus.png"
-                      />
-                    </span>
-                    <span>Upgrade to GP+</span>
-                  </button>
-                </div>
-              </div>
             </div>
           </section>
         )}
@@ -2974,30 +2980,30 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
             </button>
           </div>
         )}
+        <aside className={styles.licenseBanner} aria-label="Creative Commons license notice">
+          <div className={styles.licenseBannerInner}>
+            <Image
+              src="/imgs/creative-commons_by-nc-sa.svg"
+              alt=""
+              aria-hidden="true"
+              width={126}
+              height={44}
+            />
+            <p className={styles.licenseBannerText}>
+              <strong>CC BY-SA 4.0.</strong> Use and adapt with attribution. If you share
+              changes, use the same license.
+            </p>
+            <a
+              href="https://creativecommons.org/licenses/by-sa/4.0/"
+              target="_blank"
+              rel="noreferrer"
+              className={styles.licenseBannerLink}
+            >
+              License details
+            </a>
+          </div>
+        </aside>
       </main>
-      <aside className={styles.licenseBanner} aria-label="Creative Commons license notice">
-        <div className={styles.licenseBannerInner}>
-          <Image
-            src="/imgs/creative-commons_by-nc-sa.svg"
-            alt=""
-            aria-hidden="true"
-            width={126}
-            height={44}
-          />
-          <p className={styles.licenseBannerText}>
-            <strong>CC BY-SA 4.0.</strong> Use and adapt with attribution. If you share
-            changes, use the same license.
-          </p>
-          <a
-            href="https://creativecommons.org/licenses/by-sa/4.0/"
-            target="_blank"
-            rel="noreferrer"
-            className={styles.licenseBannerLink}
-          >
-            License details
-          </a>
-        </div>
-      </aside>
     </div>
   );
 };

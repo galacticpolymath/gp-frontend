@@ -549,7 +549,7 @@
 .unitMain {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 14px 16px 112px;
+  padding: 14px 16px 28px;
   display: grid;
   gap: 18px;
 }
@@ -954,9 +954,38 @@
 
 .lessonFolderLink {
   display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: fit-content;
   margin-top: 12px;
-  color: #2c83c3;
-  font-weight: 600;
+  padding: 10px 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(28, 40, 189, 0.22);
+  background: #ffffff;
+  color: #1c28bd;
+  font-weight: 700;
+  font-size: 13px;
+  text-decoration: none;
+  box-shadow: 0 8px 16px rgba(28, 40, 189, 0.12);
+  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+}
+
+.lessonFolderLink:hover,
+.lessonFolderLink:focus {
+  color: #1c28bd;
+  text-decoration: none;
+  transform: translateY(-1px);
+  border-color: rgba(28, 40, 189, 0.4);
+  box-shadow: 0 12px 22px rgba(28, 40, 189, 0.2);
+}
+
+.lessonFolderLinkIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
 }
 
 .lessonContent {
@@ -969,6 +998,10 @@
   width: 100%;
 }
 
+.gpPlusBannerWrapInGrid {
+  grid-column: 1 / -1;
+}
+
 .gpPlusBanner {
   background: rgba(239, 232, 251, 0.99);
   border-radius: 20px;
@@ -979,6 +1012,30 @@
   align-items: center;
   justify-content: space-between;
   gap: 24px;
+  position: relative;
+  padding-right: 56px;
+}
+
+.gpPlusBannerClose {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  border: 1px solid rgba(28, 40, 189, 0.2);
+  background: rgba(255, 255, 255, 0.9);
+  color: #1c28bd;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.gpPlusBannerClose:hover,
+.gpPlusBannerClose:focus {
+  background: rgba(255, 255, 255, 1);
+  border-color: rgba(28, 40, 189, 0.4);
 }
 
 .gpPlusLogo {
@@ -2169,20 +2226,17 @@
 }
 
 .licenseBanner {
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 40;
-  border-top: 1px solid rgba(31, 53, 90, 0.18);
-  background: rgba(248, 251, 255, 0.97);
-  backdrop-filter: blur(8px);
+  margin-top: 16px;
+  border-top: 1px solid rgba(31, 53, 90, 0.12);
+  border-radius: 14px;
+  background: rgba(248, 251, 255, 0.95);
+  border: 1px solid rgba(31, 53, 90, 0.12);
 }
 
 .licenseBannerInner {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 8px 16px calc(8px + env(safe-area-inset-bottom, 0px));
+  max-width: 100%;
+  margin: 0;
+  padding: 10px 12px;
   display: grid;
   gap: 8px;
   align-items: center;
