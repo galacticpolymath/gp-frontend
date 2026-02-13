@@ -57,7 +57,22 @@ const VALID_CLIENT_DOMAINS = new Set([
   'https://dev.galacticpolymath.com',
   'http://localhost:3000',
   'https://teach.galacticpolymath.com',
+  'https://galacticpolymath.com',
+  'https://www.galacticpolymath.com',
 ]);
+const TRUSTED_HOST_SUFFIXES = ['.galacticpolymath.com', '.vercel.app'];
+const isValidClientOrigin = (origin) => {
+  if (VALID_CLIENT_DOMAINS.has(origin)) {
+    return true;
+  }
+
+  try {
+    const { hostname } = new URL(origin);
+    return TRUSTED_HOST_SUFFIXES.some((suffix) => hostname.endsWith(suffix));
+  } catch {
+    return false;
+  }
+};
 const OUTSETA_WEBHOOK_PATHS = new Set([
   '/api/gp-plus/outseta/account-updated',
 ]);
@@ -91,10 +106,9 @@ export default async function proxy(request) {
       return NextResponse.next();
     }
 
-    if (!VALID_CLIENT_DOMAINS.has(nextUrl.origin)) {
+    if (!isValidClientOrigin(nextUrl.origin)) {
       console.error(`Invalid client domain detected: ${nextUrl.origin}`);
-
-      return NextResponse.redirect('https://teach.galacticpolymath.com/error');
+      return NextResponse.redirect(`${nextUrl.origin}/error`);
     }
 
     if (pathname === '/password-reset') {
