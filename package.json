@@ -62,7 +62,7 @@
     "latest-version": "^9.0.0",
     "link-preview-js": "^4.0.0",
     "lodash.throttle": "^4.1.1",
-    "lucide-react": "^0.563.0",
+    "lucide-react": "^0.564.0",
     "magic-sdk": "^33.4.0",
     "moment": "^2.30.1",
     "mongodb": "^7.1.0",
