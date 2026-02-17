@@ -87,11 +87,17 @@ export interface TAccountForm {
 }
 
 export const UserContext = createContext<TUserProviderValue | null>(null);
+const GP_PLUS_STATUS_STORAGE_KEY = 'isGpPlusUser';
+const GP_PLUS_EMAIL_STORAGE_KEY = 'isGpPlusUserEmail';
 
 export const UserProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const { data, status } = useSession();
   const sessionData = data as IUserSession | null;
   const authToken = sessionData?.token ?? null;
+  const userEmail =
+    typeof sessionData?.user?.email === 'string'
+      ? sessionData.user.email.toLowerCase()
+      : '';
   const didAttemptGpPlusFetch = useRef(false);
   const [aboutUserForm, setAboutUserForm] = useState(userAccountDefault);
   const [isCopyUnitBtnDisabled, setIsCopyUnitBtnDisabled] = useState(true);
@@ -114,22 +120,42 @@ export const UserProvider: React.FC<PropsWithChildren> = ({ children }) => {
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
+    const cachedEmail = (
+      window.sessionStorage.getItem(GP_PLUS_EMAIL_STORAGE_KEY) || ''
+    ).toLowerCase();
+    if (userEmail && cachedEmail && userEmail !== cachedEmail) {
+      window.sessionStorage.removeItem(GP_PLUS_STATUS_STORAGE_KEY);
+      window.sessionStorage.removeItem(GP_PLUS_EMAIL_STORAGE_KEY);
+      cookies.remove('isGpPlusMember', { path: '/' });
+    }
+
     const cookieValue = cookies.get('isGpPlusMember');
-    const sessionValue = window.sessionStorage.getItem('isGpPlusUser');
+    const sessionValue = window.sessionStorage.getItem(GP_PLUS_STATUS_STORAGE_KEY);
     const resolved =
       cookieValue === 'true' || sessionValue === 'true' ? true : false;
     if (resolved !== isGpPlusMember) {
       setIsGpPlusMember(resolved);
     }
-  }, [isGpPlusMember]);
+  }, [isGpPlusMember, userEmail]);
 
   useEffect(() => {
     if (status !== 'authenticated') return;
     if (!authToken) return;
     if (didAttemptGpPlusFetch.current) return;
-    const cookieValue = cookies.get('isGpPlusMember');
-    const sessionValue = window.sessionStorage.getItem('isGpPlusUser');
-    if (cookieValue || sessionValue) return;
+    if (typeof window === 'undefined') return;
+
+    const cachedEmail = (
+      window.sessionStorage.getItem(GP_PLUS_EMAIL_STORAGE_KEY) || ''
+    ).toLowerCase();
+    const hasCachedStatusForUser =
+      cachedEmail === userEmail &&
+      typeof window.sessionStorage.getItem(GP_PLUS_STATUS_STORAGE_KEY) ===
+        'string';
+
+    if (hasCachedStatusForUser) {
+      return;
+    }
+
     didAttemptGpPlusFetch.current = true;
     axios
       .get('/api/get-user-account-data', {
@@ -138,7 +164,13 @@ export const UserProvider: React.FC<PropsWithChildren> = ({ children }) => {
       .then((response) => {
         const isGpPlus = response?.data?.isGpPlusMember;
         if (typeof isGpPlus === 'boolean') {
-          window.sessionStorage.setItem('isGpPlusUser', String(isGpPlus));
+          window.sessionStorage.setItem(
+            GP_PLUS_STATUS_STORAGE_KEY,
+            String(isGpPlus)
+          );
+          if (userEmail) {
+            window.sessionStorage.setItem(GP_PLUS_EMAIL_STORAGE_KEY, userEmail);
+          }
           cookies.set('isGpPlusMember', String(isGpPlus), { path: '/' });
           setIsGpPlusMember(isGpPlus);
         }
@@ -146,7 +178,7 @@ export const UserProvider: React.FC<PropsWithChildren> = ({ children }) => {
       .catch(() => {
         didAttemptGpPlusFetch.current = false;
       });
-  }, [authToken, status]);
+  }, [authToken, status, userEmail]);
   const value: TUserProviderValue = {
     _aboutUserForm: [aboutUserForm, setAboutUserForm],
     _willShowGpPlusCopyLessonHelperModal: [
