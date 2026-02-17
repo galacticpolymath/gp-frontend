@@ -111,11 +111,12 @@ const LessonPreview: React.FC<IProps> = ({ lesson, unit }) => {
     return (
       <>
         <Head>
-          <title>{`${unit?.Title ?? 'Unit'} Preview | GP`}</title>
+          <title>{`${unit?.Title ?? 'Unit'} | GP`}</title>
           <meta
             name="description"
-            content={`Preview for ${unit?.Title ?? 'this unit'} in the Galactic Polymath portal.`}
+            content={`Internal unit review page for ${unit?.Title ?? 'this unit'} in the Galactic Polymath portal.`}
           />
+          <meta name="robots" content="noindex, nofollow" />
         </Head>
         <UnitPreviewUI
           areTargetStandardsValid={areTargetStandardsValid}
@@ -188,11 +189,12 @@ const LessonPreview: React.FC<IProps> = ({ lesson, unit }) => {
   return (
     <div>
       <Head>
-        <title>{`${lesson?.Title ?? 'Lesson'} Preview | GP`}</title>
+        <title>{`${lesson?.Title ?? 'Lesson'} | GP`}</title>
         <meta
           name="description"
-          content={`Preview for ${lesson?.Title ?? 'this lesson'} in the Galactic Polymath portal.`}
+          content={`Internal lesson review page for ${lesson?.Title ?? 'this lesson'} in the Galactic Polymath portal.`}
         />
+        <meta name="robots" content="noindex, nofollow" />
       </Head>
       <div
         style={{ backgroundColor: '#252525' }}

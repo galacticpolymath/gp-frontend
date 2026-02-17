@@ -1400,9 +1400,9 @@ export const getStaticProps = async (arg: {
         throw new Error('Unit is not found.');
       }
 
-      const unitGDriveChildItemsAll = (
-        await getUnitGDriveChildItems(targetUnit.GdrivePublicID!)
-      );
+      const unitGDriveChildItemsAll = targetUnit.GdrivePublicID
+        ? await getUnitGDriveChildItems(targetUnit.GdrivePublicID)
+        : [];
       const gpGDriveLessonItems = unitGDriveChildItemsAll?.filter(item => item.mimeType !== "application/vnd.google-apps.folder")
       const unitGDriveChildItems = unitGDriveChildItemsAll?.filter((item) => item.mimeType?.includes('folder'));
       const headLinks = targetUnits

@@ -27,6 +27,7 @@ import { CookiesProvider } from "react-cookie";
 import CookieConsentBanner, {
   COOKIE_CONSENT_STORAGE_KEY,
 } from "../components/CookieConsentBanner";
+import HelpLauncher from "../components/HelpLauncher";
 
 const queryClient = new QueryClient();
 
@@ -84,6 +85,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
                     >
                       <Toaster />
                       <Component {...pageProps} />
+                      <HelpLauncher />
                       <ModalsContainer />
                       <CookieConsentBanner
                         consentStatus={cookieConsentStatus}

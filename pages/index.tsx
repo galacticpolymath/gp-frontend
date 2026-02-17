@@ -48,6 +48,7 @@ import {
 import { IUnitLesson } from "../types/global";
 import PortalNav from "../components/PortalNav";
 import Footer from "../components/Footer";
+import { ensureAbsoluteUrl } from "../shared/seo";
 import {
   IConnectionJobViz,
   IJobVizConnection,
@@ -1938,6 +1939,13 @@ export default function HomePage({
       : resolvedTab === "All"
         ? "All Resources | GP Portal"
         : `${resolvedTab} | GP Portal`;
+  const pageDescription = isHomeView
+    ? "Discover free interdisciplinary lessons, classroom-ready resources, and JobViz career tools for grades 5+."
+    : "Browse Galactic Polymath resources by subject, grade level, and format to quickly find the best classroom fit.";
+  const canonicalUrl = ensureAbsoluteUrl("/");
+  const socialPreviewImage = ensureAbsoluteUrl(
+    "/imgs/home/banners/new-gp-splosion-homepage-hero_gp-homepage-hero_desktop.png"
+  );
 
   useEffect(() => {
     if (!isAllView || deferResults) return;
@@ -2108,9 +2116,38 @@ export default function HomePage({
         return;
       }
 
-      const { default: SvgMap } = await import("svgmap");
+      let SvgMap: any = null;
+      const globalWithRequire = window as Window & {
+        require?: (moduleName: string) => unknown;
+      };
+      const originalRequire = globalWithRequire.require;
+      try {
+        const svgPanZoomModule = await import("svg-pan-zoom");
+        const svgPanZoom = (svgPanZoomModule as any).default ?? svgPanZoomModule;
+        globalWithRequire.require = (moduleName: string) => {
+          if (moduleName === "svg-pan-zoom") {
+            return svgPanZoom;
+          }
+          if (typeof originalRequire === "function") {
+            return originalRequire(moduleName);
+          }
+          throw new Error(`Unsupported module requested via require: ${moduleName}`);
+        };
 
-      if (!isMounted || !container) {
+        const svgMapModule = await import("svgmap");
+        SvgMap = svgMapModule?.default;
+      } catch (error) {
+        console.error("Unable to load svgmap module", error);
+        return;
+      } finally {
+        if (typeof originalRequire === "function") {
+          globalWithRequire.require = originalRequire;
+        } else {
+          delete globalWithRequire.require;
+        }
+      }
+
+      if (!isMounted || !container || typeof SvgMap !== "function") {
         return;
       }
 
@@ -2125,29 +2162,33 @@ export default function HomePage({
         {} as Record<string, { teachers: number; color: string }>
       );
 
-      mapInstanceRef.current = new SvgMap({
-        targetElementID: "gp-world-map",
-        allowInteraction: false,
-        showZoomReset: false,
-        showContinentSelector: false,
-        mouseWheelZoomEnabled: false,
-        touchLink: false,
-        colorNoData: "transparent",
-        colorMin: "#f0f6ff",
-        colorMax: "#f0f6ff",
-        data: {
+      try {
+        mapInstanceRef.current = new SvgMap({
+          targetElementID: "gp-world-map",
+          allowInteraction: false,
+          showZoomReset: false,
+          showContinentSelector: false,
+          mouseWheelZoomEnabled: false,
+          touchLink: false,
+          colorNoData: "transparent",
+          colorMin: "#f0f6ff",
+          colorMax: "#f0f6ff",
           data: {
-            teachers: {
-              name: "Teachers",
-              format: "{0}",
-              thresholdMin: 1,
-              thresholdMax: 1,
+            data: {
+              teachers: {
+                name: "Teachers",
+                format: "{0}",
+                thresholdMin: 1,
+                thresholdMax: 1,
+              },
             },
+            applyData: "teachers",
+            values,
           },
-          applyData: "teachers",
-          values,
-        },
-      });
+        });
+      } catch (error) {
+        console.error("Unable to initialize svgmap", error);
+      }
     };
 
     initMap();
@@ -2494,8 +2535,21 @@ export default function HomePage({
         <title>{pageTitle}</title>
         <meta
           name="description"
-          content="Preview the next-generation Galactic Polymath teacher portal with onboarding, search, and curated resources."
+          content={pageDescription}
         />
+        <meta property="og:title" content={pageTitle} />
+        <meta property="og:description" content={pageDescription} />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content={canonicalUrl} />
+        <meta property="og:site_name" content="Galactic Polymath" />
+        <meta property="og:image" content={socialPreviewImage} />
+        <meta property="og:image:alt" content="Galactic Polymath teacher resources" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={pageTitle} />
+        <meta name="twitter:description" content={pageDescription} />
+        <meta name="twitter:image" content={socialPreviewImage} />
+        <meta name="twitter:image:alt" content="Galactic Polymath teacher resources" />
+        <link rel="canonical" href={canonicalUrl} />
       </Head>
       <div
         className={`${styles.page} ${
