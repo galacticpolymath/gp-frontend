@@ -46,7 +46,7 @@ export interface TAboutUserFormBaseProps extends IAboutUserFormNewFieldsV1 {
   occupation?: string;
   zipCode?: string | null | number;
   isTeacher?: boolean;
-  accountType?: "teacher" | "student";
+  accountType?: "teacher" | "student" | "scientist";
   classCode?: string | null;
   dateOfBirth?: Date | string | null;
 }
@@ -103,7 +103,8 @@ export type TUserSchemaV2 = IUserSchemaBaseProps &
     unitGDriveLessons: IUnitGDriveLesson[];
     gdriveAuthEmails: string[];
     willShowGpPlusCopyLessonHelperModal: boolean;
-    displayName?: string
+    displayName?: string,
+    savedJobIds?: string,
     willNotShowEmailNewsLetterSignUpModal: boolean;
   };
 
