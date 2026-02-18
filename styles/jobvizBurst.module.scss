@@ -3908,6 +3908,14 @@ $jobviz-nav-height: 64px;
   justify-content: space-between;
   gap: 0.85rem;
   flex-wrap: wrap;
+  color: #f4f8ff;
+  font-weight: 500;
+  line-height: 1.45;
+}
+
+.jobvizPreviewNotice strong {
+  color: #ffffff;
+  font-weight: 700;
 }
 
 .jobvizPreviewCta {

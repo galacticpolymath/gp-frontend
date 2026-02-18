@@ -1069,6 +1069,9 @@ export default function HomePage({
   const [jobTourAccessResource, setJobTourAccessResource] =
     useState<PreviewResource | null>(null);
   const [isCopyingStudentLink, setIsCopyingStudentLink] = useState(false);
+  const [jobTourAccessMode, setJobTourAccessMode] = useState<
+    "select-view" | "teacher-tools"
+  >("select-view");
   const isSearchRoute = router.pathname === "/search";
   const [carouselIndex, setCarouselIndex] = useState(0);
   const statsSectionRef = useRef<HTMLElement | null>(null);
@@ -1269,9 +1272,11 @@ export default function HomePage({
   const handleCloseJobTourAccessModal = () => {
     setJobTourAccessResource(null);
     setIsCopyingStudentLink(false);
+    setJobTourAccessMode("select-view");
   };
   const handleOpenJobTourAccessModal = (resource: PreviewResource) => {
     setJobTourAccessResource(resource);
+    setJobTourAccessMode("select-view");
   };
   const hasGpPlusAccess =
     status === "authenticated" &&
@@ -1298,6 +1303,9 @@ export default function HomePage({
     router.push(`/jobviz?tourId=${encodeURIComponent(jobTourAccessResource.tourId)}&edit=1`);
     handleCloseJobTourAccessModal();
   }, [jobTourAccessResource?.tourId, router]);
+  const handleOpenTeacherTools = useCallback(() => {
+    setJobTourAccessMode("teacher-tools");
+  }, []);
   const handleOpenTourStudentMode = useCallback(() => {
     if (!jobTourAccessResource?.tourId) return;
     openStudentTour(jobTourAccessResource.tourId, false);
@@ -2590,7 +2598,7 @@ export default function HomePage({
     setJobTourError(null);
     const requests = [
       getJobTours({
-        filterObj: {},
+        filterObj: { heading: "" },
         sort: { lastEdited: -1 },
         limit: 200,
       }),
@@ -4459,75 +4467,112 @@ export default function HomePage({
       {jobTourAccessResource && (
         <div className={styles.modalOverlay} role="presentation">
           <div
-            className={styles.modal}
+            className={`${styles.modal} ${styles.jobTourAccessModal}`}
             role="dialog"
             aria-modal="true"
             aria-label="JobViz tour access"
           >
-            <div className={styles.modalHeader}>
+            <div className={styles.jobTourAccessHeader}>
               <div>
-                <p className={styles.modalKicker}>JobViz+ Career Tour</p>
-                <h2 className={styles.modalTitle}>
+                <p className={styles.jobTourAccessKicker}>JobViz+ Career Tour</p>
+                <h2 className={styles.jobTourAccessTitle}>
                   {jobTourAccessResource.title}
                 </h2>
               </div>
               <button
-                className={styles.modalClose}
+                className={styles.jobTourAccessClose}
                 type="button"
                 onClick={handleCloseJobTourAccessModal}
               >
                 Close
               </button>
             </div>
-            <div className={styles.wizardCard}>
-              <p className={styles.resourceDescription}>
+            <div className={styles.jobTourAccessBody}>
+              <p className={styles.jobTourAccessDescription}>
                 {hasGpPlusAccess
-                  ? "Open this tour in teacher mode to edit, or open/copy the student-facing link."
+                  ? jobTourAccessMode === "teacher-tools"
+                    ? "Teacher tools let you edit this tour and share a student-ready link."
+                    : "Choose how you want to open this tour."
                   : "Preview the first 2 jobs in student view. GP+ unlocks assigning and creating full tours."}
               </p>
-              <div className={styles.wizardFooter}>
+              <div className={styles.jobTourAccessActions}>
                 {hasGpPlusAccess ? (
-                  <>
-                    <button
-                      className={styles.primaryButton}
-                      type="button"
-                      onClick={handleOpenTourTeacherMode}
-                    >
-                      Open as Teacher
-                    </button>
-                    <button
-                      className={styles.secondaryButton}
-                      type="button"
-                      onClick={handleOpenTourStudentMode}
-                    >
-                      Open as Student
-                    </button>
-                    <button
-                      className={styles.ghostButton}
-                      type="button"
-                      disabled={isCopyingStudentLink}
-                      onClick={handleCopyTourStudentLink}
-                    >
-                      {isCopyingStudentLink ? "Copying..." : "Copy Student Link"}
-                    </button>
-                  </>
+                  jobTourAccessMode === "teacher-tools" ? (
+                    <>
+                      <button
+                        className={styles.jobTourAccessPrimaryBtn}
+                        type="button"
+                        onClick={handleOpenTourTeacherMode}
+                      >
+                        <NotebookPen size={16} aria-hidden="true" />
+                        Edit Tour
+                      </button>
+                      <button
+                        className={styles.jobTourAccessSecondaryBtn}
+                        type="button"
+                        disabled={isCopyingStudentLink}
+                        onClick={handleCopyTourStudentLink}
+                      >
+                        <FiShare2 aria-hidden="true" />
+                        {isCopyingStudentLink ? "Copying..." : "Copy Student Link"}
+                      </button>
+                      <button
+                        className={styles.jobTourAccessGhostBtn}
+                        type="button"
+                        onClick={() => setJobTourAccessMode("select-view")}
+                      >
+                        <CircleArrowLeft size={16} aria-hidden="true" />
+                        Back
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <button
+                        className={styles.jobTourAccessPrimaryBtn}
+                        type="button"
+                        onClick={handleOpenTeacherTools}
+                      >
+                        <Briefcase size={16} aria-hidden="true" />
+                        Open as Teacher
+                      </button>
+                      <button
+                        className={styles.jobTourAccessSecondaryBtn}
+                        type="button"
+                        onClick={handleOpenTourStudentMode}
+                      >
+                        <School size={16} aria-hidden="true" />
+                        Open as Student
+                      </button>
+                      <button
+                        className={styles.jobTourAccessGhostBtn}
+                        type="button"
+                        onClick={handleCloseJobTourAccessModal}
+                      >
+                        <X size={16} aria-hidden="true" />
+                        Not now
+                      </button>
+                    </>
+                  )
                 ) : (
                   <>
                     <button
-                      className={styles.primaryButton}
+                      className={styles.jobTourAccessPrimaryBtn}
                       type="button"
                       onClick={handleOpenTourPreview}
                     >
+                      <School size={16} aria-hidden="true" />
                       Preview as Student
                     </button>
-                    <Link href="/gp-plus" className={styles.secondaryButton}>
+                    <Link href="/gp-plus" className={styles.jobTourAccessSecondaryBtn}>
+                      <Rocket size={16} aria-hidden="true" />
                       Get GP+ to Assign or Create
                     </Link>
                     <button
-                      className={styles.ghostButton}
+                      className={styles.jobTourAccessGhostBtn}
                       type="button"
                       onClick={handleCloseJobTourAccessModal}
                     >
+                      <X size={16} aria-hidden="true" />
                       Not now
                     </button>
                   </>
@@ -4535,6 +4580,12 @@ export default function HomePage({
               </div>
             </div>
           </div>
+          <button
+            className={styles.modalBackdrop}
+            type="button"
+            onClick={handleCloseJobTourAccessModal}
+            aria-label="Close tour access modal"
+          />
         </div>
       )}
     </>

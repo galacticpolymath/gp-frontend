@@ -1728,6 +1728,117 @@
   font-weight: 600;
 }
 
+.jobTourAccessModal {
+  width: min(560px, 92vw);
+  border-radius: 22px;
+  padding: 0;
+  overflow: hidden;
+}
+
+.jobTourAccessHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 18px 20px 12px;
+  border-bottom: 1px solid rgba(44, 131, 195, 0.15);
+  background: linear-gradient(
+    140deg,
+    rgba(44, 131, 195, 0.08),
+    rgba(108, 45, 130, 0.08)
+  );
+}
+
+.jobTourAccessKicker {
+  margin: 0 0 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 11px;
+  color: #6c2d82;
+}
+
+.jobTourAccessTitle {
+  margin: 0;
+  font-size: 1.2rem;
+  line-height: 1.35;
+  color: #22327d;
+}
+
+.jobTourAccessClose {
+  border: 1px solid rgba(35, 49, 138, 0.2);
+  background: #ffffff;
+  color: #2c83c3;
+  padding: 7px 11px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.jobTourAccessBody {
+  padding: 16px 20px 20px;
+}
+
+.jobTourAccessDescription {
+  margin: 0;
+  color: #4b567d;
+  line-height: 1.55;
+}
+
+.jobTourAccessActions {
+  margin-top: 14px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.jobTourAccessPrimaryBtn,
+.jobTourAccessSecondaryBtn,
+.jobTourAccessGhostBtn {
+  border-radius: 999px;
+  padding: 10px 14px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-decoration: none;
+  border: 1px solid transparent;
+}
+
+.jobTourAccessPrimaryBtn {
+  background: linear-gradient(135deg, #2c83c3, #6c2d82);
+  color: #ffffff;
+}
+
+.jobTourAccessPrimaryBtn:hover,
+.jobTourAccessPrimaryBtn:focus-visible {
+  color: #ffffff;
+  filter: brightness(1.06);
+}
+
+.jobTourAccessSecondaryBtn {
+  background: #ffffff;
+  border-color: rgba(44, 131, 195, 0.35);
+  color: #2c83c3;
+}
+
+.jobTourAccessSecondaryBtn:hover,
+.jobTourAccessSecondaryBtn:focus-visible {
+  color: #1d6b9f;
+  background: rgba(44, 131, 195, 0.07);
+}
+
+.jobTourAccessGhostBtn {
+  background: #ffffff;
+  border-color: rgba(35, 49, 138, 0.18);
+  color: #4b567d;
+}
+
+.jobTourAccessGhostBtn:hover,
+.jobTourAccessGhostBtn:focus-visible {
+  background: #f3f6fb;
+}
+
 .mediaModalBody {
   display: grid;
   gap: 16px;
