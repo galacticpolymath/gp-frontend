@@ -35,24 +35,16 @@ export default async function handler(
     }
 
     const email = payload.email;
+    const jobIdsToDelete = request.query['jobIdsToDelete']
+    const jobIdsToDeleteValidated = typeof jobIdsToDelete === 'string' ? [jobIdsToDelete] : jobIdsToDelete
 
-    if (!request.body || typeof request.body !== 'object' || Array.isArray(request.body)) {
+    if (!jobIdsToDeleteValidated || !jobIdsToDeleteValidated.length) {
       throw new CustomError(
-        'Request body must be a non-array object.',
+        'No job IDs provided to delete.',
         400
       );
     }
 
-    const { jobIds: _jobIds } = request.body as { jobIds?: unknown };
-
-    if (!_jobIds || !(_jobIds && Array.isArray(_jobIds) && _jobIds.length && _jobIds.every(jobId => typeof jobId === 'string'))) {
-      throw new CustomError(
-        'Request body must include a non-empty string "jobId".',
-        400
-      );
-    }
-
-    let jobIds = _jobIds as string[];
     const { wasSuccessful: wasConnectionSuccessful } = await connectToMongodb(
       15_000,
       0,
@@ -65,7 +57,7 @@ export default async function handler(
 
     const updateResult = await User.updateOne(
       { email: email.toLowerCase() },
-      { $pull: { savedJobIds: { $in: jobIds } } }
+      { $pull: { savedJobIds: { $in: jobIdsToDeleteValidated } } }
     );
 
     if (updateResult.matchedCount === 0) {
