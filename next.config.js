@@ -76,6 +76,18 @@ module.exports = {
   async redirects() {
     return [
       {
+        source: '/',
+        has: [{ type: 'host', value: 'student.galacticpolymath.com' }],
+        destination: '/student',
+        permanent: false,
+      },
+      {
+        source: '/account',
+        has: [{ type: 'host', value: 'student.galacticpolymath.com' }],
+        destination: '/student/login',
+        permanent: false,
+      },
+      {
         source: '/about',
         destination: 'https://www.galacticpolymath.com/about',
         permanent: true,

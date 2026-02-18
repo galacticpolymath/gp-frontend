@@ -828,6 +828,30 @@ $jobviz-nav-height: 64px;
   opacity: 0.95;
 }
 
+.jobvizCardLocked {
+  opacity: 0.65;
+  filter: saturate(0.55);
+  cursor: not-allowed;
+}
+
+.jobvizCardLocked::after {
+  opacity: 0.3;
+}
+
+.lockedCardBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 0.15rem 0.55rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: #dbe8ff;
+  background: rgba(9, 15, 35, 0.6);
+}
+
 .categoryBookmark {
   position: absolute;
   top: 12px;
@@ -3871,6 +3895,99 @@ $jobviz-nav-height: 64px;
   background: rgba(255, 255, 255, 0.1);
   padding: 0.1rem 0.3rem;
   border-radius: 0.35rem;
+}
+
+.jobvizPreviewNotice {
+  margin-bottom: 1.25rem;
+  padding: 0.95rem 1rem;
+  border-radius: 1rem;
+  background: linear-gradient(120deg, rgba(10, 26, 70, 0.85), rgba(35, 13, 66, 0.8));
+  border: 1px solid rgba(117, 172, 255, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.85rem;
+  flex-wrap: wrap;
+}
+
+.jobvizPreviewCta {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 0.4rem 0.9rem;
+  font-weight: 700;
+  color: #ffffff !important;
+  background: linear-gradient(120deg, #1c6dea, #6f3dff);
+  text-decoration: none;
+}
+
+.jobvizPreviewCta:hover,
+.jobvizPreviewCta:focus-visible {
+  color: #ffffff !important;
+  text-decoration: none;
+  filter: brightness(1.1);
+}
+
+.jobvizIntroOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2200;
+  background: rgba(2, 8, 26, 0.75);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.85rem;
+  padding: 1rem;
+  flex-wrap: wrap;
+}
+
+.jobvizIntroDialog {
+  width: min(520px, 100%);
+  background: rgba(10, 17, 42, 0.95);
+  border: 1px solid rgba(130, 169, 255, 0.35);
+  border-radius: 16px;
+  padding: 1rem 1.1rem;
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.45);
+}
+
+.jobvizIntroDialog h3 {
+  margin: 0 0 0.35rem;
+  color: #f4f8ff;
+}
+
+.jobvizIntroDialog p {
+  margin: 0;
+  color: rgba(229, 239, 255, 0.86);
+  line-height: 1.45;
+}
+
+.jobvizIntroActions {
+  margin-top: 0.9rem;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.jobvizIntroDismiss,
+.jobvizIntroContinue {
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  padding: 0.35rem 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.jobvizIntroDismiss {
+  color: #dde8ff;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.jobvizIntroContinue {
+  color: #ffffff;
+  background: linear-gradient(120deg, #1c6dea, #6f3dff);
+  border-color: rgba(255, 255, 255, 0.35);
 }
 
 .tourBuilderPlaceholder {

@@ -73,10 +73,7 @@ export default function HelpLauncher() {
     const mailtoHref = `mailto:${SUPPORT_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 
     setIsOpen(false);
-    const openedTab = window.open(mailtoHref, "_blank", "noopener,noreferrer");
-    if (!openedTab) {
-      window.location.href = mailtoHref;
-    }
+    window.open(mailtoHref, "_blank", "noopener,noreferrer");
   };
 
   return (
@@ -112,7 +109,7 @@ export default function HelpLauncher() {
         }}
       >
         <div className="d-flex justify-content-between align-items-start mb-2">
-          <p className="mb-0 fw-semibold">Need help?</p>
+          <p className="mb-0 fw-semibold">Get Support</p>
           <div className="d-flex align-items-center gap-1">
             <button
               type="button"
@@ -135,7 +132,7 @@ export default function HelpLauncher() {
           </div>
         </div>
         <p className="mb-3" style={{ fontSize: "0.9rem" }}>
-          Email us and we will include page details automatically.
+          Let us know how we can help.
         </p>
         <div className="d-flex flex-column gap-2">
           {(["bug", "question"] as TInquiryType[]).map((inquiryType) => {

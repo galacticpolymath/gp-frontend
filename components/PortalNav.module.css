@@ -213,8 +213,13 @@
 
 .profileSlot a,
 .profileSlot a:hover,
-.profileSlot a:focus {
-  text-decoration: none;
+.profileSlot a:focus,
+.profileSlot a:focus-visible,
+.profileSlot button,
+.profileSlot button:hover,
+.profileSlot button:focus,
+.profileSlot button:focus-visible {
+  text-decoration: none !important;
 }
 
 .profileSlotOpen {
