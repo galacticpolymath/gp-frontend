@@ -29,6 +29,7 @@ export interface JobVizCardProps {
   jobIconName?: string;
   socCode?: string | null;
   isAssignmentJob?: boolean;
+  isLocked?: boolean;
   shouldAnimate?: boolean;
   animationDelayMs?: number;
   isExiting?: boolean;
@@ -82,6 +83,7 @@ export const JobVizCard: React.FC<JobVizCardProps> = ({
   jobIconName,
   socCode,
   isAssignmentJob,
+  isLocked = false,
   shouldAnimate = false,
   animationDelayMs = 0,
   isExiting = false,
@@ -141,7 +143,7 @@ export const JobVizCard: React.FC<JobVizCardProps> = ({
         "--card-pivot-dy": `${pivotShift?.dy ?? 0}px`,
       }
     : undefined;
-  const isInteractive = Boolean(onClick || onCardAction);
+  const isInteractive = !isLocked && Boolean(onClick || onCardAction);
   const canBookmark =
     Boolean(jobTourEditor?.isEditing) && level === 2 && Boolean(socCode);
   const isBookmarked =
@@ -179,7 +181,9 @@ export const JobVizCard: React.FC<JobVizCardProps> = ({
   return (
     <article
       ref={cardRef}
-      className={`${containerClass} ${highlightClass} ${visitedClass} ${animationClass} ${exitClass}`}
+      className={`${containerClass} ${highlightClass} ${visitedClass} ${animationClass} ${exitClass} ${
+        isLocked ? styles.jobvizCardLocked : ""
+      }`}
       style={animationStyle}
       data-jobviz-card-id={cardId}
       onClick={isInteractive ? handleCardClick : undefined}
@@ -190,7 +194,13 @@ export const JobVizCard: React.FC<JobVizCardProps> = ({
       onFocus={() => setHover(true)}
       onBlur={() => setHover(false)}
       onKeyDown={handleKeyActivate}
-      aria-label={level === 1 ? "Click to view jobs" : "Click for job details"}
+      aria-label={
+        isLocked
+          ? "Locked in preview mode"
+          : level === 1
+            ? "Click to view jobs"
+            : "Click for job details"
+      }
       aria-describedby={isHovered ? tooltipId : undefined}
     >
       {canBookmark && socCode && (
@@ -261,6 +271,12 @@ export const JobVizCard: React.FC<JobVizCardProps> = ({
                 title="Part of this assignment"
                 aria-hidden="true"
               />
+            )}
+            {isLocked && (
+              <span className={styles.lockedCardBadge}>
+                <LucideIcon name="Lock" />
+                Locked
+              </span>
             )}
           </div>
         </div>

@@ -7,6 +7,7 @@ import styles from './UnitPage.module.css';
 import {
   Blocks,
   Clock3,
+  Copy,
   Download,
   Eye,
   FileText,
@@ -464,6 +465,181 @@ const buildExcerpt = (value: string, length = 140) => {
     return value;
   }
   return `${value.slice(0, length).trim()}…`;
+};
+
+const stripLinePrefix = (value: string) =>
+  value
+    .replace(/^(authors?|created by|written by|by)\s*[:\-]\s*/i, '')
+    .trim();
+
+const cleanContributorToken = (value: string) =>
+  value
+    .replace(/\(.*?\)/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+const isLikelyContributorName = (value: string) => {
+  if (!value) return false;
+  if (value.length < 3 || value.length > 80) return false;
+  if (/\d/.test(value)) return false;
+  if (/https?:\/\//i.test(value)) return false;
+
+  const blockedWords = [
+    'university',
+    'department',
+    'school',
+    'grade',
+    'lesson',
+    'curriculum',
+    'galactic polymath',
+    'license',
+    'http',
+    'www.',
+  ];
+  const lowered = value.toLowerCase();
+  if (blockedWords.some((word) => lowered.includes(word))) return false;
+
+  const words = value.split(/\s+/).filter(Boolean);
+  return words.length >= 2 && words.length <= 5;
+};
+
+const extractContributorNamesFromCredits = (creditsHtml?: string | null) => {
+  if (!creditsHtml) return [];
+
+  const normalizedText = creditsHtml
+    .replace(/<br\s*\/?>/gi, '\n')
+    .replace(/<\/p>/gi, '\n')
+    .replace(/<li>/gi, '\n')
+    .replace(/<\/li>/gi, '\n')
+    .replace(/<[^>]*>/g, ' ')
+    .replace(/\u00a0/g, ' ');
+  const lines = normalizedText
+    .split('\n')
+    .map((line) => line.trim())
+    .filter(Boolean);
+
+  return lines
+    .map((line) => {
+      const left = line.split('|')[0] ?? '';
+      const cleaned = stripLinePrefix(left)
+        .replace(/^[\s\-*•]+/, '')
+        .replace(/^"+|"+$/g, '')
+        .trim();
+      return isLikelyContributorName(cleaned) ? cleaned : null;
+    })
+    .filter((name): name is string => !!name);
+};
+
+const asContributorName = (value: unknown): string | null => {
+  if (typeof value === 'string') {
+    const cleaned = cleanContributorToken(value);
+    return isLikelyContributorName(cleaned) ? cleaned : null;
+  }
+  if (!value || typeof value !== 'object') return null;
+
+  const nameField = (value as { name?: unknown }).name;
+  if (typeof nameField === 'string') {
+    const cleaned = cleanContributorToken(nameField);
+    return isLikelyContributorName(cleaned) ? cleaned : null;
+  }
+  if (nameField && typeof nameField === 'object') {
+    const first = (nameField as { first?: unknown }).first;
+    const middle = (nameField as { middle?: unknown }).middle;
+    const last = (nameField as { last?: unknown }).last;
+    const composed = [first, middle, last]
+      .filter((part): part is string => typeof part === 'string' && !!part.trim())
+      .join(' ')
+      .trim();
+    return isLikelyContributorName(composed) ? composed : null;
+  }
+  return null;
+};
+
+const dedupeContributors = (names: string[]) => {
+  const seen = new Set<string>();
+  const unique: string[] = [];
+  for (const name of names) {
+    const normalized = name.toLowerCase();
+    if (seen.has(normalized)) continue;
+    seen.add(normalized);
+    unique.push(name);
+  }
+  return unique;
+};
+
+const getUnitContributorNames = (
+  unit: TUnitForUI,
+  acknowledgmentsEntries: any[],
+  creditsContent: string
+) => {
+  const parsedCreditNames = dedupeContributors(
+    extractContributorNamesFromCredits(creditsContent)
+  );
+
+  if (parsedCreditNames.length) {
+    return parsedCreditNames;
+  }
+
+  const unitAny = unit as any;
+  const structuredCandidates = [
+    unitAny?.contributors,
+    unitAny?.authors,
+    unitAny?.citation?.authors,
+    unitAny?.attribution?.authors,
+    unitAny?.Sections?.credits?.Contributors,
+    unitAny?.Sections?.credits?.contributors,
+    unitAny?.Sections?.credits?.Authors,
+    unitAny?.Sections?.credits?.authors,
+  ]
+    .flat()
+    .filter(Boolean);
+  const structuredNames = structuredCandidates
+    .map(asContributorName)
+    .filter((name): name is string => !!name);
+
+  const acknowledgmentNames = acknowledgmentsEntries
+    .flatMap((entry) => entry?.records ?? [])
+    .map((record: any) => asContributorName(record?.name ?? record))
+    .filter((name): name is string => !!name);
+
+  return dedupeContributors([
+    ...structuredNames,
+    ...acknowledgmentNames,
+  ]);
+};
+
+const getCitationYear = (value?: string | Date | null) => {
+  if (!value) return 'n.d.';
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return 'n.d.';
+  return `${date.getFullYear()}`;
+};
+
+const toVancouverName = (name: string) => {
+  const parts = name
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean);
+  if (parts.length <= 1) return name;
+  const last = parts[parts.length - 1];
+  const initials = parts
+    .slice(0, -1)
+    .map((part) => part[0]?.toUpperCase() ?? '')
+    .join('');
+  return `${last} ${initials}`.trim();
+};
+
+const toVancouverAuthors = (names: string[]) => {
+  if (!names.length) return 'Galactic Polymath';
+  const formatted = names.map(toVancouverName);
+  return formatted.join(', ');
+};
+
+const formatVancouverCitedDate = (value: Date) => {
+  const year = value.getFullYear();
+  const month = value.toLocaleString('en-US', { month: 'short' });
+  const day = `${value.getDate()}`.padStart(2, '0');
+  return `${year} ${month} ${day}`;
 };
 
 const getLessonIdentifier = <TItem extends IItem = IItemForUI>(
@@ -1008,10 +1184,19 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
   const [selectedSubjects, setSelectedSubjects] = useState<
     TStandardsSubjectFilter[]
   >(['all']);
+  const [copiedEntry, setCopiedEntry] = useState<
+    'attribution' | 'citation' | null
+  >(null);
+  const [copyErrorEntry, setCopyErrorEntry] = useState<
+    'attribution' | 'citation' | null
+  >(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const unitTagListRef = useRef<HTMLDivElement>(null);
   const unitTagMeasureRefs = useRef<Array<HTMLSpanElement | null>>([]);
   const versionNotesAnchorRef = useRef<HTMLDivElement>(null);
+  const citationStatusTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(
+    null
+  );
   const [shouldScrollToVersionNotes, setShouldScrollToVersionNotes] =
     useState(false);
 
@@ -1380,6 +1565,47 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
   const availLocs = unit.Sections?.overview?.availLocs ?? [];
   const locale = unit.locale ?? 'en-US';
   const numID = unit.numID ?? undefined;
+  const contributorNames = useMemo(
+    () => getUnitContributorNames(unit, acknowledgmentsEntries, creditsContent),
+    [acknowledgmentsEntries, creditsContent, unit]
+  );
+  const citationTitle = `${unitTitle}${unitSubtitle ? `: ${unitSubtitle}` : ''}`;
+  const citationSourceUrl = useMemo(() => {
+    const fallbackPath =
+      typeof numID !== 'undefined' ? `/units/${locale}/${numID}` : '/units';
+    const baseUrl =
+      typeof unit.URL === 'string' && unit.URL.trim()
+        ? unit.URL.trim()
+        : fallbackPath;
+    return typeof window !== 'undefined' && baseUrl.startsWith('/')
+      ? `${window.location.origin}${baseUrl}`
+      : baseUrl;
+  }, [locale, numID, unit.URL]);
+  const citationAuthorsLabel = contributorNames.length
+    ? contributorNames.join(', ')
+    : 'Galactic Polymath';
+  const attributionText = useMemo(
+    () =>
+      `"${citationTitle}" by ${citationAuthorsLabel}. Source: [Galactic Polymath](${citationSourceUrl}). License: [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/).`,
+    [citationAuthorsLabel, citationSourceUrl, citationTitle]
+  );
+  const vancouverCitation = useMemo(() => {
+    const year = getCitationYear(unit.ReleaseDate);
+    const citedDate = formatVancouverCitedDate(new Date());
+    return `${toVancouverAuthors(
+      contributorNames
+    )}. ${citationTitle} [Internet]. Galactic Polymath; ${year} [cited ${citedDate}]. Available from: ${citationSourceUrl}`;
+  }, [citationSourceUrl, citationTitle, contributorNames, unit.ReleaseDate]);
+  const attributionDisplayParts = useMemo(
+    () => ({
+      titleByAuthors: `"${citationTitle}" by ${citationAuthorsLabel}.`,
+      sourceLabel: 'Galactic Polymath',
+      sourceHref: citationSourceUrl,
+      licenseLabel: 'CC BY-NC-SA 4.0',
+      licenseHref: 'https://creativecommons.org/licenses/by-nc-sa/4.0/',
+    }),
+    [citationAuthorsLabel, citationSourceUrl, citationTitle]
+  );
   const alignedSubjects = useMemo(() => {
     const standardsData = unit.Sections?.standards?.Data;
     const subjectsFromStandards = Array.isArray(standardsData)
@@ -1446,6 +1672,13 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
   useEffect(() => {
     setActiveMaterialIndex(0);
   }, [activeLessonId]);
+  useEffect(() => {
+    return () => {
+      if (citationStatusTimeoutRef.current) {
+        clearTimeout(citationStatusTimeoutRef.current);
+      }
+    };
+  }, []);
   const [, setIsGpPlusModalDisplayed] = _isGpPlusModalDisplayed;
 
   const handleVersionInfoClick = () => {
@@ -1510,6 +1743,53 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
       trackUnitEvent('unit_shared', { share_method: 'clipboard' });
     } catch (error) {
       trackUnitEvent('unit_share_failed', { reason: 'clipboard_write_failed' });
+    }
+  };
+
+  const handleCopyCitation = async (
+    text: string,
+    entryType: 'attribution' | 'citation'
+  ) => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    const setStatusWithReset = (status: 'copied' | 'error') => {
+      if (status === 'copied') {
+        setCopiedEntry(entryType);
+        setCopyErrorEntry(null);
+      } else {
+        setCopiedEntry(null);
+        setCopyErrorEntry(entryType);
+      }
+      if (citationStatusTimeoutRef.current) {
+        clearTimeout(citationStatusTimeoutRef.current);
+      }
+      citationStatusTimeoutRef.current = setTimeout(() => {
+        setCopiedEntry(null);
+        setCopyErrorEntry(null);
+      }, 2200);
+    };
+
+    try {
+      await navigator.clipboard.writeText(text);
+      setStatusWithReset('copied');
+      return;
+    } catch (error) {}
+
+    try {
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      textarea.setAttribute('readonly', '');
+      textarea.style.position = 'fixed';
+      textarea.style.left = '-9999px';
+      document.body.appendChild(textarea);
+      textarea.select();
+      const wasCopied = document.execCommand('copy');
+      document.body.removeChild(textarea);
+      setStatusWithReset(wasCopied ? 'copied' : 'error');
+    } catch (error) {
+      setStatusWithReset('error');
     }
   };
 
@@ -2982,25 +3262,100 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
         )}
         <aside className={styles.licenseBanner} aria-label="Creative Commons license notice">
           <div className={styles.licenseBannerInner}>
-            <Image
-              src="/imgs/creative-commons_by-nc-sa.svg"
-              alt=""
-              aria-hidden="true"
-              width={126}
-              height={44}
-            />
-            <p className={styles.licenseBannerText}>
-              <strong>CC BY-SA 4.0.</strong> Use and adapt with attribution. If you share
-              changes, use the same license.
-            </p>
-            <a
-              href="https://creativecommons.org/licenses/by-sa/4.0/"
-              target="_blank"
-              rel="noreferrer"
-              className={styles.licenseBannerLink}
-            >
-              License details
-            </a>
+            <div className={styles.licenseTopRow}>
+              <Image
+                src="/imgs/creative-commons_by-nc-sa.svg"
+                alt=""
+                aria-hidden="true"
+                width={126}
+                height={44}
+              />
+              <div className={styles.licenseMeta}>
+                <p className={styles.licenseBannerText}>
+                  <strong>CC BY-NC-SA 4.0.</strong> Share + Remix, with attribution. Don&apos;t sell.
+                </p>
+                <a
+                  href="https://creativecommons.org/licenses/by-nc-sa/4.0/"
+                  target="_blank"
+                  rel="noreferrer"
+                  className={styles.licenseBannerLink}
+                >
+                  License details
+                </a>
+              </div>
+            </div>
+            <details className={styles.citationDisclosure} open>
+              <summary className={styles.citationDisclosureSummary}>
+                Citation &amp; Attribution Info
+              </summary>
+              <div className={styles.citationBlock}>
+                <div className={styles.citationEntry}>
+                  <p className={styles.citationLabel}>Give Attribution</p>
+                  <p className={styles.citationText}>
+                    {attributionDisplayParts.titleByAuthors}{' '}
+                    Source:{' '}
+                    <a
+                      href={attributionDisplayParts.sourceHref}
+                      target="_blank"
+                      rel="noreferrer"
+                      className={styles.citationInlineLink}
+                    >
+                      {attributionDisplayParts.sourceLabel}
+                    </a>
+                    . License:{' '}
+                    <a
+                      href={attributionDisplayParts.licenseHref}
+                      target="_blank"
+                      rel="noreferrer"
+                      className={styles.citationInlineLink}
+                    >
+                      {attributionDisplayParts.licenseLabel}
+                    </a>
+                    .
+                  </p>
+                  <div className={styles.citationEntryFooter}>
+                    {copiedEntry === 'attribution' && (
+                      <span className={styles.citationStatus}>Copied</span>
+                    )}
+                    {copyErrorEntry === 'attribution' && (
+                      <span className={styles.citationStatusError}>Unable to copy</span>
+                    )}
+                    <button
+                      type="button"
+                      className={styles.copyCitationButton}
+                      onClick={() => handleCopyCitation(attributionText, 'attribution')}
+                      aria-label="Copy attribution"
+                      title="Copy attribution"
+                    >
+                      <Copy size={13} aria-hidden="true" />
+                      <span>Copy</span>
+                    </button>
+                  </div>
+                </div>
+                <div className={styles.citationEntry}>
+                  <p className={styles.citationLabel}>Cite this Work</p>
+                  <p className={styles.citationText}>{vancouverCitation}</p>
+                  <div className={styles.citationEntryFooter}>
+                    {copiedEntry === 'citation' && (
+                      <span className={styles.citationStatus}>Copied</span>
+                    )}
+                    {copyErrorEntry === 'citation' && (
+                      <span className={styles.citationStatusError}>Unable to copy</span>
+                    )}
+                    <button
+                      type="button"
+                      className={styles.copyCitationButton}
+                      onClick={() => handleCopyCitation(vancouverCitation, 'citation')}
+                      aria-label="Copy citation"
+                      title="Copy citation"
+                    >
+                      <Copy size={13} aria-hidden="true" />
+                      <span>Copy</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </details>
           </div>
         </aside>
       </main>

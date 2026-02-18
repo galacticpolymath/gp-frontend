@@ -17,6 +17,7 @@ export interface JobVizGridItem {
   jobIconName?: string;
   socCode?: string | null;
   isAssignmentJob?: boolean;
+  isLocked?: boolean;
 }
 
 export interface CardAnchor {
@@ -232,6 +233,7 @@ export const JobVizGrid: React.FC<JobVizGridProps> = ({
               jobIconName={item.jobIconName}
               socCode={item.socCode}
               isAssignmentJob={item.isAssignmentJob}
+              isLocked={item.isLocked}
               highlight={item.highlight}
               highlightClicked={item.highlightClicked}
               showBookmark={item.showBookmark}

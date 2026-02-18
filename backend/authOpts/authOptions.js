@@ -206,6 +206,9 @@ export const authOptions = {
             formType,
             isOnMailingList,
             clientUrl,
+            accountType,
+            classCode,
+            dateOfBirth,
           } = credentials;
           /** @type { import('../models/User').TUserSchema } */
           const dbUser = await getUserByEmail(email);
@@ -283,6 +286,35 @@ export const authOptions = {
 
           console.log("Creating the new user...");
 
+          const isStudentAccount = accountType === "student";
+          let normalizedDateOfBirth = null;
+          if (isStudentAccount) {
+            normalizedDateOfBirth = dateOfBirth ? new Date(dateOfBirth) : null;
+            if (
+              !normalizedDateOfBirth ||
+              Number.isNaN(normalizedDateOfBirth.getTime())
+            ) {
+              throw new AuthError(
+                "invalidStudentBirthDate",
+                422,
+                callbackUrl ?? ""
+              );
+            }
+            const now = new Date();
+            const minBirthDate = new Date(
+              now.getFullYear() - 13,
+              now.getMonth(),
+              now.getDate()
+            );
+            if (normalizedDateOfBirth > minBirthDate) {
+              throw new AuthError(
+                "underageAccountNotAllowed",
+                403,
+                callbackUrl ?? ""
+              );
+            }
+          }
+
           const hashedPassword = hashPassword(
             password,
             createSalt(),
@@ -296,9 +328,19 @@ export const authOptions = {
             firstName,
             lastName,
             provider: "credentials",
-            roles: ["user"],
+            roles: isStudentAccount ? ["user", "student"] : ["user"],
             totalSignIns: 1,
             lastSignIn: new Date(),
+            ...(isStudentAccount
+              ? {
+                  accountType: "student",
+                  classCode:
+                    typeof classCode === "string" && classCode.trim()
+                      ? classCode.trim()
+                      : undefined,
+                  dateOfBirth: normalizedDateOfBirth,
+                }
+              : {}),
           };
           const newUserDoc = createDocument(userDocumentToCreate, User);
 
@@ -495,6 +537,22 @@ export const authOptions = {
             code ?? 500,
             urlErrorParamKey ?? "",
             urlErrorParamVal ?? ""
+          );
+        }
+
+        if (errType === "invalidStudentBirthDate") {
+          throw new SignInError(
+            "invalid-student-birthdate",
+            "Please provide a valid date of birth.",
+            code ?? 422
+          );
+        }
+
+        if (errType === "underageAccountNotAllowed") {
+          throw new SignInError(
+            "student-under-13-not-allowed",
+            "Students under 13 cannot create self-serve accounts.",
+            code ?? 403
           );
         }
 

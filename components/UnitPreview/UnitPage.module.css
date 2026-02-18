@@ -2236,16 +2236,31 @@
 .licenseBannerInner {
   max-width: 100%;
   margin: 0;
-  padding: 10px 12px;
+  padding: 10px 12px 11px;
   display: grid;
-  gap: 8px;
+  gap: 6px;
+  align-items: start;
+}
+
+.licenseTopRow {
+  display: flex;
   align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.licenseMeta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
 .licenseBannerText {
   margin: 0;
   font-size: 12px;
-  line-height: 1.35;
+  line-height: 1.3;
   color: #1f355a;
 }
 
@@ -2260,6 +2275,107 @@
   color: #1f355a;
   text-decoration: underline;
   text-underline-offset: 2px;
+}
+
+.citationDisclosure {
+  border-top: 1px solid rgba(31, 53, 90, 0.12);
+  padding-top: 4px;
+}
+
+.citationDisclosureSummary {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 700;
+  color: #1f355a;
+  cursor: pointer;
+  list-style: none;
+}
+
+.citationDisclosureSummary::-webkit-details-marker {
+  display: none;
+}
+
+.citationBlock {
+  display: grid;
+  gap: 9px;
+  padding-top: 8px;
+}
+
+.citationLabel {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 700;
+  color: #1f355a;
+}
+
+.citationText {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.35;
+  color: #1f355a;
+}
+
+.citationEntry {
+  display: grid;
+  gap: 4px;
+}
+
+.citationEntryFooter {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.copyCitationButton {
+  border: 1px solid rgba(31, 53, 90, 0.28);
+  background: #ffffff;
+  color: #1f355a;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  transition: background-color 140ms ease, border-color 140ms ease;
+  flex: 0 0 auto;
+}
+
+.copyCitationButton:hover {
+  background: #eef4ff;
+  border-color: rgba(31, 53, 90, 0.45);
+}
+
+.citationStatus {
+  font-size: 12px;
+  color: #1c6f3f;
+  font-weight: 700;
+}
+
+.citationStatusError {
+  font-size: 12px;
+  color: #b42318;
+  font-weight: 700;
+}
+
+.citationInlineLink {
+  color: #1f355a;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  font-weight: 700;
+}
+
+@media (max-width: 767px) {
+  .licenseTopRow {
+    gap: 7px;
+  }
+
+  .licenseMeta {
+    gap: 7px;
+  }
 }
 
 @media (max-width: 1023px) {

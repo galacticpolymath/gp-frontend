@@ -46,6 +46,9 @@ export interface TAboutUserFormBaseProps extends IAboutUserFormNewFieldsV1 {
   occupation?: string;
   zipCode?: string | null | number;
   isTeacher?: boolean;
+  accountType?: "teacher" | "student";
+  classCode?: string | null;
+  dateOfBirth?: Date | string | null;
 }
 
 export interface TAboutUserForm<

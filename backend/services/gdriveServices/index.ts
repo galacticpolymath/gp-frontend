@@ -206,11 +206,25 @@ export const createDrive = async (
 ) => {
   const drive = google.drive('v3');
   const creds = new GoogleServiceAccountAuthCreds();
+  const normalizedPrivateKey = creds?.private_key?.replace(/\\n/g, '\n').replace(/"/g, '');
+  const hasRequiredCreds =
+    typeof creds.client_email === 'string' &&
+    !!creds.client_email &&
+    typeof normalizedPrivateKey === 'string' &&
+    !!normalizedPrivateKey;
+
+  if (!hasRequiredCreds) {
+    throw new CustomError(
+      'Google Drive service account credentials are missing. Set GDRIVE_WORKER_KEY and related service account env vars before creating a Drive client.',
+      500
+    );
+  }
+
   const auth = new google.auth.GoogleAuth({
     credentials: {
       client_email: creds.client_email,
       client_id: creds.client_id,
-      private_key: creds?.private_key?.replace(/\\n/g, '\n').replace(/"/g, ''),
+      private_key: normalizedPrivateKey,
     },
     scopes: scopes,
   });
@@ -1024,6 +1038,17 @@ export const getGDriveItemViaServiceAccount = async (
 };
 
 export const getUnitGDriveChildItems = async (unitId: string) => {
+  const creds = new GoogleServiceAccountAuthCreds();
+  const hasDriveId = typeof process.env.GOOGLE_DRIVE_ID === 'string' && !!process.env.GOOGLE_DRIVE_ID;
+  const hasPrivateKey = typeof creds.private_key === 'string' && !!creds.private_key;
+
+  if (!hasDriveId || !hasPrivateKey) {
+    console.warn(
+      'Skipping getUnitGDriveChildItems because Google Drive credentials are not configured in this environment.'
+    );
+    return [];
+  }
+
   try {
     const drive = await createDrive();
 

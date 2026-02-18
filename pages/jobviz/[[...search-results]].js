@@ -7,6 +7,7 @@ import {
   useState,
 } from "react";
 import { useRouter } from "next/router";
+import Link from "next/link";
 import Layout from "../../components/Layout";
 import { AssignmentBanner } from "../../components/JobViz/AssignmentBanner";
 import {
@@ -74,6 +75,11 @@ import {
   DEFAULT_JOB_TOUR_VERSION_PREFIX,
   CLASS_SUBJECT_OPTIONS,
 } from "../../components/JobViz/JobTours/jobTourConstants";
+import {
+  buildStudentTourUrl,
+  isTruthyQueryFlag,
+  JOBVIZ_PREVIEW_LIMIT,
+} from "../../components/JobViz/JobTours/tourAccess";
 import { toast } from "react-hot-toast";
 
 const JOBVIZ_DESCRIPTION =
@@ -82,6 +88,8 @@ const JOBVIZ_DATA_SOURCE =
   "https://www.bls.gov/emp/tables/occupational-projections-and-characteristics.htm";
 const VIEWING_HEADER_TRANSITION_MS = 480;
 const GRID_NAVIGATION_HEADER_DELAY_MS = VIEWING_HEADER_TRANSITION_MS;
+const JOBVIZ_WELCOME_DISMISSED_KEY = "jobviz_intro_dismissed";
+const JOBVIZ_TOUR_WELCOME_DISMISSED_KEY = "jobviz_tour_intro_dismissed";
 
 const JobVizSearchResults = ({
   metaDescription,
@@ -110,6 +118,10 @@ const JobVizSearchResults = ({
   const hasGpPlusMembership =
     status === "authenticated" &&
     (isGpPlusMember || isGpPlusCookieValue || isGpPlusMemberFromCookie);
+  const isPreviewQuery = isTruthyQueryFlag(router.query?.preview);
+  const isStudentLinkView = isTruthyQueryFlag(router.query?.student);
+  const [showJobvizWelcome, setShowJobvizWelcome] = useState(false);
+  const [showTourWelcome, setShowTourWelcome] = useState(false);
 
   const parsed = useMemo(
     () => parseJobvizPath(router.query?.["search-results"]),
@@ -184,6 +196,10 @@ const JobVizSearchResults = ({
   const teacherEditDenied = wantsTeacherEditMode && !hasGpPlusMembership;
   const isStudentMode = viewMode === "student";
   const isTeacherEditMode = viewMode === "teacher-edit";
+  const shouldForcePreviewMode =
+    Boolean(tourIdParam) && !hasGpPlusMembership && !wantsTeacherEditMode;
+  const isTourPreviewMode =
+    (isPreviewQuery || shouldForcePreviewMode) && !isTeacherEditMode;
   const lastReportParamRef = useRef(null);
   const [selectedTourJobs, setSelectedTourJobs] = useState(new Set());
   const [lastToggledSoc, setLastToggledSoc] = useState(null);
@@ -203,12 +219,35 @@ const JobVizSearchResults = ({
     assignment: DEFAULT_JOB_TOUR_ASSIGNMENT,
   });
 
+  useEffect(() => {
+    if (!router.isReady) return;
+    if (!shouldForcePreviewMode || isPreviewQuery) return;
+    const params = new URLSearchParams();
+    Object.entries(router.query ?? {}).forEach(([key, value]) => {
+      if (Array.isArray(value)) {
+        value.forEach((entry) => params.append(key, String(entry)));
+        return;
+      }
+      if (value !== undefined && value !== null) {
+        params.set(key, String(value));
+      }
+    });
+    params.set("preview", "1");
+    params.set("student", "1");
+    const nextUrl = `${router.pathname}?${params.toString()}`;
+    router.replace(nextUrl, undefined, { shallow: true, scroll: false });
+  }, [isPreviewQuery, router, shouldForcePreviewMode]);
+
   const assignmentSocCodes = useMemo(() => {
     if (isTeacherEditMode && selectedTourJobs.size) {
       return new Set(selectedTourJobs);
     }
     if (activeTour?.selectedJobs?.length) {
-      return new Set(activeTour.selectedJobs.filter(Boolean));
+      const selectedTourSocCodes = activeTour.selectedJobs.filter(Boolean);
+      if (isTourPreviewMode) {
+        return new Set(selectedTourSocCodes.slice(0, JOBVIZ_PREVIEW_LIMIT));
+      }
+      return new Set(selectedTourSocCodes);
     }
     const param = router.query?.[SOC_CODES_PARAM_NAME];
     const value = Array.isArray(param) ? param.join(",") : param;
@@ -216,7 +255,17 @@ const JobVizSearchResults = ({
     if (!value) return null;
 
     return new Set(value.split(",").filter(Boolean));
-  }, [activeTour, isTeacherEditMode, router.query, selectedTourJobs]);
+  }, [
+    activeTour,
+    isTeacherEditMode,
+    isTourPreviewMode,
+    router.query,
+    selectedTourJobs,
+  ]);
+  const previewLockedCount = useMemo(() => {
+    if (!isTourPreviewMode || !activeTour?.selectedJobs?.length) return 0;
+    return Math.max(activeTour.selectedJobs.length - JOBVIZ_PREVIEW_LIMIT, 0);
+  }, [activeTour?.selectedJobs, isTourPreviewMode]);
 
   const assignmentParams = useMemo(
     () => ({
@@ -380,10 +429,10 @@ const JobVizSearchResults = ({
     () => isStudentMode && hasAssignmentList
   );
   useEffect(() => {
-    if (isStudentMode && hasAssignmentList) {
+    if ((isStudentMode || isTourPreviewMode) && hasAssignmentList) {
       setShowAssignmentOnly(true);
     }
-  }, [hasAssignmentList, isStudentMode]);
+  }, [hasAssignmentList, isStudentMode, isTourPreviewMode]);
   const sortQueryFromRouter =
     typeof router.query?.sort === "string" ? router.query.sort : undefined;
   const normalizedSortFromQuery = useMemo(
@@ -603,6 +652,25 @@ const JobVizSearchResults = ({
         showBookmark: true,
       }));
   }, [assignmentSocCodes]);
+  const previewLockedItems = useMemo(() => {
+    if (!isTourPreviewMode || !previewLockedCount) return [];
+    return Array.from({ length: previewLockedCount }).map((_, index) => ({
+      id: `preview-locked-${index + 1}`,
+      title: "Locked in preview",
+      iconName: "Lock",
+      level: 2,
+      jobsCount: undefined,
+      growthPercent: null,
+      wage: null,
+      education: null,
+      socCode: null,
+      isAssignmentJob: true,
+      highlight: false,
+      highlightClicked: false,
+      showBookmark: false,
+      isLocked: true,
+    }));
+  }, [isTourPreviewMode, previewLockedCount]);
 
   const sortedGridItems = useMemo(
     () => sortJobVizItems(gridItems, sortOptionId),
@@ -616,10 +684,14 @@ const JobVizSearchResults = ({
 
   const filteredGridItems = useMemo(() => {
     if (showAssignmentOnly && hasAssignmentList) {
-      return sortedAssignmentItems;
+      return isTourPreviewMode
+        ? [...sortedAssignmentItems, ...previewLockedItems]
+        : sortedAssignmentItems;
     }
     return sortedGridItems;
   }, [
+    isTourPreviewMode,
+    previewLockedItems,
     sortedGridItems,
     sortedAssignmentItems,
     showAssignmentOnly,
@@ -818,6 +890,10 @@ const JobVizSearchResults = ({
   );
   const handleGridItemClick = useCallback(
     (item, meta) => {
+      if (item?.isLocked) {
+        setShowTourUpgradeModal(true);
+        return;
+      }
       if (showAssignmentOnly && hasAssignmentList) {
         handleAssignmentGridClick(item);
         return;
@@ -853,6 +929,7 @@ const JobVizSearchResults = ({
     [
       showAssignmentOnly,
       hasAssignmentList,
+      setShowTourUpgradeModal,
       handleAssignmentGridClick,
       scheduleNavigation,
       handleGridClick,
@@ -1007,7 +1084,9 @@ const JobVizSearchResults = ({
   const assignmentCountLabel = assignmentJobCount
     ? `${assignmentJobCount} career${assignmentJobCount === 1 ? "" : "s"}`
     : "a curated set of careers";
-  const studentHeroSubtitle = `This assignment spotlights ${assignmentCountLabel} with quick descriptions, wages, and growth stats so you can rate how interested you are. Feel free to explore related careers as you rate the selected jobs. Discover what's possible!`;
+  const studentHeroSubtitle = isTourPreviewMode
+    ? `Preview mode unlocks the first ${JOBVIZ_PREVIEW_LIMIT} jobs in this tour. Upgrade to GP+ to assign and edit the full experience.`
+    : `This assignment spotlights ${assignmentCountLabel} with quick descriptions, wages, and growth stats so you can rate how interested you are. Feel free to explore related careers as you rate the selected jobs. Discover what's possible!`;
   const heroSubtitle = isStudentMode ? studentHeroSubtitle : baseHeroSubtitle;
   const heroTitle = isStudentMode
     ? "JobViz+ Career Tour Assignment"
@@ -1036,7 +1115,11 @@ const JobVizSearchResults = ({
   const handleHeroStatAction = useHeroStatAction({
     onBrowseNavigate: ensureJobCategoriesLevel,
   });
-  const heroEyebrow = isStudentMode
+  const heroEyebrow = isStudentLinkView
+    ? "STUDENT LINK"
+    : isTourPreviewMode
+    ? "TOUR PREVIEW"
+    : isStudentMode
     ? "STUDENT VIEW"
     : isGpPlusHero
       ? "Premium | GP+ Subscriber"
@@ -1045,6 +1128,30 @@ const JobVizSearchResults = ({
     <HeroForFreeUsers onStatAction={handleHeroStatAction} />
   ) : null;
   const showGpPlusUpsell = !hasGpPlusMembership && !isStudentMode;
+  const handleDismissWelcome = useCallback((storageKey, setter, persist) => {
+    if (persist && typeof window !== "undefined") {
+      window.localStorage.setItem(storageKey, "true");
+    }
+    setter(false);
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const didDismiss = window.localStorage.getItem(JOBVIZ_WELCOME_DISMISSED_KEY);
+    if (!didDismiss) {
+      setShowJobvizWelcome(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!tourIdParam || !activeTour?._id || typeof window === "undefined") return;
+    const didDismiss = window.localStorage.getItem(
+      JOBVIZ_TOUR_WELCOME_DISMISSED_KEY
+    );
+    if (!didDismiss) {
+      setShowTourWelcome(true);
+    }
+  }, [activeTour?._id, tourIdParam]);
 
 
   useEffect(() => {
@@ -1166,16 +1273,42 @@ const JobVizSearchResults = ({
     }
     router.push(buildEditUrl({ copy: true }));
   };
+  const handleCopyStudentLink = async () => {
+    const targetTourId = activeTour?._id ?? tourIdParam;
+    if (!targetTourId || typeof window === "undefined") return;
+    const shareUrl = buildStudentTourUrl(targetTourId, {
+      host: window.location.host,
+      protocol: window.location.protocol,
+      preview: false,
+    });
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      toast.success("Student view link copied.");
+    } catch {
+      toast.error("Unable to copy link. Please copy from your browser URL.");
+    }
+  };
 
   const assignmentHeaderActions = shouldShowTourActions ? (
-    <button
-      type="button"
-      className={styles.tourActionButton}
-      onClick={handleTourActionClick}
-    >
-      <img src="/plus/plus.png" alt="GP+" className={styles.tourActionIcon} />
-      {tourActionLabel}
-    </button>
+    <>
+      <button
+        type="button"
+        className={styles.tourActionButton}
+        onClick={handleTourActionClick}
+      >
+        <img src="/plus/plus.png" alt="GP+" className={styles.tourActionIcon} />
+        {tourActionLabel}
+      </button>
+      {Boolean(activeTour?._id ?? tourIdParam) && (
+        <button
+          type="button"
+          className={styles.tourActionButton}
+          onClick={handleCopyStudentLink}
+        >
+          Copy student link
+        </button>
+      )}
+    </>
   ) : null;
 
   const getVersionString = () => {
@@ -1374,6 +1507,10 @@ const JobVizSearchResults = ({
               onJobClick={handleAssignmentJobClick}
               mode={isTeacherEditMode ? "tour-editor" : "assignment"}
               headerActions={assignmentHeaderActions}
+              allowShare={!isTourPreviewMode}
+              markerLabelOverride={
+                isTourPreviewMode ? "JobViz+ | TOUR PREVIEW" : undefined
+              }
               editorFields={editorFields}
               {...(assignmentBannerOverrides ?? {})}
             />
@@ -1400,6 +1537,22 @@ const JobVizSearchResults = ({
               {teacherEditDenied && (
                 <div className={styles.jobvizNotice} role="alert">
                   <strong>Looking for edit controls?</strong> GP+ members can turn on tour editing to build and save custom JobViz+ assignments. Sign in with a GP+ account or remove the <code>?edit=1</code> parameter to preview the student view.
+                </div>
+              )}
+              {isTourPreviewMode && (
+                <div className={styles.jobvizPreviewNotice} role="status">
+                  <div>
+                    <strong>Preview mode:</strong> First {JOBVIZ_PREVIEW_LIMIT} jobs are unlocked.{" "}
+                    {previewLockedCount > 0
+                      ? `${previewLockedCount} additional jobs are locked.`
+                      : "This sample is ready to explore."}
+                  </div>
+                  <Link
+                    href="/gp-plus"
+                    className={styles.jobvizPreviewCta}
+                  >
+                    Get GP+ to Assign or Create Tours
+                  </Link>
                 </div>
               )}
               {showIntroHeading && (
@@ -1486,6 +1639,7 @@ const JobVizSearchResults = ({
                               ? styles.assignedToggleButtonActive
                               : ""
                           }`}
+                          disabled={isTourPreviewMode}
                           onClick={() => setShowAssignmentOnly((prev) => !prev)}
                           aria-pressed={isShowingAssignmentScope}
                         >
@@ -1566,12 +1720,94 @@ const JobVizSearchResults = ({
               onJobClick={handleAssignmentJobClick}
               mode={isTeacherEditMode ? "tour-editor" : "assignment"}
               headerActions={assignmentHeaderActions}
+              allowShare={!isTourPreviewMode}
+              markerLabelOverride={
+                isTourPreviewMode ? "JobViz+ | TOUR PREVIEW" : undefined
+              }
               editorFields={editorFields}
               {...(assignmentBannerOverrides ?? {})}
             />
           )}
         </div>
       </Layout>
+      {(showJobvizWelcome || showTourWelcome) && (
+        <div className={styles.jobvizIntroOverlay} role="presentation">
+          {showJobvizWelcome && (
+            <div className={styles.jobvizIntroDialog} role="dialog" aria-modal="true">
+              <h3>Welcome to JobViz</h3>
+              <p>
+                JobViz helps students explore real careers using wage, growth, and
+                education data from the U.S. Bureau of Labor Statistics.
+              </p>
+              <div className={styles.jobvizIntroActions}>
+                <button
+                  type="button"
+                  className={styles.jobvizIntroDismiss}
+                  onClick={() =>
+                    handleDismissWelcome(
+                      JOBVIZ_WELCOME_DISMISSED_KEY,
+                      setShowJobvizWelcome,
+                      true
+                    )
+                  }
+                >
+                  Don&apos;t show again
+                </button>
+                <button
+                  type="button"
+                  className={styles.jobvizIntroContinue}
+                  onClick={() =>
+                    handleDismissWelcome(
+                      JOBVIZ_WELCOME_DISMISSED_KEY,
+                      setShowJobvizWelcome,
+                      false
+                    )
+                  }
+                >
+                  Continue
+                </button>
+              </div>
+            </div>
+          )}
+          {showTourWelcome && (
+            <div className={styles.jobvizIntroDialog} role="dialog" aria-modal="true">
+              <h3>Tour preview</h3>
+              <p>
+                Explore this tour in student view. Teachers with GP+ can assign
+                full tours and build their own versions.
+              </p>
+              <div className={styles.jobvizIntroActions}>
+                <button
+                  type="button"
+                  className={styles.jobvizIntroDismiss}
+                  onClick={() =>
+                    handleDismissWelcome(
+                      JOBVIZ_TOUR_WELCOME_DISMISSED_KEY,
+                      setShowTourWelcome,
+                      true
+                    )
+                  }
+                >
+                  Don&apos;t show again
+                </button>
+                <button
+                  type="button"
+                  className={styles.jobvizIntroContinue}
+                  onClick={() =>
+                    handleDismissWelcome(
+                      JOBVIZ_TOUR_WELCOME_DISMISSED_KEY,
+                      setShowTourWelcome,
+                      false
+                    )
+                  }
+                >
+                  Continue
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
       <JobTourUpgradeModal
         show={showTourUpgradeModal}
         onClose={() => setShowTourUpgradeModal(false)}

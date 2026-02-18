@@ -45,6 +45,7 @@ interface AssignmentBannerProps {
   headerActions?: React.ReactNode;
   editorFields?: React.ReactNode;
   markerLabelOverride?: string | null;
+  allowShare?: boolean;
 }
 
 const ASSIGNMENT_LOGO = "/plus/gp-plus-submark.png";
@@ -71,6 +72,7 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
   headerActions,
   editorFields,
   markerLabelOverride,
+  allowShare = true,
 }) => {
   const router = useRouter();
   const modalContext = useModalContext();
@@ -337,6 +339,7 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
   }, [setIsJobModalOn, setSelectedJob]);
 
   const handleOpenSummaryModal = React.useCallback(() => {
+    if (!allowShare) return;
     if (!jobItems.length) return;
     closeJobModal();
     setJobvizSummaryModal({
@@ -346,7 +349,7 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
       payload: null,
       allowEditing: true,
     });
-  }, [closeJobModal, jobItems, setJobvizSummaryModal, unitName]);
+  }, [allowShare, closeJobModal, jobItems, setJobvizSummaryModal, unitName]);
 
   const triggerAssignmentConfetti = React.useCallback(() => {
     if (typeof window === "undefined") return;
@@ -392,7 +395,7 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
       return;
     }
 
-    if (!isAssignmentComplete || hasCelebratedCompletion) {
+    if (!allowShare || !isAssignmentComplete || hasCelebratedCompletion) {
       return;
     }
 
@@ -413,6 +416,7 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
       completionModalTimeoutRef.current = null;
     }, COMPLETION_MODAL_DELAY_MS);
   }, [
+    allowShare,
     closeJobModal,
     handleOpenSummaryModal,
     hasCelebratedCompletion,
@@ -984,7 +988,7 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
             {shouldShowRatings &&
               assignmentSocCodes.length > 0 &&
               (shouldShowAssignmentBody || isMobile) &&
-              (isAssignmentComplete ? (
+              (isAssignmentComplete && allowShare ? (
                 variant === "mobile" ? (
                   <button
                     type="button"
@@ -1008,7 +1012,9 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
               ) : (
                 <div className={styles.assignmentProgressRow}>
                   <div className={styles.assignmentProgressLabel}>
-                    Rated {safeDisplayedProgressRated}/{progress.total} jobs
+                    {isAssignmentComplete && !allowShare
+                      ? "Preview complete. Unlock GP+ to assign and share full tours."
+                      : `Rated ${safeDisplayedProgressRated}/${progress.total} jobs`}
                   </div>
                 <div
                   className={`${styles.assignmentProgressTrack} ${

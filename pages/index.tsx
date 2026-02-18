@@ -48,6 +48,7 @@ import {
 import { IUnitLesson } from "../types/global";
 import PortalNav from "../components/PortalNav";
 import Footer from "../components/Footer";
+import { ensureAbsoluteUrl } from "../shared/seo";
 import {
   IConnectionJobViz,
   IJobVizConnection,
@@ -62,6 +63,9 @@ import {
   DEFAULT_JOB_TOUR_ASSIGNMENT,
 } from "../components/JobViz/JobTours/jobTourConstants";
 import { getDisplayTitle, getNodeBySocCode } from "../components/JobViz/jobvizUtils";
+import {
+  buildStudentTourUrl,
+} from "../components/JobViz/JobTours/tourAccess";
 
 interface PreviewUnit {
   id: string;
@@ -210,6 +214,22 @@ const getJobTitlesForTour = (socCodes?: string[] | null, limit = 6) => {
     .slice(0, limit);
 };
 
+const getTourStopSearchTerms = (socCodes?: string[] | null) => {
+  if (!socCodes?.length) return [];
+  const terms = new Set<string>();
+  socCodes.forEach((socCodeRaw) => {
+    const socCode = String(socCodeRaw ?? "").trim();
+    if (!socCode) return;
+    terms.add(socCode);
+    const jobTitle = getJobTitleFromSocCode(socCode);
+    if (jobTitle) {
+      terms.add(jobTitle);
+      terms.add(`${jobTitle} ${socCode}`);
+    }
+  });
+  return Array.from(terms);
+};
+
 const truncateJobTitle = (title: string, maxLength = 28) => {
   if (title.length <= maxLength) return title;
   return `${title.slice(0, maxLength - 3).trim()}...`;
@@ -257,6 +277,7 @@ interface PreviewResource {
   searchTargetStandards?: string[];
   searchConnectedStandards?: string[];
   searchCareerConnections?: string[];
+  searchTourStops?: string[];
   searchGist?: string;
   searchFeaturedMedia?: string[];
   searchLessonDetails?: string[];
@@ -270,6 +291,7 @@ interface ResourceSearchMatchCategory {
 interface ResourceSearchMatchResult {
   queryMatches: boolean;
   hiddenCategories: ResourceSearchMatchCategory[];
+  relevanceScore: number;
 }
 
 const experiencePillars = [
@@ -1030,7 +1052,7 @@ export default function HomePage({
   initialTab,
 }: HomePageProps) {
   const router = useRouter();
-  const { user, status } = useSiteSession();
+  const { user, status, isGpPlusMember } = useSiteSession();
   const userId = user?.userId ?? null;
   const [activeModal, setActiveModal] = useState<"wizard" | "media" | null>(
     null
@@ -1044,6 +1066,9 @@ export default function HomePage({
   const isTypingRef = useRef(false);
   const typingTimeoutRef = useRef<number | null>(null);
   const [showStatsDebug, setShowStatsDebug] = useState(false);
+  const [jobTourAccessResource, setJobTourAccessResource] =
+    useState<PreviewResource | null>(null);
+  const [isCopyingStudentLink, setIsCopyingStudentLink] = useState(false);
   const isSearchRoute = router.pathname === "/search";
   const [carouselIndex, setCarouselIndex] = useState(0);
   const statsSectionRef = useRef<HTMLElement | null>(null);
@@ -1241,6 +1266,60 @@ export default function HomePage({
     setActiveModal(null);
     setActiveMedia(null);
   };
+  const handleCloseJobTourAccessModal = () => {
+    setJobTourAccessResource(null);
+    setIsCopyingStudentLink(false);
+  };
+  const handleOpenJobTourAccessModal = (resource: PreviewResource) => {
+    setJobTourAccessResource(resource);
+  };
+  const hasGpPlusAccess =
+    status === "authenticated" &&
+    isGpPlusMember === true;
+  const openStudentTour = useCallback(
+    (tourId: string, preview = false) => {
+      if (typeof window === "undefined") return;
+      const fullUrl = buildStudentTourUrl(tourId, {
+        host: window.location.host,
+        protocol: window.location.protocol,
+        preview,
+      });
+      window.location.assign(fullUrl);
+    },
+    []
+  );
+  const handleOpenTourPreview = useCallback(() => {
+    if (!jobTourAccessResource?.tourId) return;
+    openStudentTour(jobTourAccessResource.tourId, true);
+    handleCloseJobTourAccessModal();
+  }, [jobTourAccessResource?.tourId, openStudentTour]);
+  const handleOpenTourTeacherMode = useCallback(() => {
+    if (!jobTourAccessResource?.tourId) return;
+    router.push(`/jobviz?tourId=${encodeURIComponent(jobTourAccessResource.tourId)}&edit=1`);
+    handleCloseJobTourAccessModal();
+  }, [jobTourAccessResource?.tourId, router]);
+  const handleOpenTourStudentMode = useCallback(() => {
+    if (!jobTourAccessResource?.tourId) return;
+    openStudentTour(jobTourAccessResource.tourId, false);
+    handleCloseJobTourAccessModal();
+  }, [jobTourAccessResource?.tourId, openStudentTour]);
+  const handleCopyTourStudentLink = useCallback(async () => {
+    if (!jobTourAccessResource?.tourId || typeof window === "undefined") return;
+    setIsCopyingStudentLink(true);
+    const shareUrl = buildStudentTourUrl(jobTourAccessResource.tourId, {
+      host: window.location.host,
+      protocol: window.location.protocol,
+      preview: false,
+    });
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      toast.success("Student link copied");
+    } catch {
+      toast.error("Unable to copy student link");
+    } finally {
+      setIsCopyingStudentLink(false);
+    }
+  }, [jobTourAccessResource?.tourId]);
   const handleOpenMedia = (media: MediaItem) => {
     setActiveMedia(media);
     setActiveModal("media");
@@ -1362,6 +1441,7 @@ export default function HomePage({
       searchTargetStandards: [],
       searchConnectedStandards: [],
       searchCareerConnections: [],
+      searchTourStops: [],
       searchGist: "",
       searchFeaturedMedia: [],
       searchLessonDetails: [],
@@ -1372,6 +1452,7 @@ export default function HomePage({
         const connections = normalizeJobVizConnections(unit.jobvizConnections);
         if (!connections.length) return null;
         const selectedJobs = connections.map((item) => item.soc_code);
+        const tourStopSearchTerms = getTourStopSearchTerms(selectedJobs);
         const tourTitle = `${unit.title} JobViz Tour`;
         return {
           id: `job-tour-unit-${unit.id}`,
@@ -1404,7 +1485,10 @@ export default function HomePage({
           selectedJobs,
           searchTargetStandards: unit.targetStandards ?? [],
           searchConnectedStandards: unit.connectedStandards ?? [],
-          searchCareerConnections: unit.careerConnections ?? [],
+          searchCareerConnections: Array.from(
+            new Set([...(unit.careerConnections ?? []), ...tourStopSearchTerms])
+          ),
+          searchTourStops: tourStopSearchTerms,
           searchGist: unit.gist ?? "",
           searchFeaturedMedia: (unit.media ?? []).map((item) => item.title),
           searchLessonDetails: [],
@@ -1420,6 +1504,7 @@ export default function HomePage({
         ? unitById.get(tour.gpUnitsAssociated[0]) ?? null
         : null;
       const gpUnitTitle = associatedUnit?.title ?? null;
+      const tourStopSearchTerms = getTourStopSearchTerms(tour.selectedJobs ?? []);
       return {
         id: tour._id,
         title: tour.heading,
@@ -1451,7 +1536,10 @@ export default function HomePage({
         selectedJobs: tour.selectedJobs ?? [],
         searchTargetStandards: associatedUnit?.targetStandards ?? [],
         searchConnectedStandards: associatedUnit?.connectedStandards ?? [],
-        searchCareerConnections: associatedUnit?.careerConnections ?? [],
+        searchCareerConnections: Array.from(
+          new Set([...(associatedUnit?.careerConnections ?? []), ...tourStopSearchTerms])
+        ),
+        searchTourStops: tourStopSearchTerms,
         searchGist: associatedUnit?.gist ?? "",
         searchFeaturedMedia:
           associatedUnit ? (associatedUnit.media ?? []).map((item) => item.title) : [],
@@ -1653,7 +1741,7 @@ export default function HomePage({
   ): ResourceSearchMatchResult => {
     const query = queryValue.trim().toLowerCase();
     if (!query) {
-      return { queryMatches: true, hiddenCategories: [] };
+      return { queryMatches: true, hiddenCategories: [], relevanceScore: 0 };
     }
 
     const tokens = tokenizeSearch(query);
@@ -1668,6 +1756,12 @@ export default function HomePage({
       .join(" ");
 
     const hiddenCategories: ResourceSearchMatchCategory[] = [];
+    const titleText = (resource.title ?? "").toString();
+    const descriptionText = (resource.description ?? "").toString();
+    const subjectText = (resource.subject ?? "").toString();
+    const gradeBandText = (resource.gradeBand ?? "").toString();
+    const tagsText = resource.tags.join(" ");
+    const tourStopTerms = resource.searchTourStops ?? [];
     const targetStandardsMatches = getMatchedValues(
       tokens,
       resource.searchTargetStandards ?? []
@@ -1729,6 +1823,7 @@ export default function HomePage({
 
     const searchableFields = [
       visibleFields,
+      ...tourStopTerms,
       ...(resource.searchTargetStandards ?? []),
       ...(resource.searchConnectedStandards ?? []),
       ...(resource.searchCareerConnections ?? []),
@@ -1739,9 +1834,46 @@ export default function HomePage({
     const tokenCoverage = tokens.every((token) =>
       searchableFields.some((field) => fuzzyTokenMatch(token, field))
     );
+    let relevanceScore = 0;
+    tokens.forEach((token) => {
+      if (resource.type === "Job Tour" && tourStopTerms.some((value) => fuzzyTokenMatch(token, value))) {
+        relevanceScore += 140;
+      }
+      if (fuzzyTokenMatch(token, titleText)) {
+        relevanceScore += 100;
+      }
+      if (fuzzyTokenMatch(token, descriptionText)) {
+        relevanceScore += 30;
+      }
+      if (fuzzyTokenMatch(token, subjectText) || fuzzyTokenMatch(token, gradeBandText)) {
+        relevanceScore += 20;
+      }
+      if (fuzzyTokenMatch(token, tagsText)) {
+        relevanceScore += 16;
+      }
+      if ((resource.searchCareerConnections ?? []).some((value) => fuzzyTokenMatch(token, value))) {
+        relevanceScore += 12;
+      }
+      if ((resource.searchTargetStandards ?? []).some((value) => fuzzyTokenMatch(token, value))) {
+        relevanceScore += 9;
+      }
+      if ((resource.searchConnectedStandards ?? []).some((value) => fuzzyTokenMatch(token, value))) {
+        relevanceScore += 7;
+      }
+      if ((resource.searchFeaturedMedia ?? []).some((value) => fuzzyTokenMatch(token, value))) {
+        relevanceScore += 5;
+      }
+      if ((resource.searchLessonDetails ?? []).some((value) => fuzzyTokenMatch(token, value))) {
+        relevanceScore += 4;
+      }
+      if (fuzzyTokenMatch(token, gistText)) {
+        relevanceScore += 3;
+      }
+    });
     return {
       queryMatches: tokenCoverage,
       hiddenCategories,
+      relevanceScore,
     };
   };
 
@@ -1845,6 +1977,18 @@ export default function HomePage({
 
   const sortedResources = useMemo(() => {
     if (sortOrder === "relevant") {
+      if (searchQuery.trim()) {
+        return [...filteredResources].sort((a, b) => {
+          const aScore = searchMatchByResourceId.get(a.id)?.relevanceScore ?? 0;
+          const bScore = searchMatchByResourceId.get(b.id)?.relevanceScore ?? 0;
+          if (bScore !== aScore) {
+            return bScore - aScore;
+          }
+          const aTime = a.releaseDate ? new Date(a.releaseDate).getTime() : 0;
+          const bTime = b.releaseDate ? new Date(b.releaseDate).getTime() : 0;
+          return bTime - aTime;
+        });
+      }
       if (!hasActiveFilters) {
         const pinnedIndex = filteredResources.findIndex(
           (resource) => resource.id === "jobviz-app"
@@ -1864,7 +2008,7 @@ export default function HomePage({
       return sortOrder === "newest" ? bTime - aTime : aTime - bTime;
     });
     return sorted;
-  }, [filteredResources, sortOrder, hasActiveFilters]);
+  }, [filteredResources, hasActiveFilters, searchMatchByResourceId, searchQuery, sortOrder]);
 
   const totalResources = allResources.length;
   const totalJobTours = allResources.filter(
@@ -1938,6 +2082,13 @@ export default function HomePage({
       : resolvedTab === "All"
         ? "All Resources | GP Portal"
         : `${resolvedTab} | GP Portal`;
+  const pageDescription = isHomeView
+    ? "Discover free interdisciplinary lessons, classroom-ready resources, and JobViz career tools for grades 5+."
+    : "Browse Galactic Polymath resources by subject, grade level, and format to quickly find the best classroom fit.";
+  const canonicalUrl = ensureAbsoluteUrl("/");
+  const socialPreviewImage = ensureAbsoluteUrl(
+    "/imgs/home/banners/new-gp-splosion-homepage-hero_gp-homepage-hero_desktop.png"
+  );
 
   useEffect(() => {
     if (!isAllView || deferResults) return;
@@ -2108,9 +2259,38 @@ export default function HomePage({
         return;
       }
 
-      const { default: SvgMap } = await import("svgmap");
+      let SvgMap: any = null;
+      const globalWithRequire = window as Window & {
+        require?: (moduleName: string) => unknown;
+      };
+      const originalRequire = globalWithRequire.require;
+      try {
+        const svgPanZoomModule = await import("svg-pan-zoom");
+        const svgPanZoom = (svgPanZoomModule as any).default ?? svgPanZoomModule;
+        globalWithRequire.require = (moduleName: string) => {
+          if (moduleName === "svg-pan-zoom") {
+            return svgPanZoom;
+          }
+          if (typeof originalRequire === "function") {
+            return originalRequire(moduleName);
+          }
+          throw new Error(`Unsupported module requested via require: ${moduleName}`);
+        };
 
-      if (!isMounted || !container) {
+        const svgMapModule = await import("svgmap");
+        SvgMap = svgMapModule?.default;
+      } catch (error) {
+        console.error("Unable to load svgmap module", error);
+        return;
+      } finally {
+        if (typeof originalRequire === "function") {
+          globalWithRequire.require = originalRequire;
+        } else {
+          delete globalWithRequire.require;
+        }
+      }
+
+      if (!isMounted || !container || typeof SvgMap !== "function") {
         return;
       }
 
@@ -2125,29 +2305,33 @@ export default function HomePage({
         {} as Record<string, { teachers: number; color: string }>
       );
 
-      mapInstanceRef.current = new SvgMap({
-        targetElementID: "gp-world-map",
-        allowInteraction: false,
-        showZoomReset: false,
-        showContinentSelector: false,
-        mouseWheelZoomEnabled: false,
-        touchLink: false,
-        colorNoData: "transparent",
-        colorMin: "#f0f6ff",
-        colorMax: "#f0f6ff",
-        data: {
+      try {
+        mapInstanceRef.current = new SvgMap({
+          targetElementID: "gp-world-map",
+          allowInteraction: false,
+          showZoomReset: false,
+          showContinentSelector: false,
+          mouseWheelZoomEnabled: false,
+          touchLink: false,
+          colorNoData: "transparent",
+          colorMin: "#f0f6ff",
+          colorMax: "#f0f6ff",
           data: {
-            teachers: {
-              name: "Teachers",
-              format: "{0}",
-              thresholdMin: 1,
-              thresholdMax: 1,
+            data: {
+              teachers: {
+                name: "Teachers",
+                format: "{0}",
+                thresholdMin: 1,
+                thresholdMax: 1,
+              },
             },
+            applyData: "teachers",
+            values,
           },
-          applyData: "teachers",
-          values,
-        },
-      });
+        });
+      } catch (error) {
+        console.error("Unable to initialize svgmap", error);
+      }
     };
 
     initMap();
@@ -2397,16 +2581,16 @@ export default function HomePage({
   }, [debouncedSearchQuery, isSearchRoute, queryHydrated]);
 
   useEffect(() => {
+    if (!isSearchRoute) return;
     const shouldLoadTours =
       selectedContentTypes.includes("Job Tour") || showOnlyMyContent;
     if (!shouldLoadTours) return;
     let isMounted = true;
     setJobTourLoading(true);
     setJobTourError(null);
-    const headingQuery = searchQuery.trim();
     const requests = [
       getJobTours({
-        filterObj: { heading: headingQuery || "" },
+        filterObj: {},
         sort: { lastEdited: -1 },
         limit: 200,
       }),
@@ -2453,7 +2637,7 @@ export default function HomePage({
       isMounted = false;
     };
   }, [
-    searchQuery,
+    isSearchRoute,
     selectedContentTypes,
     showOnlyMyContent,
     status,
@@ -2494,8 +2678,21 @@ export default function HomePage({
         <title>{pageTitle}</title>
         <meta
           name="description"
-          content="Preview the next-generation Galactic Polymath teacher portal with onboarding, search, and curated resources."
+          content={pageDescription}
         />
+        <meta property="og:title" content={pageTitle} />
+        <meta property="og:description" content={pageDescription} />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content={canonicalUrl} />
+        <meta property="og:site_name" content="Galactic Polymath" />
+        <meta property="og:image" content={socialPreviewImage} />
+        <meta property="og:image:alt" content="Galactic Polymath teacher resources" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={pageTitle} />
+        <meta name="twitter:description" content={pageDescription} />
+        <meta name="twitter:image" content={socialPreviewImage} />
+        <meta name="twitter:image:alt" content="Galactic Polymath teacher resources" />
+        <link rel="canonical" href={canonicalUrl} />
       </Head>
       <div
         className={`${styles.page} ${
@@ -3057,6 +3254,7 @@ export default function HomePage({
                         ({
                           queryMatches: true,
                           hiddenCategories: [],
+                          relevanceScore: 0,
                         } as ResourceSearchMatchResult);
                       const hiddenMatchCategories = hasCommittedSearch
                         ? searchMatch.hiddenCategories
@@ -3082,7 +3280,11 @@ export default function HomePage({
                             return;
                           }
                           if (resource.type === "Job Tour" && jobTourUrl) {
-                            router.push(jobTourUrl);
+                            if (resource.tourId) {
+                              handleOpenJobTourAccessModal(resource);
+                            } else {
+                              router.push(jobTourUrl);
+                            }
                             return;
                           }
                           if (resource.type === "App" && resource.mediaLink) {
@@ -3115,7 +3317,11 @@ export default function HomePage({
                               return;
                             }
                             if (resource.type === "Job Tour" && jobTourUrl) {
-                              router.push(jobTourUrl);
+                              if (resource.tourId) {
+                                handleOpenJobTourAccessModal(resource);
+                              } else {
+                                router.push(jobTourUrl);
+                              }
                               return;
                             }
                             if (resource.type === "App" && resource.mediaLink) {
@@ -4248,6 +4454,87 @@ export default function HomePage({
             onClick={handleCloseModal}
             aria-label="Close modal"
           />
+        </div>
+      )}
+      {jobTourAccessResource && (
+        <div className={styles.modalOverlay} role="presentation">
+          <div
+            className={styles.modal}
+            role="dialog"
+            aria-modal="true"
+            aria-label="JobViz tour access"
+          >
+            <div className={styles.modalHeader}>
+              <div>
+                <p className={styles.modalKicker}>JobViz+ Career Tour</p>
+                <h2 className={styles.modalTitle}>
+                  {jobTourAccessResource.title}
+                </h2>
+              </div>
+              <button
+                className={styles.modalClose}
+                type="button"
+                onClick={handleCloseJobTourAccessModal}
+              >
+                Close
+              </button>
+            </div>
+            <div className={styles.wizardCard}>
+              <p className={styles.resourceDescription}>
+                {hasGpPlusAccess
+                  ? "Open this tour in teacher mode to edit, or open/copy the student-facing link."
+                  : "Preview the first 2 jobs in student view. GP+ unlocks assigning and creating full tours."}
+              </p>
+              <div className={styles.wizardFooter}>
+                {hasGpPlusAccess ? (
+                  <>
+                    <button
+                      className={styles.primaryButton}
+                      type="button"
+                      onClick={handleOpenTourTeacherMode}
+                    >
+                      Open as Teacher
+                    </button>
+                    <button
+                      className={styles.secondaryButton}
+                      type="button"
+                      onClick={handleOpenTourStudentMode}
+                    >
+                      Open as Student
+                    </button>
+                    <button
+                      className={styles.ghostButton}
+                      type="button"
+                      disabled={isCopyingStudentLink}
+                      onClick={handleCopyTourStudentLink}
+                    >
+                      {isCopyingStudentLink ? "Copying..." : "Copy Student Link"}
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <button
+                      className={styles.primaryButton}
+                      type="button"
+                      onClick={handleOpenTourPreview}
+                    >
+                      Preview as Student
+                    </button>
+                    <Link href="/gp-plus" className={styles.secondaryButton}>
+                      Get GP+ to Assign or Create
+                    </Link>
+                    <button
+                      className={styles.ghostButton}
+                      type="button"
+                      onClick={handleCloseJobTourAccessModal}
+                    >
+                      Not now
+                    </button>
+                  </>
+                )}
+              </div>
+            </div>
+          </div>
         </div>
       )}
     </>
