@@ -2265,7 +2265,6 @@ export default function HomePage({
       };
       const originalRequire = globalWithRequire.require;
       try {
-        // @ts-ignore
         const svgPanZoomModule = await import("svg-pan-zoom");
         const svgPanZoom = (svgPanZoomModule as any).default ?? svgPanZoomModule;
         globalWithRequire.require = (moduleName: string) => {
@@ -3052,8 +3051,8 @@ export default function HomePage({
                               />
                               <button
                                 className={`${styles.searchClearButton} ${searchInputValue.trim()
-                                    ? ""
-                                    : styles.searchClearButtonHidden
+                                  ? ""
+                                  : styles.searchClearButtonHidden
                                   }`}
                                 type="button"
                                 aria-label="Clear search"
@@ -3957,8 +3956,8 @@ export default function HomePage({
                     <div className={styles.mapWrap}>
                       <div
                         className={`${styles.mapFrame} ${statsVisibility.showMap
-                            ? styles.mapVisible
-                            : styles.mapHidden
+                          ? styles.mapVisible
+                          : styles.mapHidden
                           }`}
                         id="gp-world-map"
                         ref={mapContainerRef}
@@ -4061,8 +4060,8 @@ export default function HomePage({
                         <article
                           key={unit.id}
                           className={`${styles.newUnitCard} ${styles.reveal} ${index % 2 === 0
-                              ? styles.newUnitCardLeft
-                              : styles.newUnitCardRight
+                            ? styles.newUnitCardLeft
+                            : styles.newUnitCardRight
                             }`}
                           style={{ transitionDelay: `${index * 110}ms` }}
                           data-animate
