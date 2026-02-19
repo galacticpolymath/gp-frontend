@@ -711,6 +711,23 @@ const getLessonDisplayTitle = <TItem extends IItem = IItemForUI>(
   return `Lesson ${identifier}: ${title}`;
 };
 
+type TActiveLessonPreviewMode = 'materials' | 'procedure' | 'featured-media';
+
+const parseFeaturedMediaLessonIds = (value?: string | null) => {
+  if (!value) {
+    return [];
+  }
+  const normalized = value.trim().toLowerCase();
+  if (!normalized || normalized === 'all') {
+    return [];
+  }
+
+  return normalized
+    .split(/[,/&]|and/gi)
+    .map((token) => Number.parseInt(token.replace(/[^\d-]/g, ''), 10))
+    .filter((num) => Number.isFinite(num) && num > 0);
+};
+
 const isAssessmentLesson = <TItem extends IItem = IItemForUI>(
   lesson: INewUnitLesson<TItem> | undefined,
   index: number
@@ -1221,7 +1238,8 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
   const [isTagListExpanded, setIsTagListExpanded] = useState(false);
   const [visibleTagCount, setVisibleTagCount] = useState(0);
   const [activeMaterialIndex, setActiveMaterialIndex] = useState(0);
-  const [isDetailedFlowOpen, setIsDetailedFlowOpen] = useState(false);
+  const [activeLessonPreviewMode, setActiveLessonPreviewMode] =
+    useState<TActiveLessonPreviewMode>('materials');
   const [isGpPlusBannerDismissed, setIsGpPlusBannerDismissed] = useState(false);
   const [isStandardsFilterDockOpen, setIsStandardsFilterDockOpen] =
     useState(false);
@@ -1593,6 +1611,23 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
     activeLessonIndex >= 0 ? lessons[activeLessonIndex] : undefined;
   const activeLessonItems = activeLesson?.itemList ?? [];
   const hasDetailedFlow = !!activeLesson?.chunks?.length;
+  const activeLessonFeaturedMedia = useMemo(() => {
+    if (!activeLessonId || !unit.FeaturedMultimedia?.length) {
+      return [];
+    }
+    return unit.FeaturedMultimedia.filter((media) => {
+      const lessonIds = parseFeaturedMediaLessonIds(
+        media?.forLsn ?? (media as { forPart?: string | null })?.forPart ?? null
+      );
+      if (!lessonIds.length) {
+        return false;
+      }
+      return lessonIds.includes(activeLessonId);
+    });
+  }, [activeLessonId, unit.FeaturedMultimedia]);
+  const hasFeaturedMedia = activeLessonFeaturedMedia.length > 0;
+  const isDetailedFlowOpen = activeLessonPreviewMode === 'procedure';
+  const isFeaturedMediaOpen = activeLessonPreviewMode === 'featured-media';
   const chunkDurations = (activeLesson?.chunks ?? [])
     .map((chunk) => chunk?.chunkDur ?? 0)
     .filter((duration): duration is number => typeof duration === 'number' && duration > 0);
@@ -1719,7 +1754,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
 
   useEffect(() => {
     setActiveMaterialIndex(0);
-    setIsDetailedFlowOpen(false);
+    setActiveLessonPreviewMode('materials');
   }, [activeLessonId]);
   useEffect(() => {
     return () => {
@@ -2360,37 +2395,63 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                       </div>
                     )}
                     <div className={styles.lessonResourcesCard}>
-                      <button
-                        type="button"
-                        className={`${styles.lessonProcedureToggle} ${
-                          isDetailedFlowOpen ? styles.lessonProcedureToggleActive : ''
-                        }`}
-                        onClick={() => setIsDetailedFlowOpen(true)}
-                        aria-pressed={isDetailedFlowOpen}
-                        disabled={!hasDetailedFlow}
-                      >
-                        <span className={styles.lessonProcedureToggleText}>
-                          <ListTree size={16} aria-hidden="true" />
-                          <span>Lesson Procedure</span>
-                        </span>
-                      </button>
+                      <h3 className={styles.lessonCardHeading}>
+                        <Blocks size={16} aria-hidden="true" />
+                        <span>Quick Start</span>
+                      </h3>
+                      <div className={styles.quickStartActions}>
+                        <button
+                          type="button"
+                          className={`${styles.lessonProcedureToggle} ${
+                            isFeaturedMediaOpen ? styles.lessonProcedureToggleActive : ''
+                          }`}
+                          onClick={() => setActiveLessonPreviewMode('featured-media')}
+                          aria-pressed={isFeaturedMediaOpen}
+                          disabled={!hasFeaturedMedia}
+                        >
+                          <span className={styles.lessonProcedureToggleText}>
+                            <Eye size={16} aria-hidden="true" />
+                            <span>Featured Media</span>
+                          </span>
+                        </button>
+                        <button
+                          type="button"
+                          className={`${styles.lessonProcedureToggle} ${
+                            isDetailedFlowOpen ? styles.lessonProcedureToggleActive : ''
+                          }`}
+                          onClick={() => setActiveLessonPreviewMode('procedure')}
+                          aria-pressed={isDetailedFlowOpen}
+                          disabled={!hasDetailedFlow}
+                        >
+                          <span className={styles.lessonProcedureToggleText}>
+                            <ListTree size={16} aria-hidden="true" />
+                            <span>Procedure</span>
+                          </span>
+                        </button>
+                      </div>
                       <p className={styles.materialsHelperText}>
-                        {hasDetailedFlow
+                        {isFeaturedMediaOpen
+                          ? hasFeaturedMedia
+                            ? 'Showing featured multimedia for this lesson.'
+                            : 'No featured media is linked to this lesson yet.'
+                          : hasDetailedFlow
                           ? 'Open chunk-by-chunk guidance in the preview panel.'
                           : 'Detailed steps are not available for this lesson yet.'}
                       </p>
                       <div className={styles.materialsSectionDivider} aria-hidden="true" />
-                      <h4 className={styles.lessonCardHeading}>
+                      <h3 className={styles.lessonCardHeading}>
                         <Download size={16} aria-hidden="true" />
-                        <span>Materials and downloads</span>
-                      </h4>
+                        <span>Preview and Download</span>
+                      </h3>
                       <p className={styles.materialsHelperText}>Click an item to preview.</p>
                       {!!activeLessonItems.length ? (
                         <div className={styles.lessonDownloadList}>
                           {activeLessonItems.map((item, idx) => {
                             const previewItem = item as TPreviewItem;
                             const { pdfDownloadUrl } = getMaterialUrls(previewItem);
-                            const isActive = !isDetailedFlowOpen && idx === activeMaterialIndex;
+                            const isActive =
+                              activeLessonPreviewMode === 'materials' &&
+                              idx === activeMaterialIndex;
                             const resourceTitle =
                               item.itemTitle ?? `Resource ${idx + 1}`;
                             const isTeacherOnlyItem =
@@ -2412,7 +2473,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                                     type="button"
                                     className={styles.materialSelectButton}
                                     onClick={() => {
-                                      setIsDetailedFlowOpen(false);
+                                      setActiveLessonPreviewMode('materials');
                                       setActiveMaterialIndex(idx);
                                       trackUnitEvent('unit_material_selected', {
                                         lesson_id: activeLessonId ?? null,
@@ -2490,13 +2551,31 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                         )}
                     </div>
                     <div className={styles.lessonPreviewsCard}>
-                      {isDetailedFlowOpen ? (
+                      {isFeaturedMediaOpen ? (
+                        <article className={styles.lessonPreviewItem}>
+                          <header className={styles.lessonPreviewHeader}>
+                            <h3 className={styles.lessonCardHeading}>
+                              <Eye size={16} aria-hidden="true" />
+                              <span>Featured Media</span>
+                            </h3>
+                          </header>
+                          {hasFeaturedMedia ? (
+                            <div className={styles.previewCarousel}>
+                              <LessonsCarousel mediaItems={[...activeLessonFeaturedMedia]} />
+                            </div>
+                          ) : (
+                            <p className={styles.unitMutedText}>
+                              No featured media is linked to this lesson yet.
+                            </p>
+                          )}
+                        </article>
+                      ) : isDetailedFlowOpen ? (
                         <div className={styles.lessonProcedureInPreview}>
                           <div className={styles.lessonProcedureHeader}>
-                            <h4 className={styles.lessonCardHeading}>
+                            <h3 className={styles.lessonCardHeading}>
                               <NotebookPen size={16} aria-hidden="true" />
                               <span>Lesson Procedure</span>
-                            </h4>
+                            </h3>
                             <span>Chunk-by-chunk guidance with vocab and teacher notes.</span>
                           </div>
                           <div className={styles.lessonProcedureContent}>
@@ -2654,10 +2733,10 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                           return (
                             <article className={styles.lessonPreviewItem}>
                               <header className={styles.lessonPreviewHeader}>
-                                <h4 className={styles.lessonCardHeading}>
+                                <h3 className={styles.lessonCardHeading}>
                                   <Eye size={16} aria-hidden="true" />
                                   <span>Item preview</span>
-                                </h4>
+                                </h3>
                                 {canOpenSelected ? (
                                   <a
                                     className={styles.materialOpenLink}

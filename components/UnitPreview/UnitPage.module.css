@@ -1183,9 +1183,8 @@
 
 .lessonPreviewsCard {
   position: relative;
-  background:
-    linear-gradient(135deg, rgba(255, 255, 255, 0.5), rgba(240, 248, 255, 0.28));
-  border: 1px solid rgba(255, 255, 255, 0.42);
+  background: rgba(75, 58, 168, 0.08);
+  border: 1px solid rgba(75, 58, 168, 0.52);
   backdrop-filter: blur(14px) saturate(140%);
   -webkit-backdrop-filter: blur(14px) saturate(140%);
   box-shadow:
@@ -1210,6 +1209,11 @@
   font-weight: 700;
   cursor: pointer;
   transition: background-color 150ms ease, border-color 150ms ease;
+}
+
+.quickStartActions {
+  display: grid;
+  gap: 8px;
 }
 
 .lessonProcedureToggle:hover {
@@ -1405,6 +1409,7 @@
 
 .materialRowMain strong {
   font-size: 16px;
+  font-weight: 600;
   line-height: 1.35;
   color: #1f355a;
   white-space: normal;

@@ -269,7 +269,7 @@ a {
   font-weight: bolder;
 
   //automatic exceptions for badge & nav-links for certain effects
-  &:hover:not(.badge, .no-link-decoration, .cardsOnLessonPg) {
+  &:hover:not(.badge, .no-link-decoration) {
     &:not(.nav-link, .btn) {
       color: lighten($hydrogen-blue, 8%);
     }

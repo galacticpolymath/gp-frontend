@@ -97,6 +97,11 @@ module.exports = {
         destination: 'https://www.galacticpolymath.com/for-scientists',
         permanent: true,
       },
+      {
+        source: '/units',
+        destination: '/search?typeFilter=Unit',
+        permanent: false,
+      },
     ];
   },
   webpack(config) {

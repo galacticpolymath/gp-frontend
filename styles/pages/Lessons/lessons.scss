@@ -10,19 +10,6 @@ $toolTipColor: #f0f4ff;
   margin-bottom: 0.5rem;
 }
 
-.lessons-pg-sec {
-  margin-left: 1.5rem;
-  margin-right: 1.5rem;
-
-  @media (min-width: 576px) {
-    margin-left: 3.5rem;
-    margin-right: 3.5rem;
-  }
-}
-
-.lessons-pg-sec-max-width {
-  max-width: 1315px;
-}
 
 .loading-bubbles {
   transform: scale(150%);
@@ -69,13 +56,6 @@ $toolTipColor: #f0f4ff;
   }
 }
 
-.lessons-section-border-top {
-  border-top: solid $borderThickness $borderColor;
-}
-
-.lessons-section-border-bottom {
-  border-bottom: solid $borderThickness $borderColor;
-}
 
 .down-arrow {
   position: absolute;
@@ -202,14 +182,6 @@ $toolTipColor: #f0f4ff;
   transform-origin: 70% 70%;
 }
 
-.lessonsSection {
-  >div {
-    @media (max-width: 576px) {
-      display: flex !important;
-      flex-direction: column;
-    }
-  }
-}
 
 .jobVizEntrySection span {
   font-size: 24px;
@@ -703,24 +675,6 @@ $toolTipColor: #f0f4ff;
   }
 }
 
-.nav-section-btn {
-  width: 100px;
-  height: 100px;
-  border: solid 0.5px black;
-
-  @media (max-width: 577px) {
-    width: 83px;
-    height: 83px;
-  }
-}
-
-.lessons-nav-section-container {
-  height: 175px;
-
-  @media (max-width: 767px) {
-    height: auto;
-  }
-}
 
 .txt-underline-on-hover:hover {
   text-decoration: underline;
@@ -823,21 +777,6 @@ $toolTipColor: #f0f4ff;
   }
 }
 
-.sponsors-container-lessons {
-  >div {
-    >div {
-      min-width: 0;
-    }
-  }
-}
-
-.sponsor-container-lessons-pg {
-  width: auto;
-
-  @media (min-width: 576px) {
-    width: 210px;
-  }
-}
 
 .lessonSubject {
   bottom: 8px;
