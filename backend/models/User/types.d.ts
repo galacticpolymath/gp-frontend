@@ -45,8 +45,9 @@ export interface TAboutUserFormBaseProps extends IAboutUserFormNewFieldsV1 {
   country?: string;
   occupation?: string;
   zipCode?: string | null | number;
+  /** @deprecated This field is deprecated and will be removed in a future release. Use `accountType` instead.*/
   isTeacher?: boolean;
-  accountType?: "teacher" | "student";
+  accountType?: "teacher" | "student" | "scientist";
   classCode?: string | null;
   dateOfBirth?: Date | string | null;
 }
@@ -103,7 +104,8 @@ export type TUserSchemaV2 = IUserSchemaBaseProps &
     unitGDriveLessons: IUnitGDriveLesson[];
     gdriveAuthEmails: string[];
     willShowGpPlusCopyLessonHelperModal: boolean;
-    displayName?: string
+    displayName?: string,
+    savedJobIds?: string,
     willNotShowEmailNewsLetterSignUpModal: boolean;
   };
 

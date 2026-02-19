@@ -1,4 +1,4 @@
- 
+
 import Mongoose from "mongoose";
 import { ILessonGDriveId, IUnitGDriveLesson, IUserSchema, TUserSchemaV2 } from "./types";
 
@@ -113,6 +113,7 @@ export const UserSchema = new Schema<TUserSchemaV2>(
     email: { type: String, required: true, unique: true },
     outsetaAccountEmail: { type: String, unique: true },
     mailingListConfirmationEmailId: { type: String, required: false },
+    savedJobIds: [String],
     willNotShowEmailNewsLetterSignUpModal: Boolean,
     displayName: String,
     password: {
@@ -124,7 +125,7 @@ export const UserSchema = new Schema<TUserSchemaV2>(
     gpPlusDriveFolderId: String,
     unitGDriveLessons: [UnitGDriveLessons],
     isTeacher: { type: Boolean, required: true, default: () => false },
-    accountType: { type: String, enum: ["teacher", "student"], required: false },
+    accountType: { type: String, enum: ["teacher", "student", "scientist"], required: false },
     classCode: { type: String, required: false },
     dateOfBirth: { type: Date, required: false },
     providerAccountId: String,

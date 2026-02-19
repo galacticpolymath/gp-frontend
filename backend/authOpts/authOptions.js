@@ -1,6 +1,6 @@
- 
 
- 
+
+
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import getCanUserWriteToDb from "../services/dbAuthService";
@@ -330,17 +330,18 @@ export const authOptions = {
             provider: "credentials",
             roles: isStudentAccount ? ["user", "student"] : ["user"],
             totalSignIns: 1,
+            accountType: accountType,
             lastSignIn: new Date(),
             ...(isStudentAccount
               ? {
-                  accountType: "student",
-                  classCode:
-                    typeof classCode === "string" && classCode.trim()
-                      ? classCode.trim()
-                      : undefined,
-                  dateOfBirth: normalizedDateOfBirth,
-                }
-              : {}),
+                classCode:
+                  typeof classCode === "string" && classCode.trim()
+                    ? classCode.trim()
+                    : undefined,
+                dateOfBirth: normalizedDateOfBirth,
+              }
+              : {
+              }),
           };
           const newUserDoc = createDocument(userDocumentToCreate, User);
 
@@ -662,9 +663,8 @@ export const authOptions = {
         }
 
         return param?.user?.redirectUrl
-          ? `${param.user.redirectUrl}/?signin-err-type=${
-              type ?? "sign-in-error"
-            }`
+          ? `${param.user.redirectUrl}/?signin-err-type=${type ?? "sign-in-error"
+          }`
           : `/?signin-err-type=${type ?? "sign-in-error"}`;
       } finally {
         if (!wasUserCreated && isDbConnected) {

@@ -614,8 +614,8 @@ const isNewRelease = (releaseDate?: string | null) => {
 const toPlainText = (value?: string | null) =>
   value
     ? sanitizeHtml(value, { allowedTags: [], allowedAttributes: {} })
-        .replace(/\s+/g, " ")
-        .trim()
+      .replace(/\s+/g, " ")
+      .trim()
     : "";
 
 const formatBlogDate = (value?: string | number | null) => {
@@ -668,13 +668,13 @@ const getTargetStandards = (unit: INewUnitSchema) => {
 const getConnectedStandards = (unit: INewUnitSchema) => {
   const standardsData = unit.Sections?.standards?.Data as
     | Array<{
-        target?: boolean;
-        sets?: Array<{
-          dimensions?: Array<{
-            standardsGroup?: Array<{ codes?: string | null }>;
-          }>;
+      target?: boolean;
+      sets?: Array<{
+        dimensions?: Array<{
+          standardsGroup?: Array<{ codes?: string | null }>;
         }>;
-      }>
+      }>;
+    }>
     | undefined;
   if (!Array.isArray(standardsData)) {
     return [];
@@ -804,9 +804,9 @@ const buildMediaItems = (
         getDriveThumbnail(item.mainLink) ||
         (type === "Video"
           ? (() => {
-              const id = getYoutubeId(item.mainLink);
-              return id ? `https://img.youtube.com/vi/${id}/hqdefault.jpg` : null;
-            })()
+            const id = getYoutubeId(item.mainLink);
+            return id ? `https://img.youtube.com/vi/${id}/hqdefault.jpg` : null;
+          })()
           : null) ||
         fallbackThumbnail;
       return {
@@ -2632,8 +2632,8 @@ export default function HomePage({
         if (!isMounted) return;
         setJobTourError(
           error?.response?.data?.msg ||
-            error?.message ||
-            "Unable to load JobViz tours."
+          error?.message ||
+          "Unable to load JobViz tours."
         );
         setJobTourRecords([]);
       })
@@ -2703,9 +2703,8 @@ export default function HomePage({
         <link rel="canonical" href={canonicalUrl} />
       </Head>
       <div
-        className={`${styles.page} ${
-          isSearchTransitioning ? styles.pageSearchTransitioning : ""
-        }`}
+        className={`${styles.page} ${isSearchTransitioning ? styles.pageSearchTransitioning : ""
+          }`}
       >
         <PortalNav
           activeTab={isHomeView ? null : resolvedTab}
@@ -2744,14 +2743,12 @@ export default function HomePage({
 
             <main className={styles.allMain}>
               <section
-                className={`${styles.allShell} ${
-                  filtersCollapsed ? styles.allShellCollapsed : ""
-                }`}
+                className={`${styles.allShell} ${filtersCollapsed ? styles.allShellCollapsed : ""
+                  }`}
               >
                 <aside
-                  className={`${styles.allFiltersPanel} ${
-                    filtersCollapsed ? styles.allFiltersPanelCollapsed : ""
-                  }`}
+                  className={`${styles.allFiltersPanel} ${filtersCollapsed ? styles.allFiltersPanelCollapsed : ""
+                    }`}
                   role={filtersCollapsed ? "button" : undefined}
                   tabIndex={filtersCollapsed ? 0 : undefined}
                   onClick={() => {
@@ -2950,21 +2947,21 @@ export default function HomePage({
                           const size = 12 + t * 6;
                           return (
                             <button
-                            key={option.tag}
-                            type="button"
-                            className={
-                              selectedTags.includes(option.tag)
-                                ? styles.tagCloudItemActive
-                                : styles.tagCloudItem
-                            }
-                            onClick={() =>
-                              toggleSelection(
-                                option.tag,
-                                selectedTags,
-                                setSelectedTags
-                              )
-                            }
-                            style={{ fontSize: `${size}px` }}
+                              key={option.tag}
+                              type="button"
+                              className={
+                                selectedTags.includes(option.tag)
+                                  ? styles.tagCloudItemActive
+                                  : styles.tagCloudItem
+                              }
+                              onClick={() =>
+                                toggleSelection(
+                                  option.tag,
+                                  selectedTags,
+                                  setSelectedTags
+                                )
+                              }
+                              style={{ fontSize: `${size}px` }}
                             >
                               {option.tag}
                             </button>
@@ -3006,30 +3003,30 @@ export default function HomePage({
                         ))}
                       </div>
                     </details>
-                  <div className={styles.filterFooter}>
-                    <button
-                      className={styles.ghostButton}
-                      type="button"
-                      onClick={async () => {
-                        if (typeof window === "undefined") return;
-                        try {
-                          await navigator.clipboard.writeText(window.location.href);
-                          setShareCopied(true);
-                          window.setTimeout(() => setShareCopied(false), 2000);
-                        } catch (error) {
-                          console.error("Failed to copy share link", error);
-                        }
-                      }}
-                    >
-                      Share View
-                    </button>
-                    {shareCopied && (
-                      <span className={styles.shareCopied} role="status">
-                        <SquareCheckBig aria-hidden="true" />
-                        Copied to clipboard
-                      </span>
-                    )}
-                  </div>
+                    <div className={styles.filterFooter}>
+                      <button
+                        className={styles.ghostButton}
+                        type="button"
+                        onClick={async () => {
+                          if (typeof window === "undefined") return;
+                          try {
+                            await navigator.clipboard.writeText(window.location.href);
+                            setShareCopied(true);
+                            window.setTimeout(() => setShareCopied(false), 2000);
+                          } catch (error) {
+                            console.error("Failed to copy share link", error);
+                          }
+                        }}
+                      >
+                        Share View
+                      </button>
+                      {shareCopied && (
+                        <span className={styles.shareCopied} role="status">
+                          <SquareCheckBig aria-hidden="true" />
+                          Copied to clipboard
+                        </span>
+                      )}
+                    </div>
                   </div>
                 </aside>
                 <div className={styles.allResults}>
@@ -3061,11 +3058,10 @@ export default function HomePage({
                                 }}
                               />
                               <button
-                                className={`${styles.searchClearButton} ${
-                                  searchInputValue.trim()
-                                    ? ""
-                                    : styles.searchClearButtonHidden
-                                }`}
+                                className={`${styles.searchClearButton} ${searchInputValue.trim()
+                                  ? ""
+                                  : styles.searchClearButtonHidden
+                                  }`}
                                 type="button"
                                 aria-label="Clear search"
                                 onClick={() => {
@@ -3114,10 +3110,9 @@ export default function HomePage({
                               className={styles.resultsSelect}
                               aria-label="Sort all resources"
                               value={sortOrder}
-                              onChange={(event) =>
-                                {
-                                  setSortOrder(event.target.value as typeof sortOrder);
-                                }
+                              onChange={(event) => {
+                                setSortOrder(event.target.value as typeof sortOrder);
+                              }
                               }
                             >
                               <option value="relevant">Most relevant</option>
@@ -3126,31 +3121,30 @@ export default function HomePage({
                             </select>
                           </div>
                         </div>
-                      <div className={styles.resultsKicker}>
-                        <span>
-                          Showing {resultsCount} Results from{" "}
-                          {resolvedTab === "All" ? "All Resources" : resolvedTab}
-                        </span>
+                        <div className={styles.resultsKicker}>
+                          <span>
+                            Showing {resultsCount} Results from{" "}
+                            {resolvedTab === "All" ? "All Resources" : resolvedTab}
+                          </span>
+                        </div>
+                        {selectedContentTypes.includes("Job Tour") && (
+                          <>
+                            {jobTourLoading && (
+                              <div className={styles.resultsNotice}>
+                                Loading JobViz tours...
+                              </div>
+                            )}
+                            {jobTourError && (
+                              <div className={styles.resultsNotice} role="alert">
+                                {jobTourError}
+                              </div>
+                            )}
+                          </>
+                        )}
                       </div>
-                      {selectedContentTypes.includes("Job Tour") && (
-                        <>
-                          {jobTourLoading && (
-                            <div className={styles.resultsNotice}>
-                              Loading JobViz tours...
-                            </div>
-                          )}
-                          {jobTourError && (
-                            <div className={styles.resultsNotice} role="alert">
-                              {jobTourError}
-                            </div>
-                          )}
-                        </>
-                      )}
-                    </div>
                       <div
-                        className={`${styles.resultsChips} ${
-                          hasActiveFilterChips ? "" : styles.resultsChipsEmpty
-                        }`}
+                        className={`${styles.resultsChips} ${hasActiveFilterChips ? "" : styles.resultsChipsEmpty
+                          }`}
                       >
                         {hasActiveFilterChips && (
                           <span className={styles.activeFiltersLabel}>
@@ -3218,615 +3212,610 @@ export default function HomePage({
                         </div>
                       ) : (
                         <div
-                          className={`${styles.resourceGrid} ${
-                            resultsView === "list" ? styles.resourceGridList : ""
-                          } ${resultsTransitioning ? styles.resourceGridTransitioning : ""}`}
+                          className={`${styles.resourceGrid} ${resultsView === "list" ? styles.resourceGridList : ""
+                            } ${resultsTransitioning ? styles.resourceGridTransitioning : ""}`}
                         >
                           {sortedResources.map((resource, index) => {
-                      const ResourceIcon = resource.icon;
-                      const unitHref =
-                        resource.type === "Unit" && resource.unitId
-                          ? buildUnitPath(resource.unitId)
-                          : null;
-                      const jobTourUrl =
-                        resource.type === "Job Tour"
-                          ? buildJobTourUrl(resource)
-                          : null;
-                      const isClickable =
-                        resource.type === "Video" ||
-                        resource.type === "App" ||
-                        resource.type === "Job Tour" ||
-                        Boolean(unitHref);
-                      const showLessons =
-                        (resource.type === "Unit" || resource.type === "Lesson") &&
-                        Boolean(resource.timeLabel?.trim());
-                      const animationDelay =
-                        resultsView === "list" ? 0 : Math.min(index, 10) * 25;
-                      const madeByLabel = (() => {
-                        if (resource.tourSource === "unit") return "GP Team";
-                        if (resource.ownerId && userId && resource.ownerId === userId)
-                          return "Me";
-                        if (resource.tourIsGp) return "GP Team";
-                        return resource.ownerName || "Teacher";
-                      })();
-                      const visibilityLabel =
-                        resource.tourVisibility === "me"
-                          ? "Private"
-                          : resource.tourVisibility === "just-teachers"
-                            ? "Teachers"
-                            : resource.tourVisibility === "everyone"
-                              ? "Public"
-                              : null;
-                      const searchMatch =
-                        searchMatchByResourceId.get(resource.id) ??
-                        ({
-                          queryMatches: true,
-                          hiddenCategories: [],
-                          relevanceScore: 0,
-                        } as ResourceSearchMatchResult);
-                      const hiddenMatchCategories = hasCommittedSearch
-                        ? searchMatch.hiddenCategories
-                        : [];
-                      const cardProps = {
-                        role: isClickable ? "button" : undefined,
-                        tabIndex: isClickable ? 0 : undefined,
-                        style: {
-                          animationDelay: `${animationDelay}ms`,
-                        } as React.CSSProperties,
-                        onClick: () => {
-                          if (resource.type === "Video") {
-                            handleOpenMedia({
-                              title: resource.title,
-                              type: "Video",
-                              thumbnail: resource.image,
-                              link: resource.mediaLink ?? null,
-                              lessonRelevance: resource.mediaLessonRelevance ?? null,
-                              unitTitle: resource.unitTitle ?? null,
-                              subtitle: resource.unitSubtitle ?? null,
-                              unitId: resource.unitId ?? null,
-                            });
-                            return;
-                          }
-                          if (resource.type === "Job Tour" && jobTourUrl) {
-                            if (resource.tourId) {
-                              handleOpenJobTourAccessModal(resource);
-                            } else {
-                              router.push(jobTourUrl);
-                            }
-                            return;
-                          }
-                          if (resource.type === "App" && resource.mediaLink) {
-                            if (resource.mediaLink.startsWith("/")) {
-                              router.push(resource.mediaLink);
-                            } else {
-                              window.open(resource.mediaLink, "_blank");
-                            }
-                            return;
-                          }
-                          if (unitHref) {
-                            router.push(unitHref);
-                          }
-                        },
-                        onKeyDown: (event: React.KeyboardEvent<HTMLElement>) => {
-                          if (!isClickable) return;
-                          if (event.key === "Enter" || event.key === " ") {
-                            event.preventDefault();
-                            if (resource.type === "Video") {
-                              handleOpenMedia({
-                                title: resource.title,
-                                type: "Video",
-                                thumbnail: resource.image,
-                                link: resource.mediaLink ?? null,
-                                lessonRelevance: resource.mediaLessonRelevance ?? null,
-                                unitTitle: resource.unitTitle ?? null,
-                                subtitle: resource.unitSubtitle ?? null,
-                                unitId: resource.unitId ?? null,
-                              });
-                              return;
-                            }
-                            if (resource.type === "Job Tour" && jobTourUrl) {
-                              if (resource.tourId) {
-                                handleOpenJobTourAccessModal(resource);
-                              } else {
-                                router.push(jobTourUrl);
-                              }
-                              return;
-                            }
-                            if (resource.type === "App" && resource.mediaLink) {
-                              if (resource.mediaLink.startsWith("/")) {
-                                router.push(resource.mediaLink);
-                              } else {
-                                window.open(resource.mediaLink, "_blank");
-                              }
-                              return;
-                            }
-                            if (unitHref) {
-                              router.push(unitHref);
-                            }
-                          }
-                        },
-                      };
+                            const ResourceIcon = resource.icon;
+                            const unitHref =
+                              resource.type === "Unit" && resource.unitId
+                                ? buildUnitPath(resource.unitId)
+                                : null;
+                            const jobTourUrl =
+                              resource.type === "Job Tour"
+                                ? buildJobTourUrl(resource)
+                                : null;
+                            const isClickable =
+                              resource.type === "Video" ||
+                              resource.type === "App" ||
+                              resource.type === "Job Tour" ||
+                              Boolean(unitHref);
+                            const showLessons =
+                              (resource.type === "Unit" || resource.type === "Lesson") &&
+                              Boolean(resource.timeLabel?.trim());
+                            const animationDelay =
+                              resultsView === "list" ? 0 : Math.min(index, 10) * 25;
+                            const madeByLabel = (() => {
+                              if (resource.tourSource === "unit") return "GP Team";
+                              if (resource.ownerId && userId && resource.ownerId === userId)
+                                return "Me";
+                              if (resource.tourIsGp) return "GP Team";
+                              return resource.ownerName || "Teacher";
+                            })();
+                            const visibilityLabel =
+                              resource.tourVisibility === "me"
+                                ? "Private"
+                                : resource.tourVisibility === "just-teachers"
+                                  ? "Teachers"
+                                  : resource.tourVisibility === "everyone"
+                                    ? "Public"
+                                    : null;
+                            const searchMatch =
+                              searchMatchByResourceId.get(resource.id) ??
+                              ({
+                                queryMatches: true,
+                                hiddenCategories: [],
+                                relevanceScore: 0,
+                              } as ResourceSearchMatchResult);
+                            const hiddenMatchCategories = hasCommittedSearch
+                              ? searchMatch.hiddenCategories
+                              : [];
+                            const cardProps = {
+                              role: isClickable ? "button" : undefined,
+                              tabIndex: isClickable ? 0 : undefined,
+                              style: {
+                                animationDelay: `${animationDelay}ms`,
+                              } as React.CSSProperties,
+                              onClick: () => {
+                                if (resource.type === "Video") {
+                                  handleOpenMedia({
+                                    title: resource.title,
+                                    type: "Video",
+                                    thumbnail: resource.image,
+                                    link: resource.mediaLink ?? null,
+                                    lessonRelevance: resource.mediaLessonRelevance ?? null,
+                                    unitTitle: resource.unitTitle ?? null,
+                                    subtitle: resource.unitSubtitle ?? null,
+                                    unitId: resource.unitId ?? null,
+                                  });
+                                  return;
+                                }
+                                if (resource.type === "Job Tour" && jobTourUrl) {
+                                  if (resource.tourId) {
+                                    handleOpenJobTourAccessModal(resource);
+                                  } else {
+                                    router.push(jobTourUrl);
+                                  }
+                                  return;
+                                }
+                                if (resource.type === "App" && resource.mediaLink) {
+                                  if (resource.mediaLink.startsWith("/")) {
+                                    router.push(resource.mediaLink);
+                                  } else {
+                                    window.open(resource.mediaLink, "_blank");
+                                  }
+                                  return;
+                                }
+                                if (unitHref) {
+                                  router.push(unitHref);
+                                }
+                              },
+                              onKeyDown: (event: React.KeyboardEvent<HTMLElement>) => {
+                                if (!isClickable) return;
+                                if (event.key === "Enter" || event.key === " ") {
+                                  event.preventDefault();
+                                  if (resource.type === "Video") {
+                                    handleOpenMedia({
+                                      title: resource.title,
+                                      type: "Video",
+                                      thumbnail: resource.image,
+                                      link: resource.mediaLink ?? null,
+                                      lessonRelevance: resource.mediaLessonRelevance ?? null,
+                                      unitTitle: resource.unitTitle ?? null,
+                                      subtitle: resource.unitSubtitle ?? null,
+                                      unitId: resource.unitId ?? null,
+                                    });
+                                    return;
+                                  }
+                                  if (resource.type === "Job Tour" && jobTourUrl) {
+                                    if (resource.tourId) {
+                                      handleOpenJobTourAccessModal(resource);
+                                    } else {
+                                      router.push(jobTourUrl);
+                                    }
+                                    return;
+                                  }
+                                  if (resource.type === "App" && resource.mediaLink) {
+                                    if (resource.mediaLink.startsWith("/")) {
+                                      router.push(resource.mediaLink);
+                                    } else {
+                                      window.open(resource.mediaLink, "_blank");
+                                    }
+                                    return;
+                                  }
+                                  if (unitHref) {
+                                    router.push(unitHref);
+                                  }
+                                }
+                              },
+                            };
 
-                      if (resultsView === "list") {
-                        const hasSubtitle = Boolean(resource.description?.trim());
-                        const isUnit = resource.type === "Unit";
-                        if (resource.type === "Job Tour") {
-                          const jobTourTitle =
-                            resource.tourSource === "unit" && resource.tourUnitId
-                              ? `Jobs related to GP Unit ${resource.tourUnitId}`
-                              : resource.title;
-                          const fromUnitLabel =
-                            resource.tourUnitTitle ??
-                            resource.description.replace(/^From\s+/i, "");
-                          return (
-                            <article
-                              key={resource.id}
-                              className={`${styles.resourceRow} ${styles.jobTourRow} ${
-                                animateResults ? styles.resourceAnimate : ""
-                              }`}
-                              data-type={resource.type}
-                              {...cardProps}
-                            >
-                              <div className={styles.resourceRowMedia}>
-                                <img src={resource.image} alt="" loading="lazy" />
-                                <div className={styles.resourceMediaType}>
-                                  <img
-                                    src="/imgs/jobViz/jobviz_rocket_logo_white.svg"
-                                    alt=""
-                                    aria-hidden="true"
-                                  />
-                                </div>
-                              </div>
-                              <div className={styles.resourceRowContent}>
-                                <div
-                                  className={`${styles.resourceRowTitleLine} ${styles.jobTourRowTitleLine}`}
-                                >
-                                  <span className={styles.resourceRowTitleText}>
-                                    {resource.tourSource === "unit"
-                                      ? "Jobs related to:"
-                                      : highlightText(jobTourTitle, searchQuery)}
-                                  </span>
-                                  {fromUnitLabel ? (
-                                    <span className={styles.resourceRowSubtitle}>
-                                      &quot;
-                                      {highlightText(
-                                        truncateUnitTitle(fromUnitLabel),
-                                        searchQuery
-                                      )}
-                                      &quot;
-                                    </span>
-                                  ) : (
-                                    hasSubtitle && (
-                                      <span className={styles.resourceRowSubtitle}>
-                                        {highlightText(resource.description, searchQuery)}
-                                      </span>
-                                    )
-                                  )}
-                                </div>
-                                {hiddenMatchCategories.length > 0 && (
-                                  <div className={styles.rowMatchArea}>
-                                    <span className={styles.searchMatchLabel}>
-                                      Search also matches
-                                    </span>
-                                    {hiddenMatchCategories.slice(0, 2).map((category) => (
-                                      <span
-                                        key={`${resource.id}-${category.label}`}
-                                        className={styles.rowMatchLine}
-                                      >
-                                        <strong>{category.label}:</strong>{" "}
-                                        {summarizeCategoryValues(category.values, 2).join(", ")}
-                                      </span>
-                                    ))}
-                                  </div>
-                                )}
-                              </div>
-                              <div
-                                className={`${styles.resourceRowCol} ${styles.resourceRowColCenter}`}
-                              >
-                                <span className={styles.resourceRowColValue}>
-                                  {resource.subject ?? "Science"}
-                                </span>
-                              </div>
-                              <div
-                                className={`${styles.resourceRowCol} ${styles.resourceRowColCenter}`}
-                              >
-                                <span className={styles.resourceRowColValue}>
-                                  {resource.gradeBand.replace(/^Grades\s*/i, "")}
-                                </span>
-                              </div>
-                              <div
-                                className={`${styles.resourceRowCol} ${styles.resourceRowColCenter} ${styles.resourceRowTypeCol}`}
-                              >
-                                <span className={styles.resourceRowTypeText}>
-                                  {resource.type}
-                                </span>
-                                {(resource.isNew || resource.isPlus) && (
-                                  <div className={styles.resourceBadges}>
-                                    {resource.isNew && (
-                                      <span className={styles.resourceBadge}>New</span>
-                                    )}
-                                    {resource.isPlus && (
-                                      <span className={styles.resourceBadgePlus}>
+                            if (resultsView === "list") {
+                              const hasSubtitle = Boolean(resource.description?.trim());
+                              const isUnit = resource.type === "Unit";
+                              if (resource.type === "Job Tour") {
+                                const jobTourTitle =
+                                  resource.tourSource === "unit" && resource.tourUnitId
+                                    ? `Jobs related to GP Unit ${resource.tourUnitId}`
+                                    : resource.title;
+                                const fromUnitLabel =
+                                  resource.tourUnitTitle ??
+                                  resource.description.replace(/^From\s+/i, "");
+                                return (
+                                  <article
+                                    key={resource.id}
+                                    className={`${styles.resourceRow} ${styles.jobTourRow} ${animateResults ? styles.resourceAnimate : ""
+                                      }`}
+                                    data-type={resource.type}
+                                    {...cardProps}
+                                  >
+                                    <div className={styles.resourceRowMedia}>
+                                      <img src={resource.image} alt="" loading="lazy" />
+                                      <div className={styles.resourceMediaType}>
                                         <img
-                                          src="/plus/plus.png"
+                                          src="/imgs/jobViz/jobviz_rocket_logo_white.svg"
                                           alt=""
                                           aria-hidden="true"
                                         />
-                                        GP+
+                                      </div>
+                                    </div>
+                                    <div className={styles.resourceRowContent}>
+                                      <div
+                                        className={`${styles.resourceRowTitleLine} ${styles.jobTourRowTitleLine}`}
+                                      >
+                                        <span className={styles.resourceRowTitleText}>
+                                          {resource.tourSource === "unit"
+                                            ? "Jobs related to:"
+                                            : highlightText(jobTourTitle, searchQuery)}
+                                        </span>
+                                        {fromUnitLabel ? (
+                                          <span className={styles.resourceRowSubtitle}>
+                                            &quot;
+                                            {highlightText(
+                                              truncateUnitTitle(fromUnitLabel),
+                                              searchQuery
+                                            )}
+                                            &quot;
+                                          </span>
+                                        ) : (
+                                          hasSubtitle && (
+                                            <span className={styles.resourceRowSubtitle}>
+                                              {highlightText(resource.description, searchQuery)}
+                                            </span>
+                                          )
+                                        )}
+                                      </div>
+                                      {hiddenMatchCategories.length > 0 && (
+                                        <div className={styles.rowMatchArea}>
+                                          <span className={styles.searchMatchLabel}>
+                                            Search also matches
+                                          </span>
+                                          {hiddenMatchCategories.slice(0, 2).map((category) => (
+                                            <span
+                                              key={`${resource.id}-${category.label}`}
+                                              className={styles.rowMatchLine}
+                                            >
+                                              <strong>{category.label}:</strong>{" "}
+                                              {summarizeCategoryValues(category.values, 2).join(", ")}
+                                            </span>
+                                          ))}
+                                        </div>
+                                      )}
+                                    </div>
+                                    <div
+                                      className={`${styles.resourceRowCol} ${styles.resourceRowColCenter}`}
+                                    >
+                                      <span className={styles.resourceRowColValue}>
+                                        {resource.subject ?? "Science"}
                                       </span>
+                                    </div>
+                                    <div
+                                      className={`${styles.resourceRowCol} ${styles.resourceRowColCenter}`}
+                                    >
+                                      <span className={styles.resourceRowColValue}>
+                                        {resource.gradeBand.replace(/^Grades\s*/i, "")}
+                                      </span>
+                                    </div>
+                                    <div
+                                      className={`${styles.resourceRowCol} ${styles.resourceRowColCenter} ${styles.resourceRowTypeCol}`}
+                                    >
+                                      <span className={styles.resourceRowTypeText}>
+                                        {resource.type}
+                                      </span>
+                                      {(resource.isNew || resource.isPlus) && (
+                                        <div className={styles.resourceBadges}>
+                                          {resource.isNew && (
+                                            <span className={styles.resourceBadge}>New</span>
+                                          )}
+                                          {resource.isPlus && (
+                                            <span className={styles.resourceBadgePlus}>
+                                              <img
+                                                src="/plus/plus.png"
+                                                alt=""
+                                                aria-hidden="true"
+                                              />
+                                              GP+
+                                            </span>
+                                          )}
+                                        </div>
+                                      )}
+                                    </div>
+                                  </article>
+                                );
+                              }
+                              return (
+                                <article
+                                  key={resource.id}
+                                  className={`${styles.resourceRow} ${animateResults ? styles.resourceAnimate : ""
+                                    }`}
+                                  data-type={resource.type}
+                                  {...cardProps}
+                                >
+                                  <div className={styles.resourceRowMedia}>
+                                    <img src={resource.image} alt="" loading="lazy" />
+                                    <div className={styles.resourceMediaType}>
+                                      <ResourceIcon aria-hidden="true" />
+                                    </div>
+                                  </div>
+                                  <div className={styles.resourceRowContent}>
+                                    <p className={styles.resourceRowTitleLine}>
+                                      <span className={styles.resourceRowTitleText}>
+                                        {highlightText(resource.title, searchQuery)}
+                                      </span>
+                                      {hasSubtitle && (
+                                        <span
+                                          className={
+                                            isUnit
+                                              ? styles.resourceRowSubtitleWithColon
+                                              : styles.resourceRowSubtitle
+                                          }
+                                        >
+                                          {resource.type === "Video" ||
+                                            resource.type === "App" ? (
+                                            <span
+                                              className={styles.resourceFromLine}
+                                              style={{ display: "block" }}
+                                            >
+                                              <CornerDownRight aria-hidden="true" />
+                                              <span>
+                                                From{" "}
+                                                {highlightText(
+                                                  resource.unitTitle ??
+                                                  resource.description.replace(/^From\s+/i, ""),
+                                                  searchQuery
+                                                )}
+                                              </span>
+                                              <span className={styles.resourceFromPill}>
+                                                Unit
+                                              </span>
+                                            </span>
+                                          ) : (
+                                            highlightText(resource.description, searchQuery)
+                                          )}
+                                        </span>
+                                      )}
+                                    </p>
+                                    {hiddenMatchCategories.length > 0 && (
+                                      <div className={styles.rowMatchArea}>
+                                        <span className={styles.searchMatchLabel}>
+                                          Search also matches
+                                        </span>
+                                        {hiddenMatchCategories.slice(0, 2).map((category) => (
+                                          <span
+                                            key={`${resource.id}-${category.label}`}
+                                            className={styles.rowMatchLine}
+                                          >
+                                            <strong>{category.label}:</strong>{" "}
+                                            {summarizeCategoryValues(category.values, 2).join(", ")}
+                                          </span>
+                                        ))}
+                                      </div>
                                     )}
                                   </div>
-                                )}
-                              </div>
-                            </article>
-                          );
-                        }
-                        return (
-                          <article
-                            key={resource.id}
-                            className={`${styles.resourceRow} ${
-                              animateResults ? styles.resourceAnimate : ""
-                            }`}
-                            data-type={resource.type}
-                            {...cardProps}
-                          >
-                            <div className={styles.resourceRowMedia}>
-                              <img src={resource.image} alt="" loading="lazy" />
-                              <div className={styles.resourceMediaType}>
-                                <ResourceIcon aria-hidden="true" />
-                              </div>
-                            </div>
-                            <div className={styles.resourceRowContent}>
-                              <p className={styles.resourceRowTitleLine}>
-                                <span className={styles.resourceRowTitleText}>
-                                  {highlightText(resource.title, searchQuery)}
-                                </span>
-                                {hasSubtitle && (
-                                  <span
-                                    className={
-                                      isUnit
-                                        ? styles.resourceRowSubtitleWithColon
-                                        : styles.resourceRowSubtitle
-                                    }
+                                  <div
+                                    className={`${styles.resourceRowCol} ${styles.resourceRowColCenter}`}
                                   >
-                                    {resource.type === "Video" ||
-                                    resource.type === "App" ? (
-                                      <span
-                                        className={styles.resourceFromLine}
-                                        style={{ display: "block" }}
-                                      >
+                                    <span className={styles.resourceRowColValue}>
+                                      {resource.subject ?? "Science"}
+                                    </span>
+                                  </div>
+                                  <div
+                                    className={`${styles.resourceRowCol} ${styles.resourceRowColCenter}`}
+                                  >
+                                    <span className={styles.resourceRowColValue}>
+                                      {resource.gradeBand.replace(/^Grades\s*/i, "")}
+                                    </span>
+                                  </div>
+                                  <div
+                                    className={`${styles.resourceRowCol} ${styles.resourceRowColCenter} ${styles.resourceRowTypeCol}`}
+                                  >
+                                    <span className={styles.resourceRowTypeText}>
+                                      {resource.type}
+                                    </span>
+                                    {resource.type === "Unit" &&
+                                      resource.timeLabel?.trim() && (
+                                        <span className={styles.resourceRowLessonCount}>
+                                          {resource.timeLabel}
+                                        </span>
+                                      )}
+                                    {(resource.isNew || resource.isPlus) && (
+                                      <div className={styles.resourceBadges}>
+                                        {resource.isNew && (
+                                          <span className={styles.resourceBadge}>New</span>
+                                        )}
+                                        {resource.isPlus && (
+                                          <span className={styles.resourceBadgePlus}>
+                                            <img
+                                              src="/plus/plus.png"
+                                              alt=""
+                                              aria-hidden="true"
+                                            />
+                                            GP+
+                                          </span>
+                                        )}
+                                      </div>
+                                    )}
+                                  </div>
+                                </article>
+                              );
+                            }
+
+                            if (resource.type === "Job Tour") {
+                              const jobTitlesRaw = getJobTitlesForTour(
+                                resource.selectedJobs,
+                                4
+                              );
+                              const jobTitles = jobTitlesRaw.map((title) =>
+                                truncateJobTitle(title)
+                              );
+                              const remainingJobs = Math.max(
+                                (resource.selectedJobs?.length ?? 0) - jobTitlesRaw.length,
+                                0
+                              );
+                              const isUnitTour = resource.tourSource === "unit";
+                              return (
+                                <article
+                                  key={resource.id}
+                                  className={`${styles.resourceCard} ${styles.jobTourCard} ${animateResults ? styles.resourceAnimate : ""
+                                    }`}
+                                  data-type={resource.type}
+                                  {...cardProps}
+                                >
+                                  <div className={styles.resourceMedia}>
+                                    <img src={resource.image} alt="" loading="lazy" />
+                                    <div className={styles.resourceMediaType}>
+                                      <img
+                                        src="/imgs/jobViz/jobviz_rocket_logo_white_bold.svg"
+                                        alt=""
+                                        aria-hidden="true"
+                                      />
+                                    </div>
+                                  </div>
+                                  <div className={styles.resourceContent}>
+                                    <h3>
+                                      {isUnitTour
+                                        ? "Jobs Related to GP Unit:"
+                                        : highlightText(resource.title, searchQuery)}
+                                    </h3>
+                                    <p className={styles.resourceDescription}>
+                                      {isUnitTour ? (
+                                        <span className={styles.jobTourFromLine}>
+                                          <CornerDownRight aria-hidden="true" />
+                                          <span>
+                                            from{" "}
+                                            {highlightText(
+                                              resource.description.replace(/^From\s+/i, ""),
+                                              searchQuery
+                                            )}
+                                          </span>
+                                        </span>
+                                      ) : (
+                                        highlightText(resource.description, searchQuery)
+                                      )}
+                                    </p>
+                                    <p className={styles.jobTourAuthorLine}>
+                                      By{" "}
+                                      <span className={styles.jobTourAuthorPill}>
+                                        {madeByLabel}
+                                      </span>
+                                    </p>
+                                    {jobTitles.length ? (
+                                      <div className={styles.jobTourJobs}>
+                                        {jobTitles.map((title) => (
+                                          <span key={title}>{highlightText(title, searchQuery)}</span>
+                                        ))}
+                                        {remainingJobs > 0 && (
+                                          <span className={styles.jobTourJobsMore}>
+                                            + {remainingJobs} more
+                                          </span>
+                                        )}
+                                      </div>
+                                    ) : null}
+                                  </div>
+                                  <div className={styles.resourceSide}>
+                                    <span className={styles.resourceTypePill}>
+                                      <ResourceIcon aria-hidden="true" />
+                                      {resource.type.toLowerCase()}
+                                    </span>
+                                    {(resource.isNew || resource.isPlus) && (
+                                      <div className={styles.resourceBadges}>
+                                        {resource.isNew && (
+                                          <span className={styles.resourceBadge}>New</span>
+                                        )}
+                                        {resource.isPlus && (
+                                          <span className={styles.resourceBadgePlus}>
+                                            <img
+                                              src="/plus/plus.png"
+                                              alt=""
+                                              aria-hidden="true"
+                                            />
+                                            GP+
+                                          </span>
+                                        )}
+                                      </div>
+                                    )}
+                                    <div className={styles.resourceSideMeta}>
+                                      <span>
+                                        <Compass aria-hidden="true" />
+                                        {resource.subject ?? "Science"}
+                                      </span>
+                                      <span>
+                                        <School aria-hidden="true" />
+                                        {resource.gradeBand
+                                          .replace(/^Grades\s*/i, "")
+                                          .replace(/university/gi, "College")}
+                                      </span>
+                                      <span>
+                                        <Briefcase aria-hidden="true" />
+                                        {resource.timeLabel}
+                                      </span>
+                                    </div>
+                                  </div>
+                                  {hiddenMatchCategories.length > 0 && (
+                                    <div className={styles.searchMatchArea}>
+                                      <p className={styles.searchMatchLabel}>
+                                        Search also matches
+                                      </p>
+                                      {hiddenMatchCategories.map((category) => (
+                                        <p
+                                          key={`${resource.id}-${category.label}`}
+                                          className={styles.searchMatchLine}
+                                        >
+                                          <strong>{category.label}:</strong>{" "}
+                                          {summarizeCategoryValues(category.values).map(
+                                            (value, idx) => (
+                                              <React.Fragment key={`${value}-${idx}`}>
+                                                {idx > 0 ? ", " : ""}
+                                                {highlightText(value, searchQuery)}
+                                              </React.Fragment>
+                                            )
+                                          )}
+                                        </p>
+                                      ))}
+                                    </div>
+                                  )}
+                                </article>
+                              );
+                            }
+                            return (
+                              <article
+                                key={resource.id}
+                                className={`${styles.resourceCard} ${animateResults ? styles.resourceAnimate : ""
+                                  }`}
+                                data-type={resource.type}
+                                {...cardProps}
+                              >
+                                <div className={styles.resourceMedia}>
+                                  <img src={resource.image} alt="" loading="lazy" />
+                                  <div className={styles.resourceMediaType}>
+                                    <ResourceIcon aria-hidden="true" />
+                                  </div>
+                                </div>
+                                <div className={styles.resourceContent}>
+                                  <h3>{highlightText(resource.title, searchQuery)}</h3>
+                                  <p className={styles.resourceDescription}>
+                                    {resource.type === "Video" || resource.type === "App" ? (
+                                      <span className={styles.resourceFromLine}>
                                         <CornerDownRight aria-hidden="true" />
                                         <span>
                                           From{" "}
                                           {highlightText(
                                             resource.unitTitle ??
-                                              resource.description.replace(/^From\s+/i, ""),
+                                            resource.description.replace(/^From\s+/i, ""),
                                             searchQuery
                                           )}
                                         </span>
-                                        <span className={styles.resourceFromPill}>
-                                          Unit
-                                        </span>
+                                        <span className={styles.resourceFromPill}>Unit</span>
                                       </span>
                                     ) : (
                                       highlightText(resource.description, searchQuery)
                                     )}
-                                  </span>
-                                )}
-                              </p>
-                              {hiddenMatchCategories.length > 0 && (
-                                <div className={styles.rowMatchArea}>
-                                  <span className={styles.searchMatchLabel}>
-                                    Search also matches
-                                  </span>
-                                  {hiddenMatchCategories.slice(0, 2).map((category) => (
-                                    <span
-                                      key={`${resource.id}-${category.label}`}
-                                      className={styles.rowMatchLine}
-                                    >
-                                      <strong>{category.label}:</strong>{" "}
-                                      {summarizeCategoryValues(category.values, 2).join(", ")}
-                                    </span>
-                                  ))}
-                                </div>
-                              )}
-                            </div>
-                            <div
-                              className={`${styles.resourceRowCol} ${styles.resourceRowColCenter}`}
-                            >
-                              <span className={styles.resourceRowColValue}>
-                                {resource.subject ?? "Science"}
-                              </span>
-                            </div>
-                            <div
-                              className={`${styles.resourceRowCol} ${styles.resourceRowColCenter}`}
-                            >
-                              <span className={styles.resourceRowColValue}>
-                                {resource.gradeBand.replace(/^Grades\s*/i, "")}
-                              </span>
-                            </div>
-                            <div
-                              className={`${styles.resourceRowCol} ${styles.resourceRowColCenter} ${styles.resourceRowTypeCol}`}
-                            >
-                              <span className={styles.resourceRowTypeText}>
-                                {resource.type}
-                              </span>
-                              {resource.type === "Unit" &&
-                                resource.timeLabel?.trim() && (
-                                  <span className={styles.resourceRowLessonCount}>
-                                    {resource.timeLabel}
-                                  </span>
-                                )}
-                              {(resource.isNew || resource.isPlus) && (
-                                <div className={styles.resourceBadges}>
-                                  {resource.isNew && (
-                                    <span className={styles.resourceBadge}>New</span>
-                                  )}
-                                  {resource.isPlus && (
-                                    <span className={styles.resourceBadgePlus}>
-                                      <img
-                                        src="/plus/plus.png"
-                                        alt=""
-                                        aria-hidden="true"
-                                      />
-                                      GP+
-                                    </span>
-                                  )}
-                                </div>
-                              )}
-                            </div>
-                          </article>
-                        );
-                      }
-
-                      if (resource.type === "Job Tour") {
-                        const jobTitlesRaw = getJobTitlesForTour(
-                          resource.selectedJobs,
-                          4
-                        );
-                        const jobTitles = jobTitlesRaw.map((title) =>
-                          truncateJobTitle(title)
-                        );
-                        const remainingJobs = Math.max(
-                          (resource.selectedJobs?.length ?? 0) - jobTitlesRaw.length,
-                          0
-                        );
-                        const isUnitTour = resource.tourSource === "unit";
-                        return (
-                          <article
-                            key={resource.id}
-                            className={`${styles.resourceCard} ${styles.jobTourCard} ${
-                              animateResults ? styles.resourceAnimate : ""
-                            }`}
-                            data-type={resource.type}
-                            {...cardProps}
-                          >
-                            <div className={styles.resourceMedia}>
-                              <img src={resource.image} alt="" loading="lazy" />
-                              <div className={styles.resourceMediaType}>
-                                <img
-                                  src="/imgs/jobViz/jobviz_rocket_logo_white_bold.svg"
-                                  alt=""
-                                  aria-hidden="true"
-                                />
-                              </div>
-                            </div>
-                            <div className={styles.resourceContent}>
-                              <h3>
-                                {isUnitTour
-                                  ? "Jobs Related to GP Unit:"
-                                  : highlightText(resource.title, searchQuery)}
-                              </h3>
-                              <p className={styles.resourceDescription}>
-                                {isUnitTour ? (
-                                  <span className={styles.jobTourFromLine}>
-                                    <CornerDownRight aria-hidden="true" />
-                                    <span>
-                                      from{" "}
-                                      {highlightText(
-                                        resource.description.replace(/^From\s+/i, ""),
-                                        searchQuery
-                                      )}
-                                    </span>
-                                  </span>
-                                ) : (
-                                  highlightText(resource.description, searchQuery)
-                                )}
-                              </p>
-                              <p className={styles.jobTourAuthorLine}>
-                                By{" "}
-                                <span className={styles.jobTourAuthorPill}>
-                                  {madeByLabel}
-                                </span>
-                              </p>
-                              {jobTitles.length ? (
-                                <div className={styles.jobTourJobs}>
-                                  {jobTitles.map((title) => (
-                                    <span key={title}>{highlightText(title, searchQuery)}</span>
-                                  ))}
-                                  {remainingJobs > 0 && (
-                                    <span className={styles.jobTourJobsMore}>
-                                      + {remainingJobs} more
-                                    </span>
-                                  )}
-                                </div>
-                              ) : null}
-                            </div>
-                            <div className={styles.resourceSide}>
-                              <span className={styles.resourceTypePill}>
-                                <ResourceIcon aria-hidden="true" />
-                                {resource.type.toLowerCase()}
-                              </span>
-                              {(resource.isNew || resource.isPlus) && (
-                                <div className={styles.resourceBadges}>
-                                  {resource.isNew && (
-                                    <span className={styles.resourceBadge}>New</span>
-                                  )}
-                                  {resource.isPlus && (
-                                    <span className={styles.resourceBadgePlus}>
-                                      <img
-                                        src="/plus/plus.png"
-                                        alt=""
-                                        aria-hidden="true"
-                                      />
-                                      GP+
-                                    </span>
-                                  )}
-                                </div>
-                              )}
-                              <div className={styles.resourceSideMeta}>
-                                <span>
-                                  <Compass aria-hidden="true" />
-                                  {resource.subject ?? "Science"}
-                                </span>
-                                <span>
-                                  <School aria-hidden="true" />
-                                  {resource.gradeBand
-                                    .replace(/^Grades\s*/i, "")
-                                    .replace(/university/gi, "College")}
-                                </span>
-                                <span>
-                                  <Briefcase aria-hidden="true" />
-                                  {resource.timeLabel}
-                                </span>
-                              </div>
-                            </div>
-                            {hiddenMatchCategories.length > 0 && (
-                              <div className={styles.searchMatchArea}>
-                                <p className={styles.searchMatchLabel}>
-                                  Search also matches
-                                </p>
-                                {hiddenMatchCategories.map((category) => (
-                                  <p
-                                    key={`${resource.id}-${category.label}`}
-                                    className={styles.searchMatchLine}
-                                  >
-                                    <strong>{category.label}:</strong>{" "}
-                                    {summarizeCategoryValues(category.values).map(
-                                      (value, idx) => (
-                                        <React.Fragment key={`${value}-${idx}`}>
-                                          {idx > 0 ? ", " : ""}
-                                          {highlightText(value, searchQuery)}
-                                        </React.Fragment>
-                                      )
-                                    )}
                                   </p>
-                                ))}
-                              </div>
-                            )}
-                          </article>
-                        );
-                      }
-                      return (
-                        <article
-                          key={resource.id}
-                          className={`${styles.resourceCard} ${
-                            animateResults ? styles.resourceAnimate : ""
-                          }`}
-                          data-type={resource.type}
-                          {...cardProps}
-                        >
-                          <div className={styles.resourceMedia}>
-                            <img src={resource.image} alt="" loading="lazy" />
-                            <div className={styles.resourceMediaType}>
-                              <ResourceIcon aria-hidden="true" />
-                            </div>
-                          </div>
-                          <div className={styles.resourceContent}>
-                            <h3>{highlightText(resource.title, searchQuery)}</h3>
-                            <p className={styles.resourceDescription}>
-                              {resource.type === "Video" || resource.type === "App" ? (
-                                <span className={styles.resourceFromLine}>
-                                  <CornerDownRight aria-hidden="true" />
-                                  <span>
-                                    From{" "}
-                                    {highlightText(
-                                      resource.unitTitle ??
-                                        resource.description.replace(/^From\s+/i, ""),
-                                      searchQuery
-                                    )}
+                                  {resource.tags?.length ? (
+                                    <div className={styles.resourceTags}>
+                                      {resource.tags.map((tag) => (
+                                        <span key={tag}>{highlightText(tag, searchQuery)}</span>
+                                      ))}
+                                    </div>
+                                  ) : null}
+                                </div>
+                                <div className={styles.resourceSide}>
+                                  <span className={styles.resourceTypePill}>
+                                    <ResourceIcon aria-hidden="true" />
+                                    {resource.type.toLowerCase()}
                                   </span>
-                                  <span className={styles.resourceFromPill}>Unit</span>
-                                </span>
-                              ) : (
-                                highlightText(resource.description, searchQuery)
-                              )}
-                            </p>
-                            {resource.tags?.length ? (
-                              <div className={styles.resourceTags}>
-                                {resource.tags.map((tag) => (
-                                  <span key={tag}>{highlightText(tag, searchQuery)}</span>
-                                ))}
-                              </div>
-                            ) : null}
-                          </div>
-                          <div className={styles.resourceSide}>
-                            <span className={styles.resourceTypePill}>
-                              <ResourceIcon aria-hidden="true" />
-                              {resource.type.toLowerCase()}
-                            </span>
-                            {(resource.isNew || resource.isPlus) && (
-                              <div className={styles.resourceBadges}>
-                                {resource.isNew && (
-                                  <span className={styles.resourceBadge}>New</span>
-                                )}
-                                {resource.isPlus && (
-                                  <span className={styles.resourceBadgePlus}>
-                                    <img
-                                      src="/plus/plus.png"
-                                      alt=""
-                                      aria-hidden="true"
-                                    />
-                                    GP+
-                                  </span>
-                                )}
-                              </div>
-                            )}
-                            <div className={styles.resourceSideMeta}>
-                              <span>
-                                <Compass aria-hidden="true" />
-                                {resource.subject ?? "Science"}
-                              </span>
-                              <span>
-                                <School aria-hidden="true" />
-                                {resource.gradeBand
-                                  .replace(/^Grades\s*/i, "")
-                                  .replace(/university/gi, "College")}
-                              </span>
-                              {(resource.type === "Unit" || resource.type === "Lesson") &&
-                                resource.timeLabel && (
-                                  <span>
-                                    <NotebookPen aria-hidden="true" />
-                                    {resource.timeLabel}
-                                  </span>
-                                )}
-                            </div>
-                          </div>
-                          {hiddenMatchCategories.length > 0 && (
-                            <div className={styles.searchMatchArea}>
-                              <p className={styles.searchMatchLabel}>
-                                Search also matches
-                              </p>
-                              {hiddenMatchCategories.map((category) => (
-                                <p
-                                  key={`${resource.id}-${category.label}`}
-                                  className={styles.searchMatchLine}
-                                >
-                                  <strong>{category.label}:</strong>{" "}
-                                  {summarizeCategoryValues(category.values).map(
-                                    (value, idx) => (
-                                      <React.Fragment key={`${value}-${idx}`}>
-                                        {idx > 0 ? ", " : ""}
-                                        {highlightText(value, searchQuery)}
-                                      </React.Fragment>
-                                    )
+                                  {(resource.isNew || resource.isPlus) && (
+                                    <div className={styles.resourceBadges}>
+                                      {resource.isNew && (
+                                        <span className={styles.resourceBadge}>New</span>
+                                      )}
+                                      {resource.isPlus && (
+                                        <span className={styles.resourceBadgePlus}>
+                                          <img
+                                            src="/plus/plus.png"
+                                            alt=""
+                                            aria-hidden="true"
+                                          />
+                                          GP+
+                                        </span>
+                                      )}
+                                    </div>
                                   )}
-                                </p>
-                              ))}
-                            </div>
-                          )}
-                        </article>
-                      );
+                                  <div className={styles.resourceSideMeta}>
+                                    <span>
+                                      <Compass aria-hidden="true" />
+                                      {resource.subject ?? "Science"}
+                                    </span>
+                                    <span>
+                                      <School aria-hidden="true" />
+                                      {resource.gradeBand
+                                        .replace(/^Grades\s*/i, "")
+                                        .replace(/university/gi, "College")}
+                                    </span>
+                                    {(resource.type === "Unit" || resource.type === "Lesson") &&
+                                      resource.timeLabel && (
+                                        <span>
+                                          <NotebookPen aria-hidden="true" />
+                                          {resource.timeLabel}
+                                        </span>
+                                      )}
+                                  </div>
+                                </div>
+                                {hiddenMatchCategories.length > 0 && (
+                                  <div className={styles.searchMatchArea}>
+                                    <p className={styles.searchMatchLabel}>
+                                      Search also matches
+                                    </p>
+                                    {hiddenMatchCategories.map((category) => (
+                                      <p
+                                        key={`${resource.id}-${category.label}`}
+                                        className={styles.searchMatchLine}
+                                      >
+                                        <strong>{category.label}:</strong>{" "}
+                                        {summarizeCategoryValues(category.values).map(
+                                          (value, idx) => (
+                                            <React.Fragment key={`${value}-${idx}`}>
+                                              {idx > 0 ? ", " : ""}
+                                              {highlightText(value, searchQuery)}
+                                            </React.Fragment>
+                                          )
+                                        )}
+                                      </p>
+                                    ))}
+                                  </div>
+                                )}
+                              </article>
+                            );
                           })}
                         </div>
                       )}
@@ -3844,17 +3833,17 @@ export default function HomePage({
               <div className={styles.heroGlow} aria-hidden="true" />
               <div className={styles.heroBody}>
                 <div className={styles.heroCopy}>
-              <p className={styles.kicker}>Free Resources, Built With Experts</p>
-              <h1 className={styles.heroTitle}>
-                Real science,
-                <br />
-                ready to teach
-              </h1>
-              <p className={styles.heroLead}>
-                Our content comes straight from scientists at the frontier of
-                discovery— curated and adapted by our expert team of educators,
-                scientists and artists for your K-12 classrooms.
-              </p>
+                  <p className={styles.kicker}>Free Resources, Built With Experts</p>
+                  <h1 className={styles.heroTitle}>
+                    Real science,
+                    <br />
+                    ready to teach
+                  </h1>
+                  <p className={styles.heroLead}>
+                    Our content comes straight from scientists at the frontier of
+                    discovery— curated and adapted by our expert team of educators,
+                    scientists and artists for your K-12 classrooms.
+                  </p>
                   <div className={styles.heroHighlights}>
                     {experiencePillars.map((pillar) => (
                       <div
@@ -3873,19 +3862,19 @@ export default function HomePage({
                 </div>
                 <div className={styles.heroPanel}>
                   <div className={styles.searchCard}>
-                  <form className={styles.searchBar} onSubmit={handleHomeSearchSubmit}>
-                    <Search className={styles.searchIcon} aria-hidden="true" />
-                    <input
-                      type="text"
-                      placeholder="Search by title, topic, standards, or skill..."
-                      aria-label="Search resources"
-                      value={searchInputValue}
-                      onChange={(event) => setSearchInputValue(event.target.value)}
-                    />
-                    <button className={styles.searchSubmitButton} type="submit">
-                      Search
-                    </button>
-                  </form>
+                    <form className={styles.searchBar} onSubmit={handleHomeSearchSubmit}>
+                      <Search className={styles.searchIcon} aria-hidden="true" />
+                      <input
+                        type="text"
+                        placeholder="Search by title, topic, standards, or skill..."
+                        aria-label="Search resources"
+                        value={searchInputValue}
+                        onChange={(event) => setSearchInputValue(event.target.value)}
+                      />
+                      <button className={styles.searchSubmitButton} type="submit">
+                        Search
+                      </button>
+                    </form>
                   </div>
                   <div className={styles.heroCarousel}>
                     {carouselImages.map((src, index) => (
@@ -3893,9 +3882,8 @@ export default function HomePage({
                         key={src}
                         src={src}
                         alt=""
-                        className={`${styles.heroCarouselImage} ${
-                          index === carouselIndex ? styles.heroCarouselActive : ""
-                        }`}
+                        className={`${styles.heroCarouselImage} ${index === carouselIndex ? styles.heroCarouselActive : ""
+                          }`}
                         loading={index === 0 ? "eager" : "lazy"}
                       />
                     ))}
@@ -3975,11 +3963,10 @@ export default function HomePage({
                     </div>
                     <div className={styles.mapWrap}>
                       <div
-                        className={`${styles.mapFrame} ${
-                          statsVisibility.showMap
-                            ? styles.mapVisible
-                            : styles.mapHidden
-                        }`}
+                        className={`${styles.mapFrame} ${statsVisibility.showMap
+                          ? styles.mapVisible
+                          : styles.mapHidden
+                          }`}
                         id="gp-world-map"
                         ref={mapContainerRef}
                       >
@@ -3989,14 +3976,14 @@ export default function HomePage({
                       </div>
                     </div>
                   </div>
-                <div className={styles.statsCtaRow}>
-                  <Link className={styles.primaryButton} href="/account">
-                    Log in
-                  </Link>
-                  <Link className={styles.secondaryButton} href="/gp-plus">
-                    Create free account
-                  </Link>
-                </div>
+                  <div className={styles.statsCtaRow}>
+                    <Link className={styles.primaryButton} href="/account">
+                      Log in
+                    </Link>
+                    <Link className={styles.secondaryButton} href="/gp-plus">
+                      Create free account
+                    </Link>
+                  </div>
                 </div>
               </section>
 
@@ -4019,9 +4006,8 @@ export default function HomePage({
                     {spotlightResources.map((resource, index) => (
                       <article
                         key={resource.title}
-                        className={`${styles.spotlightCard} ${styles.reveal} ${
-                          resource.id === "wizard" ? styles.spotlightWizard : ""
-                        }`}
+                        className={`${styles.spotlightCard} ${styles.reveal} ${resource.id === "wizard" ? styles.spotlightWizard : ""
+                          }`}
                         style={{ transitionDelay: `${index * 90}ms` }}
                         data-animate
                       >
@@ -4081,11 +4067,10 @@ export default function HomePage({
                       return (
                         <article
                           key={unit.id}
-                          className={`${styles.newUnitCard} ${styles.reveal} ${
-                            index % 2 === 0
-                              ? styles.newUnitCardLeft
-                              : styles.newUnitCardRight
-                          }`}
+                          className={`${styles.newUnitCard} ${styles.reveal} ${index % 2 === 0
+                            ? styles.newUnitCardLeft
+                            : styles.newUnitCardRight
+                            }`}
                           style={{ transitionDelay: `${index * 110}ms` }}
                           data-animate
                         >
@@ -4146,14 +4131,14 @@ export default function HomePage({
                                 </p>
                               )}
                             </div>
-                        <div className={styles.cardActions}>
+                            <div className={styles.cardActions}>
                               <Link
                                 className={styles.primaryButton}
                                 href={buildUnitPath(unit.id)}
                               >
                                 Take Me to the Unit
                               </Link>
-                        </div>
+                            </div>
                           </div>
                         </article>
                       );
@@ -4310,9 +4295,8 @@ export default function HomePage({
       {activeModal && (
         <div className={styles.modalOverlay} role="presentation">
           <div
-            className={`${styles.modal} ${
-              activeModal === "media" ? styles.mediaModal : ""
-            }`}
+            className={`${styles.modal} ${activeModal === "media" ? styles.mediaModal : ""
+              }`}
             role="dialog"
             aria-modal="true"
             ref={modalRef}
