@@ -6,12 +6,20 @@ import RichText from '../RichText';
 import styles from './UnitPage.module.css';
 import {
   Blocks,
+  CircleAlert,
+  ChevronUp,
   Clock3,
   Copy,
   Download,
   Eye,
+  FileArchive,
+  FileImage,
+  FileSpreadsheet,
   FileText,
+  FileVideo,
   Filter,
+  Link2,
+  ListTree,
   Network,
   NotebookPen,
   SquareArrowOutUpRight,
@@ -109,6 +117,44 @@ const SUBJECT_COLOR_MAP: Record<string, string> = {
 
 const getSubjectColor = (subject: string) =>
   SUBJECT_COLOR_MAP[subject.trim().toLowerCase()] ?? '#B798E8';
+
+const getMaterialTypeIcon = (itemType?: unknown, itemCat?: unknown) => {
+  const rawType =
+    typeof itemType === 'string' && itemType.trim()
+      ? itemType
+      : typeof itemCat === 'string'
+      ? itemCat
+      : '';
+  const normalizedType = rawType.trim().toLowerCase();
+
+  if (
+    normalizedType.includes('sheet') ||
+    normalizedType.includes('spread') ||
+    normalizedType.includes('excel') ||
+    normalizedType.includes('csv') ||
+    normalizedType.includes('data')
+  ) {
+    return <FileSpreadsheet size={15} />;
+  }
+  if (
+    normalizedType.includes('image') ||
+    normalizedType.includes('photo') ||
+    normalizedType.includes('png') ||
+    normalizedType.includes('jpg')
+  ) {
+    return <FileImage size={15} />;
+  }
+  if (normalizedType.includes('video') || normalizedType.includes('clip')) {
+    return <FileVideo size={15} />;
+  }
+  if (normalizedType.includes('link') || normalizedType.includes('url')) {
+    return <Link2 size={15} />;
+  }
+  if (normalizedType.includes('zip') || normalizedType.includes('archive')) {
+    return <FileArchive size={15} />;
+  }
+  return <FileText size={15} />;
+};
 
 const CONSENT_STORAGE_KEY = 'gp_cookie_consent_v1';
 
@@ -1175,6 +1221,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
   const [isTagListExpanded, setIsTagListExpanded] = useState(false);
   const [visibleTagCount, setVisibleTagCount] = useState(0);
   const [activeMaterialIndex, setActiveMaterialIndex] = useState(0);
+  const [isDetailedFlowOpen, setIsDetailedFlowOpen] = useState(false);
   const [isGpPlusBannerDismissed, setIsGpPlusBannerDismissed] = useState(false);
   const [isStandardsFilterDockOpen, setIsStandardsFilterDockOpen] =
     useState(false);
@@ -1545,6 +1592,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
   const activeLesson =
     activeLessonIndex >= 0 ? lessons[activeLessonIndex] : undefined;
   const activeLessonItems = activeLesson?.itemList ?? [];
+  const hasDetailedFlow = !!activeLesson?.chunks?.length;
   const chunkDurations = (activeLesson?.chunks ?? [])
     .map((chunk) => chunk?.chunkDur ?? 0)
     .filter((duration): duration is number => typeof duration === 'number' && duration > 0);
@@ -1671,6 +1719,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
 
   useEffect(() => {
     setActiveMaterialIndex(0);
+    setIsDetailedFlowOpen(false);
   }, [activeLessonId]);
   useEffect(() => {
     return () => {
@@ -2311,6 +2360,26 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                       </div>
                     )}
                     <div className={styles.lessonResourcesCard}>
+                      <button
+                        type="button"
+                        className={`${styles.lessonProcedureToggle} ${
+                          isDetailedFlowOpen ? styles.lessonProcedureToggleActive : ''
+                        }`}
+                        onClick={() => setIsDetailedFlowOpen(true)}
+                        aria-pressed={isDetailedFlowOpen}
+                        disabled={!hasDetailedFlow}
+                      >
+                        <span className={styles.lessonProcedureToggleText}>
+                          <ListTree size={16} aria-hidden="true" />
+                          <span>Lesson Procedure</span>
+                        </span>
+                      </button>
+                      <p className={styles.materialsHelperText}>
+                        {hasDetailedFlow
+                          ? 'Open chunk-by-chunk guidance in the preview panel.'
+                          : 'Detailed steps are not available for this lesson yet.'}
+                      </p>
+                      <div className={styles.materialsSectionDivider} aria-hidden="true" />
                       <h4 className={styles.lessonCardHeading}>
                         <Download size={16} aria-hidden="true" />
                         <span>Materials and downloads</span>
@@ -2320,10 +2389,8 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                         <div className={styles.lessonDownloadList}>
                           {activeLessonItems.map((item, idx) => {
                             const previewItem = item as TPreviewItem;
-                            const { openUrl, pdfDownloadUrl } = getMaterialUrls(
-                              previewItem
-                            );
-                            const isActive = idx === activeMaterialIndex;
+                            const { pdfDownloadUrl } = getMaterialUrls(previewItem);
+                            const isActive = !isDetailedFlowOpen && idx === activeMaterialIndex;
                             const resourceTitle =
                               item.itemTitle ?? `Resource ${idx + 1}`;
                             const isTeacherOnlyItem =
@@ -2331,7 +2398,6 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                               item.itemTitle.toLowerCase().includes('teacher');
                             const isTeacherLocked =
                               isAuthenticated && !isUserTeacher && isTeacherOnlyItem;
-                            const canOpenResource = !!openUrl && !isTeacherLocked && isAuthenticated;
                             const canAccessPdf = !!pdfDownloadUrl && !isTeacherLocked && isAuthenticated;
 
                             return (
@@ -2346,6 +2412,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                                     type="button"
                                     className={styles.materialSelectButton}
                                     onClick={() => {
+                                      setIsDetailedFlowOpen(false);
                                       setActiveMaterialIndex(idx);
                                       trackUnitEvent('unit_material_selected', {
                                         lesson_id: activeLessonId ?? null,
@@ -2357,7 +2424,10 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                                     aria-pressed={isActive}
                                   >
                                     <span className={styles.materialRowIcon} aria-hidden="true">
-                                      <FileText size={15} />
+                                      {getMaterialTypeIcon(
+                                        previewItem.itemType,
+                                        previewItem.itemCat
+                                      )}
                                     </span>
                                     <span className={styles.materialRowMain}>
                                       <strong>{resourceTitle}</strong>
@@ -2368,23 +2438,6 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                                       )}
                                     </span>
                                   </button>
-
-                                  <div className={styles.materialRowLinks}>
-                                    {canOpenResource ? (
-                                      <a
-                                        className={styles.materialOpenLink}
-                                        href={openUrl}
-                                        target="_blank"
-                                        rel="noreferrer"
-                                      >
-                                        View
-                                      </a>
-                                    ) : (
-                                      <span className={styles.materialOpenLinkDisabled}>
-                                        {isTeacherLocked || !isAuthenticated ? 'Restricted' : 'No file'}
-                                      </span>
-                                    )}
-                                  </div>
                                 </div>
                                 {pdfDownloadUrl && (
                                   <div className={styles.materialRowPdfWrap}>
@@ -2399,7 +2452,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                                       </a>
                                     ) : (
                                       <span className={styles.materialPdfLinkDisabled}>
-                                        PDF download unavailable
+                                        Log in to download
                                       </span>
                                     )}
                                   </div>
@@ -2437,7 +2490,131 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                         )}
                     </div>
                     <div className={styles.lessonPreviewsCard}>
-                      {!!activeLessonItems.length ? (
+                      {isDetailedFlowOpen ? (
+                        <div className={styles.lessonProcedureInPreview}>
+                          <div className={styles.lessonProcedureHeader}>
+                            <h4 className={styles.lessonCardHeading}>
+                              <NotebookPen size={16} aria-hidden="true" />
+                              <span>Lesson Procedure</span>
+                            </h4>
+                            <span>Chunk-by-chunk guidance with vocab and teacher notes.</span>
+                          </div>
+                          <div className={styles.lessonProcedureContent}>
+                            {activeLesson.chunks?.map((chunk, index) => (
+                              <article
+                                key={`${chunk.chunkTitle}-${index}`}
+                                className={styles.lessonChunk}
+                              >
+                                <div className={styles.lessonChunkTimeline}>
+                                  <div
+                                    className={`${styles.lessonChunkHeader} ${
+                                      chunkDurations.length
+                                        ? styles.lessonChunkHeaderOverGraph
+                                        : ''
+                                    }`}
+                                  >
+                                    {typeof chunk.chunkDur === 'number' ? (
+                                      <span className={styles.lessonChunkDuration}>
+                                        <Clock3 size={12} aria-hidden="true" />
+                                        <span>{chunk.chunkDur} min</span>
+                                      </span>
+                                    ) : null}
+                                    <h5>{chunk.chunkTitle ?? 'Lesson segment'}</h5>
+                                  </div>
+                                  {!!chunkDurations.length && (
+                                    <ChunkGraph
+                                      className={styles.lessonChunkGraph}
+                                      durList={chunkDurations}
+                                      chunkNum={index}
+                                    />
+                                  )}
+                                </div>
+                                {(() => {
+                                  return chunk.steps?.map((step, idx) => {
+                                    const rawStep = (
+                                      step as { Step?: number | string | null }
+                                    ).Step;
+                                    const stepNumber =
+                                      typeof rawStep === 'number'
+                                        ? rawStep
+                                        : typeof rawStep === 'string'
+                                        ? Number.parseInt(rawStep.replace(/[^\d-]/g, ''), 10)
+                                        : Number.NaN;
+                                    const safeStepNumber =
+                                      Number.isFinite(stepNumber) && stepNumber > 0
+                                        ? stepNumber
+                                        : idx + 1;
+                                    const stepDuration = getStepDuration(
+                                      step as {
+                                        StepDur?: number | string | null;
+                                        StepDuration?: number | string | null;
+                                        stepDur?: number | string | null;
+                                      }
+                                    );
+
+                                    return (
+                                      <div
+                                        key={`${step.StepTitle}-${idx}`}
+                                        className={styles.lessonStep}
+                                      >
+                                        <div className={styles.lessonStepMain}>
+                                          <div className={styles.lessonStepTitleRow}>
+                                            <strong>
+                                              {step.StepTitle
+                                                ? `${safeStepNumber}. ${step.StepTitle}`
+                                                : `${safeStepNumber}.`}
+                                            </strong>
+                                            {stepDuration != null && (
+                                              <span className={styles.lessonStepDuration}>
+                                                {stepDuration} min
+                                              </span>
+                                            )}
+                                          </div>
+                                          {step.StepQuickDescription && (
+                                            <div className={styles.lessonStepQuickDescription}>
+                                              <RichText content={step.StepQuickDescription} />
+                                            </div>
+                                          )}
+                                          {step.StepDetails && (
+                                            <div className={styles.lessonStepDetails}>
+                                              <RichText content={step.StepDetails} />
+                                            </div>
+                                          )}
+                                          {!!step.Vocab && (
+                                            <div className={styles.stepInfoBlock}>
+                                              <h6>Vocabulary</h6>
+                                              <RichText content={step.Vocab} />
+                                            </div>
+                                          )}
+                                        </div>
+                                        <aside className={styles.lessonStepAside}>
+                                          {!!step.TeachingTips && (
+                                            <div className={styles.stepInfoBlock}>
+                                              <h6>Teaching tips</h6>
+                                              <RichText content={step.TeachingTips} />
+                                            </div>
+                                          )}
+                                          {!!step.VariantNotes && (
+                                            <div className={styles.stepInfoBlock}>
+                                              <h6>Variant notes</h6>
+                                              <RichText content={step.VariantNotes} />
+                                            </div>
+                                          )}
+                                        </aside>
+                                      </div>
+                                    );
+                                  });
+                                })()}
+                              </article>
+                            ))}
+                            {!activeLesson.chunks?.length && (
+                              <p className={styles.unitMutedText}>
+                                Detailed steps will appear here once added.
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      ) : !!activeLessonItems.length ? (
                         (() => {
                           const safeIndex =
                             activeMaterialIndex > activeLessonItems.length - 1
@@ -2446,9 +2623,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                           const selectedItem = activeLessonItems[safeIndex];
                           const selectedPreviewItem = selectedItem as TPreviewItem;
                           const { openUrl, previewUrl, embedUrl, pdfDownloadUrl } =
-                            getMaterialUrls(
-                            selectedPreviewItem
-                          );
+                            getMaterialUrls(selectedPreviewItem);
                           const previewImg =
                             (
                               selectedItem as {
@@ -2466,7 +2641,9 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                             typeof selectedItem?.itemTitle === 'string' &&
                             selectedItem.itemTitle.toLowerCase().includes('teacher');
                           const isPresentation = itemTypeLabel === 'presentation';
-                          const frameSrc = isPresentation ? embedUrl ?? previewUrl ?? openUrl : embedUrl ?? previewUrl;
+                          const frameSrc = isPresentation
+                            ? embedUrl ?? previewUrl ?? openUrl
+                            : embedUrl ?? previewUrl;
                           const isPreviewLockedLoggedOut = !isAuthenticated;
                           const isPreviewLockedTeacher =
                             isAuthenticated && !isUserTeacher && selectedIsTeacherOnly;
@@ -2531,7 +2708,12 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                                   <div className={styles.lessonPreviewGate}>
                                     <p>
                                       {isPreviewLockedLoggedOut
-                                        ? 'Must Be Logged in to View Teaching Materials'
+                                        ? (
+                                            <span className={styles.lessonPreviewGateWarning}>
+                                              <CircleAlert size={14} aria-hidden="true" />
+                                              <span>Must Be Logged in to View Teaching Materials</span>
+                                            </span>
+                                          )
                                         : 'Only viewable by teachers. If you are a teacher, please update your account.'}
                                     </p>
                                     {isPreviewLockedLoggedOut ? (
@@ -2592,135 +2774,6 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                           Item previews will appear here.
                         </p>
                       )}
-                    </div>
-                  </div>
-                  <div className={styles.lessonProcedureCardFull}>
-                    <div className={styles.lessonProcedureCard}>
-                      <div className={styles.lessonProcedureInner}>
-                        <div className={styles.lessonProcedureHeader}>
-                          <h4 className={styles.lessonCardHeading}>
-                            <NotebookPen size={16} aria-hidden="true" />
-                            <span>Detailed procedure</span>
-                          </h4>
-                          <span>Chunk-by-chunk guidance with vocab and teacher notes.</span>
-                        </div>
-                        <div className={styles.lessonProcedureContent}>
-                          {activeLesson.chunks?.map((chunk, index) => (
-                            <article
-                              key={`${chunk.chunkTitle}-${index}`}
-                              className={styles.lessonChunk}
-                            >
-                            <div className={styles.lessonChunkTimeline}>
-                              <div
-                                className={`${styles.lessonChunkHeader} ${
-                                  chunkDurations.length
-                                    ? styles.lessonChunkHeaderOverGraph
-                                    : ''
-                                }`}
-                              >
-                                {typeof chunk.chunkDur === 'number' ? (
-                                  <>
-                                    <span className={styles.lessonChunkDuration}>
-                                      <Clock3 size={12} aria-hidden="true" />
-                                      <span>{chunk.chunkDur} min</span>
-                                    </span>
-                                  </>
-                                ) : null}
-                                <h5>{chunk.chunkTitle ?? 'Lesson segment'}</h5>
-                              </div>
-                              {!!chunkDurations.length && (
-                                <ChunkGraph
-                                  className={styles.lessonChunkGraph}
-                                  durList={chunkDurations}
-                                  chunkNum={index}
-                                />
-                              )}
-                            </div>
-                            {(() => {
-                              return chunk.steps?.map((step, idx) => {
-                                const rawStep = (
-                                  step as { Step?: number | string | null }
-                                ).Step;
-                                const stepNumber =
-                                  typeof rawStep === 'number'
-                                    ? rawStep
-                                    : typeof rawStep === 'string'
-                                    ? Number.parseInt(rawStep.replace(/[^\d-]/g, ''), 10)
-                                    : Number.NaN;
-                                const safeStepNumber =
-                                  Number.isFinite(stepNumber) && stepNumber > 0
-                                    ? stepNumber
-                                    : idx + 1;
-                                const stepDuration = getStepDuration(
-                                  step as {
-                                    StepDur?: number | string | null;
-                                    StepDuration?: number | string | null;
-                                    stepDur?: number | string | null;
-                                  }
-                                );
-
-                                return (
-                                  <div
-                                    key={`${step.StepTitle}-${idx}`}
-                                    className={styles.lessonStep}
-                                  >
-                                    <div className={styles.lessonStepMain}>
-                                      <div className={styles.lessonStepTitleRow}>
-                                        <strong>
-                                          {step.StepTitle
-                                            ? `${safeStepNumber}. ${step.StepTitle}`
-                                            : `${safeStepNumber}.`}
-                                        </strong>
-                                        {stepDuration != null && (
-                                          <span className={styles.lessonStepDuration}>
-                                            {stepDuration} min
-                                          </span>
-                                        )}
-                                      </div>
-                                      {step.StepQuickDescription && (
-                                        <div className={styles.lessonStepQuickDescription}>
-                                          <RichText content={step.StepQuickDescription} />
-                                        </div>
-                                      )}
-                                      {step.StepDetails && (
-                                        <div className={styles.lessonStepDetails}>
-                                          <RichText content={step.StepDetails} />
-                                        </div>
-                                      )}
-                                      {!!step.Vocab && (
-                                        <div className={styles.stepInfoBlock}>
-                                          <h6>Vocabulary</h6>
-                                          <RichText content={step.Vocab} />
-                                        </div>
-                                      )}
-                                    </div>
-                                    <aside className={styles.lessonStepAside}>
-                                      {!!step.TeachingTips && (
-                                        <div className={styles.stepInfoBlock}>
-                                          <h6>Teaching tips</h6>
-                                          <RichText content={step.TeachingTips} />
-                                        </div>
-                                      )}
-                                      {!!step.VariantNotes && (
-                                        <div className={styles.stepInfoBlock}>
-                                          <h6>Variant notes</h6>
-                                          <RichText content={step.VariantNotes} />
-                                        </div>
-                                      )}
-                                    </aside>
-                                  </div>
-                                );
-                              });
-                            })()}
-                            </article>
-                          ))}
-                          {!activeLesson.chunks?.length && (
-                            <p className={styles.unitMutedText}>
-                              Detailed steps will appear here once added.
-                            </p>
-                          )}
-                        </div>
-                      </div>
                     </div>
                   </div>
                 </div>
@@ -3282,80 +3335,85 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                 >
                   License details
                 </a>
+                <details className={styles.citationAccordion}>
+                  <summary className={styles.citationAccordionSummary}>
+                    <span>How to cite and attribute</span>
+                    <ChevronUp
+                      size={14}
+                      aria-hidden="true"
+                      className={styles.citationAccordionChevron}
+                    />
+                  </summary>
+                  <div className={styles.citationBlock}>
+                    <div className={styles.citationEntry}>
+                      <p className={styles.citationLabel}>Give Attribution</p>
+                      <p className={styles.citationText}>
+                        {attributionDisplayParts.titleByAuthors}{' '}
+                        Source:{' '}
+                        <a
+                          href={attributionDisplayParts.sourceHref}
+                          target="_blank"
+                          rel="noreferrer"
+                          className={styles.citationInlineLink}
+                        >
+                          {attributionDisplayParts.sourceLabel}
+                        </a>
+                        . License:{' '}
+                        <a
+                          href={attributionDisplayParts.licenseHref}
+                          target="_blank"
+                          rel="noreferrer"
+                          className={styles.citationInlineLink}
+                        >
+                          {attributionDisplayParts.licenseLabel}
+                        </a>
+                        .
+                      </p>
+                      <div className={styles.citationEntryFooter}>
+                        {copiedEntry === 'attribution' && (
+                          <span className={styles.citationStatus}>Copied</span>
+                        )}
+                        {copyErrorEntry === 'attribution' && (
+                          <span className={styles.citationStatusError}>Unable to copy</span>
+                        )}
+                        <button
+                          type="button"
+                          className={styles.copyCitationButton}
+                          onClick={() => handleCopyCitation(attributionText, 'attribution')}
+                          aria-label="Copy attribution"
+                          title="Copy attribution"
+                        >
+                          <Copy size={13} aria-hidden="true" />
+                          <span>Copy</span>
+                        </button>
+                      </div>
+                    </div>
+                    <div className={styles.citationEntry}>
+                      <p className={styles.citationLabel}>Cite this Work</p>
+                      <p className={styles.citationText}>{vancouverCitation}</p>
+                      <div className={styles.citationEntryFooter}>
+                        {copiedEntry === 'citation' && (
+                          <span className={styles.citationStatus}>Copied</span>
+                        )}
+                        {copyErrorEntry === 'citation' && (
+                          <span className={styles.citationStatusError}>Unable to copy</span>
+                        )}
+                        <button
+                          type="button"
+                          className={styles.copyCitationButton}
+                          onClick={() => handleCopyCitation(vancouverCitation, 'citation')}
+                          aria-label="Copy citation"
+                          title="Copy citation"
+                        >
+                          <Copy size={13} aria-hidden="true" />
+                          <span>Copy</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </details>
               </div>
             </div>
-            <details className={styles.citationDisclosure} open>
-              <summary className={styles.citationDisclosureSummary}>
-                Citation &amp; Attribution Info
-              </summary>
-              <div className={styles.citationBlock}>
-                <div className={styles.citationEntry}>
-                  <p className={styles.citationLabel}>Give Attribution</p>
-                  <p className={styles.citationText}>
-                    {attributionDisplayParts.titleByAuthors}{' '}
-                    Source:{' '}
-                    <a
-                      href={attributionDisplayParts.sourceHref}
-                      target="_blank"
-                      rel="noreferrer"
-                      className={styles.citationInlineLink}
-                    >
-                      {attributionDisplayParts.sourceLabel}
-                    </a>
-                    . License:{' '}
-                    <a
-                      href={attributionDisplayParts.licenseHref}
-                      target="_blank"
-                      rel="noreferrer"
-                      className={styles.citationInlineLink}
-                    >
-                      {attributionDisplayParts.licenseLabel}
-                    </a>
-                    .
-                  </p>
-                  <div className={styles.citationEntryFooter}>
-                    {copiedEntry === 'attribution' && (
-                      <span className={styles.citationStatus}>Copied</span>
-                    )}
-                    {copyErrorEntry === 'attribution' && (
-                      <span className={styles.citationStatusError}>Unable to copy</span>
-                    )}
-                    <button
-                      type="button"
-                      className={styles.copyCitationButton}
-                      onClick={() => handleCopyCitation(attributionText, 'attribution')}
-                      aria-label="Copy attribution"
-                      title="Copy attribution"
-                    >
-                      <Copy size={13} aria-hidden="true" />
-                      <span>Copy</span>
-                    </button>
-                  </div>
-                </div>
-                <div className={styles.citationEntry}>
-                  <p className={styles.citationLabel}>Cite this Work</p>
-                  <p className={styles.citationText}>{vancouverCitation}</p>
-                  <div className={styles.citationEntryFooter}>
-                    {copiedEntry === 'citation' && (
-                      <span className={styles.citationStatus}>Copied</span>
-                    )}
-                    {copyErrorEntry === 'citation' && (
-                      <span className={styles.citationStatusError}>Unable to copy</span>
-                    )}
-                    <button
-                      type="button"
-                      className={styles.copyCitationButton}
-                      onClick={() => handleCopyCitation(vancouverCitation, 'citation')}
-                      aria-label="Copy citation"
-                      title="Copy citation"
-                    >
-                      <Copy size={13} aria-hidden="true" />
-                      <span>Copy</span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </details>
           </div>
         </aside>
       </main>

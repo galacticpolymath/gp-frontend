@@ -97,6 +97,7 @@ Use these as subtle accents in standards-alignment UI (chips, borders, icons), n
 - Use stacked icon pairs for JobViz job cards: outer glyph = category, inner = specific job. Maintain 24px outer, 16px inner, 2px stroke.
 - Emoji ratings should render with consistent line height and include aria-labels describing the rating meaning.
 - Navigation and filter icons follow mono-line style at 1.5px stroke; avoid mixing filled and outline icons within a single component.
+- Button-style controls (including links styled as buttons) must never use default browser blue link color or underline in any state (`link`, `visited`, `hover`, `focus`, `active`). Underlines are reserved for bare text links on light backgrounds only.
 
 ## Micro-interactions & Motion
 - Default animation timing: 150-200ms ease-out for hover/tap, 250ms ease-in-out for modal transitions. No animation should exceed 300ms.
