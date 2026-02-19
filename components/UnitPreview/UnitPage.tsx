@@ -2710,7 +2710,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                                       {isPreviewLockedLoggedOut
                                         ? (
                                             <span className={styles.lessonPreviewGateWarning}>
-                                              <CircleAlert size={14} aria-hidden="true" />
+                                              <CircleAlert size={18} aria-hidden="true" />
                                               <span>Must Be Logged in to View Teaching Materials</span>
                                             </span>
                                           )

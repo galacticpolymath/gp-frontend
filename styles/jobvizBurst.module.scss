@@ -65,7 +65,7 @@ $jobviz-nav-height: 64px;
   margin: 0;
   max-width: 48rem;
   color: rgba(230, 240, 255, 0.7);
-  font-size: 1rem;
+  font-size: 1.04rem;
 }
 
 .sectionHeader {
@@ -87,7 +87,7 @@ $jobviz-nav-height: 64px;
   align-items: center;
   gap: 0.4rem;
   cursor: pointer;
-  font-size: 0.9rem;
+  font-size: 0.96rem;
   transition: transform 0.25s ease, border-color 0.25s ease,
     box-shadow 0.25s ease;
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
@@ -207,20 +207,20 @@ $jobviz-nav-height: 64px;
 
 .tierRange {
   font-family: "Noto Sans Mono", ui-monospace;
-  font-size: 0.82rem;
+  font-size: 0.9rem;
   color: rgba(230, 240, 255, 0.7);
 }
 
 .tierList p {
   margin: 0;
   color: rgba(230, 240, 255, 0.78);
-  font-size: 0.9rem;
+  font-size: 0.96rem;
   line-height: 1.4;
 }
 
 .tierFootnote {
   margin: 0;
-  font-size: 0.85rem;
+  font-size: 0.93rem;
   color: rgba(230, 240, 255, 0.6);
 }
 
@@ -321,7 +321,7 @@ $jobviz-nav-height: 64px;
   margin: 0;
   text-transform: uppercase;
   letter-spacing: 0.2em;
-  font-size: 0.7rem;
+  font-size: 0.78rem;
   color: rgba(255, 255, 255, 0.92);
 }
 
@@ -441,7 +441,7 @@ $jobviz-nav-height: 64px;
   margin: 0;
   text-transform: uppercase;
   letter-spacing: 0.2em;
-  font-size: 0.75rem;
+  font-size: 0.83rem;
   color: rgba(230, 240, 255, 0.65);
 }
 
@@ -474,7 +474,7 @@ $jobviz-nav-height: 64px;
   background: rgba(255, 255, 255, 0.04);
   color: var(--preview-blue-200);
   cursor: pointer;
-  font-size: 0.95rem;
+  font-size: 1.01rem;
   transition: background 0.2s ease, border-color 0.2s ease;
 }
 
@@ -534,7 +534,7 @@ $jobviz-nav-height: 64px;
 
 .heroStatLabel {
   display: block;
-  font-size: 0.85rem;
+  font-size: 0.93rem;
   color: rgba(230, 240, 255, 0.75);
   text-transform: none;
   letter-spacing: 0.02em;
@@ -614,12 +614,12 @@ $jobviz-nav-height: 64px;
 
 .swatchHex {
   font-family: "Noto Sans Mono", ui-monospace;
-  font-size: 0.85rem;
+  font-size: 0.93rem;
   color: rgba(230, 240, 255, 0.7);
 }
 
 .swatchRole {
-  font-size: 0.85rem;
+  font-size: 0.93rem;
   color: rgba(230, 240, 255, 0.6);
 }
 
@@ -845,7 +845,7 @@ $jobviz-nav-height: 64px;
   border-radius: 999px;
   border: 1px solid rgba(255, 255, 255, 0.3);
   padding: 0.15rem 0.55rem;
-  font-size: 0.72rem;
+  font-size: 0.8rem;
   font-weight: 700;
   letter-spacing: 0.02em;
   color: #dbe8ff;
@@ -944,7 +944,7 @@ $jobviz-nav-height: 64px;
 }
 
 .cardRatingLabel {
-  font-size: 0.85rem;
+  font-size: 0.93rem;
   color: rgba(244, 247, 255, 0.85);
 }
 
@@ -1002,7 +1002,7 @@ $jobviz-nav-height: 64px;
 .cardDescriptor {
   margin: 0;
   color: rgba(230, 240, 255, 0.7);
-  font-size: 0.95rem;
+  font-size: 1.01rem;
 }
 
 .cardFooter {
@@ -1010,7 +1010,7 @@ $jobviz-nav-height: 64px;
   align-items: center;
   justify-content: space-between;
   color: rgba(230, 240, 255, 0.75);
-  font-size: 0.95rem;
+  font-size: 1.01rem;
 }
 
 .cardAction {
@@ -1043,7 +1043,7 @@ $jobviz-nav-height: 64px;
 
 .statLabel {
   display: block;
-  font-size: 0.75rem;
+  font-size: 0.83rem;
   color: rgba(230, 240, 255, 0.6);
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -1083,7 +1083,7 @@ $jobviz-nav-height: 64px;
 
 .assignmentUnitLabel {
   margin: 0 0 0.75rem;
-  font-size: 0.95rem;
+  font-size: 1.01rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: rgba(222, 238, 255, 0.75);
@@ -1127,7 +1127,7 @@ $jobviz-nav-height: 64px;
   transform-origin: center;
   text-transform: uppercase;
   letter-spacing: 0.4em;
-  font-size: 0.68rem;
+  font-size: 0.76rem;
   color: rgba(233, 240, 255, 0.78);
   font-weight: 600;
   pointer-events: none;
@@ -1411,7 +1411,7 @@ $jobviz-nav-height: 64px;
 }
 
 .assignmentUnitLabelInline {
-  font-size: 0.9rem;
+  font-size: 0.96rem;
   color: rgba(230, 240, 255, 0.75);
   display: inline-flex;
   align-items: center;
@@ -1498,7 +1498,7 @@ $jobviz-nav-height: 64px;
   display: inline-flex;
   align-items: center;
   gap: 0.3rem;
-  font-size: 0.75rem;
+  font-size: 0.83rem;
   letter-spacing: 0.02em;
   padding: 0.08rem 0.75rem;
   border-radius: 999px;
@@ -1563,7 +1563,7 @@ $jobviz-nav-height: 64px;
   flex-direction: column;
   align-items: center;
   gap: 0.35rem;
-  font-size: 0.85rem;
+  font-size: 0.93rem;
   color: rgba(230, 240, 255, 0.8);
   text-align: center;
   opacity: 0.85;
@@ -1572,7 +1572,7 @@ $jobviz-nav-height: 64px;
 
 .assignmentDesktopDock[data-dock-collapsed="true"] .assignmentDockCollapsedNotice {
   display: flex;
-  font-size: 0.78rem;
+  font-size: 0.86rem;
 }
 
 .assignmentInfoBlock {
@@ -1598,7 +1598,7 @@ $jobviz-nav-height: 64px;
 .assignmentMarkerLabel {
   text-transform: uppercase;
   letter-spacing: 0.18em;
-  font-size: 0.7rem;
+  font-size: 0.78rem;
   color: rgba(11, 24, 45, 0.85);
   display: inline-flex;
   align-items: center;
@@ -1637,7 +1637,7 @@ $jobviz-nav-height: 64px;
   gap: 0.4rem;
   padding: 0.35rem 0.85rem;
   border-radius: 999px;
-  font-size: 0.85rem;
+  font-size: 0.93rem;
   color: rgba(233, 240, 255, 0.95);
   background: rgba(18, 23, 60, 0.85);
   border: 1px solid rgba(140, 165, 255, 0.45);
@@ -1687,7 +1687,7 @@ $jobviz-nav-height: 64px;
 }
 
 .assignmentProgressLabel {
-  font-size: 0.85rem;
+  font-size: 0.93rem;
   color: rgba(230, 240, 255, 0.75);
   padding-top: 0.4rem;
 }
@@ -1729,7 +1729,7 @@ $jobviz-nav-height: 64px;
   background: linear-gradient(120deg, #7b5bff, #ff7bb8, #ffd369);
   color: #fefefe;
   font-weight: 700;
-  font-size: 0.95rem;
+  font-size: 1.01rem;
   letter-spacing: 0.02em;
   display: inline-flex;
   align-items: center;
@@ -1765,7 +1765,7 @@ $jobviz-nav-height: 64px;
   margin-top: 0.8rem;
   color: #fefefe;
   font-weight: 600;
-  text-decoration: underline;
+  text-decoration: none;
   cursor: pointer;
   align-self: flex-start;
 }
@@ -1780,7 +1780,7 @@ $jobviz-nav-height: 64px;
   display: inline-flex;
   justify-content: center;
   padding: 0.25rem 0.4rem;
-  font-size: 1rem;
+  font-size: 1.04rem;
   font-weight: 600;
   text-transform: none;
   letter-spacing: 0.02em;
@@ -1818,8 +1818,8 @@ $jobviz-nav-height: 64px;
   border: none;
   padding: 0;
   color: #fefefe;
-  text-decoration: underline;
-  font-size: 0.85rem;
+  text-decoration: none;
+  font-size: 0.93rem;
   cursor: pointer;
 }
 
@@ -1850,8 +1850,8 @@ $jobviz-nav-height: 64px;
   border: none;
   background: none;
   color: rgba(255, 255, 255, 0.75);
-  text-decoration: underline;
-  font-size: 0.85rem;
+  text-decoration: none;
+  font-size: 0.93rem;
   padding: 0;
 }
 
@@ -1864,13 +1864,13 @@ $jobviz-nav-height: 64px;
   border: none;
   background: none;
   color: rgba(255, 255, 255, 0.75);
-  text-decoration: underline;
-  font-size: 0.85rem;
+  text-decoration: none;
+  font-size: 0.93rem;
 }
 
 .assignmentCopy {
   margin: 0;
-  font-size: 0.95rem;
+  font-size: 1.01rem;
   color: rgba(20, 32, 55, 0.85);
 }
 
@@ -1973,7 +1973,7 @@ $jobviz-nav-height: 64px;
   margin: 0;
   text-transform: uppercase;
   letter-spacing: 0.3em;
-  font-size: 0.7rem;
+  font-size: 0.78rem;
   color: rgba(230, 240, 255, 0.6);
 }
 
@@ -2121,7 +2121,7 @@ $jobviz-nav-height: 64px;
   color: #1a1c3a;
   padding: 0.25rem 0.6rem;
   border-radius: 999px;
-  font-size: 0.75rem;
+  font-size: 0.83rem;
   letter-spacing: 0.02em;
   animation: hintBounce 1s ease-in-out infinite;
   box-shadow: 0 8px 18px rgba(0, 0, 0, 0.25);
@@ -2187,7 +2187,7 @@ $jobviz-nav-height: 64px;
 }
 
 .assignmentCarouselTitle {
-  font-size: 0.9rem;
+  font-size: 0.96rem;
   font-weight: 400;
   color: #f9fbff;
   width: 100%;
@@ -2218,7 +2218,7 @@ $jobviz-nav-height: 64px;
   align-items: center;
   gap: 0.45rem;
   color: #f6fbff;
-  font-size: 0.95rem;
+  font-size: 1.01rem;
 }
 
 .assignmentListIconWrap {
@@ -2372,7 +2372,7 @@ $jobviz-nav-height: 64px;
   border-radius: 16px;
   padding: 0.35rem 0.65rem;
   color: rgba(230, 240, 255, 0.8);
-  font-size: 0.85rem;
+  font-size: 0.93rem;
   display: flex;
   align-items: center;
   gap: 0.4rem;
@@ -2449,7 +2449,7 @@ $jobviz-nav-height: 64px;
   align-items: center;
   gap: 0.45rem;
   color: rgba(244, 247, 255, 0.95);
-  font-size: 0.85rem;
+  font-size: 0.93rem;
   letter-spacing: 0.01em;
   box-shadow: 0 15px 30px rgba(0, 0, 0, 0.35);
   opacity: 0;
@@ -2525,7 +2525,7 @@ $jobviz-nav-height: 64px;
   margin: 0;
   text-transform: uppercase;
   letter-spacing: 0.2em;
-  font-size: 0.7rem;
+  font-size: 0.78rem;
   color: rgba(230, 240, 255, 0.6);
 }
 
@@ -2537,7 +2537,7 @@ $jobviz-nav-height: 64px;
 
 .modalSocCode {
   font-family: "Noto Sans Mono", ui-monospace;
-  font-size: 0.75rem;
+  font-size: 0.83rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: rgba(255, 255, 255, 0.7);
@@ -2545,7 +2545,7 @@ $jobviz-nav-height: 64px;
 
 .modalSocCodeInline {
   font-family: "Noto Sans Mono", ui-monospace;
-  font-size: 0.75rem;
+  font-size: 0.83rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: rgba(230, 240, 255, 0.6);
@@ -2600,7 +2600,7 @@ $jobviz-nav-height: 64px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 0.9rem;
+  font-size: 0.96rem;
   color: rgba(230, 240, 255, 0.8);
   gap: 0.65rem;
 }
@@ -2644,7 +2644,7 @@ $jobviz-nav-height: 64px;
 }
 
 .modalRatingStatus {
-  font-size: 0.78rem;
+  font-size: 0.86rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: rgba(210, 216, 240, 0.8);
@@ -2670,14 +2670,14 @@ $jobviz-nav-height: 64px;
   padding: 0.6rem 0.75rem;
   background: rgba(255, 255, 255, 0.04);
   color: rgba(240, 244, 255, 0.9);
-  font-size: 0.85rem;
+  font-size: 0.93rem;
 }
 
 .modalRatingInfo p {
   margin: 0 0 0.35rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  font-size: 0.75rem;
+  font-size: 0.83rem;
   color: rgba(255, 255, 255, 0.8);
 }
 
@@ -2697,7 +2697,7 @@ $jobviz-nav-height: 64px;
 }
 
 .modalRatingInfoEmoji {
-  font-size: 1rem;
+  font-size: 1.04rem;
 }
 
 .modalRatingInfoText {
@@ -2736,7 +2736,7 @@ $jobviz-nav-height: 64px;
 
 .modalRatingNotice {
   margin: 0;
-  font-size: 0.85rem;
+  font-size: 0.93rem;
   color: rgba(230, 235, 255, 0.6);
 }
 
@@ -2938,7 +2938,7 @@ $jobviz-nav-height: 64px;
 
 .modalStat dt {
   margin: 0;
-  font-size: 0.75rem;
+  font-size: 0.83rem;
   color: rgba(230, 240, 255, 0.65);
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -2962,7 +2962,7 @@ $jobviz-nav-height: 64px;
   margin: 0;
   display: inline-flex;
   align-items: center;
-  font-size: 0.78rem;
+  font-size: 0.86rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: rgba(140, 186, 255, 0.85);
@@ -3018,7 +3018,7 @@ $jobviz-nav-height: 64px;
 .primaryButton {
   border-radius: 16px;
   padding: 0.85rem 1.4rem;
-  font-size: 0.95rem;
+  font-size: 1.01rem;
   cursor: pointer;
   border: 1px solid transparent;
 }
@@ -3204,14 +3204,14 @@ $jobviz-nav-height: 64px;
 .categoryDeck {
   margin: 0;
   color: rgba(215, 228, 255, 0.65);
-  font-size: 0.85rem;
+  font-size: 0.93rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
 .categoryLabel {
   display: block;
-  font-size: 0.75rem;
+  font-size: 0.83rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: rgba(222, 229, 255, 0.75);
@@ -3342,7 +3342,7 @@ $jobviz-nav-height: 64px;
 }
 
 .gridContextLabel {
-  font-size: 0.72rem;
+  font-size: 0.8rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: rgba(230, 235, 255, 0.75);
@@ -3357,7 +3357,7 @@ $jobviz-nav-height: 64px;
 }
 
 .gridFilterLabel {
-  font-size: 0.75rem;
+  font-size: 0.83rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: rgba(230, 235, 255, 0.75);
@@ -3369,7 +3369,7 @@ $jobviz-nav-height: 64px;
   background: rgba(255, 255, 255, 0.08);
   color: rgba(243, 247, 255, 0.9);
   padding: 0.3rem 0.9rem;
-  font-size: 0.85rem;
+  font-size: 0.93rem;
   letter-spacing: 0.02em;
   text-transform: uppercase;
   cursor: pointer;
@@ -3455,12 +3455,12 @@ $jobviz-nav-height: 64px;
 .sortButtonLabel {
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  font-size: 0.72rem;
+  font-size: 0.8rem;
   color: rgba(230, 235, 255, 0.75);
 }
 
 .sortButtonValue {
-  font-size: 0.9rem;
+  font-size: 0.96rem;
   color: #ffffff;
 }
 
@@ -3498,7 +3498,7 @@ $jobviz-nav-height: 64px;
   border-radius: 12px;
   cursor: pointer;
   text-align: left;
-  font-size: 0.92rem;
+  font-size: 0.98rem;
 }
 
 .sortOption:hover,
@@ -3523,7 +3523,7 @@ $jobviz-nav-height: 64px;
 }
 
 .sortOptionDetail {
-  font-size: 0.8rem;
+  font-size: 0.88rem;
   color: rgba(230, 235, 255, 0.65);
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -3537,7 +3537,7 @@ $jobviz-nav-height: 64px;
 
 .jobvizSource {
   color: rgba(237, 243, 255, 0.86);
-  font-size: 0.95rem;
+  font-size: 1.01rem;
   margin-top: 1.75rem;
   margin-bottom: 2rem;
   line-height: 1.6;
@@ -3558,7 +3558,7 @@ $jobviz-nav-height: 64px;
 .jobvizBreadcrumb {
   font-family: "Noto Sans Mono", ui-monospace, SFMono-Regular, Menlo, Monaco,
     Consolas, "Liberation Mono", "Courier New", monospace;
-  font-size: 0.86rem;
+  font-size: 0.94rem;
   color: rgba(255, 255, 255, 0.95);
   margin-bottom: 1rem;
   display: flex;
@@ -3577,7 +3577,7 @@ $jobviz-nav-height: 64px;
 }
 
 .breadcrumbButton:hover .breadcrumbLabel {
-  text-decoration: underline;
+  text-decoration: none;
 }
 
 .breadcrumbSegment,
@@ -3767,7 +3767,7 @@ $jobviz-nav-height: 64px;
 }
 
 .jobvizSearchMeta {
-  font-size: 0.85rem;
+  font-size: 0.93rem;
   color: rgba(255, 255, 255, 0.6);
 }
 
@@ -3777,7 +3777,7 @@ $jobviz-nav-height: 64px;
   align-items: center;
   padding: 0.15rem 0.45rem;
   border-radius: 999px;
-  font-size: 0.7rem;
+  font-size: 0.78rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   border: 1px solid rgba(255, 255, 255, 0.25);
@@ -3802,7 +3802,7 @@ $jobviz-nav-height: 64px;
   color: #f8fbff;
   padding: 0.35rem 0.75rem;
   border-radius: 999px;
-  font-size: 0.78rem;
+  font-size: 0.86rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   border: 1px solid rgba(255, 255, 255, 0.15);
@@ -3878,7 +3878,7 @@ $jobviz-nav-height: 64px;
   border-radius: 1rem;
   background: rgba(12, 14, 24, 0.7);
   border: 1px solid rgba(255, 255, 255, 0.12);
-  font-size: 0.95rem;
+  font-size: 1.01rem;
   line-height: 1.5;
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
 }
@@ -4033,7 +4033,7 @@ $jobviz-nav-height: 64px;
   background: transparent;
   color: inherit;
   font-weight: 600;
-  font-size: 0.85rem;
+  font-size: 0.93rem;
   transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 }
 
@@ -4098,7 +4098,7 @@ $jobviz-nav-height: 64px;
   }
 
   .assignmentCarouselTitle {
-    font-size: 0.78rem;
+    font-size: 0.86rem;
     line-height: 1.2;
   }
 
@@ -4213,7 +4213,7 @@ $jobviz-nav-height: 64px;
 }
 
 .assignedScopeMessage {
-  font-size: 0.72rem;
+  font-size: 0.8rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: rgba(230, 235, 255, 0.75);
@@ -4234,7 +4234,7 @@ $jobviz-nav-height: 64px;
   background: rgba(255, 255, 255, 0.04);
   color: #f8fbff;
   padding: 0.4rem 0.9rem;
-  font-size: 0.9rem;
+  font-size: 0.96rem;
   letter-spacing: 0.02em;
   display: inline-flex;
   align-items: center;
@@ -4484,7 +4484,7 @@ $jobviz-nav-height: 64px;
 
 .completionStatus {
   margin: 0;
-  font-size: 0.9rem;
+  font-size: 0.96rem;
   text-transform: uppercase;
   letter-spacing: 0.12em;
   color: rgba(255, 255, 255, 0.7);
@@ -4522,7 +4522,7 @@ $jobviz-nav-height: 64px;
 
 .completionParagraph {
   margin: 0 0 0.5rem;
-  font-size: 1rem;
+  font-size: 1.04rem;
   line-height: 1.5;
   color: #fefefe;
 }
@@ -4558,7 +4558,7 @@ $jobviz-nav-height: 64px;
   border: none;
   border-radius: 999px;
   padding: 0.9rem 2rem;
-  font-size: 1rem;
+  font-size: 1.04rem;
   font-weight: 700;
   background: linear-gradient(120deg, #7b5bff, #ff7bb8, #ffd369);
   color: #fefefe;
@@ -4726,7 +4726,7 @@ $jobviz-nav-height: 64px;
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
-  font-size: 0.8rem;
+  font-size: 0.88rem;
   text-transform: uppercase;
   letter-spacing: 0.15em;
   background: linear-gradient(120deg, #7b5bff, #ff7bb8, #ffd369);
@@ -4767,7 +4767,7 @@ $jobviz-nav-height: 64px;
 .summaryModalKicker {
   margin: 0;
   text-transform: uppercase;
-  font-size: 0.78rem;
+  font-size: 0.86rem;
   letter-spacing: 0.2em;
   color: rgba(255, 255, 255, 0.65);
 }
@@ -4781,7 +4781,7 @@ $jobviz-nav-height: 64px;
 }
 
 .summaryAssignmentTitle {
-  font-size: 1rem;
+  font-size: 1.04rem;
   color: rgba(255, 255, 255, 0.8);
   letter-spacing: 0.02em;
 }
@@ -4880,7 +4880,7 @@ $jobviz-nav-height: 64px;
 }
 
 .summaryCountLabel {
-  font-size: 0.85rem;
+  font-size: 0.93rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: rgba(255, 255, 255, 0.7);
@@ -4897,7 +4897,7 @@ $jobviz-nav-height: 64px;
     font-size: 1.25rem;
   }
   .summaryCountLabel {
-    font-size: 0.78rem;
+    font-size: 0.86rem;
   }
   .summaryCountValue {
     font-size: 1.5rem;
@@ -4921,7 +4921,7 @@ $jobviz-nav-height: 64px;
 .summaryReflectionHeader {
   display: flex;
   justify-content: space-between;
-  font-size: 0.85rem;
+  font-size: 0.93rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: rgba(255, 255, 255, 0.85);
@@ -4945,7 +4945,7 @@ $jobviz-nav-height: 64px;
   border: 1px solid rgba(123, 91, 255, 0.35);
   background: linear-gradient(135deg, rgba(255, 255, 255, 1), rgba(255, 243, 226, 0.95) 45%, rgba(255, 214, 241, 0.92));
   color: #1d1440;
-  font-size: 1rem;
+  font-size: 1.04rem;
   padding: 1.1rem 1.25rem;
   resize: vertical;
   transition:
@@ -4970,7 +4970,7 @@ $jobviz-nav-height: 64px;
 
 .summaryReadOnlyNote {
   margin: -0.35rem 0 0;
-  font-size: 0.8rem;
+  font-size: 0.88rem;
   color: rgba(255, 255, 255, 0.7);
 }
 
@@ -5007,8 +5007,8 @@ $jobviz-nav-height: 64px;
   background: none;
   padding: 0;
   color: rgba(255, 255, 255, 0.85);
-  font-size: 0.9rem;
-  text-decoration: underline;
+  font-size: 0.96rem;
+  text-decoration: none;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
@@ -5044,7 +5044,7 @@ $jobviz-nav-height: 64px;
 }
 
 .summaryShareQr span {
-  font-size: 0.85rem;
+  font-size: 0.93rem;
   color: rgba(255, 255, 255, 0.85);
 }
 
@@ -5058,7 +5058,7 @@ $jobviz-nav-height: 64px;
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  font-size: 0.9rem;
+  font-size: 0.96rem;
   cursor: pointer;
   transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
 }
@@ -5094,7 +5094,7 @@ $jobviz-nav-height: 64px;
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  font-size: 0.85rem;
+  font-size: 0.93rem;
   color: rgba(255, 255, 255, 0.8);
 }
 
@@ -5107,7 +5107,7 @@ $jobviz-nav-height: 64px;
   padding: 0.6rem 0.9rem;
   border-radius: 12px;
   background: rgba(255, 255, 255, 0.1);
-  font-size: 0.9rem;
+  font-size: 0.96rem;
 }
 
 .summaryJobGroups {
@@ -5135,7 +5135,7 @@ $jobviz-nav-height: 64px;
 
 .summaryJobGroupHeader h4 {
   margin: 0;
-  font-size: 0.95rem;
+  font-size: 1.01rem;
   letter-spacing: 0.05em;
   text-transform: uppercase;
   display: inline-flex;
@@ -5174,7 +5174,7 @@ $jobviz-nav-height: 64px;
   margin: 0;
   text-transform: uppercase;
   letter-spacing: 0.2em;
-  font-size: 0.75rem;
+  font-size: 0.83rem;
   color: rgba(12, 15, 27, 0.65);
 }
 
@@ -5199,7 +5199,7 @@ $jobviz-nav-height: 64px;
 }
 
 .summaryJobGroupCount {
-  font-size: 0.85rem;
+  font-size: 0.93rem;
   padding: 0.2rem 0.65rem;
   border-radius: 999px;
   border: 1px solid rgba(255, 255, 255, 0.25);
@@ -5303,7 +5303,7 @@ $jobviz-nav-height: 64px;
 .summaryJobGroupEmpty {
   margin: 0.8rem 0 0;
   color: rgba(255, 255, 255, 0.7);
-  font-size: 0.9rem;
+  font-size: 0.96rem;
 }
 
 .summarySecondaryCallout {
@@ -5313,7 +5313,7 @@ $jobviz-nav-height: 64px;
   border: 1px solid rgba(255, 255, 255, 0.18);
   background: rgba(12, 20, 44, 0.85);
   color: rgba(255, 255, 255, 0.9);
-  font-size: 0.95rem;
+  font-size: 1.01rem;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15);
 }
 
@@ -5339,7 +5339,7 @@ $jobviz-nav-height: 64px;
   border: 1px solid rgba(255, 255, 255, 0.25);
   border-radius: 999px;
   padding: 0.65rem 1.5rem;
-  font-size: 0.95rem;
+  font-size: 1.01rem;
   font-weight: 600;
   background: transparent;
   color: #fefefe;
@@ -5377,7 +5377,7 @@ $jobviz-nav-height: 64px;
 
 .summaryInfoPanel h4 {
   margin: 0;
-  font-size: 0.95rem;
+  font-size: 1.01rem;
 }
 
 .summaryInfoPanel ul {
@@ -5386,7 +5386,7 @@ $jobviz-nav-height: 64px;
   display: flex;
   flex-direction: column;
   gap: 0.2rem;
-  font-size: 0.9rem;
+  font-size: 0.96rem;
 }
 
 @media (max-width: 640px) {
@@ -5509,7 +5509,7 @@ $jobviz-nav-height: 64px;
   color: #1826bc;
   font-weight: 700;
   padding: 8px 16px;
-  font-size: 0.9rem;
+  font-size: 0.96rem;
   box-shadow: inset 0 0 10px rgba(24, 38, 188, 0.25);
   transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
   display: inline-flex;
@@ -5570,7 +5570,7 @@ $jobviz-nav-height: 64px;
   border-radius: 10px;
   border: 1px solid rgba(54, 54, 54, 0.2);
   padding: 10px 12px;
-  font-size: 0.95rem;
+  font-size: 1.01rem;
 }
 
 .tourEditorField label,
@@ -5589,7 +5589,7 @@ $jobviz-nav-height: 64px;
   display: flex;
   gap: 8px;
   align-items: center;
-  font-size: 0.85rem;
+  font-size: 0.93rem;
 }
 
 .tourEditorRequired {
@@ -5599,7 +5599,7 @@ $jobviz-nav-height: 64px;
 
 .tourEditorRequiredNote {
   margin: 4px 0 0;
-  font-size: 0.8rem;
+  font-size: 0.88rem;
   color: #4f4f4f;
 }
 
@@ -5616,7 +5616,7 @@ $jobviz-nav-height: 64px;
   border-radius: 10px;
   border: 1px solid rgba(54, 54, 54, 0.2);
   padding: 10px 12px;
-  font-size: 0.95rem;
+  font-size: 1.01rem;
   background: #fff;
   color: #363636;
 }
@@ -5656,12 +5656,12 @@ $jobviz-nav-height: 64px;
   background: rgba(44, 131, 195, 0.12);
   border-radius: 999px;
   padding: 6px 10px;
-  font-size: 0.82rem;
+  font-size: 0.9rem;
   color: #1f3f5c;
 }
 
 .tourEditorHelper {
-  font-size: 0.85rem;
+  font-size: 0.93rem;
   color: #4f4f4f;
 }
 
@@ -5677,7 +5677,7 @@ $jobviz-nav-height: 64px;
   display: flex;
   flex-direction: column;
   gap: 4px;
-  font-size: 0.85rem;
+  font-size: 0.93rem;
   color: #4f4f4f;
 }
 
@@ -5720,7 +5720,7 @@ $jobviz-nav-height: 64px;
 }
 
 .jobvizUpgradeKicker {
-  font-size: 0.75rem;
+  font-size: 0.83rem;
   text-transform: uppercase;
   letter-spacing: 0.12em;
   font-weight: 600;

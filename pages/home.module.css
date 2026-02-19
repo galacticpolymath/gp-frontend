@@ -103,7 +103,7 @@
 .kicker {
   text-transform: uppercase;
   letter-spacing: 0.2em;
-  font-size: 12px;
+  font-size: 16px;
   margin: 0;
   color: rgba(240, 244, 255, 0.7);
 }
@@ -133,7 +133,7 @@
   border: 0;
   border-radius: 999px;
   padding: 12px 20px;
-  font-size: 14px;
+  font-size: 16px;
   cursor: pointer;
   font-weight: 600;
   transition: transform 0.25s ease, box-shadow 0.25s ease, background-color 0.45s ease;
@@ -221,7 +221,7 @@
 
 .highlightCard p {
   margin: 0;
-  font-size: 14px;
+  font-size: 16px;
   color: rgba(240, 244, 255, 0.78);
 }
 
@@ -265,7 +265,7 @@
   color: #f0f4ff;
   padding: 8px 12px;
   border-radius: 999px;
-  font-size: 12px;
+  font-size: 16px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
@@ -377,7 +377,7 @@
   border: none;
   outline: none;
   flex: 1;
-  font-size: 14px;
+  font-size: 16px;
   background: transparent;
 }
 
@@ -387,7 +387,7 @@
   padding: 8px 14px;
   background: #2c83c3;
   color: #ffffff;
-  font-size: 12px;
+  font-size: 16px;
   font-weight: 700;
   cursor: pointer;
   white-space: nowrap;
@@ -405,7 +405,7 @@
 
 .filterNote {
   margin-top: 12px;
-  font-size: 12px;
+  font-size: 16px;
   color: #6a6f87;
 }
 
@@ -418,7 +418,7 @@
 
 .wizardKicker {
   margin: 0 0 4px;
-  font-size: 12px;
+  font-size: 16px;
   text-transform: uppercase;
   letter-spacing: 0.18em;
   color: #6c2d82;
@@ -429,7 +429,7 @@
   color: #23318a;
   padding: 4px 10px;
   border-radius: 999px;
-  font-size: 12px;
+  font-size: 16px;
   font-weight: 600;
 }
 
@@ -453,7 +453,7 @@
 .pillActive {
   padding: 6px 12px;
   border-radius: 999px;
-  font-size: 12px;
+  font-size: 16px;
   border: 1px solid rgba(44, 131, 195, 0.25);
 }
 
@@ -600,7 +600,7 @@
   border-radius: 12px;
   background: rgba(44, 131, 195, 0.08);
   border: 1px solid rgba(44, 131, 195, 0.2);
-  font-size: 12px;
+  font-size: 16px;
   color: #2b3355;
 }
 
@@ -637,7 +637,7 @@
   margin: 0 0 6px;
   text-transform: uppercase;
   letter-spacing: 0.14em;
-  font-size: 12px;
+  font-size: 16px;
   color: #c6ddff;
   font-weight: 700;
 }
@@ -656,7 +656,7 @@
 .statsCaption {
   margin: 0;
   color: #c6ddff;
-  font-size: 14px;
+  font-size: 16px;
 }
 
 .statsDivider {
@@ -728,7 +728,7 @@
   left: 14px;
   bottom: 12px;
   margin: 0;
-  font-size: 12px;
+  font-size: 16px;
   color: #c6ddff;
   background: rgba(15, 24, 44, 0.35);
   padding: 6px 10px;
@@ -888,7 +888,7 @@
   margin: 0 0 8px;
   text-transform: uppercase;
   letter-spacing: 0.14em;
-  font-size: 12px;
+  font-size: 16px;
   color: #6c2d82;
   font-weight: 700;
 }
@@ -917,7 +917,7 @@
 
 .spotlightEyebrow {
   margin: 0 0 6px;
-  font-size: 12px;
+  font-size: 16px;
   text-transform: uppercase;
   letter-spacing: 0.18em;
   color: #2c83c3;
@@ -1072,7 +1072,7 @@
 
 .blogMeta {
   margin: 0;
-  font-size: 12px;
+  font-size: 16px;
   text-transform: uppercase;
   letter-spacing: 0.2em;
   color: #2f3650;
@@ -1101,7 +1101,7 @@
   border: 1px solid rgba(44, 131, 195, 0.5);
   color: #2c83c3;
   font-weight: 600;
-  font-size: 13px;
+  font-size: 15px;
   letter-spacing: 0.02em;
   background: rgba(255, 255, 255, 0.8);
   transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
@@ -1115,7 +1115,7 @@
 .spotlightMeta {
   display: inline-block;
   margin-top: 12px;
-  font-size: 12px;
+  font-size: 16px;
   color: #6a6f87;
 }
 
@@ -1226,7 +1226,7 @@
   color: #ffffff;
   padding: 6px 12px;
   border-radius: 999px;
-  font-size: 12px;
+  font-size: 16px;
   font-weight: 700;
 }
 
@@ -1279,7 +1279,7 @@
 
 .sponsorTitle {
   margin: 0;
-  font-size: 12px;
+  font-size: 16px;
   text-transform: uppercase;
   letter-spacing: 0.12em;
   color: #6c2d82;
@@ -1300,7 +1300,7 @@
 
 .sponsorText {
   margin: 0;
-  font-size: 13px;
+  font-size: 15px;
   color: #5e6275;
 }
 
@@ -1321,7 +1321,7 @@
 
 .supportingMediaLabel {
   margin: 0;
-  font-size: 12px;
+  font-size: 16px;
   text-transform: uppercase;
   letter-spacing: 0.12em;
   color: rgba(240, 244, 255, 0.78);
@@ -1340,7 +1340,7 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  font-size: 14px;
+  font-size: 16px;
 }
 
 .supportingMediaList svg {
@@ -1359,7 +1359,7 @@
 
 .gistLabel {
   margin: 0;
-  font-size: 12px;
+  font-size: 16px;
   text-transform: uppercase;
   letter-spacing: 0.12em;
   color: rgba(240, 248, 255, 0.9);
@@ -1387,7 +1387,7 @@
 
 .unitConnectionsLabel {
   margin: 0;
-  font-size: 12px;
+  font-size: 16px;
   text-transform: uppercase;
   letter-spacing: 0.12em;
   color: #2c83c3;
@@ -1396,7 +1396,7 @@
 
 .unitConnectionsText {
   margin: 0;
-  font-size: 13px;
+  font-size: 15px;
   color: #4c4f66;
   line-height: 1.5;
 }
@@ -1409,14 +1409,14 @@
   margin: 0 0 8px;
   font-weight: 600;
   color: #2c83c3;
-  font-size: 13px;
+  font-size: 15px;
 }
 
 .overviewTags {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
-  font-size: 12px;
+  font-size: 16px;
   color: #2b3355;
 }
 
@@ -1428,13 +1428,13 @@
 }
 
 .epauletteBlock span {
-  font-size: 12px;
+  font-size: 16px;
   color: #5e6275;
 }
 
 .subjectLine {
   margin: 4px 0 0;
-  font-size: 12px;
+  font-size: 16px;
   color: #5e6275;
 }
 
@@ -1473,7 +1473,7 @@
 }
 
 .cardType {
-  font-size: 12px;
+  font-size: 16px;
   text-transform: uppercase;
   letter-spacing: 0.14em;
   color: #6c2d82;
@@ -1490,7 +1490,7 @@
   display: flex;
   gap: 12px;
   flex-wrap: wrap;
-  font-size: 13px;
+  font-size: 15px;
   color: #2c83c3;
   font-weight: 600;
 }
@@ -1504,7 +1504,7 @@
 .tagRow span {
   background: rgba(44, 131, 195, 0.12);
   color: #23318a;
-  font-size: 12px;
+  font-size: 16px;
   padding: 4px 10px;
   border-radius: 999px;
 }
@@ -1524,7 +1524,7 @@
 .resourceSummary {
   display: flex;
   gap: 12px;
-  font-size: 12px;
+  font-size: 16px;
   font-weight: 600;
   color: #6c2d82;
 }
@@ -1532,7 +1532,7 @@
 .mediaEmpty {
   margin: 4px 0 0;
   color: #5e6275;
-  font-size: 13px;
+  font-size: 15px;
 }
 
 .mediaGrid {
@@ -1579,7 +1579,7 @@
   color: #6c2d82;
   padding: 3px 8px;
   border-radius: 999px;
-  font-size: 10px;
+  font-size: 16px;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -1588,7 +1588,7 @@
 .mediaTitle {
   display: block;
   padding: 10px 12px 12px;
-  font-size: 13px;
+  font-size: 15px;
   color: #2b3355;
   font-weight: 600;
   flex: 1;
@@ -1708,7 +1708,7 @@
   margin: 0 0 6px;
   text-transform: uppercase;
   letter-spacing: 0.12em;
-  font-size: 11px;
+  font-size: 15px;
   color: #6c2d82;
 }
 
@@ -1753,7 +1753,7 @@
   margin: 0 0 4px;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  font-size: 11px;
+  font-size: 15px;
   color: #6c2d82;
 }
 
@@ -1899,7 +1899,7 @@
 
 .mediaConnected {
   margin: 0;
-  font-size: 14px;
+  font-size: 16px;
   color: rgba(240, 244, 255, 0.75);
 }
 
@@ -1990,7 +1990,7 @@
 }
 
 .allStatCard span {
-  font-size: 12px;
+  font-size: 16px;
   color: rgba(240, 244, 255, 0.7);
 }
 
@@ -2034,7 +2034,7 @@
 .filterPillActive {
   padding: 5px 11px;
   border-radius: 999px;
-  font-size: 12px;
+  font-size: 16px;
   border: 2px solid rgba(44, 131, 195, 0.22);
   box-sizing: border-box;
   transition: border-color 0.2s ease, background-color 0.2s ease;
@@ -2123,7 +2123,7 @@
   margin: 0 0 4px;
   text-transform: uppercase;
   letter-spacing: 0.16em;
-  font-size: 11px;
+  font-size: 15px;
   color: #363636;
 }
 
@@ -2133,7 +2133,7 @@
   color: #2c83c3;
   border-radius: 999px;
   padding: 5px 11px;
-  font-size: 12px;
+  font-size: 16px;
   cursor: pointer;
   font-weight: 600;
   box-sizing: border-box;
@@ -2193,7 +2193,7 @@
 }
 
 .filterCollapsedLabel {
-  font-size: 10px;
+  font-size: 13px;
   font-weight: 700;
   color: #2c83c3;
   text-transform: uppercase;
@@ -2255,7 +2255,7 @@
   color: #2c83c3;
   list-style: none;
   margin-bottom: 10px;
-  font-size: 14px;
+  font-size: 16px;
   text-transform: uppercase;
   letter-spacing: 0.08em;
 }
@@ -2276,9 +2276,8 @@
 
 .filterTagsGroup .filterPillActive {
   color: #2c83c3;
-  text-decoration: underline;
-  text-underline-offset: 3px;
-  text-decoration-thickness: 2px;
+  text-decoration: none;
+  box-shadow: inset 0 -2px 0 #2c83c3;
 }
 
 .filterTagsGroup .filterPill:hover,
@@ -2342,9 +2341,8 @@ details:not([open]) .filterSummary::after {
 
 .tagCloudItemActive {
   color: #2c83c3;
-  text-decoration: underline;
-  text-decoration-thickness: 2px;
-  text-underline-offset: 3px;
+  text-decoration: none;
+  box-shadow: inset 0 -2px 0 #2c83c3;
 }
 
 .tagCloudToggle {
@@ -2354,13 +2352,13 @@ details:not([open]) .filterSummary::after {
   cursor: pointer;
   color: #2c83c3;
   font-weight: 700;
-  font-size: 12px;
+  font-size: 16px;
   text-transform: uppercase;
   letter-spacing: 0.12em;
 }
 
 .tagCloudToggle:hover {
-  text-decoration: underline;
+  text-decoration: none;
 }
 
 .filterFooter {
@@ -2386,7 +2384,7 @@ details:not([open]) .filterSummary::after {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-size: 12px;
+  font-size: 16px;
   color: #363636;
   font-weight: 600;
   animation: fadeUp 200ms ease-out both;
@@ -2436,7 +2434,7 @@ details:not([open]) .filterSummary::after {
   margin: 0;
   text-transform: uppercase;
   letter-spacing: 0.12em;
-  font-size: 12px;
+  font-size: 16px;
   color: #363636;
 }
 
@@ -2456,7 +2454,7 @@ details:not([open]) .filterSummary::after {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-size: 12px;
+  font-size: 15px;
   cursor: pointer;
   font-weight: 600;
   color: #2c83c3;
@@ -2471,7 +2469,7 @@ details:not([open]) .filterSummary::after {
   border-radius: 999px;
   border: 1px solid rgba(44, 131, 195, 0.2);
   padding: 6px 12px;
-  font-size: 12px;
+  font-size: 15px;
   color: #2b3355;
   background: #ffffff;
 }
@@ -2489,7 +2487,7 @@ details:not([open]) .filterSummary::after {
 }
 
 .activeFiltersLabel {
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 600;
   color: #6c2d82;
   text-transform: uppercase;
@@ -2501,7 +2499,7 @@ details:not([open]) .filterSummary::after {
   border: 1px solid rgba(44, 131, 195, 0.2);
   border-radius: 999px;
   padding: 6px 10px;
-  font-size: 12px;
+  font-size: 14px;
   color: #2c83c3;
   display: inline-flex;
   align-items: center;
@@ -2546,7 +2544,7 @@ details:not([open]) .filterSummary::after {
   position: sticky;
   top: 0;
   z-index: 2;
-  font-size: 10px;
+  font-size: 16px;
   text-transform: uppercase;
   letter-spacing: 0.12em;
   color: #ffffff;
@@ -2745,7 +2743,7 @@ details:not([open]) .filterSummary::after {
   border-radius: 999px;
   background: rgba(54, 54, 54, 0.12);
   color: #363636;
-  font-size: 10px;
+  font-size: 14px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.06em;
@@ -2761,7 +2759,7 @@ details:not([open]) .filterSummary::after {
 .resourceTags span {
   padding: 4px 8px;
   border-radius: 999px;
-  font-size: 11px;
+  font-size: 14px;
   background: rgba(44, 131, 195, 0.1);
   color: #2c83c3;
 }
@@ -2778,7 +2776,7 @@ details:not([open]) .filterSummary::after {
 
 .searchMatchLabel {
   margin: 0;
-  font-size: 11px;
+  font-size: 14px;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: #2f5f85;
@@ -2787,7 +2785,7 @@ details:not([open]) .filterSummary::after {
 
 .searchMatchLine {
   margin: 0;
-  font-size: 12px;
+  font-size: 16px;
   color: #364568;
   line-height: 1.4;
 }
@@ -2830,7 +2828,7 @@ details:not([open]) .filterSummary::after {
 .resourceBadgePlus {
   padding: 4px 8px;
   border-radius: 999px;
-  font-size: 11px;
+  font-size: 14px;
   font-weight: 700;
 }
 
@@ -2868,7 +2866,7 @@ details:not([open]) .filterSummary::after {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 600;
   color: #363636;
   text-transform: uppercase;
@@ -2950,14 +2948,14 @@ details:not([open]) .filterSummary::after {
 }
 
 .rowMatchLine {
-  font-size: 10px;
+  font-size: 14px;
   color: #3f4d72;
   line-height: 1.3;
 }
 
 .resourceRowTitleLine {
   margin: 0;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 400;
   color: #363636;
 }
@@ -2976,7 +2974,7 @@ details:not([open]) .filterSummary::after {
 
 .resourceRowLessonCount {
   margin: 4px 0 0;
-  font-size: 11px;
+  font-size: 14px;
   font-weight: 400;
   color: #2c83c3;
   align-self: center;
@@ -3004,7 +3002,7 @@ details:not([open]) .filterSummary::after {
 }
 
 .resourceRowColLabel {
-  font-size: 9px;
+  font-size: 14px;
   text-transform: uppercase;
   letter-spacing: 0.12em;
   color: #5b5f6f;
@@ -3025,7 +3023,7 @@ details:not([open]) .filterSummary::after {
 }
 
 .resourceRowColValue {
-  font-size: 11px;
+  font-size: 14px;
   font-weight: 700;
   color: #363636;
 }
@@ -3036,7 +3034,7 @@ details:not([open]) .filterSummary::after {
   gap: 9px;
   border-radius: 999px;
   padding: 5px 10px;
-  font-size: 11px;
+  font-size: 14px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -3049,7 +3047,7 @@ details:not([open]) .filterSummary::after {
 
 .resourceRowTypeText {
   font-weight: 700;
-  font-size: 11px;
+  font-size: 14px;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: var(--type-pill-fg);
@@ -3139,11 +3137,11 @@ details:not([open]) .filterSummary::after {
   }
 
   .jobTourCard .resourceDescription {
-    font-size: 14px;
+    font-size: 16px;
   }
 
   .jobTourJobs span {
-    font-size: 10px;
+    font-size: 16px;
     padding: 3px 7px;
   }
 
@@ -3152,7 +3150,7 @@ details:not([open]) .filterSummary::after {
   }
 
   .jobTourCard .resourceSideMeta {
-    font-size: 11px;
+    font-size: 15px;
     letter-spacing: 0.06em;
   }
 }
@@ -3212,7 +3210,7 @@ details:not([open]) .filterSummary::after {
   }
 
   .resourceCard .resourceTypePill {
-    font-size: 14px;
+    font-size: 16px;
     padding: 6px 12px;
   }
 
@@ -3264,7 +3262,7 @@ details:not([open]) .filterSummary::after {
 
   .searchSubmitButton {
     padding: 7px 12px;
-    font-size: 11px;
+    font-size: 15px;
   }
 
   .sectionDivider {
@@ -3360,7 +3358,7 @@ details:not([open]) .filterSummary::after {
   .resourceSideMeta {
     padding-left: 0;
     gap: 8px;
-    font-size: 11px;
+    font-size: 15px;
   }
 
   .searchMatchArea {
@@ -3368,7 +3366,7 @@ details:not([open]) .filterSummary::after {
   }
 
   .searchMatchLine {
-    font-size: 11px;
+    font-size: 15px;
   }
 }
 
@@ -3424,7 +3422,7 @@ details:not([open]) .filterSummary::after {
   .resourceRowSubtitle,
   .resourceRowTitleText {
     display: inline;
-    font-size: 12px;
+    font-size: 14px;
   }
 
   .resourceRowTitleLine {
@@ -3454,7 +3452,7 @@ details:not([open]) .filterSummary::after {
   }
 
   .resourceRowColValue {
-    font-size: 11px;
+    font-size: 14px;
     font-weight: 400;
   }
 
@@ -3464,14 +3462,14 @@ details:not([open]) .filterSummary::after {
 
   .resourceRowTypeText {
     font-weight: 700;
-    font-size: 11px;
+    font-size: 13px;
     text-transform: uppercase;
     letter-spacing: 0.04em;
     color: #363636;
   }
 
   .resourceRowTypeCol .resourceRowLessonCount {
-    font-size: 10px;
+    font-size: 13px;
     margin: 2px 0 0;
   }
 
@@ -3566,7 +3564,7 @@ details:not([open]) .filterSummary::after {
   }
 
   .pressCheck {
-    font-size: 13px;
+    font-size: 15px;
   }
 }
 
@@ -3620,7 +3618,7 @@ details:not([open]) .filterSummary::after {
 .jobTourCard .resourceTypePill {
   background: rgba(108, 45, 130, 0.12);
   color: #6c2d82;
-  font-size: 14px;
+  font-size: 16px;
   padding: 7px 12px;
 }
 
@@ -3631,7 +3629,7 @@ details:not([open]) .filterSummary::after {
 }
 
 .jobTourBadge {
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -3642,7 +3640,7 @@ details:not([open]) .filterSummary::after {
 }
 
 .jobTourGpBadge {
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -3661,7 +3659,7 @@ details:not([open]) .filterSummary::after {
 }
 
 .jobTourFromUnit {
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 600;
   color: #6c2d82;
   text-decoration: none;
@@ -3677,7 +3675,7 @@ details:not([open]) .filterSummary::after {
 
 .jobTourAuthorLine {
   margin: 0;
-  font-size: 12px;
+  font-size: 16px;
   font-weight: 600;
   color: #2c83c3;
   text-transform: uppercase;
@@ -3688,7 +3686,7 @@ details:not([open]) .filterSummary::after {
 }
 
 .jobTourJobs span {
-  font-size: 11px;
+  font-size: 14px;
   padding: 4px 8px;
   border-radius: 999px;
   background: rgba(108, 45, 130, 0.12);
@@ -3754,7 +3752,7 @@ details:not([open]) .filterSummary::after {
 }
 
 .jobTourRowMetaLine {
-  font-size: 11px;
+  font-size: 14px;
   color: #4f4f4f;
   display: inline-flex;
   align-items: center;
@@ -3763,7 +3761,7 @@ details:not([open]) .filterSummary::after {
 }
 
 .jobTourRowJobsLine {
-  font-size: 11px;
+  font-size: 14px;
   color: #5b5f6f;
   display: -webkit-box;
   -webkit-line-clamp: 1;
@@ -3817,7 +3815,7 @@ details:not([open]) .filterSummary::after {
 
 .jobvizToursActionPill {
   margin-left: 10px;
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -3877,7 +3875,7 @@ details:not([open]) .filterSummary::after {
 }
 
 .jobvizToursTileKicker {
-  font-size: 12px;
+  font-size: 14px;
   text-transform: uppercase;
   letter-spacing: 0.1em;
   color: #6c2d82;
@@ -3886,6 +3884,6 @@ details:not([open]) .filterSummary::after {
 
 .resultsNotice {
   margin-top: 8px;
-  font-size: 0.85rem;
+  font-size: 0.95rem;
   color: #4f4f4f;
 }

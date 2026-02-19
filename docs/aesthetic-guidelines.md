@@ -93,7 +93,7 @@ Use these as subtle accents in standards-alignment UI (chips, borders, icons), n
 ## Typography & Iconography
 - **Primary font:** Noto Sans Light/Regular/SemiBold with system fallbacks (`"Noto Sans", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif`).
 - Heading scale: H1 40/44, H2 32/36, H3 24/28, Body 18/28 for portal readability; tighten to 16/24 for dense tables.
-- Minimum readable sizes: body-like instructional text should be at least 14px on mobile and 15-16px on desktop; reserve 12-13px for short labels/chips only.
+- Minimum readable sizes: body-like instructional text should be at least 15px on mobile and 16px on desktop; reserve 13px for short labels/chips only.
 - Use stacked icon pairs for JobViz job cards: outer glyph = category, inner = specific job. Maintain 24px outer, 16px inner, 2px stroke.
 - Emoji ratings should render with consistent line height and include aria-labels describing the rating meaning.
 - Navigation and filter icons follow mono-line style at 1.5px stroke; avoid mixing filled and outline icons within a single component.
@@ -111,6 +111,16 @@ Use these as subtle accents in standards-alignment UI (chips, borders, icons), n
 - Provide descriptive aria labels for CTA buttons (e.g., "Assign Data Streams unit to class").
 - Lazy-load heavy data visualizations, but prefetch next-level hierarchy nodes to keep JobViz snappy. Keep core CSS under 150kb compressed; prefer CSS variables for theming.
 - For cache-only interactions (emoji ratings), show persistence expectations ("Saved on this device") and provide a reset control.
+
+### Readable Type Minimums (Enforced)
+- Body copy, instructional copy, and paragraph text: minimum 16px desktop, 15px mobile.
+- Helper/meta/supporting text: minimum 14px desktop, 13px mobile.
+- Button labels and links styled as buttons: minimum 14px in all breakpoints, weight 600+.
+- Warning/advisory messages: minimum 14px text, with adjacent icons at least 16px.
+- Line-height for paragraph/help text: minimum 1.4.
+- 12-13px text is only allowed for compact chips/badges/tokens and other non-instructional UI labels.
+- No component may reduce instructional text below these floors via media queries or `clamp()`.
+- PR review must include a smallest-rendered-text pass for all new/edited screens.
 
 ## Shareability, Meta Tags, and SEO
 - **Titles & descriptions:** Keep `<title>` ≤60 chars and `<meta name="description">` between 140-160 chars with action-oriented copy for teachers. Highlight freemium benefits ("Free open-access lessons" vs. "GP+ editable pack").
