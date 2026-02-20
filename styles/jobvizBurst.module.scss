@@ -2557,6 +2557,53 @@ $jobviz-nav-height: 64px;
   gap: 0.5rem;
 }
 
+.saveJobButton {
+  border: 1px solid rgba(255, 255, 255, 0.34);
+  background: rgba(255, 255, 255, 0.08);
+  color: #f7fbff;
+  min-height: 34px;
+  border-radius: 999px;
+  padding: 0.35rem 0.65rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+
+.saveJobButton:hover,
+.saveJobButton:focus-visible {
+  transform: translateY(-1px);
+  border-color: rgba(255, 214, 120, 0.82);
+  background: rgba(255, 214, 120, 0.16);
+}
+
+.saveJobButton:disabled {
+  cursor: default;
+  opacity: 0.95;
+}
+
+.saveJobButtonActive {
+  color: #ffd678;
+  border-color: rgba(255, 214, 120, 0.82);
+  background: rgba(255, 214, 120, 0.18);
+}
+
+.saveJobButtonIcon {
+  flex: 0 0 auto;
+}
+
+.savedJobInlineStar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffd678;
+  margin-left: 0.12rem;
+  margin-top: 0.15rem;
+}
+
 .modalCloseButton {
   border: none;
   background: rgba(255, 255, 255, 0.08);

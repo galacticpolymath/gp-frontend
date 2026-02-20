@@ -105,7 +105,7 @@ export type TUserSchemaV2 = IUserSchemaBaseProps &
     gdriveAuthEmails: string[];
     willShowGpPlusCopyLessonHelperModal: boolean;
     displayName?: string,
-    savedJobIds?: string,
+    savedJobIds?: string[],
     willNotShowEmailNewsLetterSignUpModal: boolean;
   };
 

@@ -2429,21 +2429,11 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                           </span>
                         </button>
                       </div>
-                      <p className={styles.materialsHelperText}>
-                        {isFeaturedMediaOpen
-                          ? hasFeaturedMedia
-                            ? 'Showing featured multimedia for this lesson.'
-                            : 'No featured media is linked to this lesson yet.'
-                          : hasDetailedFlow
-                          ? 'Open chunk-by-chunk guidance in the preview panel.'
-                          : 'Detailed steps are not available for this lesson yet.'}
-                      </p>
                       <div className={styles.materialsSectionDivider} aria-hidden="true" />
                       <h3 className={styles.lessonCardHeading}>
                         <Download size={16} aria-hidden="true" />
                         <span>Preview and Download</span>
                       </h3>
-                      <p className={styles.materialsHelperText}>Click an item to preview.</p>
                       {!!activeLessonItems.length ? (
                         <div className={styles.lessonDownloadList}>
                           {activeLessonItems.map((item, idx) => {

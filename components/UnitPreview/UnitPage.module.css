@@ -1231,6 +1231,12 @@
   background: rgba(75, 58, 168, 0.08);
 }
 
+.lessonProcedureToggleActive:hover,
+.lessonProcedureToggleActive:focus-visible {
+  border-color: rgba(75, 58, 168, 0.52);
+  background: rgba(75, 58, 168, 0.08);
+}
+
 .lessonProcedureToggleText {
   display: inline-flex;
   align-items: center;
@@ -1238,14 +1244,14 @@
 }
 
 .materialsSectionDivider {
-  margin: 8px 0 10px;
-  height: 1px;
+  margin: 14px 0;
+  height: 2px;
   width: 100%;
   background: linear-gradient(
     90deg,
-    rgba(44, 131, 195, 0.08),
-    rgba(44, 131, 195, 0.2),
-    rgba(44, 131, 195, 0.08)
+    rgba(75, 58, 168, 0.06),
+    rgba(75, 58, 168, 0.52),
+    rgba(75, 58, 168, 0.06)
   );
 }
 
@@ -1340,13 +1346,6 @@
   gap: 7px;
 }
 
-.materialsHelperText {
-  margin: 2px 0 8px;
-  font-size: 16px;
-  line-height: 1.4;
-  color: #6e7890;
-}
-
 .materialRow {
   display: grid;
   gap: 6px;
@@ -1363,6 +1362,12 @@
 }
 
 .materialRowActive {
+  border-color: rgba(75, 58, 168, 0.52);
+  background: rgba(75, 58, 168, 0.09);
+}
+
+.materialRowActive:hover,
+.materialRowActive:focus-within {
   border-color: rgba(75, 58, 168, 0.52);
   background: rgba(75, 58, 168, 0.09);
 }

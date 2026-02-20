@@ -64,6 +64,7 @@ const PROJECTIONS: Partial<
   gradesTaught: 1,
   gradesType: 1,
   _id: 1,
+  savedJobIds: 1,
 } as const;
 
 export default async function handler(

@@ -4,8 +4,11 @@ import Modal from "react-bootstrap/Modal";
 import { useRouter } from "next/router";
 import { toast } from "react-toastify";
 import { useSearchParams } from "next/navigation";
+import axios from "axios";
+import { Star } from "lucide-react";
 import { LucideIcon } from "../JobViz/LucideIcon";
 import { useModalContext } from "../../providers/ModalProvider";
+import useSiteSession from "../../customHooks/useSiteSession";
 import jobVizDataObj from "../../data/Jobviz/jobVizDataObj.json";
 import { createSelectedJobVizJobLink } from "../JobViz/JobTours/JobToursCard";
 import { JOBVIZ_BRACKET_SEARCH_ID } from "../JobViz/jobvizConstants";
@@ -52,6 +55,7 @@ const SelectedJob: React.FC = () => {
     _isJobModalOn,
     _jobToursModalCssProps,
     _jobvizReturnPath,
+    _isLoginModalDisplayed,
   } =
     useModalContext();
   const router = useRouter();
@@ -60,6 +64,7 @@ const SelectedJob: React.FC = () => {
   const [, setIsJobModal] = _isJobModalOn;
   const [, setJobToursModalCssProps] = _jobToursModalCssProps;
   const [jobvizReturnPath, setJobvizReturnPath] = _jobvizReturnPath;
+  const [, setIsLoginModalDisplayed] = _isLoginModalDisplayed;
   const [jobLink, setJobLink] = useState("");
   const [infoModal, setInfoModal] = useState<InfoModalType | null>(null);
   const [modalHistory, setModalHistory] = useState<InfoModalType | null>(null);
@@ -85,6 +90,10 @@ const SelectedJob: React.FC = () => {
   );
   const assignmentQueryParam = router.query?.[SOC_CODES_PARAM_NAME];
   const [jobvizOverlayOffset, setJobvizOverlayOffset] = useState(0);
+  const [savedJobIds, setSavedJobIds] = useState<Set<string>>(new Set());
+  const [isSavingJob, setIsSavingJob] = useState(false);
+  const { status, token } = useSiteSession();
+  const isAuthenticated = status === "authenticated";
 
   const assignmentSocCodes = useMemo(() => {
     const value = Array.isArray(assignmentQueryParam)
@@ -246,6 +255,39 @@ const SelectedJob: React.FC = () => {
     }
     setShowRatingInfo(false);
   }, [visibleJob]);
+
+  useEffect(() => {
+    if (!isAuthenticated || !token) {
+      setSavedJobIds(new Set());
+      return;
+    }
+
+    let isCancelled = false;
+    axios
+      .get<{ savedJobIds?: string[] }>("/api/get-user-account-data", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then(({ data }) => {
+        if (isCancelled) return;
+        const ids = Array.isArray(data?.savedJobIds)
+          ? data.savedJobIds.filter(
+              (value): value is string => typeof value === "string" && !!value.trim()
+            )
+          : [];
+        setSavedJobIds(new Set(ids));
+      })
+      .catch(() => {
+        if (!isCancelled) {
+          setSavedJobIds(new Set());
+        }
+      });
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [isAuthenticated, token]);
 
   const activeInfoModal = modalHistory ? infoModalContent[modalHistory] : null;
   const shouldRenderInfoModal =
@@ -431,6 +473,46 @@ const SelectedJob: React.FC = () => {
     }
   };
 
+  const handleSaveJob = async () => {
+    const jobId = visibleJob?.id != null ? String(visibleJob.id) : visibleJob?.soc_code;
+    if (!jobId) {
+      return;
+    }
+
+    if (!isAuthenticated || !token) {
+      setIsLoginModalDisplayed(true);
+      return;
+    }
+
+    if (savedJobIds.has(jobId)) {
+      return;
+    }
+
+    try {
+      setIsSavingJob(true);
+      await axios.put(
+        "/api/saved-jobs/add",
+        { jobId },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setSavedJobIds((previous) => {
+        const next = new Set(previous);
+        next.add(jobId);
+        return next;
+      });
+      toast.success("Job saved");
+    } catch (error) {
+      console.error("Failed to save job", error);
+      toast.error("Unable to save job");
+    } finally {
+      setIsSavingJob(false);
+    }
+  };
+
   const handleExploreRelatedCareers = async () => {
     if (!visibleJob) return;
 
@@ -526,6 +608,11 @@ const SelectedJob: React.FC = () => {
     canBookmark && visibleJob?.soc_code
       ? jobTourEditor?.isSelected(visibleJob.soc_code)
       : false;
+  const activeJobId = visibleJob?.id != null ? String(visibleJob.id) : null;
+  const isSavedJob = Boolean(
+    (activeJobId && savedJobIds.has(activeJobId)) ||
+      (visibleJob?.soc_code && savedJobIds.has(visibleJob.soc_code))
+  );
 
   return (
     <>
@@ -556,6 +643,42 @@ const SelectedJob: React.FC = () => {
                   Job detail <span className={styles.modalSocCodeInline}>(SOC {visibleJob.soc_code})</span>
                 </p>
                 <div className={styles.modalHeaderActions}>
+                  <button
+                    type="button"
+                    className={`${styles.saveJobButton} ${
+                      isSavedJob ? styles.saveJobButtonActive : ""
+                    }`}
+                    onClick={handleSaveJob}
+                    disabled={isSavingJob || isSavedJob}
+                    aria-label={
+                      isSavedJob
+                        ? "Job saved"
+                        : isAuthenticated
+                        ? "Save job"
+                        : "Log in to save job"
+                    }
+                    title={
+                      isSavedJob
+                        ? "Saved"
+                        : isAuthenticated
+                        ? "Save Job"
+                        : "Log in to save job"
+                    }
+                  >
+                    <Star
+                      size={14}
+                      aria-hidden="true"
+                      className={styles.saveJobButtonIcon}
+                      fill={isSavedJob ? "currentColor" : "none"}
+                    />
+                    <span>
+                      {isSavedJob
+                        ? "Saved"
+                        : isSavingJob
+                        ? "Saving..."
+                        : "Save Job"}
+                    </span>
+                  </button>
                   {canBookmark && visibleJob?.soc_code && (
                     <button
                       type="button"
@@ -603,6 +726,15 @@ const SelectedJob: React.FC = () => {
                 </div>
                 <div className={styles.modalTitleGroup}>
                   <h3 className={styles.modalTitle}>{jobTitle}</h3>
+                  {isSavedJob && (
+                    <span
+                      className={styles.savedJobInlineStar}
+                      title="Saved job"
+                      aria-label="Saved job"
+                    >
+                      <Star size={12} fill="currentColor" aria-hidden="true" />
+                    </span>
+                  )}
                   {isAssignmentJob && (
                     <span
                       className={styles.assignmentBadgeDot}
