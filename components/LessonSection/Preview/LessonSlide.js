@@ -56,20 +56,30 @@ const LessonSlide = ({
           className={`${styles.SlideBody} mt-2 text-wrap lessonSlideBody px-1 px-md-3`}
           style={{ width: "100%" }}
         >
-          {forLsn && (
-            <div className='badge badge-pill bg-primary-light mb-1' style={{ color: 'gray' }}>For Lesson {forLsn}</div>
-          )}
+          <div className={styles.slideMetaRow}>
+            {forLsn && (
+              <div
+                className='badge badge-pill bg-primary-light mb-1'
+                style={{ color: 'gray' }}
+              >
+                For Lesson {forLsn}
+              </div>
+            )}
+            {by && (
+              <span className={styles.slideByline}>
+                by{' '}
+                <a
+                  href={byLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {by}
+                </a>
+              </span>
+            )}
+          </div>
           <h6 className='m-0 mb-1 fw-bolder fst-italic'>{title}</h6>
           <RichText className='lessonRelevanceTxt mb-2 me-3' content={lessonRelevance} />
-          <span className=" d-block d-sm-inline w-100">by{' '}
-            <a
-              href={byLink}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {by}
-            </a>
-          </span>
         </div>
       </div>
     </div>

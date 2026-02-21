@@ -239,8 +239,8 @@ export const CopyLessonBtnUI: React.FC<ICopyLessonBtnUIProps> = ({
                     {isGpPlusMember &&
                       gdriveAccessToken &&
                       (userGDriveLessonFolderId
-                        ? 'Bulk copy to my Google Drive again'
-                        : 'Bulk copy to my Google Drive')}
+                        ? 'Copy All Lesson Files to My Google Drive again'
+                        : 'Copy All Lesson Files to My Google Drive')}
                     {!isGpPlusMember && (
                       <>Subscribe to copy this lesson to your Google Drive</>
                     )}
@@ -282,7 +282,9 @@ export const CopyLessonBtnUI: React.FC<ICopyLessonBtnUIProps> = ({
 
 const CopyLessonBtn: React.FC<
   ICopyLessonBtnProps &
-  Pick<ICopyLessonBtnUIProps, 'childrenClassName' | 'btnClassName'>
+  Pick<ICopyLessonBtnUIProps, 'childrenClassName' | 'btnClassName'> & {
+    btnWrapperClassName?: string;
+  }
 > = ({
   sharedGDriveLessonFolderId,
   MediumTitle,
@@ -299,6 +301,7 @@ const CopyLessonBtn: React.FC<
   lessonsFolder,
   isRetrievingLessonFolderIds,
   setParts,
+  btnWrapperClassName = 'mb-3',
   childrenClassName = 'd-flex flex-row align-items-center justify-content-center gap-2',
   btnRef,
 }) => {
@@ -1526,7 +1529,7 @@ const CopyLessonBtn: React.FC<
     }, [lessonToCopy]);
 
     return (
-      <div style={{ width: 'fit-content' }} className="mb-3">
+      <div style={{ width: 'fit-content' }} className={btnWrapperClassName}>
         <Button
           ref={btnRef}
           onClick={isGpPlusMember ? copyLesson : takeUserToSignUpPg}
@@ -1582,8 +1585,8 @@ const CopyLessonBtn: React.FC<
                     {isGpPlusMember &&
                       gdriveAccessToken &&
                       (userGDriveLessonFolderId
-                        ? 'Bulk copy to my Google Drive again'
-                        : 'Bulk copy to my Google Drive')}
+                        ? 'Copy All Lesson Files to My Google Drive again'
+                        : 'Copy All Lesson Files to My Google Drive')}
                     {!isGpPlusMember && (
                       <>Subscribe to copy this lesson to your Google Drive</>
                     )}
