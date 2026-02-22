@@ -29,6 +29,24 @@ export const runtime = "nodejs";
 export const maxDuration = 300;
 const USER_GP_PLUS_PARENT_FOLDER_NAME = "My GP+ Units";
 
+const getDriveListScopeParams = () => {
+  const sharedDriveId = process.env.GOOGLE_DRIVE_ID?.trim();
+
+  if (!sharedDriveId) {
+    throw new CustomError(
+      "GOOGLE_DRIVE_ID is required for template Shared Drive listing.",
+      500
+    );
+  }
+
+  return {
+    corpora: "drive" as const,
+    driveId: sharedDriveId,
+    includeItemsFromAllDrives: true,
+    supportsAllDrives: true,
+  };
+};
+
 export const getGDriveItem = async (
   fileId: string,
   accessToken: string,
@@ -598,10 +616,7 @@ export default async function handler(
     console.log("Will retrieve files...");
 
     const gdriveResponse = await drive.files.list({
-      corpora: "drive",
-      includeItemsFromAllDrives: true,
-      supportsAllDrives: true,
-      driveId: process.env.GOOGLE_DRIVE_ID,
+      ...getDriveListScopeParams(),
       q: `'${request.query.unitDriveId}' in parents`,
     });
     console.log("gdriveResponse.data?.files: ", gdriveResponse.data?.files);
@@ -634,10 +649,7 @@ export default async function handler(
         unitFolder.pathToFile !== ""
       ) {
         const { data } = await drive.files.list({
-          corpora: "drive",
-          includeItemsFromAllDrives: true,
-          supportsAllDrives: true,
-          driveId: process.env.GOOGLE_DRIVE_ID,
+          ...getDriveListScopeParams(),
           q: `'${unitFolder.id}' in parents`,
         });
 
@@ -727,10 +739,7 @@ export default async function handler(
 
       if (unitFolder.mimeType.includes("folder")) {
         const folderDataResponse = await drive.files.list({
-          corpora: "drive",
-          includeItemsFromAllDrives: true,
-          supportsAllDrives: true,
-          driveId: process.env.GOOGLE_DRIVE_ID,
+          ...getDriveListScopeParams(),
           q: `'${unitFolder.id}' in parents`,
         });
 

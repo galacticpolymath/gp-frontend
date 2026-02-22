@@ -42,6 +42,24 @@ type TAppProperties = Record<
 
 export const ORIGINAL_ITEM_ID_FIELD_NAME = 'originalItemId';
 
+const getDriveListScopeParams = () => {
+  const sharedDriveId = process.env.GOOGLE_DRIVE_ID?.trim();
+
+  if (!sharedDriveId) {
+    throw new CustomError(
+      'GOOGLE_DRIVE_ID is required for template Shared Drive listing.',
+      500
+    );
+  }
+
+  return {
+    corpora: 'drive' as const,
+    driveId: sharedDriveId,
+    includeItemsFromAllDrives: true,
+    supportsAllDrives: true,
+  };
+};
+
 export class GDriveItem {
   name: string;
   appProperties?: TAppProperties;
@@ -610,10 +628,7 @@ export const getFolderChildItems = async (
       unitFolder.pathToFile !== ''
     ) {
       const { data } = await drive.files.list({
-        corpora: 'drive',
-        includeItemsFromAllDrives: true,
-        supportsAllDrives: true,
-        driveId: process.env.GOOGLE_DRIVE_ID,
+        ...getDriveListScopeParams(),
         q: `'${unitFolder.id}' in parents`,
       });
 
@@ -703,10 +718,7 @@ export const getFolderChildItems = async (
 
     if (unitFolder?.mimeType?.includes('folder')) {
       const folderDataResponse = await drive.files.list({
-        corpora: 'drive',
-        includeItemsFromAllDrives: true,
-        supportsAllDrives: true,
-        driveId: process.env.GOOGLE_DRIVE_ID,
+        ...getDriveListScopeParams(),
         q: `'${unitFolder.id}' in parents`,
       });
 
@@ -829,10 +841,7 @@ export const getTargetFolderChildItems = async (
 ) => {
   try {
     const gdriveResponse = await drive.files.list({
-      corpora: 'drive',
-      includeItemsFromAllDrives: true,
-      supportsAllDrives: true,
-      driveId: process.env.GOOGLE_DRIVE_ID,
+      ...getDriveListScopeParams(),
       q: `'${unitId}' in parents`,
       fields: '*',
     });
@@ -1055,10 +1064,7 @@ export const getUnitGDriveChildItems = async (unitId: string) => {
     console.log(`Getting the GDrive child items for the unit: ${unitId}`);
 
     const gdriveResponse = await drive.files.list({
-      corpora: 'drive',
-      includeItemsFromAllDrives: true,
-      supportsAllDrives: true,
-      driveId: process.env.GOOGLE_DRIVE_ID,
+      ...getDriveListScopeParams(),
       q: `'${unitId}' in parents`,
       fields: '*',
     });
@@ -1336,10 +1342,7 @@ export const createUnitFolder = async (
 
   const drive = await createDrive();
   const gdriveResponse = await drive.files.list({
-    corpora: 'drive',
-    includeItemsFromAllDrives: true,
-    supportsAllDrives: true,
-    driveId: process.env.GOOGLE_DRIVE_ID,
+    ...getDriveListScopeParams(),
     q: `'${unit.sharedGDriveId}' in parents`,
     fields: '*',
   });
@@ -1499,11 +1502,8 @@ export const shareFilesWithUser = async (
         },
         fileId: fileId,
         fields: '*',
-        corpora: 'drive',
-        includeItemsFromAllDrives: true,
         supportsAllDrives: true,
         sendNotificationEmail: false,
-        driveId: process.env.GOOGLE_DRIVE_ID,
       });
     });
     const shareFileResults = await Promise.all(shareFilePromises);
@@ -1545,11 +1545,8 @@ export const shareFileWithUser = async (
       },
       fileId: fileId,
       fields: '*',
-      corpora: 'drive',
-      includeItemsFromAllDrives: true,
       supportsAllDrives: true,
       sendNotificationEmail: false,
-      driveId: process.env.GOOGLE_DRIVE_ID,
     });
 
     return permissionUpdateResult as unknown as {

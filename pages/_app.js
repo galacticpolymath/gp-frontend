@@ -21,6 +21,10 @@ import { UserProvider } from "../providers/UserProvider";
 import { LessonProvider } from "../providers/LessonProvider";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { GoogleDrivePickerProvider } from "@geniux/google-drive-picker-react";
+import {
+  GOOGLE_DRIVE_AUTH_API_KEY,
+  GOOGLE_DRIVE_CLIENT_ID,
+} from "../globalVars";
 
 
 import { CookiesProvider } from "react-cookie";
@@ -77,11 +81,8 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
                 <QueryClientProvider client={queryClient}>
                   <CookiesProvider>
                     <GoogleDrivePickerProvider
-                      clientId={
-                        process.env
-                          .NEXT_PUBLIC_GOOGLE_DRIVE_PROJECT_CLIENT_ID_TEST
-                      }
-                      apiKey={process.env.NEXT_PUBLIC_GOOGLE_DRIVE_AUTH_API_KEY}
+                      clientId={GOOGLE_DRIVE_CLIENT_ID}
+                      apiKey={GOOGLE_DRIVE_AUTH_API_KEY}
                     >
                       <Toaster />
                       <Component {...pageProps} />

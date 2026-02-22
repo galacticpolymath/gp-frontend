@@ -38,7 +38,7 @@
 
 .unitEyebrow {
   text-transform: uppercase;
-  font-size: 12px;
+  font-size: 13px;
   letter-spacing: 0.18em;
   color: inherit;
   margin: 0;
@@ -67,7 +67,7 @@
 .unitVersionInfo {
   margin-left: auto;
   color: inherit;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 400;
   white-space: nowrap;
   border: 0;
@@ -199,7 +199,7 @@
   justify-content: flex-end;
   flex: 0 0 auto;
   min-width: 0;
-  font-size: 14px;
+  font-size: 15px;
   color: rgba(240, 244, 255, 0.96);
 }
 
@@ -221,7 +221,7 @@
   padding: 8px 12px;
   min-height: 44px;
   background: rgba(255, 255, 255, 0.14);
-  font-size: 14px;
+  font-size: 15px;
   color: #e6f0ff;
 }
 
@@ -241,8 +241,9 @@
 .unitStickyText {
   display: block;
   max-width: 100%;
-  font-size: 14px;
-  font-weight: 600;
+  font-size: 15px;
+  font-weight: 400;
+  font-style: italic;
   color: rgba(240, 244, 255, 0.96);
   white-space: normal;
   overflow-wrap: anywhere;
@@ -336,7 +337,7 @@
   padding: 0;
   cursor: pointer;
   color: #7a8094;
-  font-size: 14px;
+  font-size: 15px;
   transition: color 0.18s ease, transform 0.18s ease, opacity 0.18s ease;
 }
 
@@ -351,7 +352,7 @@
 }
 
 .unitSearchLabel {
-  font-size: 12px;
+  font-size: 13px;
   color: rgba(76, 82, 105, 0.7);
 }
 
@@ -359,7 +360,7 @@
   border: none;
   background: transparent;
   padding: 8px calc(var(--field-height) + 4px) 8px 12px;
-  font-size: 14px;
+  font-size: 15px;
   color: #1d2333;
   outline: none;
   width: 100%;
@@ -389,7 +390,7 @@
 
 .stickyShareAction {
   padding: 0;
-  font-size: 13px;
+  font-size: 15px;
   line-height: 1;
   font-weight: 600;
   border: 0;
@@ -408,7 +409,37 @@
 }
 
 .stickyShareAction i {
-  font-size: 12px;
+  font-size: 15px;
+}
+
+.unitNavVisibilityToggle {
+  padding: 0;
+  font-size: 15px;
+  line-height: 1;
+  font-weight: 600;
+  border: 0;
+  background: transparent;
+  color: #dce9ff;
+  min-height: 30px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  margin-left: 14px;
+  align-self: center;
+}
+
+.unitNavVisibilityToggle:hover,
+.unitNavVisibilityToggle:focus {
+  color: #f7fbff;
+}
+
+.unitNavVisibilityToggleIconCollapsed {
+  transform: rotate(180deg);
+}
+
+.unitNavVisibilityToggleIconExpanded {
+  transform: rotate(0deg);
 }
 
 .unitTabList {
@@ -421,20 +452,31 @@
 }
 
 .unitTabButton {
-  border-radius: 999px;
-  padding: 8px 14px;
-  border: 1px solid rgba(173, 216, 255, 0.28);
-  background: rgba(255, 255, 255, 0.1);
-  color: #dce9ff;
-  font-size: 13px;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
+  padding: 2px 0;
+  min-height: 0;
+  background: transparent;
+  color: rgba(220, 233, 255, 0.9);
+  font-size: 15px;
   font-weight: 600;
+  white-space: nowrap;
+  text-decoration: none;
   cursor: pointer;
 }
 
 .unitTabButtonActive {
-  background: #4b3aa8;
+  background: transparent;
   color: #f7fbff;
-  border-color: rgba(201, 182, 255, 0.7);
+  border-color: rgba(240, 244, 255, 0.95);
+}
+
+.unitTabButton:hover,
+.unitTabButton:focus-visible {
+  color: #f7fbff;
+  border-bottom-color: rgba(240, 244, 255, 0.75);
+  background: transparent;
 }
 
 .unitSearchResults {
@@ -442,9 +484,9 @@
   background: #ffffff;
   border-radius: 16px;
   border: 1px solid rgba(44, 131, 195, 0.18);
-  padding: 12px;
+  padding: 10px;
   display: grid;
-  gap: 8px;
+  gap: 6px;
   box-shadow: 0 12px 24px rgba(24, 30, 61, 0.12);
 }
 
@@ -458,7 +500,7 @@
 
 .lessonSubtabLabel {
   color: rgba(220, 233, 255, 0.85);
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 600;
   white-space: nowrap;
 }
@@ -474,8 +516,8 @@
   border: 1px solid rgba(173, 216, 255, 0.28);
   background: rgba(255, 255, 255, 0.1);
   color: #dce9ff;
-  padding: 6px 10px;
-  font-size: 13px;
+  padding: 7px 11px;
+  font-size: 14px;
   line-height: 1;
   display: inline-flex;
   align-items: center;
@@ -484,9 +526,9 @@
 }
 
 .lessonSubtabButtonActive {
-  background: #4b3aa8;
+  background: rgba(255, 255, 255, 0.3);
   color: #f7fbff;
-  border-color: rgba(201, 182, 255, 0.7);
+  border-color: rgba(201, 220, 244, 0.95);
 }
 
 .lessonSubtabThumb {
@@ -515,8 +557,8 @@
 .unitSearchResult {
   text-align: left;
   display: grid;
-  gap: 4px;
-  padding: 8px 10px;
+  gap: 3px;
+  padding: 7px 9px;
   border-radius: 12px;
   border: 1px solid transparent;
   background: rgba(240, 244, 255, 0.6);
@@ -530,19 +572,20 @@
 }
 
 .searchResultTitle {
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 600;
   color: #1c2233;
 }
 
 .searchResultExcerpt {
-  font-size: 12px;
+  font-size: 14px;
+  line-height: 1.4;
   color: #4c5269;
 }
 
 .searchResultEmpty {
   margin: 0;
-  font-size: 13px;
+  font-size: 15px;
   color: #5d647c;
 }
 
@@ -562,7 +605,7 @@
 
 .sectionIntro {
   margin: 0 0 10px;
-  font-size: 14px;
+  font-size: 16px;
   color: #5d647c;
 }
 
@@ -599,13 +642,13 @@
 }
 
 .unitLead {
-  font-size: 14px;
+  font-size: 16px;
   color: #1f355a;
   line-height: 1.5;
 }
 
 .unitSummaryText {
-  font-size: 14px;
+  font-size: 16px;
   color: #4c5269;
   line-height: 1.5;
 }
@@ -619,26 +662,30 @@
 
 .unitLeadMarkdown :global(p) {
   margin: 0 0 8px;
-  font-size: 14px;
+  font-size: 16px;
   color: #1f355a;
   line-height: 1.5;
 }
 
 .unitSummaryMarkdown :global(p) {
   margin: 0 0 8px;
-  font-size: 14px;
+  font-size: 16px;
   color: #4c5269;
   line-height: 1.5;
 }
 
 .lessonPreface {
-  font-size: 14px;
+  font-size: 15px;
   color: #4c5269;
-  line-height: 1.5;
+  line-height: 1.45;
+}
+
+.lessonPreface :global(p) {
+  margin: 0 0 8px;
 }
 
 .richTextBlock :global(p) {
-  font-size: 14px;
+  font-size: 16px;
   color: #4c5269;
   line-height: 1.5;
 }
@@ -654,7 +701,7 @@
 .richTextBlock :global(ol),
 .richTextBlock :global(ul),
 .richTextBlock :global(li) {
-  font-size: 14px;
+  font-size: 16px;
   line-height: 1.5;
   color: #4c5269;
 }
@@ -713,7 +760,7 @@
 
 .atGlanceLabel {
   color: #4c5269;
-  font-size: 13px;
+  font-size: 14px;
   line-height: 1.3;
 }
 
@@ -729,7 +776,7 @@
   align-items: center;
   flex-wrap: wrap;
   gap: 12px;
-  font-size: 14px;
+  font-size: 15px;
 }
 
 .unitDetailLabel {
@@ -755,7 +802,7 @@
 .alignedSubjectsText {
   grid-column: 1 / -1;
   margin-top: 2px;
-  font-size: 13px;
+  font-size: 14px;
   color: #2c83c3;
   text-decoration: underline;
   text-underline-offset: 2px;
@@ -783,6 +830,8 @@
   width: 100%;
   min-width: 0;
   overflow: hidden;
+  display: flex;
+  min-height: 0;
 }
 
 .previewCarousel :global(.carousel) {
@@ -803,10 +852,15 @@
 
 .previewCarousel :global(.autoCarouselContainer) {
   border-radius: 14px;
-  padding: 8px;
+  padding: 6px 6px 2px;
   border: 1px solid rgba(108, 45, 130, 0.16);
   background: linear-gradient(160deg, rgba(255, 255, 255, 0.76), rgba(246, 250, 255, 0.78));
   box-shadow: 0 10px 20px rgba(22, 34, 56, 0.09);
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-height: 0;
+  height: 100%;
 }
 
 .previewCarousel :global(.autoCarouselContainer h5) {
@@ -816,7 +870,7 @@
 
 .previewCarousel :global(.autoCarouselContainer p) {
   margin-bottom: 4px;
-  font-size: 12px;
+  font-size: 14px;
   line-height: 1.4;
 }
 
@@ -831,18 +885,43 @@
 }
 
 .previewCarousel :global(.lessonSlideBody h6) {
-  font-size: 13px;
+  font-size: 14px;
   line-height: 1.3;
 }
 
 .previewCarousel :global(.lessonSlideBody .lessonRelevanceTxt) {
-  font-size: 12px;
+  font-size: 14px;
   margin-bottom: 6px !important;
 }
 
 .previewCarousel :global(.bi-arrow-left-circle-fill),
 .previewCarousel :global(.bi-arrow-right-circle-fill) {
-  font-size: 1.45rem !important;
+  font-size: 1.25rem !important;
+}
+
+.previewCarousel :global(.thumbnailLi) {
+  padding: 4px !important;
+}
+
+.featuredMediaViewport {
+  width: 100%;
+  min-height: 320px;
+  max-height: calc(100dvh - var(--portal-nav-offset, 0px) - 180px);
+  align-self: stretch;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-bottom: 8px;
+}
+
+.featuredMediaViewport :global(.autoCarouselContainer) {
+  height: auto;
+  min-height: 0;
+  overflow: visible;
+}
+
+.featuredMediaViewport :global(.mediaItemContainer) {
+  height: clamp(220px, 34vh, 420px);
+  max-height: clamp(220px, 34vh, 420px);
 }
 
 .unitTag {
@@ -850,7 +929,7 @@
   border-radius: 999px;
   background: rgba(255, 61, 172, 0.12);
   color: #7c1a4c;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 600;
 }
 
@@ -858,7 +937,7 @@
   border: 1px dashed rgba(44, 131, 195, 0.4);
   background: rgba(44, 131, 195, 0.08);
   color: #1f355a;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 700;
   line-height: 1;
   cursor: pointer;
@@ -898,31 +977,72 @@
 }
 
 .unitMutedText {
-  font-size: 14px;
+  font-size: 15px;
   line-height: 1.5;
   color: #6a7087;
 }
 
 .nextTabCtaWrap {
   display: flex;
-  justify-content: flex-end;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.nextLessonCta {
+  border: 1px solid rgba(68, 90, 201, 0.42);
+  border-radius: 999px;
+  background: linear-gradient(
+    145deg,
+    rgba(104, 87, 214, 0.16),
+    rgba(80, 158, 224, 0.2)
+  );
+  color: #20376d;
+  font-size: 15px;
+  font-weight: 700;
+  padding: 9px 14px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.nextLessonCta:hover,
+.nextLessonCta:focus {
+  border-color: rgba(68, 90, 201, 0.6);
+  background: linear-gradient(
+    145deg,
+    rgba(104, 87, 214, 0.24),
+    rgba(80, 158, 224, 0.28)
+  );
 }
 
 .nextTabCta {
-  border: 1px solid rgba(44, 131, 195, 0.28);
+  border: 1px solid rgba(68, 90, 201, 0.42);
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.95);
-  color: #1f355a;
-  font-size: 14px;
-  font-weight: 600;
+  background: linear-gradient(
+    145deg,
+    rgba(104, 87, 214, 0.16),
+    rgba(80, 158, 224, 0.2)
+  );
+  color: #20376d;
+  font-size: 15px;
+  font-weight: 700;
   padding: 9px 14px;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
 }
 
 .nextTabCta:hover,
 .nextTabCta:focus {
-  border-color: rgba(44, 131, 195, 0.45);
-  background: rgba(240, 244, 255, 0.95);
+  border-color: rgba(68, 90, 201, 0.6);
+  background: linear-gradient(
+    145deg,
+    rgba(104, 87, 214, 0.24),
+    rgba(80, 158, 224, 0.28)
+  );
 }
 
 .materialsLayout {
@@ -944,7 +1064,7 @@
 }
 
 .lessonTileTag {
-  font-size: 11px;
+  font-size: 13px;
   padding: 4px 8px;
   border-radius: 999px;
   border: 1px solid rgba(44, 131, 195, 0.4);
@@ -965,7 +1085,7 @@
   background: #ffffff;
   color: #1c28bd;
   font-weight: 700;
-  font-size: 13px;
+  font-size: 14px;
   text-decoration: none;
   box-shadow: 0 8px 16px rgba(28, 40, 189, 0.12);
   transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
@@ -1155,9 +1275,10 @@
 
 .lessonMaterialsGrid {
   display: grid;
-  gap: 12px;
+  gap: 10px;
   align-items: start;
-  grid-template-columns: minmax(0, 0.86fr) minmax(0, 1.14fr);
+  grid-template-columns: fit-content(360px) minmax(0, 1fr);
+  min-height: 0;
 }
 
 .lessonSummaryCard,
@@ -1165,8 +1286,381 @@
 .lessonPreviewsCard {
   background: rgba(255, 255, 255, 0.92);
   border-radius: 18px;
-  padding: 14px;
+  padding: 12px;
   border: 1px solid rgba(44, 131, 195, 0.12);
+}
+
+.lessonResourcesCard {
+  width: 100%;
+  max-width: 380px;
+  padding: 0;
+  background-color: rgba(252, 251, 246, 0.78);
+  background-image:
+    radial-gradient(rgba(68, 76, 247, 0.12) 0.5px, rgba(252, 251, 246, 0.78) 0.5px),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.22), rgba(242, 239, 255, 0.16));
+  background-size: 10px 10px;
+  box-shadow:
+    0 10px 24px rgba(21, 45, 82, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.55);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  min-height: 0;
+}
+
+.lessonResourcesCard::after {
+  content: "";
+  display: block;
+  height: 200px;
+  flex: 0 0 200px;
+  order: 999;
+}
+
+.lessonPreviewsCard {
+  width: 100%;
+  min-width: 0;
+  align-self: start;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+  overscroll-behavior: contain;
+}
+
+.lessonPreviewsCard {
+  position: relative;
+  background: rgba(75, 58, 168, 0.08);
+  border: 1px solid rgba(75, 58, 168, 0.52);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  box-shadow:
+    0 14px 34px rgba(18, 43, 77, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.52);
+}
+
+.lessonProcedureToggle {
+  width: 100%;
+  border: 1px solid rgba(44, 131, 195, 0.12);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.52);
+  color: #1f355a;
+  min-height: 40px;
+  padding: 8px 9px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+  font: inherit;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 150ms ease, border-color 150ms ease;
+}
+
+.quickStartActions {
+  display: grid;
+  gap: 8px;
+}
+
+.lessonProcedureToggle:hover {
+  border-color: rgba(44, 131, 195, 0.2);
+  background: rgba(250, 253, 255, 0.74);
+}
+
+.lessonProcedureToggle:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+.lessonProcedureToggleActive {
+  border-color: rgba(75, 58, 168, 0.52);
+  background: rgba(75, 58, 168, 0.08);
+}
+
+.lessonProcedureToggleActive:hover,
+.lessonProcedureToggleActive:focus-visible {
+  border-color: rgba(75, 58, 168, 0.52);
+  background: rgba(75, 58, 168, 0.08);
+}
+
+.lessonProcedureToggleText {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+}
+
+.resourceSection {
+  position: relative;
+  border-left: 1px solid rgba(63, 90, 153, 0.18);
+  border-right: 1px solid rgba(63, 90, 153, 0.18);
+  border-top: 0;
+  border-bottom: 0;
+  border-radius: 0;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(1px);
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.resourceSection + .resourceSection {
+  margin-top: 0;
+  border-top: 1px solid rgba(80, 98, 146, 0.16);
+}
+
+.resourceSection:first-child {
+  border-top: 1px solid rgba(63, 90, 153, 0.18);
+  border-top-left-radius: 14px;
+  border-top-right-radius: 14px;
+}
+
+.resourceSection:last-child {
+  border-bottom: 1px solid rgba(63, 90, 153, 0.18);
+  border-bottom-left-radius: 14px;
+  border-bottom-right-radius: 14px;
+}
+
+.quickStartSection {
+  order: 1;
+}
+
+.previewDownloadSection {
+  order: 3;
+}
+
+.gpPlusFunctionsSection {
+  order: 2;
+}
+
+.quickStartSection {
+  box-shadow:
+    0 6px 10px rgba(89, 64, 179, 0.04),
+    inset 0 0 0 1px rgba(89, 64, 179, 0.04);
+  background: rgba(252, 251, 255, 0.74);
+}
+
+.quickStartSection::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  height: 100%;
+  background:
+    radial-gradient(circle at 22% 32%, rgba(121, 96, 222, 0.05), transparent 48%),
+    linear-gradient(115deg, rgba(103, 84, 205, 0.03), transparent 66%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.gpPlusFunctionsSection {
+  overflow: hidden;
+  box-shadow:
+    0 12px 22px rgba(36, 63, 200, 0.14),
+    inset 0 0 0 1px rgba(46, 84, 227, 0.1);
+}
+
+.gpPlusFunctionsSection::before {
+  content: "";
+  position: absolute;
+  inset: -20% -15% auto;
+  height: 120%;
+  background:
+    radial-gradient(circle at 20% 35%, rgba(50, 110, 255, 0.16), transparent 40%),
+    linear-gradient(110deg, rgba(50, 110, 255, 0.1), transparent 65%);
+  pointer-events: none;
+}
+
+.previewDownloadSection {
+  box-shadow:
+    0 6px 10px rgba(89, 64, 179, 0.04),
+    inset 0 0 0 1px rgba(89, 64, 179, 0.04);
+  background: rgba(252, 251, 255, 0.74);
+}
+
+.previewDownloadSection::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  height: 100%;
+  background:
+    radial-gradient(circle at 22% 32%, rgba(121, 96, 222, 0.05), transparent 48%),
+    linear-gradient(115deg, rgba(103, 84, 205, 0.03), transparent 66%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.previewDownloadSection:last-child {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.resourceSection > * {
+  position: relative;
+  z-index: 1;
+}
+
+.gpFunctionActions {
+  display: grid;
+  gap: 8px;
+}
+
+.gpFunctionActionBtn {
+  min-height: 40px;
+  border-color: rgba(24, 38, 188, 0.34);
+  color: #1826bc;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.92)) padding-box,
+    linear-gradient(120deg, rgba(24, 38, 188, 0.35), rgba(44, 131, 195, 0.45)) border-box;
+  transition:
+    transform 180ms ease,
+    background-position 240ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease;
+  background-size: 100% 100%, 220% 220%;
+  background-position: 0% 50%, 0% 50%;
+  text-decoration: none;
+}
+
+.gpFunctionActionBtn:hover {
+  border-color: rgba(24, 38, 188, 0.55);
+  background-position: 0% 50%, 100% 50%;
+  box-shadow: 0 10px 18px rgba(24, 38, 188, 0.16);
+  transform: translateY(-1px);
+}
+
+.gpFunctionActionBtn:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.gpFunctionActionBtn .lessonProcedureToggleText {
+  color: #1826bc;
+}
+
+.gpFunctionActionBtn .lessonProcedureToggleText :global(svg) {
+  stroke: #1826bc;
+}
+
+.copyAgainLinkBtn {
+  border: 0;
+  background: transparent;
+  color: #1a2bbd;
+  font-weight: 600;
+  padding: 0;
+  width: fit-content;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.copyAgainLinkBtn:hover,
+.copyAgainLinkBtn:focus-visible {
+  color: #0f1b82;
+}
+
+.copyAgainLinkBtn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.hiddenCopyLessonBtn {
+  display: none !important;
+}
+
+.gradeBandSelectorCard {
+  border: 1px solid rgba(44, 131, 195, 0.18);
+  border-radius: 14px;
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.88);
+  box-shadow: 0 8px 16px rgba(32, 56, 97, 0.08);
+}
+
+.gradeBandPreface :global(p) {
+  margin: 0 0 8px;
+  font-size: 15px;
+  line-height: 1.45;
+  color: #445376;
+}
+
+.gradeBandChooser {
+  display: grid;
+  gap: 8px;
+}
+
+.gradeBandChooser h4 {
+  margin: 0;
+  font-size: 15px;
+  color: #1f355a;
+}
+
+.gradeBandOptions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 14px;
+}
+
+.gradeBandOption {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  color: #1f355a;
+  cursor: pointer;
+}
+
+.gradeBandOption input {
+  margin: 0;
+}
+
+.copyAllFallback {
+  display: grid;
+  gap: 6px;
+  justify-items: start;
+}
+
+.copyAllDirectCta {
+  min-height: 50px;
+  border: 3px solid #2339c4;
+  border-radius: 999px;
+  background: #fff;
+  color: #121a2f;
+  font-size: 16px;
+  font-weight: 700;
+  padding: 8px 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.copyAllDirectCta:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.copyAllDirectCtaIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.copyAllHelperText {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.35;
+  color: #5b6480;
+}
+
+.materialsSectionDivider {
+  margin: 14px 0;
+  height: 2px;
+  width: 100%;
+  background: linear-gradient(
+    90deg,
+    rgba(75, 58, 168, 0.06),
+    rgba(75, 58, 168, 0.52),
+    rgba(75, 58, 168, 0.06)
+  );
 }
 
 .lessonSummaryCard {
@@ -1185,42 +1679,25 @@
   gap: 10px;
 }
 
-.lessonProcedureCardFull {
-  grid-column: 1 / -1;
-  width: 100vw;
-  max-width: 100vw;
-  margin-left: calc(50% - 50vw);
-  margin-right: calc(50% - 50vw);
-  border-radius: 0;
-  padding: 14px;
-  border: 1px solid rgba(60, 126, 188, 0.24);
-  box-shadow: 0 10px 24px rgba(24, 43, 76, 0.1);
-  background-repeat: no-repeat, no-repeat, no-repeat, repeat;
-  background-size: auto, auto, auto, 44px 44px;
-  background:
-    radial-gradient(circle at 0% 0%, rgba(44, 131, 195, 0.14), transparent 34%),
-    radial-gradient(circle at 100% 0%, rgba(44, 131, 195, 0.12), transparent 36%),
-    radial-gradient(circle at 0% 100%, rgba(44, 131, 195, 0.1), transparent 36%),
-    radial-gradient(circle at 100% 100%, rgba(44, 131, 195, 0.1), transparent 38%),
-    linear-gradient(180deg, rgba(44, 131, 195, 0.06), rgba(44, 131, 195, 0.04)),
-    linear-gradient(135deg, rgba(250, 253, 255, 0.94), rgba(250, 253, 255, 0.94)),
-    url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='44' height='44' viewBox='0 0 44 44'%3E%3Cg stroke='%237f92b6' stroke-width='1.65' stroke-linecap='round'%3E%3Cline x1='22' y1='18.5' x2='22' y2='25.5'/%3E%3Cline x1='18.5' y1='22' x2='25.5' y2='22'/%3E%3C/g%3E%3C/svg%3E");
-}
-
 .lessonCardHeading {
   margin: 0;
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  font-size: 15px;
+  font-size: 17px;
+  font-weight: 800;
   color: #1f355a;
+}
+
+.lessonCardHeading :global(svg) {
+  stroke-width: 2.4;
 }
 
 .lessonEyebrow {
   margin: 0 0 6px;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  font-size: 12px;
+  font-size: 14px;
   color: #4c5269;
 }
 
@@ -1261,7 +1738,7 @@
   align-items: center;
   padding: 4px 10px;
   border-radius: 999px;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.04em;
@@ -1282,22 +1759,29 @@
   gap: 7px;
 }
 
-.materialsHelperText {
-  margin: 4px 0 10px;
-  font-size: 12px;
-  color: #6e7890;
-}
-
 .materialRow {
   display: grid;
-  gap: 7px;
-  border: 1px solid rgba(44, 131, 195, 0.2);
+  gap: 6px;
+  border: 1px solid rgba(44, 131, 195, 0.12);
   border-radius: 12px;
-  background: rgba(246, 250, 255, 0.68);
-  padding: 8px 9px;
+  background: rgba(255, 255, 255, 0.52);
+  padding: 7px 8px;
+  transition: background-color 150ms ease, border-color 150ms ease;
+  cursor: pointer;
+}
+
+.materialRow:hover {
+  border-color: rgba(44, 131, 195, 0.2);
+  background: rgba(250, 253, 255, 0.74);
 }
 
 .materialRowActive {
+  border-color: rgba(75, 58, 168, 0.52);
+  background: rgba(75, 58, 168, 0.09);
+}
+
+.materialRowActive:hover,
+.materialRowActive:focus-within {
   border-color: rgba(75, 58, 168, 0.52);
   background: rgba(75, 58, 168, 0.09);
 }
@@ -1343,30 +1827,24 @@
 }
 
 .materialRowMain strong {
-  font-size: 12px;
-  line-height: 1.25;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.35;
   color: #1f355a;
   white-space: normal;
   overflow: visible;
 }
 
 .materialRowMain span {
-  font-size: 11px;
+  font-size: 14px;
   color: #5d647c;
   text-transform: uppercase;
   letter-spacing: 0.03em;
 }
 
-.materialRowLinks {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  flex: 0 0 auto;
-}
-
 .materialOpenLink,
 .materialOpenLinkDisabled {
-  font-size: 11px;
+  font-size: 15px;
   font-weight: 600;
   color: #4b3aa8;
   white-space: nowrap;
@@ -1381,24 +1859,32 @@
 .materialPdfLink {
   display: inline-flex;
   align-items: center;
-  font-size: 11px;
-  font-weight: 700;
+  min-height: 34px;
+  font-size: 15px;
+  font-weight: 400;
   color: #1f355a;
   border: 1px solid rgba(44, 131, 195, 0.26);
   border-radius: 999px;
   padding: 2px 7px;
   background: rgba(255, 255, 255, 0.85);
+  width: fit-content;
+  max-width: 100%;
+  flex: 0 0 auto;
 }
 
 .materialPdfLinkDisabled {
   display: inline-flex;
   align-items: center;
-  font-size: 11px;
+  min-height: 34px;
+  font-size: 15px;
   color: #81899e;
   border: 1px dashed rgba(120, 130, 150, 0.44);
   border-radius: 999px;
   padding: 2px 7px;
   background: rgba(255, 255, 255, 0.62);
+  width: fit-content;
+  max-width: 100%;
+  flex: 0 0 auto;
 }
 
 .materialOpenLinkDisabled {
@@ -1406,8 +1892,15 @@
 }
 
 .materialRowPdfWrap {
-  display: flex;
-  justify-content: flex-end;
+  display: inline-flex;
+  width: fit-content;
+  max-width: 100%;
+  justify-content: flex-start;
+  pointer-events: none;
+}
+
+.materialRowPdfWrap > * {
+  pointer-events: auto;
 }
 
 .lessonPreviewList {
@@ -1416,12 +1909,24 @@
 }
 
 .lessonPreviewItem {
-  border-radius: 14px;
-  border: 1px solid rgba(44, 131, 195, 0.16);
-  background: rgba(255, 255, 255, 0.75);
-  padding: 12px;
+  border-radius: 0;
+  border: 0;
+  background: transparent;
+  margin: 0;
+  padding: 0;
   display: grid;
-  gap: 12px;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: 8px;
+  height: 100%;
+  min-height: 0;
+}
+
+.lessonProcedureInPreview {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  height: 100%;
+  min-height: 0;
 }
 
 .lessonPreviewHeader {
@@ -1436,8 +1941,9 @@
   position: relative;
   border-radius: 10px;
   overflow: hidden;
-  min-height: 360px;
-  max-height: 620px;
+  min-height: 280px;
+  height: 100%;
+  max-height: none;
   border: 1px solid rgba(44, 131, 195, 0.2);
   background: rgba(255, 255, 255, 0.88);
   display: flex;
@@ -1454,7 +1960,7 @@
 .lessonPreviewSurface iframe {
   width: 100%;
   height: 100%;
-  min-height: 360px;
+  min-height: 280px;
   border: 0;
   object-fit: contain;
 }
@@ -1474,8 +1980,8 @@
   display: grid;
   align-content: center;
   justify-items: center;
-  gap: 10px;
-  padding: 18px;
+  gap: 8px;
+  padding: 14px;
   text-align: center;
   background: rgba(245, 250, 255, 0.34);
   backdrop-filter: blur(8px);
@@ -1484,13 +1990,30 @@
 .lessonPreviewGate p {
   margin: 0;
   max-width: 44ch;
-  font-size: 13px;
-  font-weight: 600;
-  color: #1d2f54;
-  background: rgba(255, 255, 255, 0.78);
-  border: 1px solid rgba(44, 131, 195, 0.2);
+  font-size: 16px;
+  line-height: 1.4;
+  font-weight: 500;
+  color: #375171;
+  background: rgba(255, 255, 255, 0.66);
+  border: 1px solid rgba(44, 131, 195, 0.14);
   border-radius: 10px;
-  padding: 8px 10px;
+  padding: 6px 9px;
+}
+
+.lessonPreviewGateWarning {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.lessonPreviewGateWarning svg {
+  width: 22px;
+  height: 22px;
+  flex: 0 0 22px;
 }
 
 .lessonPreviewGateActions {
@@ -1505,29 +2028,39 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 34px;
-  padding: 0 12px;
+  min-height: 36px;
+  padding: 0 14px;
   border-radius: 999px;
-  border: 1px solid rgba(44, 131, 195, 0.35);
-  background: rgba(255, 255, 255, 0.9);
-  color: #1f355a;
-  font-size: 12px;
+  border: 1px solid rgba(44, 131, 195, 0.34);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(237, 246, 255, 0.9));
+  color: #16335b;
+  font-size: 15px;
   font-weight: 700;
-  text-decoration: none;
-  transition: transform 140ms ease, box-shadow 140ms ease, background-color 140ms ease;
+  text-decoration: none !important;
+  transition: transform 140ms ease, box-shadow 140ms ease, background-color 140ms ease, border-color 140ms ease;
 }
 
 .lessonPreviewGateButton:visited,
-.lessonPreviewGateButton:active {
-  color: #1f355a;
+.lessonPreviewGateButton:active,
+.lessonPreviewGateButton:link {
+  color: #16335b;
+  text-decoration: none !important;
 }
 
 .lessonPreviewGateButton:hover,
 .lessonPreviewGateButton:focus {
-  color: #1f355a;
-  background: #ffffff;
-  box-shadow: 0 8px 16px rgba(21, 47, 84, 0.14);
+  color: #16335b;
+  text-decoration: none !important;
+  background: linear-gradient(180deg, #ffffff, rgba(232, 244, 255, 0.96));
+  border-color: rgba(44, 131, 195, 0.46);
+  box-shadow: 0 8px 16px rgba(21, 47, 84, 0.12);
   transform: translateY(-1px);
+  outline: none;
+}
+
+.lessonPreviewGateButton:focus-visible {
+  outline: 2px solid rgba(44, 131, 195, 0.5);
+  outline-offset: 2px;
 }
 
 .lessonPreviewMeta {
@@ -1537,37 +2070,34 @@
 
 .lessonPreviewItem p {
   margin: 0;
-  font-size: 13px;
+  font-size: 16px;
+  line-height: 1.4;
   color: #4c5269;
 }
 
 .lessonPreviewType {
-  font-size: 11px;
+  font-size: 14px;
   text-transform: uppercase;
   letter-spacing: 0.04em;
   color: #4c5269;
 }
 
-.lessonSummaryCard,
-.lessonProcedureCard {
+.lessonSummaryCard {
   background: rgba(255, 255, 255, 0.92);
   border-radius: 18px;
   padding: 14px;
   border: 1px solid rgba(44, 131, 195, 0.12);
 }
 
-.lessonProcedureCard {
-  width: 100%;
-  border-radius: 16px;
-  padding: 14px;
-  border: 0;
-  box-shadow: none;
-  background: transparent;
-}
-
-.lessonSummaryCard h3 {
-  font-size: 20px;
-  line-height: 1.25;
+.lessonTitleMarkdown :global(h1),
+.lessonTitleMarkdown :global(h2),
+.lessonTitleMarkdown :global(h3),
+.lessonTitleMarkdown :global(h4),
+.lessonTitleMarkdown :global(h5),
+.lessonTitleMarkdown :global(h6),
+.lessonTitleMarkdown :global(p) {
+  font-size: 26px;
+  line-height: 1.2;
   margin: 0 0 8px;
 }
 
@@ -1577,23 +2107,40 @@
   margin: 0 0 6px;
 }
 
+.lessonObjectives {
+  margin-top: 12px;
+}
+
 .lessonObjectives ul {
   margin: 0;
   padding-left: 16px;
-  color: #4c5269;
-  font-size: 14px;
+  color: #6b7387;
+  font-size: 15px;
 }
 
 .lessonObjectivesLead {
   margin: 0 0 4px;
-  font-size: 13px;
+  font-size: 15px;
   line-height: 1.45;
   color: #6b7387;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .lessonObjectives li {
-  font-size: 14px;
+  font-size: 15px;
   line-height: 1.5;
+  color: #6b7387;
+}
+
+.lessonObjectives li::marker {
+  color: #6b7387;
+}
+
+.lessonObjectives li :global(p) {
+  margin: 0;
+  color: #6b7387;
 }
 
 .lessonPrepCard {
@@ -1614,30 +2161,90 @@
   gap: 4px;
 }
 
-.lessonProcedureInner {
-  width: 100%;
-  max-width: 600px;
-  margin: 0 auto;
+.procedureLinkOutBtn {
+  justify-self: end;
+  border: 1px solid rgba(24, 38, 188, 0.38);
+  border-radius: 999px;
+  background: rgba(24, 38, 188, 0.08);
+  color: #1826bc;
+  font-size: 13px;
+  font-weight: 700;
+  min-height: 30px;
+  padding: 0 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: background-color 160ms ease, border-color 160ms ease;
+}
+
+.procedureLinkOutBtn:hover,
+.procedureLinkOutBtn:focus-visible {
+  background: rgba(24, 38, 188, 0.16);
+  border-color: rgba(24, 38, 188, 0.56);
 }
 
 .lessonProcedureHeader span {
-  font-size: 13px;
+  font-size: 16px;
+  line-height: 1.4;
   color: #4c5269;
 }
 
 .lessonProcedureContent {
   margin-top: 8px;
   display: grid;
-  gap: 8px;
+  gap: 7px;
+  flex: 1 1 auto;
+  min-height: 0;
+  max-height: none;
+  overflow: auto;
+  padding-right: 2px;
+}
+
+.procedureStandaloneLayout {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: calc(100dvh - var(--portal-nav-offset, 0px) - 24px);
+  align-items: center;
+}
+
+.procedureStandaloneHeader {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(44, 131, 195, 0.16);
+  border-radius: 14px;
+  padding: 10px 12px;
+  width: 100%;
+  max-width: 500px;
+}
+
+.procedureStandaloneHeader p {
+  margin: 0;
+  font-size: 14px;
+  color: #4c5269;
+}
+
+.procedureStandaloneHeader h2 {
+  margin: 2px 0 0;
+  font-size: 22px;
+  line-height: 1.2;
+  color: #1f355a;
+}
+
+.lessonPreviewsCardStandalone {
+  width: 100%;
+  max-width: 500px;
+  flex: 1 1 auto;
+  min-height: 0;
+  max-height: none;
 }
 
 .lessonChunk {
-  padding: 9px;
+  padding: 8px;
   border-radius: 12px;
   background: rgba(255, 255, 255, 0.8);
   border: 1px solid rgba(44, 131, 195, 0.16);
   display: grid;
-  gap: 6px;
+  gap: 5px;
 }
 
 .lessonChunkTimeline {
@@ -1661,7 +2268,7 @@
 
 .lessonChunkHeader h5 {
   margin: 0;
-  font-size: 14px;
+  font-size: 16px;
   color: #152746;
   font-weight: 700;
 }
@@ -1673,7 +2280,7 @@
   gap: 3px;
   border-radius: 999px;
   padding: 2px 6px;
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 700;
   color: #1f355a;
   background: rgba(255, 255, 255, 0.9);
@@ -1699,8 +2306,8 @@
 .lessonStep {
   margin-top: 2px;
   display: grid;
-  gap: 8px;
-  padding: 8px 10px 8px 6px;
+  gap: 6px;
+  padding: 7px 8px;
   border: 1px solid rgba(44, 131, 195, 0.14);
   border-radius: 10px;
   background: rgba(255, 255, 255, 0.7);
@@ -1708,7 +2315,7 @@
 
 .lessonStepMain {
   display: grid;
-  gap: 5px;
+  gap: 4px;
 }
 
 .lessonStepTitleRow {
@@ -1719,7 +2326,7 @@
 }
 
 .lessonStepTitleRow strong {
-  font-size: 14px;
+  font-size: 16px;
   color: #102446;
   font-weight: 700;
 }
@@ -1731,25 +2338,26 @@
   padding: 1px 7px;
   background: rgba(31, 53, 90, 0.08);
   color: #27456f;
-  font-size: 11px;
+  font-size: 15px;
   font-weight: 700;
   white-space: nowrap;
 }
 
 .lessonStepQuickDescription :global(p) {
   margin: 0;
-  font-size: 13px;
+  font-size: 16px;
+  line-height: 1.4;
   color: #40506f;
 }
 
 .lessonStepDetails :global(p) {
   margin: 0 0 6px;
-  font-size: 12px;
+  font-size: 16px;
   line-height: 1.45;
 }
 
 .lessonStepDetails :global(li) {
-  font-size: 12px;
+  font-size: 16px;
   line-height: 1.45;
 }
 
@@ -1764,7 +2372,7 @@
 .lessonStepDetails :global(h3),
 .lessonStepDetails :global(h4) {
   margin: 2px 0 6px;
-  font-size: 13px;
+  font-size: 16px;
   line-height: 1.3;
 }
 
@@ -1783,7 +2391,7 @@
 
 .stepVocabEntry dt {
   margin: 0;
-  font-size: 12px;
+  font-size: 15px;
   font-weight: 700;
   color: #1f355a;
 }
@@ -1794,7 +2402,7 @@
 
 .stepVocabEntry dd :global(p) {
   margin: 0;
-  font-size: 12px;
+  font-size: 15px;
   line-height: 1.4;
   color: #4c5269;
 }
@@ -1808,13 +2416,13 @@
   border: 1px solid rgba(44, 131, 195, 0.14);
   border-radius: 8px;
   background: rgba(240, 244, 255, 0.66);
-  padding: 6px 8px;
+  padding: 5px 7px;
 }
 
 .stepInfoBlock h6 {
   margin: 0 0 4px;
   color: #1f355a;
-  font-size: 12px;
+  font-size: 14px;
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
@@ -1823,7 +2431,7 @@
 .stepInfoBlock :global(li) {
   margin: 0 0 4px;
   color: #4c5269;
-  font-size: 12px;
+  font-size: 15px;
   line-height: 1.45;
 }
 
@@ -1834,11 +2442,11 @@
 
 .creditsPanel {
   display: grid;
-  gap: 10px;
+  gap: 8px;
   border: 1px solid rgba(44, 131, 195, 0.14);
   border-radius: 12px;
   background: rgba(240, 244, 255, 0.66);
-  padding: 12px;
+  padding: 10px;
 }
 
 .creditsPanel h3 {
@@ -1856,10 +2464,10 @@
 .acknowledgmentEntry,
 .versionEntry {
   display: grid;
-  gap: 8px;
+  gap: 6px;
   border: 1px solid rgba(44, 131, 195, 0.12);
   border-radius: 10px;
-  padding: 10px;
+  padding: 9px;
   background: rgba(255, 255, 255, 0.78);
 }
 
@@ -1887,7 +2495,7 @@
 .versionMeta {
   margin: 0;
   color: #1f355a;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 700;
 }
 
@@ -1899,7 +2507,7 @@
 .standardsIntroPanel {
   position: relative;
   display: grid;
-  gap: 12px;
+  gap: 10px;
   border: 1px solid rgba(107, 122, 177, 0.28);
   background:
     radial-gradient(
@@ -1913,7 +2521,7 @@
       rgba(248, 246, 255, 0.98)
     );
   border-radius: 14px;
-  padding: 14px;
+  padding: 12px;
   box-shadow: 0 10px 24px rgba(40, 52, 89, 0.14);
 }
 
@@ -1951,7 +2559,7 @@
 
 .standardsIntroCopy {
   margin: 0;
-  font-size: 14px;
+  font-size: 15px;
   color: #2f4165;
   line-height: 1.45;
 }
@@ -1960,11 +2568,11 @@
   width: fit-content;
   border: 1px solid rgba(44, 131, 195, 0.28);
   border-radius: 999px;
-  min-height: 40px;
+  min-height: 42px;
   padding: 0 12px;
   background: rgba(255, 255, 255, 0.92);
   color: #1f355a;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 700;
   display: inline-flex;
   align-items: center;
@@ -1978,7 +2586,7 @@
   border-radius: 999px;
   background: #1f355a;
   color: #ffffff;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 700;
   line-height: 20px;
   text-align: center;
@@ -1987,11 +2595,11 @@
 .standardsFilters {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
   border: 1px solid rgba(44, 131, 195, 0.14);
   background: rgba(240, 244, 255, 0.66);
   border-radius: 12px;
-  padding: 12px;
+  padding: 10px;
 }
 
 .standardsFiltersHeader {
@@ -2000,7 +2608,7 @@
   align-items: center;
   gap: 6px;
   color: #1f355a;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 700;
 }
 
@@ -2013,11 +2621,11 @@
 .standardsFiltersReset {
   border: 1px solid rgba(120, 130, 150, 0.35);
   border-radius: 999px;
-  min-height: 28px;
+  min-height: 32px;
   padding: 0 10px;
   background: #ffffff;
   color: #1f355a;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 700;
 }
 
@@ -2049,7 +2657,7 @@
   border: 1px solid rgba(44, 131, 195, 0.22);
   border-radius: 999px;
   padding: 8px 12px;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 600;
   color: #1f355a;
   background: rgba(255, 255, 255, 0.9);
@@ -2098,7 +2706,7 @@
 }
 
 .standardsSection h3 span {
-  font-size: 12px;
+  font-size: 13px;
   padding: 3px 8px;
   border-radius: 999px;
   color: #3b2f88;
@@ -2113,10 +2721,10 @@
 .standardSubjectGroup {
   --subject-color: #b798e8;
   display: grid;
-  gap: 10px;
+  gap: 8px;
   border: 1px solid rgba(44, 131, 195, 0.14);
   border-radius: 12px;
-  padding: 10px;
+  padding: 9px;
   background: color-mix(in srgb, var(--subject-color) 20%, white);
 }
 
@@ -2146,7 +2754,7 @@
 
 .standardSetPill {
   border-radius: 999px;
-  font-size: 11px;
+  font-size: 13px;
   padding: 4px 9px;
   border: 1px solid rgba(44, 131, 195, 0.2);
   color: #1f355a;
@@ -2161,7 +2769,7 @@
 .standardRow {
   display: grid;
   gap: 6px;
-  padding: 10px;
+  padding: 9px;
   border-radius: 10px;
   background: rgba(240, 244, 255, 0.65);
   border: 1px solid rgba(44, 131, 195, 0.14);
@@ -2173,13 +2781,13 @@
   justify-content: space-between;
   gap: 10px;
   flex-wrap: wrap;
-  font-size: 14px;
+  font-size: 15px;
 }
 
 .standardDimensionText,
 .standardGradeText {
   margin: 0;
-  font-size: 14px;
+  font-size: 15px;
   color: #4c5269;
   font-weight: 600;
   display: inline-flex;
@@ -2203,7 +2811,7 @@
 
 .standardStatementLine {
   margin: 0;
-  font-size: 14px;
+  font-size: 15px;
   color: #4c5269;
 }
 
@@ -2219,7 +2827,7 @@
 
 .standardAlignmentNotes :global(p) {
   margin: 0 0 6px;
-  font-size: 14px;
+  font-size: 15px;
   line-height: 1.45;
   color: #586074;
   font-weight: 500;
@@ -2236,9 +2844,9 @@
 .licenseBannerInner {
   max-width: 100%;
   margin: 0;
-  padding: 10px 12px 11px;
+  padding: 9px 10px;
   display: grid;
-  gap: 6px;
+  gap: 5px;
   align-items: start;
 }
 
@@ -2259,8 +2867,8 @@
 
 .licenseBannerText {
   margin: 0;
-  font-size: 12px;
-  line-height: 1.3;
+  font-size: 14px;
+  line-height: 1.4;
   color: #1f355a;
 }
 
@@ -2270,48 +2878,68 @@
 
 .licenseBannerLink {
   width: fit-content;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 700;
   color: #1f355a;
   text-decoration: underline;
   text-underline-offset: 2px;
 }
 
-.citationDisclosure {
-  border-top: 1px solid rgba(31, 53, 90, 0.12);
-  padding-top: 4px;
+.citationAccordion {
+  margin: 0;
 }
 
-.citationDisclosureSummary {
+.citationAccordion[open] {
+  width: 100%;
+  flex-basis: 100%;
+}
+
+.citationAccordionSummary {
   margin: 0;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 700;
   color: #1f355a;
   cursor: pointer;
   list-style: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  border: 1px solid rgba(31, 53, 90, 0.2);
+  border-radius: 999px;
+  padding: 4px 9px;
+  background: rgba(255, 255, 255, 0.7);
 }
 
-.citationDisclosureSummary::-webkit-details-marker {
+.citationAccordionSummary::-webkit-details-marker {
   display: none;
+}
+
+.citationAccordionChevron {
+  transform: rotate(180deg);
+  transition: transform 180ms ease;
+}
+
+.citationAccordion[open] .citationAccordionChevron {
+  transform: rotate(0deg);
 }
 
 .citationBlock {
   display: grid;
-  gap: 9px;
-  padding-top: 8px;
+  gap: 7px;
+  padding-top: 7px;
 }
 
 .citationLabel {
   margin: 0;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 700;
   color: #1f355a;
 }
 
 .citationText {
   margin: 0;
-  font-size: 12px;
-  line-height: 1.35;
+  font-size: 14px;
+  line-height: 1.4;
   color: #1f355a;
 }
 
@@ -2333,7 +2961,7 @@
   background: #ffffff;
   color: #1f355a;
   border-radius: 999px;
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 700;
   padding: 4px 8px;
   display: inline-flex;
@@ -2350,13 +2978,13 @@
 }
 
 .citationStatus {
-  font-size: 12px;
+  font-size: 13px;
   color: #1c6f3f;
   font-weight: 700;
 }
 
 .citationStatusError {
-  font-size: 12px;
+  font-size: 13px;
   color: #b42318;
   font-weight: 700;
 }
@@ -2497,6 +3125,10 @@
     margin-top: 0;
   }
 
+  .lessonPreviewsCard {
+    position: sticky;
+  }
+
   .licenseBannerInner {
     grid-template-columns: auto minmax(0, 1fr) auto;
     gap: 14px;
@@ -2537,7 +3169,15 @@
 
   .standardStatementLine,
   .standardAlignmentNotes :global(p) {
-    font-size: 15px;
+    font-size: 16px;
+  }
+}
+
+@media (min-width: 768px) {
+  .lessonPreviewSurface,
+  .lessonPreviewSurface iframe,
+  .lessonPreviewSurface img {
+    min-height: 0;
   }
 }
 
@@ -2548,6 +3188,7 @@
 
   .lessonMaterialsGrid {
     grid-template-columns: minmax(0, 1fr);
+    position: static;
   }
 
   .lessonPreviewSurface,
@@ -2561,7 +3202,7 @@
   }
 
   .lessonChunkDuration {
-    font-size: 13px;
+    font-size: 15px;
     padding: 1px 5px;
   }
 
@@ -2592,7 +3233,7 @@
   }
 
   .lessonStepDuration {
-    font-size: 10px;
+    font-size: 14px;
     padding: 1px 6px;
   }
 
@@ -2608,7 +3249,7 @@
   }
 
   .licenseBannerText {
-    font-size: 11px;
+    font-size: 14px;
   }
 
   .unitStickyHeader {
@@ -2638,9 +3279,14 @@
   }
 
   .unitStickyText {
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 400;
     line-height: 1.25;
+  }
+
+  .lessonPreviewsCard {
+    min-height: 420px;
+    max-height: none;
   }
 
   .unitSearch {
@@ -2679,7 +3325,7 @@
     min-height: 0;
     background: transparent;
     color: rgba(220, 233, 255, 0.9);
-    font-size: 14px;
+    font-size: 15px;
     font-weight: 600;
     white-space: nowrap;
     text-decoration: none;
@@ -2713,18 +3359,24 @@
     align-items: start;
   }
 
-  .lessonSummaryCard h3 {
-    font-size: 36px;
-    line-height: 1.2;
+  .lessonTitleMarkdown :global(h1),
+  .lessonTitleMarkdown :global(h2),
+  .lessonTitleMarkdown :global(h3),
+  .lessonTitleMarkdown :global(h4),
+  .lessonTitleMarkdown :global(h5),
+  .lessonTitleMarkdown :global(h6),
+  .lessonTitleMarkdown :global(p) {
+    font-size: clamp(30px, 2.35vw, 36px);
+    line-height: 1.18;
   }
 
   .lessonPreface {
-    font-size: 24px;
-    line-height: 1.45;
+    font-size: clamp(17px, 1.15vw, 20px);
+    line-height: 1.4;
   }
 
   .lessonMaterialsGrid {
-    grid-template-columns: minmax(0, 0.72fr) minmax(0, 1.28fr);
+    grid-template-columns: fit-content(380px) minmax(0, 1fr);
   }
 
   .lessonStep {

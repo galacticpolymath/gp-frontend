@@ -6,14 +6,27 @@ import RichText from '../RichText';
 import styles from './UnitPage.module.css';
 import {
   Blocks,
+  ArrowRight,
+  CircleAlert,
+  ChevronUp,
   Clock3,
   Copy,
+  BrainCog,
   Download,
   Eye,
+  FileArchive,
+  FileImage,
+  FileSpreadsheet,
+  FileStack,
   FileText,
+  FileVideo,
   Filter,
+  Link2,
+  ListTree,
+  MonitorPlay,
   Network,
   NotebookPen,
+  TextSearch,
   SquareArrowOutUpRight,
   Target,
   X,
@@ -32,6 +45,10 @@ import ChunkGraph from '../LessonSection/TeachIt/ChunkGraph';
 import { ISubject } from '../../backend/models/Unit/types/standards';
 import { setSessionStorageItem } from '../../shared/fns';
 import useSiteSession from '../../customHooks/useSiteSession';
+import CopyLessonBtn, {
+  ensureValidToken,
+} from '../LessonSection/TeachIt/CopyLessonBtn';
+import { useCustomCookies } from '../../customHooks/useCustomCookies';
 
 const TAB_OVERVIEW = 'overview';
 const TAB_MATERIALS = 'materials';
@@ -84,6 +101,29 @@ type TMergedStandardByDimension = {
   lines: TMergedStandardLine[];
 };
 
+const SquareArrowRightExitIcon: React.FC<{
+  size?: number;
+  className?: string;
+}> = ({ size = 15, className }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className={className}
+    aria-hidden="true"
+  >
+    <path d="M10 12h11" />
+    <path d="m17 16 4-4-4-4" />
+    <path d="M21 6.344V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-1.344" />
+  </svg>
+);
+
 const STANDARDS_GRADE_BANDS: { key: TGradeBand; label: string }[] = [
   { key: 'all', label: 'All grade bands' },
   { key: '3-5', label: 'advanced 5' },
@@ -110,7 +150,46 @@ const SUBJECT_COLOR_MAP: Record<string, string> = {
 const getSubjectColor = (subject: string) =>
   SUBJECT_COLOR_MAP[subject.trim().toLowerCase()] ?? '#B798E8';
 
+const getMaterialTypeIcon = (itemType?: unknown, itemCat?: unknown) => {
+  const rawType =
+    typeof itemType === 'string' && itemType.trim()
+      ? itemType
+      : typeof itemCat === 'string'
+      ? itemCat
+      : '';
+  const normalizedType = rawType.trim().toLowerCase();
+
+  if (
+    normalizedType.includes('sheet') ||
+    normalizedType.includes('spread') ||
+    normalizedType.includes('excel') ||
+    normalizedType.includes('csv') ||
+    normalizedType.includes('data')
+  ) {
+    return <FileSpreadsheet size={15} />;
+  }
+  if (
+    normalizedType.includes('image') ||
+    normalizedType.includes('photo') ||
+    normalizedType.includes('png') ||
+    normalizedType.includes('jpg')
+  ) {
+    return <FileImage size={15} />;
+  }
+  if (normalizedType.includes('video') || normalizedType.includes('clip')) {
+    return <FileVideo size={15} />;
+  }
+  if (normalizedType.includes('link') || normalizedType.includes('url')) {
+    return <Link2 size={15} />;
+  }
+  if (normalizedType.includes('zip') || normalizedType.includes('archive')) {
+    return <FileArchive size={15} />;
+  }
+  return <FileText size={15} />;
+};
+
 const CONSENT_STORAGE_KEY = 'gp_cookie_consent_v1';
+const GOOGLE_DRIVE_FOLDER_URL_BASE = 'https://drive.google.com/drive/folders';
 
 type TGtagParams = Record<string, string | number | boolean | null | undefined>;
 
@@ -147,6 +226,17 @@ const suppressPortalNavReveal = (durationMs = 700) => {
   window.dispatchEvent(
     new CustomEvent('gp:suppress-nav-unhide', { detail: { durationMs } })
   );
+};
+
+const setPortalNavHidden = (hidden: boolean) => {
+  if (typeof window === 'undefined') {
+    return;
+  }
+  const root = document.documentElement;
+  const portalNav = document.querySelector('nav[data-nav-hidden]') as HTMLElement | null;
+  const navHeight = portalNav?.getBoundingClientRect().height ?? 0;
+  root.style.setProperty('--portal-nav-offset', hidden ? '0px' : `${Math.max(0, Math.round(navHeight))}px`);
+  window.dispatchEvent(new CustomEvent('gp:set-nav-hidden', { detail: { hidden } }));
 };
 
 const isPortalNavHidden = () => {
@@ -665,6 +755,23 @@ const getLessonDisplayTitle = <TItem extends IItem = IItemForUI>(
   return `Lesson ${identifier}: ${title}`;
 };
 
+type TActiveLessonPreviewMode = 'materials' | 'procedure' | 'featured-media';
+
+const parseFeaturedMediaLessonIds = (value?: string | null) => {
+  if (!value) {
+    return [];
+  }
+  const normalized = value.trim().toLowerCase();
+  if (!normalized || normalized === 'all') {
+    return [];
+  }
+
+  return normalized
+    .split(/[,/&]|and/gi)
+    .map((token) => Number.parseInt(token.replace(/[^\d-]/g, ''), 10))
+    .filter((num) => Number.isFinite(num) && num > 0);
+};
+
 const isAssessmentLesson = <TItem extends IItem = IItemForUI>(
   lesson: INewUnitLesson<TItem> | undefined,
   index: number
@@ -687,6 +794,33 @@ type TPreviewItem = {
   itemType?: string | null;
   itemCat?: string | null;
   fileType?: string | null;
+};
+
+type TUserGDriveData = {
+  userLessonFolderGDriveIds: {
+    lessonNum: string;
+    lessonDriveId: string;
+    gradesRange?: string;
+  }[];
+  userGDriveItemIdsOfLessonFolder: {
+    userGDriveItemCopyId: string;
+    originalLessonItemIdInGpGoogleDrive: string;
+  }[];
+};
+
+type TResolvedLessonFolderResponse = {
+  lessonFolder: {
+    id: string;
+    name: string;
+    parentFolder: {
+      id: string;
+      name: string;
+    };
+  };
+  lessonsFolder: {
+    sharedGDriveId: string;
+    name: string;
+  };
 };
 
 const getFirstItemUrl = (item?: TPreviewItem) => {
@@ -739,6 +873,19 @@ const getGoogleDriveFileId = (value: string) => {
   if (openMatch?.[1]) {
     return openMatch[1];
   }
+  return null;
+};
+
+const getGoogleDriveFolderIdFromUrl = (value?: string | null) => {
+  if (!value) {
+    return null;
+  }
+
+  const folderMatch = value.match(/drive\.google\.com\/drive\/folders\/([^/?]+)/i);
+  if (folderMatch?.[1]) {
+    return folderMatch[1];
+  }
+
   return null;
 };
 
@@ -795,7 +942,10 @@ const getMaterialUrls = (item?: TPreviewItem & { mimeType?: string | null }) => 
   const isWebResource = itemCat === 'web resource' || fileType === 'web resource';
   const isPresentationType = itemType === 'presentation';
   const isPresentationFileType = fileType === 'presentation';
+  const isPresentationCategory = itemCat === 'presentation';
   const isPresentation = isPresentationType || isPresentationFileType;
+  const isPresentationWorksheetVariant =
+    isPresentationCategory && !isPresentationType;
   const isWorksheetOrHandout =
     itemType === 'worksheet' ||
     itemType === 'handout' ||
@@ -804,7 +954,8 @@ const getMaterialUrls = (item?: TPreviewItem & { mimeType?: string | null }) => 
   const supportsPdfExport =
     !isWebResource &&
     !isPresentation &&
-    (isWorksheetOrHandout ||
+    (isPresentationWorksheetVariant ||
+      isWorksheetOrHandout ||
       mimeType.includes('pdf') ||
       mimeType.includes('document') ||
       mimeType.includes('word') ||
@@ -881,6 +1032,15 @@ const getFirstLessonResource = (
     return null;
   }
   return resources.find((resource) => resource?.lessons?.length) ?? resources[0];
+};
+
+const getLessonResourcePersistKey = (
+  resource: IResource<INewUnitLesson<IItemForUI>>,
+  index: number
+) => {
+  const gradePrefix = resource?.gradePrefix?.trim() ?? '';
+  const grades = resource?.grades?.trim() ?? '';
+  return `${gradePrefix}|${grades}|${index}`;
 };
 
 const buildSearchEntries = (
@@ -1103,7 +1263,16 @@ const buildSearchEntries = (
 };
 
 const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
-  const { status, user, isGpPlusMember } = useSiteSession();
+  const {
+    status,
+    user,
+    token,
+    isGpPlusMember,
+    gdriveAccessToken,
+    gdriveRefreshToken,
+    gdriveAccessTokenExp,
+  } = useSiteSession();
+  const { setAppCookie } = useCustomCookies();
   const isAuthenticated = status === 'authenticated';
   const isUserTeacher = Boolean(
     (user as { isTeacher?: boolean } | undefined)?.isTeacher
@@ -1120,10 +1289,16 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
     unit.Sections?.versions?.Data ??
     ((unit.Sections as { versionNotes?: { Data?: any[] } })?.versionNotes?.Data ??
       []);
-  const lessonResources = getFirstLessonResource(
-    teachingMaterials?.classroom?.resources
+  const classroomResources = teachingMaterials?.classroom?.resources ?? [];
+  const unitId = unit?._id ? String(unit._id) : '';
+  const gradeBandStorageKey = `unit-materials-grade-band:${unitId}`;
+  const [selectedResourceIndex, setSelectedResourceIndex] = useState(0);
+  const lessonResources =
+    classroomResources[selectedResourceIndex] ??
+    getFirstLessonResource(classroomResources);
+  const [lessons, setLessons] = useState<INewUnitLesson<IItemForUI>[]>(
+    lessonResources?.lessons ?? []
   );
-  const lessons: INewUnitLesson<IItemForUI>[] = lessonResources?.lessons ?? [];
 
   const availableTabs = useMemo<{ key: TTabKey; label: string; isVisible: boolean }[]>(
     () =>
@@ -1172,9 +1347,19 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
   );
   const [searchTerm, setSearchTerm] = useState('');
   const [isSearchExpanded, setIsSearchExpanded] = useState(false);
+  const [isPortalNavCollapsed, setIsPortalNavCollapsed] = useState(true);
   const [isTagListExpanded, setIsTagListExpanded] = useState(false);
   const [visibleTagCount, setVisibleTagCount] = useState(0);
   const [activeMaterialIndex, setActiveMaterialIndex] = useState(0);
+  const [activeLessonPreviewMode, setActiveLessonPreviewMode] =
+    useState<TActiveLessonPreviewMode>('materials');
+  const [isProcedureStandaloneView, setIsProcedureStandaloneView] =
+    useState(false);
+  const [isRetrievingLessonFolderIds, setIsRetrievingLessonFolderIds] =
+    useState(false);
+  const [resolvedLessonFolderFromApi, setResolvedLessonFolderFromApi] =
+    useState<TResolvedLessonFolderResponse | null>(null);
+  const [isResolvingLessonFolder, setIsResolvingLessonFolder] = useState(false);
   const [isGpPlusBannerDismissed, setIsGpPlusBannerDismissed] = useState(false);
   const [isStandardsFilterDockOpen, setIsStandardsFilterDockOpen] =
     useState(false);
@@ -1191,14 +1376,29 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
     'attribution' | 'citation' | null
   >(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const copyLessonBtnRef = useRef<HTMLButtonElement | null>(null);
   const unitTagListRef = useRef<HTMLDivElement>(null);
   const unitTagMeasureRefs = useRef<Array<HTMLSpanElement | null>>([]);
   const versionNotesAnchorRef = useRef<HTMLDivElement>(null);
+  const lessonMaterialsGridRef = useRef<HTMLDivElement>(null);
+  const lessonPreviewsCardRef = useRef<HTMLDivElement>(null);
+  const [lessonPreviewsCardHeight, setLessonPreviewsCardHeight] = useState<
+    number | null
+  >(null);
+  const [lessonMaterialsStickyTop, setLessonMaterialsStickyTop] = useState<
+    number | null
+  >(null);
   const citationStatusTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(
     null
   );
   const [shouldScrollToVersionNotes, setShouldScrollToVersionNotes] =
     useState(false);
+  const shouldShowGradeBandChooser = classroomResources.some(
+    (resource) =>
+      Boolean(resource?.gradePrefix?.trim() || resource?.grades?.trim())
+  );
+  const hasMultipleGradeBandOptions = classroomResources.length > 1;
+  const teachingMaterialsPreface = teachingMaterials?.unitPreface?.trim() ?? '';
 
   const searchResults = useMemo(() => {
     const term = normalize(searchTerm.trim());
@@ -1336,6 +1536,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
     const legacyParts = rawHash.includes('=') ? [] : rawHash.split(':');
     const tabValue = params.get('tab') ?? legacyParts[0] ?? '';
     const lessonValue = params.get('lesson') ?? legacyParts[1] ?? '';
+    const previewValue = params.get('preview') ?? '';
     if (tabValue) {
       const isValid = availableTabs.some((tab) => tab.key === tabValue);
       if (isValid) {
@@ -1353,6 +1554,13 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
         }
       }
     }
+    if (
+      previewValue === 'materials' ||
+      previewValue === 'procedure' ||
+      previewValue === 'featured-media'
+    ) {
+      setActiveLessonPreviewMode(previewValue);
+    }
   };
 
   useEffect(() => {
@@ -1361,6 +1569,19 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
     window.addEventListener('hashchange', handleHashChange);
     return () => window.removeEventListener('hashchange', handleHashChange);
   }, [availableTabs, lessons]);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+    const searchParams = new URLSearchParams(window.location.search);
+    const shouldShowProcedureOnly = searchParams.get('procedure') === '1';
+    setIsProcedureStandaloneView(shouldShowProcedureOnly);
+    if (shouldShowProcedureOnly) {
+      setActiveTab(TAB_MATERIALS);
+      setActiveLessonPreviewMode('procedure');
+    }
+  }, []);
 
   useEffect(() => {
     if (activeTab !== TAB_MATERIALS) {
@@ -1432,6 +1653,15 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
       trackUnitEvent('unit_search_toggled', { expanded: !current });
       return !current;
     });
+  };
+
+  const handlePortalNavToggle = () => {
+    const nextCollapsed = !isPortalNavCollapsed;
+    setPortalNavHidden(nextCollapsed);
+    setIsPortalNavCollapsed(nextCollapsed);
+    if (nextCollapsed) {
+      suppressPortalNavReveal(1200);
+    }
   };
 
   useEffect(() => {
@@ -1539,12 +1769,120 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
     }
   }, [activeTab, isStandardsFilterDockOpen]);
 
+  useEffect(() => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    if (activeTab !== TAB_MATERIALS || isProcedureStandaloneView) {
+      setLessonPreviewsCardHeight(null);
+      return;
+    }
+
+    let rafId = 0;
+
+    const measurePreviewCardHeight = () => {
+      if (!lessonMaterialsGridRef.current) {
+        return;
+      }
+
+      if (window.innerWidth < 768) {
+        setLessonPreviewsCardHeight(null);
+        setLessonMaterialsStickyTop(null);
+        return;
+      }
+
+      const rootStyles = window.getComputedStyle(document.documentElement);
+      const portalNavOffset = Number.parseFloat(
+        rootStyles.getPropertyValue('--portal-nav-offset')
+      );
+      const unitStickyHeader = document.querySelector(
+        `.${styles.unitStickyHeader}`
+      ) as HTMLElement | null;
+      const unitStickyHeaderHeight = unitStickyHeader
+        ? unitStickyHeader.getBoundingClientRect().height
+        : 0;
+      const stickyTopOffset =
+        (Number.isFinite(portalNavOffset) ? portalNavOffset : 0) +
+        unitStickyHeaderHeight +
+        0;
+      const viewportBottomPadding = 14;
+      const nextHeight = Math.max(
+        380,
+        Math.floor(window.innerHeight - stickyTopOffset - viewportBottomPadding)
+      );
+      setLessonMaterialsStickyTop(stickyTopOffset);
+
+      setLessonPreviewsCardHeight((currentHeight) => {
+        if (currentHeight != null && Math.abs(currentHeight - nextHeight) < 2) {
+          return currentHeight;
+        }
+        return nextHeight;
+      });
+    };
+
+    const scheduleMeasure = () => {
+      window.cancelAnimationFrame(rafId);
+      rafId = window.requestAnimationFrame(measurePreviewCardHeight);
+    };
+
+    scheduleMeasure();
+    window.addEventListener('resize', scheduleMeasure);
+    window.addEventListener('gp:set-nav-hidden', scheduleMeasure as EventListener);
+
+    const resizeObserver =
+      typeof ResizeObserver !== 'undefined'
+        ? new ResizeObserver(scheduleMeasure)
+        : null;
+
+    if (resizeObserver && lessonMaterialsGridRef.current) {
+      resizeObserver.observe(lessonMaterialsGridRef.current);
+    }
+    const unitStickyHeader = document.querySelector(
+      `.${styles.unitStickyHeader}`
+    ) as HTMLElement | null;
+    if (resizeObserver && unitStickyHeader) {
+      resizeObserver.observe(unitStickyHeader);
+    }
+
+    return () => {
+      window.cancelAnimationFrame(rafId);
+      window.removeEventListener('resize', scheduleMeasure);
+      window.removeEventListener('gp:set-nav-hidden', scheduleMeasure as EventListener);
+      resizeObserver?.disconnect();
+    };
+  }, [
+    activeLessonId,
+    activeMaterialIndex,
+    activeLessonPreviewMode,
+    activeTab,
+    isProcedureStandaloneView,
+  ]);
+
   const activeLessonIndex = lessons.findIndex(
     (lesson, index) => getLessonIdentifier(lesson, index) === activeLessonId
   );
   const activeLesson =
     activeLessonIndex >= 0 ? lessons[activeLessonIndex] : undefined;
   const activeLessonItems = activeLesson?.itemList ?? [];
+  const hasDetailedFlow = !!activeLesson?.chunks?.length;
+  const activeLessonFeaturedMedia = useMemo(() => {
+    if (!activeLessonId || !unit.FeaturedMultimedia?.length) {
+      return [];
+    }
+    return unit.FeaturedMultimedia.filter((media) => {
+      const lessonIds = parseFeaturedMediaLessonIds(
+        media?.forLsn ?? (media as { forPart?: string | null })?.forPart ?? null
+      );
+      if (!lessonIds.length) {
+        return false;
+      }
+      return lessonIds.includes(activeLessonId);
+    });
+  }, [activeLessonId, unit.FeaturedMultimedia]);
+  const hasFeaturedMedia = activeLessonFeaturedMedia.length > 0;
+  const isDetailedFlowOpen = activeLessonPreviewMode === 'procedure';
+  const isFeaturedMediaOpen = activeLessonPreviewMode === 'featured-media';
   const chunkDurations = (activeLesson?.chunks ?? [])
     .map((chunk) => chunk?.chunkDur ?? 0)
     .filter((duration): duration is number => typeof duration === 'number' && duration > 0);
@@ -1552,6 +1890,10 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
   const nextTab =
     activeTabIndex >= 0 && activeTabIndex < availableTabs.length - 1
       ? availableTabs[activeTabIndex + 1]
+      : null;
+  const nextLessonId =
+    activeLessonIndex >= 0 && activeLessonIndex < lessons.length - 1
+      ? getLessonIdentifier(lessons[activeLessonIndex + 1], activeLessonIndex + 1)
       : null;
 
   const unitTitle = unit.Title ?? 'Unit';
@@ -1670,7 +2012,98 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
   const { _isGpPlusModalDisplayed } = useModalContext();
 
   useEffect(() => {
+    setLessons(lessonResources?.lessons ?? []);
+  }, [lessonResources?.lessons]);
+
+  useEffect(() => {
+    if (!classroomResources.length || typeof window === 'undefined') {
+      return;
+    }
+
+    const savedResourceKey = window.localStorage.getItem(gradeBandStorageKey);
+    if (!savedResourceKey) {
+      return;
+    }
+
+    const matchedIndex = classroomResources.findIndex((resource, index) => {
+      return getLessonResourcePersistKey(resource, index) === savedResourceKey;
+    });
+
+    if (matchedIndex >= 0) {
+      setSelectedResourceIndex(matchedIndex);
+    }
+  }, [classroomResources, gradeBandStorageKey]);
+
+  useEffect(() => {
+    if (!classroomResources.length || typeof window === 'undefined') {
+      return;
+    }
+
+    const selectedResource = classroomResources[selectedResourceIndex];
+    if (!selectedResource) {
+      return;
+    }
+
+    window.localStorage.setItem(
+      gradeBandStorageKey,
+      getLessonResourcePersistKey(selectedResource, selectedResourceIndex)
+    );
+  }, [classroomResources, gradeBandStorageKey, selectedResourceIndex]);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    setPortalNavHidden(true);
+    const syncTimer = window.setTimeout(() => setPortalNavHidden(true), 120);
+    suppressPortalNavReveal(1200);
+    setIsPortalNavCollapsed(true);
+    return () => window.clearTimeout(syncTimer);
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    const syncPortalNavState = () => {
+      setIsPortalNavCollapsed(isPortalNavHidden());
+    };
+
+    syncPortalNavState();
+    const portalNav = document.querySelector('nav[data-nav-hidden]');
+    if (!portalNav || typeof MutationObserver === 'undefined') {
+      return;
+    }
+
+    const observer = new MutationObserver(syncPortalNavState);
+    observer.observe(portalNav, {
+      attributes: true,
+      attributeFilter: ['data-nav-hidden'],
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!lessons.length) {
+      setActiveLessonId(null);
+      return;
+    }
+
+    const lessonStillExists = lessons.some(
+      (lesson, index) => getLessonIdentifier(lesson, index) === activeLessonId
+    );
+
+    if (!lessonStillExists) {
+      setActiveLessonId(getLessonIdentifier(lessons[0], 0));
+    }
+  }, [activeLessonId, lessons]);
+
+  useEffect(() => {
     setActiveMaterialIndex(0);
+    setActiveLessonPreviewMode('materials');
   }, [activeLessonId]);
   useEffect(() => {
     return () => {
@@ -1680,6 +2113,468 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
     };
   }, []);
   const [, setIsGpPlusModalDisplayed] = _isGpPlusModalDisplayed;
+
+  const activeLessonSharedGDriveFolder = useMemo(() => {
+    if (!activeLesson?.sharedGDriveLessonFolders?.length) {
+      return null;
+    }
+
+    if (activeLessonId === 100) {
+      return (
+        activeLesson.sharedGDriveLessonFolders.find(
+          (folder) => folder?.name?.toLowerCase() === 'assessments'
+        ) ?? null
+      );
+    }
+
+    const lessonGradeType = (
+      (lessonResources as { gradePrefix?: string | null; grades?: string | null }) ??
+      {}
+    ).gradePrefix
+      ? (
+          lessonResources as { gradePrefix?: string | null; grades?: string | null }
+        ).gradePrefix
+      : (
+          lessonResources as { gradePrefix?: string | null; grades?: string | null }
+        ).grades;
+
+    const normalizedGradeType = lessonGradeType?.toLowerCase().trim();
+    if (!normalizedGradeType) {
+      return activeLesson.sharedGDriveLessonFolders[0] ?? null;
+    }
+
+    const matchingFolder = activeLesson.sharedGDriveLessonFolders.find((folder) => {
+      const parentFolderGradeType = folder.parentFolder?.name
+        ?.split('_')
+        ?.at(-1)
+        ?.toLowerCase()
+        ?.trim();
+      return parentFolderGradeType === normalizedGradeType;
+    });
+
+    return matchingFolder ?? activeLesson.sharedGDriveLessonFolders[0] ?? null;
+  }, [activeLesson, activeLessonId, lessonResources]);
+
+  const resolvedLessonsFolder = useMemo(() => {
+    if (activeLesson?.lessonsFolder?.sharedGDriveId) {
+      return activeLesson.lessonsFolder;
+    }
+
+    const fallbackLesson = lessons.find(
+      (lesson) => lesson?.lessonsFolder?.sharedGDriveId
+    );
+    return fallbackLesson?.lessonsFolder;
+  }, [activeLesson, lessons]);
+
+  const resolvedAllUnitLessons = useMemo(() => {
+    if (activeLesson?.allUnitLessons?.length) {
+      return activeLesson.allUnitLessons;
+    }
+
+    const fallbackLesson = lessons.find((lesson) => lesson?.allUnitLessons?.length);
+    return fallbackLesson?.allUnitLessons;
+  }, [activeLesson, lessons]);
+
+  const activeLessonSharedGDriveFolderFallback = useMemo(() => {
+    if (!resolvedAllUnitLessons?.length || activeLesson?.lsn == null) {
+      return null;
+    }
+
+    const lessonIdStr = String(activeLesson.lsn);
+    const matchedLesson = resolvedAllUnitLessons.find(
+      (lesson) => lesson.id === lessonIdStr
+    );
+
+    if (!matchedLesson?.sharedGDriveId) {
+      return null;
+    }
+
+    return {
+      id: matchedLesson.sharedGDriveId,
+      name: activeLesson.title ?? `lesson-${lessonIdStr}`,
+      parentFolder: {
+        id:
+          resolvedLessonsFolder?.sharedGDriveId ??
+          unit.GdrivePublicID ??
+          '',
+        name:
+          resolvedLessonsFolder?.name ??
+          unit.MediumTitle ??
+          unit.Title ??
+          'Unit',
+      },
+    };
+  }, [
+    activeLesson,
+    resolvedAllUnitLessons,
+    resolvedLessonsFolder,
+    unit.GdrivePublicID,
+    unit.MediumTitle,
+    unit.Title,
+  ]);
+
+  const resolvedActiveLessonSharedFolder =
+    activeLessonSharedGDriveFolder ?? activeLessonSharedGDriveFolderFallback;
+  const selectedGradeBandFolderId = getGoogleDriveFolderIdFromUrl(
+    lessonResources?.links?.url?.[0] ?? null
+  );
+
+  useEffect(() => {
+    let didCancel = false;
+
+    const resolveLessonFolder = async () => {
+      if (!unit.GdrivePublicID || activeLessonId == null) {
+        setResolvedLessonFolderFromApi(null);
+        setIsResolvingLessonFolder(false);
+        return;
+      }
+
+      setIsResolvingLessonFolder(true);
+
+      try {
+        const url = new URL(
+          `${window.location.origin}/api/gp-plus/resolve-lesson-folder`
+        );
+        url.searchParams.set('unitRootFolderId', unit.GdrivePublicID);
+        url.searchParams.set('lessonId', String(activeLessonId));
+        if (selectedGradeBandFolderId) {
+          url.searchParams.set('gradeBandFolderId', selectedGradeBandFolderId);
+        }
+
+        const response = await fetch(url.href);
+        if (!response.ok || didCancel) {
+          setResolvedLessonFolderFromApi(null);
+          return;
+        }
+
+        const data = (await response.json()) as TResolvedLessonFolderResponse;
+        if (!didCancel) {
+          setResolvedLessonFolderFromApi(data);
+        }
+      } catch (error) {
+        console.error('Failed to resolve lesson folder from API:', error);
+        if (!didCancel) {
+          setResolvedLessonFolderFromApi(null);
+        }
+      } finally {
+        if (!didCancel) {
+          setIsResolvingLessonFolder(false);
+        }
+      }
+    };
+
+    resolveLessonFolder();
+    return () => {
+      didCancel = true;
+    };
+  }, [activeLessonId, selectedGradeBandFolderId, unit.GdrivePublicID]);
+
+  const resolvedLessonsFolderForCopy = useMemo(() => {
+    if (resolvedLessonsFolder?.sharedGDriveId) {
+      return {
+        sharedGDriveId: resolvedLessonsFolder.sharedGDriveId,
+        name:
+          resolvedLessonsFolder.name?.trim() ||
+          lessonResources?.links?.linkText?.trim() ||
+          lessonResources?.grades?.trim() ||
+          lessonResources?.gradePrefix?.trim() ||
+          unit.MediumTitle ||
+          unit.Title ||
+          'Lesson Materials',
+      };
+    }
+
+    const parentFolder = (
+      resolvedActiveLessonSharedFolder as {
+        parentFolder?: { id?: string; name?: string };
+      } | null
+    )?.parentFolder;
+
+    if (parentFolder?.id && parentFolder?.name) {
+      return {
+        sharedGDriveId: parentFolder.id,
+        name: parentFolder.name,
+      };
+    }
+
+    const rootMaterialsFolderUrl = lessonResources?.links?.url?.[0] ?? null;
+    const rootMaterialsFolderId = getGoogleDriveFolderIdFromUrl(rootMaterialsFolderUrl);
+    if (rootMaterialsFolderId) {
+      return {
+        sharedGDriveId: rootMaterialsFolderId,
+        name:
+          lessonResources?.links?.linkText?.trim() ||
+          lessonResources?.grades?.trim() ||
+          'Lesson Materials',
+      };
+    }
+
+    if (unit.GdrivePublicID) {
+      return {
+        sharedGDriveId: unit.GdrivePublicID,
+        name:
+          unit.MediumTitle?.trim() ||
+          unit.Title?.trim() ||
+          'Lesson Materials',
+      };
+    }
+
+    return undefined;
+  }, [
+    lessonResources,
+    resolvedActiveLessonSharedFolder,
+    resolvedLessonsFolder,
+    unit.GdrivePublicID,
+    unit.MediumTitle,
+    unit.Title,
+  ]);
+
+  const lessonFolderIdFromAllUnitLessons =
+    activeLessonId != null
+      ? resolvedAllUnitLessons?.find(
+          (lesson) => lesson.id === String(activeLessonId)
+        )?.sharedGDriveId
+      : undefined;
+  const resolvedSharedFolderIdForCopy =
+    resolvedLessonFolderFromApi?.lessonFolder?.id ||
+    resolvedActiveLessonSharedFolder?.id ||
+    lessonFolderIdFromAllUnitLessons ||
+    selectedGradeBandFolderId ||
+    unit.GdrivePublicID ||
+    '';
+  const resolvedSharedFolderNameForCopy =
+    resolvedLessonFolderFromApi?.lessonFolder?.name?.trim() ||
+    resolvedActiveLessonSharedFolder?.name?.trim() ||
+    activeLesson?.title?.trim() ||
+    `Lesson ${activeLessonId ?? ''}`.trim() ||
+    'Lesson';
+  const effectiveLessonsFolderForCopy = useMemo(() => {
+    const folderId =
+      resolvedLessonFolderFromApi?.lessonsFolder?.sharedGDriveId?.trim() ||
+      resolvedLessonsFolderForCopy?.sharedGDriveId?.trim() ||
+      (resolvedActiveLessonSharedFolder as { parentFolder?: { id?: string } } | null)
+        ?.parentFolder?.id?.trim() ||
+      undefined;
+
+    if (!folderId) {
+      return undefined;
+    }
+
+    const folderName =
+      resolvedLessonFolderFromApi?.lessonsFolder?.name?.trim() ||
+      resolvedLessonsFolderForCopy?.name?.trim() ||
+      (resolvedActiveLessonSharedFolder as { parentFolder?: { name?: string } } | null)
+        ?.parentFolder?.name?.trim() ||
+      lessonResources?.links?.linkText?.trim() ||
+      lessonResources?.grades?.trim() ||
+      lessonResources?.gradePrefix?.trim() ||
+      unit.MediumTitle?.trim() ||
+      unit.Title?.trim() ||
+      'Lesson Materials';
+
+    return {
+      sharedGDriveId: folderId,
+      name: folderName,
+    };
+  }, [
+    lessonResources,
+    resolvedActiveLessonSharedFolder,
+    resolvedLessonFolderFromApi,
+    resolvedLessonsFolderForCopy,
+    unit.MediumTitle,
+    unit.Title,
+  ]);
+  const lessonsGradesForCopy =
+    lessonResources?.grades?.trim() ||
+    lessonResources?.gradePrefix?.trim() ||
+    'default';
+  const allUnitLessonsForCopy =
+    resolvedAllUnitLessons?.length
+      ? resolvedAllUnitLessons
+      : resolvedSharedFolderIdForCopy && activeLessonId != null
+      ? [
+          {
+            id: String(activeLessonId),
+            sharedGDriveId: resolvedSharedFolderIdForCopy,
+          },
+        ]
+      : undefined;
+
+  const hasValidLessonsFolderForCopy = Boolean(
+    effectiveLessonsFolderForCopy?.sharedGDriveId &&
+      effectiveLessonsFolderForCopy?.name
+  );
+  // Copy requires both the lesson source folder and the lessons container folder mapping.
+  const canShowCopyAllToGoogleDriveBtn = Boolean(
+    resolvedSharedFolderIdForCopy &&
+      hasValidLessonsFolderForCopy &&
+      allUnitLessonsForCopy?.length
+  );
+  const browseAllMaterialsUrl = lessonResources?.links?.url?.[0] ?? null;
+  const canBrowseAllMaterials = Boolean(browseAllMaterialsUrl);
+  const isCopyAllDisabledForGpPlus = isGpPlusUser && !canShowCopyAllToGoogleDriveBtn;
+  const isBrowseDisabledForGpPlus = isGpPlusUser && !canBrowseAllMaterials;
+  const copyAllUnavailableReason =
+    isResolvingLessonFolder
+      ? 'Resolving lesson folder...'
+      : 'Copy is unavailable because the lesson folder mapping is still resolving. Please wait a moment and try again.';
+  const browseUnavailableReason =
+    'Browse is unavailable because this lesson does not yet have a mapped Google Drive folder.';
+
+  const selectMaterialItem = (
+    index: number,
+    itemTitle: string | null | undefined
+  ) => {
+    setActiveLessonPreviewMode('materials');
+    setActiveMaterialIndex(index);
+    trackUnitEvent('unit_material_selected', {
+      lesson_id: activeLessonId ?? null,
+      material_index: index,
+      material_title: itemTitle ?? `Resource ${index + 1}`,
+    });
+  };
+
+  useEffect(() => {
+    if (
+      !isAuthenticated ||
+      !isGpPlusUser ||
+      !token ||
+      !gdriveAccessToken ||
+      !gdriveRefreshToken ||
+      !gdriveAccessTokenExp ||
+      !unitId ||
+      !lessonResources?.lessons?.length
+    ) {
+      return;
+    }
+
+    const gradesRange = (
+      lessonResources as { grades?: string | null } | null
+    )?.grades;
+    if (!gradesRange) {
+      return;
+    }
+
+    const lessonNumIds = lessonResources.lessons
+      .map((lesson) => lesson?.lsn)
+      .filter((lsn): lsn is number => typeof lsn === 'number')
+      .map((lsn) => lsn.toString());
+
+    const gpLessonItemIds = lessonResources.lessons.flatMap((lesson) =>
+      (lesson.itemList ?? [])
+        .map((item) =>
+          'gpGDriveItemId' in item && item.gpGDriveItemId
+            ? String(item.gpGDriveItemId)
+            : ''
+        )
+        .filter(Boolean)
+    );
+
+    if (!lessonNumIds.length || !gpLessonItemIds.length) {
+      return;
+    }
+
+    let didCancel = false;
+
+    const retrieveUserLessonFolderIds = async () => {
+      setIsRetrievingLessonFolderIds(true);
+
+      try {
+        const validToken = await ensureValidToken(gdriveAccessTokenExp, setAppCookie);
+        if (!validToken || didCancel) {
+          return;
+        }
+
+        const url = new URL(
+          `${window.location.origin}/api/gp-plus/get-gdrive-lesson-ids`
+        );
+
+        lessonNumIds.forEach((lessonNumId) => {
+          url.searchParams.append('lessonNumIds', lessonNumId);
+        });
+        gpLessonItemIds.forEach((itemId) => {
+          url.searchParams.append('lessonItemIds', itemId);
+        });
+        url.searchParams.append('unitId', unitId);
+        url.searchParams.append('grades', gradesRange);
+
+        const response = await fetch(url.href, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'gdrive-token': validToken,
+            'gdrive-token-refresh': gdriveRefreshToken,
+          },
+        });
+
+        if (!response.ok || didCancel) {
+          return;
+        }
+
+        const data = (await response.json()) as TUserGDriveData | null;
+        if (!data || didCancel) {
+          return;
+        }
+
+        setLessons((currentLessons) => {
+          return currentLessons.map((lesson) => {
+            const lessonNumId =
+              typeof lesson.lsn === 'number' ? lesson.lsn.toString() : '';
+            const userLessonFolder = data.userLessonFolderGDriveIds?.find(
+              (folder) => folder.lessonNum === lessonNumId
+            );
+
+            const itemList = (lesson.itemList ?? []).map((item) => {
+              const gpItemId =
+                'gpGDriveItemId' in item && item.gpGDriveItemId
+                  ? item.gpGDriveItemId
+                  : null;
+
+              if (!gpItemId) {
+                return item;
+              }
+
+              const copiedItem = data.userGDriveItemIdsOfLessonFolder?.find(
+                (itemCopy) =>
+                  itemCopy.originalLessonItemIdInGpGoogleDrive === gpItemId
+              );
+
+              return copiedItem?.userGDriveItemCopyId
+                ? { ...item, userGDriveItemCopyId: copiedItem.userGDriveItemCopyId }
+                : item;
+            });
+
+            return {
+              ...lesson,
+              itemList,
+              userGDriveLessonFolderId: userLessonFolder?.lessonDriveId,
+            };
+          });
+        });
+      } catch (error) {
+        console.error('Failed to retrieve user lesson folder ids:', error);
+      } finally {
+        if (!didCancel) {
+          setIsRetrievingLessonFolderIds(false);
+        }
+      }
+    };
+
+    retrieveUserLessonFolderIds();
+
+    return () => {
+      didCancel = true;
+    };
+  }, [
+    gdriveAccessToken,
+    gdriveAccessTokenExp,
+    gdriveRefreshToken,
+    isAuthenticated,
+    isGpPlusUser,
+    lessonResources,
+    setAppCookie,
+    token,
+    unitId,
+  ]);
 
   const handleVersionInfoClick = () => {
     setShouldScrollToVersionNotes(true);
@@ -1746,6 +2641,51 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
     }
   };
 
+  const handleCopyAllUpsellClick = () => {
+    const currentUrl = getCurrentUnitUrl();
+    if (currentUrl) {
+      setSessionStorageItem('userEntryRedirectUrl', currentUrl);
+    }
+    window.location.assign('/gp-plus');
+  };
+
+  const handleBrowseAllMaterialsClick = () => {
+    if (!isGpPlusUser) {
+      handleCopyAllUpsellClick();
+      return;
+    }
+
+    if (!browseAllMaterialsUrl) {
+      return;
+    }
+
+    window.open(browseAllMaterialsUrl, '_blank', 'noopener,noreferrer');
+  };
+
+  const handleCopyAllMaterialsClick = () => {
+    if (!isGpPlusUser) {
+      handleCopyAllUpsellClick();
+      return;
+    }
+
+    if (!canShowCopyAllToGoogleDriveBtn) {
+      return;
+    }
+
+    copyLessonBtnRef.current?.click();
+  };
+
+  const handleOpenProcedureInNewTab = () => {
+    if (typeof window === 'undefined' || activeLessonId == null) {
+      return;
+    }
+
+    const nextUrl = new URL(window.location.href);
+    nextUrl.searchParams.set('procedure', '1');
+    nextUrl.hash = `tab=${TAB_MATERIALS}&lesson=${activeLessonId}&preview=procedure`;
+    window.open(nextUrl.toString(), '_blank', 'noopener,noreferrer');
+  };
+
   const handleCopyCitation = async (
     text: string,
     entryType: 'attribution' | 'citation'
@@ -1792,6 +2732,161 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
       setStatusWithReset('error');
     }
   };
+
+  const latestCopiedLessonFolderId = activeLesson?.userGDriveLessonFolderId?.trim();
+  const latestCopiedLessonFolderUrl = latestCopiedLessonFolderId
+    ? `${GOOGLE_DRIVE_FOLDER_URL_BASE}/${latestCopiedLessonFolderId}`
+    : null;
+  const fixedLessonPaneStyle =
+    lessonPreviewsCardHeight != null
+      ? {
+          height: `${lessonPreviewsCardHeight}px`,
+          maxHeight: `${lessonPreviewsCardHeight}px`,
+        }
+      : undefined;
+  const previewPaneStickyStyle =
+    lessonMaterialsStickyTop != null
+      ? {
+          ...fixedLessonPaneStyle,
+          top: `${lessonMaterialsStickyTop}px`,
+        }
+      : fixedLessonPaneStyle;
+
+  const renderProcedurePanel = (showLinkOutAction: boolean) => (
+    <div className={styles.lessonProcedureInPreview}>
+      <div className={styles.lessonProcedureHeader}>
+        <h3 className={styles.lessonCardHeading}>
+          <NotebookPen size={16} aria-hidden="true" />
+          <span>Lesson Procedure</span>
+        </h3>
+        {showLinkOutAction && (
+          <button
+            type="button"
+            className={styles.procedureLinkOutBtn}
+            onClick={handleOpenProcedureInNewTab}
+          >
+            <span>Open Procedure Tab</span>
+            <SquareArrowOutUpRight size={13} aria-hidden="true" />
+          </button>
+        )}
+        <span>Chunk-by-chunk guidance with vocab and teacher notes.</span>
+      </div>
+      <div className={styles.lessonProcedureContent}>
+        {activeLesson?.chunks?.map((chunk, index) => (
+          <article
+            key={`${chunk.chunkTitle}-${index}`}
+            className={styles.lessonChunk}
+          >
+            <div className={styles.lessonChunkTimeline}>
+              <div
+                className={`${styles.lessonChunkHeader} ${
+                  chunkDurations.length
+                    ? styles.lessonChunkHeaderOverGraph
+                    : ''
+                }`}
+              >
+                {typeof chunk.chunkDur === 'number' ? (
+                  <span className={styles.lessonChunkDuration}>
+                    <Clock3 size={12} aria-hidden="true" />
+                    <span>{chunk.chunkDur} min</span>
+                  </span>
+                ) : null}
+                <h5>{chunk.chunkTitle ?? 'Lesson segment'}</h5>
+              </div>
+              {!!chunkDurations.length && (
+                <ChunkGraph
+                  className={styles.lessonChunkGraph}
+                  durList={chunkDurations}
+                  chunkNum={index}
+                />
+              )}
+            </div>
+            {(() => {
+              return chunk.steps?.map((step, idx) => {
+                const rawStep = (
+                  step as { Step?: number | string | null }
+                ).Step;
+                const stepNumber =
+                  typeof rawStep === 'number'
+                    ? rawStep
+                    : typeof rawStep === 'string'
+                    ? Number.parseInt(rawStep.replace(/[^\d-]/g, ''), 10)
+                    : Number.NaN;
+                const safeStepNumber =
+                  Number.isFinite(stepNumber) && stepNumber > 0
+                    ? stepNumber
+                    : idx + 1;
+                const stepDuration = getStepDuration(
+                  step as {
+                    StepDur?: number | string | null;
+                    StepDuration?: number | string | null;
+                    stepDur?: number | string | null;
+                  }
+                );
+
+                return (
+                  <div
+                    key={`${step.StepTitle}-${idx}`}
+                    className={styles.lessonStep}
+                  >
+                    <div className={styles.lessonStepMain}>
+                      <div className={styles.lessonStepTitleRow}>
+                        <strong>
+                          {step.StepTitle
+                            ? `${safeStepNumber}. ${step.StepTitle}`
+                            : `${safeStepNumber}.`}
+                        </strong>
+                        {stepDuration != null && (
+                          <span className={styles.lessonStepDuration}>
+                            {stepDuration} min
+                          </span>
+                        )}
+                      </div>
+                      {step.StepQuickDescription && (
+                        <div className={styles.lessonStepQuickDescription}>
+                          <RichText content={step.StepQuickDescription} />
+                        </div>
+                      )}
+                      {step.StepDetails && (
+                        <div className={styles.lessonStepDetails}>
+                          <RichText content={step.StepDetails} />
+                        </div>
+                      )}
+                      {!!step.Vocab && (
+                        <div className={styles.stepInfoBlock}>
+                          <h6>Vocabulary</h6>
+                          <RichText content={step.Vocab} />
+                        </div>
+                      )}
+                    </div>
+                    <aside className={styles.lessonStepAside}>
+                      {!!step.TeachingTips && (
+                        <div className={styles.stepInfoBlock}>
+                          <h6>Teaching tips</h6>
+                          <RichText content={step.TeachingTips} />
+                        </div>
+                      )}
+                      {!!step.VariantNotes && (
+                        <div className={styles.stepInfoBlock}>
+                          <h6>Variant notes</h6>
+                          <RichText content={step.VariantNotes} />
+                        </div>
+                      )}
+                    </aside>
+                  </div>
+                );
+              });
+            })()}
+          </article>
+        ))}
+        {!activeLesson?.chunks?.length && (
+          <p className={styles.unitMutedText}>
+            Detailed steps will appear here once added.
+          </p>
+        )}
+      </div>
+    </div>
+  );
 
   const handleGradeBandFilter = (gradeBand: TGradeBand) => {
     setSelectedGradeBands((current) => {
@@ -1868,7 +2963,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                   aria-expanded={isSearchExpanded}
                   onClick={handleSearchToggle}
                 >
-                  <i className="bi bi-search" />
+                  <TextSearch size={16} aria-hidden="true" />
                 </button>
                 <input
                   id="unit-search"
@@ -1879,7 +2974,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                       : `${styles.unitSearchInput} ${styles.unitSearchInputCollapsed}`
                   }
                   type="search"
-                  placeholder="Search lessons, steps, resources"
+                  placeholder="Search within this unit"
                   value={searchTerm}
                   onChange={(event) => setSearchTerm(event.target.value)}
                   onKeyDown={(event) => {
@@ -1916,6 +3011,23 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                   Share
                 </button>
               )}
+              <button
+                type="button"
+                className={styles.unitNavVisibilityToggle}
+                onClick={handlePortalNavToggle}
+                aria-label={isPortalNavCollapsed ? 'Expand top navigation' : 'Collapse top navigation'}
+              >
+                <ChevronUp
+                  size={18}
+                  aria-hidden="true"
+                  className={
+                    isPortalNavCollapsed
+                      ? styles.unitNavVisibilityToggleIconCollapsed
+                      : styles.unitNavVisibilityToggleIconExpanded
+                  }
+                />
+                <span>{isPortalNavCollapsed ? 'Expand' : 'Collapse'}</span>
+              </button>
             </div>
           </div>
           <div className={styles.unitTabList}>
@@ -2191,6 +3303,24 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
           <section className={styles.unitSection}>
             <div className={styles.materialsLayout}>
               {activeLesson ? (
+                isProcedureStandaloneView ? (
+                  <div className={styles.procedureStandaloneLayout}>
+                    <div className={styles.procedureStandaloneHeader}>
+                      <p>{unitTitle}</p>
+                      <h2>
+                        {isAssessmentLesson(activeLesson, activeLessonIndex)
+                          ? 'Assessment'
+                          : `Lesson ${getLessonIdentifier(activeLesson, activeLessonIndex)}`}
+                        {activeLesson.title ? `: ${activeLesson.title}` : ''}
+                      </h2>
+                    </div>
+                    <div
+                      className={`${styles.lessonPreviewsCard} ${styles.lessonPreviewsCardStandalone}`}
+                    >
+                      {renderProcedurePanel(false)}
+                    </div>
+                  </div>
+                ) : (
                 <div className={styles.lessonLayout}>
                   <div className={styles.lessonSummaryCard}>
                     <div className={styles.lessonSummaryMain}>
@@ -2199,21 +3329,26 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                           Lesson {getLessonIdentifier(activeLesson, activeLessonIndex)}
                         </p>
                       )}
-                      <h3>{activeLesson.title ?? 'Untitled lesson'}</h3>
+                      <div className={styles.lessonTitleMarkdown}>
+                        <RichText content={activeLesson.title ?? 'Untitled lesson'} />
+                      </div>
                       {activeLesson.lsnPreface && (
-                        <p className={styles.lessonPreface}>
-                          {activeLesson.lsnPreface}
-                        </p>
+                        <RichText
+                          className={styles.lessonPreface}
+                          content={activeLesson.lsnPreface}
+                        />
                       )}
                       {!!activeLesson.learningObj?.length && (
                         <div className={styles.lessonObjectives}>
-                          <h4>Learning Objectives</h4>
-                          <p className={styles.lessonObjectivesLead}>
+                          <h4 className={styles.lessonObjectivesLead}>
+                            <BrainCog size={16} aria-hidden="true" />
                             Students will be able to:
-                          </p>
+                          </h4>
                           <ul>
                             {activeLesson.learningObj.map((item, idx) => (
-                              <li key={`${item}-${idx}`}>{item}</li>
+                              <li key={`${item}-${idx}`}>
+                                <RichText content={item} />
+                              </li>
                             ))}
                           </ul>
                         </div>
@@ -2266,7 +3401,50 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                       )}
                     </div>
                   </div>
-                  <div className={styles.lessonMaterialsGrid}>
+                  {(teachingMaterialsPreface || shouldShowGradeBandChooser) && (
+                    <div className={styles.gradeBandSelectorCard}>
+                      {teachingMaterialsPreface && (
+                        <div className={styles.gradeBandPreface}>
+                          <RichText content={teachingMaterialsPreface} />
+                        </div>
+                      )}
+                      {shouldShowGradeBandChooser && (
+                        <div className={styles.gradeBandChooser}>
+                          <h4>Available Grade Bands</h4>
+                          <div className={styles.gradeBandOptions}>
+                            {classroomResources.map((resource, index) => {
+                              const label =
+                                resource.gradePrefix?.trim() ||
+                                resource.grades?.trim() ||
+                                `Option ${index + 1}`;
+                              const optionId = `grade-band-${unitId}-${index}`;
+                              return (
+                                <label
+                                  key={optionId}
+                                  htmlFor={optionId}
+                                  className={styles.gradeBandOption}
+                                >
+                                  <input
+                                    id={optionId}
+                                    type="radio"
+                                    name={`grade-band-${unitId}`}
+                                    checked={selectedResourceIndex === index}
+                                    onChange={() => setSelectedResourceIndex(index)}
+                                    disabled={!hasMultipleGradeBandOptions}
+                                  />
+                                  <span>{label}</span>
+                                </label>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                  <div
+                    ref={lessonMaterialsGridRef}
+                    className={styles.lessonMaterialsGrid}
+                  >
                     {!isGpPlusUser && !isGpPlusBannerDismissed && (
                       <div className={styles.gpPlusBannerWrapInGrid}>
                         <div className={styles.gpPlusBanner}>
@@ -2311,133 +3489,262 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                       </div>
                     )}
                     <div className={styles.lessonResourcesCard}>
-                      <h4 className={styles.lessonCardHeading}>
-                        <Download size={16} aria-hidden="true" />
-                        <span>Materials and downloads</span>
-                      </h4>
-                      <p className={styles.materialsHelperText}>Click an item to preview.</p>
-                      {!!activeLessonItems.length ? (
-                        <div className={styles.lessonDownloadList}>
-                          {activeLessonItems.map((item, idx) => {
-                            const previewItem = item as TPreviewItem;
-                            const { openUrl, pdfDownloadUrl } = getMaterialUrls(
-                              previewItem
-                            );
-                            const isActive = idx === activeMaterialIndex;
-                            const resourceTitle =
-                              item.itemTitle ?? `Resource ${idx + 1}`;
-                            const isTeacherOnlyItem =
-                              typeof item.itemTitle === 'string' &&
-                              item.itemTitle.toLowerCase().includes('teacher');
-                            const isTeacherLocked =
-                              isAuthenticated && !isUserTeacher && isTeacherOnlyItem;
-                            const canOpenResource = !!openUrl && !isTeacherLocked && isAuthenticated;
-                            const canAccessPdf = !!pdfDownloadUrl && !isTeacherLocked && isAuthenticated;
-
-                            return (
-                              <article
-                                key={`${item.itemTitle}-${idx}`}
-                                className={`${styles.materialRow} ${
-                                  isActive ? styles.materialRowActive : ''
-                                }`}
+                      <section
+                        className={`${styles.resourceSection} ${styles.quickStartSection}`}
+                      >
+                        <h3 className={styles.lessonCardHeading}>
+                          <Blocks size={16} aria-hidden="true" />
+                          <span>Quick Start</span>
+                        </h3>
+                        <div className={styles.quickStartActions}>
+                          <button
+                            type="button"
+                            className={`${styles.lessonProcedureToggle} ${
+                              isFeaturedMediaOpen ? styles.lessonProcedureToggleActive : ''
+                            }`}
+                            onClick={() => setActiveLessonPreviewMode('featured-media')}
+                            aria-pressed={isFeaturedMediaOpen}
+                            disabled={!hasFeaturedMedia}
+                          >
+                            <span className={styles.lessonProcedureToggleText}>
+                              <MonitorPlay size={16} aria-hidden="true" />
+                              <span>Featured Media</span>
+                            </span>
+                          </button>
+                          <button
+                            type="button"
+                            className={`${styles.lessonProcedureToggle} ${
+                              isDetailedFlowOpen ? styles.lessonProcedureToggleActive : ''
+                            }`}
+                            onClick={() => setActiveLessonPreviewMode('procedure')}
+                            aria-pressed={isDetailedFlowOpen}
+                            disabled={!hasDetailedFlow}
+                          >
+                            <span className={styles.lessonProcedureToggleText}>
+                              <ListTree size={16} aria-hidden="true" />
+                              <span>Procedure</span>
+                            </span>
+                          </button>
+                        </div>
+                      </section>
+                      <section
+                        className={`${styles.resourceSection} ${styles.gpPlusFunctionsSection}`}
+                      >
+                        <h3 className={styles.lessonCardHeading}>
+                          <Image
+                            alt="GP+ icon"
+                            width={18}
+                            height={18}
+                            src="/plus/plus.png"
+                          />
+                          <span>GP Plus Functions</span>
+                        </h3>
+                        <div className={styles.gpFunctionActions}>
+                          {latestCopiedLessonFolderUrl ? (
+                            <>
+                              <a
+                                className={`${styles.lessonProcedureToggle} ${styles.gpFunctionActionBtn}`}
+                                href={latestCopiedLessonFolderUrl}
+                                target="_blank"
+                                rel="noreferrer"
                               >
-                                <div className={styles.materialRowTop}>
-                                  <button
-                                    type="button"
-                                    className={styles.materialSelectButton}
-                                    onClick={() => {
-                                      setActiveMaterialIndex(idx);
-                                      trackUnitEvent('unit_material_selected', {
-                                        lesson_id: activeLessonId ?? null,
-                                        material_index: idx,
-                                        material_title:
-                                          item.itemTitle ?? `Resource ${idx + 1}`,
-                                      });
-                                    }}
-                                    aria-pressed={isActive}
-                                  >
-                                    <span className={styles.materialRowIcon} aria-hidden="true">
-                                      <FileText size={15} />
-                                    </span>
-                                    <span className={styles.materialRowMain}>
-                                      <strong>{resourceTitle}</strong>
-                                      {(previewItem.itemType || previewItem.itemCat) && (
-                                        <span>
-                                          {(previewItem.itemType ?? previewItem.itemCat ?? '').toString()}
+                                <span className={styles.lessonProcedureToggleText}>
+                                  <FileStack size={16} aria-hidden="true" />
+                                  <span>My Copy of Files</span>
+                                </span>
+                              </a>
+                              <button
+                                type="button"
+                                className={styles.copyAgainLinkBtn}
+                                onClick={handleCopyAllMaterialsClick}
+                                disabled={isCopyAllDisabledForGpPlus}
+                              >
+                                Copy again
+                              </button>
+                            </>
+                          ) : (
+                            <button
+                              type="button"
+                              className={`${styles.lessonProcedureToggle} ${styles.gpFunctionActionBtn}`}
+                              onClick={handleCopyAllMaterialsClick}
+                              disabled={isCopyAllDisabledForGpPlus}
+                            >
+                              <span className={styles.lessonProcedureToggleText}>
+                                <FileStack size={16} aria-hidden="true" />
+                                <span>Copy All to My Google Drive</span>
+                              </span>
+                            </button>
+                          )}
+                          <button
+                            type="button"
+                            className={`${styles.lessonProcedureToggle} ${styles.gpFunctionActionBtn}`}
+                            onClick={handleBrowseAllMaterialsClick}
+                            disabled={isBrowseDisabledForGpPlus}
+                          >
+                            <span className={styles.lessonProcedureToggleText}>
+                              <Eye size={16} aria-hidden="true" />
+                              <span>Browse on Gdrive (View Only)</span>
+                            </span>
+                          </button>
+                          {isBrowseDisabledForGpPlus && (
+                            <p className={styles.copyAllHelperText}>
+                              {browseUnavailableReason}
+                            </p>
+                          )}
+                          {isCopyAllDisabledForGpPlus && (
+                            <p className={styles.copyAllHelperText}>
+                              {copyAllUnavailableReason}
+                            </p>
+                          )}
+                        </div>
+                        {isGpPlusUser && canShowCopyAllToGoogleDriveBtn && (
+                          <CopyLessonBtn
+                            btnRef={copyLessonBtnRef}
+                            unitId={unitId}
+                            unitTitle={unit.Title}
+                            MediumTitle={unit.MediumTitle ?? unit.Title ?? 'Unit'}
+                            lessonId={activeLessonId ?? ''}
+                            lessonName={activeLesson.title ?? 'Lesson'}
+                            lessonsGrades={
+                              lessonsGradesForCopy
+                            }
+                            sharedGDriveLessonFolderId={resolvedSharedFolderIdForCopy}
+                            lessonSharedDriveFolderName={resolvedSharedFolderNameForCopy}
+                            userGDriveLessonFolderId={
+                              activeLesson.userGDriveLessonFolderId
+                            }
+                            allUnitLessons={allUnitLessonsForCopy}
+                            GdrivePublicID={unit.GdrivePublicID}
+                            lessonsFolder={effectiveLessonsFolderForCopy}
+                            isRetrievingLessonFolderIds={isRetrievingLessonFolderIds}
+                            setParts={setLessons as any}
+                            btnClassName={styles.hiddenCopyLessonBtn}
+                            childrenClassName={styles.hiddenCopyLessonBtn}
+                            btnWrapperClassName={styles.hiddenCopyLessonBtn}
+                          />
+                        )}
+                      </section>
+                      <section
+                        className={`${styles.resourceSection} ${styles.previewDownloadSection}`}
+                      >
+                        <h3 className={styles.lessonCardHeading}>
+                          <Download size={16} aria-hidden="true" />
+                          <span>Preview and Download</span>
+                        </h3>
+                        {!!activeLessonItems.length ? (
+                          <div className={styles.lessonDownloadList}>
+                            {activeLessonItems.map((item, idx) => {
+                              const previewItem = item as TPreviewItem;
+                              const { pdfDownloadUrl } = getMaterialUrls(previewItem);
+                              const isActive =
+                                activeLessonPreviewMode === 'materials' &&
+                                idx === activeMaterialIndex;
+                              const resourceTitle =
+                                item.itemTitle ?? `Resource ${idx + 1}`;
+                              const isTeacherOnlyItem =
+                                typeof item.itemTitle === 'string' &&
+                                item.itemTitle.toLowerCase().includes('teacher');
+                              const isTeacherLocked =
+                                isAuthenticated && !isUserTeacher && isTeacherOnlyItem;
+                              const canAccessPdf = !!pdfDownloadUrl && !isTeacherLocked && isAuthenticated;
+
+                              return (
+                                <article
+                                  key={`${item.itemTitle}-${idx}`}
+                                  className={`${styles.materialRow} ${
+                                    isActive ? styles.materialRowActive : ''
+                                  }`}
+                                  onClick={(event) => {
+                                    const target = event.target as HTMLElement;
+                                    if (target.closest('a')) {
+                                      return;
+                                    }
+                                    selectMaterialItem(idx, item.itemTitle);
+                                  }}
+                                >
+                                  <div className={styles.materialRowTop}>
+                                    <button
+                                      type="button"
+                                      className={styles.materialSelectButton}
+                                      onClick={(event) => {
+                                        event.stopPropagation();
+                                        selectMaterialItem(idx, item.itemTitle);
+                                      }}
+                                      aria-pressed={isActive}
+                                    >
+                                      <span className={styles.materialRowIcon} aria-hidden="true">
+                                        {getMaterialTypeIcon(
+                                          previewItem.itemType,
+                                          previewItem.itemCat
+                                        )}
+                                      </span>
+                                      <span className={styles.materialRowMain}>
+                                        <strong>{resourceTitle}</strong>
+                                        {(previewItem.itemType || previewItem.itemCat) && (
+                                          <span>
+                                            {(previewItem.itemType ?? previewItem.itemCat ?? '').toString()}
+                                          </span>
+                                        )}
+                                      </span>
+                                    </button>
+                                  </div>
+                                  {pdfDownloadUrl && (
+                                    <div className={styles.materialRowPdfWrap}>
+                                      {canAccessPdf ? (
+                                        <a
+                                          className={styles.materialPdfLink}
+                                          href={pdfDownloadUrl}
+                                          target="_blank"
+                                          rel="noreferrer"
+                                        >
+                                          Download PDF
+                                        </a>
+                                      ) : (
+                                        <span className={styles.materialPdfLinkDisabled}>
+                                          Log in to download
                                         </span>
                                       )}
-                                    </span>
-                                  </button>
-
-                                  <div className={styles.materialRowLinks}>
-                                    {canOpenResource ? (
-                                      <a
-                                        className={styles.materialOpenLink}
-                                        href={openUrl}
-                                        target="_blank"
-                                        rel="noreferrer"
-                                      >
-                                        View
-                                      </a>
-                                    ) : (
-                                      <span className={styles.materialOpenLinkDisabled}>
-                                        {isTeacherLocked || !isAuthenticated ? 'Restricted' : 'No file'}
-                                      </span>
-                                    )}
-                                  </div>
-                                </div>
-                                {pdfDownloadUrl && (
-                                  <div className={styles.materialRowPdfWrap}>
-                                    {canAccessPdf ? (
-                                      <a
-                                        className={styles.materialPdfLink}
-                                        href={pdfDownloadUrl}
-                                        target="_blank"
-                                        rel="noreferrer"
-                                      >
-                                        Download PDF
-                                      </a>
-                                    ) : (
-                                      <span className={styles.materialPdfLinkDisabled}>
-                                        PDF download unavailable
-                                      </span>
-                                    )}
-                                  </div>
-                                )}
-                              </article>
-                            );
-                          })}
-                        </div>
-                      ) : (
-                        <p className={styles.unitMutedText}>
-                          Materials will appear here once added.
-                        </p>
-                      )}
-                      {isAuthenticated &&
-                        isGpPlusUser &&
-                        lessonResources?.links?.url &&
-                        lessonResources?.links?.linkText && (
-                          <a
-                            className={styles.lessonFolderLink}
-                            href={lessonResources.links.url?.[0] ?? '#'}
-                            target="_blank"
-                            rel="noreferrer"
-                          >
-                            <span className={styles.lessonFolderLinkIcon}>
-                              <Image
-                                src="/plus/plus.png"
-                                alt=""
-                                aria-hidden="true"
-                                width={20}
-                                height={20}
-                              />
-                            </span>
-                            <span>{lessonResources.links.linkText}</span>
-                          </a>
+                                    </div>
+                                  )}
+                                </article>
+                              );
+                            })}
+                          </div>
+                        ) : (
+                          <p className={styles.unitMutedText}>
+                            Materials will appear here once added.
+                          </p>
                         )}
+                      </section>
                     </div>
-                    <div className={styles.lessonPreviewsCard}>
-                      {!!activeLessonItems.length ? (
+                    <div
+                      ref={lessonPreviewsCardRef}
+                      className={styles.lessonPreviewsCard}
+                      style={previewPaneStickyStyle}
+                    >
+                      {isFeaturedMediaOpen ? (
+                        <article className={styles.lessonPreviewItem}>
+                          <header className={styles.lessonPreviewHeader}>
+                            <h3 className={styles.lessonCardHeading}>
+                              <MonitorPlay size={16} aria-hidden="true" />
+                              <span>Featured Media</span>
+                            </h3>
+                          </header>
+                          {hasFeaturedMedia ? (
+                            <div
+                              className={`${styles.previewCarousel} ${styles.featuredMediaViewport}`}
+                            >
+                              <LessonsCarousel mediaItems={[...activeLessonFeaturedMedia]} />
+                            </div>
+                          ) : (
+                            <p className={styles.unitMutedText}>
+                              No featured media is linked to this lesson yet.
+                            </p>
+                          )}
+                        </article>
+                      ) : isDetailedFlowOpen ? (
+                        renderProcedurePanel(true)
+                      ) : !!activeLessonItems.length ? (
                         (() => {
                           const safeIndex =
                             activeMaterialIndex > activeLessonItems.length - 1
@@ -2446,9 +3753,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                           const selectedItem = activeLessonItems[safeIndex];
                           const selectedPreviewItem = selectedItem as TPreviewItem;
                           const { openUrl, previewUrl, embedUrl, pdfDownloadUrl } =
-                            getMaterialUrls(
-                            selectedPreviewItem
-                          );
+                            getMaterialUrls(selectedPreviewItem);
                           const previewImg =
                             (
                               selectedItem as {
@@ -2466,7 +3771,9 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                             typeof selectedItem?.itemTitle === 'string' &&
                             selectedItem.itemTitle.toLowerCase().includes('teacher');
                           const isPresentation = itemTypeLabel === 'presentation';
-                          const frameSrc = isPresentation ? embedUrl ?? previewUrl ?? openUrl : embedUrl ?? previewUrl;
+                          const frameSrc = isPresentation
+                            ? embedUrl ?? previewUrl ?? openUrl
+                            : embedUrl ?? previewUrl;
                           const isPreviewLockedLoggedOut = !isAuthenticated;
                           const isPreviewLockedTeacher =
                             isAuthenticated && !isUserTeacher && selectedIsTeacherOnly;
@@ -2477,10 +3784,10 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                           return (
                             <article className={styles.lessonPreviewItem}>
                               <header className={styles.lessonPreviewHeader}>
-                                <h4 className={styles.lessonCardHeading}>
+                                <h3 className={styles.lessonCardHeading}>
                                   <Eye size={16} aria-hidden="true" />
                                   <span>Item preview</span>
-                                </h4>
+                                </h3>
                                 {canOpenSelected ? (
                                   <a
                                     className={styles.materialOpenLink}
@@ -2531,7 +3838,12 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                                   <div className={styles.lessonPreviewGate}>
                                     <p>
                                       {isPreviewLockedLoggedOut
-                                        ? 'Must Be Logged in to View Teaching Materials'
+                                        ? (
+                                            <span className={styles.lessonPreviewGateWarning}>
+                                              <CircleAlert size={18} aria-hidden="true" />
+                                              <span>Must Be Logged in to View Teaching Materials</span>
+                                            </span>
+                                          )
                                         : 'Only viewable by teachers. If you are a teacher, please update your account.'}
                                     </p>
                                     {isPreviewLockedLoggedOut ? (
@@ -2594,136 +3906,8 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                       )}
                     </div>
                   </div>
-                  <div className={styles.lessonProcedureCardFull}>
-                    <div className={styles.lessonProcedureCard}>
-                      <div className={styles.lessonProcedureInner}>
-                        <div className={styles.lessonProcedureHeader}>
-                          <h4 className={styles.lessonCardHeading}>
-                            <NotebookPen size={16} aria-hidden="true" />
-                            <span>Detailed procedure</span>
-                          </h4>
-                          <span>Chunk-by-chunk guidance with vocab and teacher notes.</span>
-                        </div>
-                        <div className={styles.lessonProcedureContent}>
-                          {activeLesson.chunks?.map((chunk, index) => (
-                            <article
-                              key={`${chunk.chunkTitle}-${index}`}
-                              className={styles.lessonChunk}
-                            >
-                            <div className={styles.lessonChunkTimeline}>
-                              <div
-                                className={`${styles.lessonChunkHeader} ${
-                                  chunkDurations.length
-                                    ? styles.lessonChunkHeaderOverGraph
-                                    : ''
-                                }`}
-                              >
-                                {typeof chunk.chunkDur === 'number' ? (
-                                  <>
-                                    <span className={styles.lessonChunkDuration}>
-                                      <Clock3 size={12} aria-hidden="true" />
-                                      <span>{chunk.chunkDur} min</span>
-                                    </span>
-                                  </>
-                                ) : null}
-                                <h5>{chunk.chunkTitle ?? 'Lesson segment'}</h5>
-                              </div>
-                              {!!chunkDurations.length && (
-                                <ChunkGraph
-                                  className={styles.lessonChunkGraph}
-                                  durList={chunkDurations}
-                                  chunkNum={index}
-                                />
-                              )}
-                            </div>
-                            {(() => {
-                              return chunk.steps?.map((step, idx) => {
-                                const rawStep = (
-                                  step as { Step?: number | string | null }
-                                ).Step;
-                                const stepNumber =
-                                  typeof rawStep === 'number'
-                                    ? rawStep
-                                    : typeof rawStep === 'string'
-                                    ? Number.parseInt(rawStep.replace(/[^\d-]/g, ''), 10)
-                                    : Number.NaN;
-                                const safeStepNumber =
-                                  Number.isFinite(stepNumber) && stepNumber > 0
-                                    ? stepNumber
-                                    : idx + 1;
-                                const stepDuration = getStepDuration(
-                                  step as {
-                                    StepDur?: number | string | null;
-                                    StepDuration?: number | string | null;
-                                    stepDur?: number | string | null;
-                                  }
-                                );
-
-                                return (
-                                  <div
-                                    key={`${step.StepTitle}-${idx}`}
-                                    className={styles.lessonStep}
-                                  >
-                                    <div className={styles.lessonStepMain}>
-                                      <div className={styles.lessonStepTitleRow}>
-                                        <strong>
-                                          {step.StepTitle
-                                            ? `${safeStepNumber}. ${step.StepTitle}`
-                                            : `${safeStepNumber}.`}
-                                        </strong>
-                                        {stepDuration != null && (
-                                          <span className={styles.lessonStepDuration}>
-                                            {stepDuration} min
-                                          </span>
-                                        )}
-                                      </div>
-                                      {step.StepQuickDescription && (
-                                        <div className={styles.lessonStepQuickDescription}>
-                                          <RichText content={step.StepQuickDescription} />
-                                        </div>
-                                      )}
-                                      {step.StepDetails && (
-                                        <div className={styles.lessonStepDetails}>
-                                          <RichText content={step.StepDetails} />
-                                        </div>
-                                      )}
-                                      {!!step.Vocab && (
-                                        <div className={styles.stepInfoBlock}>
-                                          <h6>Vocabulary</h6>
-                                          <RichText content={step.Vocab} />
-                                        </div>
-                                      )}
-                                    </div>
-                                    <aside className={styles.lessonStepAside}>
-                                      {!!step.TeachingTips && (
-                                        <div className={styles.stepInfoBlock}>
-                                          <h6>Teaching tips</h6>
-                                          <RichText content={step.TeachingTips} />
-                                        </div>
-                                      )}
-                                      {!!step.VariantNotes && (
-                                        <div className={styles.stepInfoBlock}>
-                                          <h6>Variant notes</h6>
-                                          <RichText content={step.VariantNotes} />
-                                        </div>
-                                      )}
-                                    </aside>
-                                  </div>
-                                );
-                              });
-                            })()}
-                            </article>
-                          ))}
-                          {!activeLesson.chunks?.length && (
-                            <p className={styles.unitMutedText}>
-                              Detailed steps will appear here once added.
-                            </p>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
                 </div>
+                )
               ) : (
                 <p className={styles.unitMutedText}>
                   Choose a lesson to explore teaching materials.
@@ -3249,17 +4433,31 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
             </div>
           </section>
         )}
-        {activeTab !== TAB_CREDITS && nextTab && (
+        {(activeTab === TAB_MATERIALS && nextLessonId != null) ||
+        (activeTab !== TAB_CREDITS && nextTab) ? (
           <div className={styles.nextTabCtaWrap}>
-            <button
-              type="button"
-              className={styles.nextTabCta}
-              onClick={() => handleTabChange(nextTab.key as TTabKey)}
-            >
-              Next: {nextTab.label}
-            </button>
+            {activeTab === TAB_MATERIALS && nextLessonId != null && (
+              <button
+                type="button"
+                className={styles.nextLessonCta}
+                onClick={() => handleLessonChange(nextLessonId)}
+              >
+                <span>Lesson {nextLessonId}</span>
+                <ArrowRight size={15} aria-hidden="true" />
+              </button>
+            )}
+            {nextTab && (
+              <button
+                type="button"
+                className={styles.nextTabCta}
+                onClick={() => handleTabChange(nextTab.key as TTabKey)}
+              >
+                <span>Next: {nextTab.label}</span>
+                <SquareArrowRightExitIcon size={15} />
+              </button>
+            )}
           </div>
-        )}
+        ) : null}
         <aside className={styles.licenseBanner} aria-label="Creative Commons license notice">
           <div className={styles.licenseBannerInner}>
             <div className={styles.licenseTopRow}>
@@ -3282,80 +4480,85 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                 >
                   License details
                 </a>
+                <details className={styles.citationAccordion}>
+                  <summary className={styles.citationAccordionSummary}>
+                    <span>How to cite and attribute</span>
+                    <ChevronUp
+                      size={14}
+                      aria-hidden="true"
+                      className={styles.citationAccordionChevron}
+                    />
+                  </summary>
+                  <div className={styles.citationBlock}>
+                    <div className={styles.citationEntry}>
+                      <p className={styles.citationLabel}>Give Attribution</p>
+                      <p className={styles.citationText}>
+                        {attributionDisplayParts.titleByAuthors}{' '}
+                        Source:{' '}
+                        <a
+                          href={attributionDisplayParts.sourceHref}
+                          target="_blank"
+                          rel="noreferrer"
+                          className={styles.citationInlineLink}
+                        >
+                          {attributionDisplayParts.sourceLabel}
+                        </a>
+                        . License:{' '}
+                        <a
+                          href={attributionDisplayParts.licenseHref}
+                          target="_blank"
+                          rel="noreferrer"
+                          className={styles.citationInlineLink}
+                        >
+                          {attributionDisplayParts.licenseLabel}
+                        </a>
+                        .
+                      </p>
+                      <div className={styles.citationEntryFooter}>
+                        {copiedEntry === 'attribution' && (
+                          <span className={styles.citationStatus}>Copied</span>
+                        )}
+                        {copyErrorEntry === 'attribution' && (
+                          <span className={styles.citationStatusError}>Unable to copy</span>
+                        )}
+                        <button
+                          type="button"
+                          className={styles.copyCitationButton}
+                          onClick={() => handleCopyCitation(attributionText, 'attribution')}
+                          aria-label="Copy attribution"
+                          title="Copy attribution"
+                        >
+                          <Copy size={13} aria-hidden="true" />
+                          <span>Copy</span>
+                        </button>
+                      </div>
+                    </div>
+                    <div className={styles.citationEntry}>
+                      <p className={styles.citationLabel}>Cite this Work</p>
+                      <p className={styles.citationText}>{vancouverCitation}</p>
+                      <div className={styles.citationEntryFooter}>
+                        {copiedEntry === 'citation' && (
+                          <span className={styles.citationStatus}>Copied</span>
+                        )}
+                        {copyErrorEntry === 'citation' && (
+                          <span className={styles.citationStatusError}>Unable to copy</span>
+                        )}
+                        <button
+                          type="button"
+                          className={styles.copyCitationButton}
+                          onClick={() => handleCopyCitation(vancouverCitation, 'citation')}
+                          aria-label="Copy citation"
+                          title="Copy citation"
+                        >
+                          <Copy size={13} aria-hidden="true" />
+                          <span>Copy</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </details>
               </div>
             </div>
-            <details className={styles.citationDisclosure} open>
-              <summary className={styles.citationDisclosureSummary}>
-                Citation &amp; Attribution Info
-              </summary>
-              <div className={styles.citationBlock}>
-                <div className={styles.citationEntry}>
-                  <p className={styles.citationLabel}>Give Attribution</p>
-                  <p className={styles.citationText}>
-                    {attributionDisplayParts.titleByAuthors}{' '}
-                    Source:{' '}
-                    <a
-                      href={attributionDisplayParts.sourceHref}
-                      target="_blank"
-                      rel="noreferrer"
-                      className={styles.citationInlineLink}
-                    >
-                      {attributionDisplayParts.sourceLabel}
-                    </a>
-                    . License:{' '}
-                    <a
-                      href={attributionDisplayParts.licenseHref}
-                      target="_blank"
-                      rel="noreferrer"
-                      className={styles.citationInlineLink}
-                    >
-                      {attributionDisplayParts.licenseLabel}
-                    </a>
-                    .
-                  </p>
-                  <div className={styles.citationEntryFooter}>
-                    {copiedEntry === 'attribution' && (
-                      <span className={styles.citationStatus}>Copied</span>
-                    )}
-                    {copyErrorEntry === 'attribution' && (
-                      <span className={styles.citationStatusError}>Unable to copy</span>
-                    )}
-                    <button
-                      type="button"
-                      className={styles.copyCitationButton}
-                      onClick={() => handleCopyCitation(attributionText, 'attribution')}
-                      aria-label="Copy attribution"
-                      title="Copy attribution"
-                    >
-                      <Copy size={13} aria-hidden="true" />
-                      <span>Copy</span>
-                    </button>
-                  </div>
-                </div>
-                <div className={styles.citationEntry}>
-                  <p className={styles.citationLabel}>Cite this Work</p>
-                  <p className={styles.citationText}>{vancouverCitation}</p>
-                  <div className={styles.citationEntryFooter}>
-                    {copiedEntry === 'citation' && (
-                      <span className={styles.citationStatus}>Copied</span>
-                    )}
-                    {copyErrorEntry === 'citation' && (
-                      <span className={styles.citationStatusError}>Unable to copy</span>
-                    )}
-                    <button
-                      type="button"
-                      className={styles.copyCitationButton}
-                      onClick={() => handleCopyCitation(vancouverCitation, 'citation')}
-                      aria-label="Copy citation"
-                      title="Copy citation"
-                    >
-                      <Copy size={13} aria-hidden="true" />
-                      <span>Copy</span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </details>
           </div>
         </aside>
       </main>

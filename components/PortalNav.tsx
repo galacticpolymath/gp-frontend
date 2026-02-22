@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useEffect, useRef, useState } from "react";
-import { Home, ListFilter, Menu } from "lucide-react";
+import { Home, ListFilter, Menu, Search } from "lucide-react";
 import axios from "axios";
 import useSiteSession from "../customHooks/useSiteSession";
 import styles from "./PortalNav.module.css";
@@ -50,6 +50,7 @@ const PortalNav: React.FC<PortalNavProps> = ({
     }
     return value === "true";
   })();
+  const isUnitRoute = router.pathname.startsWith("/units");
 
   const [navOpen, setNavOpen] = useState(false);
   const [accountMenuOpen, setAccountMenuOpen] = useState(false);
@@ -170,6 +171,7 @@ const PortalNav: React.FC<PortalNavProps> = ({
 
   useEffect(() => {
     if (disableNavbar) return;
+    if (isUnitRoute) return;
     if (typeof window === "undefined") return;
     const root = document.documentElement;
 
@@ -219,7 +221,7 @@ const PortalNav: React.FC<PortalNavProps> = ({
 
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [disableNavbar]);
+  }, [disableNavbar, isUnitRoute]);
 
   useEffect(() => {
     if (disableNavbar) return;
@@ -247,6 +249,36 @@ const PortalNav: React.FC<PortalNavProps> = ({
       window.removeEventListener(
         "gp:suppress-nav-unhide",
         handleSuppressNavUnhide as EventListener
+      );
+    };
+  }, [disableNavbar]);
+
+  useEffect(() => {
+    if (disableNavbar) return;
+    if (typeof window === "undefined") return;
+    const root = document.documentElement;
+
+    const handleSetNavHidden = (
+      event: CustomEvent<{ hidden?: boolean }>
+    ) => {
+      const hidden = event.detail?.hidden === true;
+      navHiddenRef.current = hidden;
+      setIsNavHidden(hidden);
+
+      const navHeight = navRef.current?.getBoundingClientRect().height ?? 0;
+      const offset = hidden ? 0 : Math.max(0, Math.round(navHeight));
+      root.style.setProperty("--portal-nav-offset", `${offset}px`);
+    };
+
+    window.addEventListener(
+      "gp:set-nav-hidden",
+      handleSetNavHidden as EventListener
+    );
+
+    return () => {
+      window.removeEventListener(
+        "gp:set-nav-hidden",
+        handleSetNavHidden as EventListener
       );
     };
   }, [disableNavbar]);
@@ -297,7 +329,9 @@ const PortalNav: React.FC<PortalNavProps> = ({
   return (
     <nav
       ref={navRef}
-      className={`${styles.nav} ${isNavHidden ? styles.navHidden : ""}`}
+      className={`${styles.nav} ${isNavHidden ? styles.navHidden : ""} ${
+        isUnitRoute && isNavHidden ? styles.navUnitCollapsed : ""
+      }`}
       data-nav-hidden={isNavHidden ? "true" : "false"}
     >
       <button
@@ -344,7 +378,10 @@ const PortalNav: React.FC<PortalNavProps> = ({
       </button>
       <div className={`${styles.navRight} ${navOpen ? styles.navRightOpen : ""}`}>
         <div className={styles.navTabsGroup}>
-          <span className={styles.navTabsLabel}>Search + Explore</span>
+          <span className={styles.navTabsLabel}>
+            <Search size={12} aria-hidden="true" />
+            <span>Search + Explore</span>
+          </span>
           <div className={styles.navTabs} role="tablist" aria-label="Resource types">
             {NAV_TABS.map((tab) => (
               <button

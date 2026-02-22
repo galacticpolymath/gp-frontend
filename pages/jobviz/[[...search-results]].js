@@ -1539,7 +1539,7 @@ const JobVizSearchResults = ({
                   <strong>Looking for edit controls?</strong> GP+ members can turn on tour editing to build and save custom JobViz+ assignments. Sign in with a GP+ account or remove the <code>?edit=1</code> parameter to preview the student view.
                 </div>
               )}
-              {isTourPreviewMode && (
+              {isTourPreviewMode && !isStudentLinkView && (
                 <div className={styles.jobvizPreviewNotice} role="status">
                   <div>
                     <strong>Preview mode:</strong> First {JOBVIZ_PREVIEW_LIMIT} jobs are unlocked.{" "}

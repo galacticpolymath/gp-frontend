@@ -78,6 +78,7 @@ const OUTSETA_WEBHOOK_PATHS = new Set([
 ]);
 const PUBLIC_API_ROUTES = new Set([
   '/api/job-tours/get',
+  '/api/gp-plus/resolve-lesson-folder',
 ]);
 
 /** @param {import('next/server').NextRequest} request */
@@ -472,6 +473,9 @@ export default async function proxy(request) {
         method === 'POST' &&
         authorizationStr) ||
       (nextUrl.pathname == '/api/gp-plus/copy-lesson' &&
+        method === 'GET' &&
+        authorizationStr) ||
+      (nextUrl.pathname == '/api/gp-plus/resolve-lesson-folder' &&
         method === 'GET' &&
         authorizationStr) ||
       (nextUrl.pathname == '/api/job-tours/create' &&
