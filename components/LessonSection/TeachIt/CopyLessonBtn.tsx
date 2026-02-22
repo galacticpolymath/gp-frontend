@@ -14,7 +14,10 @@ import {
   getLocalStorageItem,
   setLocalStorageItem,
 } from '../../../shared/fns';
-import { GOOGLE_DRIVE_PROJECT_CLIENT_ID } from '../../../globalVars';
+import {
+  GOOGLE_DRIVE_AUTH_API_KEY,
+  GOOGLE_DRIVE_PROJECT_CLIENT_ID,
+} from '../../../globalVars';
 import { useModalContext } from '../../../providers/ModalProvider';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
@@ -33,10 +36,7 @@ import {
 } from '../../../backend/models/Unit/types/teachingMaterials';
 import { useLessonContext } from '../../../providers/LessonProvider';
 import Cookies from 'js-cookie';
-import {
-  TCopyFilesMsg,
-  TCopyLessonReqQueryParams,
-} from '../../../pages/api/gp-plus/copy-lesson';
+import { TCopyFilesMsg, TCopyLessonReqQueryParams } from '../../../pages/api/gp-plus/copy-lesson';
 import { ILessonForUI, TSetter } from '../../../types/global';
 import { INewUnitSchema } from '../../../backend/models/Unit/types/unit';
 import { EventSourcePolyfill } from 'event-source-polyfill';
@@ -389,6 +389,112 @@ const CopyLessonBtn: React.FC<
     };
 
     const [isCopyingLesson, setIsCopyingLesson] = useState(false);
+    const [isPickerOpen, setIsPickerOpen] = useState(false);
+
+    const clearBootstrapModalArtifacts = () => {
+      if (typeof document === 'undefined') {
+        return;
+      }
+
+      document.querySelectorAll('.modal-backdrop').forEach((el) => el.remove());
+      document.body.classList.remove('modal-open');
+      document.body.style.removeProperty('overflow');
+      document.body.style.removeProperty('padding-right');
+      document.documentElement.style.removeProperty('overflow');
+    };
+
+    const setPickerPageLock = (isLocked: boolean) => {
+      if (typeof document === 'undefined') {
+        return;
+      }
+
+      document.documentElement.classList.toggle('gp-picker-open', isLocked);
+      document.body.classList.toggle('gp-picker-open', isLocked);
+      setIsPickerOpen(isLocked);
+    };
+
+    const createLessonDocsView = (parentFolderId?: string) => {
+      if (!parentFolderId || typeof window === 'undefined') {
+        return undefined;
+      }
+
+      const pickerApi = (window as any)?.google?.picker;
+      if (!pickerApi?.DocsView || !pickerApi?.ViewId?.DOCS) {
+        return undefined;
+      }
+
+      const view = new pickerApi.DocsView(pickerApi.ViewId.DOCS);
+
+      if (typeof view.setParent === 'function') {
+        view.setParent(parentFolderId);
+      }
+      if (typeof view.setIncludeFolders === 'function') {
+        view.setIncludeFolders(true);
+      }
+      if (typeof view.setSelectFolderEnabled === 'function') {
+        view.setSelectFolderEnabled(false);
+      }
+      if (
+        typeof view.setMode === 'function' &&
+        pickerApi?.DocsViewMode?.LIST
+      ) {
+        view.setMode(pickerApi.DocsViewMode.LIST);
+      }
+
+      return view;
+    };
+
+    const openPickerSafely = (
+      pickerConfig: Parameters<typeof openPicker>[0]
+    ) => {
+      clearBootstrapModalArtifacts();
+      setPickerPageLock(true);
+      window.setTimeout(() => {
+        try {
+          const originalCallback = pickerConfig.callbackFunction;
+          openPicker({
+            ...pickerConfig,
+            callbackFunction: (data) => {
+              const action =
+                typeof data?.action === 'string'
+                  ? data.action.toLowerCase()
+                  : '';
+              if (action === 'cancel' || action === 'picked') {
+                setPickerPageLock(false);
+              }
+              originalCallback?.(data);
+            },
+          });
+        } catch (error) {
+          console.error('Failed to open Google Drive Picker:', error);
+          setPickerPageLock(false);
+          throw error;
+        }
+      }, 0);
+    };
+
+    useEffect(() => {
+      if (!isPickerOpen || typeof document === 'undefined') {
+        return;
+      }
+
+      const observer = new MutationObserver(() => {
+        const pickerDialogExists = Boolean(
+          document.querySelector('.picker-dialog, .picker-dialog-content')
+        );
+
+        if (!pickerDialogExists) {
+          setPickerPageLock(false);
+        }
+      });
+
+      observer.observe(document.body, { childList: true, subtree: true });
+      return () => observer.disconnect();
+    }, [isPickerOpen]);
+
+    useEffect(() => {
+      return () => setPickerPageLock(false);
+    }, []);
 
     const copyLesson = async () => {
       console.log('Copy unit function called');
@@ -425,7 +531,6 @@ const CopyLessonBtn: React.FC<
       if (
         !sharedGDriveLessonFolderId ||
         !lessonSharedDriveFolderName ||
-        !lessonsGrades ||
         !lessonsFolder?.name ||
         !lessonsFolder.sharedGDriveId
       ) {
@@ -455,20 +560,33 @@ const CopyLessonBtn: React.FC<
         return;
       }
 
-      openPicker({
+      if (!GOOGLE_DRIVE_AUTH_API_KEY) {
+        alert(
+          "Google Drive picker is not configured. Add NEXT_PUBLIC_GOOGLE_DRIVE_AUTH_API_KEY in .env.local and restart the dev server."
+        );
+        setIsCopyingLesson(false);
+        return;
+      }
+
+      const customLessonView = createLessonDocsView(sharedGDriveLessonFolderId);
+
+      openPickerSafely({
         appId: '1095510414161',
         clientId: GOOGLE_DRIVE_PROJECT_CLIENT_ID,
-        developerKey: process.env.NEXT_PUBLIC_GOOGLE_DRIVE_AUTH_API_KEY as string,
+        developerKey: GOOGLE_DRIVE_AUTH_API_KEY,
         viewId: 'DOCS',
         token: validToken,
-        showUploadView: true,
+        disableDefaultView: Boolean(customLessonView),
+        customViews: customLessonView ? [customLessonView] : undefined,
+        showUploadView: false,
         setParentFolder: sharedGDriveLessonFolderId,
-        showUploadFolders: true,
+        showUploadFolders: false,
         customScopes: [
           'https://www.googleapis.com/auth/drive.file',
           'https://www.googleapis.com/auth/userinfo.email',
         ],
-        setSelectFolderEnabled: true,
+        setIncludeFolders: true,
+        setSelectFolderEnabled: false,
         supportDrives: true,
         multiselect: true,
         callbackFunction: async (data) => {
@@ -577,8 +695,19 @@ const CopyLessonBtn: React.FC<
             // TODO: get all of the file ids to copy the lesson again if the user clicks on the retry button
 
             console.log('First document ID, data?.docs: ', data?.docs);
-            const fileIds = data.docs.map((file) => file.id);
-            const fileNames = data.docs.map((file) => file.name);
+            const pickedFiles = data.docs.filter((file: any) => {
+              return file?.mimeType !== 'application/vnd.google-apps.folder';
+            });
+            const fileIds = pickedFiles.map((file) => file.id);
+            const fileNames = pickedFiles.map((file) => file.name);
+
+            if (!fileIds.length) {
+              updateIdsOfLessonsBeingCopied('delete');
+              setIsCopyingLesson(false);
+              toast.dismiss(toastId);
+              alert('Select one or more files (not folders) to copy this lesson.');
+              return;
+            }
             const reqQueryParams: Partial<TCopyLessonReqQueryParams> = {
               unitId: unitId,
               unitName: MediumTitle,
@@ -588,7 +717,7 @@ const CopyLessonBtn: React.FC<
               lessonName: lessonName,
               lessonSharedGDriveFolderId: sharedGDriveLessonFolderId,
               lessonSharedDriveFolderName,
-              lessonsFolderGradesRange: lessonsGrades,
+              lessonsFolderGradesRange: lessonsGrades ?? 'default',
             };
 
             console.log('reqQueryParams: ', reqQueryParams);
@@ -822,7 +951,7 @@ const CopyLessonBtn: React.FC<
                   if (!wasSuccessful) {
                     subtitle = (
                       <span>
-                        Copy operation failed. Click{' '}
+                        {(msg ? `${msg} ` : 'Copy operation failed. ')}Click{' '}
                         <span
                           onClick={() => {
                             handleFileReportTxtClick(failedCopiedFiles);
@@ -1014,9 +1143,6 @@ const CopyLessonBtn: React.FC<
           setAppCookie
         );
 
-        if (!lessonsGrades) {
-          throw new Error('lessonsGrades is required but not provided');
-        }
         if (!validToken) {
           setLocalStorageItem(
             'gpPlusFeatureLocation',
@@ -1031,21 +1157,34 @@ const CopyLessonBtn: React.FC<
 
         console.log('validToken in openGDrivePickerToCopyLesson: ', validToken);
 
-        openPicker({
+        if (!GOOGLE_DRIVE_AUTH_API_KEY) {
+          alert(
+            "Google Drive picker is not configured. Add NEXT_PUBLIC_GOOGLE_DRIVE_AUTH_API_KEY in .env.local and restart the dev server."
+          );
+          setLessonToCopy(null);
+          return;
+        }
+
+        const customLessonView =
+          createLessonDocsView(sharedGDriveLessonFolderId);
+
+        openPickerSafely({
           appId: '1095510414161',
           clientId: GOOGLE_DRIVE_PROJECT_CLIENT_ID,
-          developerKey: process.env
-            .NEXT_PUBLIC_GOOGLE_DRIVE_AUTH_API_KEY as string,
+          developerKey: GOOGLE_DRIVE_AUTH_API_KEY,
           viewId: 'DOCS',
           token: validToken,
-          showUploadView: true,
+          disableDefaultView: Boolean(customLessonView),
+          customViews: customLessonView ? [customLessonView] : undefined,
+          showUploadView: false,
           setParentFolder: sharedGDriveLessonFolderId,
-          showUploadFolders: true,
+          showUploadFolders: false,
           customScopes: [
             'https://www.googleapis.com/auth/drive.file',
             'https://www.googleapis.com/auth/userinfo.email',
           ],
-          setSelectFolderEnabled: true,
+          setIncludeFolders: true,
+          setSelectFolderEnabled: false,
           supportDrives: true,
           multiselect: true,
           callbackFunction: async (data) => {
@@ -1150,8 +1289,19 @@ const CopyLessonBtn: React.FC<
 
               console.log('First document ID, data?.docs: ', data?.docs);
 
-              const fileIds = data.docs.map((file) => file.id);
-              const fileNames = data.docs.map((file) => file.name);
+              const pickedFiles = data.docs.filter((file: any) => {
+                return file?.mimeType !== 'application/vnd.google-apps.folder';
+              });
+              const fileIds = pickedFiles.map((file) => file.id);
+              const fileNames = pickedFiles.map((file) => file.name);
+
+              if (!fileIds.length) {
+                updateIdsOfLessonsBeingCopied('delete');
+                setIsCopyingLesson(false);
+                toast.dismiss(toastId);
+                alert('Select one or more files (not folders) to copy this lesson.');
+                return;
+              }
               const reqQueryParams: Partial<TCopyLessonReqQueryParams> = {
                 unitId: unitId,
                 unitName: MediumTitle,
@@ -1161,7 +1311,7 @@ const CopyLessonBtn: React.FC<
                 lessonName: lessonName,
                 lessonSharedGDriveFolderId: sharedGDriveLessonFolderId,
                 lessonSharedDriveFolderName,
-                lessonsFolderGradesRange: lessonsGrades,
+                lessonsFolderGradesRange: lessonsGrades ?? 'default',
               };
 
               console.log('reqQueryParams: ', reqQueryParams);
@@ -1352,11 +1502,7 @@ const CopyLessonBtn: React.FC<
                         <CopyingUnitToast
                           title={title}
                           toastId={toastId}
-                          subtitle={
-                            wasSuccessful
-                              ? 'Copy completed successfully!'
-                              : 'Copy operation failed'
-                          }
+                          subtitle={wasSuccessful ? 'Copy completed successfully!' : msg || 'Copy operation failed'}
                           jobStatus={wasSuccessful ? 'success' : 'failure'}
                           onCancel={() => {
                             console.log('Toast dismissed after job completion');

@@ -4,6 +4,15 @@ import axios from "axios";
 import { NextApiRequest, NextApiResponse } from "next";
 import { GOOGLE_DRIVE_PROJECT_CLIENT_ID } from "../../../globalVars";
 
+const getGoogleDriveClientId = () =>
+  process.env.NEXT_PUBLIC_GOOGLE_DRIVE_PROJECT_CLIENT_ID_TEST ||
+  GOOGLE_DRIVE_PROJECT_CLIENT_ID ||
+  process.env.AUTH_CLIENT_ID ||
+  "";
+
+const getGoogleDriveClientSecret = () =>
+  process.env.GOOGLE_DRIVE_AUTH_SECRET || process.env.AUTH_CLIENT_SECRET;
+
 interface IRefreshTokenRequestBody {
   refresh_token: string;
 }
@@ -32,8 +41,8 @@ export default async function handler(
     }
 
     const refreshTokenRequestBody = {
-      client_id: GOOGLE_DRIVE_PROJECT_CLIENT_ID,
-      client_secret: process.env.GOOGLE_DRIVE_AUTH_SECRET,
+      client_id: getGoogleDriveClientId(),
+      client_secret: getGoogleDriveClientSecret(),
       refresh_token,
       grant_type: "refresh_token",
     };

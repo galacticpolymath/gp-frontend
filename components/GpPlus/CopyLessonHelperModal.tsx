@@ -119,6 +119,9 @@ const CopyLessonHelperModal: React.FC<ThankYouModalProps> = ({ onClose }) => {
             <p className="text-muted mb-2">
               Select all lesson files by drawing a box around them like this:
             </p>
+            <p className="text-muted mb-2">
+              Tip: You can also use Shift-click (or Cmd/Ctrl-click) to select multiple files.
+            </p>
             <div className="d-flex justify-content-center mt-3">
               <Image
                 src="/plus/Select-FILES.gif"

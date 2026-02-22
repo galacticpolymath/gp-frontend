@@ -13,8 +13,18 @@ import { updateUserCustom } from "../../../backend/services/userServices";
 import { TUserSchemaV2 } from "../../../backend/models/User/types";
 import { getJwtPayloadPromise } from "../../../nondependencyFns";
 
+const getGoogleDriveClientId = () =>
+  process.env.NEXT_PUBLIC_GOOGLE_DRIVE_PROJECT_CLIENT_ID_TEST ||
+  GOOGLE_DRIVE_PROJECT_CLIENT_ID ||
+  process.env.AUTH_CLIENT_ID ||
+  "";
+
+const getGoogleDriveClientSecret = () =>
+  process.env.GOOGLE_DRIVE_AUTH_SECRET || process.env.AUTH_CLIENT_SECRET;
+
 interface IResBody {
   code: string;
+  redirectUri?: string;
 }
 
 interface IGDriveServerAuthRes
@@ -32,8 +42,8 @@ export class GoogleAuthReqBody {
   private grant_type: "authorization_code" | "refresh_token";
 
   constructor(redirectUri: string, code: string, refreshToken: string) {
-    this.client_id = GOOGLE_DRIVE_PROJECT_CLIENT_ID;
-    this.client_secret = process.env.GOOGLE_DRIVE_AUTH_SECRET as string;
+    this.client_id = getGoogleDriveClientId();
+    this.client_secret = getGoogleDriveClientSecret() as string;
     this.redirect_uri = redirectUri;
 
     if (code) {
@@ -49,7 +59,7 @@ export class GoogleAuthReqBody {
 
 export interface IGoogleDriveAuthResBody {
   access_token: string;
-  refresh_token: string;
+  refresh_token?: string;
   email: string;
   expires_at: number;
   refresh_token_expires_at: number;
@@ -70,16 +80,45 @@ export default async function handler(
     const { payload } =
       (await getJwtPayloadPromise(request.headers.authorization)) ?? {};
 
-    if (!payload || !payload.email) {
-      throw new CustomError("Unauthorized. Please try logging in again.", 401);
+    const reqBody = request.body as IResBody;
+    if (!reqBody?.code || typeof reqBody.code !== "string") {
+      throw new CustomError("Missing Google authorization code.", 400);
     }
 
-    const origin = request.headers.origin;
-    const reqBody = request.body as IResBody;
-    const redirect_uri = `${origin}/google-drive-auth-result`;
+    const clientSecret = getGoogleDriveClientSecret();
+    const clientId = getGoogleDriveClientId();
+
+    if (!clientSecret) {
+      throw new CustomError("Google Drive auth secret is not configured.", 500);
+    }
+    const forwardedProto = request.headers["x-forwarded-proto"];
+    const proto =
+      typeof forwardedProto === "string"
+        ? forwardedProto.split(",")[0]
+        : "http";
+    const host = request.headers.host;
+    const fallbackOrigin = host ? `${proto}://${host}` : undefined;
+    const refererOrigin = request.headers.referer
+      ? new URL(request.headers.referer).origin
+      : undefined;
+    const bodyRedirectUri =
+      typeof reqBody?.redirectUri === "string" ? reqBody.redirectUri : undefined;
+
+    const redirect_uri =
+      bodyRedirectUri ||
+      (request.headers.origin
+        ? `${request.headers.origin}/google-drive-auth-result`
+        : undefined) ||
+      (refererOrigin ? `${refererOrigin}/google-drive-auth-result` : undefined) ||
+      (fallbackOrigin ? `${fallbackOrigin}/google-drive-auth-result` : undefined);
+
+    if (!redirect_uri) {
+      throw new CustomError("Unable to resolve Google redirect URI.", 400);
+    }
+
     const googleDriveAuthReqBody = {
-      client_id: GOOGLE_DRIVE_PROJECT_CLIENT_ID,
-      client_secret: process.env.GOOGLE_DRIVE_AUTH_SECRET,
+      client_id: clientId,
+      client_secret: clientSecret,
       redirect_uri,
       code: reqBody.code,
       grant_type: "authorization_code",
@@ -106,7 +145,6 @@ export default async function handler(
 
     if (
       typeof data.access_token !== "string" ||
-      typeof data.refresh_token !== "string" ||
       typeof data.expires_in !== "number"
     ) {
       console.error(
@@ -137,39 +175,48 @@ export default async function handler(
       throw new CustomError("No user email found in the response.", 404);
     }
 
-    const googleAdminService = await createGoogleAdminService();
+    try {
+      const googleAdminService = await createGoogleAdminService();
 
-    if (!googleAdminService) {
-      throw new CustomError("Failed to create service.", 500);
-    }
+      if (googleAdminService) {
+        const userGroupMember = await getGoogleGroupMember(
+          userInfoRes.data.email,
+          googleAdminService
+        );
 
-    const userGroupMember = await getGoogleGroupMember(
-      userInfoRes.data.email,
-      googleAdminService
-    );
+        console.log("Retrieved google group member: ", userGroupMember);
 
-    console.log("Retrieved google group member: ", userGroupMember);
+        if (!userGroupMember) {
+          const insertionResult = await insertGoogleGroupMember(
+            userInfoRes.data.email,
+            googleAdminService
+          );
+          if (payload?.email) {
+            const userDbUpatedResult = await updateUserCustom(
+              { email: payload.email },
+              {
+                $addToSet: {
+                  gdriveAuthEmails: userInfoRes.data.email,
+                } as Record<keyof Pick<TUserSchemaV2, "gdriveAuthEmails">, string>,
+              },
+              {
+                upsert: true,
+              }
+            );
 
-    if (!userGroupMember) {
-      const insertionResult = await insertGoogleGroupMember(
-        userInfoRes.data.email,
-        googleAdminService
-      );
-      const userDbUpatedResult = await updateUserCustom(
-        { email: payload.email },
-        {
-          $addToSet: {
-            gdriveAuthEmails: userInfoRes.data.email,
-          } as Record<keyof Pick<TUserSchemaV2, "gdriveAuthEmails">, string>,
-        },
-        {
-          upsert: true,
+            console.log("User DB updated result: ", userDbUpatedResult);
+          } else {
+            console.warn(
+              "No validated app JWT payload during Google auth callback; skipping user DB gdriveAuthEmails update."
+            );
+          }
+          console.log("Insertion of a google group member: ", insertionResult);
         }
-      );
-
-      console.log("User DB updated result: ", userDbUpatedResult);
-
-      console.log("Insertion of a google group member: ", insertionResult);
+      } else {
+        console.warn("Google Admin service unavailable during GP+ auth; skipping group sync.");
+      }
+    } catch (groupSyncError) {
+      console.error("Google group sync failed during GP+ auth:", groupSyncError);
     }
 
     const _data: Partial<IGoogleDriveAuthResBody> = {
@@ -185,10 +232,27 @@ export default async function handler(
     console.error("Error response: ");
     console.error(error?.response);
 
-    return response.status(500).send({
+    const customStatus =
+      typeof error?.code === "number" ? error.code : undefined;
+    const upstreamStatus =
+      typeof error?.response?.status === "number"
+        ? error.response.status
+        : undefined;
+    const statusCode = customStatus || upstreamStatus || 500;
+    const upstreamMessage =
+      error?.response?.data?.error_description ||
+      error?.response?.data?.error?.message ||
+      error?.response?.data?.error;
+    const upstreamData = error?.response?.data;
+    const errMsg =
+      error?.message ||
+      upstreamMessage ||
+      "GP Plus auth failed. Server error.";
+
+    return response.status(statusCode).send({
       errType: "authFailed",
-      errMsg: "GP Plus auth failed. Server error.",
-      errorObj: error,
+      errMsg,
+      details: upstreamData ?? upstreamMessage ?? null,
     });
   }
 }

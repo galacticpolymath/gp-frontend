@@ -1345,7 +1345,10 @@ export default async function handler(
       fileCopies
     });
   } catch (error: any) {
-    const { message, code } = error ?? {};
+    const { message, code, status } = error ?? {};
+    const responseErrorMsg = error?.response?.data?.error?.message;
+    const statusCode = error?.response?.status || status;
+    const failureMsg = responseErrorMsg || message || "Copy operation failed.";
 
     console.error(`Error message: ${message}`);
     console.error(`Error code: ${code}`);
@@ -1356,6 +1359,7 @@ export default async function handler(
     sendMessage(response, {
       isJobDone: true,
       wasSuccessful: false,
+      msg: statusCode ? `${failureMsg} (status ${statusCode})` : failureMsg,
     });
   } finally {
     if (parentFolder) {

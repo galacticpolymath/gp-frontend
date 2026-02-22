@@ -29,14 +29,15 @@ const GoogleDriveAuthResult = () => {
   const { setAppCookie, cookies } = useCustomCookies();
   const { token } = useSiteSession();
   const { _isLoginModalDisplayed } = useModalContext();
-  const gpPlusFeatureLocation = getLocalStorageItem("gpPlusFeatureLocation");
+  const [isHydrated, setIsHydrated] = useState(false);
+  const [isFeatureLocationLoaded, setIsFeatureLocationLoaded] = useState(false);
+  const [authCode, setAuthCode] = useState<string | null>(null);
+  const [gpPlusFeatureLocation, setGpPlusFeatureLocation] = useState<
+    string | null
+  >(null);
   const [willRedirectUser, setWillRedirectUser] = useState(false);
   const [, setIsLoginModalDisplayed] = _isLoginModalDisplayed;
   const [wasLoginBtnClicked, setWasLoginBtnClicked] = useState(false);
-  const didAttemptToRetrieveAuthTokens =
-    typeof sessionStorage !== "undefined"
-      ? sessionStorage.getItem(`${window.location.search}`)
-      : null;
   const layoutProps = {
     title: "Google Drive Auth Result | Galactic Polymath",
     description:
@@ -58,6 +59,22 @@ const GoogleDriveAuthResult = () => {
   };
 
   useEffect(() => {
+    setIsHydrated(true);
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+    const urlParams = new URLSearchParams(window.location.search);
+    setAuthCode(urlParams.get("code"));
+
+    const storedFeatureLocation = getLocalStorageItem("gpPlusFeatureLocation");
+    setGpPlusFeatureLocation(storedFeatureLocation);
+    setIsFeatureLocationLoaded(true);
+  }, []);
+
+  useEffect(() => {
     const gpPlusFeatureLocation = getLocalStorageItem("gpPlusFeatureLocation");
 
     if (willRedirectUser && gpPlusFeatureLocation) {
@@ -70,9 +87,15 @@ const GoogleDriveAuthResult = () => {
   }, [willRedirectUser]);
 
   const { isError, isFetching } = useQuery({
-    retry: 1,
+    retry: false,
     refetchOnWindowFocus: false,
-    queryKey: [status],
+    enabled:
+      isHydrated &&
+      isFeatureLocationLoaded &&
+      status === "authenticated" &&
+      !!token &&
+      !!authCode,
+    queryKey: [isHydrated, isFeatureLocationLoaded, status, token, authCode],
     queryFn: async () => {
       if (status !== "authenticated") {
         console.log("The user is unauthenticated. Please log in first.");
@@ -80,19 +103,24 @@ const GoogleDriveAuthResult = () => {
         return false;
       }
 
-      const urlParams = new URLSearchParams(window.location.search);
-      const code = urlParams.get("code");
-
-      if (!code) {
+      if (!authCode) {
         return false;
       }
 
-      const responseBody = await authenticateUserWithGDrive(code, token);
+      const authCodeStorageKey = `gp:gdrive-auth-code:${authCode}`;
+      const wasCodeAlreadyUsed =
+        typeof window !== "undefined" &&
+        window.sessionStorage.getItem(authCodeStorageKey) === "used";
+
+      if (wasCodeAlreadyUsed) {
+        return true;
+      }
+
+      const responseBody = await authenticateUserWithGDrive(authCode, token);
 
       if (
         !responseBody ||
         !responseBody.access_token ||
-        !responseBody.refresh_token ||
         !responseBody.email ||
         !responseBody.expires_at
       ) {
@@ -120,17 +148,22 @@ const GoogleDriveAuthResult = () => {
         secure: true,
         path: "/",
       });
-      setAppCookie("gdriveRefreshToken", responseBody.refresh_token, {
-        expires: new Date(new Date().getTime() + 1_000 * 60 * 60 * 24 * 180),
-        secure: true,
-        path: "/",
-      });
+      if (responseBody.refresh_token) {
+        setAppCookie("gdriveRefreshToken", responseBody.refresh_token, {
+          expires: new Date(new Date().getTime() + 1_000 * 60 * 60 * 24 * 180),
+          secure: true,
+          path: "/",
+        });
+      }
       setAppCookie("gdriveAccessTokenExp", responseBody.expires_at, {
         expires: new Date(new Date().getTime() + 1_000 * 60 * 60 * 24 * 180),
         secure: true,
         path: "/",
       });
 
+      if (typeof window !== "undefined") {
+        window.sessionStorage.setItem(authCodeStorageKey, "used");
+      }
 
       if (gpPlusFeatureLocation) {
         setWillRedirectUser(true);
@@ -141,6 +174,28 @@ const GoogleDriveAuthResult = () => {
       return true;
     },
   });
+
+  if (!isHydrated) {
+    return (
+      <Layout {...layoutProps}>
+        <div className="min-vh-100 pt-5 ps-2 pe-2 pe-sm-0 ps-sm-5 d-flex flex-column">
+          <div className="text-center text-sm-start d-flex flex-column">
+            <span
+              style={{ width: "fit-content" }}
+              className="text-center text-sm-start d-inline-flex flex-column justify-center"
+            >
+              Loading, please wait...
+              <span className="d-inline-flex align-items-center justify-content-center">
+                <Spinner animation="border" role="status" className="mt-2">
+                  <span className="visually-hidden">Loading...</span>
+                </Spinner>
+              </span>
+            </span>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
 
   if (status === "unauthenticated") {
     return (
@@ -191,7 +246,7 @@ const GoogleDriveAuthResult = () => {
     );
   }
 
-  const authUrl = createGDriveAuthUrl();
+  const authUrl = createGDriveAuthUrl(window.location.origin);
 
   if (isError) {
     return (

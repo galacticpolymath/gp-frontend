@@ -1,6 +1,13 @@
  
 
 export const GOOGLE_DRIVE_PROJECT_CLIENT_ID = '1095510414161-7v7mlrakupjs18n2ml9brjoqs0rjkg4v.apps.googleusercontent.com';
+export const GOOGLE_DRIVE_AUTH_API_KEY =
+    process.env.NEXT_PUBLIC_GOOGLE_DRIVE_AUTH_API_KEY ||
+    process.env.NEXT_PUBLIC_GOOGLE_API_KEY ||
+    '';
+export const GOOGLE_DRIVE_CLIENT_ID =
+    process.env.NEXT_PUBLIC_GOOGLE_DRIVE_PROJECT_CLIENT_ID_TEST ||
+    GOOGLE_DRIVE_PROJECT_CLIENT_ID;
 export const PASSWORD_RESET_CODE_VAR_NAME = 'password_reset_code';
 export const isProd = process.env.NEXT_PUBLIC_VERCEL_ENV === 'production';
 export const supportEmail = 'mailto:feedback@galacticpolymath.com';

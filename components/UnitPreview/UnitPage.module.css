@@ -389,7 +389,7 @@
 
 .stickyShareAction {
   padding: 0;
-  font-size: 14px;
+  font-size: 15px;
   line-height: 1;
   font-weight: 600;
   border: 0;
@@ -408,7 +408,37 @@
 }
 
 .stickyShareAction i {
-  font-size: 14px;
+  font-size: 15px;
+}
+
+.unitNavVisibilityToggle {
+  padding: 0;
+  font-size: 15px;
+  line-height: 1;
+  font-weight: 600;
+  border: 0;
+  background: transparent;
+  color: #dce9ff;
+  min-height: 30px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  margin-left: 14px;
+  align-self: center;
+}
+
+.unitNavVisibilityToggle:hover,
+.unitNavVisibilityToggle:focus {
+  color: #f7fbff;
+}
+
+.unitNavVisibilityToggleIconCollapsed {
+  transform: rotate(180deg);
+}
+
+.unitNavVisibilityToggleIconExpanded {
+  transform: rotate(0deg);
 }
 
 .unitTabList {
@@ -1250,13 +1280,19 @@
 .lessonResourcesCard {
   width: 100%;
   max-width: 380px;
-  background-color: #e5e5f7;
-  background-image: radial-gradient(rgba(68, 76, 247, 0.24) 0.5px, #e5e5f7 0.5px);
+  padding: 0;
+  background-color: rgba(252, 251, 246, 0.78);
+  background-image:
+    radial-gradient(rgba(68, 76, 247, 0.12) 0.5px, rgba(252, 251, 246, 0.78) 0.5px),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.22), rgba(242, 239, 255, 0.16));
   background-size: 10px 10px;
   box-shadow:
     0 10px 24px rgba(21, 45, 82, 0.1),
     inset 0 1px 0 rgba(255, 255, 255, 0.55);
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
 }
 
 .lessonPreviewsCard {
@@ -1325,25 +1361,69 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
+  font-weight: 500;
 }
 
 .resourceSection {
   position: relative;
-  border: 1px solid rgba(63, 90, 153, 0.2);
-  border-radius: 14px;
+  border-left: 1px solid rgba(63, 90, 153, 0.18);
+  border-right: 1px solid rgba(63, 90, 153, 0.18);
+  border-top: 0;
+  border-bottom: 0;
+  border-radius: 0;
   padding: 10px;
   background: rgba(255, 255, 255, 0.72);
   backdrop-filter: blur(1px);
+  overflow: hidden;
+  isolation: isolate;
 }
 
 .resourceSection + .resourceSection {
-  margin-top: 10px;
+  margin-top: 0;
+  border-top: 1px solid rgba(80, 98, 146, 0.16);
+}
+
+.resourceSection:first-child {
+  border-top: 1px solid rgba(63, 90, 153, 0.18);
+  border-top-left-radius: 14px;
+  border-top-right-radius: 14px;
+}
+
+.resourceSection:last-child {
+  border-bottom: 1px solid rgba(63, 90, 153, 0.18);
+  border-bottom-left-radius: 14px;
+  border-bottom-right-radius: 14px;
+}
+
+.quickStartSection {
+  order: 1;
+}
+
+.previewDownloadSection {
+  order: 2;
+}
+
+.gpPlusFunctionsSection {
+  order: 3;
 }
 
 .quickStartSection {
   box-shadow:
-    0 10px 20px rgba(44, 131, 195, 0.12),
-    inset 0 0 0 1px rgba(44, 131, 195, 0.08);
+    0 6px 10px rgba(89, 64, 179, 0.04),
+    inset 0 0 0 1px rgba(89, 64, 179, 0.04);
+  background: rgba(252, 251, 255, 0.74);
+}
+
+.quickStartSection::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  height: 100%;
+  background:
+    radial-gradient(circle at 22% 32%, rgba(121, 96, 222, 0.05), transparent 48%),
+    linear-gradient(115deg, rgba(103, 84, 205, 0.03), transparent 66%);
+  pointer-events: none;
+  z-index: 0;
 }
 
 .gpPlusFunctionsSection {
@@ -1366,8 +1446,31 @@
 
 .previewDownloadSection {
   box-shadow:
-    0 10px 20px rgba(75, 58, 168, 0.11),
-    inset 0 0 0 1px rgba(75, 58, 168, 0.08);
+    0 6px 10px rgba(89, 64, 179, 0.04),
+    inset 0 0 0 1px rgba(89, 64, 179, 0.04);
+  background: rgba(252, 251, 255, 0.74);
+}
+
+.previewDownloadSection::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  height: 100%;
+  background:
+    radial-gradient(circle at 22% 32%, rgba(121, 96, 222, 0.05), transparent 48%),
+    linear-gradient(115deg, rgba(103, 84, 205, 0.03), transparent 66%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.previewDownloadSection:last-child {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.resourceSection > * {
+  position: relative;
+  z-index: 1;
 }
 
 .gpFunctionActions {
@@ -1376,22 +1479,12 @@
 }
 
 .gpFunctionActionBtn {
-  width: 100%;
-  border: 1px solid rgba(44, 131, 195, 0.2);
-  border-radius: 12px;
-  background: rgba(255, 255, 255, 0.78);
-  color: #1f355a;
-  min-height: 42px;
-  padding: 8px 10px;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  cursor: pointer;
+  min-height: 40px;
 }
 
 .gpFunctionActionBtn:hover {
-  border-color: rgba(44, 131, 195, 0.35);
-  background: rgba(255, 255, 255, 0.94);
+  border-color: rgba(44, 131, 195, 0.2);
+  background: rgba(250, 253, 255, 0.74);
 }
 
 .gpFunctionActionBtn:disabled {
@@ -1401,6 +1494,51 @@
 
 .hiddenCopyLessonBtn {
   display: none !important;
+}
+
+.gradeBandSelectorCard {
+  border: 1px solid rgba(44, 131, 195, 0.18);
+  border-radius: 14px;
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.88);
+  box-shadow: 0 8px 16px rgba(32, 56, 97, 0.08);
+}
+
+.gradeBandPreface :global(p) {
+  margin: 0 0 8px;
+  font-size: 15px;
+  line-height: 1.45;
+  color: #445376;
+}
+
+.gradeBandChooser {
+  display: grid;
+  gap: 8px;
+}
+
+.gradeBandChooser h4 {
+  margin: 0;
+  font-size: 15px;
+  color: #1f355a;
+}
+
+.gradeBandOptions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 14px;
+}
+
+.gradeBandOption {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  color: #1f355a;
+  cursor: pointer;
+}
+
+.gradeBandOption input {
+  margin: 0;
 }
 
 .copyAllFallback {
@@ -1476,7 +1614,12 @@
   align-items: center;
   gap: 7px;
   font-size: 17px;
+  font-weight: 800;
   color: #1f355a;
+}
+
+.lessonCardHeading :global(svg) {
+  stroke-width: 2.4;
 }
 
 .lessonEyebrow {
@@ -1614,7 +1757,7 @@
 
 .materialRowMain strong {
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 500;
   line-height: 1.35;
   color: #1f355a;
   white-space: normal;
@@ -1647,7 +1790,7 @@
   align-items: center;
   min-height: 34px;
   font-size: 15px;
-  font-weight: 700;
+  font-weight: 400;
   color: #1f355a;
   border: 1px solid rgba(44, 131, 195, 0.26);
   border-radius: 999px;

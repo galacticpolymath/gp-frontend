@@ -152,13 +152,15 @@ export class CustomHeaders extends AxiosHeaders {
   constructor(appAccessToken: string) {
     super();
     this.Authorization = `Bearer ${appAccessToken}`;
-    const gdriveAccessToken = Cookies.get("gdrive-token");
+    const gdriveAccessToken =
+      Cookies.get("gdrive-token") || Cookies.get("gdriveAccessToken");
 
     if (gdriveAccessToken) {
       this["gdrive-token"] = gdriveAccessToken;
     }
 
-    const gdriveRefreshToken = Cookies.get("gdrive-token-refresh");
+    const gdriveRefreshToken =
+      Cookies.get("gdrive-token-refresh") || Cookies.get("gdriveRefreshToken");
 
     if (gdriveRefreshToken) {
       this["gdrive-token-refresh"] = gdriveRefreshToken;
@@ -177,17 +179,53 @@ export const authenticateUserWithGDrive = async (
       );
     }
 
-    const headers = new CustomHeaders(accessToken);
+    const headers: Record<string, string> = {
+      Authorization: `Bearer ${accessToken}`,
+    };
+    const gdriveAccessToken =
+      Cookies.get("gdrive-token") || Cookies.get("gdriveAccessToken");
+    const gdriveRefreshToken =
+      Cookies.get("gdrive-token-refresh") || Cookies.get("gdriveRefreshToken");
+
+    if (gdriveAccessToken) {
+      headers["gdrive-token"] = gdriveAccessToken;
+    }
+
+    if (gdriveRefreshToken) {
+      headers["gdrive-token-refresh"] = gdriveRefreshToken;
+    }
 
     console.log("headers: ", headers);
 
+    const redirectUri = `${window.location.origin}/google-drive-auth-result`;
     const { status, data } = await axios.post<
       IErr | { data: Partial<IGoogleDriveAuthResBody> }
-    >("/api/gp-plus/auth", { code }, { headers });
+    >("/api/gp-plus/auth", { code, redirectUri }, {
+      headers,
+      validateStatus: () => true,
+    });
 
     if (status !== 200) {
+      console.error("Google auth endpoint non-200 response:", {
+        status,
+        data,
+      });
+      const dataErrMsg =
+        typeof data === "object" && data && "errMsg" in data
+          ? String((data as any).errMsg ?? "")
+          : "";
+      const rawDetails =
+        typeof data === "object" && data && "details" in data
+          ? (data as any).details
+          : "";
+      const dataDetails =
+        typeof rawDetails === "string"
+          ? rawDetails
+          : rawDetails
+            ? JSON.stringify(rawDetails)
+            : "";
       throw new Error(
-        `Failed to authenticate user with Google Drive. Status code: ${status}. Data: ${data}`
+        `Failed to authenticate user with Google Drive. Status code: ${status}.${dataErrMsg ? ` ${dataErrMsg}` : ""}${dataDetails ? ` Details: ${dataDetails}` : ""}`
       );
     }
 
@@ -203,6 +241,9 @@ export const authenticateUserWithGDrive = async (
       "Failed to authenticate user with Google Drive. Reason: ",
       error
     );
+    if (axios.isAxiosError(error)) {
+      console.error("Auth endpoint response payload:", error.response?.data);
+    }
 
     return null;
   }

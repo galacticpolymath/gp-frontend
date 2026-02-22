@@ -23,8 +23,10 @@ import {
   Filter,
   Link2,
   ListTree,
+  MonitorPlay,
   Network,
   NotebookPen,
+  TextSearch,
   SquareArrowOutUpRight,
   Target,
   X,
@@ -223,6 +225,17 @@ const suppressPortalNavReveal = (durationMs = 700) => {
   window.dispatchEvent(
     new CustomEvent('gp:suppress-nav-unhide', { detail: { durationMs } })
   );
+};
+
+const setPortalNavHidden = (hidden: boolean) => {
+  if (typeof window === 'undefined') {
+    return;
+  }
+  const root = document.documentElement;
+  const portalNav = document.querySelector('nav[data-nav-hidden]') as HTMLElement | null;
+  const navHeight = portalNav?.getBoundingClientRect().height ?? 0;
+  root.style.setProperty('--portal-nav-offset', hidden ? '0px' : `${Math.max(0, Math.round(navHeight))}px`);
+  window.dispatchEvent(new CustomEvent('gp:set-nav-hidden', { detail: { hidden } }));
 };
 
 const isPortalNavHidden = () => {
@@ -794,6 +807,21 @@ type TUserGDriveData = {
   }[];
 };
 
+type TResolvedLessonFolderResponse = {
+  lessonFolder: {
+    id: string;
+    name: string;
+    parentFolder: {
+      id: string;
+      name: string;
+    };
+  };
+  lessonsFolder: {
+    sharedGDriveId: string;
+    name: string;
+  };
+};
+
 const getFirstItemUrl = (item?: TPreviewItem) => {
   if (item?.externalUrl) {
     return item.externalUrl;
@@ -844,6 +872,19 @@ const getGoogleDriveFileId = (value: string) => {
   if (openMatch?.[1]) {
     return openMatch[1];
   }
+  return null;
+};
+
+const getGoogleDriveFolderIdFromUrl = (value?: string | null) => {
+  if (!value) {
+    return null;
+  }
+
+  const folderMatch = value.match(/drive\.google\.com\/drive\/folders\/([^/?]+)/i);
+  if (folderMatch?.[1]) {
+    return folderMatch[1];
+  }
+
   return null;
 };
 
@@ -990,6 +1031,15 @@ const getFirstLessonResource = (
     return null;
   }
   return resources.find((resource) => resource?.lessons?.length) ?? resources[0];
+};
+
+const getLessonResourcePersistKey = (
+  resource: IResource<INewUnitLesson<IItemForUI>>,
+  index: number
+) => {
+  const gradePrefix = resource?.gradePrefix?.trim() ?? '';
+  const grades = resource?.grades?.trim() ?? '';
+  return `${gradePrefix}|${grades}|${index}`;
 };
 
 const buildSearchEntries = (
@@ -1238,10 +1288,13 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
     unit.Sections?.versions?.Data ??
     ((unit.Sections as { versionNotes?: { Data?: any[] } })?.versionNotes?.Data ??
       []);
-  const lessonResources = getFirstLessonResource(
-    teachingMaterials?.classroom?.resources
-  );
+  const classroomResources = teachingMaterials?.classroom?.resources ?? [];
   const unitId = unit?._id ? String(unit._id) : '';
+  const gradeBandStorageKey = `unit-materials-grade-band:${unitId}`;
+  const [selectedResourceIndex, setSelectedResourceIndex] = useState(0);
+  const lessonResources =
+    classroomResources[selectedResourceIndex] ??
+    getFirstLessonResource(classroomResources);
   const [lessons, setLessons] = useState<INewUnitLesson<IItemForUI>[]>(
     lessonResources?.lessons ?? []
   );
@@ -1293,6 +1346,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
   );
   const [searchTerm, setSearchTerm] = useState('');
   const [isSearchExpanded, setIsSearchExpanded] = useState(false);
+  const [isPortalNavCollapsed, setIsPortalNavCollapsed] = useState(true);
   const [isTagListExpanded, setIsTagListExpanded] = useState(false);
   const [visibleTagCount, setVisibleTagCount] = useState(0);
   const [activeMaterialIndex, setActiveMaterialIndex] = useState(0);
@@ -1300,6 +1354,9 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
     useState<TActiveLessonPreviewMode>('materials');
   const [isRetrievingLessonFolderIds, setIsRetrievingLessonFolderIds] =
     useState(false);
+  const [resolvedLessonFolderFromApi, setResolvedLessonFolderFromApi] =
+    useState<TResolvedLessonFolderResponse | null>(null);
+  const [isResolvingLessonFolder, setIsResolvingLessonFolder] = useState(false);
   const [isGpPlusBannerDismissed, setIsGpPlusBannerDismissed] = useState(false);
   const [isStandardsFilterDockOpen, setIsStandardsFilterDockOpen] =
     useState(false);
@@ -1325,6 +1382,12 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
   );
   const [shouldScrollToVersionNotes, setShouldScrollToVersionNotes] =
     useState(false);
+  const shouldShowGradeBandChooser = classroomResources.some(
+    (resource) =>
+      Boolean(resource?.gradePrefix?.trim() || resource?.grades?.trim())
+  );
+  const hasMultipleGradeBandOptions = classroomResources.length > 1;
+  const teachingMaterialsPreface = teachingMaterials?.unitPreface?.trim() ?? '';
 
   const searchResults = useMemo(() => {
     const term = normalize(searchTerm.trim());
@@ -1558,6 +1621,15 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
       trackUnitEvent('unit_search_toggled', { expanded: !current });
       return !current;
     });
+  };
+
+  const handlePortalNavToggle = () => {
+    const nextCollapsed = !isPortalNavCollapsed;
+    setPortalNavHidden(nextCollapsed);
+    setIsPortalNavCollapsed(nextCollapsed);
+    if (nextCollapsed) {
+      suppressPortalNavReveal(1200);
+    }
   };
 
   useEffect(() => {
@@ -1822,6 +1894,77 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
   }, [lessonResources?.lessons]);
 
   useEffect(() => {
+    if (!classroomResources.length || typeof window === 'undefined') {
+      return;
+    }
+
+    const savedResourceKey = window.localStorage.getItem(gradeBandStorageKey);
+    if (!savedResourceKey) {
+      return;
+    }
+
+    const matchedIndex = classroomResources.findIndex((resource, index) => {
+      return getLessonResourcePersistKey(resource, index) === savedResourceKey;
+    });
+
+    if (matchedIndex >= 0) {
+      setSelectedResourceIndex(matchedIndex);
+    }
+  }, [classroomResources, gradeBandStorageKey]);
+
+  useEffect(() => {
+    if (!classroomResources.length || typeof window === 'undefined') {
+      return;
+    }
+
+    const selectedResource = classroomResources[selectedResourceIndex];
+    if (!selectedResource) {
+      return;
+    }
+
+    window.localStorage.setItem(
+      gradeBandStorageKey,
+      getLessonResourcePersistKey(selectedResource, selectedResourceIndex)
+    );
+  }, [classroomResources, gradeBandStorageKey, selectedResourceIndex]);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    setPortalNavHidden(true);
+    const syncTimer = window.setTimeout(() => setPortalNavHidden(true), 120);
+    suppressPortalNavReveal(1200);
+    setIsPortalNavCollapsed(true);
+    return () => window.clearTimeout(syncTimer);
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    const syncPortalNavState = () => {
+      setIsPortalNavCollapsed(isPortalNavHidden());
+    };
+
+    syncPortalNavState();
+    const portalNav = document.querySelector('nav[data-nav-hidden]');
+    if (!portalNav || typeof MutationObserver === 'undefined') {
+      return;
+    }
+
+    const observer = new MutationObserver(syncPortalNavState);
+    observer.observe(portalNav, {
+      attributes: true,
+      attributeFilter: ['data-nav-hidden'],
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
     if (!lessons.length) {
       setActiveLessonId(null);
       return;
@@ -1890,13 +2033,33 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
     return matchingFolder ?? activeLesson.sharedGDriveLessonFolders[0] ?? null;
   }, [activeLesson, activeLessonId, lessonResources]);
 
+  const resolvedLessonsFolder = useMemo(() => {
+    if (activeLesson?.lessonsFolder?.sharedGDriveId) {
+      return activeLesson.lessonsFolder;
+    }
+
+    const fallbackLesson = lessons.find(
+      (lesson) => lesson?.lessonsFolder?.sharedGDriveId
+    );
+    return fallbackLesson?.lessonsFolder;
+  }, [activeLesson, lessons]);
+
+  const resolvedAllUnitLessons = useMemo(() => {
+    if (activeLesson?.allUnitLessons?.length) {
+      return activeLesson.allUnitLessons;
+    }
+
+    const fallbackLesson = lessons.find((lesson) => lesson?.allUnitLessons?.length);
+    return fallbackLesson?.allUnitLessons;
+  }, [activeLesson, lessons]);
+
   const activeLessonSharedGDriveFolderFallback = useMemo(() => {
-    if (!activeLesson?.allUnitLessons?.length || activeLesson.lsn == null) {
+    if (!resolvedAllUnitLessons?.length || activeLesson?.lsn == null) {
       return null;
     }
 
     const lessonIdStr = String(activeLesson.lsn);
-    const matchedLesson = activeLesson.allUnitLessons.find(
+    const matchedLesson = resolvedAllUnitLessons.find(
       (lesson) => lesson.id === lessonIdStr
     );
 
@@ -1909,32 +2072,207 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
       name: activeLesson.title ?? `lesson-${lessonIdStr}`,
       parentFolder: {
         id:
-          activeLesson.lessonsFolder?.sharedGDriveId ??
+          resolvedLessonsFolder?.sharedGDriveId ??
           unit.GdrivePublicID ??
           '',
         name:
-          activeLesson.lessonsFolder?.name ??
+          resolvedLessonsFolder?.name ??
           unit.MediumTitle ??
           unit.Title ??
           'Unit',
       },
     };
-  }, [activeLesson, unit.GdrivePublicID, unit.MediumTitle, unit.Title]);
+  }, [
+    activeLesson,
+    resolvedAllUnitLessons,
+    resolvedLessonsFolder,
+    unit.GdrivePublicID,
+    unit.MediumTitle,
+    unit.Title,
+  ]);
 
   const resolvedActiveLessonSharedFolder =
     activeLessonSharedGDriveFolder ?? activeLessonSharedGDriveFolderFallback;
-
-  const canShowCopyAllToGoogleDriveBtn = Boolean(
-    resolvedActiveLessonSharedFolder?.id &&
-      resolvedActiveLessonSharedFolder?.name &&
-      activeLesson?.lessonsFolder?.sharedGDriveId
+  const selectedGradeBandFolderId = getGoogleDriveFolderIdFromUrl(
+    lessonResources?.links?.url?.[0] ?? null
   );
+
+  useEffect(() => {
+    let didCancel = false;
+
+    const resolveLessonFolder = async () => {
+      if (!unit.GdrivePublicID || activeLessonId == null) {
+        setResolvedLessonFolderFromApi(null);
+        setIsResolvingLessonFolder(false);
+        return;
+      }
+
+      setIsResolvingLessonFolder(true);
+
+      try {
+        const url = new URL(
+          `${window.location.origin}/api/gp-plus/resolve-lesson-folder`
+        );
+        url.searchParams.set('unitRootFolderId', unit.GdrivePublicID);
+        url.searchParams.set('lessonId', String(activeLessonId));
+        if (selectedGradeBandFolderId) {
+          url.searchParams.set('gradeBandFolderId', selectedGradeBandFolderId);
+        }
+
+        const response = await fetch(url.href);
+        if (!response.ok || didCancel) {
+          setResolvedLessonFolderFromApi(null);
+          return;
+        }
+
+        const data = (await response.json()) as TResolvedLessonFolderResponse;
+        if (!didCancel) {
+          setResolvedLessonFolderFromApi(data);
+        }
+      } catch (error) {
+        console.error('Failed to resolve lesson folder from API:', error);
+        if (!didCancel) {
+          setResolvedLessonFolderFromApi(null);
+        }
+      } finally {
+        if (!didCancel) {
+          setIsResolvingLessonFolder(false);
+        }
+      }
+    };
+
+    resolveLessonFolder();
+    return () => {
+      didCancel = true;
+    };
+  }, [activeLessonId, selectedGradeBandFolderId, unit.GdrivePublicID]);
+
+  const resolvedLessonsFolderForCopy = useMemo(() => {
+    if (resolvedLessonsFolder?.sharedGDriveId) {
+      return {
+        sharedGDriveId: resolvedLessonsFolder.sharedGDriveId,
+        name:
+          resolvedLessonsFolder.name?.trim() ||
+          lessonResources?.links?.linkText?.trim() ||
+          lessonResources?.grades?.trim() ||
+          lessonResources?.gradePrefix?.trim() ||
+          unit.MediumTitle ||
+          unit.Title ||
+          'Lesson Materials',
+      };
+    }
+
+    const parentFolder = (
+      resolvedActiveLessonSharedFolder as {
+        parentFolder?: { id?: string; name?: string };
+      } | null
+    )?.parentFolder;
+
+    if (parentFolder?.id && parentFolder?.name) {
+      return {
+        sharedGDriveId: parentFolder.id,
+        name: parentFolder.name,
+      };
+    }
+
+    const rootMaterialsFolderUrl = lessonResources?.links?.url?.[0] ?? null;
+    const rootMaterialsFolderId = getGoogleDriveFolderIdFromUrl(rootMaterialsFolderUrl);
+    if (rootMaterialsFolderId) {
+      return {
+        sharedGDriveId: rootMaterialsFolderId,
+        name:
+          lessonResources?.links?.linkText?.trim() ||
+          lessonResources?.grades?.trim() ||
+          'Lesson Materials',
+      };
+    }
+
+    if (unit.GdrivePublicID) {
+      return {
+        sharedGDriveId: unit.GdrivePublicID,
+        name:
+          unit.MediumTitle?.trim() ||
+          unit.Title?.trim() ||
+          'Lesson Materials',
+      };
+    }
+
+    return undefined;
+  }, [
+    lessonResources,
+    resolvedActiveLessonSharedFolder,
+    resolvedLessonsFolder,
+    unit.GdrivePublicID,
+    unit.MediumTitle,
+    unit.Title,
+  ]);
+
+  const lessonFolderIdFromAllUnitLessons =
+    activeLessonId != null
+      ? resolvedAllUnitLessons?.find(
+          (lesson) => lesson.id === String(activeLessonId)
+        )?.sharedGDriveId
+      : undefined;
+  const resolvedSharedFolderIdForCopy =
+    resolvedLessonFolderFromApi?.lessonFolder?.id ||
+    resolvedActiveLessonSharedFolder?.id ||
+    lessonFolderIdFromAllUnitLessons ||
+    selectedGradeBandFolderId ||
+    unit.GdrivePublicID ||
+    '';
+  const resolvedSharedFolderNameForCopy =
+    resolvedLessonFolderFromApi?.lessonFolder?.name?.trim() ||
+    resolvedActiveLessonSharedFolder?.name?.trim() ||
+    activeLesson?.title?.trim() ||
+    `Lesson ${activeLessonId ?? ''}`.trim() ||
+    'Lesson';
+  const effectiveLessonsFolderForCopy = {
+    sharedGDriveId:
+      resolvedLessonFolderFromApi?.lessonsFolder?.sharedGDriveId ||
+      resolvedLessonsFolderForCopy?.sharedGDriveId ||
+      (resolvedActiveLessonSharedFolder as { parentFolder?: { id?: string } } | null)
+        ?.parentFolder?.id ||
+      unit.GdrivePublicID ||
+      resolvedSharedFolderIdForCopy,
+    name:
+      resolvedLessonFolderFromApi?.lessonsFolder?.name?.trim() ||
+      resolvedLessonsFolderForCopy?.name?.trim() ||
+      (resolvedActiveLessonSharedFolder as { parentFolder?: { name?: string } } | null)
+        ?.parentFolder?.name?.trim() ||
+      lessonResources?.links?.linkText?.trim() ||
+      lessonResources?.grades?.trim() ||
+      lessonResources?.gradePrefix?.trim() ||
+      unit.MediumTitle?.trim() ||
+      unit.Title?.trim() ||
+      'Lesson Materials',
+  };
+  const lessonsGradesForCopy =
+    lessonResources?.grades?.trim() ||
+    lessonResources?.gradePrefix?.trim() ||
+    'default';
+  const allUnitLessonsForCopy =
+    resolvedAllUnitLessons?.length
+      ? resolvedAllUnitLessons
+      : resolvedSharedFolderIdForCopy && activeLessonId != null
+      ? [
+          {
+            id: String(activeLessonId),
+            sharedGDriveId: resolvedSharedFolderIdForCopy,
+          },
+        ]
+      : undefined;
+
+  // Keep this gate simple and deterministic: if we can resolve the lesson source folder,
+  // the Copy All flow should be available.
+  const canShowCopyAllToGoogleDriveBtn = Boolean(resolvedSharedFolderIdForCopy);
   const browseAllMaterialsUrl = lessonResources?.links?.url?.[0] ?? null;
   const canBrowseAllMaterials = Boolean(browseAllMaterialsUrl);
   const isCopyAllDisabledForGpPlus = isGpPlusUser && !canShowCopyAllToGoogleDriveBtn;
   const isBrowseDisabledForGpPlus = isGpPlusUser && !canBrowseAllMaterials;
   const copyAllUnavailableReason =
-    'Copy is unavailable because this lesson does not yet have a mapped source folder for the selected grade.';
+    isResolvingLessonFolder
+      ? 'Resolving lesson folder...'
+      : 'Copy is unavailable because this lesson source folder is not yet mapped in Google Drive.';
   const browseUnavailableReason =
     'Browse is unavailable because this lesson does not yet have a mapped Google Drive folder.';
 
@@ -2314,7 +2652,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                   aria-expanded={isSearchExpanded}
                   onClick={handleSearchToggle}
                 >
-                  <i className="bi bi-search" />
+                  <TextSearch size={16} aria-hidden="true" />
                 </button>
                 <input
                   id="unit-search"
@@ -2325,7 +2663,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                       : `${styles.unitSearchInput} ${styles.unitSearchInputCollapsed}`
                   }
                   type="search"
-                  placeholder="Search lessons, steps, resources"
+                  placeholder="Search within this unit"
                   value={searchTerm}
                   onChange={(event) => setSearchTerm(event.target.value)}
                   onKeyDown={(event) => {
@@ -2362,6 +2700,23 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                   Share
                 </button>
               )}
+              <button
+                type="button"
+                className={styles.unitNavVisibilityToggle}
+                onClick={handlePortalNavToggle}
+                aria-label={isPortalNavCollapsed ? 'Expand top navigation' : 'Collapse top navigation'}
+              >
+                <ChevronUp
+                  size={18}
+                  aria-hidden="true"
+                  className={
+                    isPortalNavCollapsed
+                      ? styles.unitNavVisibilityToggleIconCollapsed
+                      : styles.unitNavVisibilityToggleIconExpanded
+                  }
+                />
+                <span>{isPortalNavCollapsed ? 'Expand' : 'Collapse'}</span>
+              </button>
             </div>
           </div>
           <div className={styles.unitTabList}>
@@ -2717,6 +3072,46 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                       )}
                     </div>
                   </div>
+                  {(teachingMaterialsPreface || shouldShowGradeBandChooser) && (
+                    <div className={styles.gradeBandSelectorCard}>
+                      {teachingMaterialsPreface && (
+                        <div className={styles.gradeBandPreface}>
+                          <RichText content={teachingMaterialsPreface} />
+                        </div>
+                      )}
+                      {shouldShowGradeBandChooser && (
+                        <div className={styles.gradeBandChooser}>
+                          <h4>Available Grade Bands</h4>
+                          <div className={styles.gradeBandOptions}>
+                            {classroomResources.map((resource, index) => {
+                              const label =
+                                resource.gradePrefix?.trim() ||
+                                resource.grades?.trim() ||
+                                `Option ${index + 1}`;
+                              const optionId = `grade-band-${unitId}-${index}`;
+                              return (
+                                <label
+                                  key={optionId}
+                                  htmlFor={optionId}
+                                  className={styles.gradeBandOption}
+                                >
+                                  <input
+                                    id={optionId}
+                                    type="radio"
+                                    name={`grade-band-${unitId}`}
+                                    checked={selectedResourceIndex === index}
+                                    onChange={() => setSelectedResourceIndex(index)}
+                                    disabled={!hasMultipleGradeBandOptions}
+                                  />
+                                  <span>{label}</span>
+                                </label>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
                   <div className={styles.lessonMaterialsGrid}>
                     {!isGpPlusUser && !isGpPlusBannerDismissed && (
                       <div className={styles.gpPlusBannerWrapInGrid}>
@@ -2780,7 +3175,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                             disabled={!hasFeaturedMedia}
                           >
                             <span className={styles.lessonProcedureToggleText}>
-                              <Eye size={16} aria-hidden="true" />
+                              <MonitorPlay size={16} aria-hidden="true" />
                               <span>Featured Media</span>
                             </span>
                           </button>
@@ -2815,7 +3210,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                         <div className={styles.gpFunctionActions}>
                           <button
                             type="button"
-                            className={styles.gpFunctionActionBtn}
+                            className={`${styles.lessonProcedureToggle} ${styles.gpFunctionActionBtn}`}
                             onClick={handleBrowseAllMaterialsClick}
                             disabled={isBrowseDisabledForGpPlus}
                           >
@@ -2826,7 +3221,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                           </button>
                           <button
                             type="button"
-                            className={styles.gpFunctionActionBtn}
+                            className={`${styles.lessonProcedureToggle} ${styles.gpFunctionActionBtn}`}
                             onClick={handleCopyAllMaterialsClick}
                             disabled={isCopyAllDisabledForGpPlus}
                           >
@@ -2855,18 +3250,16 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                             lessonId={activeLessonId ?? ''}
                             lessonName={activeLesson.title ?? 'Lesson'}
                             lessonsGrades={
-                              (
-                                lessonResources as { grades?: string | null } | null
-                              )?.grades ?? undefined
+                              lessonsGradesForCopy
                             }
-                            sharedGDriveLessonFolderId={resolvedActiveLessonSharedFolder!.id}
-                            lessonSharedDriveFolderName={resolvedActiveLessonSharedFolder!.name}
+                            sharedGDriveLessonFolderId={resolvedSharedFolderIdForCopy}
+                            lessonSharedDriveFolderName={resolvedSharedFolderNameForCopy}
                             userGDriveLessonFolderId={
                               activeLesson.userGDriveLessonFolderId
                             }
-                            allUnitLessons={activeLesson.allUnitLessons}
+                            allUnitLessons={allUnitLessonsForCopy}
                             GdrivePublicID={unit.GdrivePublicID}
-                            lessonsFolder={activeLesson.lessonsFolder}
+                            lessonsFolder={effectiveLessonsFolderForCopy}
                             isRetrievingLessonFolderIds={isRetrievingLessonFolderIds}
                             setParts={setLessons as any}
                             btnClassName={styles.hiddenCopyLessonBtn}
@@ -2973,7 +3366,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                         <article className={styles.lessonPreviewItem}>
                           <header className={styles.lessonPreviewHeader}>
                             <h3 className={styles.lessonCardHeading}>
-                              <Eye size={16} aria-hidden="true" />
+                              <MonitorPlay size={16} aria-hidden="true" />
                               <span>Featured Media</span>
                             </h3>
                           </header>
