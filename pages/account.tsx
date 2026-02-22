@@ -786,6 +786,29 @@ const AccountPg: React.FC = () => {
             </BootstrapButton>
             <BootstrapButton
               onClick={() =>
+                window.open("https://drive.google.com/drive/my-drive", "_blank", "noopener,noreferrer")
+              }
+              variant="outline-primary"
+              size="sm"
+              className="p-1 mt-2 account-action-btn"
+              style={{ width: "210px" }}
+            >
+              <span
+                style={{ fontSize: "18px", textTransform: "none" }}
+                className="d-inline-flex align-items-center gap-2"
+              >
+                <Image
+                  src="/imgs/google_drive.png"
+                  alt="Google Drive"
+                  width={20}
+                  height={20}
+                  style={{ width: "20px", height: "20px", objectFit: "contain" }}
+                />
+                My GP+ Units
+              </span>
+            </BootstrapButton>
+            <BootstrapButton
+              onClick={() =>
                 router.push("/search?typeFilter=Job%20Tour&mine=1")
               }
               variant="outline-primary"

@@ -103,38 +103,27 @@ const CopyLessonHelperModal: React.FC<ThankYouModalProps> = ({ onClose }) => {
         zIndex: 10000,
       }}
     >
-      <Modal.Body className="text-center p-4">
-        <div className="mb-4">
-          <h4 className="mb-3">About Copying A Lesson: </h4>
-          <div className="mb-3">
-            <p className="text-muted mb-2">
-              Files will be copied to your Google drive in the following path:
-            </p>
-            <p className="fw-bold text-primary">
-              My Drive → My GP+ Units → UNIT NAME
-            </p>
-          </div>
-
-          <div className="mb-3">
-            <p className="text-muted mb-2">
-              Select all lesson files by drawing a box around them like this:
-            </p>
-            <p className="text-muted mb-2">
-              Tip: You can also use Shift-click (or Cmd/Ctrl-click) to select multiple files.
-            </p>
-            <div className="d-flex justify-content-center mt-3">
-              <Image
-                src="/plus/Select-FILES.gif"
-                alt="How to select files by drawing a box"
-                width={400}
-                height={300}
-                className="rounded shadow-sm"
-                style={{ maxWidth: "100%", height: "auto" }}
-              />
-            </div>
+      <Modal.Body className="text-center px-4 pt-4 pb-2">
+        <div className="mb-2">
+          <h4 className="mb-2">Copy lesson files to Google Drive</h4>
+          <p className="text-muted mb-1">
+            Destination: <span className="fw-bold text-primary">My Drive → My GP+ Units → UNIT NAME</span>
+          </p>
+          <p className="text-muted mb-2">
+            In the picker, drag a selection box over files. Shift/Cmd/Ctrl-click also works.
+          </p>
+          <div className="d-flex justify-content-center mt-2 mb-2">
+            <Image
+              src="/plus/Select-FILES.gif"
+              alt="How to select files by drawing a box"
+              width={620}
+              height={400}
+              className="rounded shadow-sm"
+              style={{ width: "100%", maxWidth: "620px", height: "auto" }}
+            />
           </div>
         </div>
-        <div className="d-flex align-items-center justify-content-center">
+        <div className="d-flex align-items-center justify-content-center mb-1">
           {dontShowModalAgain ? (
             <BiCheckboxChecked
               onClick={handleDontShowAgainToggle}
@@ -156,7 +145,18 @@ const CopyLessonHelperModal: React.FC<ThankYouModalProps> = ({ onClose }) => {
           </span>
         </div>
       </Modal.Body>
-      <Modal.Footer className="d-flex justify-content-between align-items-center flex-column">
+      <Modal.Footer className="d-flex justify-content-end align-items-center gap-2 py-2">
+        <Button
+          variant="light"
+          onClick={handleOnHide}
+          style={{
+            color: "#1f355a",
+            borderColor: "rgba(31, 53, 90, 0.35)",
+            backgroundColor: "#ffffff",
+          }}
+        >
+          Cancel
+        </Button>
         <Button variant="primary" onClick={handleContinueBtnClick}>
           Continue
         </Button>

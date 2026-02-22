@@ -36,6 +36,24 @@ export const VALID_WRITABLE_ROLES = new Set([
   "writer",
 ]);
 
+const getDriveListScopeParams = () => {
+  const sharedDriveId = process.env.GOOGLE_DRIVE_ID?.trim();
+
+  if (!sharedDriveId) {
+    throw new CustomError(
+      "GOOGLE_DRIVE_ID is required for template Shared Drive listing.",
+      500
+    );
+  }
+
+  return {
+    corpora: "drive" as const,
+    driveId: sharedDriveId,
+    includeItemsFromAllDrives: true,
+    supportsAllDrives: true,
+  };
+};
+
 export type TCopyFilesMsg = Partial<{
   msg: string;
   targetFolderId: string;
@@ -630,7 +648,7 @@ export default async function handler(
           clientOrigin
         );
 
-        if (!unitFolderChildItems || !unitFolderChildItems.files?.length) {
+        if (!unitFolderChildItems || !unitFolderChildItems.files) {
           throw new CustomError("Lessons folder data is missing.", 500);
         }
 
@@ -1068,10 +1086,7 @@ export default async function handler(
 
     const drive = await createDrive();
     const gdriveResponse = await drive.files.list({
-      corpora: "drive",
-      includeItemsFromAllDrives: true,
-      supportsAllDrives: true,
-      driveId: process.env.GOOGLE_DRIVE_ID,
+      ...getDriveListScopeParams(),
       q: `'${reqQueryParams.unitSharedGDriveId}' in parents`,
       fields: "*",
     });

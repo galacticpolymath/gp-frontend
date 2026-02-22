@@ -242,7 +242,8 @@
   display: block;
   max-width: 100%;
   font-size: 15px;
-  font-weight: 600;
+  font-weight: 400;
+  font-style: italic;
   color: rgba(240, 244, 255, 0.96);
   white-space: normal;
   overflow-wrap: anywhere;
@@ -451,20 +452,31 @@
 }
 
 .unitTabButton {
-  border-radius: 999px;
-  padding: 8px 14px;
-  border: 1px solid rgba(173, 216, 255, 0.28);
-  background: rgba(255, 255, 255, 0.1);
-  color: #dce9ff;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
+  padding: 2px 0;
+  min-height: 0;
+  background: transparent;
+  color: rgba(220, 233, 255, 0.9);
   font-size: 15px;
   font-weight: 600;
+  white-space: nowrap;
+  text-decoration: none;
   cursor: pointer;
 }
 
 .unitTabButtonActive {
-  background: #4b3aa8;
+  background: transparent;
   color: #f7fbff;
-  border-color: rgba(201, 182, 255, 0.7);
+  border-color: rgba(240, 244, 255, 0.95);
+}
+
+.unitTabButton:hover,
+.unitTabButton:focus-visible {
+  color: #f7fbff;
+  border-bottom-color: rgba(240, 244, 255, 0.75);
+  background: transparent;
 }
 
 .unitSearchResults {
@@ -514,9 +526,9 @@
 }
 
 .lessonSubtabButtonActive {
-  background: #4b3aa8;
+  background: rgba(255, 255, 255, 0.3);
   color: #f7fbff;
-  border-color: rgba(201, 182, 255, 0.7);
+  border-color: rgba(201, 220, 244, 0.95);
 }
 
 .lessonSubtabThumb {
@@ -1264,8 +1276,9 @@
 .lessonMaterialsGrid {
   display: grid;
   gap: 10px;
-  align-items: stretch;
+  align-items: start;
   grid-template-columns: fit-content(360px) minmax(0, 1fr);
+  min-height: 0;
 }
 
 .lessonSummaryCard,
@@ -1293,12 +1306,26 @@
   display: flex;
   flex-direction: column;
   gap: 0;
+  min-height: 0;
+}
+
+.lessonResourcesCard::after {
+  content: "";
+  display: block;
+  height: 200px;
+  flex: 0 0 200px;
+  order: 999;
 }
 
 .lessonPreviewsCard {
   width: 100%;
   min-width: 0;
-  align-self: stretch;
+  align-self: start;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+  overscroll-behavior: contain;
 }
 
 .lessonPreviewsCard {
@@ -1400,11 +1427,11 @@
 }
 
 .previewDownloadSection {
-  order: 2;
+  order: 3;
 }
 
 .gpPlusFunctionsSection {
-  order: 3;
+  order: 2;
 }
 
 .quickStartSection {
@@ -1480,16 +1507,60 @@
 
 .gpFunctionActionBtn {
   min-height: 40px;
+  border-color: rgba(24, 38, 188, 0.34);
+  color: #1826bc;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.92)) padding-box,
+    linear-gradient(120deg, rgba(24, 38, 188, 0.35), rgba(44, 131, 195, 0.45)) border-box;
+  transition:
+    transform 180ms ease,
+    background-position 240ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease;
+  background-size: 100% 100%, 220% 220%;
+  background-position: 0% 50%, 0% 50%;
+  text-decoration: none;
 }
 
 .gpFunctionActionBtn:hover {
-  border-color: rgba(44, 131, 195, 0.2);
-  background: rgba(250, 253, 255, 0.74);
+  border-color: rgba(24, 38, 188, 0.55);
+  background-position: 0% 50%, 100% 50%;
+  box-shadow: 0 10px 18px rgba(24, 38, 188, 0.16);
+  transform: translateY(-1px);
 }
 
 .gpFunctionActionBtn:disabled {
   cursor: not-allowed;
   opacity: 0.55;
+}
+
+.gpFunctionActionBtn .lessonProcedureToggleText {
+  color: #1826bc;
+}
+
+.gpFunctionActionBtn .lessonProcedureToggleText :global(svg) {
+  stroke: #1826bc;
+}
+
+.copyAgainLinkBtn {
+  border: 0;
+  background: transparent;
+  color: #1a2bbd;
+  font-weight: 600;
+  padding: 0;
+  width: fit-content;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.copyAgainLinkBtn:hover,
+.copyAgainLinkBtn:focus-visible {
+  color: #0f1b82;
+}
+
+.copyAgainLinkBtn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
 }
 
 .hiddenCopyLessonBtn {
@@ -1844,12 +1915,18 @@
   margin: 0;
   padding: 0;
   display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
   gap: 8px;
+  height: 100%;
+  min-height: 0;
 }
 
 .lessonProcedureInPreview {
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: 8px;
+  height: 100%;
+  min-height: 0;
 }
 
 .lessonPreviewHeader {
@@ -1864,9 +1941,9 @@
   position: relative;
   border-radius: 10px;
   overflow: hidden;
-  min-height: 320px;
-  height: clamp(320px, calc(100dvh - var(--portal-nav-offset, 0px) - 235px), 760px);
-  max-height: 760px;
+  min-height: 280px;
+  height: 100%;
+  max-height: none;
   border: 1px solid rgba(44, 131, 195, 0.2);
   background: rgba(255, 255, 255, 0.88);
   display: flex;
@@ -1883,7 +1960,7 @@
 .lessonPreviewSurface iframe {
   width: 100%;
   height: 100%;
-  min-height: 320px;
+  min-height: 280px;
   border: 0;
   object-fit: contain;
 }
@@ -2084,6 +2161,28 @@
   gap: 4px;
 }
 
+.procedureLinkOutBtn {
+  justify-self: end;
+  border: 1px solid rgba(24, 38, 188, 0.38);
+  border-radius: 999px;
+  background: rgba(24, 38, 188, 0.08);
+  color: #1826bc;
+  font-size: 13px;
+  font-weight: 700;
+  min-height: 30px;
+  padding: 0 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: background-color 160ms ease, border-color 160ms ease;
+}
+
+.procedureLinkOutBtn:hover,
+.procedureLinkOutBtn:focus-visible {
+  background: rgba(24, 38, 188, 0.16);
+  border-color: rgba(24, 38, 188, 0.56);
+}
+
 .lessonProcedureHeader span {
   font-size: 16px;
   line-height: 1.4;
@@ -2094,9 +2193,49 @@
   margin-top: 8px;
   display: grid;
   gap: 7px;
-  max-height: calc(100dvh - var(--portal-nav-offset, 0px) - 230px);
+  flex: 1 1 auto;
+  min-height: 0;
+  max-height: none;
   overflow: auto;
   padding-right: 2px;
+}
+
+.procedureStandaloneLayout {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: calc(100dvh - var(--portal-nav-offset, 0px) - 24px);
+  align-items: center;
+}
+
+.procedureStandaloneHeader {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(44, 131, 195, 0.16);
+  border-radius: 14px;
+  padding: 10px 12px;
+  width: 100%;
+  max-width: 500px;
+}
+
+.procedureStandaloneHeader p {
+  margin: 0;
+  font-size: 14px;
+  color: #4c5269;
+}
+
+.procedureStandaloneHeader h2 {
+  margin: 2px 0 0;
+  font-size: 22px;
+  line-height: 1.2;
+  color: #1f355a;
+}
+
+.lessonPreviewsCardStandalone {
+  width: 100%;
+  max-width: 500px;
+  flex: 1 1 auto;
+  min-height: 0;
+  max-height: none;
 }
 
 .lessonChunk {
@@ -2986,6 +3125,10 @@
     margin-top: 0;
   }
 
+  .lessonPreviewsCard {
+    position: sticky;
+  }
+
   .licenseBannerInner {
     grid-template-columns: auto minmax(0, 1fr) auto;
     gap: 14px;
@@ -3030,6 +3173,14 @@
   }
 }
 
+@media (min-width: 768px) {
+  .lessonPreviewSurface,
+  .lessonPreviewSurface iframe,
+  .lessonPreviewSurface img {
+    min-height: 0;
+  }
+}
+
 @media (max-width: 767px) {
   .unitMain {
     padding-bottom: 132px;
@@ -3037,6 +3188,7 @@
 
   .lessonMaterialsGrid {
     grid-template-columns: minmax(0, 1fr);
+    position: static;
   }
 
   .lessonPreviewSurface,
@@ -3130,6 +3282,11 @@
     font-size: 14px;
     font-weight: 400;
     line-height: 1.25;
+  }
+
+  .lessonPreviewsCard {
+    min-height: 420px;
+    max-height: none;
   }
 
   .unitSearch {

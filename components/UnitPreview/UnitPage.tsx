@@ -189,6 +189,7 @@ const getMaterialTypeIcon = (itemType?: unknown, itemCat?: unknown) => {
 };
 
 const CONSENT_STORAGE_KEY = 'gp_cookie_consent_v1';
+const GOOGLE_DRIVE_FOLDER_URL_BASE = 'https://drive.google.com/drive/folders';
 
 type TGtagParams = Record<string, string | number | boolean | null | undefined>;
 
@@ -1352,6 +1353,8 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
   const [activeMaterialIndex, setActiveMaterialIndex] = useState(0);
   const [activeLessonPreviewMode, setActiveLessonPreviewMode] =
     useState<TActiveLessonPreviewMode>('materials');
+  const [isProcedureStandaloneView, setIsProcedureStandaloneView] =
+    useState(false);
   const [isRetrievingLessonFolderIds, setIsRetrievingLessonFolderIds] =
     useState(false);
   const [resolvedLessonFolderFromApi, setResolvedLessonFolderFromApi] =
@@ -1377,6 +1380,14 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
   const unitTagListRef = useRef<HTMLDivElement>(null);
   const unitTagMeasureRefs = useRef<Array<HTMLSpanElement | null>>([]);
   const versionNotesAnchorRef = useRef<HTMLDivElement>(null);
+  const lessonMaterialsGridRef = useRef<HTMLDivElement>(null);
+  const lessonPreviewsCardRef = useRef<HTMLDivElement>(null);
+  const [lessonPreviewsCardHeight, setLessonPreviewsCardHeight] = useState<
+    number | null
+  >(null);
+  const [lessonMaterialsStickyTop, setLessonMaterialsStickyTop] = useState<
+    number | null
+  >(null);
   const citationStatusTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(
     null
   );
@@ -1525,6 +1536,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
     const legacyParts = rawHash.includes('=') ? [] : rawHash.split(':');
     const tabValue = params.get('tab') ?? legacyParts[0] ?? '';
     const lessonValue = params.get('lesson') ?? legacyParts[1] ?? '';
+    const previewValue = params.get('preview') ?? '';
     if (tabValue) {
       const isValid = availableTabs.some((tab) => tab.key === tabValue);
       if (isValid) {
@@ -1542,6 +1554,13 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
         }
       }
     }
+    if (
+      previewValue === 'materials' ||
+      previewValue === 'procedure' ||
+      previewValue === 'featured-media'
+    ) {
+      setActiveLessonPreviewMode(previewValue);
+    }
   };
 
   useEffect(() => {
@@ -1550,6 +1569,19 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
     window.addEventListener('hashchange', handleHashChange);
     return () => window.removeEventListener('hashchange', handleHashChange);
   }, [availableTabs, lessons]);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+    const searchParams = new URLSearchParams(window.location.search);
+    const shouldShowProcedureOnly = searchParams.get('procedure') === '1';
+    setIsProcedureStandaloneView(shouldShowProcedureOnly);
+    if (shouldShowProcedureOnly) {
+      setActiveTab(TAB_MATERIALS);
+      setActiveLessonPreviewMode('procedure');
+    }
+  }, []);
 
   useEffect(() => {
     if (activeTab !== TAB_MATERIALS) {
@@ -1736,6 +1768,96 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
       setIsStandardsFilterDockOpen(false);
     }
   }, [activeTab, isStandardsFilterDockOpen]);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    if (activeTab !== TAB_MATERIALS || isProcedureStandaloneView) {
+      setLessonPreviewsCardHeight(null);
+      return;
+    }
+
+    let rafId = 0;
+
+    const measurePreviewCardHeight = () => {
+      if (!lessonMaterialsGridRef.current) {
+        return;
+      }
+
+      if (window.innerWidth < 768) {
+        setLessonPreviewsCardHeight(null);
+        setLessonMaterialsStickyTop(null);
+        return;
+      }
+
+      const rootStyles = window.getComputedStyle(document.documentElement);
+      const portalNavOffset = Number.parseFloat(
+        rootStyles.getPropertyValue('--portal-nav-offset')
+      );
+      const unitStickyHeader = document.querySelector(
+        `.${styles.unitStickyHeader}`
+      ) as HTMLElement | null;
+      const unitStickyHeaderHeight = unitStickyHeader
+        ? unitStickyHeader.getBoundingClientRect().height
+        : 0;
+      const stickyTopOffset =
+        (Number.isFinite(portalNavOffset) ? portalNavOffset : 0) +
+        unitStickyHeaderHeight +
+        0;
+      const viewportBottomPadding = 14;
+      const nextHeight = Math.max(
+        380,
+        Math.floor(window.innerHeight - stickyTopOffset - viewportBottomPadding)
+      );
+      setLessonMaterialsStickyTop(stickyTopOffset);
+
+      setLessonPreviewsCardHeight((currentHeight) => {
+        if (currentHeight != null && Math.abs(currentHeight - nextHeight) < 2) {
+          return currentHeight;
+        }
+        return nextHeight;
+      });
+    };
+
+    const scheduleMeasure = () => {
+      window.cancelAnimationFrame(rafId);
+      rafId = window.requestAnimationFrame(measurePreviewCardHeight);
+    };
+
+    scheduleMeasure();
+    window.addEventListener('resize', scheduleMeasure);
+    window.addEventListener('gp:set-nav-hidden', scheduleMeasure as EventListener);
+
+    const resizeObserver =
+      typeof ResizeObserver !== 'undefined'
+        ? new ResizeObserver(scheduleMeasure)
+        : null;
+
+    if (resizeObserver && lessonMaterialsGridRef.current) {
+      resizeObserver.observe(lessonMaterialsGridRef.current);
+    }
+    const unitStickyHeader = document.querySelector(
+      `.${styles.unitStickyHeader}`
+    ) as HTMLElement | null;
+    if (resizeObserver && unitStickyHeader) {
+      resizeObserver.observe(unitStickyHeader);
+    }
+
+    return () => {
+      window.cancelAnimationFrame(rafId);
+      window.removeEventListener('resize', scheduleMeasure);
+      window.removeEventListener('gp:set-nav-hidden', scheduleMeasure as EventListener);
+      resizeObserver?.disconnect();
+    };
+  }, [
+    activeLessonId,
+    activeMaterialIndex,
+    activeLessonPreviewMode,
+    activeTab,
+    isProcedureStandaloneView,
+  ]);
 
   const activeLessonIndex = lessons.findIndex(
     (lesson, index) => getLessonIdentifier(lesson, index) === activeLessonId
@@ -2226,15 +2348,19 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
     activeLesson?.title?.trim() ||
     `Lesson ${activeLessonId ?? ''}`.trim() ||
     'Lesson';
-  const effectiveLessonsFolderForCopy = {
-    sharedGDriveId:
-      resolvedLessonFolderFromApi?.lessonsFolder?.sharedGDriveId ||
-      resolvedLessonsFolderForCopy?.sharedGDriveId ||
+  const effectiveLessonsFolderForCopy = useMemo(() => {
+    const folderId =
+      resolvedLessonFolderFromApi?.lessonsFolder?.sharedGDriveId?.trim() ||
+      resolvedLessonsFolderForCopy?.sharedGDriveId?.trim() ||
       (resolvedActiveLessonSharedFolder as { parentFolder?: { id?: string } } | null)
-        ?.parentFolder?.id ||
-      unit.GdrivePublicID ||
-      resolvedSharedFolderIdForCopy,
-    name:
+        ?.parentFolder?.id?.trim() ||
+      undefined;
+
+    if (!folderId) {
+      return undefined;
+    }
+
+    const folderName =
       resolvedLessonFolderFromApi?.lessonsFolder?.name?.trim() ||
       resolvedLessonsFolderForCopy?.name?.trim() ||
       (resolvedActiveLessonSharedFolder as { parentFolder?: { name?: string } } | null)
@@ -2244,8 +2370,20 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
       lessonResources?.gradePrefix?.trim() ||
       unit.MediumTitle?.trim() ||
       unit.Title?.trim() ||
-      'Lesson Materials',
-  };
+      'Lesson Materials';
+
+    return {
+      sharedGDriveId: folderId,
+      name: folderName,
+    };
+  }, [
+    lessonResources,
+    resolvedActiveLessonSharedFolder,
+    resolvedLessonFolderFromApi,
+    resolvedLessonsFolderForCopy,
+    unit.MediumTitle,
+    unit.Title,
+  ]);
   const lessonsGradesForCopy =
     lessonResources?.grades?.trim() ||
     lessonResources?.gradePrefix?.trim() ||
@@ -2262,9 +2400,16 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
         ]
       : undefined;
 
-  // Keep this gate simple and deterministic: if we can resolve the lesson source folder,
-  // the Copy All flow should be available.
-  const canShowCopyAllToGoogleDriveBtn = Boolean(resolvedSharedFolderIdForCopy);
+  const hasValidLessonsFolderForCopy = Boolean(
+    effectiveLessonsFolderForCopy?.sharedGDriveId &&
+      effectiveLessonsFolderForCopy?.name
+  );
+  // Copy requires both the lesson source folder and the lessons container folder mapping.
+  const canShowCopyAllToGoogleDriveBtn = Boolean(
+    resolvedSharedFolderIdForCopy &&
+      hasValidLessonsFolderForCopy &&
+      allUnitLessonsForCopy?.length
+  );
   const browseAllMaterialsUrl = lessonResources?.links?.url?.[0] ?? null;
   const canBrowseAllMaterials = Boolean(browseAllMaterialsUrl);
   const isCopyAllDisabledForGpPlus = isGpPlusUser && !canShowCopyAllToGoogleDriveBtn;
@@ -2272,7 +2417,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
   const copyAllUnavailableReason =
     isResolvingLessonFolder
       ? 'Resolving lesson folder...'
-      : 'Copy is unavailable because this lesson source folder is not yet mapped in Google Drive.';
+      : 'Copy is unavailable because the lesson folder mapping is still resolving. Please wait a moment and try again.';
   const browseUnavailableReason =
     'Browse is unavailable because this lesson does not yet have a mapped Google Drive folder.';
 
@@ -2530,6 +2675,17 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
     copyLessonBtnRef.current?.click();
   };
 
+  const handleOpenProcedureInNewTab = () => {
+    if (typeof window === 'undefined' || activeLessonId == null) {
+      return;
+    }
+
+    const nextUrl = new URL(window.location.href);
+    nextUrl.searchParams.set('procedure', '1');
+    nextUrl.hash = `tab=${TAB_MATERIALS}&lesson=${activeLessonId}&preview=procedure`;
+    window.open(nextUrl.toString(), '_blank', 'noopener,noreferrer');
+  };
+
   const handleCopyCitation = async (
     text: string,
     entryType: 'attribution' | 'citation'
@@ -2576,6 +2732,161 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
       setStatusWithReset('error');
     }
   };
+
+  const latestCopiedLessonFolderId = activeLesson?.userGDriveLessonFolderId?.trim();
+  const latestCopiedLessonFolderUrl = latestCopiedLessonFolderId
+    ? `${GOOGLE_DRIVE_FOLDER_URL_BASE}/${latestCopiedLessonFolderId}`
+    : null;
+  const fixedLessonPaneStyle =
+    lessonPreviewsCardHeight != null
+      ? {
+          height: `${lessonPreviewsCardHeight}px`,
+          maxHeight: `${lessonPreviewsCardHeight}px`,
+        }
+      : undefined;
+  const previewPaneStickyStyle =
+    lessonMaterialsStickyTop != null
+      ? {
+          ...fixedLessonPaneStyle,
+          top: `${lessonMaterialsStickyTop}px`,
+        }
+      : fixedLessonPaneStyle;
+
+  const renderProcedurePanel = (showLinkOutAction: boolean) => (
+    <div className={styles.lessonProcedureInPreview}>
+      <div className={styles.lessonProcedureHeader}>
+        <h3 className={styles.lessonCardHeading}>
+          <NotebookPen size={16} aria-hidden="true" />
+          <span>Lesson Procedure</span>
+        </h3>
+        {showLinkOutAction && (
+          <button
+            type="button"
+            className={styles.procedureLinkOutBtn}
+            onClick={handleOpenProcedureInNewTab}
+          >
+            <span>Open Procedure Tab</span>
+            <SquareArrowOutUpRight size={13} aria-hidden="true" />
+          </button>
+        )}
+        <span>Chunk-by-chunk guidance with vocab and teacher notes.</span>
+      </div>
+      <div className={styles.lessonProcedureContent}>
+        {activeLesson?.chunks?.map((chunk, index) => (
+          <article
+            key={`${chunk.chunkTitle}-${index}`}
+            className={styles.lessonChunk}
+          >
+            <div className={styles.lessonChunkTimeline}>
+              <div
+                className={`${styles.lessonChunkHeader} ${
+                  chunkDurations.length
+                    ? styles.lessonChunkHeaderOverGraph
+                    : ''
+                }`}
+              >
+                {typeof chunk.chunkDur === 'number' ? (
+                  <span className={styles.lessonChunkDuration}>
+                    <Clock3 size={12} aria-hidden="true" />
+                    <span>{chunk.chunkDur} min</span>
+                  </span>
+                ) : null}
+                <h5>{chunk.chunkTitle ?? 'Lesson segment'}</h5>
+              </div>
+              {!!chunkDurations.length && (
+                <ChunkGraph
+                  className={styles.lessonChunkGraph}
+                  durList={chunkDurations}
+                  chunkNum={index}
+                />
+              )}
+            </div>
+            {(() => {
+              return chunk.steps?.map((step, idx) => {
+                const rawStep = (
+                  step as { Step?: number | string | null }
+                ).Step;
+                const stepNumber =
+                  typeof rawStep === 'number'
+                    ? rawStep
+                    : typeof rawStep === 'string'
+                    ? Number.parseInt(rawStep.replace(/[^\d-]/g, ''), 10)
+                    : Number.NaN;
+                const safeStepNumber =
+                  Number.isFinite(stepNumber) && stepNumber > 0
+                    ? stepNumber
+                    : idx + 1;
+                const stepDuration = getStepDuration(
+                  step as {
+                    StepDur?: number | string | null;
+                    StepDuration?: number | string | null;
+                    stepDur?: number | string | null;
+                  }
+                );
+
+                return (
+                  <div
+                    key={`${step.StepTitle}-${idx}`}
+                    className={styles.lessonStep}
+                  >
+                    <div className={styles.lessonStepMain}>
+                      <div className={styles.lessonStepTitleRow}>
+                        <strong>
+                          {step.StepTitle
+                            ? `${safeStepNumber}. ${step.StepTitle}`
+                            : `${safeStepNumber}.`}
+                        </strong>
+                        {stepDuration != null && (
+                          <span className={styles.lessonStepDuration}>
+                            {stepDuration} min
+                          </span>
+                        )}
+                      </div>
+                      {step.StepQuickDescription && (
+                        <div className={styles.lessonStepQuickDescription}>
+                          <RichText content={step.StepQuickDescription} />
+                        </div>
+                      )}
+                      {step.StepDetails && (
+                        <div className={styles.lessonStepDetails}>
+                          <RichText content={step.StepDetails} />
+                        </div>
+                      )}
+                      {!!step.Vocab && (
+                        <div className={styles.stepInfoBlock}>
+                          <h6>Vocabulary</h6>
+                          <RichText content={step.Vocab} />
+                        </div>
+                      )}
+                    </div>
+                    <aside className={styles.lessonStepAside}>
+                      {!!step.TeachingTips && (
+                        <div className={styles.stepInfoBlock}>
+                          <h6>Teaching tips</h6>
+                          <RichText content={step.TeachingTips} />
+                        </div>
+                      )}
+                      {!!step.VariantNotes && (
+                        <div className={styles.stepInfoBlock}>
+                          <h6>Variant notes</h6>
+                          <RichText content={step.VariantNotes} />
+                        </div>
+                      )}
+                    </aside>
+                  </div>
+                );
+              });
+            })()}
+          </article>
+        ))}
+        {!activeLesson?.chunks?.length && (
+          <p className={styles.unitMutedText}>
+            Detailed steps will appear here once added.
+          </p>
+        )}
+      </div>
+    </div>
+  );
 
   const handleGradeBandFilter = (gradeBand: TGradeBand) => {
     setSelectedGradeBands((current) => {
@@ -2992,6 +3303,24 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
           <section className={styles.unitSection}>
             <div className={styles.materialsLayout}>
               {activeLesson ? (
+                isProcedureStandaloneView ? (
+                  <div className={styles.procedureStandaloneLayout}>
+                    <div className={styles.procedureStandaloneHeader}>
+                      <p>{unitTitle}</p>
+                      <h2>
+                        {isAssessmentLesson(activeLesson, activeLessonIndex)
+                          ? 'Assessment'
+                          : `Lesson ${getLessonIdentifier(activeLesson, activeLessonIndex)}`}
+                        {activeLesson.title ? `: ${activeLesson.title}` : ''}
+                      </h2>
+                    </div>
+                    <div
+                      className={`${styles.lessonPreviewsCard} ${styles.lessonPreviewsCardStandalone}`}
+                    >
+                      {renderProcedurePanel(false)}
+                    </div>
+                  </div>
+                ) : (
                 <div className={styles.lessonLayout}>
                   <div className={styles.lessonSummaryCard}>
                     <div className={styles.lessonSummaryMain}>
@@ -3112,7 +3441,10 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                       )}
                     </div>
                   )}
-                  <div className={styles.lessonMaterialsGrid}>
+                  <div
+                    ref={lessonMaterialsGridRef}
+                    className={styles.lessonMaterialsGrid}
+                  >
                     {!isGpPlusUser && !isGpPlusBannerDismissed && (
                       <div className={styles.gpPlusBannerWrapInGrid}>
                         <div className={styles.gpPlusBanner}>
@@ -3208,6 +3540,41 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                           <span>GP Plus Functions</span>
                         </h3>
                         <div className={styles.gpFunctionActions}>
+                          {latestCopiedLessonFolderUrl ? (
+                            <>
+                              <a
+                                className={`${styles.lessonProcedureToggle} ${styles.gpFunctionActionBtn}`}
+                                href={latestCopiedLessonFolderUrl}
+                                target="_blank"
+                                rel="noreferrer"
+                              >
+                                <span className={styles.lessonProcedureToggleText}>
+                                  <FileStack size={16} aria-hidden="true" />
+                                  <span>My Copy of Files</span>
+                                </span>
+                              </a>
+                              <button
+                                type="button"
+                                className={styles.copyAgainLinkBtn}
+                                onClick={handleCopyAllMaterialsClick}
+                                disabled={isCopyAllDisabledForGpPlus}
+                              >
+                                Copy again
+                              </button>
+                            </>
+                          ) : (
+                            <button
+                              type="button"
+                              className={`${styles.lessonProcedureToggle} ${styles.gpFunctionActionBtn}`}
+                              onClick={handleCopyAllMaterialsClick}
+                              disabled={isCopyAllDisabledForGpPlus}
+                            >
+                              <span className={styles.lessonProcedureToggleText}>
+                                <FileStack size={16} aria-hidden="true" />
+                                <span>Copy All to My Google Drive</span>
+                              </span>
+                            </button>
+                          )}
                           <button
                             type="button"
                             className={`${styles.lessonProcedureToggle} ${styles.gpFunctionActionBtn}`}
@@ -3216,18 +3583,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                           >
                             <span className={styles.lessonProcedureToggleText}>
                               <Eye size={16} aria-hidden="true" />
-                              <span>Browse All Materials</span>
-                            </span>
-                          </button>
-                          <button
-                            type="button"
-                            className={`${styles.lessonProcedureToggle} ${styles.gpFunctionActionBtn}`}
-                            onClick={handleCopyAllMaterialsClick}
-                            disabled={isCopyAllDisabledForGpPlus}
-                          >
-                            <span className={styles.lessonProcedureToggleText}>
-                              <FileStack size={16} aria-hidden="true" />
-                              <span>Copy All to My Google Drive</span>
+                              <span>Browse on Gdrive (View Only)</span>
                             </span>
                           </button>
                           {isBrowseDisabledForGpPlus && (
@@ -3277,82 +3633,82 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                         </h3>
                         {!!activeLessonItems.length ? (
                           <div className={styles.lessonDownloadList}>
-                          {activeLessonItems.map((item, idx) => {
-                            const previewItem = item as TPreviewItem;
-                            const { pdfDownloadUrl } = getMaterialUrls(previewItem);
-                            const isActive =
-                              activeLessonPreviewMode === 'materials' &&
-                              idx === activeMaterialIndex;
-                            const resourceTitle =
-                              item.itemTitle ?? `Resource ${idx + 1}`;
-                            const isTeacherOnlyItem =
-                              typeof item.itemTitle === 'string' &&
-                              item.itemTitle.toLowerCase().includes('teacher');
-                            const isTeacherLocked =
-                              isAuthenticated && !isUserTeacher && isTeacherOnlyItem;
-                            const canAccessPdf = !!pdfDownloadUrl && !isTeacherLocked && isAuthenticated;
+                            {activeLessonItems.map((item, idx) => {
+                              const previewItem = item as TPreviewItem;
+                              const { pdfDownloadUrl } = getMaterialUrls(previewItem);
+                              const isActive =
+                                activeLessonPreviewMode === 'materials' &&
+                                idx === activeMaterialIndex;
+                              const resourceTitle =
+                                item.itemTitle ?? `Resource ${idx + 1}`;
+                              const isTeacherOnlyItem =
+                                typeof item.itemTitle === 'string' &&
+                                item.itemTitle.toLowerCase().includes('teacher');
+                              const isTeacherLocked =
+                                isAuthenticated && !isUserTeacher && isTeacherOnlyItem;
+                              const canAccessPdf = !!pdfDownloadUrl && !isTeacherLocked && isAuthenticated;
 
-                            return (
-                              <article
-                                key={`${item.itemTitle}-${idx}`}
-                                className={`${styles.materialRow} ${
-                                  isActive ? styles.materialRowActive : ''
-                                }`}
-                                onClick={(event) => {
-                                  const target = event.target as HTMLElement;
-                                  if (target.closest('a')) {
-                                    return;
-                                  }
-                                  selectMaterialItem(idx, item.itemTitle);
-                                }}
-                              >
-                                <div className={styles.materialRowTop}>
-                                  <button
-                                    type="button"
-                                    className={styles.materialSelectButton}
-                                    onClick={(event) => {
-                                      event.stopPropagation();
-                                      selectMaterialItem(idx, item.itemTitle);
-                                    }}
-                                    aria-pressed={isActive}
-                                  >
-                                    <span className={styles.materialRowIcon} aria-hidden="true">
-                                      {getMaterialTypeIcon(
-                                        previewItem.itemType,
-                                        previewItem.itemCat
-                                      )}
-                                    </span>
-                                    <span className={styles.materialRowMain}>
-                                      <strong>{resourceTitle}</strong>
-                                      {(previewItem.itemType || previewItem.itemCat) && (
-                                        <span>
-                                          {(previewItem.itemType ?? previewItem.itemCat ?? '').toString()}
+                              return (
+                                <article
+                                  key={`${item.itemTitle}-${idx}`}
+                                  className={`${styles.materialRow} ${
+                                    isActive ? styles.materialRowActive : ''
+                                  }`}
+                                  onClick={(event) => {
+                                    const target = event.target as HTMLElement;
+                                    if (target.closest('a')) {
+                                      return;
+                                    }
+                                    selectMaterialItem(idx, item.itemTitle);
+                                  }}
+                                >
+                                  <div className={styles.materialRowTop}>
+                                    <button
+                                      type="button"
+                                      className={styles.materialSelectButton}
+                                      onClick={(event) => {
+                                        event.stopPropagation();
+                                        selectMaterialItem(idx, item.itemTitle);
+                                      }}
+                                      aria-pressed={isActive}
+                                    >
+                                      <span className={styles.materialRowIcon} aria-hidden="true">
+                                        {getMaterialTypeIcon(
+                                          previewItem.itemType,
+                                          previewItem.itemCat
+                                        )}
+                                      </span>
+                                      <span className={styles.materialRowMain}>
+                                        <strong>{resourceTitle}</strong>
+                                        {(previewItem.itemType || previewItem.itemCat) && (
+                                          <span>
+                                            {(previewItem.itemType ?? previewItem.itemCat ?? '').toString()}
+                                          </span>
+                                        )}
+                                      </span>
+                                    </button>
+                                  </div>
+                                  {pdfDownloadUrl && (
+                                    <div className={styles.materialRowPdfWrap}>
+                                      {canAccessPdf ? (
+                                        <a
+                                          className={styles.materialPdfLink}
+                                          href={pdfDownloadUrl}
+                                          target="_blank"
+                                          rel="noreferrer"
+                                        >
+                                          Download PDF
+                                        </a>
+                                      ) : (
+                                        <span className={styles.materialPdfLinkDisabled}>
+                                          Log in to download
                                         </span>
                                       )}
-                                    </span>
-                                  </button>
-                                </div>
-                                {pdfDownloadUrl && (
-                                  <div className={styles.materialRowPdfWrap}>
-                                    {canAccessPdf ? (
-                                      <a
-                                        className={styles.materialPdfLink}
-                                        href={pdfDownloadUrl}
-                                        target="_blank"
-                                        rel="noreferrer"
-                                      >
-                                        Download PDF
-                                      </a>
-                                    ) : (
-                                      <span className={styles.materialPdfLinkDisabled}>
-                                        Log in to download
-                                      </span>
-                                    )}
-                                  </div>
-                                )}
-                              </article>
-                            );
-                          })}
+                                    </div>
+                                  )}
+                                </article>
+                              );
+                            })}
                           </div>
                         ) : (
                           <p className={styles.unitMutedText}>
@@ -3361,7 +3717,11 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                         )}
                       </section>
                     </div>
-                    <div className={styles.lessonPreviewsCard}>
+                    <div
+                      ref={lessonPreviewsCardRef}
+                      className={styles.lessonPreviewsCard}
+                      style={previewPaneStickyStyle}
+                    >
                       {isFeaturedMediaOpen ? (
                         <article className={styles.lessonPreviewItem}>
                           <header className={styles.lessonPreviewHeader}>
@@ -3383,129 +3743,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                           )}
                         </article>
                       ) : isDetailedFlowOpen ? (
-                        <div className={styles.lessonProcedureInPreview}>
-                          <div className={styles.lessonProcedureHeader}>
-                            <h3 className={styles.lessonCardHeading}>
-                              <NotebookPen size={16} aria-hidden="true" />
-                              <span>Lesson Procedure</span>
-                            </h3>
-                            <span>Chunk-by-chunk guidance with vocab and teacher notes.</span>
-                          </div>
-                          <div className={styles.lessonProcedureContent}>
-                            {activeLesson.chunks?.map((chunk, index) => (
-                              <article
-                                key={`${chunk.chunkTitle}-${index}`}
-                                className={styles.lessonChunk}
-                              >
-                                <div className={styles.lessonChunkTimeline}>
-                                  <div
-                                    className={`${styles.lessonChunkHeader} ${
-                                      chunkDurations.length
-                                        ? styles.lessonChunkHeaderOverGraph
-                                        : ''
-                                    }`}
-                                  >
-                                    {typeof chunk.chunkDur === 'number' ? (
-                                      <span className={styles.lessonChunkDuration}>
-                                        <Clock3 size={12} aria-hidden="true" />
-                                        <span>{chunk.chunkDur} min</span>
-                                      </span>
-                                    ) : null}
-                                    <h5>{chunk.chunkTitle ?? 'Lesson segment'}</h5>
-                                  </div>
-                                  {!!chunkDurations.length && (
-                                    <ChunkGraph
-                                      className={styles.lessonChunkGraph}
-                                      durList={chunkDurations}
-                                      chunkNum={index}
-                                    />
-                                  )}
-                                </div>
-                                {(() => {
-                                  return chunk.steps?.map((step, idx) => {
-                                    const rawStep = (
-                                      step as { Step?: number | string | null }
-                                    ).Step;
-                                    const stepNumber =
-                                      typeof rawStep === 'number'
-                                        ? rawStep
-                                        : typeof rawStep === 'string'
-                                        ? Number.parseInt(rawStep.replace(/[^\d-]/g, ''), 10)
-                                        : Number.NaN;
-                                    const safeStepNumber =
-                                      Number.isFinite(stepNumber) && stepNumber > 0
-                                        ? stepNumber
-                                        : idx + 1;
-                                    const stepDuration = getStepDuration(
-                                      step as {
-                                        StepDur?: number | string | null;
-                                        StepDuration?: number | string | null;
-                                        stepDur?: number | string | null;
-                                      }
-                                    );
-
-                                    return (
-                                      <div
-                                        key={`${step.StepTitle}-${idx}`}
-                                        className={styles.lessonStep}
-                                      >
-                                        <div className={styles.lessonStepMain}>
-                                          <div className={styles.lessonStepTitleRow}>
-                                            <strong>
-                                              {step.StepTitle
-                                                ? `${safeStepNumber}. ${step.StepTitle}`
-                                                : `${safeStepNumber}.`}
-                                            </strong>
-                                            {stepDuration != null && (
-                                              <span className={styles.lessonStepDuration}>
-                                                {stepDuration} min
-                                              </span>
-                                            )}
-                                          </div>
-                                          {step.StepQuickDescription && (
-                                            <div className={styles.lessonStepQuickDescription}>
-                                              <RichText content={step.StepQuickDescription} />
-                                            </div>
-                                          )}
-                                          {step.StepDetails && (
-                                            <div className={styles.lessonStepDetails}>
-                                              <RichText content={step.StepDetails} />
-                                            </div>
-                                          )}
-                                          {!!step.Vocab && (
-                                            <div className={styles.stepInfoBlock}>
-                                              <h6>Vocabulary</h6>
-                                              <RichText content={step.Vocab} />
-                                            </div>
-                                          )}
-                                        </div>
-                                        <aside className={styles.lessonStepAside}>
-                                          {!!step.TeachingTips && (
-                                            <div className={styles.stepInfoBlock}>
-                                              <h6>Teaching tips</h6>
-                                              <RichText content={step.TeachingTips} />
-                                            </div>
-                                          )}
-                                          {!!step.VariantNotes && (
-                                            <div className={styles.stepInfoBlock}>
-                                              <h6>Variant notes</h6>
-                                              <RichText content={step.VariantNotes} />
-                                            </div>
-                                          )}
-                                        </aside>
-                                      </div>
-                                    );
-                                  });
-                                })()}
-                              </article>
-                            ))}
-                            {!activeLesson.chunks?.length && (
-                              <p className={styles.unitMutedText}>
-                                Detailed steps will appear here once added.
-                              </p>
-                            )}
-                          </div>
-                        </div>
+                        renderProcedurePanel(true)
                       ) : !!activeLessonItems.length ? (
                         (() => {
                           const safeIndex =
@@ -3669,6 +3907,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                     </div>
                   </div>
                 </div>
+                )
               ) : (
                 <p className={styles.unitMutedText}>
                   Choose a lesson to explore teaching materials.

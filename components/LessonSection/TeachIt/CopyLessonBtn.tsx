@@ -531,6 +531,7 @@ const CopyLessonBtn: React.FC<
       if (
         !sharedGDriveLessonFolderId ||
         !lessonSharedDriveFolderName ||
+        !allUnitLessons?.length ||
         !lessonsFolder?.name ||
         !lessonsFolder.sharedGDriveId
       ) {
@@ -749,19 +750,14 @@ const CopyLessonBtn: React.FC<
               });
             }
 
-            if (allUnitLessons?.length) {
-              url.searchParams.append(
-                'allUnitLessons',
-                encodeURI(JSON.stringify(allUnitLessons))
-              );
-            }
-
-            if (lessonsFolder) {
-              url.searchParams.append(
-                'lessonsFolder',
-                encodeURI(JSON.stringify(lessonsFolder))
-              );
-            }
+            url.searchParams.append(
+              'allUnitLessons',
+              encodeURI(JSON.stringify(allUnitLessons))
+            );
+            url.searchParams.append(
+              'lessonsFolder',
+              encodeURI(JSON.stringify(lessonsFolder))
+            );
 
             console.log('lessonsFolder: ', lessonsFolder);
 
@@ -1138,6 +1134,20 @@ const CopyLessonBtn: React.FC<
 
     const openGDrivePickerToCopyLesson = async () => {
       try {
+        if (
+          !sharedGDriveLessonFolderId ||
+          !lessonSharedDriveFolderName ||
+          !lessonsFolder?.name ||
+          !lessonsFolder.sharedGDriveId ||
+          !allUnitLessons?.length
+        ) {
+          alert(
+            "ERROR! Can't open the target lesson folder. Please refresh the page or contact support if the issue persists."
+          );
+          setLessonToCopy(null);
+          return;
+        }
+
         const validToken = await ensureValidToken(
           gdriveAccessTokenExp!,
           setAppCookie
@@ -1343,19 +1353,14 @@ const CopyLessonBtn: React.FC<
                 });
               }
 
-              if (allUnitLessons?.length) {
-                url.searchParams.append(
-                  'allUnitLessons',
-                  encodeURI(JSON.stringify(allUnitLessons))
-                );
-              }
-
-              if (lessonsFolder) {
-                url.searchParams.append(
-                  'lessonsFolder',
-                  encodeURI(JSON.stringify(lessonsFolder))
-                );
-              }
+              url.searchParams.append(
+                'allUnitLessons',
+                encodeURI(JSON.stringify(allUnitLessons))
+              );
+              url.searchParams.append(
+                'lessonsFolder',
+                encodeURI(JSON.stringify(lessonsFolder))
+              );
 
               console.log('lessonsFolder: ', lessonsFolder);
 
