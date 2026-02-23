@@ -2915,6 +2915,31 @@ details:not([open]) .filterSummary::after {
   box-shadow: 0 0 0 2px #363636, 0 26px 40px rgba(12, 18, 48, 0.18);
 }
 
+.resourceNavigating {
+  pointer-events: none;
+  opacity: 0.78;
+}
+
+.resourceNavigating::after {
+  content: "";
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(44, 131, 195, 0.25);
+  border-top-color: #2c83c3;
+  border-radius: 999px;
+  animation: gpCardSpin 600ms linear infinite;
+  z-index: 2;
+}
+
+@keyframes gpCardSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 .resourceRowMedia {
   background: #e9efff;
   min-height: 100%;

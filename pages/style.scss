@@ -259,6 +259,44 @@ input[type="checkbox"] {
   cursor: pointer;
 }
 
+.gp-route-loader {
+  position: fixed;
+  top: 18px;
+  right: 18px;
+  z-index: 2147483000;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: rgba(18, 24, 54, 0.9);
+  color: #ffffff;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(4px);
+  font-size: 14px;
+  letter-spacing: 0.01em;
+}
+
+.gp-route-loader__spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-top-color: #ffffff;
+  border-radius: 999px;
+  animation: gpRouteLoaderSpin 720ms linear infinite;
+}
+
+.gp-route-loader__label {
+  line-height: 1;
+  white-space: nowrap;
+}
+
+@keyframes gpRouteLoaderSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 .default-cursor {
   cursor: auto !important;
 }

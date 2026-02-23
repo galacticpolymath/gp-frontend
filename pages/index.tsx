@@ -1155,6 +1155,34 @@ export default function HomePage({
   const animateTimeoutRef = useRef<number | null>(null);
   const previousResultsSignatureRef = useRef<string | null>(null);
   const hasSeenInitialResultsRef = useRef(false);
+  const prefetchedRoutesRef = useRef<Set<string>>(new Set());
+  const [navigatingResourceId, setNavigatingResourceId] = useState<string | null>(
+    null
+  );
+
+  const prefetchInternalRoute = useCallback(
+    (href: string | null) => {
+      if (!href) return;
+      if (prefetchedRoutesRef.current.has(href)) return;
+      prefetchedRoutesRef.current.add(href);
+      router.prefetch(href).catch(() => {
+        prefetchedRoutesRef.current.delete(href);
+      });
+    },
+    [router]
+  );
+
+  const navigateToInternalRoute = useCallback(
+    (href: string, resourceId?: string) => {
+      if (resourceId) {
+        setNavigatingResourceId(resourceId);
+      }
+      router.push(href).catch(() => {
+        setNavigatingResourceId(null);
+      });
+    },
+    [router]
+  );
 
   const triggerResultsAnimation = useCallback(() => {
     if (animateTimeoutRef.current) {
@@ -2017,6 +2045,27 @@ export default function HomePage({
     });
     return sorted;
   }, [filteredResources, hasActiveFilters, searchMatchByResourceId, searchQuery, sortOrder]);
+
+  useEffect(() => {
+    if (!sortedResources.length) return;
+    sortedResources.slice(0, 12).forEach((resource) => {
+      if (resource.type === "Unit" && resource.unitId) {
+        prefetchInternalRoute(buildUnitPath(resource.unitId));
+        return;
+      }
+      if (resource.type === "Job Tour") {
+        prefetchInternalRoute(buildJobTourUrl(resource));
+        return;
+      }
+      if (
+        resource.type === "App" &&
+        resource.mediaLink &&
+        resource.mediaLink.startsWith("/")
+      ) {
+        prefetchInternalRoute(resource.mediaLink);
+      }
+    });
+  }, [prefetchInternalRoute, sortedResources]);
 
   const totalResources = allResources.length;
   const totalJobTours = allResources.filter(
@@ -3260,82 +3309,64 @@ export default function HomePage({
                             const hiddenMatchCategories = hasCommittedSearch
                               ? searchMatch.hiddenCategories
                               : [];
+                            const internalHref =
+                              resource.type === "Job Tour"
+                                ? jobTourUrl
+                                : resource.type === "App"
+                                  ? resource.mediaLink?.startsWith("/")
+                                    ? resource.mediaLink
+                                    : null
+                                  : unitHref;
+                            const isNavigating = navigatingResourceId === resource.id;
+                            const handleActivateResource = () => {
+                              if (resource.type === "Video") {
+                                handleOpenMedia({
+                                  title: resource.title,
+                                  type: "Video",
+                                  thumbnail: resource.image,
+                                  link: resource.mediaLink ?? null,
+                                  lessonRelevance: resource.mediaLessonRelevance ?? null,
+                                  unitTitle: resource.unitTitle ?? null,
+                                  subtitle: resource.unitSubtitle ?? null,
+                                  unitId: resource.unitId ?? null,
+                                });
+                                return;
+                              }
+                              if (resource.type === "Job Tour" && jobTourUrl) {
+                                if (resource.tourId) {
+                                  handleOpenJobTourAccessModal(resource);
+                                } else {
+                                  navigateToInternalRoute(jobTourUrl, resource.id);
+                                }
+                                return;
+                              }
+                              if (resource.type === "App" && resource.mediaLink) {
+                                if (resource.mediaLink.startsWith("/")) {
+                                  navigateToInternalRoute(resource.mediaLink, resource.id);
+                                } else {
+                                  window.open(resource.mediaLink, "_blank");
+                                }
+                                return;
+                              }
+                              if (unitHref) {
+                                navigateToInternalRoute(unitHref, resource.id);
+                              }
+                            };
                             const cardProps = {
                               role: isClickable ? "button" : undefined,
                               tabIndex: isClickable ? 0 : undefined,
+                              "aria-busy": isNavigating || undefined,
                               style: {
                                 animationDelay: `${animationDelay}ms`,
                               } as React.CSSProperties,
-                              onClick: () => {
-                                if (resource.type === "Video") {
-                                  handleOpenMedia({
-                                    title: resource.title,
-                                    type: "Video",
-                                    thumbnail: resource.image,
-                                    link: resource.mediaLink ?? null,
-                                    lessonRelevance: resource.mediaLessonRelevance ?? null,
-                                    unitTitle: resource.unitTitle ?? null,
-                                    subtitle: resource.unitSubtitle ?? null,
-                                    unitId: resource.unitId ?? null,
-                                  });
-                                  return;
-                                }
-                                if (resource.type === "Job Tour" && jobTourUrl) {
-                                  if (resource.tourId) {
-                                    handleOpenJobTourAccessModal(resource);
-                                  } else {
-                                    router.push(jobTourUrl);
-                                  }
-                                  return;
-                                }
-                                if (resource.type === "App" && resource.mediaLink) {
-                                  if (resource.mediaLink.startsWith("/")) {
-                                    router.push(resource.mediaLink);
-                                  } else {
-                                    window.open(resource.mediaLink, "_blank");
-                                  }
-                                  return;
-                                }
-                                if (unitHref) {
-                                  router.push(unitHref);
-                                }
-                              },
+                              onClick: handleActivateResource,
+                              onMouseEnter: () => prefetchInternalRoute(internalHref),
+                              onFocus: () => prefetchInternalRoute(internalHref),
                               onKeyDown: (event: React.KeyboardEvent<HTMLElement>) => {
                                 if (!isClickable) return;
                                 if (event.key === "Enter" || event.key === " ") {
                                   event.preventDefault();
-                                  if (resource.type === "Video") {
-                                    handleOpenMedia({
-                                      title: resource.title,
-                                      type: "Video",
-                                      thumbnail: resource.image,
-                                      link: resource.mediaLink ?? null,
-                                      lessonRelevance: resource.mediaLessonRelevance ?? null,
-                                      unitTitle: resource.unitTitle ?? null,
-                                      subtitle: resource.unitSubtitle ?? null,
-                                      unitId: resource.unitId ?? null,
-                                    });
-                                    return;
-                                  }
-                                  if (resource.type === "Job Tour" && jobTourUrl) {
-                                    if (resource.tourId) {
-                                      handleOpenJobTourAccessModal(resource);
-                                    } else {
-                                      router.push(jobTourUrl);
-                                    }
-                                    return;
-                                  }
-                                  if (resource.type === "App" && resource.mediaLink) {
-                                    if (resource.mediaLink.startsWith("/")) {
-                                      router.push(resource.mediaLink);
-                                    } else {
-                                      window.open(resource.mediaLink, "_blank");
-                                    }
-                                    return;
-                                  }
-                                  if (unitHref) {
-                                    router.push(unitHref);
-                                  }
+                                  handleActivateResource();
                                 }
                               },
                             };
@@ -3355,7 +3386,7 @@ export default function HomePage({
                                   <article
                                     key={resource.id}
                                     className={`${styles.resourceRow} ${styles.jobTourRow} ${animateResults ? styles.resourceAnimate : ""
-                                      }`}
+                                      } ${isNavigating ? styles.resourceNavigating : ""}`}
                                     data-type={resource.type}
                                     {...cardProps}
                                   >
@@ -3457,7 +3488,7 @@ export default function HomePage({
                                 <article
                                   key={resource.id}
                                   className={`${styles.resourceRow} ${animateResults ? styles.resourceAnimate : ""
-                                    }`}
+                                    } ${isNavigating ? styles.resourceNavigating : ""}`}
                                   data-type={resource.type}
                                   {...cardProps}
                                 >
@@ -3587,7 +3618,7 @@ export default function HomePage({
                                 <article
                                   key={resource.id}
                                   className={`${styles.resourceCard} ${styles.jobTourCard} ${animateResults ? styles.resourceAnimate : ""
-                                    }`}
+                                    } ${isNavigating ? styles.resourceNavigating : ""}`}
                                   data-type={resource.type}
                                   {...cardProps}
                                 >
@@ -3711,7 +3742,7 @@ export default function HomePage({
                               <article
                                 key={resource.id}
                                 className={`${styles.resourceCard} ${animateResults ? styles.resourceAnimate : ""
-                                  }`}
+                                  } ${isNavigating ? styles.resourceNavigating : ""}`}
                                 data-type={resource.type}
                                 {...cardProps}
                               >

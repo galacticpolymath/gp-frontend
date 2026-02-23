@@ -4,6 +4,7 @@ import ModalsContainer from "../ModalsContainer";
 import { GoogleAnalytics } from "nextjs-google-analytics";
 import { SessionProvider } from "next-auth/react";
 import { Toaster } from "react-hot-toast";
+import { useRouter } from "next/router";
 import "../styles/pages/gpPlus.scss";
 import "./style.scss";
 import "../styles/pages/Lessons/lessons.scss";
@@ -36,7 +37,36 @@ import HelpLauncher from "../components/HelpLauncher";
 const queryClient = new QueryClient();
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }) {
+  const router = useRouter();
   const [cookieConsentStatus, setCookieConsentStatus] = useState(null);
+  const [isRouteLoading, setIsRouteLoading] = useState(false);
+
+  useEffect(() => {
+    const shouldTrackRoute = (url) => {
+      if (!url || typeof url !== "string") return false;
+      const path = url.split("?")[0];
+      return path.startsWith("/units/") || path.startsWith("/jobviz");
+    };
+
+    const handleRouteStart = (url) => {
+      if (!shouldTrackRoute(url)) return;
+      setIsRouteLoading(true);
+    };
+
+    const handleRouteDone = () => {
+      setIsRouteLoading(false);
+    };
+
+    router.events.on("routeChangeStart", handleRouteStart);
+    router.events.on("routeChangeComplete", handleRouteDone);
+    router.events.on("routeChangeError", handleRouteDone);
+
+    return () => {
+      router.events.off("routeChangeStart", handleRouteStart);
+      router.events.off("routeChangeComplete", handleRouteDone);
+      router.events.off("routeChangeError", handleRouteDone);
+    };
+  }, [router.events]);
 
   useEffect(() => {
     import("bootstrap/dist/js/bootstrap.bundle.min.js").catch(() => {});
@@ -85,6 +115,12 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
                       apiKey={GOOGLE_DRIVE_AUTH_API_KEY}
                     >
                       <Toaster />
+                      {isRouteLoading && (
+                        <div className="gp-route-loader" role="status" aria-live="polite">
+                          <span className="gp-route-loader__spinner" aria-hidden="true" />
+                          <span className="gp-route-loader__label">Loading destination...</span>
+                        </div>
+                      )}
                       <Component {...pageProps} />
                       <HelpLauncher />
                       <ModalsContainer />
