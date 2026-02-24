@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import QRCode from 'react-qr-code';
 import { format } from 'date-fns';
 import RichText from '../RichText';
 import styles from './UnitPage.module.css';
@@ -852,6 +853,22 @@ const getGoogleDocBase = (value: string) => {
   return `https://docs.google.com/${match[1]}/d/${match[2]}`;
 };
 
+const getGoogleDocMatch = (value: string) => {
+  const match = value.match(
+    /https?:\/\/docs\.google\.com\/(presentation|document|spreadsheets)\/d\/([^/]+)/i
+  );
+  if (!match?.[1] || !match?.[2]) {
+    return null;
+  }
+  return {
+    kind: match[1].toLowerCase() as
+      | 'presentation'
+      | 'document'
+      | 'spreadsheets',
+    id: match[2],
+  };
+};
+
 const getGoogleDriveFileBase = (value: string) => {
   const fileMatch = value.match(/drive\.google\.com\/file\/d\/([^/]+)/i);
   if (fileMatch?.[1]) {
@@ -920,6 +937,34 @@ const toGooglePdfExportUrl = (value: string) => {
   return null;
 };
 
+const toGoogleOfficeExport = (value: string) => {
+  const match = getGoogleDocMatch(value);
+  if (!match) {
+    return null;
+  }
+
+  if (match.kind === 'presentation') {
+    return {
+      format: 'PPTX',
+      url: `https://docs.google.com/presentation/d/${match.id}/export/pptx`,
+    };
+  }
+  if (match.kind === 'document') {
+    return {
+      format: 'DOCX',
+      url: `https://docs.google.com/document/d/${match.id}/export?format=docx`,
+    };
+  }
+  if (match.kind === 'spreadsheets') {
+    return {
+      format: 'XLSX',
+      url: `https://docs.google.com/spreadsheets/d/${match.id}/export?format=xlsx`,
+    };
+  }
+
+  return null;
+};
+
 const getNormalizedGDriveRoot = (value: string) => {
   const docBase = getGoogleDocBase(value);
   if (docBase) {
@@ -967,6 +1012,8 @@ const getMaterialUrls = (item?: TPreviewItem & { mimeType?: string | null }) => 
       previewUrl: baseUrl,
       embedUrl: baseUrl,
       pdfDownloadUrl: null,
+      officeDownloadUrl: null,
+      officeFormat: null,
     };
   }
 
@@ -979,8 +1026,11 @@ const getMaterialUrls = (item?: TPreviewItem & { mimeType?: string | null }) => 
         previewUrl: viewUrl,
         embedUrl: viewUrl,
         pdfDownloadUrl: null,
+        officeDownloadUrl: toGoogleOfficeExport(gdriveRoot)?.url ?? null,
+        officeFormat: toGoogleOfficeExport(gdriveRoot)?.format ?? null,
       };
     }
+    const officeExport = toGoogleOfficeExport(gdriveRoot);
     const previewUrl = `${gdriveRoot}/preview`;
     return {
       openUrl: `${gdriveRoot}/view`,
@@ -989,6 +1039,8 @@ const getMaterialUrls = (item?: TPreviewItem & { mimeType?: string | null }) => 
       pdfDownloadUrl: supportsPdfExport
         ? toGooglePdfExportUrl(gdriveRoot) ?? null
         : null,
+      officeDownloadUrl: officeExport?.url ?? null,
+      officeFormat: officeExport?.format ?? null,
     };
   }
 
@@ -998,20 +1050,26 @@ const getMaterialUrls = (item?: TPreviewItem & { mimeType?: string | null }) => 
       previewUrl: null,
       embedUrl: null,
       pdfDownloadUrl: null,
+      officeDownloadUrl: null,
+      officeFormat: null,
     };
   }
 
   if (isPresentation) {
     const viewUrl = toGoogleDriveViewUrl(baseUrl) ?? baseUrl;
+    const officeExport = toGoogleOfficeExport(baseUrl);
     return {
       openUrl: viewUrl,
       previewUrl: viewUrl,
       embedUrl: viewUrl,
       pdfDownloadUrl: null,
+      officeDownloadUrl: officeExport?.url ?? null,
+      officeFormat: officeExport?.format ?? null,
     };
   }
 
   const previewUrl = toGoogleDrivePreviewUrl(baseUrl) ?? baseUrl;
+  const officeExport = toGoogleOfficeExport(baseUrl);
   const pdfDownloadUrl =
     supportsPdfExport
       ? toGooglePdfExportUrl(baseUrl) ?? (isPdfUrl(baseUrl) ? baseUrl : null)
@@ -1022,6 +1080,8 @@ const getMaterialUrls = (item?: TPreviewItem & { mimeType?: string | null }) => 
     previewUrl,
     embedUrl: isWorksheetOrHandout ? previewUrl : previewUrl,
     pdfDownloadUrl,
+    officeDownloadUrl: officeExport?.url ?? null,
+    officeFormat: officeExport?.format ?? null,
   };
 };
 
@@ -1393,6 +1453,9 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
   );
   const [shouldScrollToVersionNotes, setShouldScrollToVersionNotes] =
     useState(false);
+  const [officeUpsellFormat, setOfficeUpsellFormat] = useState<string | null>(
+    null
+  );
   const shouldShowGradeBandChooser = classroomResources.some(
     (resource) =>
       Boolean(resource?.gradePrefix?.trim() || resource?.grades?.trim())
@@ -1575,9 +1638,14 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
       return;
     }
     const searchParams = new URLSearchParams(window.location.search);
-    const shouldShowProcedureOnly = searchParams.get('procedure') === '1';
+    const shouldShowProcedureOnly =
+      searchParams.has('procedure-only') || searchParams.get('procedure') === '1';
     setIsProcedureStandaloneView(shouldShowProcedureOnly);
     if (shouldShowProcedureOnly) {
+      const lessonFromQuery = Number.parseInt(searchParams.get('lesson') ?? '', 10);
+      if (!Number.isNaN(lessonFromQuery)) {
+        setActiveLessonId(lessonFromQuery);
+      }
       setActiveTab(TAB_MATERIALS);
       setActiveLessonPreviewMode('procedure');
     }
@@ -1628,6 +1696,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
     setActiveTab(TAB_MATERIALS);
     updateHash(TAB_MATERIALS, lessonId);
     trackUnitEvent('unit_lesson_selected', { lesson_id: lessonId });
+    scrollToTop();
   };
 
   const handleSearchSelect = (entry: TSearchEntry) => {
@@ -2675,14 +2744,22 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
     copyLessonBtnRef.current?.click();
   };
 
+  const handleOpenOfficeUpsell = (format: string) => {
+    setOfficeUpsellFormat(format);
+  };
+
+  const handleCloseOfficeUpsell = () => {
+    setOfficeUpsellFormat(null);
+  };
+
   const handleOpenProcedureInNewTab = () => {
     if (typeof window === 'undefined' || activeLessonId == null) {
       return;
     }
 
     const nextUrl = new URL(window.location.href);
-    nextUrl.searchParams.set('procedure', '1');
-    nextUrl.hash = `tab=${TAB_MATERIALS}&lesson=${activeLessonId}&preview=procedure`;
+    nextUrl.hash = '';
+    nextUrl.search = `?procedure-only&lesson=${activeLessonId}`;
     window.open(nextUrl.toString(), '_blank', 'noopener,noreferrer');
   };
 
@@ -2748,28 +2825,50 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
     lessonMaterialsStickyTop != null
       ? {
           ...fixedLessonPaneStyle,
+          position: 'sticky' as const,
           top: `${lessonMaterialsStickyTop}px`,
+          alignSelf: 'start' as const,
         }
       : fixedLessonPaneStyle;
 
-  const renderProcedurePanel = (showLinkOutAction: boolean) => (
-    <div className={styles.lessonProcedureInPreview}>
+  const renderProcedurePanel = (
+    showLinkOutAction: boolean,
+    showPanelHeading = true,
+    panelClassName?: string
+  ) => (
+    <div
+      className={
+        panelClassName
+          ? `${styles.lessonProcedureInPreview} ${panelClassName}`
+          : styles.lessonProcedureInPreview
+      }
+    >
       <div className={styles.lessonProcedureHeader}>
-        <h3 className={styles.lessonCardHeading}>
-          <NotebookPen size={16} aria-hidden="true" />
-          <span>Lesson Procedure</span>
-        </h3>
-        {showLinkOutAction && (
-          <button
-            type="button"
-            className={styles.procedureLinkOutBtn}
-            onClick={handleOpenProcedureInNewTab}
-          >
-            <span>Open Procedure Tab</span>
-            <SquareArrowOutUpRight size={13} aria-hidden="true" />
-          </button>
+        {(showPanelHeading || showLinkOutAction) && (
+          <div className={styles.lessonProcedureHeaderTop}>
+            {showPanelHeading ? (
+              <h3 className={styles.lessonCardHeading}>
+                <NotebookPen size={16} aria-hidden="true" />
+                <span>Lesson Procedure</span>
+              </h3>
+            ) : (
+              <span />
+            )}
+            {showLinkOutAction && (
+              <button
+                type="button"
+                className={styles.procedureLinkOutBtn}
+                onClick={handleOpenProcedureInNewTab}
+              >
+                <span>Open in New Tab</span>
+                <SquareArrowOutUpRight size={13} aria-hidden="true" />
+              </button>
+            )}
+          </div>
         )}
-        <span>Chunk-by-chunk guidance with vocab and teacher notes.</span>
+        {showPanelHeading && (
+          <span>Chunk-by-chunk guidance with vocab and teacher notes.</span>
+        )}
       </div>
       <div className={styles.lessonProcedureContent}>
         {activeLesson?.chunks?.map((chunk, index) => (
@@ -2884,6 +2983,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
             Detailed steps will appear here once added.
           </p>
         )}
+        <p className={styles.procedureEndMarker}>End</p>
       </div>
     </div>
   );
@@ -2932,65 +3032,106 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
     trackUnitEvent('unit_standards_filters_reset');
   };
 
+  const currentLessonLabel =
+    activeLesson && isAssessmentLesson(activeLesson, activeLessonIndex)
+      ? 'Assessment'
+      : `Lesson ${activeLessonId ?? ''}`;
+  const procedureReturnHref =
+    numID != null
+      ? `/units/${locale}/${numID}#tab=${TAB_MATERIALS}&lesson=${activeLessonId ?? ''}`
+      : '/units';
+  const procedureReturnQrUrl = useMemo(() => {
+    if (typeof window !== 'undefined') {
+      return new URL(procedureReturnHref, window.location.origin).toString();
+    }
+
+    if (typeof unit.URL === 'string' && unit.URL.trim()) {
+      try {
+        const fallback = new URL(unit.URL.trim());
+        fallback.search = '';
+        fallback.hash = `tab=${TAB_MATERIALS}&lesson=${activeLessonId ?? ''}`;
+        return fallback.toString();
+      } catch (error) {}
+    }
+
+    return procedureReturnHref;
+  }, [activeLessonId, procedureReturnHref, unit.URL]);
+
   return (
-    <div className={styles.unitPage}>
-      <div className={styles.unitStickyHeader}>
-        <div className={styles.unitStickyInner}>
-          <div className={styles.unitStickyTopRow}>
-            <div className={styles.unitStickyTitle}>
-              <span className={styles.unitStickyText}>
-                {unitTitle}
-                {unitSubtitle ? `: ${unitSubtitle}` : ''}
-              </span>
+    <div
+      className={`${styles.unitPage} ${
+        isProcedureStandaloneView ? styles.unitPageProcedureOnly : ''
+      }`}
+    >
+      {!isProcedureStandaloneView && (
+        <div className={styles.unitStickyHeader}>
+          <div className={styles.unitStickyInner}>
+            <div className={styles.unitStickyTopRow}>
+              <div className={styles.unitStickyTitle}>
+                <span className={styles.unitStickyText}>
+                  {unitTitle}
+                  {unitSubtitle ? `: ${unitSubtitle}` : ''}
+                </span>
+              </div>
             </div>
-          </div>
-          <div className={styles.unitSearch}>
-            <div className={styles.unitSearchRow}>
-              <div
-                className={
-                  isSearchExpanded
-                    ? `${styles.unitSearchInputWrap} ${styles.unitSearchInputWrapExpanded}`
-                    : `${styles.unitSearchInputWrap} ${styles.unitSearchInputWrapCollapsed}`
-                }
-              >
-                <button
-                  type="button"
-                  className={styles.unitSearchIcon}
-                  aria-label={
-                    isSearchExpanded ? 'Collapse unit search' : 'Expand unit search'
-                  }
-                  aria-controls="unit-search"
-                  aria-expanded={isSearchExpanded}
-                  onClick={handleSearchToggle}
-                >
-                  <TextSearch size={16} aria-hidden="true" />
-                </button>
-                <input
-                  id="unit-search"
-                  ref={searchInputRef}
+            <div className={styles.unitSearch}>
+              <div className={styles.unitSearchRow}>
+                <div
                   className={
                     isSearchExpanded
-                      ? `${styles.unitSearchInput} ${styles.unitSearchInputExpanded}`
-                      : `${styles.unitSearchInput} ${styles.unitSearchInputCollapsed}`
+                      ? `${styles.unitSearchInputWrap} ${styles.unitSearchInputWrapExpanded}`
+                      : `${styles.unitSearchInputWrap} ${styles.unitSearchInputWrapCollapsed}`
                   }
-                  type="search"
-                  placeholder="Search within this unit"
-                  value={searchTerm}
-                  onChange={(event) => setSearchTerm(event.target.value)}
-                  onKeyDown={(event) => {
-                    if (event.key === 'Escape') {
-                      setSearchTerm('');
-                      setIsSearchExpanded(false);
+                >
+                  <button
+                    type="button"
+                    className={styles.unitSearchIcon}
+                    aria-label={
+                      isSearchExpanded ? 'Collapse unit search' : 'Expand unit search'
                     }
-                  }}
-                  tabIndex={isSearchExpanded ? 0 : -1}
-                />
-              </div>
-              {availLocs.length > 0 && numID != null && (
-                <div className={styles.unitLocaleActions}>
-                  <div className={styles.unitLocaleSwitcher}>
-                    <LocDropdown availLocs={availLocs} loc={locale} id={numID} />
+                    aria-controls="unit-search"
+                    aria-expanded={isSearchExpanded}
+                    onClick={handleSearchToggle}
+                  >
+                    <TextSearch size={16} aria-hidden="true" />
+                  </button>
+                  <input
+                    id="unit-search"
+                    ref={searchInputRef}
+                    className={
+                      isSearchExpanded
+                        ? `${styles.unitSearchInput} ${styles.unitSearchInputExpanded}`
+                        : `${styles.unitSearchInput} ${styles.unitSearchInputCollapsed}`
+                    }
+                    type="search"
+                    placeholder="Search within this unit"
+                    value={searchTerm}
+                    onChange={(event) => setSearchTerm(event.target.value)}
+                    onKeyDown={(event) => {
+                      if (event.key === 'Escape') {
+                        setSearchTerm('');
+                        setIsSearchExpanded(false);
+                      }
+                    }}
+                    tabIndex={isSearchExpanded ? 0 : -1}
+                  />
+                </div>
+                {availLocs.length > 0 && numID != null && (
+                  <div className={styles.unitLocaleActions}>
+                    <div className={styles.unitLocaleSwitcher}>
+                      <LocDropdown availLocs={availLocs} loc={locale} id={numID} />
+                    </div>
+                    <button
+                      className={styles.stickyShareAction}
+                      type="button"
+                      onClick={handleShare}
+                    >
+                      <i className="bi bi-share" aria-hidden="true" />
+                      Share
+                    </button>
                   </div>
+                )}
+                {!(availLocs.length > 0 && numID != null) && (
                   <button
                     className={styles.stickyShareAction}
                     type="button"
@@ -2999,123 +3140,113 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                     <i className="bi bi-share" aria-hidden="true" />
                     Share
                   </button>
-                </div>
-              )}
-              {!(availLocs.length > 0 && numID != null) && (
+                )}
                 <button
-                  className={styles.stickyShareAction}
                   type="button"
-                  onClick={handleShare}
+                  className={styles.unitNavVisibilityToggle}
+                  onClick={handlePortalNavToggle}
+                  aria-label={isPortalNavCollapsed ? 'Expand top navigation' : 'Collapse top navigation'}
                 >
-                  <i className="bi bi-share" aria-hidden="true" />
-                  Share
+                  <ChevronUp
+                    size={18}
+                    aria-hidden="true"
+                    className={
+                      isPortalNavCollapsed
+                        ? styles.unitNavVisibilityToggleIconCollapsed
+                        : styles.unitNavVisibilityToggleIconExpanded
+                    }
+                  />
+                  <span>{isPortalNavCollapsed ? 'Expand' : 'Collapse'}</span>
                 </button>
-              )}
-              <button
-                type="button"
-                className={styles.unitNavVisibilityToggle}
-                onClick={handlePortalNavToggle}
-                aria-label={isPortalNavCollapsed ? 'Expand top navigation' : 'Collapse top navigation'}
-              >
-                <ChevronUp
-                  size={18}
-                  aria-hidden="true"
-                  className={
-                    isPortalNavCollapsed
-                      ? styles.unitNavVisibilityToggleIconCollapsed
-                      : styles.unitNavVisibilityToggleIconExpanded
-                  }
-                />
-                <span>{isPortalNavCollapsed ? 'Expand' : 'Collapse'}</span>
-              </button>
-            </div>
-          </div>
-          <div className={styles.unitTabList}>
-            {availableTabs.map((tab) => (
-              <button
-                key={tab.key}
-                type="button"
-                className={
-                  tab.key === activeTab
-                    ? `${styles.unitTabButton} ${styles.unitTabButtonActive}`
-                    : styles.unitTabButton
-                }
-                onClick={() => handleTabChange(tab.key as TTabKey)}
-              >
-                {tab.label}
-              </button>
-            ))}
-          </div>
-          {activeTab === TAB_MATERIALS && lessons.length > 0 && (
-            <div className={styles.lessonSubtabBar}>
-              <span className={styles.lessonSubtabLabel}>Lessons:</span>
-              <div className={styles.lessonSubtabList}>
-                {lessons.map((lesson, index) => {
-                  const lessonId = getLessonIdentifier(lesson, index);
-                  const isActive = lessonId === activeLessonId;
-                  const isAssessment = isAssessmentLesson(lesson, index);
-                  return (
-                    <button
-                      key={`sticky-lesson-tab-${lessonId}`}
-                      type="button"
-                      className={
-                        isActive
-                          ? `${styles.lessonSubtabButton} ${styles.lessonSubtabButtonActive}`
-                          : styles.lessonSubtabButton
-                      }
-                      onClick={() => handleLessonChange(lessonId)}
-                    >
-                      {isAssessment ? (
-                        <span
-                          className={`${styles.lessonSubtabThumb} ${styles.lessonSubtabThumbAssessment}`}
-                          aria-hidden="true"
-                        >
-                          <NotebookPen size={13} />
-                        </span>
-                      ) : lesson.tile ? (
-                        <span className={styles.lessonSubtabThumb} aria-hidden="true">
-                          <Image
-                            src={lesson.tile}
-                            alt=""
-                            width={22}
-                            height={22}
-                          />
-                        </span>
-                      ) : null}
-                      <span>{isAssessment ? 'Assess' : lessonId}</span>
-                    </button>
-                  );
-                })}
               </div>
             </div>
-          )}
-          {isSearchExpanded && searchTerm.length > 1 && (
-            <div className={styles.unitSearchResults}>
-              {searchResults.length ? (
-                searchResults.map((entry) => (
-                  <button
-                    key={entry.id}
-                    type="button"
-                    className={styles.unitSearchResult}
-                    onClick={() => handleSearchSelect(entry)}
-                  >
-                    <span className={styles.searchResultTitle}>
-                      {entry.title}
-                    </span>
-                    <span className={styles.searchResultExcerpt}>
-                      {entry.excerpt}
-                    </span>
-                  </button>
-                ))
-              ) : (
-                <p className={styles.searchResultEmpty}>
-                  No matches yet. Try a different keyword.
-                </p>
-              )}
+            <div className={styles.unitTabList}>
+              {availableTabs.map((tab) => (
+                <button
+                  key={tab.key}
+                  type="button"
+                  className={
+                    tab.key === activeTab
+                      ? `${styles.unitTabButton} ${styles.unitTabButtonActive}`
+                      : styles.unitTabButton
+                  }
+                  onClick={() => handleTabChange(tab.key as TTabKey)}
+                >
+                  {tab.label}
+                </button>
+              ))}
             </div>
-          )}
+            {activeTab === TAB_MATERIALS && lessons.length > 0 && (
+              <div className={styles.lessonSubtabBar}>
+                <span className={styles.lessonSubtabLabel}>Lessons:</span>
+                <div className={styles.lessonSubtabList}>
+                  {lessons.map((lesson, index) => {
+                    const lessonId = getLessonIdentifier(lesson, index);
+                    const isActive = lessonId === activeLessonId;
+                    const isAssessment = isAssessmentLesson(lesson, index);
+                    return (
+                      <button
+                        key={`sticky-lesson-tab-${lessonId}`}
+                        type="button"
+                        className={
+                          isActive
+                            ? `${styles.lessonSubtabButton} ${styles.lessonSubtabButtonActive}`
+                            : styles.lessonSubtabButton
+                        }
+                        onClick={() => handleLessonChange(lessonId)}
+                      >
+                        {isAssessment ? (
+                          <span
+                            className={`${styles.lessonSubtabThumb} ${styles.lessonSubtabThumbAssessment}`}
+                            aria-hidden="true"
+                          >
+                            <NotebookPen size={13} />
+                          </span>
+                        ) : lesson.tile ? (
+                          <span className={styles.lessonSubtabThumb} aria-hidden="true">
+                            <Image
+                              src={lesson.tile}
+                              alt=""
+                              width={22}
+                              height={22}
+                            />
+                          </span>
+                        ) : null}
+                        <span>{isAssessment ? 'Assess' : lessonId}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+            {isSearchExpanded && searchTerm.length > 1 && (
+              <div className={styles.unitSearchResults}>
+                {searchResults.length ? (
+                  searchResults.map((entry) => (
+                    <button
+                      key={entry.id}
+                      type="button"
+                      className={styles.unitSearchResult}
+                      onClick={() => handleSearchSelect(entry)}
+                    >
+                      <span className={styles.searchResultTitle}>
+                        {entry.title}
+                      </span>
+                      <span className={styles.searchResultExcerpt}>
+                        {entry.excerpt}
+                      </span>
+                    </button>
+                  ))
+                ) : (
+                  <p className={styles.searchResultEmpty}>
+                    No matches yet. Try a different keyword.
+                  </p>
+                )}
+              </div>
+            )}
+          </div>
         </div>
-      </div>
+      )}
 
       {activeTab === TAB_OVERVIEW && (
         <section className={styles.unitHero}>
@@ -3306,19 +3437,57 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                 isProcedureStandaloneView ? (
                   <div className={styles.procedureStandaloneLayout}>
                     <div className={styles.procedureStandaloneHeader}>
-                      <p>{unitTitle}</p>
-                      <h2>
-                        {isAssessmentLesson(activeLesson, activeLessonIndex)
-                          ? 'Assessment'
-                          : `Lesson ${getLessonIdentifier(activeLesson, activeLessonIndex)}`}
-                        {activeLesson.title ? `: ${activeLesson.title}` : ''}
-                      </h2>
+                      <p className={styles.procedureStandaloneLabel}>Procedure from:</p>
+                      <div className={styles.procedureStandaloneHeaderRow}>
+                        <Link
+                          href={procedureReturnHref}
+                          className={styles.procedureReturnLink}
+                        >
+                          {unitBanner && (
+                            <span className={styles.procedureReturnBanner} aria-hidden="true">
+                              <Image
+                                src={unitBanner}
+                                alt=""
+                                fill
+                                sizes="140px"
+                                style={{ objectFit: 'cover' }}
+                              />
+                            </span>
+                          )}
+                          <span className={styles.procedureReturnText}>
+                            <span>{unitTitle}</span>
+                            <span>
+                              {currentLessonLabel}
+                              {activeLesson.title ? `: ${activeLesson.title}` : ''}
+                            </span>
+                          </span>
+                          {activeLesson.tile && (
+                            <span className={styles.procedureReturnTile} aria-hidden="true">
+                              <Image
+                                src={activeLesson.tile}
+                                alt=""
+                                fill
+                                sizes="74px"
+                                style={{ objectFit: 'cover' }}
+                              />
+                            </span>
+                          )}
+                        </Link>
+                        <div className={styles.procedureReturnQr}>
+                          <QRCode
+                            value={procedureReturnQrUrl}
+                            size={86}
+                            bgColor="#ffffff"
+                            fgColor="#111111"
+                          />
+                        </div>
+                      </div>
                     </div>
-                    <div
-                      className={`${styles.lessonPreviewsCard} ${styles.lessonPreviewsCardStandalone}`}
-                    >
-                      {renderProcedurePanel(false)}
-                    </div>
+                    {renderProcedurePanel(
+                      false,
+                      false,
+                      styles.lessonProcedureStandalonePanel
+                    )}
                   </div>
                 ) : (
                 <div className={styles.lessonLayout}>
@@ -3635,7 +3804,11 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                           <div className={styles.lessonDownloadList}>
                             {activeLessonItems.map((item, idx) => {
                               const previewItem = item as TPreviewItem;
-                              const { pdfDownloadUrl } = getMaterialUrls(previewItem);
+                              const {
+                                pdfDownloadUrl,
+                                officeDownloadUrl,
+                                officeFormat,
+                              } = getMaterialUrls(previewItem);
                               const isActive =
                                 activeLessonPreviewMode === 'materials' &&
                                 idx === activeMaterialIndex;
@@ -3647,6 +3820,18 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                               const isTeacherLocked =
                                 isAuthenticated && !isUserTeacher && isTeacherOnlyItem;
                               const canAccessPdf = !!pdfDownloadUrl && !isTeacherLocked && isAuthenticated;
+                              const hasOfficeDownload =
+                                !!officeDownloadUrl && !!officeFormat;
+                              const canAccessOffice =
+                                hasOfficeDownload &&
+                                !isTeacherLocked &&
+                                isAuthenticated &&
+                                isGpPlusUser;
+                              const canUpsellOffice =
+                                hasOfficeDownload &&
+                                !isTeacherLocked &&
+                                isAuthenticated &&
+                                !isGpPlusUser;
 
                               return (
                                 <article
@@ -3656,7 +3841,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                                   }`}
                                   onClick={(event) => {
                                     const target = event.target as HTMLElement;
-                                    if (target.closest('a')) {
+                                    if (target.closest('a') || target.closest('button')) {
                                       return;
                                     }
                                     selectMaterialItem(idx, item.itemTitle);
@@ -3688,20 +3873,62 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                                       </span>
                                     </button>
                                   </div>
-                                  {pdfDownloadUrl && (
+                                  {(pdfDownloadUrl || hasOfficeDownload) && (
                                     <div className={styles.materialRowPdfWrap}>
-                                      {canAccessPdf ? (
-                                        <a
-                                          className={styles.materialPdfLink}
-                                          href={pdfDownloadUrl}
-                                          target="_blank"
-                                          rel="noreferrer"
-                                        >
-                                          Download PDF
-                                        </a>
-                                      ) : (
-                                        <span className={styles.materialPdfLinkDisabled}>
-                                          Log in to download
+                                      <div className={styles.materialDownloadRow}>
+                                        <span className={styles.materialDownloadLabel}>
+                                          Download
+                                        </span>
+                                        <div className={styles.materialDownloadActions}>
+                                          {pdfDownloadUrl &&
+                                            (canAccessPdf ? (
+                                              <a
+                                                className={styles.materialPdfLink}
+                                                href={pdfDownloadUrl}
+                                                target="_blank"
+                                                rel="noreferrer"
+                                              >
+                                                PDF
+                                              </a>
+                                            ) : (
+                                              <span className={styles.materialPdfLinkDisabled}>
+                                                PDF
+                                              </span>
+                                            ))}
+                                          {hasOfficeDownload &&
+                                            (canAccessOffice ? (
+                                              <a
+                                                className={`${styles.materialPdfLink} ${styles.materialOfficeLink}`}
+                                                href={officeDownloadUrl ?? undefined}
+                                                target="_blank"
+                                                rel="noreferrer"
+                                              >
+                                                {officeFormat}
+                                              </a>
+                                            ) : canUpsellOffice ? (
+                                              <button
+                                                type="button"
+                                                className={`${styles.materialPdfLink} ${styles.materialOfficeLink} ${styles.materialOfficeLinkLocked}`}
+                                                onClick={() =>
+                                                  handleOpenOfficeUpsell(
+                                                    officeFormat ?? 'Office'
+                                                  )
+                                                }
+                                              >
+                                                {officeFormat}
+                                              </button>
+                                            ) : (
+                                              <span
+                                                className={`${styles.materialPdfLinkDisabled} ${styles.materialOfficeLinkLocked}`}
+                                              >
+                                                {officeFormat}
+                                              </span>
+                                            ))}
+                                        </div>
+                                      </div>
+                                      {!isGpPlusUser && hasOfficeDownload && isAuthenticated && (
+                                        <span className={styles.officeUpsellTag}>
+                                          GP+ editable files
                                         </span>
                                       )}
                                     </div>
@@ -3752,7 +3979,14 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                               : activeMaterialIndex;
                           const selectedItem = activeLessonItems[safeIndex];
                           const selectedPreviewItem = selectedItem as TPreviewItem;
-                          const { openUrl, previewUrl, embedUrl, pdfDownloadUrl } =
+                          const {
+                            openUrl,
+                            previewUrl,
+                            embedUrl,
+                            pdfDownloadUrl,
+                            officeDownloadUrl,
+                            officeFormat,
+                          } =
                             getMaterialUrls(selectedPreviewItem);
                           const previewImg =
                             (
@@ -3780,6 +4014,18 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                           const isPreviewLocked =
                             isPreviewLockedLoggedOut || isPreviewLockedTeacher;
                           const canOpenSelected = !!openUrl && !isPreviewLocked;
+                          const hasOfficeDownload =
+                            !!officeDownloadUrl && !!officeFormat;
+                          const canAccessOffice =
+                            hasOfficeDownload &&
+                            !isPreviewLockedTeacher &&
+                            isAuthenticated &&
+                            isGpPlusUser;
+                          const canUpsellOffice =
+                            hasOfficeDownload &&
+                            !isPreviewLockedTeacher &&
+                            isAuthenticated &&
+                            !isGpPlusUser;
 
                           return (
                             <article className={styles.lessonPreviewItem}>
@@ -3885,15 +4131,57 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                                       '').toString()}
                                   </span>
                                 )}
-                                {pdfDownloadUrl && isAuthenticated && !isPreviewLockedTeacher && (
-                                  <a
-                                    className={styles.materialPdfLink}
-                                    href={pdfDownloadUrl}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                  >
-                                    Download PDF
-                                  </a>
+                                {(pdfDownloadUrl || hasOfficeDownload) && (
+                                  <div className={styles.materialDownloadRow}>
+                                    <span className={styles.materialDownloadLabel}>
+                                      Download
+                                    </span>
+                                    <div className={styles.materialDownloadActions}>
+                                      {pdfDownloadUrl && isAuthenticated && !isPreviewLockedTeacher ? (
+                                        <a
+                                          className={styles.materialPdfLink}
+                                          href={pdfDownloadUrl}
+                                          target="_blank"
+                                          rel="noreferrer"
+                                        >
+                                          PDF
+                                        </a>
+                                      ) : pdfDownloadUrl ? (
+                                        <span className={styles.materialPdfLinkDisabled}>
+                                          PDF
+                                        </span>
+                                      ) : null}
+                                      {hasOfficeDownload &&
+                                        (canAccessOffice ? (
+                                          <a
+                                            className={`${styles.materialPdfLink} ${styles.materialOfficeLink}`}
+                                            href={officeDownloadUrl ?? undefined}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                          >
+                                            {officeFormat}
+                                          </a>
+                                        ) : canUpsellOffice ? (
+                                          <button
+                                            type="button"
+                                            className={`${styles.materialPdfLink} ${styles.materialOfficeLink} ${styles.materialOfficeLinkLocked}`}
+                                            onClick={() =>
+                                              handleOpenOfficeUpsell(
+                                                officeFormat ?? 'Office'
+                                              )
+                                            }
+                                          >
+                                            {officeFormat}
+                                          </button>
+                                        ) : (
+                                          <span
+                                            className={`${styles.materialPdfLinkDisabled} ${styles.materialOfficeLinkLocked}`}
+                                          >
+                                            {officeFormat}
+                                          </span>
+                                        ))}
+                                    </div>
+                                  </div>
                                 )}
                               </div>
                             </article>
@@ -4433,8 +4721,9 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
             </div>
           </section>
         )}
-        {(activeTab === TAB_MATERIALS && nextLessonId != null) ||
-        (activeTab !== TAB_CREDITS && nextTab) ? (
+        {!isProcedureStandaloneView &&
+        ((activeTab === TAB_MATERIALS && nextLessonId != null) ||
+          (activeTab !== TAB_CREDITS && nextTab)) ? (
           <div className={styles.nextTabCtaWrap}>
             {activeTab === TAB_MATERIALS && nextLessonId != null && (
               <button
@@ -4459,108 +4748,141 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
           </div>
         ) : null}
         <aside className={styles.licenseBanner} aria-label="Creative Commons license notice">
-          <div className={styles.licenseBannerInner}>
-            <div className={styles.licenseTopRow}>
-              <Image
-                src="/imgs/creative-commons_by-nc-sa.svg"
-                alt=""
-                aria-hidden="true"
-                width={126}
-                height={44}
-              />
-              <div className={styles.licenseMeta}>
-                <p className={styles.licenseBannerText}>
-                  <strong>CC BY-NC-SA 4.0.</strong> Share + Remix, with attribution. Don&apos;t sell.
-                </p>
-                <a
-                  href="https://creativecommons.org/licenses/by-nc-sa/4.0/"
-                  target="_blank"
-                  rel="noreferrer"
-                  className={styles.licenseBannerLink}
+            <div className={styles.licenseBannerInner}>
+              <div className={styles.licenseTopRow}>
+                <Image
+                  src="/imgs/creative-commons_by-nc-sa.svg"
+                  alt=""
+                  aria-hidden="true"
+                  width={126}
+                  height={44}
+                />
+                <div className={styles.licenseMeta}>
+                  <p className={styles.licenseBannerText}>
+                    <strong>CC BY-NC-SA 4.0.</strong> Share + Remix, with attribution. Don&apos;t sell.
+                  </p>
+                  <a
+                    href="https://creativecommons.org/licenses/by-nc-sa/4.0/"
+                    target="_blank"
+                    rel="noreferrer"
+                    className={styles.licenseBannerLink}
+                  >
+                    License details
+                  </a>
+                  <details className={styles.citationAccordion}>
+                    <summary className={styles.citationAccordionSummary}>
+                      <span>How to cite and attribute</span>
+                      <ChevronUp
+                        size={14}
+                        aria-hidden="true"
+                        className={styles.citationAccordionChevron}
+                      />
+                    </summary>
+                    <div className={styles.citationBlock}>
+                      <div className={styles.citationEntry}>
+                        <p className={styles.citationLabel}>Give Attribution</p>
+                        <p className={styles.citationText}>
+                          {attributionDisplayParts.titleByAuthors}{' '}
+                          Source:{' '}
+                          <a
+                            href={attributionDisplayParts.sourceHref}
+                            target="_blank"
+                            rel="noreferrer"
+                            className={styles.citationInlineLink}
+                          >
+                            {attributionDisplayParts.sourceLabel}
+                          </a>
+                          . License:{' '}
+                          <a
+                            href={attributionDisplayParts.licenseHref}
+                            target="_blank"
+                            rel="noreferrer"
+                            className={styles.citationInlineLink}
+                          >
+                            {attributionDisplayParts.licenseLabel}
+                          </a>
+                          .
+                        </p>
+                        <div className={styles.citationEntryFooter}>
+                          {copiedEntry === 'attribution' && (
+                            <span className={styles.citationStatus}>Copied</span>
+                          )}
+                          {copyErrorEntry === 'attribution' && (
+                            <span className={styles.citationStatusError}>Unable to copy</span>
+                          )}
+                          <button
+                            type="button"
+                            className={styles.copyCitationButton}
+                            onClick={() => handleCopyCitation(attributionText, 'attribution')}
+                            aria-label="Copy attribution"
+                            title="Copy attribution"
+                          >
+                            <Copy size={13} aria-hidden="true" />
+                            <span>Copy</span>
+                          </button>
+                        </div>
+                      </div>
+                      <div className={styles.citationEntry}>
+                        <p className={styles.citationLabel}>Cite this Work</p>
+                        <p className={styles.citationText}>{vancouverCitation}</p>
+                        <div className={styles.citationEntryFooter}>
+                          {copiedEntry === 'citation' && (
+                            <span className={styles.citationStatus}>Copied</span>
+                          )}
+                          {copyErrorEntry === 'citation' && (
+                            <span className={styles.citationStatusError}>Unable to copy</span>
+                          )}
+                          <button
+                            type="button"
+                            className={styles.copyCitationButton}
+                            onClick={() => handleCopyCitation(vancouverCitation, 'citation')}
+                            aria-label="Copy citation"
+                            title="Copy citation"
+                          >
+                            <Copy size={13} aria-hidden="true" />
+                            <span>Copy</span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </details>
+                </div>
+              </div>
+            </div>
+        </aside>
+        {officeUpsellFormat && (
+          <div
+            className={styles.officeUpsellModalBackdrop}
+            role="presentation"
+            onClick={handleCloseOfficeUpsell}
+          >
+            <div
+              className={styles.officeUpsellModal}
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="office-upsell-title"
+              onClick={(event) => event.stopPropagation()}
+            >
+              <h3 id="office-upsell-title">Editable {officeUpsellFormat} files are GP+ only</h3>
+              <p>
+                With a GP+ subscription, you can download editable Office files for
+                teaching materials and unlock the full GP+ toolkit.
+              </p>
+              <div className={styles.officeUpsellActions}>
+                <Link href="/plus" className={styles.officeUpsellPrimary}>
+                  Explore GP+ Benefits
+                </Link>
+                <button
+                  type="button"
+                  className={styles.officeUpsellSecondary}
+                  onClick={handleCloseOfficeUpsell}
                 >
-                  License details
-                </a>
-                <details className={styles.citationAccordion}>
-                  <summary className={styles.citationAccordionSummary}>
-                    <span>How to cite and attribute</span>
-                    <ChevronUp
-                      size={14}
-                      aria-hidden="true"
-                      className={styles.citationAccordionChevron}
-                    />
-                  </summary>
-                  <div className={styles.citationBlock}>
-                    <div className={styles.citationEntry}>
-                      <p className={styles.citationLabel}>Give Attribution</p>
-                      <p className={styles.citationText}>
-                        {attributionDisplayParts.titleByAuthors}{' '}
-                        Source:{' '}
-                        <a
-                          href={attributionDisplayParts.sourceHref}
-                          target="_blank"
-                          rel="noreferrer"
-                          className={styles.citationInlineLink}
-                        >
-                          {attributionDisplayParts.sourceLabel}
-                        </a>
-                        . License:{' '}
-                        <a
-                          href={attributionDisplayParts.licenseHref}
-                          target="_blank"
-                          rel="noreferrer"
-                          className={styles.citationInlineLink}
-                        >
-                          {attributionDisplayParts.licenseLabel}
-                        </a>
-                        .
-                      </p>
-                      <div className={styles.citationEntryFooter}>
-                        {copiedEntry === 'attribution' && (
-                          <span className={styles.citationStatus}>Copied</span>
-                        )}
-                        {copyErrorEntry === 'attribution' && (
-                          <span className={styles.citationStatusError}>Unable to copy</span>
-                        )}
-                        <button
-                          type="button"
-                          className={styles.copyCitationButton}
-                          onClick={() => handleCopyCitation(attributionText, 'attribution')}
-                          aria-label="Copy attribution"
-                          title="Copy attribution"
-                        >
-                          <Copy size={13} aria-hidden="true" />
-                          <span>Copy</span>
-                        </button>
-                      </div>
-                    </div>
-                    <div className={styles.citationEntry}>
-                      <p className={styles.citationLabel}>Cite this Work</p>
-                      <p className={styles.citationText}>{vancouverCitation}</p>
-                      <div className={styles.citationEntryFooter}>
-                        {copiedEntry === 'citation' && (
-                          <span className={styles.citationStatus}>Copied</span>
-                        )}
-                        {copyErrorEntry === 'citation' && (
-                          <span className={styles.citationStatusError}>Unable to copy</span>
-                        )}
-                        <button
-                          type="button"
-                          className={styles.copyCitationButton}
-                          onClick={() => handleCopyCitation(vancouverCitation, 'citation')}
-                          aria-label="Copy citation"
-                          title="Copy citation"
-                        >
-                          <Copy size={13} aria-hidden="true" />
-                          <span>Copy</span>
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </details>
+                  Not now
+                </button>
               </div>
             </div>
           </div>
-        </aside>
+        )}
       </main>
     </div>
   );

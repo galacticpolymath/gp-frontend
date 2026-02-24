@@ -17,7 +17,7 @@
  
  
  
-import { useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import LessonSlide from './LessonSlide';
 import { getVideoThumb } from './utils';
 import Image from 'next/image';
@@ -26,10 +26,59 @@ import Dot from '../NavDots/Dot';
 
 const LessonsCarousel = ({ mediaItems }) => {
     const [currentIndex, setCurrentIndex] = useState(0);
-    const mediaItemsSorted = mediaItems ? mediaItems.sort((lessonDocumentA, lessonDocumentB) => lessonDocumentA.order - lessonDocumentB.order).map((item, index) => ({ ...item, isVisible: index === 0 })) : []
+    const carouselRef = useRef(null);
+    const mediaItemsSorted = useMemo(
+        () =>
+            mediaItems
+                ? [...mediaItems]
+                    .sort(
+                        (lessonDocumentA, lessonDocumentB) =>
+                            lessonDocumentA.order - lessonDocumentB.order
+                    )
+                    .map((item, index) => ({ ...item, isVisible: index === 0 }))
+                : [],
+        [mediaItems]
+    );
     const [controlDots, setControlDots] = useState(mediaItemsSorted);
 
+    useEffect(() => {
+        setCurrentIndex(0);
+        setControlDots(mediaItemsSorted);
+    }, [mediaItemsSorted]);
+
+    const stopMediaPlayback = useCallback(() => {
+        if (!carouselRef.current) {
+            return;
+        }
+
+        const mediaElements = carouselRef.current.querySelectorAll('iframe, video');
+        mediaElements.forEach((element) => {
+            if (element.tagName.toLowerCase() === 'video') {
+                element.pause?.();
+                return;
+            }
+
+            const iframeSrc = element.getAttribute('src') ?? '';
+            if (iframeSrc.includes('youtube.com/embed')) {
+                element.contentWindow?.postMessage(
+                    JSON.stringify({
+                        event: 'command',
+                        func: 'pauseVideo',
+                        args: [],
+                    }),
+                    '*'
+                );
+                return;
+            }
+
+            if (iframeSrc.includes('player.vimeo.com')) {
+                element.contentWindow?.postMessage({ method: 'pause' }, '*');
+            }
+        });
+    }, []);
+
     const handleNextBtnClick = () => {
+        stopMediaPlayback();
         const newItemIndexOnUI = currentIndex + 1
         setCurrentIndex(newItemIndexOnUI);
         setControlDots(controlDots => {
@@ -44,6 +93,7 @@ const LessonsCarousel = ({ mediaItems }) => {
     }
 
     const handlePrevBtnClick = () => {
+        stopMediaPlayback();
         const newItemIndexOnUI = currentIndex - 1
         setCurrentIndex(newItemIndexOnUI);
         setControlDots(controlDots => {
@@ -58,6 +108,7 @@ const LessonsCarousel = ({ mediaItems }) => {
     }
 
     const handleDotOrThumbNailClick = selectedItemIndex => {
+        stopMediaPlayback();
         setCurrentIndex(selectedItemIndex);
         setControlDots(controlDots => {
             return controlDots.map((item, index) => {
@@ -72,7 +123,10 @@ const LessonsCarousel = ({ mediaItems }) => {
 
     return (
         // put the parent div into its own component
-        <div className='shadow rounded p-0 display-flex flex-column justify-content-center autoCarouselContainer'>
+        <div
+            ref={carouselRef}
+            className='shadow rounded p-0 display-flex flex-column justify-content-start align-items-stretch autoCarouselContainer'
+        >
             <section className='row mt-0'>
                 <section
                     style={{ height: 'fit-content' }}
@@ -82,7 +136,7 @@ const LessonsCarousel = ({ mediaItems }) => {
                         className="autoCarouselSlider mt-0"
                         style={{ transform: `translate3d(${-currentIndex * 100}%, 0, 0)` }}
                     >
-                        {mediaItems?.length && mediaItems.sort((lessonDocumentA, lessonDocumentB) => lessonDocumentA.order - lessonDocumentB.order).map((lessonDocument, index) => {
+                        {mediaItemsSorted.length > 0 && mediaItemsSorted.map((lessonDocument, index) => {
                             return (
                                 <LessonSlide
                                     key={index}
@@ -156,5 +210,4 @@ const LessonsCarousel = ({ mediaItems }) => {
 }
 
 export default LessonsCarousel;
-
 

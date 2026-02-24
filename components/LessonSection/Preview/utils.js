@@ -37,6 +37,7 @@ const normalizeYouTubeEmbedUrl = (url) => {
     embedUrl.searchParams.set('playsinline', '1');
     embedUrl.searchParams.set('rel', '0');
     embedUrl.searchParams.set('modestbranding', '1');
+    embedUrl.searchParams.set('enablejsapi', '1');
 
     return embedUrl.toString();
   } catch (error) {

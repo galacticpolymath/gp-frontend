@@ -1,9 +1,26 @@
 .unitPage {
+  --free-tier-blue: #2c83c3;
+  --free-tier-blue-soft: rgba(44, 131, 195, 0.14);
+  --free-tier-blue-surface: #eef7ff;
+  --materials-active-blue: #1669ac;
   font-family: var(--font-family-base, "Noto Sans", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif);
   color: #1c2233;
   background: radial-gradient(circle at top, rgba(44, 131, 195, 0.18), transparent 45%),
     linear-gradient(135deg, rgba(240, 244, 255, 0.96), rgba(255, 255, 255, 0.95));
   min-height: 100vh;
+}
+
+.unitPageProcedureOnly {
+  background: #ffffff;
+}
+
+.unitPageProcedureOnly .unitMain {
+  max-width: 800px;
+  padding: 24px 16px 36px;
+}
+
+.unitPageProcedureOnly .unitSection {
+  width: 100%;
 }
 
 .unitHero {
@@ -831,6 +848,8 @@
   min-width: 0;
   overflow: hidden;
   display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
   min-height: 0;
 }
 
@@ -910,6 +929,7 @@
   align-self: stretch;
   overflow-y: auto;
   overflow-x: hidden;
+  overscroll-behavior-y: auto;
   padding-bottom: 8px;
 }
 
@@ -922,6 +942,11 @@
 .featuredMediaViewport :global(.mediaItemContainer) {
   height: clamp(220px, 34vh, 420px);
   max-height: clamp(220px, 34vh, 420px);
+}
+
+.featuredMediaViewport :global(.autoCarouselItem) {
+  align-items: flex-start !important;
+  justify-content: flex-start !important;
 }
 
 .unitTag {
@@ -1294,14 +1319,14 @@
   width: 100%;
   max-width: 380px;
   padding: 0;
-  background-color: rgba(252, 251, 246, 0.78);
+  background-color: rgba(232, 236, 242, 0.9);
   background-image:
-    radial-gradient(rgba(68, 76, 247, 0.12) 0.5px, rgba(252, 251, 246, 0.78) 0.5px),
-    linear-gradient(145deg, rgba(255, 255, 255, 0.22), rgba(242, 239, 255, 0.16));
+    radial-gradient(rgba(90, 104, 126, 0.12) 0.5px, rgba(232, 236, 242, 0.9) 0.5px),
+    linear-gradient(148deg, rgba(247, 249, 252, 0.86), rgba(218, 224, 233, 0.8));
   background-size: 10px 10px;
   box-shadow:
-    0 10px 24px rgba(21, 45, 82, 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.55);
+    0 12px 24px rgba(26, 37, 55, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.58);
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -1325,18 +1350,21 @@
   flex-direction: column;
   min-height: 0;
   overflow: hidden;
-  overscroll-behavior: contain;
+  overscroll-behavior: auto;
 }
 
 .lessonPreviewsCard {
   position: relative;
-  background: rgba(75, 58, 168, 0.08);
-  border: 1px solid rgba(75, 58, 168, 0.52);
+  background:
+    radial-gradient(circle at 12% 16%, rgba(44, 131, 195, 0.1), transparent 54%),
+    linear-gradient(160deg, rgba(243, 246, 251, 0.93), rgba(231, 236, 244, 0.9));
+  border: 2px solid rgba(44, 131, 195, 0.5);
   backdrop-filter: blur(14px) saturate(140%);
   -webkit-backdrop-filter: blur(14px) saturate(140%);
   box-shadow:
-    0 14px 34px rgba(18, 43, 77, 0.12),
-    inset 0 1px 0 rgba(255, 255, 255, 0.52);
+    0 14px 34px rgba(23, 39, 62, 0.16),
+    inset 0 0 0 1px rgba(44, 131, 195, 0.2),
+    inset 0 0 34px rgba(44, 131, 195, 0.12);
 }
 
 .lessonProcedureToggle {
@@ -1355,7 +1383,11 @@
   font-size: 16px;
   font-weight: 700;
   cursor: pointer;
-  transition: background-color 150ms ease, border-color 150ms ease;
+  transition:
+    background-color 150ms ease,
+    border-color 150ms ease,
+    box-shadow 150ms ease,
+    transform 150ms ease;
 }
 
 .quickStartActions {
@@ -1364,8 +1396,12 @@
 }
 
 .lessonProcedureToggle:hover {
-  border-color: rgba(44, 131, 195, 0.2);
-  background: rgba(250, 253, 255, 0.74);
+  border-color: rgba(44, 131, 195, 0.34);
+  background: rgba(251, 254, 255, 0.9);
+  box-shadow:
+    0 8px 14px rgba(37, 63, 98, 0.12),
+    0 0 0 1px rgba(44, 131, 195, 0.18);
+  transform: translateY(-1px);
 }
 
 .lessonProcedureToggle:disabled {
@@ -1374,14 +1410,17 @@
 }
 
 .lessonProcedureToggleActive {
-  border-color: rgba(75, 58, 168, 0.52);
-  background: rgba(75, 58, 168, 0.08);
+  border: 2px solid rgba(22, 105, 172, 0.8);
+  background: linear-gradient(170deg, rgba(215, 237, 255, 0.82), rgba(201, 228, 252, 0.88));
+  box-shadow:
+    0 0 0 1px rgba(22, 105, 172, 0.22),
+    0 8px 14px rgba(22, 105, 172, 0.16);
 }
 
 .lessonProcedureToggleActive:hover,
 .lessonProcedureToggleActive:focus-visible {
-  border-color: rgba(75, 58, 168, 0.52);
-  background: rgba(75, 58, 168, 0.08);
+  border-color: rgba(22, 105, 172, 0.88);
+  background: linear-gradient(170deg, rgba(215, 237, 255, 0.88), rgba(201, 228, 252, 0.95));
 }
 
 .lessonProcedureToggleText {
@@ -1406,7 +1445,7 @@
 }
 
 .resourceSection + .resourceSection {
-  margin-top: 0;
+  margin-top: 8px;
   border-top: 1px solid rgba(80, 98, 146, 0.16);
 }
 
@@ -1436,9 +1475,13 @@
 
 .quickStartSection {
   box-shadow:
-    0 6px 10px rgba(89, 64, 179, 0.04),
-    inset 0 0 0 1px rgba(89, 64, 179, 0.04);
-  background: rgba(252, 251, 255, 0.74);
+    0 8px 14px rgba(32, 43, 60, 0.08),
+    inset 0 0 0 1px rgba(69, 84, 110, 0.14);
+  background: linear-gradient(
+    145deg,
+    rgba(244, 247, 251, 0.86) 0%,
+    rgba(227, 233, 241, 0.82) 100%
+  );
 }
 
 .quickStartSection::before {
@@ -1447,8 +1490,8 @@
   inset: 0;
   height: 100%;
   background:
-    radial-gradient(circle at 22% 32%, rgba(121, 96, 222, 0.05), transparent 48%),
-    linear-gradient(115deg, rgba(103, 84, 205, 0.03), transparent 66%);
+    radial-gradient(circle at 22% 32%, rgba(74, 91, 121, 0.08), transparent 52%),
+    linear-gradient(115deg, rgba(107, 122, 148, 0.06), transparent 68%);
   pointer-events: none;
   z-index: 0;
 }
@@ -1456,8 +1499,14 @@
 .gpPlusFunctionsSection {
   overflow: hidden;
   box-shadow:
-    0 12px 22px rgba(36, 63, 200, 0.14),
-    inset 0 0 0 1px rgba(46, 84, 227, 0.1);
+    0 10px 18px rgba(36, 35, 74, 0.14),
+    inset 0 0 0 1px rgba(110, 118, 212, 0.14);
+  background: linear-gradient(
+    135deg,
+    rgba(75, 126, 198, 0.2) 0%,
+    rgba(93, 101, 184, 0.2) 55%,
+    rgba(112, 98, 170, 0.18) 100%
+  );
 }
 
 .gpPlusFunctionsSection::before {
@@ -1466,16 +1515,21 @@
   inset: -20% -15% auto;
   height: 120%;
   background:
-    radial-gradient(circle at 20% 35%, rgba(50, 110, 255, 0.16), transparent 40%),
-    linear-gradient(110deg, rgba(50, 110, 255, 0.1), transparent 65%);
+    radial-gradient(circle at 20% 35%, rgba(110, 149, 240, 0.16), transparent 44%),
+    radial-gradient(circle at 84% 30%, rgba(134, 104, 194, 0.13), transparent 46%),
+    linear-gradient(110deg, rgba(82, 124, 232, 0.08), transparent 65%);
   pointer-events: none;
 }
 
 .previewDownloadSection {
   box-shadow:
-    0 6px 10px rgba(89, 64, 179, 0.04),
-    inset 0 0 0 1px rgba(89, 64, 179, 0.04);
-  background: rgba(252, 251, 255, 0.74);
+    0 8px 14px rgba(32, 43, 60, 0.08),
+    inset 0 0 0 1px rgba(69, 84, 110, 0.14);
+  background: linear-gradient(
+    145deg,
+    rgba(243, 247, 251, 0.84) 0%,
+    rgba(225, 233, 241, 0.8) 100%
+  );
 }
 
 .previewDownloadSection::before {
@@ -1484,8 +1538,20 @@
   inset: 0;
   height: 100%;
   background:
-    radial-gradient(circle at 22% 32%, rgba(121, 96, 222, 0.05), transparent 48%),
-    linear-gradient(115deg, rgba(103, 84, 205, 0.03), transparent 66%);
+    radial-gradient(circle at 22% 32%, rgba(78, 96, 127, 0.07), transparent 50%),
+    linear-gradient(115deg, rgba(103, 120, 151, 0.05), transparent 66%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.previewDownloadSection::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(rgba(94, 111, 139, 0.1) 0.5px, rgba(238, 242, 248, 0.34) 0.5px),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.24), rgba(225, 233, 244, 0.22));
+  background-size: 11px 11px, 100% 100%;
   pointer-events: none;
   z-index: 0;
 }
@@ -1507,25 +1573,32 @@
 
 .gpFunctionActionBtn {
   min-height: 40px;
-  border-color: rgba(24, 38, 188, 0.34);
-  color: #1826bc;
+  border-color: rgba(45, 62, 92, 0.32);
+  color: #1c2233;
   background:
     linear-gradient(rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.92)) padding-box,
-    linear-gradient(120deg, rgba(24, 38, 188, 0.35), rgba(44, 131, 195, 0.45)) border-box;
+    linear-gradient(120deg, rgba(77, 93, 119, 0.3), rgba(44, 131, 195, 0.3)) border-box;
   transition:
     transform 180ms ease,
     background-position 240ms ease,
     border-color 180ms ease,
-    box-shadow 180ms ease;
+    box-shadow 180ms ease,
+    filter 180ms ease;
   background-size: 100% 100%, 220% 220%;
   background-position: 0% 50%, 0% 50%;
   text-decoration: none;
 }
 
 .gpFunctionActionBtn:hover {
-  border-color: rgba(24, 38, 188, 0.55);
+  border-color: rgba(72, 107, 167, 0.62);
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.99), rgba(245, 251, 255, 0.99)) padding-box,
+    linear-gradient(120deg, rgba(97, 128, 188, 0.58), rgba(131, 104, 198, 0.52)) border-box;
   background-position: 0% 50%, 100% 50%;
-  box-shadow: 0 10px 18px rgba(24, 38, 188, 0.16);
+  box-shadow:
+    0 12px 20px rgba(53, 97, 165, 0.2),
+    0 0 0 1px rgba(120, 152, 210, 0.28);
+  filter: saturate(1.06) brightness(1.03);
   transform: translateY(-1px);
 }
 
@@ -1535,11 +1608,11 @@
 }
 
 .gpFunctionActionBtn .lessonProcedureToggleText {
-  color: #1826bc;
+  color: #1c2233;
 }
 
 .gpFunctionActionBtn .lessonProcedureToggleText :global(svg) {
-  stroke: #1826bc;
+  stroke: #1c2233;
 }
 
 .copyAgainLinkBtn {
@@ -1571,8 +1644,12 @@
   border: 1px solid rgba(44, 131, 195, 0.18);
   border-radius: 14px;
   padding: 10px 12px;
-  background: rgba(255, 255, 255, 0.88);
-  box-shadow: 0 8px 16px rgba(32, 56, 97, 0.08);
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.94), rgba(255, 255, 255, 0.94)) padding-box,
+    linear-gradient(150deg, rgba(44, 131, 195, 0.2), rgba(44, 131, 195, 0.08)) border-box;
+  box-shadow:
+    0 10px 20px rgba(20, 52, 88, 0.08),
+    inset 0 0 0 1px rgba(44, 131, 195, 0.06);
 }
 
 .gradeBandPreface :global(p) {
@@ -1580,6 +1657,12 @@
   font-size: 15px;
   line-height: 1.45;
   color: #445376;
+}
+
+.gradeBandPreface + .gradeBandChooser {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(44, 131, 195, 0.2);
 }
 
 .gradeBandChooser {
@@ -1766,24 +1849,40 @@
   border-radius: 12px;
   background: rgba(255, 255, 255, 0.52);
   padding: 7px 8px;
-  transition: background-color 150ms ease, border-color 150ms ease;
+  transition:
+    background-color 150ms ease,
+    border-color 150ms ease,
+    box-shadow 150ms ease,
+    transform 150ms ease;
   cursor: pointer;
 }
 
 .materialRow:hover {
-  border-color: rgba(44, 131, 195, 0.2);
-  background: rgba(250, 253, 255, 0.74);
+  border-color: rgba(44, 131, 195, 0.34);
+  background: rgba(250, 253, 255, 0.82);
+  box-shadow:
+    0 7px 12px rgba(33, 58, 92, 0.1),
+    0 0 0 1px rgba(44, 131, 195, 0.14);
+  transform: translateY(-1px);
 }
 
 .materialRowActive {
-  border-color: rgba(75, 58, 168, 0.52);
-  background: rgba(75, 58, 168, 0.09);
+  border: 2px solid rgba(22, 105, 172, 0.84);
+  background: linear-gradient(165deg, rgba(218, 238, 255, 0.8), rgba(202, 228, 252, 0.9));
+  box-shadow:
+    0 0 0 1px rgba(22, 105, 172, 0.2),
+    0 10px 16px rgba(22, 105, 172, 0.14);
 }
 
 .materialRowActive:hover,
 .materialRowActive:focus-within {
-  border-color: rgba(75, 58, 168, 0.52);
-  background: rgba(75, 58, 168, 0.09);
+  border-color: rgba(22, 105, 172, 0.94);
+  background: linear-gradient(165deg, rgba(218, 238, 255, 0.87), rgba(202, 228, 252, 0.95));
+}
+
+.materialRowActive .materialRowIcon {
+  background: rgba(22, 105, 172, 0.2);
+  color: #114775;
 }
 
 .materialRowTop {
@@ -1859,32 +1958,48 @@
 .materialPdfLink {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   min-height: 34px;
   font-size: 15px;
-  font-weight: 400;
+  font-weight: 600;
   color: #1f355a;
   border: 1px solid rgba(44, 131, 195, 0.26);
   border-radius: 999px;
-  padding: 2px 7px;
+  padding: 2px 10px;
   background: rgba(255, 255, 255, 0.85);
   width: fit-content;
   max-width: 100%;
   flex: 0 0 auto;
+  text-decoration: none;
 }
 
 .materialPdfLinkDisabled {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   min-height: 34px;
   font-size: 15px;
   color: #81899e;
   border: 1px dashed rgba(120, 130, 150, 0.44);
   border-radius: 999px;
-  padding: 2px 7px;
+  padding: 2px 10px;
   background: rgba(255, 255, 255, 0.62);
   width: fit-content;
   max-width: 100%;
   flex: 0 0 auto;
+}
+
+.materialOfficeLink {
+  border-color: rgba(92, 104, 208, 0.4);
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.96), rgba(255, 255, 255, 0.96)) padding-box,
+    linear-gradient(120deg, rgba(78, 136, 220, 0.38), rgba(121, 95, 196, 0.4))
+      border-box;
+  color: #22315a;
+}
+
+.materialOfficeLinkLocked {
+  cursor: pointer;
 }
 
 .materialOpenLinkDisabled {
@@ -1892,15 +2007,117 @@
 }
 
 .materialRowPdfWrap {
-  display: inline-flex;
-  width: fit-content;
+  display: grid;
+  gap: 4px;
+  justify-items: start;
+  width: 100%;
   max-width: 100%;
-  justify-content: flex-start;
   pointer-events: none;
 }
 
 .materialRowPdfWrap > * {
   pointer-events: auto;
+}
+
+.materialDownloadRow {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.materialDownloadLabel {
+  font-size: 13px;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: #4f5f7f;
+  font-weight: 700;
+}
+
+.materialDownloadActions {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.officeUpsellTag {
+  font-size: 12px;
+  font-weight: 600;
+  color: #4e5aa6;
+}
+
+.officeUpsellModalBackdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(17, 25, 38, 0.44);
+  display: grid;
+  place-items: center;
+  z-index: 80;
+  padding: 14px;
+}
+
+.officeUpsellModal {
+  width: min(480px, 100%);
+  border-radius: 16px;
+  border: 1px solid rgba(87, 118, 183, 0.3);
+  background:
+    radial-gradient(circle at 14% 18%, rgba(72, 135, 214, 0.12), transparent 55%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.97), rgba(243, 247, 255, 0.95));
+  box-shadow: 0 22px 38px rgba(22, 33, 50, 0.3);
+  padding: 16px;
+  display: grid;
+  gap: 10px;
+}
+
+.officeUpsellModal h3 {
+  margin: 0;
+  font-size: 22px;
+  line-height: 1.2;
+  color: #1f355a;
+}
+
+.officeUpsellModal p {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.45;
+  color: #4c5269;
+}
+
+.officeUpsellActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.officeUpsellPrimary,
+.officeUpsellSecondary {
+  min-height: 36px;
+  border-radius: 999px;
+  padding: 0 14px;
+  font-size: 14px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+
+.officeUpsellPrimary {
+  border: 1px solid rgba(72, 107, 167, 0.5);
+  background: linear-gradient(
+    120deg,
+    rgba(78, 136, 220, 0.2),
+    rgba(121, 95, 196, 0.2)
+  );
+  color: #1f355a;
+}
+
+.officeUpsellSecondary {
+  border: 1px solid rgba(76, 90, 122, 0.3);
+  background: rgba(255, 255, 255, 0.9);
+  color: #4c5269;
 }
 
 .lessonPreviewList {
@@ -2083,10 +2300,41 @@
 }
 
 .lessonSummaryCard {
-  background: rgba(255, 255, 255, 0.92);
+  background:
+    radial-gradient(circle at 18% 24%, rgba(44, 131, 195, 0.1), transparent 52%),
+    radial-gradient(circle at 88% 18%, rgba(44, 131, 195, 0.07), transparent 45%),
+    linear-gradient(160deg, rgba(255, 255, 255, 0.94), rgba(242, 249, 255, 0.92));
   border-radius: 18px;
   padding: 14px;
-  border: 1px solid rgba(44, 131, 195, 0.12);
+  border: 1px solid rgba(44, 131, 195, 0.2);
+  box-shadow:
+    0 14px 30px rgba(24, 52, 86, 0.1),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.42);
+  position: relative;
+  overflow: hidden;
+}
+
+.lessonSummaryCard::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(44, 131, 195, 0.09) 0.55px, transparent 0.55px);
+  background-size: 11px 11px;
+  opacity: 0.28;
+  pointer-events: none;
+}
+
+.lessonSummaryCard > * {
+  position: relative;
+  z-index: 1;
+}
+
+.lessonProcedureHeaderTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
 }
 
 .lessonTitleMarkdown :global(h1),
@@ -2162,25 +2410,28 @@
 }
 
 .procedureLinkOutBtn {
-  justify-self: end;
-  border: 1px solid rgba(24, 38, 188, 0.38);
-  border-radius: 999px;
-  background: rgba(24, 38, 188, 0.08);
-  color: #1826bc;
-  font-size: 13px;
+  justify-self: start;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: #145b95;
+  font-size: 14px;
   font-weight: 700;
-  min-height: 30px;
-  padding: 0 10px;
+  line-height: 1.2;
+  min-height: 0;
+  padding: 0;
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  transition: background-color 160ms ease, border-color 160ms ease;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: color 160ms ease, text-decoration-color 160ms ease;
 }
 
 .procedureLinkOutBtn:hover,
 .procedureLinkOutBtn:focus-visible {
-  background: rgba(24, 38, 188, 0.16);
-  border-color: rgba(24, 38, 188, 0.56);
+  color: #0f4a79;
+  text-decoration-color: rgba(15, 74, 121, 0.7);
 }
 
 .lessonProcedureHeader span {
@@ -2197,45 +2448,180 @@
   min-height: 0;
   max-height: none;
   overflow: auto;
+  overscroll-behavior-y: auto;
   padding-right: 2px;
+}
+
+.procedureEndMarker {
+  margin: 12px 0 2px;
+  text-align: center;
+  font-size: 15px;
+  font-weight: 700;
+  color: #3f4f6a;
 }
 
 .procedureStandaloneLayout {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  min-height: calc(100dvh - var(--portal-nav-offset, 0px) - 24px);
+  gap: 10px;
+  min-height: auto;
   align-items: center;
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
 }
 
 .procedureStandaloneHeader {
-  background: rgba(255, 255, 255, 0.9);
-  border: 1px solid rgba(44, 131, 195, 0.16);
-  border-radius: 14px;
-  padding: 10px 12px;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
   width: 100%;
-  max-width: 500px;
+  max-width: 800px;
+  display: grid;
+  gap: 6px;
+  text-align: left;
 }
 
-.procedureStandaloneHeader p {
+.procedureStandaloneLabel {
   margin: 0;
-  font-size: 14px;
-  color: #4c5269;
+  font-size: 16px;
+  line-height: 1.3;
+  font-weight: 700;
+  color: #1f355a;
 }
 
-.procedureStandaloneHeader h2 {
-  margin: 2px 0 0;
-  font-size: 22px;
-  line-height: 1.2;
+.procedureStandaloneHeaderRow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: start;
+}
+
+.procedureReturnLink {
+  width: 100%;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: 0;
+  row-gap: 0;
+  text-decoration: none !important;
+  border: 1px solid rgba(44, 131, 195, 0.26);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 0;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(23, 43, 72, 0.09);
+  transition:
+    transform 140ms ease,
+    box-shadow 140ms ease,
+    border-color 140ms ease,
+    background-color 140ms ease;
+}
+
+.procedureReturnBanner {
+  position: relative;
+  width: 136px;
+  min-height: 74px;
+  align-self: stretch;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-right: 1px solid rgba(44, 131, 195, 0.22);
+}
+
+.procedureReturnText {
+  display: grid;
+  gap: 3px;
+  min-height: 74px;
+  align-content: center;
+  padding: 10px 12px;
+}
+
+.procedureReturnTile {
+  position: relative;
+  width: 74px;
+  min-height: 74px;
+  align-self: stretch;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-left: 1px solid rgba(44, 131, 195, 0.22);
+  overflow: hidden;
+}
+
+.procedureReturnText span:first-child {
+  font-size: 15px;
+  line-height: 1.3;
   color: #1f355a;
+  font-weight: 700;
+}
+
+.procedureReturnText span:last-child {
+  font-size: 18px;
+  line-height: 1.28;
+  color: #143f68;
+  font-weight: 700;
+}
+
+.procedureReturnLink:hover,
+.procedureReturnLink:focus-visible {
+  text-decoration: none !important;
+  border-color: rgba(44, 131, 195, 0.52);
+  background: #ffffff;
+  box-shadow: 0 10px 20px rgba(23, 43, 72, 0.14);
+  transform: translateY(-1px);
+}
+
+.procedureReturnLink:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 10px rgba(23, 43, 72, 0.11);
+}
+
+.procedureReturnQr {
+  width: 104px;
+  height: 104px;
+  padding: 7px;
+  border-radius: 10px;
+  border: 1px solid rgba(44, 131, 195, 0.22);
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-self: start;
+  margin-top: 0;
+  overflow: hidden;
 }
 
 .lessonPreviewsCardStandalone {
   width: 100%;
-  max-width: 500px;
+  max-width: 800px;
   flex: 1 1 auto;
   min-height: 0;
   max-height: none;
+}
+
+.unitPageProcedureOnly .lessonPreviewsCard,
+.unitPageProcedureOnly .lessonPreviewsCardStandalone {
+  overflow: visible;
+  overscroll-behavior: auto;
+  background: #ffffff;
+  border: 1px solid rgba(44, 131, 195, 0.22);
+  box-shadow: none;
+}
+
+.lessonProcedureStandalonePanel {
+  width: 100%;
+  max-width: 800px;
+}
+
+.unitPageProcedureOnly .lessonProcedureContent {
+  overflow: visible;
+  padding-right: 0;
+}
+
+.unitPageProcedureOnly .licenseBanner {
+  margin-top: 8px;
 }
 
 .lessonChunk {
@@ -3289,6 +3675,17 @@
     max-height: none;
   }
 
+  .procedureStandaloneHeaderRow {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .procedureReturnQr {
+    justify-self: start;
+    height: 96px;
+    width: 96px;
+    padding: 6px;
+  }
+
   .unitSearch {
     position: static;
     top: auto;
@@ -3346,6 +3743,26 @@
 
   .unitLocaleSwitcher {
     justify-content: flex-end;
+  }
+}
+
+@media print {
+  .procedureStandaloneHeaderRow {
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .procedureReturnLink {
+    min-width: 0;
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .procedureReturnQr {
+    justify-self: end;
+    break-inside: avoid;
+    page-break-inside: avoid;
   }
 }
 
