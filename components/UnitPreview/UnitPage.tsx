@@ -8,6 +8,8 @@ import styles from './UnitPage.module.css';
 import {
   Blocks,
   ArrowRight,
+  Apple,
+  BowArrow,
   CircleAlert,
   ChevronUp,
   Clock3,
@@ -22,8 +24,8 @@ import {
   FileText,
   FileVideo,
   Filter,
+  GraduationCap,
   Link2,
-  ListTree,
   MonitorPlay,
   Network,
   NotebookPen,
@@ -756,7 +758,11 @@ const getLessonDisplayTitle = <TItem extends IItem = IItemForUI>(
   return `Lesson ${identifier}: ${title}`;
 };
 
-type TActiveLessonPreviewMode = 'materials' | 'procedure' | 'featured-media';
+type TActiveLessonPreviewMode =
+  | 'materials'
+  | 'procedure'
+  | 'featured-media'
+  | 'going-further';
 
 const parseFeaturedMediaLessonIds = (value?: string | null) => {
   if (!value) {
@@ -795,6 +801,13 @@ type TPreviewItem = {
   itemType?: string | null;
   itemCat?: string | null;
   fileType?: string | null;
+};
+
+type TGoingFurtherItem = {
+  item?: number | null;
+  itemTitle?: string | null;
+  itemDescription?: string | null;
+  itemLink?: string | null;
 };
 
 type TUserGDriveData = {
@@ -1620,7 +1633,8 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
     if (
       previewValue === 'materials' ||
       previewValue === 'procedure' ||
-      previewValue === 'featured-media'
+      previewValue === 'featured-media' ||
+      previewValue === 'going-further'
     ) {
       setActiveLessonPreviewMode(previewValue);
     }
@@ -1952,6 +1966,11 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
   const hasFeaturedMedia = activeLessonFeaturedMedia.length > 0;
   const isDetailedFlowOpen = activeLessonPreviewMode === 'procedure';
   const isFeaturedMediaOpen = activeLessonPreviewMode === 'featured-media';
+  const activeLessonGoingFurther = (activeLesson?.goingFurther ?? []).filter(
+    Boolean
+  ) as TGoingFurtherItem[];
+  const hasGoingFurther = activeLessonGoingFurther.length > 0;
+  const isGoingFurtherOpen = activeLessonPreviewMode === 'going-further';
   const chunkDurations = (activeLesson?.chunks ?? [])
     .map((chunk) => chunk?.chunkDur ?? 0)
     .filter((duration): duration is number => typeof duration === 'number' && duration > 0);
@@ -2848,7 +2867,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
           <div className={styles.lessonProcedureHeaderTop}>
             {showPanelHeading ? (
               <h3 className={styles.lessonCardHeading}>
-                <NotebookPen size={16} aria-hidden="true" />
+                <Apple size={16} aria-hidden="true" />
                 <span>Lesson Procedure</span>
               </h3>
             ) : (
@@ -3145,7 +3164,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                   type="button"
                   className={styles.unitNavVisibilityToggle}
                   onClick={handlePortalNavToggle}
-                  aria-label={isPortalNavCollapsed ? 'Expand top navigation' : 'Collapse top navigation'}
+                  aria-label={isPortalNavCollapsed ? 'Menu' : 'Collapse menu'}
                 >
                   <ChevronUp
                     size={18}
@@ -3156,7 +3175,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                         : styles.unitNavVisibilityToggleIconExpanded
                     }
                   />
-                  <span>{isPortalNavCollapsed ? 'Expand' : 'Collapse'}</span>
+                  <span>{isPortalNavCollapsed ? 'Menu' : 'Collapse'}</span>
                 </button>
               </div>
             </div>
@@ -3249,7 +3268,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
       )}
 
       {activeTab === TAB_OVERVIEW && (
-        <section className={styles.unitHero}>
+        <section className={`${styles.unitHero} ${styles.unitTabFadeIn}`}>
           <div className={styles.unitHeroIntro}>
             <div className={styles.unitEyebrowRow}>
               <p className={styles.unitEyebrow}>Galactic Polymath · Unit</p>
@@ -3328,7 +3347,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
 
       <main className={styles.unitMain}>
         {activeTab === TAB_OVERVIEW && (
-          <section className={styles.unitSection}>
+          <section className={`${styles.unitSection} ${styles.unitTabFadeIn}`}>
             <div className={styles.unitOverviewGrid}>
               <div
                 className={`${styles.unitOverviewCard} ${styles.unitOverviewCardPrimary}`}
@@ -3431,7 +3450,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
         )}
 
         {activeTab === TAB_MATERIALS && (
-          <section className={styles.unitSection}>
+          <section className={`${styles.unitSection} ${styles.unitTabFadeIn}`}>
             <div className={styles.materialsLayout}>
               {activeLesson ? (
                 isProcedureStandaloneView ? (
@@ -3490,7 +3509,10 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                     )}
                   </div>
                 ) : (
-                <div className={styles.lessonLayout}>
+                <div
+                  key={`lesson-content-${activeLessonId ?? 'none'}`}
+                  className={`${styles.lessonLayout} ${styles.unitTabFadeIn}`}
+                >
                   <div className={styles.lessonSummaryCard}>
                     <div className={styles.lessonSummaryMain}>
                       {!isAssessmentLesson(activeLesson, activeLessonIndex) && (
@@ -3579,7 +3601,10 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                       )}
                       {shouldShowGradeBandChooser && (
                         <div className={styles.gradeBandChooser}>
-                          <h4>Available Grade Bands</h4>
+                          <h4 className={styles.gradeBandHeading}>
+                            <GraduationCap size={15} aria-hidden="true" />
+                            <span>Available Grade Bands</span>
+                          </h4>
                           <div className={styles.gradeBandOptions}>
                             {classroomResources.map((resource, index) => {
                               const label =
@@ -3690,8 +3715,22 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                             disabled={!hasDetailedFlow}
                           >
                             <span className={styles.lessonProcedureToggleText}>
-                              <ListTree size={16} aria-hidden="true" />
+                              <Apple size={16} aria-hidden="true" />
                               <span>Procedure</span>
+                            </span>
+                          </button>
+                          <button
+                            type="button"
+                            className={`${styles.lessonProcedureToggle} ${
+                              isGoingFurtherOpen ? styles.lessonProcedureToggleActive : ''
+                            }`}
+                            onClick={() => setActiveLessonPreviewMode('going-further')}
+                            aria-pressed={isGoingFurtherOpen}
+                            disabled={!hasGoingFurther}
+                          >
+                            <span className={styles.lessonProcedureToggleText}>
+                              <BowArrow size={16} aria-hidden="true" />
+                              <span>Going Further</span>
                             </span>
                           </button>
                         </div>
@@ -3971,6 +4010,57 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                         </article>
                       ) : isDetailedFlowOpen ? (
                         renderProcedurePanel(true)
+                      ) : isGoingFurtherOpen ? (
+                        <article
+                          className={`${styles.lessonPreviewItem} ${styles.goingFurtherPreviewItem}`}
+                        >
+                          <header className={styles.lessonPreviewHeader}>
+                            <h3 className={styles.lessonCardHeading}>
+                              <BowArrow size={16} aria-hidden="true" />
+                              <span>Going Further</span>
+                            </h3>
+                          </header>
+                          <p className={styles.goingFurtherSubheading}>
+                            Resources to expand this learning experience
+                          </p>
+                          {hasGoingFurther ? (
+                            <div className={styles.goingFurtherList}>
+                              {activeLessonGoingFurther.map((entry, idx) => {
+                                const title =
+                                  entry.itemTitle?.trim() || `Resource ${idx + 1}`;
+                                const description = entry.itemDescription?.trim();
+                                const href = entry.itemLink?.trim() ?? '';
+                                const canOpen = href.length > 0;
+
+                                return (
+                                  <article
+                                    key={`${title}-${idx}`}
+                                    className={styles.goingFurtherItem}
+                                  >
+                                    {canOpen ? (
+                                      <a
+                                        href={href}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                        className={styles.goingFurtherLink}
+                                      >
+                                        <span>{title}</span>
+                                        <SquareArrowOutUpRight size={13} aria-hidden="true" />
+                                      </a>
+                                    ) : (
+                                      <strong>{title}</strong>
+                                    )}
+                                    {description ? <p>{description}</p> : null}
+                                  </article>
+                                );
+                              })}
+                            </div>
+                          ) : (
+                            <p className={styles.unitMutedText}>
+                              Going Further links will appear here once added.
+                            </p>
+                          )}
+                        </article>
                       ) : !!activeLessonItems.length ? (
                         (() => {
                           const safeIndex =
@@ -4206,7 +4296,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
         )}
 
         {activeTab === TAB_STANDARDS && (
-          <section className={styles.unitSection}>
+          <section className={`${styles.unitSection} ${styles.unitTabFadeIn}`}>
             <div className={styles.unitOverviewCardWide}>
               {!!flatStandards.length ? (
                 <div className={styles.standardsLayout}>
@@ -4568,7 +4658,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
         )}
 
         {activeTab === TAB_BACKGROUND && (
-          <section className={styles.unitSection}>
+          <section className={`${styles.unitSection} ${styles.unitTabFadeIn}`}>
             <h2 className={styles.sectionTitle}>Background</h2>
             <p className={styles.sectionIntro}>
               Context and real-world connections for this unit.
@@ -4588,7 +4678,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
         )}
 
         {activeTab === TAB_CREDITS && (
-          <section className={styles.unitSection}>
+          <section className={`${styles.unitSection} ${styles.unitTabFadeIn}`}>
             <h2 className={styles.sectionTitle}>Credits, Acknowledgments, and Versions</h2>
             <p className={styles.sectionIntro}>
               This unit was made possible by hundreds of hours of work by tons of

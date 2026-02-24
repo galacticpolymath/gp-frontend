@@ -3,6 +3,7 @@
   --free-tier-blue-soft: rgba(44, 131, 195, 0.14);
   --free-tier-blue-surface: #eef7ff;
   --materials-active-blue: #1669ac;
+  --sticky-offwhite: rgba(220, 233, 255, 0.9);
   font-family: var(--font-family-base, "Noto Sans", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif);
   color: #1c2233;
   background: radial-gradient(circle at top, rgba(44, 131, 195, 0.18), transparent 45%),
@@ -217,11 +218,11 @@
   flex: 0 0 auto;
   min-width: 0;
   font-size: 15px;
-  color: rgba(240, 244, 255, 0.96);
+  color: var(--sticky-offwhite);
 }
 
 .unitLocaleSwitcher * {
-  color: rgba(240, 244, 255, 0.96);
+  color: var(--sticky-offwhite);
 }
 
 .unitLocaleActions {
@@ -239,15 +240,15 @@
   min-height: 44px;
   background: rgba(255, 255, 255, 0.14);
   font-size: 15px;
-  color: #e6f0ff;
+  color: var(--sticky-offwhite);
 }
 
 .unitLocaleSwitcher :global(.ReactFlagsSelect-module__selectBtn *) {
-  color: rgba(240, 244, 255, 0.96) !important;
+  color: var(--sticky-offwhite) !important;
 }
 
 .unitLocaleSwitcher :global(.ReactFlagsSelect-module__selectBtn svg) {
-  fill: rgba(240, 244, 255, 0.96);
+  fill: var(--sticky-offwhite);
 }
 
 .unitLocaleSwitcher :global(.ReactFlagsSelect-module__selectBtn):focus {
@@ -261,7 +262,7 @@
   font-size: 15px;
   font-weight: 400;
   font-style: italic;
-  color: rgba(240, 244, 255, 0.96);
+  color: var(--sticky-offwhite);
   white-space: normal;
   overflow-wrap: anywhere;
 }
@@ -358,13 +359,18 @@
   transition: color 0.18s ease, transform 0.18s ease, opacity 0.18s ease;
 }
 
+.unitSearchIcon :global(svg) {
+  width: 20px;
+  height: 20px;
+}
+
 .unitSearchInputWrapExpanded .unitSearchIcon {
   color: #5f6a84;
   transform: scale(1);
 }
 
 .unitSearchInputWrapCollapsed .unitSearchIcon {
-  color: #7a8094;
+  color: var(--sticky-offwhite);
   transform: scale(0.94);
 }
 
@@ -430,25 +436,29 @@
 }
 
 .unitNavVisibilityToggle {
-  padding: 0;
+  padding: 0 10px;
   font-size: 15px;
   line-height: 1;
   font-weight: 600;
-  border: 0;
-  background: transparent;
-  color: #dce9ff;
-  min-height: 30px;
+  border: 1px solid rgba(240, 244, 255, 0.7);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--sticky-offwhite);
+  min-height: 34px;
   display: inline-flex;
   align-items: center;
   gap: 6px;
   cursor: pointer;
   margin-left: 14px;
   align-self: center;
+  transition: border-color 160ms ease, background-color 160ms ease, color 160ms ease;
 }
 
 .unitNavVisibilityToggle:hover,
 .unitNavVisibilityToggle:focus {
   color: #f7fbff;
+  border-color: rgba(247, 251, 255, 0.92);
+  background: rgba(255, 255, 255, 0.14);
 }
 
 .unitNavVisibilityToggleIconCollapsed {
@@ -475,12 +485,27 @@
   padding: 2px 0;
   min-height: 0;
   background: transparent;
-  color: rgba(220, 233, 255, 0.9);
+  color: var(--sticky-offwhite);
   font-size: 15px;
   font-weight: 600;
   white-space: nowrap;
   text-decoration: none;
   cursor: pointer;
+}
+
+.unitTabFadeIn {
+  animation: unitTabFadeIn 300ms ease-out both;
+}
+
+@keyframes unitTabFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .unitTabButtonActive {
@@ -1644,12 +1669,14 @@
   border: 1px solid rgba(44, 131, 195, 0.18);
   border-radius: 14px;
   padding: 10px 12px;
-  background:
-    linear-gradient(rgba(255, 255, 255, 0.94), rgba(255, 255, 255, 0.94)) padding-box,
-    linear-gradient(150deg, rgba(44, 131, 195, 0.2), rgba(44, 131, 195, 0.08)) border-box;
+  background-color: rgba(232, 236, 242, 0.9);
+  background-image:
+    radial-gradient(rgba(90, 104, 126, 0.12) 0.5px, rgba(232, 236, 242, 0.9) 0.5px),
+    linear-gradient(148deg, rgba(247, 249, 252, 0.86), rgba(218, 224, 233, 0.8));
+  background-size: 10px 10px;
   box-shadow:
-    0 10px 20px rgba(20, 52, 88, 0.08),
-    inset 0 0 0 1px rgba(44, 131, 195, 0.06);
+    0 12px 24px rgba(26, 37, 55, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.58);
 }
 
 .gradeBandPreface :global(p) {
@@ -1674,6 +1701,12 @@
   margin: 0;
   font-size: 15px;
   color: #1f355a;
+}
+
+.gradeBandHeading {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
 }
 
 .gradeBandOptions {
@@ -2138,6 +2171,11 @@
   min-height: 0;
 }
 
+.goingFurtherPreviewItem {
+  grid-template-rows: auto auto auto;
+  align-content: start;
+}
+
 .lessonProcedureInPreview {
   display: flex;
   flex-direction: column;
@@ -2297,6 +2335,51 @@
   text-transform: uppercase;
   letter-spacing: 0.04em;
   color: #4c5269;
+}
+
+.goingFurtherSubheading {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.4;
+  color: #4c5269;
+}
+
+.goingFurtherList {
+  display: grid;
+  gap: 8px;
+}
+
+.goingFurtherItem {
+  border: 1px solid rgba(44, 131, 195, 0.22);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.82);
+  padding: 8px 10px;
+  display: grid;
+  gap: 4px;
+}
+
+.goingFurtherItem p {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.4;
+  color: #4c5269;
+}
+
+.goingFurtherLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  width: fit-content;
+  font-size: 16px;
+  font-weight: 700;
+  color: #1f355a;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.goingFurtherLink:hover,
+.goingFurtherLink:focus-visible {
+  color: #0f4a79;
 }
 
 .lessonSummaryCard {
