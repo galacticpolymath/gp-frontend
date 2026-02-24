@@ -5,7 +5,7 @@ This README provides instructions on how to access the API documentation for thi
 ## Prerequisites
 
 * Git
-* Node.js (version 14 or later recommended)
+* Node.js 22.14.0 (use `.nvmrc` / `.node-version`)
 * npm (comes with Node.js)
 
 ## Getting Started
