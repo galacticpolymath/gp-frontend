@@ -200,6 +200,9 @@ const JobVizSearchResults = ({
     Boolean(tourIdParam) && !hasGpPlusMembership && !wantsTeacherEditMode;
   const isTourPreviewMode =
     (isPreviewQuery || shouldForcePreviewMode) && !isTeacherEditMode;
+  const showUnitPreviewAssignmentBanner = isTruthyQueryFlag(
+    router.query?.previewAssignmentBanner
+  );
   const lastReportParamRef = useRef(null);
   const [selectedTourJobs, setSelectedTourJobs] = useState(new Set());
   const [lastToggledSoc, setLastToggledSoc] = useState(null);
@@ -238,16 +241,12 @@ const JobVizSearchResults = ({
     router.replace(nextUrl, undefined, { shallow: true, scroll: false });
   }, [isPreviewQuery, router, shouldForcePreviewMode]);
 
-  const assignmentSocCodes = useMemo(() => {
+  const allAssignmentSocCodes = useMemo(() => {
     if (isTeacherEditMode && selectedTourJobs.size) {
       return new Set(selectedTourJobs);
     }
     if (activeTour?.selectedJobs?.length) {
-      const selectedTourSocCodes = activeTour.selectedJobs.filter(Boolean);
-      if (isTourPreviewMode) {
-        return new Set(selectedTourSocCodes.slice(0, JOBVIZ_PREVIEW_LIMIT));
-      }
-      return new Set(selectedTourSocCodes);
+      return new Set(activeTour.selectedJobs.filter(Boolean));
     }
     const param = router.query?.[SOC_CODES_PARAM_NAME];
     const value = Array.isArray(param) ? param.join(",") : param;
@@ -258,14 +257,26 @@ const JobVizSearchResults = ({
   }, [
     activeTour,
     isTeacherEditMode,
-    isTourPreviewMode,
     router.query,
     selectedTourJobs,
   ]);
+  const assignmentSocCodes = useMemo(() => {
+    if (!allAssignmentSocCodes?.size) {
+      return allAssignmentSocCodes;
+    }
+
+    if (isTourPreviewMode) {
+      return new Set(
+        Array.from(allAssignmentSocCodes).slice(0, JOBVIZ_PREVIEW_LIMIT)
+      );
+    }
+
+    return allAssignmentSocCodes;
+  }, [allAssignmentSocCodes, isTourPreviewMode]);
   const previewLockedCount = useMemo(() => {
-    if (!isTourPreviewMode || !activeTour?.selectedJobs?.length) return 0;
-    return Math.max(activeTour.selectedJobs.length - JOBVIZ_PREVIEW_LIMIT, 0);
-  }, [activeTour?.selectedJobs, isTourPreviewMode]);
+    if (!isTourPreviewMode || !allAssignmentSocCodes?.size) return 0;
+    return Math.max(allAssignmentSocCodes.size - JOBVIZ_PREVIEW_LIMIT, 0);
+  }, [allAssignmentSocCodes, isTourPreviewMode]);
 
   const assignmentParams = useMemo(
     () => ({
@@ -656,7 +667,7 @@ const JobVizSearchResults = ({
     if (!isTourPreviewMode || !previewLockedCount) return [];
     return Array.from({ length: previewLockedCount }).map((_, index) => ({
       id: `preview-locked-${index + 1}`,
-      title: "Locked in preview",
+      title: "Unlock with GP+",
       iconName: "Lock",
       level: 2,
       jobsCount: undefined,
@@ -1537,6 +1548,11 @@ const JobVizSearchResults = ({
               {teacherEditDenied && (
                 <div className={styles.jobvizNotice} role="alert">
                   <strong>Looking for edit controls?</strong> GP+ members can turn on tour editing to build and save custom JobViz+ assignments. Sign in with a GP+ account or remove the <code>?edit=1</code> parameter to preview the student view.
+                </div>
+              )}
+              {showUnitPreviewAssignmentBanner && (
+                <div className={styles.jobvizNotice} role="status">
+                  <strong>GP+ JobViz Career Tour Assignment Preview</strong>
                 </div>
               )}
               {isTourPreviewMode && !isStudentLinkView && (

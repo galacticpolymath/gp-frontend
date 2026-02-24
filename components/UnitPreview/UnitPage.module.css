@@ -1640,6 +1640,20 @@
   stroke: #1c2233;
 }
 
+.jobVizActionIcon {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  stroke-width: 2.4;
+}
+
+.jobVizPreviewTitleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
 .copyAgainLinkBtn {
   border: 0;
   background: transparent;
@@ -1765,6 +1779,155 @@
   font-size: 13px;
   line-height: 1.35;
   color: #5b6480;
+}
+
+.jobVizPreviewPane {
+  margin-top: 2px;
+}
+
+.jobVizPreviewContext {
+  margin: 0 0 0 36px;
+  padding-left: 14px;
+  border-left: 2px solid rgba(44, 131, 195, 0.28);
+  font-size: 16px;
+  line-height: 1.5;
+  color: #22304f;
+}
+
+.jobVizPreviewHeading {
+  margin: 0 0 6px;
+  padding-bottom: 6px;
+  font-size: 17px;
+  font-weight: 700;
+  color: #1d2b4a;
+}
+
+.jobVizTourStopsBubble {
+  margin-top: 10px;
+  padding: 10px;
+  border: 1px solid rgba(79, 102, 150, 0.24);
+  border-radius: 11px;
+  background-color: #fcfbff;
+  background-image:
+    radial-gradient(circle, transparent 22%, #fcfbff 22%, #fcfbff 78%, transparent 78%, transparent),
+    radial-gradient(circle, transparent 22%, #fcfbff 22%, #fcfbff 78%, transparent 78%, transparent) 12px 12px,
+    linear-gradient(rgba(203, 31, 131, 0.12) 0.7px, transparent 0.7px) 0 -0.35px,
+    linear-gradient(90deg, rgba(203, 31, 131, 0.1) 0.7px, rgba(252, 251, 255, 0.98) 0.7px) -0.35px 0,
+    linear-gradient(135deg, rgba(83, 123, 230, 0.05), rgba(203, 31, 131, 0.04));
+  background-size: 24px 24px, 24px 24px, 12px 12px, 12px 12px, 100% 100%;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.85),
+    0 4px 10px rgba(73, 87, 124, 0.06);
+}
+
+.jobVizPreviewList {
+  margin: 0;
+  padding: 0 0 0 14px;
+  list-style: none;
+  display: grid;
+  gap: 5px;
+  font-size: 16px;
+  line-height: 1.42;
+  color: #1c2233;
+}
+
+.jobVizPreviewListItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  padding: 5px 0 5px 2px;
+}
+
+.jobVizPreviewListItem > span:last-child {
+  max-width: 50ch;
+  word-break: break-word;
+}
+
+.jobVizJobIconStack {
+  position: relative;
+  width: 30px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.jobVizJobIconBubblePrimary {
+  position: absolute;
+  inset: 0 auto auto 0;
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  background: linear-gradient(160deg, rgba(44, 131, 195, 0.18), rgba(44, 131, 195, 0.06));
+  border: 1px solid rgba(44, 131, 195, 0.46);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #1f6da7;
+}
+
+.jobVizJobIconBubbleSecondary {
+  position: absolute;
+  left: 14px;
+  bottom: -5px;
+  width: 16px;
+  height: 16px;
+  border-radius: 999px;
+  background: linear-gradient(160deg, #ffd2ea 0%, #f6a3d0 100%);
+  border: 1px solid #d05a9e;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #9a1b65;
+}
+
+.jobVizJobIconBubblePrimary :global(svg) {
+  stroke-width: 2.1;
+}
+
+.jobVizJobIconBubbleSecondary :global(svg) {
+  stroke-width: 2.05;
+}
+
+.jobVizPreviewActions {
+  margin-top: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-start;
+}
+
+.jobVizPreviewActionBtn {
+  width: fit-content;
+  max-width: 100%;
+  min-height: 42px;
+  padding: 8px 12px;
+  border-radius: 12px;
+  font-size: 14px;
+}
+
+.jobVizPreviewGpBtn {
+  border-color: rgba(66, 90, 176, 0.44);
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.96), rgba(252, 252, 255, 0.96)) padding-box,
+    linear-gradient(125deg, rgba(81, 121, 235, 0.52), rgba(132, 97, 196, 0.45))
+      border-box;
+  box-shadow:
+    0 7px 14px rgba(62, 88, 153, 0.16),
+    0 0 0 1px rgba(125, 118, 205, 0.12);
+}
+
+.jobVizPreviewGpBtn:hover {
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.99), rgba(249, 252, 255, 0.99)) padding-box,
+    linear-gradient(125deg, rgba(71, 115, 235, 0.7), rgba(151, 111, 217, 0.62))
+      border-box;
+  box-shadow:
+    0 10px 18px rgba(59, 92, 176, 0.2),
+    0 0 0 1px rgba(134, 128, 214, 0.22);
+}
+
+.jobVizPreviewLocked {
+  color: #5b6480;
+  font-weight: 600;
 }
 
 .materialsSectionDivider {

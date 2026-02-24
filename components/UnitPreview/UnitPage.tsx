@@ -35,6 +35,7 @@ import {
   X,
 } from 'lucide-react';
 import { TUnitForUI } from '../../backend/models/Unit/types/unit';
+import { IConnectionJobViz } from '../../backend/models/Unit/JobViz';
 import {
   IItem,
   IItemForUI,
@@ -52,6 +53,17 @@ import CopyLessonBtn, {
   ensureValidToken,
 } from '../LessonSection/TeachIt/CopyLessonBtn';
 import { useCustomCookies } from '../../customHooks/useCustomCookies';
+import { createJobTour } from '../JobViz/JobTours/jobTourApi';
+import {
+  DEFAULT_JOB_TOUR_ASSIGNMENT,
+  DEFAULT_JOB_TOUR_VERSION_PREFIX,
+} from '../JobViz/JobTours/jobTourConstants';
+import {
+  getIconNameForNode,
+  getJobSpecificIconName,
+  getNodeBySocCode,
+} from '../JobViz/jobvizUtils';
+import { LucideIcon } from '../JobViz/LucideIcon';
 
 const TAB_OVERVIEW = 'overview';
 const TAB_MATERIALS = 'materials';
@@ -565,6 +577,45 @@ const stripLinePrefix = (value: string) =>
     .replace(/^(authors?|created by|written by|by)\s*[:\-]\s*/i, '')
     .trim();
 
+const normalizeJobVizConnections = (
+  connections?: Array<
+    IConnectionJobViz | { job_title?: string[] | string; soc_code?: string[] | string } | null
+  > | null
+): IConnectionJobViz[] => {
+  if (!Array.isArray(connections)) {
+    return [];
+  }
+
+  return connections
+    .map((connection) => {
+      if (!connection) {
+        return null;
+      }
+
+      const jobTitle = Array.isArray(connection.job_title)
+        ? connection.job_title[0]
+        : connection.job_title;
+      const socCode = Array.isArray(connection.soc_code)
+        ? connection.soc_code[0]
+        : connection.soc_code;
+
+      if (
+        typeof jobTitle !== 'string' ||
+        typeof socCode !== 'string' ||
+        !jobTitle.trim() ||
+        !socCode.trim()
+      ) {
+        return null;
+      }
+
+      return {
+        job_title: jobTitle.trim(),
+        soc_code: socCode.trim(),
+      };
+    })
+    .filter((item): item is IConnectionJobViz => !!item);
+};
+
 const cleanContributorToken = (value: string) =>
   value
     .replace(/\(.*?\)/g, ' ')
@@ -762,7 +813,8 @@ type TActiveLessonPreviewMode =
   | 'materials'
   | 'procedure'
   | 'featured-media'
-  | 'going-further';
+  | 'going-further'
+  | 'jobviz';
 
 const parseFeaturedMediaLessonIds = (value?: string | null) => {
   if (!value) {
@@ -1469,6 +1521,11 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
   const [officeUpsellFormat, setOfficeUpsellFormat] = useState<string | null>(
     null
   );
+  const [isSavingJobVizTour, setIsSavingJobVizTour] = useState(false);
+  const [jobVizSaveMessage, setJobVizSaveMessage] = useState<string | null>(
+    null
+  );
+  const [jobVizSaveError, setJobVizSaveError] = useState<string | null>(null);
   const shouldShowGradeBandChooser = classroomResources.some(
     (resource) =>
       Boolean(resource?.gradePrefix?.trim() || resource?.grades?.trim())
@@ -1634,7 +1691,8 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
       previewValue === 'materials' ||
       previewValue === 'procedure' ||
       previewValue === 'featured-media' ||
-      previewValue === 'going-further'
+      previewValue === 'going-further' ||
+      previewValue === 'jobviz'
     ) {
       setActiveLessonPreviewMode(previewValue);
     }
@@ -1971,6 +2029,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
   ) as TGoingFurtherItem[];
   const hasGoingFurther = activeLessonGoingFurther.length > 0;
   const isGoingFurtherOpen = activeLessonPreviewMode === 'going-further';
+  const isJobVizPreviewOpen = activeLessonPreviewMode === 'jobviz';
   const chunkDurations = (activeLesson?.chunks ?? [])
     .map((chunk) => chunk?.chunkDur ?? 0)
     .filter((duration): duration is number => typeof duration === 'number' && duration > 0);
@@ -1986,6 +2045,42 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
 
   const unitTitle = unit.Title ?? 'Unit';
   const unitSubtitle = unit.Subtitle ?? '';
+  const jobVizConnections = useMemo(
+    () => normalizeJobVizConnections(unit.Sections?.jobvizConnections?.Content),
+    [unit.Sections?.jobvizConnections?.Content]
+  );
+  const hasJobVizConnections = jobVizConnections.length > 0;
+  const jobVizSocCodes = useMemo(
+    () => jobVizConnections.map((connection) => connection.soc_code),
+    [jobVizConnections]
+  );
+  const jobVizConnectionIcons = useMemo(() => {
+    return new Map(
+      jobVizConnections.map((connection) => {
+        const node = getNodeBySocCode(connection.soc_code);
+        const primaryIconName = node
+          ? getJobSpecificIconName(node) ?? getIconNameForNode(node)
+          : 'BriefcaseBusiness';
+        const secondaryIconName = node
+          ? getIconNameForNode(node)
+          : 'Sparkles';
+        return [connection.soc_code, { primaryIconName, secondaryIconName }];
+      })
+    );
+  }, [jobVizConnections]);
+  const jobVizPreviewUrl = useMemo(() => {
+    const params = new URLSearchParams();
+    if (jobVizSocCodes.length) {
+      params.set('socCodes', jobVizSocCodes.join(','));
+    }
+    if (unitTitle) {
+      params.set('unitName', unitTitle);
+    }
+    params.set('preview', '1');
+    params.set('student', '1');
+    params.set('previewAssignmentBanner', '1');
+    return `/jobviz?${params.toString()}`;
+  }, [jobVizSocCodes, unitTitle]);
   const unitBanner = unit.UnitBanner ?? '';
   const creditsContent = unit.Sections?.credits?.Content?.trim() ?? '';
   const acknowledgmentsEntries = unit.Sections?.acknowledgments?.Data ?? [];
@@ -2761,6 +2856,63 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
     }
 
     copyLessonBtnRef.current?.click();
+  };
+
+  const handlePreviewJobVizAssignmentClick = () => {
+    if (!hasJobVizConnections) {
+      return;
+    }
+    window.open(jobVizPreviewUrl, '_blank', 'noopener,noreferrer');
+  };
+
+  const getJobTourVersionString = () => {
+    const now = new Date();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    return `${DEFAULT_JOB_TOUR_VERSION_PREFIX}.${now.getFullYear()}${month}${day}`;
+  };
+
+  const handleSaveJobVizTourClick = async () => {
+    if (!isAuthenticated || !isGpPlusUser || !token || !hasJobVizConnections) {
+      return;
+    }
+
+    setIsSavingJobVizTour(true);
+    setJobVizSaveMessage(null);
+    setJobVizSaveError(null);
+
+    try {
+      const payload = {
+        heading: `${unitTitle} JobViz Tour`,
+        whoCanSee: 'me' as const,
+        classSubject: alignedSubjects[0] ?? 'Science',
+        gradeLevel: 'All',
+        tags: ['JobViz', unitTitle].filter(Boolean),
+        gpUnitsAssociated: [
+          String(unit.numID ?? unit._id ?? unitTitle),
+        ].filter(Boolean),
+        explanation: '',
+        assignment: DEFAULT_JOB_TOUR_ASSIGNMENT,
+        selectedJobs: Array.from(new Set(jobVizSocCodes)),
+        version: getJobTourVersionString(),
+        publishedDate: null,
+      };
+
+      const result = await createJobTour(payload, token);
+      setJobVizSaveMessage('Tour saved to My JobViz Tours.');
+
+      if (result?.jobTourId) {
+        window.open(`/jobviz?tourId=${result.jobTourId}&edit=1`, '_blank', 'noopener,noreferrer');
+      }
+    } catch (error: any) {
+      const message =
+        error?.response?.data?.msg ||
+        error?.message ||
+        'Unable to save this JobViz tour right now.';
+      setJobVizSaveError(message);
+    } finally {
+      setIsSavingJobVizTour(false);
+    }
   };
 
   const handleOpenOfficeUpsell = (format: string) => {
@@ -3748,6 +3900,23 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                           <span>GP Plus Functions</span>
                         </h3>
                         <div className={styles.gpFunctionActions}>
+                          <button
+                            type="button"
+                            className={`${styles.lessonProcedureToggle} ${styles.gpFunctionActionBtn}`}
+                            onClick={() => setActiveLessonPreviewMode('jobviz')}
+                            disabled={!hasJobVizConnections}
+                          >
+                            <span className={styles.lessonProcedureToggleText}>
+                              <Image
+                                alt="JobViz Career Connections icon"
+                                width={24}
+                                height={24}
+                                src="/imgs/jobViz/jobviz_rocket_logo_black.svg"
+                                className={styles.jobVizActionIcon}
+                              />
+                              <span>JobViz Career Connections</span>
+                            </span>
+                          </button>
                           {latestCopiedLessonFolderUrl ? (
                             <>
                               <a
@@ -4058,6 +4227,147 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                           ) : (
                             <p className={styles.unitMutedText}>
                               Going Further links will appear here once added.
+                            </p>
+                          )}
+                        </article>
+                      ) : isJobVizPreviewOpen ? (
+                        <article className={styles.lessonPreviewItem}>
+                          <header className={styles.lessonPreviewHeader}>
+                            <div className={styles.jobVizPreviewTitleRow}>
+                              <h3 className={styles.lessonCardHeading}>
+                                <Image
+                                  alt="JobViz Career Connections icon"
+                                  width={20}
+                                  height={20}
+                                  src="/imgs/jobViz/jobviz_rocket_logo_black.svg"
+                                  className={styles.jobVizActionIcon}
+                                />
+                                <span>JobViz Career Connections</span>
+                              </h3>
+                              <Image
+                                alt="GP+ icon"
+                                width={18}
+                                height={18}
+                                src="/plus/plus.png"
+                              />
+                            </div>
+                          </header>
+                          {hasJobVizConnections ? (
+                            <div className={styles.jobVizPreviewPane}>
+                              <p className={styles.jobVizPreviewContext}>
+                                JobViz connects classroom learning to the real
+                                world—helping students see how knowledge links
+                                to jobs, industries, and the wider economy. With
+                                data on 800+ jobs, it&apos;s a
+                                springboard for systems thinking and exploring
+                                the full landscape of opportunity.
+                              </p>
+                              <div className={styles.jobVizTourStopsBubble}>
+                                <p className={styles.jobVizPreviewHeading}>
+                                  Jobs and careers related to the {unitTitle} unit:
+                                </p>
+                                <ul className={styles.jobVizPreviewList}>
+                                  {jobVizConnections.map((jobConnection, index) => (
+                                    <li
+                                      key={`${jobConnection.soc_code}-${index}`}
+                                      className={styles.jobVizPreviewListItem}
+                                    >
+                                      <span className={styles.jobVizJobIconStack}>
+                                        <span className={styles.jobVizJobIconBubblePrimary}>
+                                          <LucideIcon
+                                            name={
+                                              jobVizConnectionIcons.get(jobConnection.soc_code)
+                                                ?.primaryIconName ?? 'BriefcaseBusiness'
+                                            }
+                                            width={14}
+                                            height={14}
+                                          />
+                                        </span>
+                                        <span className={styles.jobVizJobIconBubbleSecondary}>
+                                          <LucideIcon
+                                            name={
+                                              jobVizConnectionIcons.get(jobConnection.soc_code)
+                                                ?.secondaryIconName ?? 'Sparkles'
+                                            }
+                                            width={11}
+                                            height={11}
+                                          />
+                                        </span>
+                                      </span>
+                                      <span>
+                                        {jobConnection.job_title}
+                                        {!isGpPlusUser && index >= 2 && (
+                                          <span className={styles.jobVizPreviewLocked}>
+                                            {' '}
+                                            - Unlock with GP+
+                                          </span>
+                                        )}
+                                      </span>
+                                    </li>
+                                  ))}
+                                </ul>
+                              </div>
+                              <div className={styles.jobVizPreviewActions}>
+                                <button
+                                  type="button"
+                                  className={`${styles.gpFunctionActionBtn} ${styles.jobVizPreviewActionBtn} ${styles.jobVizPreviewGpBtn}`}
+                                  onClick={handlePreviewJobVizAssignmentClick}
+                                >
+                                  <span className={styles.lessonProcedureToggleText}>
+                                    <Network size={16} aria-hidden="true" />
+                                    <span>Preview Job Exploration Assignment</span>
+                                  </span>
+                                </button>
+                                {isGpPlusUser && isAuthenticated ? (
+                                  <button
+                                    type="button"
+                                    className={`${styles.gpFunctionActionBtn} ${styles.jobVizPreviewActionBtn} ${styles.jobVizPreviewGpBtn}`}
+                                    onClick={handleSaveJobVizTourClick}
+                                    disabled={isSavingJobVizTour}
+                                  >
+                                    <span className={styles.lessonProcedureToggleText}>
+                                      <NotebookPen size={16} aria-hidden="true" />
+                                      <span>
+                                        {isSavingJobVizTour
+                                          ? 'Saving tour...'
+                                          : 'Save Tour (Allows Edit)'}
+                                      </span>
+                                    </span>
+                                  </button>
+                                ) : (
+                                  <Link
+                                    href="/plus"
+                                    className={`${styles.gpFunctionActionBtn} ${styles.jobVizPreviewActionBtn} ${styles.jobVizPreviewGpBtn}`}
+                                  >
+                                    <span className={styles.lessonProcedureToggleText}>
+                                      <Image
+                                        alt="GP+ icon"
+                                        width={16}
+                                        height={16}
+                                        src="/plus/plus.png"
+                                      />
+                                      <span>Get GP+</span>
+                                    </span>
+                                  </Link>
+                                )}
+                              </div>
+                              {!!jobVizSaveMessage && (
+                                <p className={styles.copyAllHelperText}>
+                                  {jobVizSaveMessage}{' '}
+                                  <Link href="/search?typeFilter=Job%20Tour&mine=1">
+                                    Open My JobViz Tours
+                                  </Link>
+                                </p>
+                              )}
+                              {!!jobVizSaveError && (
+                                <p className={styles.copyAllHelperText}>
+                                  {jobVizSaveError}
+                                </p>
+                              )}
+                            </div>
+                          ) : (
+                            <p className={styles.unitMutedText}>
+                              JobViz connections are not available for this unit yet.
                             </p>
                           )}
                         </article>
