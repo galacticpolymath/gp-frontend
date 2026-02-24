@@ -117,7 +117,7 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3.3.3",
+    "@eslint/eslintrc": "^3.3.4",
     "@eslint/js": "^10.0.1",
     "@types/crypto-js": "^4.2.2",
     "@types/d3": "^7.4.3",
