@@ -1,19 +1,6 @@
 import nextConfig from "eslint-config-next";
 import globals from "globals";
 
-const jobVizComponentTargets = [
-  "components/JobViz/AssignmentBanner.tsx",
-  "components/JobViz/Heros/HeroForFreeUsers.tsx",
-  "components/JobViz/JobVizBreadcrumb.tsx",
-  "components/JobViz/JobVizCard.tsx",
-  "components/JobViz/JobVizGrid.tsx",
-  "components/JobViz/JobVizLayout.tsx",
-  "components/JobViz/JobVizSearch.tsx",
-  "components/JobViz/jobvizUtils.ts",
-  "components/JobViz/iconMappings.ts",
-  "components/JobViz/infoModalContent.ts",
-];
-
 const jsTargets = ["**/*.{js,jsx}"];
 
 const tsTargets = ["**/*.{ts,tsx}"];
@@ -71,11 +58,27 @@ export default [
     files: ["**/*.{js,jsx,ts,tsx}"],
     rules: {
       "@next/next/no-img-element": "off",
-      "react-hooks/refs": "off",
-      "react-hooks/set-state-in-effect": "off",
-      "react-hooks/preserve-manual-memoization": "off",
-      "react-hooks/immutability": "off",
-      "react-hooks/exhaustive-deps": "off",
+      "react-hooks/refs": "warn",
+      "react-hooks/set-state-in-effect": "warn",
+      "react-hooks/preserve-manual-memoization": "warn",
+      "react-hooks/immutability": "warn",
+      "react-hooks/exhaustive-deps": "warn",
+      eqeqeq: ["error", "always", { null: "ignore" }],
+      "no-console": ["warn", { allow: ["warn", "error"] }],
+      "no-debugger": "error",
+      "no-alert": "error",
+      "no-var": "error",
+      "prefer-const": "error",
+    },
+  },
+  {
+    files: ["**/*.{ts,tsx}"],
+    rules: {
+      "@typescript-eslint/no-explicit-any": "warn",
+      "@typescript-eslint/no-unused-vars": [
+        "warn",
+        { argsIgnorePattern: "^_", varsIgnorePattern: "^_" },
+      ],
     },
   },
 ];
