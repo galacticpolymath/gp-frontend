@@ -22,7 +22,6 @@
     "@fortawesome/fontawesome-free": "^7.2.0",
     "@fortawesome/react-fontawesome": "^3.2.0",
     "@geniux/google-drive-picker-react": "^1.0.0",
-    "@getbrevo/brevo": "^3.0.1",
     "@google-cloud/iam": "^2.3.1",
     "@google-cloud/local-auth": "^3.0.1",
     "@google-cloud/resource-manager": "^6.2.1",
@@ -30,7 +29,6 @@
     "@googleworkspace/drive-picker-element": "^0.7.3",
     "@headlessui/react": "^2.2.9",
     "@ionic/react": "^8.7.17",
-    "@magic-ext/oauth": "^24.0.0",
     "@mui/icons-material": "^7.3.8",
     "@mui/material": "^7.3.7",
     "@mui/styles": "^6.5.0",
@@ -141,7 +139,7 @@
     "typescript": "^5.9.3"
   },
   "engines": {
-    "node": ">=22.14.0 <23"
+    "node": ">=24 <25"
   },
   "browser": {
     "fs": false,
