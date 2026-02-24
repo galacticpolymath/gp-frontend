@@ -129,7 +129,7 @@ const LessonsCarousel = ({ mediaItems }) => {
         >
             <section className='row mt-0'>
                 <section
-                    style={{ height: 'fit-content' }}
+                    style={{ height: 'fit-content', overflow: 'hidden' }}
                     className="col-12 mt-0"
                 >
                     <div
@@ -164,7 +164,7 @@ const LessonsCarousel = ({ mediaItems }) => {
                     <i className="fs-1 text-black bi-arrow-right-circle-fill lh-1 d-block" />
                 </button>
             </section>
-            <section className="mt-1 mb-2">
+            <section className="mt-1 mb-2 position-relative" style={{ zIndex: 2 }}>
                 <ul className='ps-0 mb-0 d-flex flex-wrap justify-content-center align-items-center' style={{ transform: 'translate3d(0px, 0px, 0px)', 'transitionDuration': '3500ms', transition: 'all .15s ease-in', listStyle: 'none' }}>
                     {controlDots?.length && controlDots.map((item, index) => {
                         const { type, title, mainLink, isVisible, webAppPreviewImg } = item;
@@ -210,4 +210,3 @@ const LessonsCarousel = ({ mediaItems }) => {
 }
 
 export default LessonsCarousel;
-

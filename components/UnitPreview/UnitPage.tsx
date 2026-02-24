@@ -3902,8 +3902,11 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                         <div className={styles.gpFunctionActions}>
                           <button
                             type="button"
-                            className={`${styles.lessonProcedureToggle} ${styles.gpFunctionActionBtn}`}
+                            className={`${styles.lessonProcedureToggle} ${styles.gpFunctionActionBtn} ${
+                              isJobVizPreviewOpen ? styles.lessonProcedureToggleActive : ''
+                            }`}
                             onClick={() => setActiveLessonPreviewMode('jobviz')}
+                            aria-pressed={isJobVizPreviewOpen}
                             disabled={!hasJobVizConnections}
                           >
                             <span className={styles.lessonProcedureToggleText}>
@@ -4157,6 +4160,10 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                       className={styles.lessonPreviewsCard}
                       style={previewPaneStickyStyle}
                     >
+                      <div
+                        key={`lesson-preview-${activeLessonPreviewMode}`}
+                        className={styles.unitTabFadeIn}
+                      >
                       {isFeaturedMediaOpen ? (
                         <article className={styles.lessonPreviewItem}>
                           <header className={styles.lessonPreviewHeader}>
@@ -4231,7 +4238,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                           )}
                         </article>
                       ) : isJobVizPreviewOpen ? (
-                        <article className={styles.lessonPreviewItem}>
+                        <article className={`${styles.lessonPreviewItem} ${styles.jobVizPreviewCard}`}>
                           <header className={styles.lessonPreviewHeader}>
                             <div className={styles.jobVizPreviewTitleRow}>
                               <h3 className={styles.lessonCardHeading}>
@@ -4592,6 +4599,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                           Item previews will appear here.
                         </p>
                       )}
+                      </div>
                     </div>
                   </div>
                 </div>
