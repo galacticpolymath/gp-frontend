@@ -29,6 +29,8 @@ const AccountModal = () => {
         signOut();
     };
 
+    const buildMyJobsUrl = () => "/jobviz?saved=1";
+
     return (
         <Modal
             show={isAccountModalMobileOn}
@@ -65,6 +67,15 @@ const AccountModal = () => {
 
                 >
                     View Account
+                </Button>
+                <Button
+                    handleOnClick={() => {
+                        handleOnHide();
+                        router.push(buildMyJobsUrl());
+                    }}
+                    classNameStr="no-btn-styles text-white txt-underline-on-hover py-2"
+                >
+                    My Jobs
                 </Button>
                 <Button
                     handleOnClick={handleSignOutBtnClick}

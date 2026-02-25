@@ -190,6 +190,8 @@ const AccountPg: React.FC = () => {
 
   useGpPlusModalInteraction(gpPlusBillingTerm, !!gpPlusSub);
 
+  const getMyJobsUrl = () => "/jobviz?saved=1";
+
   const handleGpPlusAccountBtnClick = async () => {
     let wasGpPlusAccountRetrievalSuccessful = false;
 
@@ -774,7 +776,7 @@ const AccountPg: React.FC = () => {
               onClick={() => router.push("/")}
               variant="primary"
               size="sm"
-              className="p-1"
+              className="p-1 account-action-btn account-action-btn--lessons"
               style={{ width: "210px" }}
             >
               <span
@@ -785,12 +787,27 @@ const AccountPg: React.FC = () => {
               </span>
             </BootstrapButton>
             <BootstrapButton
+              onClick={() => router.push(getMyJobsUrl())}
+              variant="outline-primary"
+              size="sm"
+              className="p-1 mt-2 account-action-btn account-action-btn--my-jobs"
+              style={{ width: "210px" }}
+            >
+              <span
+                style={{ fontSize: "18px", textTransform: "none" }}
+                className="d-inline-flex align-items-center gap-2"
+              >
+                <i className="bi bi-star-fill" aria-hidden="true" />
+                My Jobs
+              </span>
+            </BootstrapButton>
+            <BootstrapButton
               onClick={() =>
                 window.open("https://drive.google.com/drive/my-drive", "_blank", "noopener,noreferrer")
               }
               variant="outline-primary"
               size="sm"
-              className="p-1 mt-2 account-action-btn"
+              className="p-1 mt-2 account-action-btn account-action-btn--gdrive"
               style={{ width: "210px" }}
             >
               <span

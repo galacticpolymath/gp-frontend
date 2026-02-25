@@ -265,9 +265,20 @@ export const JobVizCard: React.FC<JobVizCardProps> = ({
             </div>
           <div className={styles.cardHeading}>
             <h3 className={styles.cardTitle}>{compactTitle(title)}</h3>
+            {showBookmark && (
+              <span
+                className={styles.savedJobBadge}
+                title="Saved job"
+                aria-label="Saved job"
+              >
+                <LucideIcon name="Star" />
+              </span>
+            )}
             {isAssignmentJob && (
               <span
-                className={styles.assignmentBadgeDot}
+                className={`${styles.assignmentBadgeDot} ${
+                  showBookmark ? styles.assignmentBadgeOffset : ""
+                }`}
                 title="Part of this assignment"
                 aria-hidden="true"
               />

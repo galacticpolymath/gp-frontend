@@ -24,8 +24,14 @@ export default async function handler(
       );
     }
 
-    const jwtResult = await getJwtPayloadPromise(authorization);
-    const payload = jwtResult?.payload;
+    let payload: { email?: string } | undefined;
+    try {
+      const jwtResult = await getJwtPayloadPromise(authorization);
+      payload = jwtResult?.payload as { email?: string } | undefined;
+    } catch (error) {
+      console.error("Failed to parse JWT for saved-jobs/delete:", error);
+      throw new CustomError("Invalid or expired authorization token.", 401);
+    }
 
     if (!payload?.email) {
       throw new CustomError(
@@ -55,14 +61,35 @@ export default async function handler(
       throw new CustomError('Failed to connect to the database.', 500);
     }
 
-    const updateResult = await User.updateOne(
-      { email: email.toLowerCase() },
-      { $pull: { savedJobIds: { $in: jobIdsToDeleteValidated } } }
-    );
+    const user = await User.findOne({ email: email.toLowerCase() }).select({
+      savedJobIds: 1,
+    });
 
-    if (updateResult.matchedCount === 0) {
+    if (!user) {
       throw new CustomError('User not found.', 404);
     }
+
+    const normalizedDeleteIds = jobIdsToDeleteValidated
+      .filter((value): value is string => typeof value === 'string')
+      .map((value) => value.trim())
+      .filter(Boolean);
+
+    const existingRaw = (user as { savedJobIds?: unknown }).savedJobIds;
+    const existingIds = Array.isArray(existingRaw)
+      ? existingRaw
+          .filter((value): value is string => typeof value === 'string')
+          .map((value) => value.trim())
+          .filter(Boolean)
+      : typeof existingRaw === 'string' && existingRaw.trim()
+        ? [existingRaw.trim()]
+        : [];
+
+    const nextIds = existingIds.filter((id) => !normalizedDeleteIds.includes(id));
+
+    await User.updateOne(
+      { email: email.toLowerCase() },
+      { $set: { savedJobIds: nextIds } }
+    );
 
     return response.status(200).json({
       msg: 'Saved job removed successfully.',
@@ -70,13 +97,15 @@ export default async function handler(
     });
   } catch (error: unknown) {
     const { code, message } = (error as { code?: number; message?: string }) ?? {};
+    const safeStatusCode =
+      typeof code === "number" && code >= 400 && code <= 599 ? code : 500;
 
     console.error(
       'Failed to remove saved job. Reason: ',
       error
     );
 
-    return response.status(code ?? 500).json({
+    return response.status(safeStatusCode).json({
       msg: message ?? 'An error occurred on the server.',
       wasSuccessful: false
     });

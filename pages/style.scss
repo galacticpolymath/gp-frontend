@@ -468,16 +468,334 @@ ol li {
 
 .login-ui-modal {
   width: 35vw;
+  border: 1px solid rgba(146, 180, 255, 0.74);
+  background:
+    radial-gradient(circle at 8% 8%, rgba(150, 190, 255, 0.22), transparent 40%),
+    radial-gradient(circle at 92% 0%, rgba(255, 176, 232, 0.2), transparent 34%),
+    linear-gradient(165deg, rgba(12, 21, 53, 0.97), rgba(15, 13, 44, 0.96));
+  box-shadow:
+    0 0 0 1px rgba(198, 218, 255, 0.24),
+    0 30px 75px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
 
   @media (min-width: 577px) {
     min-width: 400px;
     max-height: 670px;
+    border-radius: 18px !important;
   }
 
   @media (max-width: 576px) {
     width: 100vw;
     border-radius: 0% !important;
     height: 100vh;
+  }
+}
+
+.login-ui-modal--refresh {
+  color: #f7fbff;
+  overflow: hidden;
+}
+
+.login-modal-dialog {
+  padding-inline: 0.75rem;
+}
+
+.login-modal-header {
+  padding: 1rem 1.1rem 0.35rem;
+}
+
+.login-modal-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-right: 2rem;
+}
+
+.login-modal-logo {
+  width: 56px;
+  height: 56px;
+  border-radius: 0;
+  background: transparent;
+  padding: 0;
+}
+
+.login-modal-close-btn {
+  border-radius: 999px;
+  background-color: rgba(255, 255, 255, 0.16) !important;
+  opacity: 1 !important;
+  padding: 0.45rem !important;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.22);
+}
+
+.login-modal-close-btn.btn-close {
+  filter: invert(1) brightness(1.8);
+}
+
+.login-modal-close-btn:hover,
+.login-modal-close-btn:focus-visible {
+  background-color: rgba(255, 255, 255, 0.26) !important;
+}
+
+.login-modal-title {
+  margin: 0;
+  color: #ffffff;
+  font-size: 1.22rem;
+  font-weight: 700;
+}
+
+.login-modal-subtitle {
+  margin: 0.2rem 0 0;
+  color: rgba(232, 240, 255, 0.82);
+  font-size: 0.92rem;
+  line-height: 1.35;
+}
+
+.login-modal-body {
+  padding: 0.25rem 1.15rem 1.1rem;
+}
+
+.login-modal-google-btn {
+  width: 100%;
+  border: 1px solid rgba(255, 255, 255, 0.34);
+  background: rgba(255, 255, 255, 0.97);
+  color: #0f1e47;
+  min-height: 52px;
+  border-radius: 12px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.55rem;
+  box-shadow: 0 8px 18px rgba(7, 10, 34, 0.24);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.login-modal-google-btn:hover,
+.login-modal-google-btn:focus-visible {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 24px rgba(7, 10, 34, 0.28);
+}
+
+.login-modal-google-label {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.login-modal-field-group {
+  margin-top: 0.45rem;
+}
+
+.login-modal-label {
+  font-size: 0.84rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(223, 235, 255, 0.78);
+  margin-bottom: 0.35rem;
+  display: inline-block;
+}
+
+.login-modal-input-row {
+  width: 100%;
+}
+
+.login-modal-input-icon {
+  position: absolute;
+  left: 0.78rem;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  pointer-events: none;
+  display: inline-flex;
+  align-items: center;
+}
+
+.login-modal-input-container {
+  padding-left: 2.2rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 10px !important;
+  background: rgba(240, 247, 255, 0.95);
+}
+
+.login-modal-input-container:focus-within {
+  border-color: rgba(123, 171, 255, 0.95);
+  box-shadow: 0 0 0 2px rgba(123, 171, 255, 0.24);
+}
+
+.login-modal-error {
+  min-height: 0.8rem;
+  color: #ff7f95;
+  font-size: 0.8rem;
+  display: inline-block;
+  margin-top: 0.22rem;
+}
+
+.login-modal-password-toggle {
+  color: #1f2b4f;
+}
+
+.login-modal-password-input {
+  padding-left: 2.1rem !important;
+}
+
+.login-modal-submit-btn {
+  width: 100%;
+  min-height: 42px;
+  border-radius: 12px !important;
+  border: 1px solid rgba(132, 184, 255, 0.75) !important;
+  background: linear-gradient(128deg, #2f7df7, #5f54ff) !important;
+  box-shadow: 0 10px 20px rgba(33, 74, 198, 0.32);
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.login-modal-submit-btn:hover,
+.login-modal-submit-btn:focus-visible {
+  filter: brightness(1.07);
+}
+
+.login-modal-link {
+  color: #a5d7ff;
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-color: rgba(165, 215, 255, 0.6);
+  text-underline-offset: 2px;
+}
+
+.login-modal-link:hover,
+.login-modal-link:focus-visible {
+  color: #ffe4ff;
+}
+
+.login-modal-footer {
+  margin-top: 0.65rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  padding-top: 0.8rem;
+}
+
+.login-modal-footer-text {
+  color: rgba(233, 240, 255, 0.84);
+}
+
+.password-recovery-modal .modal-body {
+  padding-top: 0.1rem !important;
+}
+
+.password-recovery-modal .login-modal-field-group {
+  margin-top: 0.3rem;
+}
+
+.password-recovery-modal .login-modal-footer {
+  margin-top: 0.3rem;
+}
+
+.create-account-modal {
+  max-width: 860px;
+  width: min(860px, 96vw);
+}
+
+.create-account-modal-body {
+  padding-top: 0.15rem;
+}
+
+.create-account-mailing-wrap {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.04);
+  padding: 0.65rem 0.75rem;
+}
+
+.create-account-mailing-toggle {
+  width: 100%;
+  border: none;
+  background: transparent;
+  color: rgba(236, 242, 255, 0.92);
+  display: flex;
+  align-items: flex-start;
+  gap: 0.45rem;
+  text-align: left;
+}
+
+.create-account-mailing-icon {
+  color: #8ec8ff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: -0.18rem;
+}
+
+.create-account-mailing-label {
+  font-size: 0.93rem;
+  line-height: 1.35;
+}
+
+.create-account-google-btn {
+  width: 100%;
+}
+
+.auth-divider {
+  margin: 0.15rem 0 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  color: rgba(230, 236, 252, 0.85);
+  font-size: 0.85rem;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.auth-divider-line {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.25);
+  flex: 1;
+}
+
+.create-account-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.create-account-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.create-account-grid-single {
+  grid-template-columns: 1fr;
+}
+
+.create-account-text-input {
+  min-height: 42px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(240, 247, 255, 0.95);
+  color: #0f1e47;
+  padding: 0.5rem 0.75rem;
+  outline: none;
+}
+
+.create-account-text-input:focus {
+  border-color: rgba(123, 171, 255, 0.95);
+  box-shadow: 0 0 0 2px rgba(123, 171, 255, 0.24);
+}
+
+.create-account-submit {
+  width: 100%;
+  margin-top: 0.45rem;
+}
+
+@media (max-width: 767px) {
+  .create-account-grid {
+    grid-template-columns: 1fr;
+    gap: 0.35rem;
+  }
+
+  .create-account-modal {
+    width: 100vw;
+    max-width: none;
+    border-radius: 0 !important;
+    min-height: 100vh;
   }
 }
 
@@ -505,16 +823,37 @@ ol li {
 
 .account-action-btn {
   border-width: 2px;
+  border-color: #1c28bd !important;
+  background: #ffffff !important;
+  color: #1c28bd !important;
   font-weight: 600;
   letter-spacing: 0.02em;
+  box-shadow: 0 10px 20px rgba(28, 40, 189, 0.12);
+}
+
+.account-action-btn span {
+  color: inherit !important;
+}
+
+.account-action-btn:hover,
+.account-action-btn:focus-visible {
+  background: #1c28bd !important;
+  color: #ffffff !important;
+  border-color: #1c28bd !important;
+}
+
+.account-action-btn--lessons,
+.account-action-btn--my-jobs,
+.account-action-btn--gdrive,
+.account-action-btn--jobviz {
+  background: #ffffff !important;
+  color: #1c28bd !important;
+  border-color: #1c28bd !important;
 }
 
 .account-action-btn--jobviz,
 .account-action-btn--jobviz.btn,
 .account-action-btn--jobviz.btn-outline-primary {
-  background: #ffffff !important;
-  border-color: #1c28bd !important;
-  color: #1c28bd !important;
   box-shadow: 0 10px 20px rgba(28, 40, 189, 0.12);
 }
 

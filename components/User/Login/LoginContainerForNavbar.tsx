@@ -208,6 +208,8 @@ const LoginContainerForNavbar: React.FC<IProps> = ({ _modalAnimation }) => {
     });
   };
 
+  const buildMyJobsUrl = () => "/jobviz?saved=1";
+
   const handleAccountBtnClick = () => {
     if (
       document.documentElement.clientWidth <= 767 &&
@@ -354,6 +356,15 @@ const LoginContainerForNavbar: React.FC<IProps> = ({ _modalAnimation }) => {
               classNameStr="no-btn-styles text-black txt-underline-on-hover py-2"
             >
               View Account
+            </Button>
+            <Button
+              handleOnClick={() => {
+                setModalAnimation("fade-out-quick");
+                router.push(buildMyJobsUrl());
+              }}
+              classNameStr="no-btn-styles text-black txt-underline-on-hover py-2"
+            >
+              My Jobs
             </Button>
             <Button
               handleOnClick={async () => await handleSignOutBtnClick()}

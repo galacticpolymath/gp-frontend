@@ -4,10 +4,10 @@
  
  
 import { useContext, useEffect, useState } from 'react';
-import { CloseButton, Modal, ModalBody, ModalFooter, ModalHeader, ModalTitle } from 'react-bootstrap';
+import { CloseButton, Modal, ModalBody, ModalFooter, ModalHeader } from 'react-bootstrap';
 import { MdOutlineMail } from 'react-icons/md';
 import Button from '../../General/Button';
-import { InputSection } from '../formElements';
+import { CustomInput } from '../formElements';
 import { defautlNotifyModalVal, ModalContext } from '../../../providers/ModalProvider';
 import axios from 'axios';
 import { getTargetKeyValFromUrl, resetUrl, validateEmail } from '../../../globalFns';
@@ -163,7 +163,7 @@ const PasswordResetModal = () => {
         if (isPasswordRecoverModalOnVarInUrl) {
             setIsPasswordResetModalOn(true);
         }
-    }, [router.asPath]);
+    }, [router, router.asPath, setIsPasswordResetModalOn]);
 
     return (
         <Modal
@@ -178,63 +178,58 @@ const PasswordResetModal = () => {
                     }, 300);
                 }
             }}
-            dialogClassName='selected-gp-web-app-dialog m-0 d-flex justify-content-center align-items-center'
-            contentClassName='login-ui-modal bg-white shadow-lg rounded pt-2 box-shadow-login-ui-modal'
+            dialogClassName='selected-gp-web-app-dialog login-modal-dialog m-0 d-flex justify-content-center align-items-center'
+            contentClassName='login-ui-modal login-ui-modal--refresh password-recovery-modal box-shadow-login-ui-modal'
         >
-            <ModalHeader className='d-flex flex-column'>
-                <CloseButton className='position-absolute top-0 end-0 me-2 mt-2 mb-3 text-grey' onClick={handleOnHide} />
-                <div className="d-flex justify-content-center align-items-center">
+            <ModalHeader className='login-modal-header border-0'>
+                <CloseButton className='position-absolute top-0 end-0 me-2 mt-2 mb-3 text-grey login-modal-close-btn' onClick={handleOnHide} />
+                <div className="login-modal-brand">
                     <img
-                        src='/imgs/gp_logo_gradient_transBG.png'
+                        className="login-modal-logo"
+                        src='/GP_bubbleLogo300px.png'
                         alt="gp_logo"
-                        width={75}
-                        height={75}
+                        width={48}
+                        height={48}
                     />
+                    <div>
+                        <h5 className="login-modal-title">Password recovery</h5>
+                        <p className="login-modal-subtitle">Enter your account email and we&apos;ll send reset instructions.</p>
+                    </div>
                 </div>
-                <ModalTitle className="text-black mt-2 my-0 w-100 text-center">
-                    Password Recovery
-                </ModalTitle>
             </ModalHeader>
-            <ModalBody className='d-flex flex-column'>
-                <h6 className='text-black text-start w-100'>
-                    Tell us some information about your account.
-                </h6>
+            <ModalBody className='d-flex flex-column login-modal-body pt-1'>
                 <form>
-                    <InputSection
-                        errors={errors}
-                        errorsFieldName="email"
-                        containerClassName="d-flex flex-column position-relative mt-1"
-                        inputName="email"
-                        inputId="email-id"
-                        inputStyle={{ borderRadius: '5px', fontSize: '18px', background: '#D6D6D6', height: '35px' }}
-                        label={
-                            (
-                                <div className='d-flex'>
-                                    <div className='d-flex justify-content-center align-items-center'>
-                                        <MdOutlineMail fontSize='27px' color={errors.has('email') ? 'red' : '#D6D6D6'} />
-                                    </div>
-                                    <span className={`ms-1 ${errors.has('email') ? 'text-danger' : ''}`}>
-                                        Enter your email
-                                    </span>
-                                </div>
-                            )
-                        }
-                        labelClassName={`d-block pb-1 ${errors.has('email') ? 'text-danger' : ''}`}
-                        inputAndLabelSectionClassName='d-flex flex-column'
-                        inputClassName={`px-1 pt-2 mt-1 no-outline ${errors.has('email') ? 'border-red text-danger' : 'border'}`}
-                        handleOnInputChange={event => {
-                            setErrors(new Map());
-                            setEmail(event.target.value);
-                        }}
-                        onKeyDown={event => {
-                            if (event.key === 'Enter') {
-                                event.preventDefault();
-                            }
-                        }}
-
-                    />
+                    <div className="login-modal-field-group mt-1">
+                        <label className="login-modal-label" htmlFor="email-id">Email</label>
+                        <div className="login-modal-input-row position-relative">
+                            <span className="login-modal-input-icon" aria-hidden="true">
+                                <MdOutlineMail
+                                    fontSize="20px"
+                                    color={errors.has('email') ? '#ff6b6b' : '#7a8ec2'}
+                                />
+                            </span>
+                            <CustomInput
+                                inputContainerCss={`no-outline position-relative rounded w-100 login-modal-input-container ${errors.has('email') ? 'border-red' : ''}`}
+                                inputName="email"
+                                inputId="email-id"
+                                inputType="email"
+                                placeholder="you@example.com"
+                                inputClassName={`px-1 py-2 position-relative no-outline border-0 rounded bg-transparent w-100 ${errors.has('email') ? 'text-danger' : ''}`}
+                                onChange={event => {
+                                    setErrors(new Map());
+                                    setEmail(event.target.value);
+                                }}
+                                onKeyDown={event => {
+                                    if (event.key === 'Enter') {
+                                        event.preventDefault();
+                                    }
+                                }}
+                            />
+                        </div>
+                        <span className="login-modal-error">{errors.get('email') ?? ''}</span>
+                    </div>
                     <Button
-                        classNameStr='no-btn-styles w-100 bg-primary rounded py-2 mt-2'
+                        classNameStr='no-btn-styles w-100 login-modal-submit-btn rounded py-2 mt-2'
                         handleOnClick={handleContinueBtnClick}
                     >
                         {isLoadingSpinnerOn
@@ -248,17 +243,17 @@ const PasswordResetModal = () => {
                                 </div>
                             )
                             :
-                            <span className="text-white">Continue</span>
+                            <span className="text-white">Send reset link</span>
                         }
                     </Button>
                 </form>
             </ModalBody>
-            <ModalFooter className='d-flex justify-content-center align-items-center'>
+            <ModalFooter className='login-modal-footer d-flex justify-content-center align-items-center'>
                 <Button
                     classNameStr='no-btn-styles w-100'
                     handleOnClick={handleGoBackToLoginBtnClick}
                 >
-                    <span className="text-primary underline-on-hover">Go Back To Login</span>
+                    <span className="login-modal-link">Go back to login</span>
                 </Button>
             </ModalFooter>
         </Modal>

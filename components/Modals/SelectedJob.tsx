@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import Image from "next/image";
 import Modal from "react-bootstrap/Modal";
 import { useRouter } from "next/router";
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast";
 import { useSearchParams } from "next/navigation";
 import axios from "axios";
 import { Star } from "lucide-react";
@@ -94,6 +94,10 @@ const SelectedJob: React.FC = () => {
   const [isSavingJob, setIsSavingJob] = useState(false);
   const { status, token } = useSiteSession();
   const isAuthenticated = status === "authenticated";
+  const authorizationHeader =
+    typeof token === "string" && token.startsWith("Bearer ")
+      ? token
+      : `Bearer ${token ?? ""}`;
 
   const assignmentSocCodes = useMemo(() => {
     const value = Array.isArray(assignmentQueryParam)
@@ -266,7 +270,7 @@ const SelectedJob: React.FC = () => {
     axios
       .get<{ savedJobIds?: string[] }>("/api/get-user-account-data", {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: authorizationHeader,
         },
       })
       .then(({ data }) => {
@@ -287,7 +291,7 @@ const SelectedJob: React.FC = () => {
     return () => {
       isCancelled = true;
     };
-  }, [isAuthenticated, token]);
+  }, [authorizationHeader, isAuthenticated, token]);
 
   const activeInfoModal = modalHistory ? infoModalContent[modalHistory] : null;
   const shouldRenderInfoModal =
@@ -474,12 +478,16 @@ const SelectedJob: React.FC = () => {
   };
 
   const handleSaveJob = async () => {
-    const jobId = visibleJob?.id != null ? String(visibleJob.id) : visibleJob?.soc_code;
+    const jobId =
+      (typeof visibleJob?.soc_code === "string" && visibleJob.soc_code.trim()) ||
+      (visibleJob?.id != null ? String(visibleJob.id) : "");
     if (!jobId) {
       return;
     }
 
     if (!isAuthenticated || !token) {
+      setIsJobModal(false);
+      setSelectedJob(null);
       setIsLoginModalDisplayed(true);
       return;
     }
@@ -495,7 +503,7 @@ const SelectedJob: React.FC = () => {
         { jobId },
         {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: authorizationHeader,
           },
         }
       );
@@ -504,10 +512,21 @@ const SelectedJob: React.FC = () => {
         next.add(jobId);
         return next;
       });
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(
+          new CustomEvent("jobviz-saved-jobs-updated", {
+            detail: { action: "add", jobId },
+          })
+        );
+      }
       toast.success("Job saved");
     } catch (error) {
       console.error("Failed to save job", error);
-      toast.error("Unable to save job");
+      const errorMessage =
+        axios.isAxiosError(error)
+          ? error.response?.data?.msg || error.message
+          : "Unable to save job";
+      toast.error(errorMessage || "Unable to save job");
     } finally {
       setIsSavingJob(false);
     }
@@ -676,7 +695,9 @@ const SelectedJob: React.FC = () => {
                         ? "Saved"
                         : isSavingJob
                         ? "Saving..."
-                        : "Save Job"}
+                        : isAuthenticated
+                        ? "Save Job"
+                        : "Sign in to save"}
                     </span>
                   </button>
                   {canBookmark && visibleJob?.soc_code && (

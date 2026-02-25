@@ -143,31 +143,35 @@ const LoginModal = () => {
     <Modal
       show={isLoginModalDisplayed}
       onHide={handleOnHide}
-      dialogClassName="selected-gp-web-app-dialog m-0 d-flex justify-content-center align-items-center"
-      contentClassName="login-ui-modal bg-white shadow-lg rounded pt-2 box-shadow-login-ui-modal"
+      dialogClassName="selected-gp-web-app-dialog login-modal-dialog m-0 d-flex justify-content-center align-items-center"
+      contentClassName="login-ui-modal login-ui-modal--refresh box-shadow-login-ui-modal"
     >
-      <ModalHeader className="d-flex flex-column">
+      <ModalHeader className="login-modal-header border-0">
         <CloseButton
-          className="position-absolute top-0 end-0 me-2 mt-2 mb-3 text-grey"
+          className="position-absolute top-0 end-0 me-2 mt-2 mb-3 text-grey login-modal-close-btn"
           onClick={handleOnHide}
         />
-        <img
-          className="position-absolute top-0 start-0 me-5 mt-1"
-          src="/imgs/gp_logo_gradient_transBG.png"
-          alt="gp_logo"
-          width={50}
-          height={50}
-          style={{
-            transform: "translate(17%, 6%)",
-          }}
-        />
-        <h5 className="text-black text-center mt-2">GP Sign In</h5>
+        <div className="login-modal-brand">
+          <img
+            className="login-modal-logo"
+            src="/GP_bubbleLogo300px.png"
+            alt="Galactic Polymath"
+            width={48}
+            height={48}
+          />
+          <div>
+            <h5 className="login-modal-title">Welcome back!</h5>
+            <p className="login-modal-subtitle">
+              Sign in to save jobs and unlock your account tools.
+            </p>
+          </div>
+        </div>
       </ModalHeader>
-      <div className="py-3 py-sm-2">
-        <section className="d-flex justify-content-center align-items-center pt-3">
+      <div className="login-modal-body">
+        <section className="d-flex justify-content-center align-items-center pt-2">
           <GoogleSignIn
             callbackUrl={redirectUrl}
-            className="rounded shadow px-3 py-2 w-75 py-sm-4 px-sm-5 border position-relative"
+            className="login-modal-google-btn position-relative"
             isLoggingIn
             executeExtraBtnClickLogic={() => {
               setIsGoogleLoginSpinnerDisplayed(true);
@@ -189,120 +193,110 @@ const LoginModal = () => {
               size={31}
             />
             <span
-              style={{
-                fontSize: "18px",
-                opacity: isGoogleLoginSpinnerDisplayed ? 0 : 1,
-              }}
+              className="login-modal-google-label"
+              style={{ opacity: isGoogleLoginSpinnerDisplayed ? 0 : 1 }}
             >
-              Sign in with Google.
+              Continue with Google
             </span>
           </GoogleSignIn>
         </section>
-        <ORTxtDivider color="black" className="d-flex my-3 mb-2" />
+        <ORTxtDivider color="#d2dcf8" className="d-flex my-3 mb-2" />
         <section>
           <form>
-            <div className="mt-3 d-flex justify-content-center align-items-center position-relative">
-              <label
-                style={{ width: "12.5%" }}
-                className="position-absolute d-none d-sm-flex start-0 d-flex justify-content-center align-items-center"
-                htmlFor="email-input"
-              >
-                <MdOutlineMail
-                  fontSize="31px"
-                  color={errors.has("email") ? "red" : "#D6D6D6"}
-                />
+            <div className="login-modal-field-group">
+              <label className="login-modal-label" htmlFor="email-id">
+                Email
               </label>
-              <CustomInput
-                inputContainerCss={`no-outline position-relative rounded w-75 login-modal-input-container ${errors.has("email") ? "border-red" : ""
-                  }`}
-                inputName="email"
-                inputId="email-id"
-                inputType="email"
-                placeholder="Enter email"
-                inputClassName={`px-1 py-2 position-relative no-outline border-0 rounded bg-transparent w-100 ${errors.has("email") ? "text-danger" : ""
-                  }`}
-                onChange={handleOnInputChange}
-                autoFocus
-                onKeyUp={(event) => {
-                  if (event.key === "Enter") {
-                    handleLoginBtnClick();
-                  }
-                }}
-              />
-            </div>
-            <div className="my-2 py-1 d-flex justify-content-center align-items-center">
-              <div className="w-75 d-flex align-items-center position-relative">
-                <span
-                  style={{ fontSize: "16px" }}
-                  className="left-0 text-danger position-absolute"
-                >
-                  {errors.get("email") ?? ""}
+              <div className="login-modal-input-row position-relative">
+                <span className="login-modal-input-icon" aria-hidden="true">
+                  <MdOutlineMail
+                    fontSize="20px"
+                    color={errors.has("email") ? "#ff6b6b" : "#7a8ec2"}
+                  />
                 </span>
-              </div>
-            </div>
-            <div className="mt-4 d-flex justify-content-center align-items-center">
-              <label
-                style={{ width: "12.5%" }}
-                className="position-absolute start-0 d-none d-sm-flex justify-content-center align-items-center"
-                htmlFor="password-input"
-              >
-                <FaLock
-                  fontSize="31px"
-                  color={errors.has("password") ? "red" : "#D6D6D6"}
+                <CustomInput
+                  inputContainerCss={`no-outline position-relative rounded w-100 login-modal-input-container ${
+                    errors.has("email") ? "border-red" : ""
+                  }`}
+                  inputName="email"
+                  inputId="email-id"
+                  inputType="email"
+                  placeholder="you@example.com"
+                  inputClassName={`px-1 py-2 position-relative no-outline border-0 rounded bg-transparent w-100 ${
+                    errors.has("email") ? "text-danger" : ""
+                  }`}
+                  onChange={handleOnInputChange}
+                  autoFocus
+                  onKeyUp={(event) => {
+                    if (event.key === "Enter") {
+                      handleLoginBtnClick();
+                    }
+                  }}
                 />
-              </label>
-              <CustomInput
-                inputContainerCss={`no-outline position-relative rounded w-75 bg-light-blue ${errors.has("password") ? "border-red text-danger" : ""
-                  }`}
-                isPasswordInput
-                inputStyle={{
-                  width: "90%",
-                  borderTopRightRadius: "0px",
-                  borderBottomRightRadius: "0px",
-                  borderTopLeftRadius: "6.75px",
-                  borderBottomLeftRadius: "6.75px",
-                }}
-                willUseDefaultTxtShowToggle
-                iconContainerStyle={{
-                  width: "10%",
-                  borderTopRightRadius: "6.75px",
-                  borderBottomRightRadius: "6.75px",
-                }}
-                iconContainerClassName="h-100 end-0 position-absolute top-0 d-flex justify-content-center align-items-center bg-light-blue"
-                inputName="password"
-                onChange={handleOnInputChange}
-                inputId="password-id"
-                inputClassName="px-1 py-2 position-relative no-outline bg-transparent border-0 rounded"
-                onKeyUp={(event) => {
-                  if (event.key === "Enter") {
-                    handleLoginBtnClick();
-                  }
-                }}
-              />
-            </div>
-            <div className="my-2 py-1 d-flex justify-content-center align-items-center">
-              <div className="w-75 d-flex align-items-center position-relative">
-                <span
-                  style={{ fontSize: "16px" }}
-                  className="left-0 text-danger position-absolute"
-                >
-                  {errors.get("password") ?? ""}
-                </span>
               </div>
+              <span className="login-modal-error">{errors.get("email") ?? ""}</span>
             </div>
-            <div className="d-flex justify-content-center align-items-center py-2 mt-3">
+
+            <div className="login-modal-field-group">
+              <label className="login-modal-label" htmlFor="password-id">
+                Password
+              </label>
+              <div className="login-modal-input-row position-relative">
+                <span className="login-modal-input-icon" aria-hidden="true">
+                  <FaLock
+                    fontSize="18px"
+                    color={errors.has("password") ? "#ff6b6b" : "#7a8ec2"}
+                  />
+                </span>
+                <CustomInput
+                  inputContainerCss={`no-outline position-relative rounded w-100 bg-light-blue ${
+                    errors.has("password") ? "border-red text-danger" : ""
+                  }`}
+                  isPasswordInput
+                  inputStyle={{
+                    width: "90%",
+                    paddingLeft: "1.9rem",
+                    borderTopRightRadius: "0px",
+                    borderBottomRightRadius: "0px",
+                    borderTopLeftRadius: "6.75px",
+                    borderBottomLeftRadius: "6.75px",
+                  }}
+                  willUseDefaultTxtShowToggle
+                  iconContainerStyle={{
+                    width: "10%",
+                    borderTopRightRadius: "6.75px",
+                    borderBottomRightRadius: "6.75px",
+                  }}
+                  iconContainerClassName="h-100 end-0 position-absolute top-0 d-flex justify-content-center align-items-center bg-light-blue login-modal-password-toggle"
+                  inputName="password"
+                  onChange={handleOnInputChange}
+                  inputId="password-id"
+                  inputClassName="login-modal-password-input py-2 position-relative no-outline bg-transparent border-0 rounded"
+                  onKeyUp={(event) => {
+                    if (event.key === "Enter") {
+                      handleLoginBtnClick();
+                    }
+                  }}
+                />
+              </div>
+              <span className="login-modal-error">
+                {errors.get("password") ?? ""}
+              </span>
+            </div>
+
+            <div className="d-flex justify-content-center align-items-center py-2 mt-2">
               <Button
                 handleOnClick={handleLoginBtnClick}
-                classNameStr="bg-primary rounded border-0 px-4 py-2 login-modal-input"
+                classNameStr="login-modal-submit-btn rounded border-0 px-4 py-2"
               >
                 {isLoadingSpinnerOn ? (
                   <Spinner size="sm" className="text-white" />
                 ) : (
-                  <span className="text-white">Login</span>
+                  <span className="text-white">Sign in</span>
                 )}
               </Button>
             </div>
-            <div className="d-flex justify-content-center align-items-center py-3">
+            <div className="d-flex justify-content-center align-items-center py-2">
               <Button
                 color="#3C719F"
                 defaultStyleObj={{
@@ -316,15 +310,13 @@ const LoginModal = () => {
                 className="d-block no-link-decoration"
                 handleOnClick={handleForgotYourPasswordBtnClick}
               >
-                <span className="text-primary underline-on-hover">
-                  Forgot your password?
-                </span>
+                <span className="login-modal-link">Forgot your password?</span>
               </Button>
             </div>
           </form>
         </section>
-        <div className="d-flex justify-content-center align-items-center border-top py-3 flex-column flex-sm-row">
-          <span className="text-black">Don{"'"}t have an account?</span>
+        <div className="login-modal-footer d-flex justify-content-center align-items-center flex-column flex-sm-row">
+          <span className="login-modal-footer-text">Don{"'"}t have an account?</span>
           <Button
             color="#3C719F"
             defaultStyleObj={{
@@ -338,9 +330,7 @@ const LoginModal = () => {
             className="d-block no-link-decoration"
             handleOnClick={handleCreateOneBtnClick}
           >
-            <span className="text-primary underline-on-hover ms-1">
-              Create one.
-            </span>
+            <span className="login-modal-link ms-1">Create one.</span>
           </Button>
         </div>
       </div>

@@ -6,6 +6,7 @@ import {
   useRef,
   useState,
 } from "react";
+import axios from "axios";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import Layout from "../../components/Layout";
@@ -90,6 +91,7 @@ const VIEWING_HEADER_TRANSITION_MS = 480;
 const GRID_NAVIGATION_HEADER_DELAY_MS = VIEWING_HEADER_TRANSITION_MS;
 const JOBVIZ_WELCOME_DISMISSED_KEY = "jobviz_intro_dismissed";
 const JOBVIZ_TOUR_WELCOME_DISMISSED_KEY = "jobviz_tour_intro_dismissed";
+const SAVED_JOBS_QUERY_PARAM = "saved";
 
 const JobVizSearchResults = ({
   metaDescription,
@@ -108,6 +110,10 @@ const JobVizSearchResults = ({
     modalContext._jobvizReturnPath;
   const [, setJobvizSummaryModal] = modalContext._jobvizSummaryModal;
   const { user, token, status, isGpPlusMember: gpPlusCookie } = useSiteSession();
+  const authorizationHeader =
+    typeof token === "string" && token.startsWith("Bearer ")
+      ? token
+      : `Bearer ${token ?? ""}`;
   const {
     _isUserTeacher: [isUserTeacher],
     _isGpPlusMember: [isGpPlusMember],
@@ -139,6 +145,9 @@ const JobVizSearchResults = ({
     error: null,
   });
   const [showTourUpgradeModal, setShowTourUpgradeModal] = useState(false);
+  const [savedJobIds, setSavedJobIds] = useState(new Set());
+  const [showSavedJobsOnly, setShowSavedJobsOnly] = useState(false);
+  const [showSavedJobsUpsell, setShowSavedJobsUpsell] = useState(false);
   const socCodesParam = router.query?.[SOC_CODES_PARAM_NAME];
   const hasSocCodesParam = Array.isArray(socCodesParam)
     ? socCodesParam.some(Boolean)
@@ -437,13 +446,17 @@ const JobVizSearchResults = ({
   }, [jobTitleAndSocCodePairs, resolvedSocCodesForBanner]);
   const hasAssignmentList = Boolean(resolvedSocCodesForBanner?.size);
   const [showAssignmentOnly, setShowAssignmentOnly] = useState(
-    () => isStudentMode && hasAssignmentList
+    () => (isStudentMode || isTourPreviewMode) && hasAssignmentList
   );
   useEffect(() => {
-    if ((isStudentMode || isTourPreviewMode) && hasAssignmentList) {
+    if (isTourPreviewMode && hasAssignmentList) {
       setShowAssignmentOnly(true);
+      return;
     }
-  }, [hasAssignmentList, isStudentMode, isTourPreviewMode]);
+    if (!hasAssignmentList) {
+      setShowAssignmentOnly(false);
+    }
+  }, [hasAssignmentList, isTourPreviewMode]);
   const sortQueryFromRouter =
     typeof router.query?.sort === "string" ? router.query.sort : undefined;
   const normalizedSortFromQuery = useMemo(
@@ -476,6 +489,50 @@ const JobVizSearchResults = ({
     },
     [persistSortInQuery]
   );
+  const handleAssignedToggleClick = useCallback(() => {
+    const isTurningOff = showAssignmentOnly && hasAssignmentList;
+
+    if (!isTurningOff) {
+      setShowAssignmentOnly(true);
+      return;
+    }
+
+    setShowAssignmentOnly(false);
+
+    if (parsed.targetLevel === 1 && parsed.idPath.length === 0) {
+      return;
+    }
+
+    const [, search = ""] = router.asPath.split("?");
+    const nextUrl = search ? `/jobviz?${search}` : "/jobviz";
+    router.push(nextUrl, undefined, { shallow: true, scroll: false });
+  }, [hasAssignmentList, parsed.idPath.length, parsed.targetLevel, router, showAssignmentOnly]);
+  const persistSavedFilterInQuery = useCallback(
+    (nextEnabled) => {
+      const [path, search = ""] = router.asPath.split("?");
+      const params = new URLSearchParams(search);
+      if (nextEnabled) {
+        params.set(SAVED_JOBS_QUERY_PARAM, "1");
+      } else {
+        params.delete(SAVED_JOBS_QUERY_PARAM);
+      }
+      const queryString = params.toString();
+      const nextUrl = queryString ? `${path}?${queryString}` : path;
+      router.replace(nextUrl, undefined, { shallow: true, scroll: false });
+    },
+    [router]
+  );
+  const handleSavedToggleClick = useCallback(() => {
+    if (status !== "authenticated") {
+      setShowSavedJobsUpsell(true);
+      return;
+    }
+    setShowSavedJobsOnly((prev) => {
+      const next = !prev;
+      persistSavedFilterInQuery(next);
+      return next;
+    });
+  }, [persistSavedFilterInQuery, status]);
   const sortQueryParam =
     sortOptionId === JOBVIZ_DEFAULT_SORT_OPTION.id ? undefined : sortOptionId;
   const sortQueryParams = useMemo(
@@ -508,6 +565,73 @@ const JobVizSearchResults = ({
           new CustomEvent("jobviz-focus-toggle", { detail: { value: false } })
         );
       }
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!router.isReady) return;
+    const rawSavedParam = router.query?.[SAVED_JOBS_QUERY_PARAM];
+    const normalizedSavedParam = Array.isArray(rawSavedParam)
+      ? rawSavedParam[0]
+      : rawSavedParam;
+    const shouldShowSaved = ["1", "true"].includes(
+      String(normalizedSavedParam ?? "").toLowerCase()
+    );
+    setShowSavedJobsOnly(shouldShowSaved);
+  }, [router.isReady, router.query]);
+
+  useEffect(() => {
+    if (status !== "authenticated" || !token) {
+      setSavedJobIds(new Set());
+      return;
+    }
+    let isCancelled = false;
+    axios
+      .get("/api/get-user-account-data?willNotRetrieveMailingListStatus=true", {
+        headers: {
+          Authorization: authorizationHeader,
+        },
+      })
+      .then(({ data }) => {
+        if (isCancelled) return;
+        const ids = Array.isArray(data?.savedJobIds)
+          ? data.savedJobIds
+              .filter((value) => typeof value === "string")
+              .map((value) => value.trim())
+              .filter(Boolean)
+          : [];
+        setSavedJobIds(new Set(ids));
+      })
+      .catch(() => {
+        if (!isCancelled) {
+          setSavedJobIds(new Set());
+        }
+      });
+    return () => {
+      isCancelled = true;
+    };
+  }, [authorizationHeader, status, token]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return undefined;
+    const handleSavedJobsUpdate = (event) => {
+      const payload = event?.detail ?? {};
+      const action = payload?.action;
+      const jobId = typeof payload?.jobId === "string" ? payload.jobId.trim() : "";
+      if (!jobId) return;
+      setSavedJobIds((prev) => {
+        const next = new Set(prev);
+        if (action === "remove") {
+          next.delete(jobId);
+        } else {
+          next.add(jobId);
+        }
+        return next;
+      });
+    };
+    window.addEventListener("jobviz-saved-jobs-updated", handleSavedJobsUpdate);
+    return () => {
+      window.removeEventListener("jobviz-saved-jobs-updated", handleSavedJobsUpdate);
     };
   }, []);
 
@@ -631,6 +755,8 @@ const JobVizSearchResults = ({
         (assignmentSocCodes?.has(node.soc_code) ?? false),
       highlightClicked: activeNode?.id === node.id,
       showBookmark:
+        (node.soc_code && savedJobIds.has(node.soc_code)) ||
+        savedJobIds.has(String(node.id)) ||
         assignmentAncestors.has(node.id) ||
         (assignmentSocCodes?.has(node.soc_code) ?? false),
     }));
@@ -639,6 +765,7 @@ const JobVizSearchResults = ({
     assignmentAncestors,
     assignmentSocCodes,
     activeNode?.id,
+    savedJobIds,
   ]);
 
   const assignmentJobItems = useMemo(() => {
@@ -663,6 +790,36 @@ const JobVizSearchResults = ({
         showBookmark: true,
       }));
   }, [assignmentSocCodes]);
+  const savedJobItems = useMemo(() => {
+    if (!savedJobIds.size) return [];
+    return Array.from(savedJobIds)
+      .map((savedId) => {
+        const normalized = savedId.trim();
+        return (
+          jobVizData.find((node) => node.soc_code === normalized) ??
+          jobVizData.find((node) => String(node.id) === normalized)
+        );
+      })
+      .filter(Boolean)
+      .map((node) => ({
+        id: String(node.id),
+        title: getDisplayTitle(node),
+        iconName: getIconNameForNode(node),
+        level: 2,
+        jobsCount: undefined,
+        growthPercent: node.employment_change_percent ?? null,
+        wage: node.median_annual_wage ?? null,
+        education: node.typical_education_needed_for_entry ?? null,
+        jobIconName: getJobSpecificIconName(node),
+        socCode: node.soc_code ?? null,
+        isAssignmentJob: assignmentSocCodes?.has(node.soc_code) ?? false,
+        highlight:
+          assignmentAncestors.has(node.id) ||
+          (assignmentSocCodes?.has(node.soc_code) ?? false),
+        highlightClicked: false,
+        showBookmark: true,
+      }));
+  }, [assignmentAncestors, assignmentSocCodes, savedJobIds]);
   const previewLockedItems = useMemo(() => {
     if (!isTourPreviewMode || !previewLockedCount) return [];
     return Array.from({ length: previewLockedCount }).map((_, index) => ({
@@ -692,8 +849,15 @@ const JobVizSearchResults = ({
     () => sortJobVizItems(assignmentJobItems, sortOptionId),
     [assignmentJobItems, sortOptionId]
   );
+  const sortedSavedItems = useMemo(
+    () => sortJobVizItems(savedJobItems, sortOptionId),
+    [savedJobItems, sortOptionId]
+  );
 
   const filteredGridItems = useMemo(() => {
+    if (showSavedJobsOnly && status === "authenticated") {
+      return sortedSavedItems;
+    }
     if (showAssignmentOnly && hasAssignmentList) {
       return isTourPreviewMode
         ? [...sortedAssignmentItems, ...previewLockedItems]
@@ -705,7 +869,10 @@ const JobVizSearchResults = ({
     previewLockedItems,
     sortedGridItems,
     sortedAssignmentItems,
+    sortedSavedItems,
     showAssignmentOnly,
+    showSavedJobsOnly,
+    status,
     hasAssignmentList,
   ]);
   const [persistedGridItems, setPersistedGridItems] = useState(filteredGridItems);
@@ -1033,18 +1200,23 @@ const JobVizSearchResults = ({
     sortQueryParams,
   ]);
   const isShowingAssignmentScope = showAssignmentOnly && hasAssignmentList;
+  const isShowingSavedScope = showSavedJobsOnly && status === "authenticated";
   const activeBreadcrumb = breadcrumbs[breadcrumbs.length - 1];
   const baseViewTitle = activeNode
     ? getDisplayTitle(activeNode)
     : activeBreadcrumb?.label?.replace(/-/g, " ") ?? "Job categories";
-  const viewingTitle = isShowingAssignmentScope
-    ? "Assigned jobs"
-    : baseViewTitle;
-  const viewingIconName = isShowingAssignmentScope
-    ? "Sparkles"
-    : activeNode
-      ? getIconNameForNode(activeNode)
-      : activeBreadcrumb?.iconName ?? "Grid2x2";
+  const viewingTitle = isShowingSavedScope
+    ? "Saved jobs"
+    : isShowingAssignmentScope
+      ? "Assigned jobs"
+      : baseViewTitle;
+  const viewingIconName = isShowingSavedScope
+    ? "Star"
+    : isShowingAssignmentScope
+      ? "Sparkles"
+      : activeNode
+        ? getIconNameForNode(activeNode)
+        : activeBreadcrumb?.iconName ?? "Grid2x2";
   const viewingMetaLine =
     visibleGroupCount > 0
       ? `Showing ${visibleGroupCount} job group${visibleGroupCount === 1 ? "" : "s"}${
@@ -1595,6 +1767,11 @@ const JobVizSearchResults = ({
                         <LucideIcon name="Sparkles" />
                         Showing assigned jobs across multiple categories
                       </div>
+                    ) : isShowingSavedScope ? (
+                      <div className={styles.assignedScopeMessage}>
+                        <LucideIcon name="Star" />
+                        Showing your saved jobs
+                      </div>
                     ) : (
                       <JobVizBreadcrumb segments={breadcrumbs} />
                     )}
@@ -1646,8 +1823,34 @@ const JobVizSearchResults = ({
                     </div>
                   </div>
                   <div className={styles.gridFilterRow}>
+                    <div className={styles.gridFilterActions}>
+                      <button
+                        type="button"
+                        className={`${styles.assignedToggleButton} ${
+                          isShowingSavedScope
+                            ? styles.assignedToggleButtonActive
+                            : ""
+                        } ${
+                          status !== "authenticated"
+                            ? styles.savedJobsToggleMuted
+                            : ""
+                        }`}
+                        onClick={handleSavedToggleClick}
+                        aria-pressed={isShowingSavedScope}
+                        aria-label={
+                          status === "authenticated"
+                            ? "Show only saved jobs"
+                            : "Sign in required to view saved jobs"
+                        }
+                      >
+                        <span
+                          className={styles.assignedToggleIndicator}
+                          aria-hidden="true"
+                        />
+                        Saved jobs
+                      </button>
                     {hasAssignmentList && (
-                      <div className={styles.gridFilterActions}>
+                      <>
                         <button
                           type="button"
                           className={`${styles.assignedToggleButton} ${
@@ -1656,7 +1859,7 @@ const JobVizSearchResults = ({
                               : ""
                           }`}
                           disabled={isTourPreviewMode}
-                          onClick={() => setShowAssignmentOnly((prev) => !prev)}
+                          onClick={handleAssignedToggleClick}
                           aria-pressed={isShowingAssignmentScope}
                         >
                           <span
@@ -1674,8 +1877,9 @@ const JobVizSearchResults = ({
                             Back to assignment
                           </button>
                         )}
-                      </div>
+                      </>
                     )}
+                    </div>
                     <JobVizSortControl
                       activeOptionId={sortOptionId}
                       onChange={handleSortControlChange}
@@ -1746,6 +1950,30 @@ const JobVizSearchResults = ({
           )}
         </div>
       </Layout>
+      {showSavedJobsUpsell && (
+        <div className={styles.jobvizIntroOverlay} role="presentation">
+          <div className={styles.jobvizIntroDialog} role="dialog" aria-modal="true">
+            <h3>Save jobs for later</h3>
+            <p>Create a free account to save jobs for later.</p>
+            <div className={styles.jobvizIntroActions}>
+              <button
+                type="button"
+                className={styles.jobvizIntroDismiss}
+                onClick={() => setShowSavedJobsUpsell(false)}
+              >
+                Not now
+              </button>
+              <Link
+                href="/plus"
+                className={styles.jobvizIntroContinue}
+                onClick={() => setShowSavedJobsUpsell(false)}
+              >
+                Create free account
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
       {(showJobvizWelcome || showTourWelcome) && (
         <div className={styles.jobvizIntroOverlay} role="presentation">
           {showJobvizWelcome && (
