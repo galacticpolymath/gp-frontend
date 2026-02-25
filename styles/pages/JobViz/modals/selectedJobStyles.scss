@@ -1,9 +1,19 @@
 $selectedJobTxtColor: #f6f8ff;
 $jobInfoStatCard: rgba(14, 21, 54, 0.85);
+$assignment-base-layer-z: 1500;
+$selected-job-backdrop-z: $assignment-base-layer-z - 2;
+$selected-job-modal-z: $assignment-base-layer-z - 1;
 
 :root {
   --jobviz-assignment-offset: 0px;
   --jobviz-nav-offset: 0px;
+  --jobviz-modal-viewport-offset: calc(
+    var(--jobviz-nav-offset, 0px) + var(--jobviz-assignment-offset, 0px)
+  );
+}
+
+.selectedJobModalRoot {
+  z-index: $selected-job-modal-z !important;
 }
 
 .selectedJobBackdrop {
@@ -11,7 +21,7 @@ $jobInfoStatCard: rgba(14, 21, 54, 0.85);
   opacity: 1 !important;
   backdrop-filter: blur(12px);
   border-radius: 0 !important;
-  z-index: 1200 !important;
+  z-index: $selected-job-backdrop-z !important;
 
   &.fade {
     opacity: 0 !important;
@@ -34,17 +44,22 @@ $jobInfoStatCard: rgba(14, 21, 54, 0.85);
     line-height: 1.3;
   }
 
-  overflow-y: auto;
+  overflow: hidden;
+  max-height: none;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
   background: linear-gradient(150deg, rgba(32, 5, 58, 0.97), rgba(11, 4, 26, 0.96));
   border: 1px solid rgba(204, 67, 255, 0.35);
   border-radius: 32px;
   box-shadow: 0 35px 65px rgba(0, 0, 0, 0.65);
+  padding-bottom: 0;
 
   @media (max-width: 767px) {
     .modal-body {
       padding: 0.75rem !important;
     }
-    padding-bottom: calc(var(--jobviz-assignment-offset, 0px) + 1rem);
+    max-height: none;
   }
 }
 
@@ -67,7 +82,9 @@ $jobInfoStatCard: rgba(14, 21, 54, 0.85);
   }
 
   @media (max-width: 767px) {
-    margin: 0 auto calc(var(--jobviz-assignment-offset, 0px) + 1rem) auto;
+    margin: 0 auto !important;
+    width: 100% !important;
+    height: 100% !important;
   }
 
   @media (min-width: 1200px) {
@@ -83,12 +100,17 @@ $jobInfoStatCard: rgba(14, 21, 54, 0.85);
   .modal-content {
     background: transparent;
     border: none;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
   }
 
   .modal-body {
     background: transparent;
     border-radius: 28px;
     padding: clamp(1rem, 2vw, 1.5rem);
+    flex: 1 1 auto;
+    min-height: 0;
   }
 }
 
@@ -99,33 +121,35 @@ $jobInfoStatCard: rgba(14, 21, 54, 0.85);
 }
 
 @media (max-width: 767px) {
-  .modal.modal-fullscreen-md-down {
+  .selectedJobModalRoot.modal.modal-fullscreen-md-down {
     align-items: flex-start;
-    padding-top: 0.5rem;
-    padding-bottom: calc(var(--jobviz-assignment-offset, 0px) + 0.75rem);
+    padding-top: 0;
+    padding-bottom: 0;
     box-sizing: border-box;
-    top: calc(
-      var(--jobviz-nav-offset, 0px) + var(--jobviz-assignment-offset, 0px)
-    ) !important;
-    height: calc(
-      100% - var(--jobviz-nav-offset, 0px) - var(--jobviz-assignment-offset, 0px)
-    ) !important;
+    top: var(--jobviz-modal-viewport-offset) !important;
+    bottom: var(--jobviz-modal-viewport-offset) !important;
+    height: auto !important;
+    overflow: hidden;
+    -webkit-overflow-scrolling: touch;
   }
 
-  .modal.modal-fullscreen-md-down .dialogJobVizModal {
+  .selectedJobModalRoot.modal.modal-fullscreen-md-down .modal-dialog {
+    margin: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 100% !important;
+    min-height: 0 !important;
+  }
+
+  .selectedJobModalRoot.modal.modal-fullscreen-md-down .dialogJobVizModal {
     margin-top: 0 !important;
-    margin-bottom: calc(var(--jobviz-assignment-offset, 0px) + 1rem) !important;
+    margin-bottom: 0 !important;
   }
 
-  .modal-backdrop {
-    top: calc(
-      var(--jobviz-nav-offset, 0px) + var(--jobviz-assignment-offset, 0px)
-    ) !important;
-    height: calc(
-      100% -
-        var(--jobviz-nav-offset, 0px) -
-        var(--jobviz-assignment-offset, 0px)
-    ) !important;
+  .selectedJobBackdrop {
+    top: var(--jobviz-modal-viewport-offset) !important;
+    bottom: var(--jobviz-modal-viewport-offset) !important;
+    height: auto !important;
   }
 }
 
@@ -162,16 +186,19 @@ $jobInfoStatCard: rgba(14, 21, 54, 0.85);
 }
 
 .selectedJobBody {
-  padding-bottom: 1.25rem;
+  padding-top: 0.9rem;
+  padding-bottom: max(2.5rem, calc(env(safe-area-inset-bottom, 0px) + 2rem));
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  flex: 1 1 auto;
+  min-height: 0;
 }
 
 @media (max-width: 991px) {
   .selectedJobBody {
-    padding-bottom: calc(var(--jobviz-assignment-offset, 0px) + 1.75rem) !important;
-    max-height: calc(
-      100vh - var(--jobviz-nav-offset, 0px) - var(--jobviz-assignment-offset, 0px) - 0.5rem
-    );
-    overflow-y: auto;
+    padding-bottom: max(2rem, calc(env(safe-area-inset-bottom, 0px) + 1.75rem)) !important;
+    max-height: none;
   }
 }
 

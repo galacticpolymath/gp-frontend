@@ -1704,7 +1704,7 @@ $jobviz-nav-height: 64px;
   display: flex;
   flex-direction: column;
   gap: 0.2rem;
-  margin: 0.15rem 0 0.35rem;
+  margin: 0.15rem 0 0;
   position: sticky;
   top: 0;
   z-index: $assignment-progress-z;
@@ -2200,7 +2200,8 @@ $jobviz-nav-height: 64px;
   border: 1px solid rgba(255, 255, 255, 0.08);
   background: rgba(5, 8, 18, 0.7);
   border-radius: 14px;
-  padding: 0.5rem 0.85rem;
+  margin-top: 0;
+  padding: 0 0.85rem 0.5rem;
   min-height: 58px;
   flex: 1 1 auto;
   color: #f6fbff;
@@ -4167,6 +4168,7 @@ $jobviz-nav-height: 64px;
   width: 100%;
   justify-content: center;
   flex-wrap: nowrap;
+  padding-top: 0.35rem;
 }
 
 @media (max-width: 480px) {
