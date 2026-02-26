@@ -6,6 +6,9 @@ import axios from "axios";
 
 const GP_PLUS_STATUS_STORAGE_KEY = "isGpPlusUser";
 const GP_PLUS_EMAIL_STORAGE_KEY = "isGpPlusUserEmail";
+let gpPlusStatusInFlight:
+  | Promise<{ email: string; isGpPlusMember: boolean } | null>
+  | null = null;
 
 const useSiteSession = () => {
   const session = useSession();
@@ -91,45 +94,65 @@ const useSiteSession = () => {
     if (typeof window === "undefined") return;
     if (status !== "authenticated") return;
     if (!token) return;
+    if (typeof normalizedCookieGpPlus === "boolean") return;
+    if (typeof storedGpPlusMember === "boolean") return;
+    if (typeof resolvedIsGpPlusMember === "boolean") return;
+
+    const userEmail =
+      typeof normalizedUser?.email === "string"
+        ? normalizedUser.email.toLowerCase()
+        : "";
+    if (!userEmail) return;
 
     let isCancelled = false;
-    axios
-      .get<{ isGpPlusMember?: boolean }>("/api/get-user-account-data", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then(({ data }) => {
-        if (isCancelled) return;
-        if (typeof data?.isGpPlusMember !== "boolean") return;
+    const fetchGpPlusStatus = async () => {
+      if (!gpPlusStatusInFlight) {
+        gpPlusStatusInFlight = axios
+          .get<{ isGpPlusMember?: boolean }>("/api/get-user-account-data", {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          })
+          .then(({ data }) => {
+            if (typeof data?.isGpPlusMember !== "boolean") {
+              return null;
+            }
+            return { email: userEmail, isGpPlusMember: data.isGpPlusMember };
+          })
+          .catch(() => null)
+          .finally(() => {
+            gpPlusStatusInFlight = null;
+          });
+      }
 
-        const isGpPlusMember = data.isGpPlusMember;
-        const userEmail =
-          typeof normalizedUser?.email === "string"
-            ? normalizedUser.email.toLowerCase()
-            : "";
+      const result = await gpPlusStatusInFlight;
+      if (isCancelled || !result) return;
+      if (result.email !== userEmail) return;
 
-        window.sessionStorage.setItem(
-          GP_PLUS_STATUS_STORAGE_KEY,
-          String(isGpPlusMember)
-        );
-        if (userEmail) {
-          window.sessionStorage.setItem(GP_PLUS_EMAIL_STORAGE_KEY, userEmail);
-        }
+      window.sessionStorage.setItem(
+        GP_PLUS_STATUS_STORAGE_KEY,
+        String(result.isGpPlusMember)
+      );
+      window.sessionStorage.setItem(GP_PLUS_EMAIL_STORAGE_KEY, userEmail);
+      document.cookie = `isGpPlusMember=${String(
+        result.isGpPlusMember
+      )}; path=/; SameSite=Lax`;
+      setResolvedIsGpPlusMember(result.isGpPlusMember);
+    };
 
-        document.cookie = `isGpPlusMember=${String(
-          isGpPlusMember
-        )}; path=/; SameSite=Lax`;
-        setResolvedIsGpPlusMember(isGpPlusMember);
-      })
-      .catch(() => {
-        // Keep existing cached state if refresh fails.
-      });
+    fetchGpPlusStatus();
 
     return () => {
       isCancelled = true;
     };
-  }, [normalizedUser?.email, status, token]);
+  }, [
+    normalizedCookieGpPlus,
+    normalizedUser?.email,
+    resolvedIsGpPlusMember,
+    status,
+    storedGpPlusMember,
+    token,
+  ]);
 
   const logUserOut = () => {
     localStorage.clear();

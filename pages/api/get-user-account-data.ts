@@ -20,7 +20,7 @@ import {
   isActiveGpPlusMembership,
   TAccountStageLabel,
 } from "../../backend/services/outsetaServices";
-import { findMailingListConfirmationByEmail, findMailingListConfirmationsByEmails } from "../../backend/services/mailingListConfirmationServices";
+import { findMailingListConfirmationByEmail } from "../../backend/services/mailingListConfirmationServices";
 import { TMailingListConfirmation } from "../../backend/models/MailingListConfirmation/types";
 
 export const HAS_MEMBERSHIP_STATUSES: Set<TAccountStageLabel> = new Set([
@@ -72,8 +72,6 @@ export default async function handler(
   response: NextApiResponse
 ) {
   try {
-    console.log("API called: get-user-account-data");
-
     const authorization = request?.headers?.["authorization"] ?? "";
     const authSplit = authorization.split(" ");
 
@@ -98,12 +96,11 @@ export default async function handler(
       PROJECTIONS
     );
     const getMailingListContactPromise = getMailingListContact(email);
-    let [userAccount, mailingListContact] = await Promise.all([
+    const [userAccountResult, mailingListContact] = await Promise.all([
       getUserAccountPromise,
       getMailingListContactPromise,
     ]);
-
-    console.log("userAccount: ", userAccount)
+    let userAccount = userAccountResult;
 
     if (!userAccount) {
       throw new CustomError("User not found.", 404);
@@ -113,7 +110,6 @@ export default async function handler(
       userAccount.outsetaAccountEmail || userAccount.email || email;
     if (gpPlusLookupEmail) {
       const gpPlusMembership = await getGpPlusMembership(gpPlusLookupEmail);
-      console.log("gpPlusMembership: ", gpPlusMembership);
       userAccount = {
         ...userAccount,
         isGpPlusMember:
@@ -125,8 +121,6 @@ export default async function handler(
     }
 
     const mailingListConfirmation = (await findMailingListConfirmationByEmail(email) as (TMailingListConfirmation | null));
-
-    console.log("mailingListConfirmation: ", mailingListConfirmation);
 
     if (mailingListConfirmation?._id) {
       userAccount = {

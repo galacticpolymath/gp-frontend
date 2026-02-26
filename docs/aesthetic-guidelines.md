@@ -122,6 +122,13 @@ Use these as subtle accents in standards-alignment UI (chips, borders, icons), n
 - No component may reduce instructional text below these floors via media queries or `clamp()`.
 - PR review must include a smallest-rendered-text pass for all new/edited screens.
 
+## GP+ Tooling Pattern
+- GP+ controls must use a consistent premium treatment: thick Plus Blue border (`3px`), white surface, and `border-radius: 999px` for standalone buttons.
+- Clustered GP+ sections (for example, "GP Plus Functions") should include the `plus.png` mark in the section heading. Isolated GP+ actions should include the same mark in the button content.
+- Keep GP+ action language clear and task-first: `Browse`, `Copy All`, `Open`, `Authenticate`, then any secondary help text.
+- When a copied lesson folder exists, show a compact follow-up link with external-link icon and plain language (`My file versions`) instead of repeating heavy CTA styling.
+- Use `border-radius: 12px` for cards, panels, and grouped containers in GP+ areas.
+
 ## Shareability, Meta Tags, and SEO
 - **Titles & descriptions:** Keep `<title>` ≤60 chars and `<meta name="description">` between 140-160 chars with action-oriented copy for teachers. Highlight freemium benefits ("Free open-access lessons" vs. "GP+ editable pack").
 - **Open Graph/Twitter:** Supply `og:title`, `og:description`, `og:image` (1200x630), and matching `twitter:card=summary_large_image`. Variant images for GP+ pages should show premium cues but avoid exposing gated assets.
@@ -175,8 +182,8 @@ Use these as subtle accents in standards-alignment UI (chips, borders, icons), n
     "xl": "40px"
   },
   "radii": {
-    "soft": "12px",
-    "pill": "999px"
+    "soft": "border-radius: 12px",
+    "pill": "border-radius: 999px"
   }
 }
 ```

@@ -173,11 +173,6 @@ export const getGpPlusMembership = async (
   fields = 'CurrentSubscription.*, CurrentSubscription.Plan.*, AccountStageLabel, Name, PersonAccount.Person.*, Uid'
 ): Promise<TGpPlusMembership> => {
   try {
-    console.log(
-      `Attempting to retrieve Outseta GP+ membership status for: ${email}`
-    );
-    console.log('the email yo: ', email);
-
     const url = new URL(
       `${OUTSETA_API_ORIGIN}/${OUTSETA_API_VERSION_PATH}/crm/accounts/`
     );
@@ -193,8 +188,6 @@ export const getGpPlusMembership = async (
     });
 
     const currentSubscription = data.items?.[0];
-
-    console.log('Status code: ', status);
 
     if (status !== 200 || !currentSubscription) {
       console.error('Failed to retrieve Outseta GP+ membership status.');

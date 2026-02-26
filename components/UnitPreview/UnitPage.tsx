@@ -1588,6 +1588,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
     (user as { isTeacher?: boolean } | undefined)?.isTeacher
   );
   const isGpPlusUser = isGpPlusMember === true;
+  const isGpPlusResolved = typeof isGpPlusMember === 'boolean';
   const overview = unit.Sections?.overview;
   const teachingMaterials = unit.Sections?.teachingMaterials;
   const standardsData = (unit.Sections?.standards?.Data ?? []) as ISubject[];
@@ -3943,9 +3944,22 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                   <div className={styles.lessonSummaryCard}>
                     <div className={styles.lessonSummaryMain}>
                       {!isAssessmentLesson(activeLesson, activeLessonIndex) && (
-                        <p className={styles.lessonEyebrow}>
-                          Lesson {getLessonIdentifier(activeLesson, activeLessonIndex)}
-                        </p>
+                        <div className={styles.lessonEyebrowRow}>
+                          <p className={styles.lessonEyebrow}>
+                            Lesson {getLessonIdentifier(activeLesson, activeLessonIndex)}
+                          </p>
+                          {typeof activeLesson.lsnDur === 'number' && (
+                            <button
+                              type="button"
+                              className={styles.lessonDurationPill}
+                              onClick={() => setActiveLessonPreviewMode('procedure')}
+                              aria-label="Open lesson procedure preview"
+                            >
+                              <i className="bi bi-clock-history" aria-hidden="true" />
+                              {activeLesson.lsnDur} min
+                            </button>
+                          )}
+                        </div>
                       )}
                       <div className={styles.lessonTitleMarkdown}>
                         <RichText content={activeLesson.title ?? 'Untitled lesson'} />
@@ -3971,38 +3985,6 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                           </ul>
                         </div>
                       )}
-                    </div>
-                    <div className={styles.lessonSummaryMeta}>
-                      <div className={styles.lessonTileMediaLarge} aria-hidden={!activeLesson.tile}>
-                        {activeLesson.tile ? (
-                          <Image
-                            src={activeLesson.tile}
-                            alt={`${activeLesson.title ?? 'Lesson'} tile`}
-                            width={180}
-                            height={180}
-                          />
-                        ) : null}
-                      </div>
-                      {typeof activeLesson.lsnDur === 'number' && (
-                        <div className={styles.lessonDuration}>
-                          <i className="bi bi-clock-history" aria-hidden="true" />
-                          <span>{activeLesson.lsnDur} min</span>
-                        </div>
-                      )}
-                      {activeLesson.status &&
-                        ['beta', 'upcoming'].includes(
-                          activeLesson.status.toLowerCase()
-                        ) && (
-                          <span
-                            className={`${styles.lessonStatusPill} ${
-                              activeLesson.status.toLowerCase() === 'beta'
-                                ? styles.lessonStatusPillBeta
-                                : styles.lessonStatusPillUpcoming
-                            }`}
-                          >
-                            {activeLesson.status}
-                          </span>
-                        )}
                       {!!(activeLesson.lsnTags ?? activeLesson.tags ?? []).length && (
                         <div className={styles.lessonTileTags}>
                           {(activeLesson.lsnTags ?? activeLesson.tags ?? []).map(
@@ -4017,6 +3999,32 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                           )}
                         </div>
                       )}
+                    </div>
+                    <div className={styles.lessonSummaryMeta}>
+                      <div className={styles.lessonTileMediaLarge} aria-hidden={!activeLesson.tile}>
+                        {activeLesson.tile ? (
+                          <Image
+                            src={activeLesson.tile}
+                            alt={`${activeLesson.title ?? 'Lesson'} tile`}
+                            width={180}
+                            height={180}
+                          />
+                        ) : null}
+                      </div>
+                      {activeLesson.status &&
+                        ['beta', 'upcoming'].includes(
+                          activeLesson.status.toLowerCase()
+                        ) && (
+                          <span
+                            className={`${styles.lessonStatusPill} ${
+                              activeLesson.status.toLowerCase() === 'beta'
+                                ? styles.lessonStatusPillBeta
+                                : styles.lessonStatusPillUpcoming
+                            }`}
+                          >
+                            {activeLesson.status}
+                          </span>
+                        )}
                     </div>
                   </div>
                   {(teachingMaterialsPreface || shouldShowGradeBandChooser) && (
@@ -4198,41 +4206,6 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                               <span>JobViz Career Connections</span>
                             </span>
                           </button>
-                          {latestCopiedLessonFolderUrl ? (
-                            <>
-                              <a
-                                className={`${styles.lessonProcedureToggle} ${styles.gpFunctionActionBtn}`}
-                                href={latestCopiedLessonFolderUrl}
-                                target="_blank"
-                                rel="noreferrer"
-                              >
-                                <span className={styles.lessonProcedureToggleText}>
-                                  <FileStack size={16} aria-hidden="true" />
-                                  <span>My Copy of Files</span>
-                                </span>
-                              </a>
-                              <button
-                                type="button"
-                                className={styles.copyAgainLinkBtn}
-                                onClick={handleCopyAllMaterialsClick}
-                                disabled={isCopyAllDisabledForGpPlus}
-                              >
-                                Copy again
-                              </button>
-                            </>
-                          ) : (
-                            <button
-                              type="button"
-                              className={`${styles.lessonProcedureToggle} ${styles.gpFunctionActionBtn}`}
-                              onClick={handleCopyAllMaterialsClick}
-                              disabled={isCopyAllDisabledForGpPlus}
-                            >
-                              <span className={styles.lessonProcedureToggleText}>
-                                <FileStack size={16} aria-hidden="true" />
-                                <span>Copy All to My Google Drive</span>
-                              </span>
-                            </button>
-                          )}
                           <button
                             type="button"
                             className={`${styles.lessonProcedureToggle} ${styles.gpFunctionActionBtn}`}
@@ -4244,6 +4217,28 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                               <span>Browse on Gdrive (View Only)</span>
                             </span>
                           </button>
+                          <button
+                            type="button"
+                            className={`${styles.lessonProcedureToggle} ${styles.gpFunctionActionBtn}`}
+                            onClick={handleCopyAllMaterialsClick}
+                            disabled={isCopyAllDisabledForGpPlus}
+                          >
+                            <span className={styles.lessonProcedureToggleText}>
+                              <FileStack size={16} aria-hidden="true" />
+                              <span>Copy All to my Google Drive</span>
+                            </span>
+                          </button>
+                          {latestCopiedLessonFolderUrl ? (
+                            <a
+                              className={styles.gpPlusFileVersionsLink}
+                              href={latestCopiedLessonFolderUrl}
+                              target="_blank"
+                              rel="noreferrer"
+                            >
+                              <SquareArrowOutUpRight size={15} aria-hidden="true" />
+                              <span>My file versions</span>
+                            </a>
+                          ) : null}
                           {isBrowseDisabledForGpPlus && (
                             <p className={styles.copyAllHelperText}>
                               {browseUnavailableReason}
@@ -4320,7 +4315,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                                 hasOfficeDownload &&
                                 !isTeacherLocked &&
                                 isAuthenticated &&
-                                !isGpPlusUser;
+                                isGpPlusMember === false;
 
                               return (
                                 <article
@@ -4392,7 +4387,16 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                                                 target="_blank"
                                                 rel="noreferrer"
                                               >
-                                                {officeFormat}
+                                                <span className={styles.materialOfficeLinkContent}>
+                                                  <Image
+                                                    alt="GP+ icon"
+                                                    width={13}
+                                                    height={13}
+                                                    src="/plus/plus.png"
+                                                    className={styles.materialOfficeLinkPlusIcon}
+                                                  />
+                                                  <span>{officeFormat}</span>
+                                                </span>
                                               </a>
                                             ) : canUpsellOffice ? (
                                               <button
@@ -4404,18 +4408,39 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                                                   )
                                                 }
                                               >
-                                                {officeFormat}
+                                                <span className={styles.materialOfficeLinkContent}>
+                                                  <Image
+                                                    alt="GP+ icon"
+                                                    width={13}
+                                                    height={13}
+                                                    src="/plus/plus.png"
+                                                    className={styles.materialOfficeLinkPlusIcon}
+                                                  />
+                                                  <span>{officeFormat}</span>
+                                                </span>
                                               </button>
                                             ) : (
                                               <span
-                                                className={`${styles.materialPdfLinkDisabled} ${styles.materialOfficeLinkLocked}`}
+                                                className={`${styles.materialPdfLinkDisabled} ${styles.materialOfficeLink} ${styles.materialOfficeLinkLocked}`}
                                               >
-                                                {officeFormat}
+                                                <span className={styles.materialOfficeLinkContent}>
+                                                  <Image
+                                                    alt="GP+ icon"
+                                                    width={13}
+                                                    height={13}
+                                                    src="/plus/plus.png"
+                                                    className={styles.materialOfficeLinkPlusIcon}
+                                                  />
+                                                  <span>{officeFormat}</span>
+                                                </span>
                                               </span>
                                             ))}
                                         </div>
                                       </div>
-                                      {!isGpPlusUser && hasOfficeDownload && isAuthenticated && (
+                                      {isGpPlusResolved &&
+                                        isGpPlusMember === false &&
+                                        hasOfficeDownload &&
+                                        isAuthenticated && (
                                         <span className={styles.officeUpsellTag}>
                                           GP+ editable files
                                         </span>
@@ -4440,7 +4465,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                     >
                       <div
                         key={`lesson-preview-${activeLessonPreviewMode}`}
-                        className={styles.unitTabFadeIn}
+                        className={`${styles.unitTabFadeIn} ${styles.lessonPreviewPaneContent}`}
                       >
                       {isFeaturedMediaOpen ? (
                         <article className={styles.lessonPreviewItem}>
@@ -4690,15 +4715,32 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                             typeof selectedItem?.itemTitle === 'string' &&
                             selectedItem.itemTitle.toLowerCase().includes('teacher');
                           const isPresentation = itemTypeLabel === 'presentation';
+                          const itemCatLabel =
+                            selectedPreviewItem?.itemCat?.toLowerCase() ?? '';
+                          const fileTypeLabel =
+                            selectedPreviewItem?.fileType?.toLowerCase() ?? '';
+                          const isWebResource =
+                            itemCatLabel === 'web resource' ||
+                            fileTypeLabel === 'web resource';
+                          const hasExternalOpenUrl = Boolean(
+                            openUrl && /^https?:\/\//i.test(openUrl)
+                          );
+                          const allowOpenInNewTab =
+                            isPresentation || (isWebResource && hasExternalOpenUrl);
                           const frameSrc = isPresentation
                             ? embedUrl ?? previewUrl ?? openUrl
                             : embedUrl ?? previewUrl;
+                          const isGoogleDrivePreviewFrame = Boolean(
+                            frameSrc &&
+                              /(?:docs\.google\.com|drive\.google\.com)/i.test(frameSrc)
+                          );
                           const isPreviewLockedLoggedOut = !isAuthenticated;
                           const isPreviewLockedTeacher =
                             isAuthenticated && !isUserTeacher && selectedIsTeacherOnly;
                           const isPreviewLocked =
                             isPreviewLockedLoggedOut || isPreviewLockedTeacher;
-                          const canOpenSelected = !!openUrl && !isPreviewLocked;
+                          const canOpenSelected =
+                            allowOpenInNewTab && !!openUrl && !isPreviewLocked;
                           const hasOfficeDownload =
                             !!officeDownloadUrl && !!officeFormat;
                           const canAccessOffice =
@@ -4710,7 +4752,13 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                             hasOfficeDownload &&
                             !isPreviewLockedTeacher &&
                             isAuthenticated &&
-                            !isGpPlusUser;
+                            isGpPlusMember === false;
+                          const hasGoogleDriveSource = Boolean(
+                            selectedPreviewItem.gdriveRoot ||
+                              selectedPreviewItem.itemUrls?.some((url) =>
+                                /(docs\.google\.com|drive\.google\.com)/i.test(url)
+                              )
+                          );
 
                           return (
                             <article className={styles.lessonPreviewItem}>
@@ -4729,7 +4777,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                                     <span>Open in new tab</span>
                                     <SquareArrowOutUpRight size={13} aria-hidden="true" />
                                   </a>
-                                ) : isPreviewLocked ? null : (
+                                ) : isPreviewLocked || !allowOpenInNewTab ? null : (
                                   <span className={styles.materialOpenLinkDisabled}>
                                     No file link
                                   </span>
@@ -4746,7 +4794,15 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                                   }`}
                                 >
                                   {frameSrc ? (
-                                    <iframe title={`${previewTitle} preview`} src={frameSrc} />
+                                    <iframe
+                                      title={`${previewTitle} preview`}
+                                      src={frameSrc}
+                                      className={
+                                        isGoogleDrivePreviewFrame
+                                          ? styles.lessonPreviewIFrameGoogle
+                                          : undefined
+                                      }
+                                    />
                                   ) : previewImg ? (
                                     <img
                                       src={previewImg}
@@ -4822,6 +4878,22 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                                       Download
                                     </span>
                                     <div className={styles.materialDownloadActions}>
+                                      {hasGoogleDriveSource && (
+                                        <button
+                                          type="button"
+                                          className={styles.materialCopyAllBtn}
+                                          onClick={handleCopyAllMaterialsClick}
+                                          disabled={isCopyAllDisabledForGpPlus}
+                                        >
+                                          <Image
+                                            alt="GP+ icon"
+                                            width={14}
+                                            height={14}
+                                            src="/plus/plus.png"
+                                          />
+                                          <span>Copy All to my Google Drive</span>
+                                        </button>
+                                      )}
                                       {pdfDownloadUrl && isAuthenticated && !isPreviewLockedTeacher ? (
                                         <a
                                           className={styles.materialPdfLink}
@@ -4844,7 +4916,16 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                                             target="_blank"
                                             rel="noreferrer"
                                           >
-                                            {officeFormat}
+                                            <span className={styles.materialOfficeLinkContent}>
+                                              <Image
+                                                alt="GP+ icon"
+                                                width={13}
+                                                height={13}
+                                                src="/plus/plus.png"
+                                                className={styles.materialOfficeLinkPlusIcon}
+                                              />
+                                              <span>{officeFormat}</span>
+                                            </span>
                                           </a>
                                         ) : canUpsellOffice ? (
                                           <button
@@ -4856,18 +4937,47 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                                               )
                                             }
                                           >
-                                            {officeFormat}
+                                            <span className={styles.materialOfficeLinkContent}>
+                                              <Image
+                                                alt="GP+ icon"
+                                                width={13}
+                                                height={13}
+                                                src="/plus/plus.png"
+                                                className={styles.materialOfficeLinkPlusIcon}
+                                              />
+                                              <span>{officeFormat}</span>
+                                            </span>
                                           </button>
                                         ) : (
                                           <span
-                                            className={`${styles.materialPdfLinkDisabled} ${styles.materialOfficeLinkLocked}`}
+                                            className={`${styles.materialPdfLinkDisabled} ${styles.materialOfficeLink} ${styles.materialOfficeLinkLocked}`}
                                           >
-                                            {officeFormat}
+                                            <span className={styles.materialOfficeLinkContent}>
+                                              <Image
+                                                alt="GP+ icon"
+                                                width={13}
+                                                height={13}
+                                                src="/plus/plus.png"
+                                                className={styles.materialOfficeLinkPlusIcon}
+                                              />
+                                              <span>{officeFormat}</span>
+                                            </span>
                                           </span>
                                         ))}
                                     </div>
                                   </div>
                                 )}
+                                {latestCopiedLessonFolderUrl ? (
+                                  <a
+                                    className={styles.gpPlusFileVersionsLink}
+                                    href={latestCopiedLessonFolderUrl}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                  >
+                                    <SquareArrowOutUpRight size={15} aria-hidden="true" />
+                                    <span>My file versions</span>
+                                  </a>
+                                ) : null}
                               </div>
                             </article>
                           );
