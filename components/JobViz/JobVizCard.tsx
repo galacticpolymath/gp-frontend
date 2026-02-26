@@ -1,4 +1,5 @@
 import * as React from "react";
+import { Star } from "lucide-react";
 import styles from "../../styles/jobvizBurst.module.scss";
 import { LucideIcon } from "./LucideIcon";
 import { ratingEmoji, useJobRatings } from "./jobRatingsStore";
@@ -271,7 +272,7 @@ export const JobVizCard: React.FC<JobVizCardProps> = ({
                 title="Saved job"
                 aria-label="Saved job"
               >
-                <LucideIcon name="Star" />
+                <Star size={13} fill="currentColor" aria-hidden="true" />
               </span>
             )}
             {isAssignmentJob && (

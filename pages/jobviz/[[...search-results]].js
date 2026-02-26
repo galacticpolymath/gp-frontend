@@ -756,9 +756,7 @@ const JobVizSearchResults = ({
       highlightClicked: activeNode?.id === node.id,
       showBookmark:
         (node.soc_code && savedJobIds.has(node.soc_code)) ||
-        savedJobIds.has(String(node.id)) ||
-        assignmentAncestors.has(node.id) ||
-        (assignmentSocCodes?.has(node.soc_code) ?? false),
+        savedJobIds.has(String(node.id)),
     }));
   }, [
     filteredSlice,
@@ -787,9 +785,11 @@ const JobVizSearchResults = ({
         isAssignmentJob: true,
         highlight: true,
         highlightClicked: false,
-        showBookmark: true,
+        showBookmark:
+          (node.soc_code && savedJobIds.has(node.soc_code)) ||
+          savedJobIds.has(String(node.id)),
       }));
-  }, [assignmentSocCodes]);
+  }, [assignmentSocCodes, savedJobIds]);
   const savedJobItems = useMemo(() => {
     if (!savedJobIds.size) return [];
     return Array.from(savedJobIds)

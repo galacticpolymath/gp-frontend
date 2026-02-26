@@ -83,8 +83,14 @@ type TSearchEntry = {
   tab: TTabKey;
   title: string;
   excerpt: string;
+  text: string;
   content: string;
+  anchorId?: string;
   lessonId?: number | null;
+};
+
+type TSearchResult = TSearchEntry & {
+  snippet: string;
 };
 
 type TGradeBand = 'all' | 'k-2' | '3-5' | '6-8' | '9-12';
@@ -570,6 +576,108 @@ const buildExcerpt = (value: string, length = 140) => {
     return value;
   }
   return `${value.slice(0, length).trim()}…`;
+};
+
+const getLessonSearchAnchorId = (lessonId: number) =>
+  `unit-search-lesson-${lessonId}`;
+
+const buildContextSnippet = (value: string, term: string, length = 180) => {
+  if (!value) return '';
+  const normalizedTerm = normalize(term.trim());
+  if (!normalizedTerm) {
+    return buildExcerpt(value, length);
+  }
+  const normalizedValue = normalize(value);
+  const matchIndex = normalizedValue.indexOf(normalizedTerm);
+  if (matchIndex === -1) {
+    return buildExcerpt(value, length);
+  }
+  const padding = Math.max(40, Math.floor((length - normalizedTerm.length) / 2));
+  const start = Math.max(0, matchIndex - padding);
+  const end = Math.min(value.length, matchIndex + normalizedTerm.length + padding);
+  const prefix = start > 0 ? '…' : '';
+  const suffix = end < value.length ? '…' : '';
+  return `${prefix}${value.slice(start, end).trim()}${suffix}`;
+};
+
+const escapeRegExp = (value: string) =>
+  value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+const renderHighlightedText = (
+  value: string,
+  term: string,
+  markClassName: string
+) => {
+  const trimmedTerm = term.trim();
+  if (!trimmedTerm) {
+    return value;
+  }
+  const matcher = new RegExp(`(${escapeRegExp(trimmedTerm)})`, 'ig');
+  const loweredTerm = trimmedTerm.toLowerCase();
+  const parts = value.split(matcher);
+  return parts.map((part, index) =>
+    part.toLowerCase() === loweredTerm ? (
+      <mark key={`${part}-${index}`} className={markClassName}>
+        {part}
+      </mark>
+    ) : (
+      <React.Fragment key={`${part}-${index}`}>{part}</React.Fragment>
+    )
+  );
+};
+
+const scrollToSearchAnchor = (element: HTMLElement) => {
+  if (typeof window === 'undefined') return;
+  const topOffset = 140;
+  const top = element.getBoundingClientRect().top + window.scrollY - topOffset;
+  window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+};
+
+const highlightFirstMatchInElement = (
+  element: HTMLElement,
+  term: string,
+  flashClassName: string,
+  fadeClassName: string,
+  durationMs = 3000
+) => {
+  const normalizedTerm = term.trim().toLowerCase();
+  if (normalizedTerm.length < 2 || typeof window === 'undefined') {
+    return null;
+  }
+  const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT);
+  let node = walker.nextNode();
+
+  while (node) {
+    const textNode = node as Text;
+    const value = textNode.textContent ?? '';
+    const index = value.toLowerCase().indexOf(normalizedTerm);
+    if (index >= 0) {
+      const range = document.createRange();
+      range.setStart(textNode, index);
+      range.setEnd(textNode, index + normalizedTerm.length);
+      const marker = document.createElement('span');
+      marker.className = flashClassName;
+      try {
+        range.surroundContents(marker);
+      } catch {
+        return null;
+      }
+      window.setTimeout(() => {
+        marker.classList.add(fadeClassName);
+        window.setTimeout(() => {
+          const parent = marker.parentNode;
+          if (!parent) return;
+          while (marker.firstChild) {
+            parent.insertBefore(marker.firstChild, marker);
+          }
+          parent.removeChild(marker);
+        }, 420);
+      }, durationMs);
+      return marker;
+    }
+    node = walker.nextNode();
+  }
+  return null;
 };
 
 const stripLinePrefix = (value: string) =>
@@ -1170,7 +1278,8 @@ const getLessonResourcePersistKey = (
 
 const buildSearchEntries = (
   unit: TUnitForUI,
-  lessons: INewUnitLesson<IItemForUI>[]
+  lessons: INewUnitLesson<IItemForUI>[],
+  flatStandards: TFlatStandard[]
 ): TSearchEntry[] => {
   const entries: TSearchEntry[] = [];
   const overview = unit.Sections?.overview;
@@ -1196,7 +1305,24 @@ const buildSearchEntries = (
       tab: TAB_OVERVIEW,
       title: 'Overview',
       excerpt: buildExcerpt(overviewText),
+      text: overviewText,
       content: normalize(overviewText),
+      anchorId: 'unit-search-overview-gist',
+    });
+  }
+
+  const heroText = stripHtml(
+    [unit.Title, unit.Subtitle, unit.ForGrades].filter(Boolean).join(' ')
+  );
+  if (heroText) {
+    entries.push({
+      id: 'overview-hero',
+      tab: TAB_OVERVIEW,
+      title: 'Unit details',
+      excerpt: buildExcerpt(heroText),
+      text: heroText,
+      content: normalize(heroText),
+      anchorId: 'unit-search-overview-hero',
     });
   }
 
@@ -1208,7 +1334,9 @@ const buildSearchEntries = (
       tab: TAB_OVERVIEW,
       title: 'Keywords',
       excerpt: buildExcerpt(tagText),
+      text: tagText,
       content: normalize(tagText),
+      anchorId: 'unit-search-overview-tags',
     });
   }
 
@@ -1227,8 +1355,25 @@ const buildSearchEntries = (
         tab: TAB_OVERVIEW,
         title: media?.title ?? 'Featured media',
         excerpt: buildExcerpt(mediaText),
+        text: mediaText,
         content: normalize(mediaText),
+        anchorId: 'unit-search-overview-media',
       });
+    });
+  }
+
+  const materialsPrefaceText = stripHtml(
+    teachingMaterials?.unitPreface?.trim() ?? ''
+  );
+  if (materialsPrefaceText) {
+    entries.push({
+      id: 'materials-preface',
+      tab: TAB_MATERIALS,
+      title: 'Teaching materials preface',
+      excerpt: buildExcerpt(materialsPrefaceText),
+      text: materialsPrefaceText,
+      content: normalize(materialsPrefaceText),
+      anchorId: 'unit-search-materials-preface',
     });
   }
 
@@ -1285,7 +1430,9 @@ const buildSearchEntries = (
         tab: TAB_MATERIALS,
         title: getLessonDisplayTitle(lesson, index),
         excerpt: buildExcerpt(lessonText),
+        text: lessonText,
         content: normalize(lessonText),
+        anchorId: getLessonSearchAnchorId(lessonId),
         lessonId,
       });
     }
@@ -1305,7 +1452,39 @@ const buildSearchEntries = (
       tab: TAB_STANDARDS,
       title: 'Standards',
       excerpt: buildExcerpt(standardsText),
+      text: standardsText,
       content: normalize(standardsText),
+      anchorId: 'unit-search-standards-content',
+    });
+  }
+
+  const standardsDetailText = stripHtml(
+    flatStandards
+      .map((standard) =>
+        [
+          standard.subject,
+          standard.setName,
+          standard.dimensionName,
+          standard.codes.join(' '),
+          standard.statements.join(' '),
+          standard.alignmentNotes,
+          standard.grades.join(' '),
+        ]
+          .filter(Boolean)
+          .join(' ')
+      )
+      .join(' ')
+  );
+
+  if (standardsDetailText) {
+    entries.push({
+      id: 'standards-detail',
+      tab: TAB_STANDARDS,
+      title: 'Standards details',
+      excerpt: buildExcerpt(standardsDetailText),
+      text: standardsDetailText,
+      content: normalize(standardsDetailText),
+      anchorId: 'unit-search-standards-content',
     });
   }
 
@@ -1316,7 +1495,9 @@ const buildSearchEntries = (
       tab: TAB_BACKGROUND,
       title: 'Background',
       excerpt: buildExcerpt(backgroundText),
+      text: backgroundText,
       content: normalize(backgroundText),
+      anchorId: 'unit-search-background-content',
     });
   }
 
@@ -1351,7 +1532,9 @@ const buildSearchEntries = (
       tab: TAB_CREDITS,
       title: 'Credits & acknowledgments',
       excerpt: buildExcerpt(combinedCredits),
+      text: combinedCredits,
       content: normalize(combinedCredits),
+      anchorId: 'unit-search-credits-content',
     });
   }
 
@@ -1380,7 +1563,9 @@ const buildSearchEntries = (
       tab: TAB_CREDITS,
       title: 'Major Release Updates',
       excerpt: buildExcerpt(versionsText),
+      text: versionsText,
       content: normalize(versionsText),
+      anchorId: 'major-release-updates',
     });
   }
 
@@ -1467,10 +1652,16 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
   });
 
   const searchEntries = useMemo(
-    () => buildSearchEntries(unit, lessons),
-    [unit, lessons]
+    () => buildSearchEntries(unit, lessons, flatStandards),
+    [unit, lessons, flatStandards]
   );
   const [searchTerm, setSearchTerm] = useState('');
+  const [pendingSearchNavigation, setPendingSearchNavigation] = useState<{
+    term: string;
+    anchorId?: string;
+    tab: TTabKey;
+    lessonId?: number | null;
+  } | null>(null);
   const [isSearchExpanded, setIsSearchExpanded] = useState(false);
   const [isPortalNavCollapsed, setIsPortalNavCollapsed] = useState(true);
   const [isTagListExpanded, setIsTagListExpanded] = useState(false);
@@ -1533,14 +1724,18 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
   const hasMultipleGradeBandOptions = classroomResources.length > 1;
   const teachingMaterialsPreface = teachingMaterials?.unitPreface?.trim() ?? '';
 
-  const searchResults = useMemo(() => {
+  const searchResults = useMemo<TSearchResult[]>(() => {
     const term = normalize(searchTerm.trim());
     if (term.length < 2) {
       return [];
     }
     return searchEntries
       .filter((entry) => entry.content.includes(term))
-      .slice(0, 8);
+      .slice(0, 8)
+      .map((entry) => ({
+        ...entry,
+        snippet: buildContextSnippet(entry.text, searchTerm.trim()),
+      }));
   }, [searchEntries, searchTerm]);
   const heroUnitTags = useMemo(
     () => (overview?.UnitTags ?? []).filter(Boolean),
@@ -1771,12 +1966,19 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
     scrollToTop();
   };
 
-  const handleSearchSelect = (entry: TSearchEntry) => {
+  const handleSearchSelect = (entry: TSearchResult) => {
+    const term = searchTerm.trim();
     if (entry.lessonId) {
       handleLessonChange(entry.lessonId);
     } else {
       handleTabChange(entry.tab);
     }
+    setPendingSearchNavigation({
+      term,
+      anchorId: entry.anchorId,
+      tab: entry.tab,
+      lessonId: entry.lessonId ?? null,
+    });
     setSearchTerm('');
     setIsSearchExpanded(false);
     trackUnitEvent('unit_search_result_selected', {
@@ -1785,6 +1987,58 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
       lesson_id: entry.lessonId ?? null,
     });
   };
+
+  useEffect(() => {
+    if (!pendingSearchNavigation || typeof window === 'undefined') {
+      return;
+    }
+    if (pendingSearchNavigation.tab !== activeTab) {
+      return;
+    }
+    if (
+      pendingSearchNavigation.lessonId != null &&
+      activeLessonId !== pendingSearchNavigation.lessonId
+    ) {
+      return;
+    }
+
+    let cancelled = false;
+    let timeoutId: number | undefined;
+    let attempts = 0;
+    const maxAttempts = 16;
+    const findAndHighlight = () => {
+      if (cancelled) return;
+      const anchorElement = pendingSearchNavigation.anchorId
+        ? document.getElementById(pendingSearchNavigation.anchorId)
+        : null;
+      const target = anchorElement as HTMLElement | null;
+      if (!target) {
+        attempts += 1;
+        if (attempts < maxAttempts) {
+          timeoutId = window.setTimeout(findAndHighlight, 80);
+          return;
+        }
+        setPendingSearchNavigation(null);
+        return;
+      }
+      const marker = highlightFirstMatchInElement(
+        target,
+        pendingSearchNavigation.term,
+        styles.searchInPageMatchFlash,
+        styles.searchInPageMatchFade
+      );
+      scrollToSearchAnchor(marker ?? target);
+      setPendingSearchNavigation(null);
+    };
+
+    timeoutId = window.setTimeout(findAndHighlight, 20);
+    return () => {
+      cancelled = true;
+      if (timeoutId) {
+        window.clearTimeout(timeoutId);
+      }
+    };
+  }, [activeLessonId, activeTab, pendingSearchNavigation]);
 
   const handleSearchToggle = () => {
     setIsSearchExpanded((current) => {
@@ -3401,10 +3655,18 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                       onClick={() => handleSearchSelect(entry)}
                     >
                       <span className={styles.searchResultTitle}>
-                        {entry.title}
+                        {renderHighlightedText(
+                          entry.title,
+                          searchTerm,
+                          styles.searchResultHighlight
+                        )}
                       </span>
                       <span className={styles.searchResultExcerpt}>
-                        {entry.excerpt}
+                        {renderHighlightedText(
+                          entry.snippet,
+                          searchTerm,
+                          styles.searchResultHighlight
+                        )}
                       </span>
                     </button>
                   ))
@@ -3420,7 +3682,10 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
       )}
 
       {activeTab === TAB_OVERVIEW && (
-        <section className={`${styles.unitHero} ${styles.unitTabFadeIn}`}>
+        <section
+          id="unit-search-overview-hero"
+          className={`${styles.unitHero} ${styles.unitTabFadeIn}`}
+        >
           <div className={styles.unitHeroIntro}>
             <div className={styles.unitEyebrowRow}>
               <p className={styles.unitEyebrow}>Galactic Polymath · Unit</p>
@@ -3460,7 +3725,11 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
               )}
               {!!heroUnitTags.length && (
                 <>
-                  <div ref={unitTagListRef} className={styles.unitTagList}>
+                  <div
+                    id="unit-search-overview-tags"
+                    ref={unitTagListRef}
+                    className={styles.unitTagList}
+                  >
                     {tagsToDisplay.map((tag, index) => (
                       <span key={`${tag}-${index}`} className={styles.unitTag}>
                         {tag}
@@ -3502,6 +3771,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
           <section className={`${styles.unitSection} ${styles.unitTabFadeIn}`}>
             <div className={styles.unitOverviewGrid}>
               <div
+                id="unit-search-overview-gist"
                 className={`${styles.unitOverviewCard} ${styles.unitOverviewCardPrimary}`}
               >
                 <h3>The Gist</h3>
@@ -3585,7 +3855,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                   )}
                 </div>
               </div>
-              <div className={styles.unitOverviewCardWide}>
+              <div id="unit-search-overview-media" className={styles.unitOverviewCardWide}>
                 <h3>Supporting Multimedia</h3>
                 {unit.FeaturedMultimedia?.length ? (
                   <div className={styles.previewCarousel}>
@@ -3663,6 +3933,11 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                 ) : (
                 <div
                   key={`lesson-content-${activeLessonId ?? 'none'}`}
+                  id={
+                    activeLessonId != null
+                      ? getLessonSearchAnchorId(activeLessonId)
+                      : undefined
+                  }
                   className={`${styles.lessonLayout} ${styles.unitTabFadeIn}`}
                 >
                   <div className={styles.lessonSummaryCard}>
@@ -3745,7 +4020,10 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                     </div>
                   </div>
                   {(teachingMaterialsPreface || shouldShowGradeBandChooser) && (
-                    <div className={styles.gradeBandSelectorCard}>
+                    <div
+                      id="unit-search-materials-preface"
+                      className={styles.gradeBandSelectorCard}
+                    >
                       {teachingMaterialsPreface && (
                         <div className={styles.gradeBandPreface}>
                           <RichText content={teachingMaterialsPreface} />
@@ -4617,7 +4895,10 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
           <section className={`${styles.unitSection} ${styles.unitTabFadeIn}`}>
             <div className={styles.unitOverviewCardWide}>
               {!!flatStandards.length ? (
-                <div className={styles.standardsLayout}>
+                <div
+                  id="unit-search-standards-content"
+                  className={styles.standardsLayout}
+                >
                   <div className={styles.standardsIntroPanel}>
                     <div className={styles.standardsIntroHeading}>
                       <h2 className={styles.standardsIntroTitle}>
@@ -4981,7 +5262,10 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
             <p className={styles.sectionIntro}>
               Context and real-world connections for this unit.
             </p>
-            <div className={styles.unitOverviewCardWide}>
+            <div
+              id="unit-search-background-content"
+              className={styles.unitOverviewCardWide}
+            >
               {unit.Sections?.background?.Content ? (
                 <div className={styles.richTextBlock}>
                   <RichText content={unit.Sections.background.Content} />
@@ -5002,7 +5286,10 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
               This unit was made possible by hundreds of hours of work by tons of
               people. Thank you!
             </p>
-            <div className={styles.unitOverviewCardWide}>
+            <div
+              id="unit-search-credits-content"
+              className={styles.unitOverviewCardWide}
+            >
               {hasCreditsTabContent ? (
                 <div className={styles.creditsLayout}>
                   {!!creditsContent && (

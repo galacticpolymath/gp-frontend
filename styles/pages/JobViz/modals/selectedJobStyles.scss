@@ -3,6 +3,8 @@ $jobInfoStatCard: rgba(14, 21, 54, 0.85);
 $assignment-base-layer-z: 1500;
 $selected-job-backdrop-z: $assignment-base-layer-z - 2;
 $selected-job-modal-z: $assignment-base-layer-z - 1;
+$selected-job-backdrop-mobile-z: $assignment-base-layer-z + 20;
+$selected-job-modal-mobile-z: $assignment-base-layer-z + 21;
 
 :root {
   --jobviz-assignment-offset: 0px;
@@ -121,13 +123,17 @@ $selected-job-modal-z: $assignment-base-layer-z - 1;
 }
 
 @media (max-width: 767px) {
+  .selectedJobModalRoot {
+    z-index: 20000000 !important;
+  }
+
   .selectedJobModalRoot.modal.modal-fullscreen-md-down {
     align-items: flex-start;
     padding-top: 0;
     padding-bottom: 0;
     box-sizing: border-box;
-    top: var(--jobviz-modal-viewport-offset) !important;
-    bottom: var(--jobviz-modal-viewport-offset) !important;
+    top: 0 !important;
+    bottom: 0 !important;
     height: auto !important;
     overflow: hidden;
     -webkit-overflow-scrolling: touch;
@@ -147,9 +153,15 @@ $selected-job-modal-z: $assignment-base-layer-z - 1;
   }
 
   .selectedJobBackdrop {
-    top: var(--jobviz-modal-viewport-offset) !important;
-    bottom: var(--jobviz-modal-viewport-offset) !important;
+    z-index: 19999990 !important;
+    top: 0 !important;
+    bottom: 0 !important;
     height: auto !important;
+  }
+
+  .selectedJobModal {
+    border-radius: 0;
+    min-height: 100dvh;
   }
 }
 

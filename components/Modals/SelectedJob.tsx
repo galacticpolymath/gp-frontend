@@ -707,10 +707,16 @@ const SelectedJob: React.FC = () => {
                   )}
                   {isAssignmentJob && (
                     <span
-                      className={styles.assignmentBadgeDot}
-                      title="Part of this assignment"
-                      aria-label="Part of this assignment"
-                    />
+                      className={styles.assignmentBadgePill}
+                      title="Featured job"
+                      aria-label="Featured job"
+                    >
+                      <span
+                        className={`${styles.assignmentBadgeDot} ${styles.assignmentBadgeDotInline}`}
+                        aria-hidden="true"
+                      />
+                      <span className={styles.assignmentBadgePillText}>Featured Job</span>
+                    </span>
                   )}
                 </div>
               </div>

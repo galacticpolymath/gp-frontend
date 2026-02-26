@@ -473,7 +473,7 @@
   grid-area: tabs;
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 12px;
   width: 100%;
   grid-column: 1 / -1;
 }
@@ -623,6 +623,25 @@
   font-size: 14px;
   line-height: 1.4;
   color: #4c5269;
+}
+
+.searchResultHighlight {
+  background: rgba(255, 226, 124, 0.65);
+  color: inherit;
+  padding: 0 2px;
+  border-radius: 4px;
+}
+
+.searchInPageMatchFlash {
+  background: rgba(255, 226, 124, 0.78);
+  border-radius: 4px;
+  box-shadow: 0 0 0 2px rgba(255, 226, 124, 0.45);
+  transition: background-color 0.42s ease, box-shadow 0.42s ease;
+}
+
+.searchInPageMatchFade {
+  background-color: transparent;
+  box-shadow: none;
 }
 
 .searchResultEmpty {
@@ -3979,7 +3998,7 @@
   }
 
   .unitTabList {
-    gap: 10px;
+    gap: 14px;
     flex-wrap: nowrap;
     overflow-x: auto;
     padding-bottom: 2px;
