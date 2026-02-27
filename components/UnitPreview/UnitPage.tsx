@@ -2051,6 +2051,28 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
     });
   };
 
+  const handleTagSearchClick = (
+    tagValue: string,
+    source: 'unit_hero' | 'lesson_tile'
+  ) => {
+    const term = tagValue.trim();
+    if (!term) {
+      return;
+    }
+    trackUnitEvent('unit_tag_search_clicked', {
+      tag: term,
+      source,
+      tab: activeTab,
+      lesson_id: activeLessonId ?? null,
+    });
+    if (typeof window === 'undefined') {
+      return;
+    }
+    const params = new URLSearchParams();
+    params.append('tag', term);
+    window.location.assign(`/search?${params.toString()}`);
+  };
+
   const handlePortalNavToggle = () => {
     const nextCollapsed = !isPortalNavCollapsed;
     setPortalNavHidden(nextCollapsed);
@@ -3732,9 +3754,16 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                     className={styles.unitTagList}
                   >
                     {tagsToDisplay.map((tag, index) => (
-                      <span key={`${tag}-${index}`} className={styles.unitTag}>
+                      <button
+                        key={`${tag}-${index}`}
+                        type="button"
+                        className={`${styles.unitTag} ${styles.unitTagButton}`}
+                        title="Search for related resources"
+                        aria-label={`Search for related resources: ${tag}`}
+                        onClick={() => handleTagSearchClick(tag, 'unit_hero')}
+                      >
                         {tag}
-                      </span>
+                      </button>
                     ))}
                     {hiddenTagCount > 0 && (
                       <button
@@ -3991,9 +4020,17 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                             (tag, tagIndex) => (
                               <span
                                 key={`${tag}-${tagIndex}`}
-                                className={styles.lessonTileTag}
+                                className={styles.lessonTileTagWrap}
                               >
-                                {tag}
+                                <button
+                                  type="button"
+                                  className={styles.lessonTileTag}
+                                  title="Search for related resources"
+                                  aria-label={`Search for related resources: ${tag}`}
+                                  onClick={() => handleTagSearchClick(tag, 'lesson_tile')}
+                                >
+                                  {tag}
+                                </button>
                               </span>
                             )
                           )}

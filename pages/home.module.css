@@ -2756,12 +2756,23 @@ details:not([open]) .filterSummary::after {
   gap: 6px;
 }
 
-.resourceTags span {
+.resourceTagButton {
+  border: 0;
+  cursor: pointer;
   padding: 4px 8px;
   border-radius: 999px;
   font-size: 14px;
   background: rgba(44, 131, 195, 0.1);
   color: #2c83c3;
+  transition:
+    background-color 160ms ease,
+    transform 160ms ease;
+}
+
+.resourceTagButton:hover,
+.resourceTagButton:focus-visible {
+  background: rgba(44, 131, 195, 0.2);
+  transform: translateY(-1px);
 }
 
 .searchMatchArea {

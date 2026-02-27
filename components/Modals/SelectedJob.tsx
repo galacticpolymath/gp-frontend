@@ -431,10 +431,12 @@ const SelectedJob: React.FC = () => {
   };
 
   const handleSaveJob = async () => {
-    const jobId =
-      (typeof visibleJob?.soc_code === "string" && visibleJob.soc_code.trim()) ||
-      (visibleJob?.id != null ? String(visibleJob.id) : "");
-    if (!jobId) {
+    const candidateIds = [
+      typeof visibleJob?.soc_code === "string" ? visibleJob.soc_code.trim() : "",
+      visibleJob?.id != null ? String(visibleJob.id).trim() : "",
+    ].filter(Boolean);
+    const canonicalJobId = candidateIds[0] ?? "";
+    if (!canonicalJobId) {
       return;
     }
 
@@ -445,41 +447,64 @@ const SelectedJob: React.FC = () => {
       return;
     }
 
-    if (savedJobIds.has(jobId)) {
-      return;
-    }
-
     try {
       setIsSavingJob(true);
-      await axios.put(
-        "/api/saved-jobs/add",
-        { jobId },
-        {
+      const isAlreadySaved = candidateIds.some((id) => savedJobIds.has(id));
+      const savedIdToDelete =
+        candidateIds.find((id) => savedJobIds.has(id)) ?? canonicalJobId;
+
+      if (isAlreadySaved) {
+        await axios.delete("/api/saved-jobs/delete", {
+          params: { jobIdsToDelete: savedIdToDelete },
           headers: {
             Authorization: authorizationHeader,
           },
+        });
+        setSavedJobIds((previous) => {
+          const next = new Set(previous);
+          candidateIds.forEach((id) => next.delete(id));
+          next.delete(savedIdToDelete);
+          return next;
+        });
+        if (typeof window !== "undefined") {
+          window.dispatchEvent(
+            new CustomEvent("jobviz-saved-jobs-updated", {
+              detail: { action: "remove", jobId: savedIdToDelete },
+            })
+          );
         }
-      );
-      setSavedJobIds((previous) => {
-        const next = new Set(previous);
-        next.add(jobId);
-        return next;
-      });
-      if (typeof window !== "undefined") {
-        window.dispatchEvent(
-          new CustomEvent("jobviz-saved-jobs-updated", {
-            detail: { action: "add", jobId },
-          })
+        toast.success("Job removed from saved");
+      } else {
+        await axios.put(
+          "/api/saved-jobs/add",
+          { jobId: canonicalJobId },
+          {
+            headers: {
+              Authorization: authorizationHeader,
+            },
+          }
         );
+        setSavedJobIds((previous) => {
+          const next = new Set(previous);
+          next.add(canonicalJobId);
+          return next;
+        });
+        if (typeof window !== "undefined") {
+          window.dispatchEvent(
+            new CustomEvent("jobviz-saved-jobs-updated", {
+              detail: { action: "add", jobId: canonicalJobId },
+            })
+          );
+        }
+        toast.success("Job saved");
       }
-      toast.success("Job saved");
     } catch (error) {
-      console.error("Failed to save job", error);
+      console.error("Failed to update saved job", error);
       const errorMessage =
         axios.isAxiosError(error)
           ? error.response?.data?.msg || error.message
-          : "Unable to save job";
-      toast.error(errorMessage || "Unable to save job");
+          : "Unable to update saved job";
+      toast.error(errorMessage || "Unable to update saved job");
     } finally {
       setIsSavingJob(false);
     }
@@ -617,17 +642,17 @@ const SelectedJob: React.FC = () => {
                       isSavedJob ? styles.saveJobButtonActive : ""
                     }`}
                     onClick={handleSaveJob}
-                    disabled={isSavingJob || isSavedJob}
+                    disabled={isSavingJob}
                     aria-label={
                       isSavedJob
-                        ? "Job saved"
+                        ? "Unsave job"
                         : isAuthenticated
                         ? "Save job"
                         : "Log in to save job"
                     }
                     title={
                       isSavedJob
-                        ? "Saved"
+                        ? "Unsave Job"
                         : isAuthenticated
                         ? "Save Job"
                         : "Log in to save job"
@@ -640,10 +665,10 @@ const SelectedJob: React.FC = () => {
                       fill={isSavedJob ? "currentColor" : "none"}
                     />
                     <span>
-                      {isSavedJob
-                        ? "Saved"
-                        : isSavingJob
-                        ? "Saving..."
+                      {isSavingJob
+                        ? "Updating..."
+                        : isSavedJob
+                        ? "Saved (click to unsave)"
                         : isAuthenticated
                         ? "Save Job"
                         : "Sign in to save"}

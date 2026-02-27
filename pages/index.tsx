@@ -2480,6 +2480,28 @@ export default function HomePage({
     return query;
   };
 
+  const handleResourceTagClick = (
+    event: React.MouseEvent<HTMLButtonElement>,
+    tag: string
+  ) => {
+    event.preventDefault();
+    event.stopPropagation();
+    const trimmedTag = tag.trim();
+    if (!trimmedTag) return;
+
+    if (!isSearchRoute) {
+      router.push({
+        pathname: "/search",
+        query: buildQueryObject({ tag: [trimmedTag] }),
+      });
+      return;
+    }
+
+    setSelectedTags((prev) =>
+      prev.includes(trimmedTag) ? prev : [...prev, trimmedTag]
+    );
+  };
+
   const normalizeQuery = (
     query: Record<string, string | string[] | undefined>
   ) => {
@@ -3775,7 +3797,18 @@ export default function HomePage({
                                   {resource.tags?.length ? (
                                     <div className={styles.resourceTags}>
                                       {resource.tags.map((tag) => (
-                                        <span key={tag}>{highlightText(tag, searchQuery)}</span>
+                                        <button
+                                          key={tag}
+                                          type="button"
+                                          className={styles.resourceTagButton}
+                                          title="Search for related resources"
+                                          aria-label={`Search for related resources: ${tag}`}
+                                          onClick={(event) =>
+                                            handleResourceTagClick(event, tag)
+                                          }
+                                        >
+                                          {highlightText(tag, searchQuery)}
+                                        </button>
                                       ))}
                                     </div>
                                   ) : null}

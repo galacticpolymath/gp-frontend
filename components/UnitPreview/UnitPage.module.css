@@ -1002,6 +1002,20 @@
   font-weight: 600;
 }
 
+.unitTagButton {
+  border: 0;
+  cursor: pointer;
+  transition:
+    background-color 160ms ease,
+    transform 160ms ease;
+}
+
+.unitTagButton:hover,
+.unitTagButton:focus-visible {
+  background: rgba(255, 61, 172, 0.18);
+  transform: translateY(-1px);
+}
+
 .unitTagToggle {
   border: 1px dashed rgba(44, 131, 195, 0.4);
   background: rgba(44, 131, 195, 0.08);
@@ -1132,6 +1146,10 @@
   gap: 6px;
 }
 
+.lessonTileTagWrap {
+  display: inline-flex;
+}
+
 .lessonTileTag {
   font-size: 13px;
   padding: 4px 8px;
@@ -1139,6 +1157,18 @@
   border: 1px solid rgba(44, 131, 195, 0.4);
   color: #2c83c3;
   background: rgba(255, 255, 255, 0.8);
+  cursor: pointer;
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease,
+    transform 160ms ease;
+}
+
+.lessonTileTag:hover,
+.lessonTileTag:focus-visible {
+  background: rgba(255, 255, 255, 0.96);
+  border-color: rgba(44, 131, 195, 0.62);
+  transform: translateY(-1px);
 }
 
 .lessonFolderLink {

@@ -502,7 +502,17 @@ const PortalNav: React.FC<PortalNavProps> = ({
                 className={styles.accountMenuItem}
                 href="/search?typeFilter=Job%20Tour&mine=1"
               >
-                My JobViz Tours
+                <Image
+                  src="/plus/plus.png"
+                  alt="GP+"
+                  width={12}
+                  height={12}
+                  className={styles.accountMenuPlusIcon}
+                />
+                <span>My JobViz Tours</span>
+              </Link>
+              <Link className={styles.accountMenuItem} href="/jobviz?saved=1">
+                Saved Jobs
               </Link>
               <Link className={styles.accountMenuItem} href="/account">
                 View Account

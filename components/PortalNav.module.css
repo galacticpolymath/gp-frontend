@@ -374,6 +374,8 @@
 
 .accountMenuItem {
   display: flex;
+  align-items: center;
+  gap: 6px;
   width: 100%;
   border: 0;
   background: rgba(240, 244, 255, 0.08);
@@ -385,6 +387,10 @@
   font-weight: 500;
   cursor: pointer;
   text-decoration: none;
+}
+
+.accountMenuPlusIcon {
+  flex: 0 0 auto;
 }
 
 .accountMenuItem:hover,
