@@ -135,11 +135,19 @@ const QUERY_KEYS = [
   "grade",
   "tag",
   "locale",
+  "creator",
   "mine",
   "tourScope",
 ] as const;
 
 const CONTENT_TYPES = ["Unit", "Lesson", "Video", "App", "Job Tour"] as const;
+const CREATOR_VALUES = ["me", "gp-team", "gp-teachers"] as const;
+type CreatorFilter = (typeof CREATOR_VALUES)[number];
+const CREATOR_LABELS: Record<CreatorFilter, string> = {
+  me: "Me",
+  "gp-team": "GP Team",
+  "gp-teachers": "GP+ Teachers",
+};
 const arraysEqual = (a: string[], b: string[]) =>
   a.length === b.length && a.every((value, index) => value === b[index]);
 
@@ -1095,7 +1103,7 @@ export default function HomePage({
   const [jobTourRecords, setJobTourRecords] = useState<JobTourRecord[]>([]);
   const [jobTourLoading, setJobTourLoading] = useState(false);
   const [jobTourError, setJobTourError] = useState<string | null>(null);
-  const [showOnlyMyContent, setShowOnlyMyContent] = useState(false);
+  const [selectedCreators, setSelectedCreators] = useState<CreatorFilter[]>([]);
   const [tourScope, setTourScope] = useState<"" | "unit" | "community">("");
   const handleTabClick = (tab: NavTab) => {
     const nextTypes =
@@ -1111,7 +1119,7 @@ export default function HomePage({
                 ? ["Job Tour"]
                 : [...CONTENT_TYPES];
     setSelectedContentTypes(nextTypes);
-    setShowOnlyMyContent(false);
+    setSelectedCreators([]);
     router.push({ pathname: "/search", query: buildRootQueryForTab(tab) });
   };
   const handleHomeClick = () => {
@@ -1123,7 +1131,7 @@ export default function HomePage({
     setSelectedGradeBands([]);
     setSelectedTags([]);
     setSelectedLocales([]);
-    setShowOnlyMyContent(false);
+    setSelectedCreators([]);
     setTourScope("");
     router.push("/");
   };
@@ -1287,8 +1295,13 @@ export default function HomePage({
       setSelectedLocales((prev) => prev.filter((item) => item !== chip));
       return;
     }
-    if (chip === "My JobViz Tours") {
-      setShowOnlyMyContent(false);
+    const matchingCreator = (Object.entries(CREATOR_LABELS) as Array<
+      [CreatorFilter, string]
+    >).find(([, label]) => label === chip)?.[0];
+    if (matchingCreator) {
+      setSelectedCreators((prev) =>
+        prev.filter((item) => item !== matchingCreator)
+      );
     }
   };
   const [queryHydrated, setQueryHydrated] = useState(false);
@@ -1931,8 +1944,22 @@ export default function HomePage({
       ) {
         return false;
       }
-      if (showOnlyMyContent) {
-        if (!userId || resource.ownerId !== userId) {
+      if (selectedCreators.length > 0) {
+        if (resource.type !== "Job Tour") {
+          return false;
+        }
+        const matchesMe = Boolean(userId && resource.ownerId === userId);
+        const matchesGpTeam =
+          resource.tourSource === "unit" || resource.tourIsGp === true;
+        const matchesGpTeachers =
+          resource.tourSource === "user" && resource.tourIsGp !== true;
+
+        const hasCreatorMatch =
+          (selectedCreators.includes("me") && matchesMe) ||
+          (selectedCreators.includes("gp-team") && matchesGpTeam) ||
+          (selectedCreators.includes("gp-teachers") && matchesGpTeachers);
+
+        if (!hasCreatorMatch) {
           return false;
         }
       }
@@ -1992,7 +2019,7 @@ export default function HomePage({
     selectedTags,
     selectedLocales,
     searchMatchByResourceId,
-    showOnlyMyContent,
+    selectedCreators,
     tourScope,
     userId,
   ]);
@@ -2007,7 +2034,7 @@ export default function HomePage({
     selectedGradeBands.length > 0 ||
     selectedTags.length > 0 ||
     selectedLocales.length > 0 ||
-    showOnlyMyContent ||
+    selectedCreators.length > 0 ||
     Boolean(tourScope) ||
     searchQuery.trim().length > 0;
 
@@ -2078,7 +2105,7 @@ export default function HomePage({
     selectedGradeBands.length > 0 ||
     selectedTags.length > 0 ||
     selectedLocales.length > 0 ||
-    showOnlyMyContent ||
+    selectedCreators.length > 0 ||
     Boolean(tourScope);
   const hasQueryFilters =
     searchQuery.trim().length > 0 ||
@@ -2088,7 +2115,7 @@ export default function HomePage({
     selectedGradeBands.length > 0 ||
     selectedTags.length > 0 ||
     selectedLocales.length > 0 ||
-    showOnlyMyContent ||
+    selectedCreators.length > 0 ||
     Boolean(tourScope);
   const isHomeView =
     !isSearchRoute && !hasQueryFilters && initialTab !== "All";
@@ -2538,6 +2565,10 @@ export default function HomePage({
     const nextGrade = parseQueryArray(query.grade);
     const nextTag = parseQueryArray(query.tag);
     const nextLocale = parseQueryArray(query.locale);
+    const nextCreator = parseQueryArray(query.creator).filter(
+      (value): value is CreatorFilter =>
+        (CREATOR_VALUES as readonly string[]).includes(value)
+    );
     const nextTourScopeRaw = Array.isArray(query.tourScope)
       ? query.tourScope[0]
       : query.tourScope;
@@ -2549,6 +2580,12 @@ export default function HomePage({
       query.mine === "1" ||
       query.mine === "true" ||
       (Array.isArray(query.mine) && query.mine.includes("1"));
+    const normalizedNextCreator =
+      nextCreator.length > 0
+        ? nextCreator
+        : nextMine
+        ? (["me"] as CreatorFilter[])
+        : [];
     if (!isTypingRef.current) {
       setSearchQuery(nextSearch);
       setSearchInputValue(nextSearch);
@@ -2572,7 +2609,9 @@ export default function HomePage({
     setSelectedLocales((prev) =>
       arraysEqual(prev, nextLocale) ? prev : nextLocale
     );
-    setShowOnlyMyContent(nextMine);
+    setSelectedCreators((prev) =>
+      arraysEqual(prev, normalizedNextCreator) ? prev : normalizedNextCreator
+    );
     setTourScope(nextTourScope);
     setQueryHydrated(true);
   }, [router.isReady, router.query, router.asPath, initialTab]);
@@ -2589,6 +2628,7 @@ export default function HomePage({
         grade: [],
         tag: [],
         locale: [],
+        creator: [],
         mine: undefined,
         tourScope: undefined,
       });
@@ -2613,7 +2653,8 @@ export default function HomePage({
       grade: selectedGradeBands,
       tag: selectedTags,
       locale: selectedLocales,
-      mine: showOnlyMyContent ? "1" : undefined,
+      creator: selectedCreators,
+      mine: undefined,
       tourScope: tourScope || undefined,
     });
 
@@ -2637,7 +2678,7 @@ export default function HomePage({
     selectedGradeBands,
     selectedTags,
     selectedLocales,
-    showOnlyMyContent,
+    selectedCreators,
     tourScope,
   ]);
 
@@ -2662,7 +2703,7 @@ export default function HomePage({
   useEffect(() => {
     if (!isSearchRoute) return;
     const shouldLoadTours =
-      selectedContentTypes.includes("Job Tour") || showOnlyMyContent;
+      selectedContentTypes.includes("Job Tour") || selectedCreators.length > 0;
     if (!shouldLoadTours) return;
     let isMounted = true;
     setJobTourLoading(true);
@@ -2718,7 +2759,7 @@ export default function HomePage({
   }, [
     isSearchRoute,
     selectedContentTypes,
-    showOnlyMyContent,
+    selectedCreators.length,
     status,
     userId,
   ]);
@@ -2746,10 +2787,10 @@ export default function HomePage({
   }, []);
 
   useEffect(() => {
-    if (!showOnlyMyContent) return;
+    if (!selectedCreators.length) return;
     if (selectedContentTypes.includes("Job Tour")) return;
     setSelectedContentTypes(["Job Tour"]);
-  }, [selectedContentTypes, showOnlyMyContent]);
+  }, [selectedContentTypes, selectedCreators]);
 
   return (
     <>
@@ -2916,24 +2957,42 @@ export default function HomePage({
                         ))}
                       </div>
                     </details>
-                    {status === "authenticated" && (
-                      <details className={styles.filterGroup} open>
-                        <summary className={styles.filterSummary}>My content</summary>
-                        <div className={styles.filterOptions}>
-                          <button
-                            type="button"
-                            className={
-                              showOnlyMyContent
-                                ? styles.filterPillActive
-                                : styles.filterPill
-                            }
-                            onClick={() => setShowOnlyMyContent((prev) => !prev)}
-                          >
-                            My JobViz Tours
-                          </button>
-                        </div>
-                      </details>
-                    )}
+                    <details className={styles.filterGroup} open>
+                      <summary className={styles.filterSummary}>Creator</summary>
+                      <div className={styles.filterOptions}>
+                        {(Object.entries(CREATOR_LABELS) as Array<
+                          [CreatorFilter, string]
+                        >).map(([creatorValue, creatorLabel]) => {
+                          const isActive = selectedCreators.includes(creatorValue);
+                          const isMeOption = creatorValue === "me";
+                          const isDisabled = isMeOption && status !== "authenticated";
+                          return (
+                            <button
+                              key={creatorValue}
+                              type="button"
+                              className={
+                                isActive ? styles.filterPillActive : styles.filterPill
+                              }
+                              disabled={isDisabled}
+                              title={
+                                isDisabled
+                                  ? "Sign in required"
+                                  : "Filter by creator"
+                              }
+                              onClick={() =>
+                                setSelectedCreators((prev) =>
+                                  prev.includes(creatorValue)
+                                    ? prev.filter((item) => item !== creatorValue)
+                                    : [...prev, creatorValue]
+                                )
+                              }
+                            >
+                              {creatorLabel}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </details>
                     <details className={styles.filterGroup} open>
                       <summary className={styles.filterSummary}>Target Subject</summary>
                       <div className={styles.filterOptions}>
@@ -3228,7 +3287,7 @@ export default function HomePage({
                           ...selectedGradeBands,
                           ...selectedTags,
                           ...selectedLocales,
-                          ...(showOnlyMyContent ? ["My JobViz Tours"] : []),
+                          ...selectedCreators.map((creator) => CREATOR_LABELS[creator]),
                         ].map((chip) => (
                           <button
                             key={chip}

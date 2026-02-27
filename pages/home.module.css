@@ -2047,7 +2047,8 @@
 }
 
 .filterPillActive {
-  background: #2c83c3;
+  background: #1f6da7;
+  border-color: #1f6da7;
   color: #ffffff;
 }
 
@@ -2163,24 +2164,36 @@
 }
 
 .filterPill:hover,
-.filterPillActive:hover,
 .filterReset:hover,
 .filterCollapseButton:hover,
 .allFiltersPanel .ghostButton:hover,
 .filterPill:focus-visible,
-.filterPillActive:focus-visible,
 .filterReset:focus-visible,
 .filterCollapseButton:focus-visible,
 .allFiltersPanel .ghostButton:focus-visible {
   transform: none;
   box-shadow: none;
   border-color: rgba(44, 131, 195, 0.6);
-  background-color: rgba(44, 131, 195, 0.08);
+  background-color: #ffffff;
+}
+
+.filterPill:hover,
+.filterPill:focus-visible {
+  color: #2c83c3;
+}
+
+.filterPillActive,
+.filterPillActive:hover,
+.filterPillActive:focus-visible {
+  background-color: #1f6da7;
+  border-color: #1f6da7;
+  color: #ffffff;
 }
 
 .filterPillActive:hover,
 .filterPillActive:focus-visible {
-  background-color: rgba(44, 131, 195, 0.4);
+  box-shadow: none;
+  transform: none;
 }
 
 .allFiltersPanelCollapsed .filterCollapseButton {
@@ -3874,48 +3887,61 @@ details:not([open]) .filterSummary::after {
 
 .jobvizToursTile {
   background:
-    linear-gradient(145deg, rgba(255, 255, 255, 0.95), rgba(245, 247, 255, 0.92));
-  border: 1px solid rgba(108, 45, 130, 0.2);
-  border-radius: 18px;
+    radial-gradient(circle at 12% 18%, rgba(24, 38, 188, 0.1), transparent 56%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.98), rgba(244, 248, 255, 0.95));
+  border: 3px solid #1826bc;
+  border-radius: 12px;
   padding: 20px;
-  box-shadow: 0 12px 24px rgba(24, 38, 188, 0.08);
+  box-shadow: 0 12px 24px rgba(24, 38, 188, 0.12);
   display: flex;
   flex-direction: column;
   gap: 10px;
   position: relative;
   text-decoration: none;
-  color: inherit;
-  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+  color: #1b2440;
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease,
+    border-color 180ms ease,
+    background-color 180ms ease;
 }
 
 .jobvizToursTile::after {
   content: "";
   position: absolute;
   inset: 0;
-  border-radius: 18px;
+  border-radius: 12px;
   pointer-events: none;
-  border: 1px solid rgba(24, 38, 188, 0.07);
+  border: 1px solid rgba(24, 38, 188, 0.12);
 }
 
 .jobvizToursTile:hover,
 .jobvizToursTile:focus-visible {
   transform: translateY(-2px);
-  box-shadow: 0 16px 28px rgba(24, 38, 188, 0.12);
-  border-color: rgba(108, 45, 130, 0.34);
+  box-shadow: 0 18px 32px rgba(24, 38, 188, 0.18);
+  border-color: #1826bc;
+  background:
+    radial-gradient(circle at 12% 18%, rgba(24, 38, 188, 0.13), transparent 56%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.995), rgba(246, 250, 255, 0.96));
+  text-decoration: none;
+  color: #1b2440;
 }
 
 .jobvizToursPillPlus {
   position: absolute;
   top: 16px;
   right: 16px;
+  border: 2px solid #1826bc;
+  background: #ffffff;
+  color: #1826bc;
 }
 
 .jobvizToursTileKicker {
   font-size: 14px;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  color: #6c2d82;
-  font-weight: 600;
+  color: #1826bc;
+  font-weight: 700;
 }
 
 .resultsNotice {
