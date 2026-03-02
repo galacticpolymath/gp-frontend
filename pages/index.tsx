@@ -266,6 +266,7 @@ interface PreviewResource {
   unitSubtitle?: string | null;
   mediaLink?: string | null;
   mediaLessonRelevance?: string | null;
+  lessonHref?: string | null;
   releaseDate?: string | null;
   isNew?: boolean;
   isPlus?: boolean;
@@ -545,6 +546,7 @@ const PROJECTED_UNITS_FIELDS = [
   "Sections.overview.Tags",
   "Sections.standards.Data",
   "Sections.jobvizConnections.Content",
+  "Sections.teachingMaterials.classroom.resources.lessons",
 ] as string[];
 
 const getUnitBanner = (unit: INewUnitSchema) =>
@@ -1105,6 +1107,7 @@ export default function HomePage({
   const [jobTourError, setJobTourError] = useState<string | null>(null);
   const [selectedCreators, setSelectedCreators] = useState<CreatorFilter[]>([]);
   const [tourScope, setTourScope] = useState<"" | "unit" | "community">("");
+  const [queryHydrated, setQueryHydrated] = useState(false);
   const handleTabClick = (tab: NavTab) => {
     const nextTypes =
       tab === "Units"
@@ -1118,13 +1121,35 @@ export default function HomePage({
               : tab === "JobViz"
                 ? ["Job Tour"]
                 : [...CONTENT_TYPES];
+    isTypingRef.current = false;
+    if (typingTimeoutRef.current) {
+      window.clearTimeout(typingTimeoutRef.current);
+      typingTimeoutRef.current = null;
+    }
+    setQueryHydrated(false);
+    setSearchQuery("");
+    setSearchInputValue("");
+    setDebouncedSearchQuery("");
+    setSelectedTargetSubjects([]);
+    setSelectedAlignedSubjects([]);
+    setSelectedGradeBands([]);
+    setSelectedTags([]);
+    setSelectedLocales([]);
     setSelectedContentTypes(nextTypes);
     setSelectedCreators([]);
+    setTourScope("");
     router.push({ pathname: "/search", query: buildRootQueryForTab(tab) });
   };
   const handleHomeClick = () => {
+    isTypingRef.current = false;
+    if (typingTimeoutRef.current) {
+      window.clearTimeout(typingTimeoutRef.current);
+      typingTimeoutRef.current = null;
+    }
+    setQueryHydrated(false);
     setSearchQuery("");
     setSearchInputValue("");
+    setDebouncedSearchQuery("");
     setSelectedContentTypes([...CONTENT_TYPES]);
     setSelectedTargetSubjects([]);
     setSelectedAlignedSubjects([]);
@@ -1304,7 +1329,6 @@ export default function HomePage({
       );
     }
   };
-  const [queryHydrated, setQueryHydrated] = useState(false);
   const handleOpenWizard = () => setActiveModal("wizard");
   const handleCloseModal = () => {
     setActiveModal(null);
@@ -1608,10 +1632,23 @@ export default function HomePage({
         lesson.tags && lesson.tags.length
           ? lesson.tags
           : unit?.unitTags ?? [];
+      const lessonHref =
+        typeof lesson.lessonPartPath === "string" && lesson.lessonPartPath.trim()
+          ? lesson.lessonPartPath.trim()
+          : unit?.id && lesson.lessonPartNum
+            ? `${buildUnitPath(unit.id)}#lesson_part_${lesson.lessonPartNum}`
+            : unit?.id
+              ? buildUnitPath(unit.id)
+              : null;
+      const lessonResourceId = `lesson-${unit?.id ?? "unknown"}-${
+        lesson.lessonPartNum ?? "x"
+      }-${index}`;
 
       resources.push({
-        id: `lesson-${lesson.lessonPartNum ?? index}`,
+        id: lessonResourceId,
         unitId: unit?.id ?? undefined,
+        unitTitle: unit?.title ?? lesson.unitTitle ?? undefined,
+        unitSubtitle: unit?.subtitle ?? null,
         title: lesson.lessonPartTitle || "Lesson",
         description: lesson.preface || `Lesson from ${lesson.unitTitle ?? "GP"}`,
         type: "Lesson",
@@ -1626,6 +1663,7 @@ export default function HomePage({
         timeLabel: lesson.dur ? `${lesson.dur} min` : "Lesson",
         tags: tags && tags.length ? tags.slice(0, 6) : ["Lesson"],
         locale: unit?.locale ?? "en-US",
+        lessonHref,
         releaseDate: unit?.releaseDate ?? null,
         isNew: false,
         isPlus: false,
@@ -2669,6 +2707,7 @@ export default function HomePage({
   }, [
     router,
     isAllView,
+    queryHydrated,
     searchQuery,
     debouncedSearchQuery,
     isSearchRoute,
@@ -3351,6 +3390,8 @@ export default function HomePage({
                               resource.type === "Unit" && resource.unitId
                                 ? buildUnitPath(resource.unitId)
                                 : null;
+                            const lessonHref =
+                              resource.type === "Lesson" ? resource.lessonHref ?? null : null;
                             const jobTourUrl =
                               resource.type === "Job Tour"
                                 ? buildJobTourUrl(resource)
@@ -3359,6 +3400,7 @@ export default function HomePage({
                               resource.type === "Video" ||
                               resource.type === "App" ||
                               resource.type === "Job Tour" ||
+                              Boolean(lessonHref) ||
                               Boolean(unitHref);
                             const showLessons =
                               (resource.type === "Unit" || resource.type === "Lesson") &&
@@ -3397,7 +3439,9 @@ export default function HomePage({
                                   ? resource.mediaLink?.startsWith("/")
                                     ? resource.mediaLink
                                     : null
-                                  : unitHref;
+                                  : resource.type === "Lesson"
+                                    ? lessonHref
+                                    : unitHref;
                             const isNavigating = navigatingResourceId === resource.id;
                             const handleActivateResource = () => {
                               if (resource.type === "Video") {
@@ -3427,6 +3471,10 @@ export default function HomePage({
                                 } else {
                                   window.open(resource.mediaLink, "_blank");
                                 }
+                                return;
+                              }
+                              if (lessonHref) {
+                                navigateToInternalRoute(lessonHref, resource.id);
                                 return;
                               }
                               if (unitHref) {

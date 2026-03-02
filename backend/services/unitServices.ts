@@ -520,8 +520,9 @@ const getUnitLessons = (retrievedUnits: INewUnitSchema[]) => {
           continue;
         }
 
+        const lessonPartPath = `/${UNITS_URL_PATH}/${unit.locale}/${unit.numID}#lesson_part_${lesson.lsn}`;
         const wasLessonFounded = !!unitLessons.find(
-          (unitLesson) => unitLesson.lessonPartTitle === lesson.title
+          (unitLesson) => unitLesson.lessonPartPath === lessonPartPath
         );
 
         if (wasLessonFounded) {
@@ -530,7 +531,7 @@ const getUnitLessons = (retrievedUnits: INewUnitSchema[]) => {
 
         const unitLesson = {
           tags: lesson.tags ?? null,
-          lessonPartPath: `/${UNITS_URL_PATH}/${unit.locale}/${unit.numID}#lesson_part_${lesson.lsn}`,
+          lessonPartPath,
           tile:
             lesson?.tile ??
             'https://storage.googleapis.com/gp-cloud/icons/Missing_Lesson_Tile_Icon.png',

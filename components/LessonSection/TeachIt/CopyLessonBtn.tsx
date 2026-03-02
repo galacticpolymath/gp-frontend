@@ -528,9 +528,13 @@ const CopyLessonBtn: React.FC<
 
       console.log('lessonsFolder, hey there: ', lessonsFolder);
 
+      const effectiveLessonSharedDriveFolderName =
+        lessonSharedDriveFolderName?.trim() ||
+        lessonName?.trim() ||
+        'Lesson Materials';
+
       if (
         !sharedGDriveLessonFolderId ||
-        !lessonSharedDriveFolderName ||
         !allUnitLessons?.length ||
         !lessonsFolder?.name ||
         !lessonsFolder.sharedGDriveId
@@ -717,7 +721,8 @@ const CopyLessonBtn: React.FC<
                 typeof lessonId === 'number' ? lessonId.toString() : lessonId,
               lessonName: lessonName,
               lessonSharedGDriveFolderId: sharedGDriveLessonFolderId,
-              lessonSharedDriveFolderName,
+              lessonSharedDriveFolderName:
+                effectiveLessonSharedDriveFolderName,
               lessonsFolderGradesRange: lessonsGrades ?? 'default',
             };
 
@@ -726,7 +731,7 @@ const CopyLessonBtn: React.FC<
             const headers = {
               'Content-Type': 'application/json',
               Authorization: `Bearer ${token}`,
-              'gdrive-token': validToken,
+              'gdrive-token': currentValidToken,
               'gdrive-token-refresh': gdriveRefreshToken!,
               'user-gmail': gdriveEmail,
             };

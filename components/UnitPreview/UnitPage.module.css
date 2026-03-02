@@ -449,7 +449,7 @@
   align-items: center;
   gap: 6px;
   cursor: pointer;
-  margin-left: 14px;
+  margin-left: auto;
   align-self: center;
   transition: border-color 160ms ease, background-color 160ms ease, color 160ms ease;
 }
@@ -467,6 +467,12 @@
 
 .unitNavVisibilityToggleIconExpanded {
   transform: rotate(0deg);
+}
+
+.unitNavProfileSummary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .unitTabList {
@@ -2366,6 +2372,12 @@
   text-transform: uppercase;
   color: #4f5f7f;
   font-weight: 700;
+  margin-left: 1.1rem;
+}
+
+.materialDownloadLabelLeading {
+  margin-left: 0;
+  margin-right: 0.55rem;
 }
 
 .materialDownloadActions {
@@ -4002,6 +4014,12 @@
   .standardStatementLine,
   .standardAlignmentNotes :global(p) {
     font-size: 16px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .unitNavVisibilityToggle {
+    transform: translateX(calc((100vw - 1280px) / 2));
   }
 }
 

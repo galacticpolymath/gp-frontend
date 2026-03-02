@@ -8,6 +8,7 @@ import useSiteSession from "../customHooks/useSiteSession";
 import styles from "./PortalNav.module.css";
 import GpLogo from "../public/GP_bubbleLogo300px.png";
 import { setSessionStorageItem } from "../shared/fns";
+import ProfileAvatarRing from "./ProfileAvatarRing";
 
 const NAV_TABS = ["All", "Units", "Apps", "Videos", "Lessons", "JobViz"] as const;
 export type NavTab = (typeof NAV_TABS)[number];
@@ -420,25 +421,11 @@ const PortalNav: React.FC<PortalNavProps> = ({
                 setAccountMenuOpen((prev) => !prev);
               }}
             >
-              <div
-                className={`${styles.profileAvatarRing} ${
-                  effectiveIsPlusMember
-                    ? styles.profileAvatarPlus
-                    : styles.profileAvatarFree
-                }`}
-                aria-hidden="true"
-              >
-                {effectiveAvatarUrl && !avatarError ? (
-                  <img
-                    src={effectiveAvatarUrl}
-                    alt=""
-                    className={styles.profileAvatarImage}
-                    onError={() => setAvatarError(true)}
-                  />
-                ) : (
-                  <span className={styles.profileAvatarFallback}>GP</span>
-                )}
-              </div>
+              <ProfileAvatarRing
+                avatarUrl={effectiveAvatarUrl && !avatarError ? effectiveAvatarUrl : null}
+                isPlusMember={effectiveIsPlusMember}
+                onError={() => setAvatarError(true)}
+              />
               <span className={styles.profileButton}>
                 <span
                   className={
@@ -466,25 +453,11 @@ const PortalNav: React.FC<PortalNavProps> = ({
                 router.push(accountUrl);
               }}
             >
-              <div
-                className={`${styles.profileAvatarRing} ${
-                  effectiveIsPlusMember
-                    ? styles.profileAvatarPlus
-                    : styles.profileAvatarFree
-                }`}
-                aria-hidden="true"
-              >
-                {effectiveAvatarUrl && !avatarError ? (
-                  <img
-                    src={effectiveAvatarUrl}
-                    alt=""
-                    className={styles.profileAvatarImage}
-                    onError={() => setAvatarError(true)}
-                  />
-                ) : (
-                  <span className={styles.profileAvatarFallback}>GP</span>
-                )}
-              </div>
+              <ProfileAvatarRing
+                avatarUrl={effectiveAvatarUrl && !avatarError ? effectiveAvatarUrl : null}
+                isPlusMember={effectiveIsPlusMember}
+                onError={() => setAvatarError(true)}
+              />
               <span className={styles.profileButton}>
                 Log in
                 <span className={styles.profileBadgeFree}>Free</span>

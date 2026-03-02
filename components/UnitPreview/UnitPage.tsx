@@ -3,6 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import QRCode from 'react-qr-code';
 import { format } from 'date-fns';
+import axios from 'axios';
 import RichText from '../RichText';
 import styles from './UnitPage.module.css';
 import {
@@ -64,6 +65,7 @@ import {
   getNodeBySocCode,
 } from '../JobViz/jobvizUtils';
 import { LucideIcon } from '../JobViz/LucideIcon';
+import ProfileAvatarRing from '../ProfileAvatarRing';
 
 const TAB_OVERVIEW = 'overview';
 const TAB_MATERIALS = 'materials';
@@ -1587,6 +1589,29 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
   const isUserTeacher = Boolean(
     (user as { isTeacher?: boolean } | undefined)?.isTeacher
   );
+  const [localAvatarUrl, setLocalAvatarUrl] = useState<string | null>(null);
+  const [profileAvatarUrl, setProfileAvatarUrl] = useState<string | null>(null);
+  const [avatarCandidateIndex, setAvatarCandidateIndex] = useState(0);
+  const [isAvatarHydrated, setIsAvatarHydrated] = useState(false);
+  const avatarCandidates = useMemo(() => {
+    const imageValue =
+      typeof (user as { image?: unknown } | undefined)?.image === 'string'
+        ? ((user as { image?: string }).image ?? '').trim()
+        : '';
+    const pictureValue =
+      typeof (user as { picture?: unknown } | undefined)?.picture === 'string'
+        ? ((user as { picture?: string }).picture ?? '').trim()
+        : '';
+    const profileValue = profileAvatarUrl?.trim() ?? '';
+    const localValue = localAvatarUrl?.trim() ?? '';
+
+    return [imageValue, pictureValue, profileValue, localValue].filter(
+      (value, index, arr): value is string => Boolean(value) && arr.indexOf(value) === index
+    );
+  }, [localAvatarUrl, profileAvatarUrl, user]);
+  const effectiveAvatarUrl = isAvatarHydrated
+    ? avatarCandidates[avatarCandidateIndex] ?? null
+    : null;
   const isGpPlusUser = isGpPlusMember === true;
   const isGpPlusResolved = typeof isGpPlusMember === 'boolean';
   const overview = unit.Sections?.overview;
@@ -1718,6 +1743,70 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
     null
   );
   const [jobVizSaveError, setJobVizSaveError] = useState<string | null>(null);
+
+  useEffect(() => {
+    setIsAvatarHydrated(true);
+  }, []);
+
+  useEffect(() => {
+    setAvatarCandidateIndex(0);
+  }, [avatarCandidates]);
+
+  useEffect(() => {
+    if (!isAvatarHydrated || !isAuthenticated) return;
+    const hasSessionAvatar =
+      Boolean((user as { image?: string | null } | undefined)?.image) ||
+      Boolean((user as { picture?: string | null } | undefined)?.picture);
+    if (hasSessionAvatar) return;
+
+    const localAvatarUrl = (() => {
+      if (typeof window === 'undefined') return null;
+
+      try {
+        const raw = window.localStorage.getItem('userAccount');
+        if (!raw) return null;
+        const parsed = JSON.parse(raw);
+        return typeof parsed?.picture === 'string' && parsed.picture
+          ? parsed.picture
+          : null;
+      } catch {
+        return null;
+      }
+    })();
+
+    if (localAvatarUrl) {
+      setLocalAvatarUrl(localAvatarUrl);
+      return;
+    }
+
+    if (!token) return;
+
+    let isCancelled = false;
+    (async () => {
+      try {
+        const { data } = await axios.get<{ picture?: string }>(
+          '/api/get-user-account-data',
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (isCancelled) return;
+
+        if (typeof data?.picture === 'string' && data.picture) {
+          setProfileAvatarUrl(data.picture);
+        }
+      } catch {
+        // no-op: fallback initials remain visible
+      }
+    })();
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [isAvatarHydrated, isAuthenticated, token, user]);
   const shouldShowGradeBandChooser = classroomResources.some(
     (resource) =>
       Boolean(resource?.gradePrefix?.trim() || resource?.grades?.trim())
@@ -3593,7 +3682,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                   type="button"
                   className={styles.unitNavVisibilityToggle}
                   onClick={handlePortalNavToggle}
-                  aria-label={isPortalNavCollapsed ? 'Menu' : 'Collapse menu'}
+                  aria-label={isPortalNavCollapsed ? 'Profile menu' : 'Collapse menu'}
                 >
                   <ChevronUp
                     size={18}
@@ -3604,7 +3693,24 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                         : styles.unitNavVisibilityToggleIconExpanded
                     }
                   />
-                  <span>{isPortalNavCollapsed ? 'Menu' : 'Collapse'}</span>
+                  {isPortalNavCollapsed ? (
+                    <span className={styles.unitNavProfileSummary}>
+                      <ProfileAvatarRing
+                        avatarUrl={effectiveAvatarUrl}
+                        isPlusMember={isGpPlusUser}
+                        size={22}
+                        onError={() =>
+                          setAvatarCandidateIndex((currentIndex) =>
+                            currentIndex + 1 < avatarCandidates.length
+                              ? currentIndex + 1
+                              : avatarCandidates.length
+                          )
+                        }
+                      />
+                    </span>
+                  ) : (
+                    <span>Collapse</span>
+                  )}
                 </button>
               </div>
             </div>
@@ -4397,7 +4503,9 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                                   {(pdfDownloadUrl || hasOfficeDownload) && (
                                     <div className={styles.materialRowPdfWrap}>
                                       <div className={styles.materialDownloadRow}>
-                                        <span className={styles.materialDownloadLabel}>
+                                        <span
+                                          className={`${styles.materialDownloadLabel} ${styles.materialDownloadLabelLeading}`}
+                                        >
                                           Download
                                         </span>
                                         <div className={styles.materialDownloadActions}>
@@ -4735,6 +4843,23 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                             officeFormat,
                           } =
                             getMaterialUrls(selectedPreviewItem);
+                          const previewPdfDownloadUrl =
+                            pdfDownloadUrl ??
+                            (() => {
+                              if (selectedPreviewItem?.gdriveRoot) {
+                                return (
+                                  toGooglePdfExportUrl(
+                                    getNormalizedGDriveRoot(
+                                      selectedPreviewItem.gdriveRoot
+                                    )
+                                  ) ?? null
+                                );
+                              }
+                              const firstUrl = getFirstItemUrl(selectedPreviewItem);
+                              return firstUrl
+                                ? toGooglePdfExportUrl(firstUrl) ?? null
+                                : null;
+                            })();
                           const previewImg =
                             (
                               selectedItem as {
@@ -4909,38 +5034,38 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                                       '').toString()}
                                   </span>
                                 )}
-                                {(pdfDownloadUrl || hasOfficeDownload) && (
+                                {(previewPdfDownloadUrl || hasOfficeDownload) && (
                                   <div className={styles.materialDownloadRow}>
+                                    {hasGoogleDriveSource && (
+                                      <button
+                                        type="button"
+                                        className={styles.materialCopyAllBtn}
+                                        onClick={handleCopyAllMaterialsClick}
+                                        disabled={isCopyAllDisabledForGpPlus}
+                                      >
+                                        <Image
+                                          alt="GP+ icon"
+                                          width={14}
+                                          height={14}
+                                          src="/plus/plus.png"
+                                        />
+                                        <span>Copy All to my Google Drive</span>
+                                      </button>
+                                    )}
                                     <span className={styles.materialDownloadLabel}>
                                       Download
                                     </span>
                                     <div className={styles.materialDownloadActions}>
-                                      {hasGoogleDriveSource && (
-                                        <button
-                                          type="button"
-                                          className={styles.materialCopyAllBtn}
-                                          onClick={handleCopyAllMaterialsClick}
-                                          disabled={isCopyAllDisabledForGpPlus}
-                                        >
-                                          <Image
-                                            alt="GP+ icon"
-                                            width={14}
-                                            height={14}
-                                            src="/plus/plus.png"
-                                          />
-                                          <span>Copy All to my Google Drive</span>
-                                        </button>
-                                      )}
-                                      {pdfDownloadUrl && isAuthenticated && !isPreviewLockedTeacher ? (
+                                      {previewPdfDownloadUrl && isAuthenticated && !isPreviewLockedTeacher ? (
                                         <a
                                           className={styles.materialPdfLink}
-                                          href={pdfDownloadUrl}
+                                          href={previewPdfDownloadUrl}
                                           target="_blank"
                                           rel="noreferrer"
                                         >
                                           PDF
                                         </a>
-                                      ) : pdfDownloadUrl ? (
+                                      ) : previewPdfDownloadUrl ? (
                                         <span className={styles.materialPdfLinkDisabled}>
                                           PDF
                                         </span>
