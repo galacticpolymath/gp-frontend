@@ -1149,6 +1149,19 @@ const LessonDetails: React.FC<IProps> = ({ lesson, unit }) => {
   useEffect(() => {
   });
 
+  const [isProcedureOnlyPreview, setIsProcedureOnlyPreview] = useState(false);
+  useEffect(() => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+    const searchParams = new URLSearchParams(window.location.search);
+    const isProcedureOnly =
+      searchParams.has('procedure-only') ||
+      searchParams.get('procedure') === '1' ||
+      searchParams.get('procedure') === 'true';
+    setIsProcedureOnlyPreview(isProcedureOnly);
+  }, []);
+
   if (!unit && !lesson && typeof window === 'undefined') {
     return null;
   }
@@ -1230,6 +1243,7 @@ const LessonDetails: React.FC<IProps> = ({ lesson, unit }) => {
     structuredData,
     locale: _unit.locale ?? DEFAULT_LOCALE,
     keywords: keywordsMeta,
+    showFooter: !isProcedureOnlyPreview,
   };
 
   return (
