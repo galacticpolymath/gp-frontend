@@ -2930,7 +2930,8 @@ export default function HomePage({
                           setSelectedGradeBands([]);
                           setSelectedTags([]);
                           setSelectedLocales([]);
-                          setShowOnlyMyContent(false);
+                          setSelectedCreators([]);
+                          setTourScope("");
                         }}
                       >
                         Reset

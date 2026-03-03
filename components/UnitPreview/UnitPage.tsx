@@ -2544,6 +2544,104 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
       (subject) => subject.toLowerCase() !== targetSubject
     );
   }, [alignedSubjects, overview?.TargetSubject]);
+  const targetStandardsSummary = useMemo(() => {
+    const standards = Array.isArray(unit.TargetStandardsCodes)
+      ? unit.TargetStandardsCodes
+      : [];
+    if (!standards.length) {
+      return null;
+    }
+
+    const normalizedSetNames = standards
+      .map((standard) => {
+        const raw =
+          typeof standard?.set === 'string'
+            ? standard.set
+            : typeof standard?.subject === 'string'
+              ? standard.subject
+              : '';
+        return raw.trim();
+      })
+      .filter(Boolean);
+    const setNames = Array.from(new Set(normalizedSetNames));
+    const primarySet =
+      setNames.find((setName) => setName.toLowerCase() === 'ngss') ??
+      setNames[0] ??
+      'Standards';
+
+    const setScopedStandards = standards.filter((standard) => {
+      const setValue =
+        typeof standard?.set === 'string'
+          ? standard.set.trim().toLowerCase()
+          : typeof standard?.subject === 'string'
+            ? standard.subject.trim().toLowerCase()
+            : '';
+      return setValue === primarySet.trim().toLowerCase();
+    });
+
+    const dedupeByCode = (items: typeof standards) =>
+      Array.from(
+        new Set(
+          items
+            .map((item) =>
+              typeof item?.code === 'string' ? item.code.trim().toLowerCase() : ''
+            )
+            .filter(Boolean)
+        )
+      ).length;
+
+    const cccItems = setScopedStandards.filter((standard) =>
+      /cross[\s-]*cutting.*concept/i.test(standard?.dim ?? '')
+    );
+    const sepItems = setScopedStandards.filter((standard) =>
+      /science.*engineering.*practice|engineering.*science.*practice/i.test(
+        standard?.dim ?? ''
+      )
+    );
+
+    const cccCount = dedupeByCode(cccItems);
+    const sepCount = dedupeByCode(sepItems);
+    const standardCodes = Array.from(
+      new Set(
+        setScopedStandards
+          .map((standard) =>
+            typeof standard?.code === 'string' ? standard.code.trim() : ''
+          )
+          .filter(Boolean)
+      )
+    );
+
+    const summaryParts: string[] = [];
+    if (standardCodes.length) {
+      summaryParts.push(standardCodes.join(', '));
+    }
+    if (cccCount > 0) {
+      summaryParts.push(
+        `${cccCount} Cross-Cutting Concept${cccCount === 1 ? '' : 's'} (${
+          cccCount === 1 ? 'CCC' : 'CCCs'
+        })`
+      );
+    }
+    if (sepCount > 0) {
+      summaryParts.push(
+        `${sepCount} Science and Engineering Practice${
+          sepCount === 1 ? '' : 's'
+        } (${sepCount === 1 ? 'SEP' : 'SEPs'})`
+      );
+    }
+
+    if (!summaryParts.length) {
+      const setCount = dedupeByCode(setScopedStandards);
+      summaryParts.push(
+        `${setCount} target standard${setCount === 1 ? '' : 's'}`
+      );
+    }
+
+    return {
+      set: primarySet,
+      details: summaryParts.join(', '),
+    };
+  }, [unit.TargetStandardsCodes]);
   const latestSubRelease = versionReleases
     .flatMap((release: any) => release.sub_releases ?? [])
     .find((subRelease: any) => !!subRelease?.version) ?? null;
@@ -3910,7 +4008,12 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                 id="unit-search-overview-gist"
                 className={`${styles.unitOverviewCard} ${styles.unitOverviewCardPrimary}`}
               >
-                <h3>The Gist</h3>
+                <h3 className={styles.unitOverviewSectionTitle}>
+                  <span className={styles.unitOverviewSectionTitleIcon} aria-hidden="true">
+                    <NotebookPen size={16} />
+                  </span>
+                  The Gist
+                </h3>
                 {overview?.TheGist && (
                   <div className={`${styles.richTextBlock} ${styles.unitLeadMarkdown}`}>
                     <RichText content={overview.TheGist} />
@@ -3930,12 +4033,17 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
               <div
                 className={`${styles.unitOverviewCard} ${styles.unitOverviewCardCompact}`}
               >
-                <h3>At a glance</h3>
+                <h3 className={styles.unitOverviewSectionTitle}>
+                  <span className={styles.unitOverviewSectionTitleIcon} aria-hidden="true">
+                    <Blocks size={16} />
+                  </span>
+                  At a glance
+                </h3>
                 <div className={styles.atGlanceGrid}>
                   {overview?.EstUnitTime && (
                     <div className={styles.atGlanceItem}>
                       <span className={styles.atGlanceIcon} aria-hidden="true">
-                        <i className="bi bi-clock-history" />
+                        <Clock3 size={18} />
                       </span>
                       <div className={styles.atGlanceContent}>
                         <span className={styles.atGlanceLabel}>Estimated time</span>
@@ -3948,7 +4056,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                   {unit.ForGrades && (
                     <div className={styles.atGlanceItem}>
                       <span className={styles.atGlanceIcon} aria-hidden="true">
-                        <i className="bi bi-mortarboard-fill" />
+                        <GraduationCap size={18} />
                       </span>
                       <div className={styles.atGlanceContent}>
                         <span className={styles.atGlanceLabel}>Grades</span>
@@ -3963,7 +4071,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                       onClick={() => handleTabChange(TAB_STANDARDS)}
                     >
                       <span className={styles.atGlanceIcon} aria-hidden="true">
-                        <i className="bi bi-journal-richtext" />
+                        <NotebookPen size={18} />
                       </span>
                       <div className={styles.atGlanceContent}>
                         <span className={styles.atGlanceLabel}>Subject focus</span>
@@ -3989,10 +4097,35 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                       )}
                     </button>
                   )}
+                  {targetStandardsSummary && (
+                    <button
+                      type="button"
+                      className={`${styles.atGlanceItem} ${styles.atGlanceItemAction}`}
+                      onClick={() => handleTabChange(TAB_STANDARDS)}
+                    >
+                      <span className={styles.atGlanceIcon} aria-hidden="true">
+                        <Target size={18} />
+                      </span>
+                      <div className={styles.atGlanceContent}>
+                        <span className={styles.atGlanceLabel}>Target standards</span>
+                        <span
+                          className={`${styles.atGlanceValue} ${styles.atGlanceValueCompact}`}
+                        >
+                          <strong>{targetStandardsSummary.set} |</strong>{' '}
+                          {targetStandardsSummary.details}
+                        </span>
+                      </div>
+                    </button>
+                  )}
                 </div>
               </div>
               <div id="unit-search-overview-media" className={styles.unitOverviewCardWide}>
-                <h3>Supporting Multimedia</h3>
+                <h3 className={styles.unitOverviewSectionTitle}>
+                  <span className={styles.unitOverviewSectionTitleIcon} aria-hidden="true">
+                    <MonitorPlay size={16} />
+                  </span>
+                  Supporting Multimedia
+                </h3>
                 {unit.FeaturedMultimedia?.length ? (
                   <div className={styles.previewCarousel}>
                     <LessonsCarousel mediaItems={unit.FeaturedMultimedia} />
@@ -4917,9 +5050,19 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                             isGpPlusMember === false;
                           const hasGoogleDriveSource = Boolean(
                             selectedPreviewItem.gdriveRoot ||
-                              selectedPreviewItem.itemUrls?.some((url) =>
-                                /(docs\.google\.com|drive\.google\.com)/i.test(url)
-                              )
+                              selectedPreviewItem.links?.some((linkObj) => {
+                                const urlValue = linkObj?.url;
+                                if (Array.isArray(urlValue)) {
+                                  return urlValue.some((url: string) =>
+                                    /(docs\.google\.com|drive\.google\.com)/i.test(
+                                      String(url)
+                                    )
+                                  );
+                                }
+                                return typeof urlValue === 'string'
+                                  ? /(docs\.google\.com|drive\.google\.com)/i.test(urlValue)
+                                  : false;
+                              })
                           );
 
                           return (

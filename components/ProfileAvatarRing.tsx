@@ -25,7 +25,7 @@ const ProfileAvatarRing: React.FC<ProfileAvatarRingProps> = ({
       className={`${styles.profileAvatarRing} ${
         isPlusMember ? styles.profileAvatarPlus : styles.profileAvatarFree
       } ${className ?? ""}`}
-      style={{ ["--avatar-size" as const]: `${size}px` }}
+      style={{ ["--avatar-size" as "--avatar-size"]: `${size}px` } as React.CSSProperties}
       aria-hidden={ariaHidden}
     >
       {avatarUrl ? (

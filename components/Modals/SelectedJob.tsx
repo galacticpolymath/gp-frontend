@@ -70,7 +70,7 @@ const SelectedJob: React.FC = () => {
   const [modalHistory, setModalHistory] = useState<InfoModalType | null>(null);
   const [isInfoClosing, setIsInfoClosing] = useState(false);
   const closeModalTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const copyToastId = useRef<string | number | null>(null);
+  const copyToastId = useRef<string | null>(null);
   const copyResetTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [didCopyLink, setDidCopyLink] = useState(false);
   const [shouldGlowRatingLabel, setShouldGlowRatingLabel] = useState(false);
