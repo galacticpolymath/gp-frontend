@@ -8,12 +8,13 @@
     #f7fbff;
   min-height: 100vh;
   width: 100%;
+  opacity: 1;
+  transition: opacity 220ms ease;
 }
 
 .pageSearchTransitioning {
-  opacity: 1;
-  transform: none;
-  transition: none;
+  opacity: 0;
+  pointer-events: none;
 }
 
 .hero {
@@ -181,6 +182,56 @@
   border: 1px solid rgba(44, 131, 195, 0.35);
 }
 
+.wizardLaunchButton,
+.lessonLaunchButton {
+  border: 1px solid rgba(240, 244, 255, 0.72);
+  border-radius: 999px;
+  padding: 11px 18px;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  align-self: flex-start;
+  transition:
+    box-shadow 180ms ease,
+    background-color 220ms ease,
+    color 220ms ease,
+    border-color 220ms ease;
+  background: #2c83c3;
+  color: #f0f4ff;
+  border-color: #2c83c3;
+  box-shadow: 0 6px 14px rgba(44, 131, 195, 0.2);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.wizardLaunchButton:visited,
+.lessonLaunchButton:visited {
+  color: #f0f4ff;
+}
+
+.wizardLaunchButton:hover,
+.wizardLaunchButton:focus-visible,
+.lessonLaunchButton:hover,
+.lessonLaunchButton:focus-visible {
+  background: #236ca1;
+  border-color: #236ca1;
+  color: #ffffff;
+  box-shadow: 0 8px 16px rgba(35, 108, 161, 0.24);
+}
+
+.wizardLaunchButton svg,
+.lessonLaunchButton svg {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 auto;
+}
+
 .ghostButton {
   background: transparent;
   color: #2c83c3;
@@ -340,11 +391,15 @@
 }
 
 .wizardCard {
-  background: #ffffff;
-  border: 1px solid rgba(44, 131, 195, 0.2);
-  box-shadow: 0 18px 34px rgba(12, 20, 48, 0.18);
+  background: rgba(255, 255, 255, 0.82);
+  border: 1px solid rgba(44, 131, 195, 0.22);
+  box-shadow: 0 10px 22px rgba(12, 20, 48, 0.1);
   position: relative;
   overflow: hidden;
+  border-radius: 18px;
+  padding: 26px;
+  backdrop-filter: blur(8px) saturate(112%);
+  -webkit-backdrop-filter: blur(8px) saturate(112%);
 }
 
 .wizardCard::before {
@@ -355,6 +410,13 @@
   border: 1px solid rgba(108, 45, 130, 0.15);
   pointer-events: none;
   mix-blend-mode: normal;
+}
+
+.wizardCardTitle {
+  margin: 0 0 14px;
+  font-size: 44px;
+  line-height: 1.12;
+  color: #2f365f;
 }
 
 .searchLabel {
@@ -435,11 +497,11 @@
 }
 
 .wizardStep {
-  margin-top: 12px;
+  margin-top: 22px;
 }
 
 .wizardStep p {
-  margin: 0 0 8px;
+  margin: 0 0 12px;
   font-weight: 600;
   color: #2c83c3;
 }
@@ -447,15 +509,18 @@
 .pillRow {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 12px;
 }
 
 .pill,
 .pillActive {
-  padding: 6px 12px;
+  padding: 8px 16px;
   border-radius: 999px;
   font-size: 16px;
   border: 1px solid rgba(44, 131, 195, 0.25);
+  cursor: pointer;
+  font-family: inherit;
+  line-height: 1.2;
 }
 
 .pill {
@@ -468,11 +533,44 @@
   color: #ffffff;
 }
 
+.pill:hover,
+.pill:focus-visible {
+  border-color: rgba(44, 131, 195, 0.45);
+  background: rgba(44, 131, 195, 0.08);
+}
+
 .wizardFooter {
   display: flex;
   gap: 12px;
-  margin-top: 16px;
+  margin-top: 36px;
   flex-wrap: wrap;
+}
+
+.wizardSubmitButton {
+  border: 0;
+  border-radius: 999px;
+  padding: 12px 20px;
+  font-size: 16px;
+  font-weight: 700;
+  color: #ffffff;
+  background: linear-gradient(135deg, #2c83c3 0%, #cb1f83 100%);
+  box-shadow: 0 10px 18px rgba(44, 131, 195, 0.22);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.wizardSubmitButton:hover,
+.wizardSubmitButton:focus-visible {
+  filter: brightness(1.04);
+  box-shadow: 0 12px 20px rgba(44, 131, 195, 0.28);
+}
+
+.wizardSubmitButton svg {
+  width: 16px;
+  height: 16px;
 }
 
 .main {
@@ -886,12 +984,20 @@
 }
 
 .sectionKicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   margin: 0 0 8px;
   text-transform: uppercase;
   letter-spacing: 0.14em;
   font-size: 16px;
   color: #6c2d82;
   font-weight: 700;
+}
+
+.sectionKickerIcon {
+  width: 15px;
+  height: 15px;
 }
 
 .spotlightGrid,
@@ -903,17 +1009,30 @@
 
 .spotlightCard,
 .trackCard {
-  background: rgba(255, 255, 255, 0.68);
+  background-color: rgba(245, 249, 255, 0.55);
+  background-image: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.36) 0%,
+    rgba(240, 244, 255, 0.18) 100%
+  );
   border-radius: 18px;
   padding: 20px;
-  box-shadow: 0 16px 28px rgba(24, 30, 72, 0.12);
-  border: 1px solid rgba(240, 244, 255, 0.55);
-  backdrop-filter: blur(12px);
+  box-shadow:
+    0 8px 18px rgba(24, 30, 72, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.55);
+  border: 1px solid rgba(240, 244, 255, 0.78);
+  backdrop-filter: blur(26px) saturate(135%);
+  -webkit-backdrop-filter: blur(26px) saturate(135%);
 }
 
 .spotlightWizard {
-  border: 1px solid rgba(108, 45, 130, 0.2);
-  background: linear-gradient(180deg, rgba(248, 243, 255, 0.9), #ffffff);
+  border-color: rgba(240, 244, 255, 0.78);
+  background-color: rgba(245, 249, 255, 0.55);
+  background-image: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.36) 0%,
+    rgba(240, 244, 255, 0.18) 100%
+  );
 }
 
 .spotlightEyebrow {
@@ -935,17 +1054,52 @@
   margin: 0;
 }
 
-.spotlightIcon {
-  width: 44px;
-  height: 44px;
-  border-radius: 14px;
-  background: #2c83c3;
-  color: #ffffff;
+.spotlightVisual {
+  width: 120px;
+  height: 120px;
+  border-radius: 22px;
+  overflow: hidden;
+  border: 1px solid rgba(240, 244, 255, 0.88);
+  box-shadow: 0 6px 14px rgba(18, 24, 56, 0.1);
+  flex: 0 0 auto;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 22px;
-  box-shadow: 0 10px 18px rgba(44, 131, 195, 0.35);
+}
+
+.spotlightVisual img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.spotlightVisualWizard {
+  background: radial-gradient(
+    130% 120% at 18% 55%,
+    #d62aa4 0%,
+    #c624b3 32%,
+    #9a22c8 58%,
+    #6f24d5 82%,
+    #4a2edc 100%
+  );
+  padding: 18px;
+}
+
+.spotlightVisualWizard img {
+  object-fit: contain;
+}
+
+.spotlightVisualLesson {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+@media (max-width: 768px) {
+  .spotlightVisual {
+    width: 104px;
+    height: 104px;
+    border-radius: 18px;
+  }
 }
 
 .trackIcon {
@@ -1113,13 +1267,6 @@
   color: #ffffff;
   border-color: #2c83c3;
 }
-.spotlightMeta {
-  display: inline-block;
-  margin-top: 12px;
-  font-size: 16px;
-  color: #6a6f87;
-}
-
 .newUnitGrid {
   display: flex;
   flex-direction: column;
@@ -1667,14 +1814,15 @@
 .modal {
   position: relative;
   z-index: 1001;
-  background: #ffffff;
+  background: #f8f9ff;
   color: #2b3355;
-  border-radius: 20px;
-  padding: 24px;
-  width: min(720px, 90vw);
+  border-radius: 22px;
+  padding: 30px;
+  width: min(1080px, 96vw);
   max-height: 85vh;
   overflow-y: auto;
-  box-shadow: 0 24px 48px rgba(10, 12, 32, 0.3);
+  box-shadow: 0 24px 48px rgba(10, 12, 32, 0.24);
+  border: 1px solid rgba(44, 131, 195, 0.2);
 }
 
 .mediaModal {
@@ -1699,18 +1847,19 @@
 
 .modalHeader {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   gap: 16px;
-  margin-bottom: 16px;
+  margin-bottom: 18px;
 }
 
 .modalKicker {
-  margin: 0 0 6px;
+  margin: 0;
   text-transform: uppercase;
-  letter-spacing: 0.12em;
-  font-size: 15px;
+  letter-spacing: 0.14em;
+  font-size: 18px;
   color: #6c2d82;
+  font-weight: 700;
 }
 
 .modalTitle {
@@ -1721,12 +1870,43 @@
 
 .modalClose {
   border: 1px solid rgba(35, 49, 138, 0.2);
-  background: transparent;
+  background: rgba(255, 255, 255, 0.7);
   color: #2c83c3;
-  padding: 8px 12px;
+  padding: 11px 18px;
   border-radius: 999px;
   cursor: pointer;
-  font-weight: 600;
+  font-weight: 700;
+  font-size: 17px;
+}
+
+@media (max-width: 900px) {
+  .modal {
+    padding: 20px;
+    width: min(96vw, 760px);
+  }
+
+  .wizardCard {
+    padding: 18px;
+  }
+
+  .wizardCardTitle {
+    font-size: 36px;
+    margin-bottom: 10px;
+  }
+
+  .wizardStep {
+    margin-top: 16px;
+  }
+
+  .pillRow {
+    gap: 8px;
+  }
+
+  .pill,
+  .pillActive {
+    padding: 7px 12px;
+    font-size: 15px;
+  }
 }
 
 .jobTourAccessModal {
@@ -3583,7 +3763,7 @@ details:not([open]) .filterSummary::after {
     align-items: flex-start;
   }
 
-  .spotlightIcon {
+  .spotlightVisual {
     margin-top: 6px;
   }
 

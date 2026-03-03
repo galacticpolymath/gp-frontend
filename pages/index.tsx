@@ -6,7 +6,6 @@ import {
   FiBookOpen,
   FiGrid,
   FiLayers,
-  FiPlay,
   FiPlayCircle,
   FiShare2,
   FiStar,
@@ -29,11 +28,12 @@ import {
   Rocket,
   School,
   Search,
+  Sparkles,
   SquareCheckBig,
   Youtube,
+  WandSparkles,
 } from "lucide-react";
 import type { IconBaseProps } from "react-icons";
-import { MdOutlineSchool } from "react-icons/md";
 import { toast } from "react-hot-toast";
 import styles from "./home.module.css";
 import { getUnitLessons, retrieveUnits } from "../backend/services/unitServices";
@@ -290,6 +290,8 @@ interface PreviewResource {
   searchGist?: string;
   searchFeaturedMedia?: string[];
   searchLessonDetails?: string[];
+  searchUnitTags?: string[];
+  searchLessonTags?: string[];
 }
 
 interface ResourceSearchMatchCategory {
@@ -352,22 +354,11 @@ const pressHighlights = [
 
 const spotlightResources = [
   {
-    id: "starter",
-    title: "GP Classroom Starter",
-    eyebrow: "Teacher Orientation",
-    description:
-      "A short path to understand how to teach with GP in your first week.",
-    meta: "15 minutes · Printable checklist",
-    icon: FiPlayCircle,
-  },
-  {
     id: "wizard",
     title: "Not sure where to begin?",
     eyebrow: "Easy Start Wizard",
     description:
-      "Answer three quick prompts and we will route you to the best unit, app, or video to start today.",
-    meta: "3 prompts · Personalized",
-    icon: FiPlay,
+      "Tell us 3 things and we'll route you the best resources.",
   },
   {
     id: "lesson",
@@ -375,10 +366,34 @@ const spotlightResources = [
     eyebrow: "Launch Lesson",
     description:
       "Introduce authentic science with diverse researchers and field stories.",
-    meta: "1 class period · Free",
-    icon: MdOutlineSchool,
   },
 ];
+
+const wizardGradeBands = [
+  "Upper Elementary",
+  "Middle School",
+  "High School",
+  "College",
+] as const;
+
+const wizardSubjectFocuses = [
+  "Life Science",
+  "Earth & Space",
+  "General Science",
+  "Engineering",
+  "Interdisciplinary",
+] as const;
+
+const wizardStudentGoals = [
+  "Authentic research",
+  "Career connections",
+  "Question formation",
+  "Data Literacy",
+] as const;
+
+type WizardGradeBand = (typeof wizardGradeBands)[number];
+type WizardSubjectFocus = (typeof wizardSubjectFocuses)[number];
+type WizardStudentGoal = (typeof wizardStudentGoals)[number];
 
 const carouselImages = [
   "/imgs/classroomImages/homeCarousel/1-IMG_9600-EDIT (1).jpg",
@@ -1067,6 +1082,12 @@ export default function HomePage({
   const [activeModal, setActiveModal] = useState<"wizard" | "media" | null>(
     null
   );
+  const [wizardGradeBand, setWizardGradeBand] =
+    useState<WizardGradeBand>("Middle School");
+  const [wizardSubjectFocus, setWizardSubjectFocus] =
+    useState<WizardSubjectFocus>("General Science");
+  const [wizardStudentGoal, setWizardStudentGoal] =
+    useState<WizardStudentGoal>("Authentic research");
   const [activeMedia, setActiveMedia] = useState<MediaItem | null>(null);
   const modalRef = useRef<HTMLDivElement | null>(null);
   const closeButtonRef = useRef<HTMLButtonElement | null>(null);
@@ -1108,6 +1129,34 @@ export default function HomePage({
   const [selectedCreators, setSelectedCreators] = useState<CreatorFilter[]>([]);
   const [tourScope, setTourScope] = useState<"" | "unit" | "community">("");
   const [queryHydrated, setQueryHydrated] = useState(false);
+  const sciJourneysLessonPreview = useMemo(() => {
+    const normalizedNeedle = "scijourneys";
+    const sciJourneysUnit =
+      allUnits.find((unit) =>
+        unit.title.toLowerCase().replace(/\s+/g, "").includes(normalizedNeedle)
+      ) ?? null;
+    const sciJourneysLesson =
+      lessons.find((lesson) => {
+        const lessonUnitTitle = lesson.unitTitle ?? "";
+        return (
+          lesson.lessonPartNum === 1 &&
+          lessonUnitTitle.toLowerCase().replace(/\s+/g, "").includes(normalizedNeedle)
+        );
+      }) ?? null;
+
+    const href = sciJourneysLesson?.lessonPartPath?.trim()
+      ? sciJourneysLesson.lessonPartPath.trim()
+      : sciJourneysUnit?.id
+        ? `${buildUnitPath(sciJourneysUnit.id)}#lesson_part_1`
+        : "/search?q=SciJourneys&typeFilter=Lesson";
+
+    const tile =
+      sciJourneysLesson?.tile?.trim() ||
+      sciJourneysUnit?.bannerUrl ||
+      "/imgs/lessons/lessons-hero.png";
+
+    return { href, tile };
+  }, [allUnits, lessons]);
   const handleTabClick = (tab: NavTab) => {
     const nextTypes =
       tab === "Units"
@@ -1283,6 +1332,10 @@ export default function HomePage({
       setSelectedContentTypes([...CONTENT_TYPES]);
       setSearchInputValue(nextQuery);
       setIsSearchTransitioning(true);
+      setQueryHydrated(false);
+      if (typeof window !== "undefined") {
+        document.body.style.overflow = "hidden";
+      }
       try {
         await new Promise((resolve) => window.setTimeout(resolve, 160));
         await router.push({
@@ -1290,9 +1343,17 @@ export default function HomePage({
           query: buildQueryObject({
             q: nextQuery || undefined,
           }),
-        });
-      } finally {
+        }, undefined, { scroll: false });
+        if (typeof window !== "undefined") {
+          window.scrollTo({ top: 0, behavior: "auto" });
+        }
+      } catch {
         setIsSearchTransitioning(false);
+        if (typeof window !== "undefined") {
+          document.body.style.removeProperty("overflow");
+        }
+      } finally {
+        // Transition is released after query hydration to avoid jumpy intermediate renders.
       }
     },
     [router, searchInputValue]
@@ -1329,6 +1390,69 @@ export default function HomePage({
     }
   };
   const handleOpenWizard = () => setActiveModal("wizard");
+  const handleRunWizardSearch = async () => {
+    const searchCandidates = [
+      (() => {
+        switch (wizardStudentGoal) {
+          case "Career connections":
+            return "career";
+          case "Question formation":
+            return "question";
+          case "Data Literacy":
+            return "data";
+          default:
+            return "research";
+        }
+      })(),
+      (() => {
+        switch (wizardSubjectFocus) {
+          case "Life Science":
+            return "life";
+          case "Earth & Space":
+            return "earth";
+          case "Engineering":
+            return "engineering";
+          case "Interdisciplinary":
+            return "interdisciplinary";
+          default:
+            return "science";
+        }
+      })(),
+      "lesson",
+    ];
+    const queryText =
+      searchCandidates.find((candidate) =>
+        allResources.some((resource) =>
+          buildSearchMatchResult(resource, candidate).queryMatches
+        )
+      ) ?? "";
+    setActiveModal(null);
+    setActiveMedia(null);
+    setSearchInputValue(queryText);
+    setSearchQuery(queryText);
+    setDebouncedSearchQuery(queryText);
+    setIsSearchTransitioning(true);
+    setQueryHydrated(false);
+    if (typeof window !== "undefined") {
+      document.body.style.overflow = "hidden";
+    }
+    try {
+      await router.push({
+        pathname: "/search",
+        query: buildQueryObject({
+          q: queryText || undefined,
+        }),
+      }, undefined, { scroll: false });
+      if (typeof window !== "undefined") {
+        window.scrollTo({ top: 0, behavior: "auto" });
+      }
+    } catch {
+      setIsSearchTransitioning(false);
+      if (typeof window !== "undefined") {
+        document.body.style.removeProperty("overflow");
+      }
+    }
+  };
   const handleCloseModal = () => {
     setActiveModal(null);
     setActiveMedia(null);
@@ -1627,10 +1751,19 @@ export default function HomePage({
         lesson.grades || lesson.gradesOrYears || unit?.grades || "Grades 6-12";
       const gradeBandGroup = getGradeBandGroup(gradeLabel);
       const alignedSubjects = unit?.subjectConnections ?? [];
+      const rawLessonTags = (lesson as { lsnTags?: unknown }).lsnTags;
+      const lsnTags = Array.isArray(rawLessonTags)
+        ? rawLessonTags
+            .filter((value): value is string => typeof value === "string")
+            .map((value) => value.trim())
+            .filter(Boolean)
+        : [];
       const tags =
-        lesson.tags && lesson.tags.length
-          ? lesson.tags
-          : unit?.unitTags ?? [];
+        lsnTags.length > 0
+          ? lsnTags
+          : lesson.tags && lesson.tags.length
+            ? lesson.tags
+            : [];
       const lessonHref =
         typeof lesson.lessonPartPath === "string" && lesson.lessonPartPath.trim()
           ? lesson.lessonPartPath.trim()
@@ -1673,6 +1806,8 @@ export default function HomePage({
         searchCareerConnections: unit?.careerConnections ?? [],
         searchGist: unit?.gist ?? "",
         searchFeaturedMedia: (unit?.media ?? []).map((item) => item.title),
+        searchUnitTags: unit?.unitTags ?? [],
+        searchLessonTags: tags,
         searchLessonDetails: [
           lesson.lessonPartPath ?? "",
           lesson.unitTitle ?? "",
@@ -1848,6 +1983,20 @@ export default function HomePage({
     const gradeBandText = (resource.gradeBand ?? "").toString();
     const tagsText = resource.tags.join(" ");
     const tourStopTerms = resource.searchTourStops ?? [];
+    const unitTagMatches = getMatchedValues(tokens, resource.searchUnitTags ?? []);
+    if (unitTagMatches.length) {
+      hiddenCategories.push({
+        label: "Unit tags",
+        values: unitTagMatches,
+      });
+    }
+    const lessonTagMatches = getMatchedValues(tokens, resource.searchLessonTags ?? []);
+    if (resource.type === "Lesson" && lessonTagMatches.length) {
+      hiddenCategories.push({
+        label: "Lesson tags",
+        values: lessonTagMatches,
+      });
+    }
     const targetStandardsMatches = getMatchedValues(
       tokens,
       resource.searchTargetStandards ?? []
@@ -1897,6 +2046,17 @@ export default function HomePage({
       });
     }
 
+    if (
+      resource.type === "Lesson" &&
+      descriptionText &&
+      tokens.some((token) => fuzzyTokenMatch(token, descriptionText))
+    ) {
+      hiddenCategories.push({
+        label: "Lesson preface",
+        values: [getSnippet(descriptionText, query) || descriptionText],
+      });
+    }
+
     const gistText = resource.searchGist ?? "";
     const gistMatched = tokens.some((token) => fuzzyTokenMatch(token, gistText));
     if (gistMatched) {
@@ -1915,6 +2075,8 @@ export default function HomePage({
       ...(resource.searchCareerConnections ?? []),
       ...(resource.searchFeaturedMedia ?? []),
       ...(resource.searchLessonDetails ?? []),
+      ...(resource.searchUnitTags ?? []),
+      ...(resource.searchLessonTags ?? []),
       gistText,
     ].filter(Boolean);
     const tokenCoverage = tokens.every((token) =>
@@ -1936,6 +2098,12 @@ export default function HomePage({
       }
       if (fuzzyTokenMatch(token, tagsText)) {
         relevanceScore += 16;
+      }
+      if ((resource.searchUnitTags ?? []).some((value) => fuzzyTokenMatch(token, value))) {
+        relevanceScore += 8;
+      }
+      if ((resource.searchLessonTags ?? []).some((value) => fuzzyTokenMatch(token, value))) {
+        relevanceScore += 12;
       }
       if ((resource.searchCareerConnections ?? []).some((value) => fuzzyTokenMatch(token, value))) {
         relevanceScore += 12;
@@ -2802,6 +2970,22 @@ export default function HomePage({
     userId,
   ]);
 
+  useEffect(() => {
+    if (!isSearchTransitioning) return;
+    if (!isSearchRoute || !queryHydrated) return;
+    const raf = window.requestAnimationFrame(() => {
+      window.scrollTo({ top: 0, behavior: "auto" });
+    });
+    const timeout = window.setTimeout(() => {
+      setIsSearchTransitioning(false);
+      document.body.style.removeProperty("overflow");
+    }, 180);
+    return () => {
+      window.cancelAnimationFrame(raf);
+      window.clearTimeout(timeout);
+    };
+  }, [isSearchTransitioning, isSearchRoute, queryHydrated]);
+
   // nav handled by shared PortalNav component
 
   useEffect(() => {
@@ -2860,7 +3044,7 @@ export default function HomePage({
       </Head>
       <div
         className={`${styles.page} ${
-          isSearchTransitioning && !isSearchRoute ? styles.pageSearchTransitioning : ""
+          isSearchTransitioning ? styles.pageSearchTransitioning : ""
         }`}
       >
         <PortalNav
@@ -3573,7 +3757,14 @@ export default function HomePage({
                                               className={styles.rowMatchLine}
                                             >
                                               <strong>{category.label}:</strong>{" "}
-                                              {summarizeCategoryValues(category.values, 2).join(", ")}
+                                              {summarizeCategoryValues(category.values, 2).map(
+                                                (value, idx) => (
+                                                  <React.Fragment key={`${value}-${idx}`}>
+                                                    {idx > 0 ? ", " : ""}
+                                                    {highlightText(value, searchQuery)}
+                                                  </React.Fragment>
+                                                )
+                                              )}
                                             </span>
                                           ))}
                                         </div>
@@ -3648,7 +3839,8 @@ export default function HomePage({
                                           }
                                         >
                                           {resource.type === "Video" ||
-                                            resource.type === "App" ? (
+                                          resource.type === "App" ||
+                                          resource.type === "Lesson" ? (
                                             <span
                                               className={styles.resourceFromLine}
                                               style={{ display: "block" }}
@@ -3683,7 +3875,14 @@ export default function HomePage({
                                             className={styles.rowMatchLine}
                                           >
                                             <strong>{category.label}:</strong>{" "}
-                                            {summarizeCategoryValues(category.values, 2).join(", ")}
+                                            {summarizeCategoryValues(category.values, 2).map(
+                                              (value, idx) => (
+                                                <React.Fragment key={`${value}-${idx}`}>
+                                                  {idx > 0 ? ", " : ""}
+                                                  {highlightText(value, searchQuery)}
+                                                </React.Fragment>
+                                              )
+                                            )}
                                           </span>
                                         ))}
                                       </div>
@@ -3891,7 +4090,9 @@ export default function HomePage({
                                 <div className={styles.resourceContent}>
                                   <h3>{highlightText(resource.title, searchQuery)}</h3>
                                   <p className={styles.resourceDescription}>
-                                    {resource.type === "Video" || resource.type === "App" ? (
+                                    {resource.type === "Video" ||
+                                    resource.type === "App" ||
+                                    resource.type === "Lesson" ? (
                                       <span className={styles.resourceFromLine}>
                                         <CornerDownRight aria-hidden="true" />
                                         <span>
@@ -4178,11 +4379,14 @@ export default function HomePage({
                 <div className={styles.sectionInner}>
                   <div className={styles.sectionHeader}>
                     <div>
-                      <p className={styles.sectionKicker}>Start Here</p>
+                      <p className={styles.sectionKicker}>
+                        <FiPlayCircle className={styles.sectionKickerIcon} aria-hidden="true" />
+                        Start Here
+                      </p>
                       <h2>Pick your starting point</h2>
                       <p>
-                        Start with a guide, a data-rich app, or a ready-to-teach
-                        launch lesson.
+                        Start with a personalized route or jump straight into a
+                        ready-to-teach launch lesson.
                       </p>
                     </div>
                   </div>
@@ -4200,20 +4404,47 @@ export default function HomePage({
                         </p>
                         <div className={styles.spotlightTitleRow}>
                           <h3>{resource.title}</h3>
-                          <div className={styles.spotlightIcon}>
-                            <resource.icon />
+                          <div
+                            className={`${styles.spotlightVisual} ${
+                              resource.id === "wizard"
+                                ? styles.spotlightVisualWizard
+                                : styles.spotlightVisualLesson
+                            }`}
+                          >
+                            {resource.id === "wizard" ? (
+                              <img
+                                src="/imgs/gp_logo_white_transBG.png"
+                                alt="Galactic Polymath"
+                                loading="lazy"
+                              />
+                            ) : (
+                              <img
+                                src={sciJourneysLessonPreview.tile}
+                                alt="SciJourneys lesson 1 tile"
+                                loading="lazy"
+                              />
+                            )}
                           </div>
                         </div>
                         <p>{resource.description}</p>
-                        <span className={styles.spotlightMeta}>{resource.meta}</span>
                         {resource.id === "wizard" && (
                           <button
-                            className={styles.secondaryButton}
+                            className={styles.wizardLaunchButton}
                             type="button"
                             onClick={handleOpenWizard}
                           >
-                            Open the Easy Start Wizard
+                            Open the Wizard
+                            <WandSparkles aria-hidden="true" />
                           </button>
+                        )}
+                        {resource.id === "lesson" && (
+                          <Link
+                            className={styles.lessonLaunchButton}
+                            href={sciJourneysLessonPreview.href}
+                          >
+                            Show Me
+                            <Sparkles aria-hidden="true" />
+                          </Link>
                         )}
                       </article>
                     ))}
@@ -4492,11 +4723,11 @@ export default function HomePage({
                     ? "Easy Start Wizard"
                     : activeMedia?.type ?? "Media preview"}
                 </p>
-                <h2 className={styles.modalTitle}>
-                  {activeModal === "wizard"
-                    ? "Tell us your goals"
-                    : activeMedia?.title ?? "Preview"}
-                </h2>
+                {activeModal !== "wizard" && (
+                  <h2 className={styles.modalTitle}>
+                    {activeMedia?.title ?? "Preview"}
+                  </h2>
+                )}
               </div>
               <button
                 className={styles.modalClose}
@@ -4509,51 +4740,66 @@ export default function HomePage({
             </div>
             {activeModal === "wizard" && (
               <div className={styles.wizardCard}>
-                <div className={styles.wizardHeader}>
-                  <div>
-                    <p className={styles.wizardKicker}>Easy Start Wizard</p>
-                    <h2>Tell us your goals</h2>
-                  </div>
-                  <span className={styles.wizardBadge}>3 steps</span>
-                </div>
+                <h2 className={styles.wizardCardTitle}>Tell us your goals</h2>
                 <div className={styles.wizardStep}>
                   <p>1. Which grade band do you teach?</p>
                   <div className={styles.pillRow}>
-                    <span className={styles.pill}>Upper Elementary</span>
-                    <span className={styles.pillActive}>Middle School</span>
-                    <span className={styles.pill}>High School</span>
-                    <span className={styles.pill}>College</span>
+                    {wizardGradeBands.map((option) => (
+                      <button
+                        key={option}
+                        type="button"
+                        className={
+                          option === wizardGradeBand ? styles.pillActive : styles.pill
+                        }
+                        onClick={() => setWizardGradeBand(option)}
+                      >
+                        {option}
+                      </button>
+                    ))}
                   </div>
                 </div>
                 <div className={styles.wizardStep}>
                   <p>2. Which subject focus fits you best?</p>
                   <div className={styles.pillRow}>
-                    <span className={styles.pill}>Life Science</span>
-                    <span className={styles.pill}>Earth &amp; Space</span>
-                    <span className={styles.pillActive}>STEM + Careers</span>
-                    <span className={styles.pill}>Engineering</span>
+                    {wizardSubjectFocuses.map((option) => (
+                      <button
+                        key={option}
+                        type="button"
+                        className={
+                          option === wizardSubjectFocus ? styles.pillActive : styles.pill
+                        }
+                        onClick={() => setWizardSubjectFocus(option)}
+                      >
+                        {option}
+                      </button>
+                    ))}
                   </div>
                 </div>
                 <div className={styles.wizardStep}>
                   <p>3. What do you want students to practice?</p>
                   <div className={styles.pillRow}>
-                    <span className={styles.pillActive}>
-                      Authentic research
-                    </span>
-                    <span className={styles.pill}>Career connections</span>
-                    <span className={styles.pill}>Question formation</span>
+                    {wizardStudentGoals.map((option) => (
+                      <button
+                        key={option}
+                        type="button"
+                        className={
+                          option === wizardStudentGoal ? styles.pillActive : styles.pill
+                        }
+                        onClick={() => setWizardStudentGoal(option)}
+                      >
+                        {option}
+                      </button>
+                    ))}
                   </div>
                 </div>
                 <div className={styles.wizardFooter}>
-                  <button className={styles.primaryButton} type="button">
-                    Build my path
-                  </button>
                   <button
-                    className={styles.ghostButton}
+                    className={styles.wizardSubmitButton}
                     type="button"
-                    onClick={handleCloseModal}
+                    onClick={handleRunWizardSearch}
                   >
-                    Close wizard
+                    Find Resources!
+                    <WandSparkles aria-hidden="true" />
                   </button>
                 </div>
               </div>
