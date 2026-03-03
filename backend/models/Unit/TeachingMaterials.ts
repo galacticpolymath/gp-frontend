@@ -57,12 +57,12 @@ const ItemSchemaV2 = new Schema<IItemV2>(
 );
 const LsngPrepSchema = new Schema<ILsnPrep>(
   {
-    title: String,
-    dur: Number,
-    quickDescription: String,
-    details: String,
-    variantNotes: String,
-    teachingTips: String,
+    prepTitle: String,
+    prepDur: Number,
+    prepQuickDescription: String,
+    prepDetails: String,
+    prepVariantNotes: String,
+    prepTeachingTips: String,
   },
   { _id: false }
 );

@@ -3184,11 +3184,45 @@
   gap: 0;
 }
 
+.lessonPrepSection {
+  display: grid;
+  gap: 8px;
+  padding: 0 2px 2px;
+  margin-bottom: 4px;
+}
+
+.lessonPrepHeader {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--color-brand-hydro-blue, #2c83c3);
+}
+
+.lessonPrepHeader h4 {
+  margin: 0;
+  font-size: 21px;
+  font-weight: 400;
+  line-height: 1.2;
+  color: var(--color-brand-hydro-blue, #2c83c3);
+}
+
+.lessonPrepDuration {
+  font-size: 18px;
+  line-height: 1.2;
+  font-weight: 400;
+  color: var(--color-brand-hydro-blue, #2c83c3);
+}
+
+.lessonPrepAside {
+  display: grid;
+  gap: 6px;
+}
+
 .lessonChunkHeader {
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  gap: 2px;
+  gap: 6px;
   flex-wrap: wrap;
 }
 
@@ -3198,29 +3232,31 @@
   position: relative;
 }
 
-.lessonChunkHeader h5 {
+.lessonChunkTitle {
   margin: 0;
-  font-size: 16px;
-  color: #152746;
-  font-weight: 700;
+  font-size: 21px;
+  line-height: 1.2;
+  color: var(--color-brand-hydro-blue, #2c83c3);
+  font-weight: 400;
 }
 
 .lessonChunkDuration {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 3px;
-  border-radius: 999px;
-  padding: 2px 6px;
-  font-size: 15px;
-  font-weight: 700;
-  color: #1f355a;
-  background: rgba(255, 255, 255, 0.9);
+  gap: 4px;
+  border-radius: 0;
+  padding: 0;
+  font-size: 21px;
+  line-height: 1.2;
+  font-weight: 400;
+  color: var(--color-brand-hydro-blue, #2c83c3);
+  background: transparent;
 }
 
 .lessonChunkDuration svg {
-  width: 11px;
-  height: 11px;
+  width: 16px;
+  height: 16px;
 }
 
 .lessonChunkGraph {
@@ -3342,6 +3378,7 @@
 .lessonStepAside {
   display: grid;
   gap: 6px;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
 }
 
 .stepInfoBlock {
@@ -3349,6 +3386,8 @@
   border-radius: 8px;
   background: rgba(240, 244, 255, 0.66);
   padding: 5px 7px;
+  min-width: 0;
+  height: 100%;
 }
 
 .stepInfoBlock h6 {
@@ -3357,6 +3396,26 @@
   font-size: 14px;
   text-transform: uppercase;
   letter-spacing: 0.04em;
+}
+
+.stepInfoHeading {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.stepInfoHeading svg {
+  flex-shrink: 0;
+}
+
+.stepInfoBlockTeachingTips {
+  border-color: rgba(44, 131, 195, 0.14);
+  background: rgba(240, 244, 255, 0.66);
+}
+
+.stepInfoBlockVariantNotes {
+  border-color: rgba(108, 45, 130, 0.24);
+  background: rgba(108, 45, 130, 0.12);
 }
 
 .stepInfoBlock :global(p),
@@ -4227,13 +4286,13 @@
   }
 
   .lessonChunkDuration {
-    font-size: 15px;
-    padding: 1px 5px;
+    font-size: 21px;
+    padding: 0;
   }
 
   .lessonChunkDuration svg {
-    width: 10px;
-    height: 10px;
+    width: 14px;
+    height: 14px;
   }
 
   .materialRow {
@@ -4435,9 +4494,13 @@
     grid-template-columns: fit-content(380px) minmax(0, 1fr);
   }
 
-  .lessonStep {
+  .lessonStepWithAside {
     grid-template-columns: minmax(0, 1.45fr) minmax(220px, 0.55fr);
     align-items: start;
+  }
+
+  .lessonStepFullWidth {
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .lessonStepMain {

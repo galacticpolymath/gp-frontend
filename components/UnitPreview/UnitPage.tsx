@@ -10,6 +10,7 @@ import {
   Blocks,
   ArrowRight,
   Apple,
+  BookA,
   BowArrow,
   CircleAlert,
   ChevronUp,
@@ -31,6 +32,8 @@ import {
   Network,
   NotebookPen,
   Printer,
+  Split,
+  Lightbulb,
   TextSearch,
   SquareArrowOutUpRight,
   Target,
@@ -73,6 +76,7 @@ const TAB_MATERIALS = 'materials';
 const TAB_STANDARDS = 'standards';
 const TAB_BACKGROUND = 'background';
 const TAB_CREDITS = 'credits';
+const LESSON_TILE_FALLBACK_SRC = '/imgs/gp_logo_gradient_transBG.png';
 
 type TTabKey =
   | typeof TAB_OVERVIEW
@@ -3471,43 +3475,108 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
     showLinkOutAction: boolean,
     showPanelHeading = true,
     panelClassName?: string
-  ) => (
-    <div
-      className={
-        panelClassName
-          ? `${styles.lessonProcedureInPreview} ${panelClassName}`
-          : styles.lessonProcedureInPreview
-      }
-    >
-      <div className={styles.lessonProcedureHeader}>
-        {(showPanelHeading || showLinkOutAction) && (
-          <div className={styles.lessonProcedureHeaderTop}>
-            {showPanelHeading ? (
-              <h3 className={styles.lessonCardHeading}>
-                <Apple size={16} aria-hidden="true" />
-                <span>Lesson Procedure</span>
-              </h3>
-            ) : (
-              <span />
-            )}
-            {showLinkOutAction && (
-              <button
-                type="button"
-                className={styles.procedureLinkOutBtn}
-                onClick={handleOpenProcedureInNewTab}
-              >
-                <span>Open in New Tab</span>
-                <SquareArrowOutUpRight size={13} aria-hidden="true" />
-              </button>
-            )}
-          </div>
-        )}
-        {showPanelHeading && (
-          <span>Chunk-by-chunk guidance with vocab and teacher notes.</span>
-        )}
-      </div>
-      <div className={styles.lessonProcedureContent}>
-        {activeLesson?.chunks?.map((chunk, index) => (
+  ) => {
+    const prep = activeLesson?.lsnPrep;
+    const prepTitle = prep?.prepTitle;
+    const prepDur = prep?.prepDur;
+    const prepQuickDescription = prep?.prepQuickDescription;
+    const prepDetails = prep?.prepDetails;
+    const prepTeachingTips = prep?.prepTeachingTips;
+    const prepVariantNotes = prep?.prepVariantNotes;
+    const hasPrepContent = Boolean(
+      prep &&
+        (prepTitle ||
+          prepDur != null ||
+          prepQuickDescription ||
+          prepDetails ||
+          prepTeachingTips ||
+          prepVariantNotes)
+    );
+
+    return (
+      <div
+        className={
+          panelClassName
+            ? `${styles.lessonProcedureInPreview} ${panelClassName}`
+            : styles.lessonProcedureInPreview
+        }
+      >
+        <div className={styles.lessonProcedureHeader}>
+          {(showPanelHeading || showLinkOutAction) && (
+            <div className={styles.lessonProcedureHeaderTop}>
+              {showPanelHeading ? (
+                <h3 className={styles.lessonCardHeading}>
+                  <Apple size={16} aria-hidden="true" />
+                  <span>Lesson Procedure</span>
+                </h3>
+              ) : (
+                <span />
+              )}
+              {showLinkOutAction && (
+                <button
+                  type="button"
+                  className={styles.procedureLinkOutBtn}
+                  onClick={handleOpenProcedureInNewTab}
+                >
+                  <span>Open in New Tab</span>
+                  <SquareArrowOutUpRight size={13} aria-hidden="true" />
+                </button>
+              )}
+            </div>
+          )}
+          {showPanelHeading && (
+            <span>Chunk-by-chunk guidance with vocab and teacher notes.</span>
+          )}
+        </div>
+        <div className={styles.lessonProcedureContent}>
+          {hasPrepContent && (
+            <section className={styles.lessonPrepSection}>
+              <div className={styles.lessonPrepHeader}>
+                <Clock3 size={16} aria-hidden="true" />
+                {prepDur != null && (
+                  <span className={styles.lessonPrepDuration}>
+                    {prepDur} min
+                  </span>
+                )}
+                <h4>{prepTitle ?? 'Prep'}</h4>
+              </div>
+              {prepQuickDescription && (
+                <div className={styles.lessonStepQuickDescription}>
+                  <RichText content={prepQuickDescription} />
+                </div>
+              )}
+              {prepDetails && (
+                <div className={styles.lessonStepDetails}>
+                  <RichText content={prepDetails} />
+                </div>
+              )}
+              <aside className={styles.lessonPrepAside}>
+                {!!prepTeachingTips && (
+                  <div
+                    className={`${styles.stepInfoBlock} ${styles.stepInfoBlockTeachingTips}`}
+                  >
+                    <h6 className={styles.stepInfoHeading}>
+                      <Lightbulb size={14} aria-hidden="true" />
+                      <span>Teaching tips</span>
+                    </h6>
+                    <RichText content={prepTeachingTips} />
+                  </div>
+                )}
+                {!!prepVariantNotes && (
+                  <div
+                    className={`${styles.stepInfoBlock} ${styles.stepInfoBlockVariantNotes}`}
+                  >
+                    <h6 className={styles.stepInfoHeading}>
+                      <Split size={14} aria-hidden="true" />
+                      <span>Variant notes</span>
+                    </h6>
+                    <RichText content={prepVariantNotes} />
+                  </div>
+                )}
+              </aside>
+            </section>
+          )}
+          {activeLesson?.chunks?.map((chunk, index) => (
           <article
             key={`${chunk.chunkTitle}-${index}`}
             className={styles.lessonChunk}
@@ -3523,10 +3592,12 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                 {typeof chunk.chunkDur === 'number' ? (
                   <span className={styles.lessonChunkDuration}>
                     <Clock3 size={12} aria-hidden="true" />
-                    <span>{chunk.chunkDur} min</span>
+                    <span>{chunk.chunkDur} min:</span>
                   </span>
                 ) : null}
-                <h5>{chunk.chunkTitle ?? 'Lesson segment'}</h5>
+                <h5 className={styles.lessonChunkTitle}>
+                  {chunk.chunkTitle ?? 'Lesson segment'}
+                </h5>
               </div>
               {!!chunkDurations.length && (
                 <ChunkGraph
@@ -3558,11 +3629,18 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                     stepDur?: number | string | null;
                   }
                 );
+                const hasStepAsideContent = Boolean(
+                  step.Vocab || step.TeachingTips || step.VariantNotes
+                );
 
                 return (
                   <div
                     key={`${step.StepTitle}-${idx}`}
-                    className={styles.lessonStep}
+                    className={`${styles.lessonStep} ${
+                      hasStepAsideContent
+                        ? styles.lessonStepWithAside
+                        : styles.lessonStepFullWidth
+                    }`}
                   >
                     <div className={styles.lessonStepMain}>
                       <div className={styles.lessonStepTitleRow}>
@@ -3587,27 +3665,42 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                           <RichText content={step.StepDetails} />
                         </div>
                       )}
-                      {!!step.Vocab && (
-                        <div className={styles.stepInfoBlock}>
-                          <h6>Vocabulary</h6>
-                          <RichText content={step.Vocab} />
-                        </div>
-                      )}
                     </div>
-                    <aside className={styles.lessonStepAside}>
-                      {!!step.TeachingTips && (
-                        <div className={styles.stepInfoBlock}>
-                          <h6>Teaching tips</h6>
-                          <RichText content={step.TeachingTips} />
-                        </div>
-                      )}
-                      {!!step.VariantNotes && (
-                        <div className={styles.stepInfoBlock}>
-                          <h6>Variant notes</h6>
-                          <RichText content={step.VariantNotes} />
-                        </div>
-                      )}
-                    </aside>
+                    {hasStepAsideContent && (
+                      <aside className={styles.lessonStepAside}>
+                        {!!step.Vocab && (
+                          <div className={styles.stepInfoBlock}>
+                            <h6 className={styles.stepInfoHeading}>
+                              <BookA size={14} aria-hidden="true" />
+                              <span>Vocabulary</span>
+                            </h6>
+                            <RichText content={step.Vocab} />
+                          </div>
+                        )}
+                        {!!step.TeachingTips && (
+                          <div
+                            className={`${styles.stepInfoBlock} ${styles.stepInfoBlockTeachingTips}`}
+                          >
+                            <h6 className={styles.stepInfoHeading}>
+                              <Lightbulb size={14} aria-hidden="true" />
+                              <span>Teaching tips</span>
+                            </h6>
+                            <RichText content={step.TeachingTips} />
+                          </div>
+                        )}
+                        {!!step.VariantNotes && (
+                          <div
+                            className={`${styles.stepInfoBlock} ${styles.stepInfoBlockVariantNotes}`}
+                          >
+                            <h6 className={styles.stepInfoHeading}>
+                              <Split size={14} aria-hidden="true" />
+                              <span>Variant notes</span>
+                            </h6>
+                            <RichText content={step.VariantNotes} />
+                          </div>
+                        )}
+                      </aside>
+                    )}
                   </div>
                 );
               });
@@ -3622,7 +3715,8 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
         <p className={styles.procedureEndMarker}>End</p>
       </div>
     </div>
-  );
+    );
+  };
 
   const handleGradeBandFilter = (gradeBand: TGradeBand) => {
     setSelectedGradeBands((current) => {
@@ -3666,6 +3760,15 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
     setSelectedGradeBands(['all']);
     setSelectedSubjects(['all']);
     trackUnitEvent('unit_standards_filters_reset');
+  };
+  const handleProcedureReturnClick = (
+    event: React.MouseEvent<HTMLAnchorElement>
+  ) => {
+    event.preventDefault();
+    if (typeof window === 'undefined') {
+      return;
+    }
+    window.location.assign(procedureReturnHref);
   };
   const handlePrintProcedure = () => {
     if (typeof window === 'undefined') {
@@ -3891,7 +3994,16 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                               height={22}
                             />
                           </span>
-                        ) : null}
+                        ) : (
+                          <span className={styles.lessonSubtabThumb} aria-hidden="true">
+                            <Image
+                              src={LESSON_TILE_FALLBACK_SRC}
+                              alt=""
+                              width={22}
+                              height={22}
+                            />
+                          </span>
+                        )}
                         <span>{isAssessment ? 'Assess' : lessonId}</span>
                       </button>
                     );
@@ -4188,9 +4300,10 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                         </button>
                       </div>
                       <div className={styles.procedureStandaloneHeaderRow}>
-                        <Link
+                        <a
                           href={procedureReturnHref}
                           className={styles.procedureReturnLink}
+                          onClick={handleProcedureReturnClick}
                         >
                           {unitBanner && (
                             <span className={styles.procedureReturnBanner} aria-hidden="true">
@@ -4210,18 +4323,16 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                               {activeLesson.title ? `: ${activeLesson.title}` : ''}
                             </span>
                           </span>
-                          {activeLesson.tile && (
-                            <span className={styles.procedureReturnTile} aria-hidden="true">
-                              <Image
-                                src={activeLesson.tile}
-                                alt=""
-                                fill
-                                sizes="74px"
-                                style={{ objectFit: 'cover' }}
-                              />
-                            </span>
-                          )}
-                        </Link>
+                          <span className={styles.procedureReturnTile} aria-hidden="true">
+                            <Image
+                              src={activeLesson.tile || LESSON_TILE_FALLBACK_SRC}
+                              alt=""
+                              fill
+                              sizes="74px"
+                              style={{ objectFit: 'cover' }}
+                            />
+                          </span>
+                        </a>
                         <div className={styles.procedureReturnQr}>
                           <QRCode
                             value={procedureReturnQrUrl}
@@ -4316,15 +4427,13 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                       )}
                     </div>
                     <div className={styles.lessonSummaryMeta}>
-                      <div className={styles.lessonTileMediaLarge} aria-hidden={!activeLesson.tile}>
-                        {activeLesson.tile ? (
-                          <Image
-                            src={activeLesson.tile}
-                            alt={`${activeLesson.title ?? 'Lesson'} tile`}
-                            width={180}
-                            height={180}
-                          />
-                        ) : null}
+                      <div className={styles.lessonTileMediaLarge} aria-hidden="true">
+                        <Image
+                          src={activeLesson.tile || LESSON_TILE_FALLBACK_SRC}
+                          alt={`${activeLesson.title ?? 'Lesson'} tile`}
+                          width={180}
+                          height={180}
+                        />
                       </div>
                       {activeLesson.status &&
                         ['beta', 'upcoming'].includes(

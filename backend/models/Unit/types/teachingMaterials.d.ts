@@ -113,12 +113,12 @@ export interface IChunk {
 }
 
 export interface ILsnPrep {
-  title: string | null;
-  dur: number | null;
-  quickDescription: string | null;
-  details: string | null;
-  variantNotes: string | null;
-  teachingTips: string | null;
+  prepTitle: string | null;
+  prepDur: number | null;
+  prepQuickDescription: string | null;
+  prepDetails: string | null;
+  prepVariantNotes: string | null;
+  prepTeachingTips: string | null;
 }
 
 export interface ILsnExt {
@@ -165,15 +165,6 @@ export interface ITeachingMaterialsDataForUI<TLesson = ILesson>
   remote: IClassroom<TLesson> | null;
   gatheredVocab: IGatheredVocab | null;
   lesson: ILessonDetail[];
-}
-
-interface ILsnPrep {
-  prepTitle: string;
-  prepDur: number | null;
-  prepQuickDescription: string;
-  prepDetails: string | null;
-  prepVariantNotes: null;
-  prepTeachingTips: null;
 }
 
 interface IChunkStep {
