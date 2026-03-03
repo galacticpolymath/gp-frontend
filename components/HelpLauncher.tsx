@@ -170,7 +170,7 @@ export default function HelpLauncher() {
       </section>
       <button
         type="button"
-        className={`btn btn-dark ${isOpen ? "opacity-75" : ""}`}
+        className={isOpen ? "opacity-75" : ""}
         style={{
           width: "46px",
           height: "46px",
@@ -179,6 +179,11 @@ export default function HelpLauncher() {
           alignItems: "center",
           justifyContent: "center",
           padding: 0,
+          border: "none",
+          boxShadow: "none",
+          outline: "none",
+          background: "#1f2937",
+          color: "#ffffff",
         }}
         onClick={() => setIsOpen((prev) => !prev)}
         aria-expanded={isOpen}

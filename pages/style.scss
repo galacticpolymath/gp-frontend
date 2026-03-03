@@ -71,6 +71,19 @@ body {
   scroll-behavior: smooth;
 }
 
+html,
+body,
+#__next {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+body,
+body.modal-open {
+  padding-right: 0 !important;
+  margin-right: 0 !important;
+}
+
 .list-item:not(:last-child)::after {
   content: ", ";
 }

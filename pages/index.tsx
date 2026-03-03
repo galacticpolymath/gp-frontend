@@ -1281,7 +1281,6 @@ export default function HomePage({
       event?.preventDefault();
       const nextQuery = searchInputValue.trim();
       setSelectedContentTypes([...CONTENT_TYPES]);
-      setSearchQuery(nextQuery);
       setSearchInputValue(nextQuery);
       setIsSearchTransitioning(true);
       try {
@@ -2831,6 +2830,12 @@ export default function HomePage({
     setSelectedContentTypes(["Job Tour"]);
   }, [selectedContentTypes, selectedCreators]);
 
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    document.body.classList.remove("modal-open");
+    document.body.style.removeProperty("padding-right");
+  }, []);
+
   return (
     <>
       <Head>
@@ -2854,8 +2859,9 @@ export default function HomePage({
         <link rel="canonical" href={canonicalUrl} />
       </Head>
       <div
-        className={`${styles.page} ${isSearchTransitioning ? styles.pageSearchTransitioning : ""
-          }`}
+        className={`${styles.page} ${
+          isSearchTransitioning && !isSearchRoute ? styles.pageSearchTransitioning : ""
+        }`}
       >
         <PortalNav
           activeTab={isHomeView ? null : resolvedTab}
@@ -4034,9 +4040,15 @@ export default function HomePage({
                 </div>
                 <div className={styles.heroPanel}>
                   <div className={styles.searchCard}>
-                    <form className={styles.searchBar} onSubmit={handleHomeSearchSubmit}>
+                    <form
+                      className={styles.searchBar}
+                      onSubmit={handleHomeSearchSubmit}
+                      action="/search"
+                      method="get"
+                    >
                       <Search className={styles.searchIcon} aria-hidden="true" />
                       <input
+                        name="q"
                         type="text"
                         placeholder="Search by title, topic, standards, or skill..."
                         aria-label="Search resources"

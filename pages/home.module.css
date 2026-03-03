@@ -7,12 +7,13 @@
     radial-gradient(circle at 85% 8%, rgba(255, 61, 172, 0.1), transparent 40%),
     #f7fbff;
   min-height: 100vh;
+  width: 100%;
 }
 
 .pageSearchTransitioning {
-  opacity: 0.68;
-  transform: translateY(6px);
-  transition: opacity 180ms ease, transform 180ms ease;
+  opacity: 1;
+  transform: none;
+  transition: none;
 }
 
 .hero {
