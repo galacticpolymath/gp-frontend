@@ -1149,7 +1149,7 @@ const LessonDetails: React.FC<IProps> = ({ lesson, unit }) => {
   useEffect(() => {
   });
 
-  const [isProcedureOnlyPreview, setIsProcedureOnlyPreview] = useState(false);
+  const [isStandalonePreview, setIsStandalonePreview] = useState(false);
   useEffect(() => {
     if (typeof window === 'undefined') {
       return;
@@ -1159,7 +1159,8 @@ const LessonDetails: React.FC<IProps> = ({ lesson, unit }) => {
       searchParams.has('procedure-only') ||
       searchParams.get('procedure') === '1' ||
       searchParams.get('procedure') === 'true';
-    setIsProcedureOnlyPreview(isProcedureOnly);
+    const isBackgroundOnly = searchParams.has('background-only');
+    setIsStandalonePreview(isProcedureOnly || isBackgroundOnly);
   }, []);
 
   if (!unit && !lesson && typeof window === 'undefined') {
@@ -1243,7 +1244,7 @@ const LessonDetails: React.FC<IProps> = ({ lesson, unit }) => {
     structuredData,
     locale: _unit.locale ?? DEFAULT_LOCALE,
     keywords: keywordsMeta,
-    showFooter: !isProcedureOnlyPreview,
+    showFooter: !isStandalonePreview,
   };
 
   return (

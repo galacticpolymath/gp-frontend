@@ -281,7 +281,7 @@ const LessonItemsModal: React.FC = () => {
     itemTitle: currentLessonItemName,
     itemCat,
     itemType,
-    externalUrl,
+    externalURL,
     userGDriveItemCopyId
   } = currentLessonItem;
   const itemUrl = useMemo(() => {
@@ -314,7 +314,7 @@ const LessonItemsModal: React.FC = () => {
 
   const handleOpenInNewTabBtnClick = () => {
     const url =
-      itemCat === "web resource" ? externalUrl : currentLessonItemDocUrl;
+      itemCat === "web resource" ? externalURL : currentLessonItemDocUrl;
 
     window.open(url);
   };
@@ -671,7 +671,7 @@ const LessonItemsModal: React.FC = () => {
             {lessonItems.map((item, index) => {
               const url =
                 item.itemCat === "web resource"
-                  ? item.externalUrl
+                  ? item.externalURL
                   : item.docUrl;
               const media = getMediaComponent({
                 type: 'lesson-item-doc',
@@ -694,7 +694,7 @@ const LessonItemsModal: React.FC = () => {
                   key={
                     item.gpGDriveItemId ??
                     item.gdriveRoot ??
-                    item.externalUrl ??
+                    item.externalURL ??
                     item.itemTitle ??
                     index
                   }

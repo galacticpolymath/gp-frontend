@@ -40,7 +40,7 @@ export const defautlNotifyModalVal: INotifyModalVal = {
 
 export interface ILessonItem extends IItemForClient {
   docUrl: string;
-  externalUrl: string;
+  externalURL: string;
 }
 export interface ILessonItemsModal {
   lessonItems: ILessonItem[];

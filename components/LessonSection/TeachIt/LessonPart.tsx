@@ -238,7 +238,7 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
     }
 
     return _itemList.map((item) => {
-      const externalUrl = item.externalUrl ?? item.links?.[0]?.url;
+      const externalURL = item.externalURL ?? item.links?.[0]?.url;
       const itemDocUrl =
         item.itemType === "presentation"
           ? `${item.gdriveRoot}/view`
@@ -246,7 +246,7 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
 
       return {
         ...item,
-        externalUrl,
+        externalURL,
         docUrl: itemDocUrl,
       };
     });

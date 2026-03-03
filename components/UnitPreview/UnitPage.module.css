@@ -2845,6 +2845,12 @@
   flex-wrap: wrap;
 }
 
+.lessonPreviewHeaderActions {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+
 .lessonTitleMarkdown :global(h1),
 .lessonTitleMarkdown :global(h2),
 .lessonTitleMarkdown :global(h3),

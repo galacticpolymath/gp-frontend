@@ -17,7 +17,7 @@ export interface IItemV2Props {
   mimeType: string;
   gdriveRoot: string;
   isExportable: boolean;
-  externalUrl: string;
+  externalURL: string;
   itemType: string;
 }
 

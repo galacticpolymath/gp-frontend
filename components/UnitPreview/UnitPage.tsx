@@ -11,6 +11,7 @@ import {
   ArrowRight,
   Apple,
   BookA,
+  BookOpenText,
   BowArrow,
   CircleAlert,
   ChevronUp,
@@ -74,7 +75,6 @@ import ProfileAvatarRing from '../ProfileAvatarRing';
 const TAB_OVERVIEW = 'overview';
 const TAB_MATERIALS = 'materials';
 const TAB_STANDARDS = 'standards';
-const TAB_BACKGROUND = 'background';
 const TAB_CREDITS = 'credits';
 const LESSON_TILE_FALLBACK_SRC = '/imgs/gp_logo_gradient_transBG.png';
 
@@ -82,7 +82,6 @@ type TTabKey =
   | typeof TAB_OVERVIEW
   | typeof TAB_MATERIALS
   | typeof TAB_STANDARDS
-  | typeof TAB_BACKGROUND
   | typeof TAB_CREDITS;
 
 type TSearchEntry = {
@@ -927,6 +926,7 @@ const getLessonDisplayTitle = <TItem extends IItem = IItemForUI>(
 type TActiveLessonPreviewMode =
   | 'materials'
   | 'procedure'
+  | 'background'
   | 'featured-media'
   | 'going-further'
   | 'jobviz';
@@ -963,7 +963,7 @@ const isAssessmentLesson = <TItem extends IItem = IItemForUI>(
 
 type TPreviewItem = {
   links?: { url: string[] | string | null }[] | null;
-  externalUrl?: string | null;
+  externalURL?: string | null;
   gdriveRoot?: string | null;
   itemType?: string | null;
   itemCat?: string | null;
@@ -1005,8 +1005,8 @@ type TResolvedLessonFolderResponse = {
 };
 
 const getFirstItemUrl = (item?: TPreviewItem) => {
-  if (item?.externalUrl) {
-    return item.externalUrl;
+  if (item?.externalURL) {
+    return item.externalURL;
   }
   const urlValue = item?.links?.[0]?.url;
   if (Array.isArray(urlValue)) {
@@ -1495,19 +1495,6 @@ const buildSearchEntries = (
     });
   }
 
-  const backgroundText = stripHtml(unit.Sections?.background?.Content ?? '');
-  if (backgroundText) {
-    entries.push({
-      id: 'background',
-      tab: TAB_BACKGROUND,
-      title: 'Background',
-      excerpt: buildExcerpt(backgroundText),
-      text: backgroundText,
-      content: normalize(backgroundText),
-      anchorId: 'unit-search-background-content',
-    });
-  }
-
   const acknowledgments = unit.Sections?.acknowledgments;
   const acknowledgementsText = stripHtml(
     acknowledgments?.Data?.map((entry: any) =>
@@ -1656,11 +1643,6 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
           isVisible: flatStandards.length > 0 || !!unit.TargetStandardsCodes?.length,
         },
         {
-          key: TAB_BACKGROUND as TTabKey,
-          label: 'Background',
-          isVisible: !!unit.Sections?.background,
-        },
-        {
           key: TAB_CREDITS as TTabKey,
           label: 'Credits',
           isVisible:
@@ -1700,8 +1682,11 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
   const [activeMaterialIndex, setActiveMaterialIndex] = useState(0);
   const [activeLessonPreviewMode, setActiveLessonPreviewMode] =
     useState<TActiveLessonPreviewMode>('materials');
-  const [isProcedureStandaloneView, setIsProcedureStandaloneView] =
-    useState(false);
+  const [standalonePreviewMode, setStandalonePreviewMode] = useState<
+    'none' | 'procedure' | 'background'
+  >('none');
+  const isStandalonePreview = standalonePreviewMode !== 'none';
+  const isBackgroundStandaloneView = standalonePreviewMode === 'background';
   const [isRetrievingLessonFolderIds, setIsRetrievingLessonFolderIds] =
     useState(false);
   const [resolvedLessonFolderFromApi, setResolvedLessonFolderFromApi] =
@@ -1727,6 +1712,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
   const unitTagListRef = useRef<HTMLDivElement>(null);
   const unitTagMeasureRefs = useRef<Array<HTMLSpanElement | null>>([]);
   const versionNotesAnchorRef = useRef<HTMLDivElement>(null);
+  const hasAutoPrintedStandaloneRef = useRef(false);
   const lessonMaterialsGridRef = useRef<HTMLDivElement>(null);
   const lessonPreviewsCardRef = useRef<HTMLDivElement>(null);
   const [lessonPreviewsCardHeight, setLessonPreviewsCardHeight] = useState<
@@ -1980,6 +1966,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
     if (
       previewValue === 'materials' ||
       previewValue === 'procedure' ||
+      previewValue === 'background' ||
       previewValue === 'featured-media' ||
       previewValue === 'going-further' ||
       previewValue === 'jobviz'
@@ -2002,16 +1989,44 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
     const searchParams = new URLSearchParams(window.location.search);
     const shouldShowProcedureOnly =
       searchParams.has('procedure-only') || searchParams.get('procedure') === '1';
-    setIsProcedureStandaloneView(shouldShowProcedureOnly);
-    if (shouldShowProcedureOnly) {
+    const shouldShowBackgroundOnly = searchParams.has('background-only');
+
+    if (shouldShowProcedureOnly || shouldShowBackgroundOnly) {
+      setStandalonePreviewMode(
+        shouldShowProcedureOnly ? 'procedure' : 'background'
+      );
       const lessonFromQuery = Number.parseInt(searchParams.get('lesson') ?? '', 10);
       if (!Number.isNaN(lessonFromQuery)) {
         setActiveLessonId(lessonFromQuery);
       }
       setActiveTab(TAB_MATERIALS);
-      setActiveLessonPreviewMode('procedure');
+      setActiveLessonPreviewMode(
+        shouldShowProcedureOnly ? 'procedure' : 'background'
+      );
+      return;
     }
+    setStandalonePreviewMode('none');
   }, []);
+
+  useEffect(() => {
+    if (typeof window === 'undefined' || !isStandalonePreview) {
+      hasAutoPrintedStandaloneRef.current = false;
+      return;
+    }
+
+    const searchParams = new URLSearchParams(window.location.search);
+    const shouldAutoPrint = searchParams.get('autoprint') === '1';
+    if (!shouldAutoPrint || hasAutoPrintedStandaloneRef.current) {
+      return;
+    }
+
+    const timer = window.setTimeout(() => {
+      hasAutoPrintedStandaloneRef.current = true;
+      window.print();
+    }, 180);
+
+    return () => window.clearTimeout(timer);
+  }, [isStandalonePreview]);
 
   useEffect(() => {
     if (activeTab !== TAB_MATERIALS) {
@@ -2286,7 +2301,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
       return;
     }
 
-    if (activeTab !== TAB_MATERIALS || isProcedureStandaloneView) {
+    if (activeTab !== TAB_MATERIALS || isStandalonePreview) {
       setLessonPreviewsCardHeight(null);
       return;
     }
@@ -2368,7 +2383,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
     activeMaterialIndex,
     activeLessonPreviewMode,
     activeTab,
-    isProcedureStandaloneView,
+    isStandalonePreview,
   ]);
 
   const activeLessonIndex = lessons.findIndex(
@@ -2393,7 +2408,9 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
     });
   }, [activeLessonId, unit.FeaturedMultimedia]);
   const hasFeaturedMedia = activeLessonFeaturedMedia.length > 0;
+  const hasBackgroundContent = Boolean(unit.Sections?.background?.Content?.trim());
   const isDetailedFlowOpen = activeLessonPreviewMode === 'procedure';
+  const isBackgroundOpen = activeLessonPreviewMode === 'background';
   const isFeaturedMediaOpen = activeLessonPreviewMode === 'featured-media';
   const activeLessonGoingFurther = (activeLesson?.goingFurther ?? []).filter(
     Boolean
@@ -3392,15 +3409,39 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
     setOfficeUpsellFormat(null);
   };
 
-  const handleOpenProcedureInNewTab = () => {
+  const openStandalonePreviewInNewTab = (
+    mode: 'procedure' | 'background',
+    autoPrint = false
+  ) => {
     if (typeof window === 'undefined' || activeLessonId == null) {
       return;
     }
 
     const nextUrl = new URL(window.location.href);
     nextUrl.hash = '';
-    nextUrl.search = `?procedure-only&lesson=${activeLessonId}`;
+    nextUrl.search =
+      mode === 'procedure'
+        ? `?procedure-only&lesson=${activeLessonId}`
+        : `?background-only&lesson=${activeLessonId}`;
+    if (autoPrint) {
+      nextUrl.search += '&autoprint=1';
+    }
     window.open(nextUrl.toString(), '_blank', 'noopener,noreferrer');
+  };
+
+  const handleOpenProcedureInNewTab = () => {
+    openStandalonePreviewInNewTab('procedure');
+  };
+  const handleOpenBackgroundInNewTab = () => {
+    openStandalonePreviewInNewTab('background');
+  };
+
+  const handlePrintProcedureFromPreview = () => {
+    openStandalonePreviewInNewTab('procedure', true);
+  };
+
+  const handlePrintBackgroundFromPreview = () => {
+    openStandalonePreviewInNewTab('background', true);
   };
 
   const handleCopyCitation = async (
@@ -3513,14 +3554,24 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                 <span />
               )}
               {showLinkOutAction && (
-                <button
-                  type="button"
-                  className={styles.procedureLinkOutBtn}
-                  onClick={handleOpenProcedureInNewTab}
-                >
-                  <span>Open in New Tab</span>
-                  <SquareArrowOutUpRight size={13} aria-hidden="true" />
-                </button>
+                <div className={styles.lessonPreviewHeaderActions}>
+                  <button
+                    type="button"
+                    className={styles.procedureLinkOutBtn}
+                    onClick={handlePrintProcedureFromPreview}
+                  >
+                    <span>Print</span>
+                    <Printer size={13} aria-hidden="true" />
+                  </button>
+                  <button
+                    type="button"
+                    className={styles.procedureLinkOutBtn}
+                    onClick={handleOpenProcedureInNewTab}
+                  >
+                    <span>Open in New Tab</span>
+                    <SquareArrowOutUpRight size={13} aria-hidden="true" />
+                  </button>
+                </div>
               )}
             </div>
           )}
@@ -3718,6 +3769,74 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
     );
   };
 
+  const renderBackgroundPanel = (
+    showLinkOutAction: boolean,
+    showPanelHeading = true,
+    panelClassName?: string
+  ) => {
+    const backgroundContent = unit.Sections?.background?.Content?.trim() ?? '';
+
+    return (
+      <div
+        className={
+          panelClassName
+            ? `${styles.lessonProcedureInPreview} ${panelClassName}`
+            : styles.lessonProcedureInPreview
+        }
+      >
+        <div className={styles.lessonProcedureHeader}>
+          {(showPanelHeading || showLinkOutAction) && (
+            <div className={styles.lessonProcedureHeaderTop}>
+              {showPanelHeading ? (
+                <h3 className={styles.lessonCardHeading}>
+                  <BookOpenText size={16} aria-hidden="true" />
+                  <span>Background</span>
+                </h3>
+              ) : (
+                <span />
+              )}
+              {showLinkOutAction && (
+                <div className={styles.lessonPreviewHeaderActions}>
+                  <button
+                    type="button"
+                    className={styles.procedureLinkOutBtn}
+                    onClick={handlePrintBackgroundFromPreview}
+                  >
+                    <span>Print</span>
+                    <Printer size={13} aria-hidden="true" />
+                  </button>
+                  <button
+                    type="button"
+                    className={styles.procedureLinkOutBtn}
+                    onClick={handleOpenBackgroundInNewTab}
+                  >
+                    <span>Open in New Tab</span>
+                    <SquareArrowOutUpRight size={13} aria-hidden="true" />
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
+          {showPanelHeading && (
+            <span>Context and real-world connections for this unit.</span>
+          )}
+        </div>
+        <div
+          id="unit-search-background-content"
+          className={styles.lessonProcedureContent}
+        >
+          {backgroundContent ? (
+            <div className={styles.richTextBlock}>
+              <RichText content={backgroundContent} />
+            </div>
+          ) : (
+            <p className={styles.unitMutedText}>Background content will appear here.</p>
+          )}
+        </div>
+      </div>
+    );
+  };
+
   const handleGradeBandFilter = (gradeBand: TGradeBand) => {
     setSelectedGradeBands((current) => {
       if (gradeBand === 'all') {
@@ -3770,7 +3889,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
     }
     window.location.assign(procedureReturnHref);
   };
-  const handlePrintProcedure = () => {
+  const handlePrintPreview = () => {
     if (typeof window === 'undefined') {
       return;
     }
@@ -3826,10 +3945,10 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
   return (
     <div
       className={`${styles.unitPage} ${
-        isProcedureStandaloneView ? styles.unitPageProcedureOnly : ''
+        isStandalonePreview ? styles.unitPageProcedureOnly : ''
       }`}
     >
-      {!isProcedureStandaloneView && (
+      {!isStandalonePreview && (
         <div className={styles.unitStickyHeader}>
           <div className={styles.unitStickyInner}>
             <div className={styles.unitStickyTopRow}>
@@ -4284,16 +4403,24 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
           <section className={`${styles.unitSection} ${styles.unitTabFadeIn}`}>
             <div className={styles.materialsLayout}>
               {activeLesson ? (
-                isProcedureStandaloneView ? (
+                isStandalonePreview ? (
                   <div className={styles.procedureStandaloneLayout}>
                     <div className={styles.procedureStandaloneHeader}>
                       <div className={styles.procedureStandaloneTopRow}>
-                        <p className={styles.procedureStandaloneLabel}>Procedure from:</p>
+                        <p className={styles.procedureStandaloneLabel}>
+                          {isBackgroundStandaloneView
+                            ? 'Background from:'
+                            : 'Procedure from:'}
+                        </p>
                         <button
                           type="button"
                           className={styles.procedurePrintButton}
-                          onClick={handlePrintProcedure}
-                          aria-label="Print procedure"
+                          onClick={handlePrintPreview}
+                          aria-label={
+                            isBackgroundStandaloneView
+                              ? 'Print background'
+                              : 'Print procedure'
+                          }
                         >
                           <Printer size={15} aria-hidden="true" />
                           <span>Print</span>
@@ -4343,11 +4470,17 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                         </div>
                       </div>
                     </div>
-                    {renderProcedurePanel(
-                      false,
-                      false,
-                      styles.lessonProcedureStandalonePanel
-                    )}
+                    {isBackgroundStandaloneView
+                      ? renderBackgroundPanel(
+                          false,
+                          false,
+                          styles.lessonProcedureStandalonePanel
+                        )
+                      : renderProcedurePanel(
+                          false,
+                          false,
+                          styles.lessonProcedureStandalonePanel
+                        )}
                   </div>
                 ) : (
                 <div
@@ -4579,6 +4712,20 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                             <span className={styles.lessonProcedureToggleText}>
                               <Apple size={16} aria-hidden="true" />
                               <span>Procedure</span>
+                            </span>
+                          </button>
+                          <button
+                            type="button"
+                            className={`${styles.lessonProcedureToggle} ${
+                              isBackgroundOpen ? styles.lessonProcedureToggleActive : ''
+                            }`}
+                            onClick={() => setActiveLessonPreviewMode('background')}
+                            aria-pressed={isBackgroundOpen}
+                            disabled={!hasBackgroundContent}
+                          >
+                            <span className={styles.lessonProcedureToggleText}>
+                              <BookOpenText size={16} aria-hidden="true" />
+                              <span>Background</span>
                             </span>
                           </button>
                           <button
@@ -4915,6 +5062,8 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                         </article>
                       ) : isDetailedFlowOpen ? (
                         renderProcedurePanel(true)
+                      ) : isBackgroundOpen ? (
+                        renderBackgroundPanel(true)
                       ) : isGoingFurtherOpen ? (
                         <article
                           className={`${styles.lessonPreviewItem} ${styles.goingFurtherPreviewItem}`}
@@ -5819,29 +5968,6 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
           </section>
         )}
 
-        {activeTab === TAB_BACKGROUND && (
-          <section className={`${styles.unitSection} ${styles.unitTabFadeIn}`}>
-            <h2 className={styles.sectionTitle}>Background</h2>
-            <p className={styles.sectionIntro}>
-              Context and real-world connections for this unit.
-            </p>
-            <div
-              id="unit-search-background-content"
-              className={styles.unitOverviewCardWide}
-            >
-              {unit.Sections?.background?.Content ? (
-                <div className={styles.richTextBlock}>
-                  <RichText content={unit.Sections.background.Content} />
-                </div>
-              ) : (
-                <p className={styles.unitMutedText}>
-                  Background content will appear here.
-                </p>
-              )}
-            </div>
-          </section>
-        )}
-
         {activeTab === TAB_CREDITS && (
           <section className={`${styles.unitSection} ${styles.unitTabFadeIn}`}>
             <h2 className={styles.sectionTitle}>Credits, Acknowledgments, and Versions</h2>
@@ -5979,7 +6105,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
             </div>
           </section>
         )}
-        {!isProcedureStandaloneView &&
+        {!isStandalonePreview &&
         ((activeTab === TAB_MATERIALS && nextLessonId != null) ||
           (activeTab !== TAB_CREDITS && nextTab)) ? (
           <div className={styles.nextTabCtaWrap}>
@@ -6019,7 +6145,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                   <p className={styles.licenseBannerText}>
                     <strong>CC BY-NC-SA 4.0.</strong> Share + Remix, with attribution. Don&apos;t sell.
                   </p>
-                  {isProcedureStandaloneView ? (
+                  {isStandalonePreview ? (
                     <p className={styles.citationText}>
                       {attributionDisplayParts.titleByAuthors} Source:{' '}
                       <a
