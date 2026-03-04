@@ -631,7 +631,7 @@ export default async function handler(
       throw new Error(errMsg);
     }
 
-    let unitFolders: TUnitFolder[] = rootDriveFolders.map((folder) => ({
+    const unitFolders: TUnitFolder[] = rootDriveFolders.map((folder) => ({
       name: folder.name,
       id: folder.id,
       mimeType: folder.mimeType,
@@ -766,7 +766,7 @@ export default async function handler(
           for (const folderNameAndOccurrences of Object.entries(
             foldersOccurrenceObj
           )) {
-            let [folderName, occurrences] = folderNameAndOccurrences;
+            const [folderName, occurrences] = folderNameAndOccurrences;
 
             if (occurrences.length === 1) {
               continue;
@@ -1007,9 +1007,9 @@ export default async function handler(
 
     console.log("The target folder was created.");
 
-    let foldersFailedToCreate = [];
+    const foldersFailedToCreate = [];
     /** @type {{ id: string, name: string, pathToFile: string, parentFolderId: string, gpFolderId: string }[]} */
-    let createdFolders = [];
+    const createdFolders = [];
     /** @type {{ fileId: string, pathToFile: string, parentFolderId: string, name: string }[]} */
     // get only the chlid folders of the target unit folder
     const folderPaths = unitFolders

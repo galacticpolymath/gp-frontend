@@ -32,10 +32,10 @@ const filterResults = (targetHierarchyNum, selectedLevel) => {
   });
 
   if (targetHierarchyNum === 3) {
-    let [firstNumSelectedLevel, rangeStart] =
+    const [firstNumSelectedLevel, rangeStart] =
       getLastNumFromLevel(selectedLevel);
-    let rangeStartSplitted = rangeStart.split("");
-    let rangeStartStrSecond = rangeStartSplitted[1];
+    const rangeStartSplitted = rangeStart.split("");
+    const rangeStartStrSecond = rangeStartSplitted[1];
 
     if (rangeStartStrSecond !== "0") {
       rangeStartSplitted[1] = "0";

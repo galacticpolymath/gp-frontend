@@ -40,7 +40,7 @@ const LocDropdown = ({ id, availLocs, loc }) => {
   const router = useRouter();
   const [isSpinnerDisplayed, setIsSpinnerDisplayed] = useState(false);
   let countries = [];
-  let labels = {};
+  const labels = {};
 
   availLocs.forEach((availLoc) => {
     const country = locToCountry[availLoc];

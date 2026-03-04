@@ -83,7 +83,7 @@ const useOutsetaInputValidation = () => {
         return;
       }
 
-      let userGpAccountEmail = user?.email;
+      const userGpAccountEmail = user?.email;
 
       _continueToCheckoutBtn.addEventListener('click', async (event) => {
         console.log('The continue button was clicked...');

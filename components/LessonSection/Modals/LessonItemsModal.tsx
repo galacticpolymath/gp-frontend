@@ -1,3 +1,4 @@
+/* eslint-disable no-alert */
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Button, Modal, CloseButton } from "react-bootstrap";
 import { ILessonItem, useModalContext } from "../../../providers/ModalProvider";
@@ -124,7 +125,7 @@ const LessonItemDownloadBtnsDropDown: React.FC<{
       const itemId = url.pathname.split("/").at(-1);
 
       if (!itemId) {
-        alert("Unable to download pdf. Please refresh the page.");
+        globalThis.alert?.("Unable to download pdf. Please refresh the page.");
         return;
       }
 
@@ -301,7 +302,7 @@ const LessonItemsModal: React.FC = () => {
       const itemId = url.pathname.split("/").at(-1);
 
       if (!itemId) {
-        alert("Unable to download pdf. Please refresh the page.");
+        globalThis.alert?.("Unable to download pdf. Please refresh the page.");
         return;
       }
 

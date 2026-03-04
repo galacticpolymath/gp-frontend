@@ -610,7 +610,7 @@ export const getFolderChildItems = async (
   rootDriveFolders: drive_v3.Schema$File[]
 ) => {
   const drive = await createDrive();
-  let unitFolders: TUnitFolder[] = rootDriveFolders.map((folder) => ({
+  const unitFolders: TUnitFolder[] = rootDriveFolders.map((folder) => ({
     name: folder.name,
     id: folder.id,
     mimeType: folder.mimeType,
@@ -755,7 +755,7 @@ export const getFolderChildItems = async (
         for (const folderNameAndOccurrences of Object.entries(
           foldersOccurrenceObj
         )) {
-          let [folderName, occurrences] = folderNameAndOccurrences;
+          const [folderName, occurrences] = folderNameAndOccurrences;
 
           if (
             occurrences.length === 1 ||
@@ -1800,7 +1800,7 @@ export const copyFiles = async (
   sharedGDriveLessonsFolderId: string
 ) => {
   let wasJobSuccessful = true;
-  let fileCopies: TFilesToRename = [];
+  const fileCopies: TFilesToRename = [];
 
   // check if the permission were propagated to all of the files to copy
   for (const fileToCopy of filesToCopy) {

@@ -324,7 +324,7 @@ export const deleteAccount = async (
     console.log('deleteAccount response: ', response);
     const { status } = response;
 
-    if (status != 200) {
+    if (status !== 200) {
       throw new Error('Failed to delete the target account.');
     }
 

@@ -1,3 +1,4 @@
+/* eslint-disable no-alert */
 import {
   Modal,
   ModalBody,
@@ -85,7 +86,7 @@ const AccountSettings = () => {
 
   const handleDeleteAccountBtnClick = async () => {
     setIsDeletingAccount(true);
-    const willDeleteAccount = confirm(
+    const willDeleteAccount = globalThis.confirm?.(
       "Are you sure you want to delete your account? This operation is irreversible."
     );
 
@@ -95,7 +96,7 @@ const AccountSettings = () => {
     }
 
     if (!email) {
-      alert(
+      globalThis.alert?.(
         "An error has occurred. Your email was not found. Please refresh the page and try again."
       );
       return;
@@ -146,7 +147,7 @@ const AccountSettings = () => {
       return;
     }
 
-    alert("An error has occurred. Please refresh the page and try again.");
+    globalThis.alert?.("An error has occurred. Please refresh the page and try again.");
   };
 
   const handleIsOnMailingListBtnToggle = () => {
@@ -164,7 +165,7 @@ const AccountSettings = () => {
     let additionalReqBodyProps = {};
 
     if (userAccountPrevVals?.isOnMailingList === accountForm.isOnMailingList) {
-      alert("Please update your mailing list status to save changes.");
+      globalThis.alert?.("Please update your mailing list status to save changes.");
       setTimeout(() => {
         setIsSavingChangesSpinnerOn(false);
       }, 300);

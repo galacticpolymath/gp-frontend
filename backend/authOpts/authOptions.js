@@ -706,7 +706,8 @@ export const authOptions = {
       /**
        * @type {{ email: string, roles: string[], name: { first: string, last: string }, picture: string }}
        */
-      let { email, roles, name, picture } = token?.payload ?? {};
+      const { email, roles } = token?.payload ?? {};
+      let { name, picture } = token?.payload ?? {};
       if (!email) {
         return Promise.resolve(session);
       }

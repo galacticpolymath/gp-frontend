@@ -77,7 +77,7 @@ const InstitutionAndSchoolType = ({
       <InputAndRadioBtn
         inputType='text'
         checkBoxName='institution'
-        isChecked={aboutUserForm.institution == null}
+        isChecked={aboutUserForm.institution === null}
         checkBoxVal={aboutUserForm.institution ?? 'N/A'}
         containerClassName='d-flex flex-column mt-4'
         ErrSec={<ErrorsSec errMsg={errors.get('institution') ?? ''} />}
@@ -106,7 +106,7 @@ const InstitutionAndSchoolType = ({
         handleOnCheckBoxChange={handleIsTeachingInputToggle}
         inputLabelTxt='*How many students do you teach?'
         inputVal={
-          isNotTeaching ? 'N/A' : classSize == 0 ? '' : classSize.toString()
+          isNotTeaching ? 'N/A' : classSize === 0 ? '' : classSize.toString()
         }
         inputName='classroomSize'
       />

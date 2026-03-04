@@ -81,7 +81,7 @@ const Notify = () => {
     };
 
     useEffect(() => {
-        let paramsStr = window.location.search.replace(/\?/, "");
+        const paramsStr = window.location.search.replace(/\?/, "");
         const params = paramsStr.split("=");
 
         if (

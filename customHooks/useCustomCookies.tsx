@@ -26,7 +26,7 @@ export const useCustomCookies = () => {
   const getCookies = <TKey extends keyof IAppCookies>(
     keys: TKey[]
   ): Partial<Pick<IAppCookies, TKey>> => {
-    let siteCookies = (cookies.get() ?? {}) as Partial<Record<keyof Pick<IAppCookies, TKey>, string>> ;
+    const siteCookies = (cookies.get() ?? {}) as Partial<Record<keyof Pick<IAppCookies, TKey>, string>> ;
     let appCookies: Partial<Pick<IAppCookies, TKey>> = {};
 
     for (const key of keys) {

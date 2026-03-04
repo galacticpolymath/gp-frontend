@@ -84,7 +84,7 @@ const Overview: React.FC<IOverviewProps> = ({
   console.log('UnitTags: ', UnitTags);
   console.log('_Tags: ', _Tags);
 
-  let Tags = UnitTags ?? (_Tags ? _Tags.map((tag) => tag.Value) : []);
+  const Tags = UnitTags ?? (_Tags ? _Tags.map((tag) => tag.Value) : []);
   const areTargetStandardsValid = TargetStandardsCodes?.every(
     (standard) =>
       typeof standard?.code === 'string' &&

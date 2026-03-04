@@ -186,7 +186,7 @@ const GradesOrYearsSelection = ({ _errors, _aboutUserForm }: IProps) => {
               return (
                 <section
                   key={`${selection}-${index}`}
-                  className={`d-flex mt-1 mt-sm-0 ms-2 ${index != 0 ? '' : ''}`}
+                  className={`d-flex mt-1 mt-sm-0 ms-2 ${index !== 0 ? '' : ''}`}
                   style={{ width: '45px' }}
                 >
                   <input

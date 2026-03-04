@@ -41,7 +41,7 @@ export const StandardsSchema = new Schema<Omit<IStandards, 'rootFieldsToRetrieve
   rootFieldsToRetrieveForUI: {
     type: [RootFieldToRetrieve],
     default: () => {
-      let rootFields = [
+      const rootFields = [
         {
           name: 'GradesOrYears',
           as: 'GradesOrYears',

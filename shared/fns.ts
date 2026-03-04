@@ -85,10 +85,10 @@ export const getLiveUnits = (units: INewUnitSchema[]) => {
 
     if (
       STATUSES_OF_SHOWABLE_LESSONS.includes(unit.PublicationStatus) &&
-      uniqueUnits.some((uniqueUnit) => unit.numID == uniqueUnit.numID)
+      uniqueUnits.some((uniqueUnit) => unit.numID === uniqueUnit.numID)
     ) {
       const targetUnitIndex = uniqueUnits.findIndex(
-        (uniqueUnit) => unit.numID == uniqueUnit.numID
+        (uniqueUnit) => unit.numID === uniqueUnit.numID
       );
       let targetUnit = uniqueUnits[targetUnitIndex];
 
@@ -345,7 +345,7 @@ export const getIsWithinParentElement = (
   }
 
   if (
-    element?.parentElement != null &&
+    element?.parentElement !== null &&
     typeof element?.parentElement === 'object' &&
     typeof element.parentElement[attributeType] === 'string' &&
     isWithinParentElement

@@ -1,3 +1,4 @@
+/* eslint-disable no-alert */
 import React, {
   Dispatch,
   ReactNode,
@@ -158,7 +159,7 @@ const getUserLessonsGDriveFolderIds = async (
   } catch (error) {
     console.error("Error in getUserLessonsGDriveFolderIds: ", error);
 
-    alert(
+    globalThis.alert?.(
       "Failed to get your lesson folder links. Please refresh the page and try again."
     );
 
@@ -285,7 +286,7 @@ const TeachItUI = <
               const _parts: (ILessonForUI | INewUnitLesson<IItemV2 & IUserGDriveItemCopy> | INewUnitLesson<IItemForUI>)[] = parts.map((part) => {
                 const targetLessonGDriveUserFolderId =
                   userGDriveLessonFolderIds.userLessonFolderGDriveIds.find((gDriveLessonFolderId) => {
-                    return gDriveLessonFolderId.lessonNum == part.lsn;
+                    return gDriveLessonFolderId.lessonNum === part.lsn;
                   });
 
                 if (targetLessonGDriveUserFolderId && userGDriveLessonFolderIds.userGDriveItemIdsOfLessonFolder && part.itemList?.length) {
@@ -575,7 +576,7 @@ const TeachItUI = <
 
                 console.log("part, program: ", part);
 
-                let { lsn, title, preface, itemList, tile, chunks } = part;
+                const { lsn, title, preface, itemList, tile, chunks } = part;
                 let targetLessonInDataLesson = null;
 
                 if (
@@ -583,7 +584,7 @@ const TeachItUI = <
                   dataLesson.every((val) => val !== null)
                 ) {
                   targetLessonInDataLesson = dataLesson.find(
-                    ({ lsnNum }) => lsnNum != null && lsnNum.toString() == lsn
+                    ({ lsnNum }) => lsnNum !== null && lsnNum.toString() === lsn
                   );
                   learningObjs = targetLessonInDataLesson?.learningObj ?? null;
                 }
@@ -598,10 +599,10 @@ const TeachItUI = <
                       ({ lsnNum: lsnNumDataLesson }) => {
                         return (
                           lsnNumDataLesson &&
-                          lsn != null &&
+                          lsn !== null &&
                           typeof lsn === "string" &&
                           !isNaN(Number(lsn)) &&
-                          parseInt(lsn) == lsnNumDataLesson
+                          parseInt(lsn) === lsnNumDataLesson
                         );
                       }
                     ) ?? {};

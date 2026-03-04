@@ -9,7 +9,7 @@ import { useIsVisible } from 'react-is-visible'
 
 const useLessonElementInView = (_sectionDots, SectionTitle, ref) => {
     const inView = useIsVisible(ref);
-    let h2Id = SectionTitle.replace(/[\s!]/gi, '_').toLowerCase();
+    const h2Id = SectionTitle.replace(/[\s!]/gi, '_').toLowerCase();
     const [, setSectionDots] = _sectionDots;
     const [wasRendered, setWasRendered] = useState(false);
 

@@ -7,7 +7,7 @@ export const getChunks = (arr: unknown[], chunkSize: number) => {
   let chunkWindow = [];
 
   for (let index = 0; index < arr.length; index++) {
-    let val = arr[index];
+    const val = arr[index];
 
     if (chunkWindow.length === chunkSize) {
       chunks.push(chunkWindow);

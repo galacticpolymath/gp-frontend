@@ -1,3 +1,4 @@
+/* eslint-disable no-alert */
 import React, {
   ReactNode,
   RefObject,
@@ -350,7 +351,7 @@ const CopyLessonBtn: React.FC<
       TCopyFilesMsg & { toastId: string }
     > | null>(null);
     const copyingLessonNameTxt =
-      lessonId == 100 ? 'assessments' : `L${lessonId}: ${lessonName}`;
+      lessonId === 100 ? 'assessments' : `L${lessonId}: ${lessonName}`;
 
     const copyingLessonStartingTxt = `Copying ${unitTitle} ${copyingLessonNameTxt}'`;
 
@@ -539,7 +540,7 @@ const CopyLessonBtn: React.FC<
         !lessonsFolder?.name ||
         !lessonsFolder.sharedGDriveId
       ) {
-        alert(
+        globalThis.alert?.(
           "ERROR! Can't open the target lesson folder. Please refresh the page or contact support if the issue persists."
         );
         setIsCopyingLesson(false);
@@ -566,7 +567,7 @@ const CopyLessonBtn: React.FC<
       }
 
       if (!GOOGLE_DRIVE_AUTH_API_KEY) {
-        alert(
+        globalThis.alert?.(
           "Google Drive picker is not configured. Add NEXT_PUBLIC_GOOGLE_DRIVE_AUTH_API_KEY in .env.local and restart the dev server."
         );
         setIsCopyingLesson(false);
@@ -682,7 +683,7 @@ const CopyLessonBtn: React.FC<
 
             if (!currentValidToken) {
               toast.dismiss(toastId);
-              alert(
+              globalThis.alert?.(
                 'Your google drive session has expired. Please log in again.'
               );
 
@@ -710,7 +711,7 @@ const CopyLessonBtn: React.FC<
               updateIdsOfLessonsBeingCopied('delete');
               setIsCopyingLesson(false);
               toast.dismiss(toastId);
-              alert('Select one or more files (not folders) to copy this lesson.');
+              globalThis.alert?.('Select one or more files (not folders) to copy this lesson.');
               return;
             }
             const reqQueryParams: Partial<TCopyLessonReqQueryParams> = {
@@ -800,7 +801,7 @@ const CopyLessonBtn: React.FC<
             let filesCopied = 0;
             let showProgressBar = false;
             let targetFolderId: string | undefined = undefined;
-            let failedCopiedFiles: TFileToCopy[] = [];
+            const failedCopiedFiles: TFileToCopy[] = [];
 
             eventSource.onmessage = (event) => {
               try {
@@ -887,7 +888,7 @@ const CopyLessonBtn: React.FC<
                     console.log('lessonId: ', lessonId);
 
                     const targetPartIndex = parts.findIndex((part) => {
-                      return part.lsn && lessonId && part.lsn == lessonId;
+                      return part.lsn && lessonId && part.lsn === lessonId;
                     });
                     const targetPart = parts[targetPartIndex];
 
@@ -1146,7 +1147,7 @@ const CopyLessonBtn: React.FC<
           !lessonsFolder.sharedGDriveId ||
           !allUnitLessons?.length
         ) {
-          alert(
+          globalThis.alert?.(
             "ERROR! Can't open the target lesson folder. Please refresh the page or contact support if the issue persists."
           );
           setLessonToCopy(null);
@@ -1173,7 +1174,7 @@ const CopyLessonBtn: React.FC<
         console.log('validToken in openGDrivePickerToCopyLesson: ', validToken);
 
         if (!GOOGLE_DRIVE_AUTH_API_KEY) {
-          alert(
+          globalThis.alert?.(
             "Google Drive picker is not configured. Add NEXT_PUBLIC_GOOGLE_DRIVE_AUTH_API_KEY in .env.local and restart the dev server."
           );
           setLessonToCopy(null);
@@ -1289,7 +1290,7 @@ const CopyLessonBtn: React.FC<
 
               if (!currentValidToken) {
                 toast.dismiss(toastId);
-                alert(
+                globalThis.alert?.(
                   'Your google drive session has expired. Please log in again.'
                 );
                 updateIdsOfLessonsBeingCopied('delete');
@@ -1314,7 +1315,7 @@ const CopyLessonBtn: React.FC<
                 updateIdsOfLessonsBeingCopied('delete');
                 setIsCopyingLesson(false);
                 toast.dismiss(toastId);
-                alert('Select one or more files (not folders) to copy this lesson.');
+                globalThis.alert?.('Select one or more files (not folders) to copy this lesson.');
                 return;
               }
               const reqQueryParams: Partial<TCopyLessonReqQueryParams> = {
@@ -1456,7 +1457,7 @@ const CopyLessonBtn: React.FC<
                   if (isJobDone) {
                     setParts((parts) => {
                       const targetPartIndex = parts.findIndex((part) => {
-                        return part.lsn && lessonId && part.lsn == lessonId;
+                        return part.lsn && lessonId && part.lsn === lessonId;
                       });
                       const targetPart = parts[targetPartIndex];
 
@@ -1679,7 +1680,7 @@ const CopyLessonBtn: React.FC<
     useEffect(() => {
       console.log('lessonToCopy: ', lessonToCopy);
 
-      if (lessonToCopy?.willOpenGDrivePicker && lessonToCopy.id == lessonId) {
+      if (lessonToCopy?.willOpenGDrivePicker && lessonToCopy.id === lessonId) {
         openGDrivePickerToCopyLesson();
       }
     }, [lessonToCopy]);

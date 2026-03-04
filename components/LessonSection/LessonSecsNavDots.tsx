@@ -81,7 +81,7 @@ const LessonsSecsNavDots = ({
   }, [sectionDots]);
 
   useEffect(() => {
-    let url = router.asPath;
+    const url = router.asPath;
 
     if (targetSec && url.indexOf("#")) {
       targetSec.element.scrollIntoView({

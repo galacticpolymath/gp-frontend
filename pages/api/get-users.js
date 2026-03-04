@@ -62,7 +62,7 @@ export default async function handler(request, response) {
         }
 
         const allBrevoContacts = await getAllBrevoMailingListContacts();
-        let { errMsg, users } = await getUsers();
+        const { errMsg, users } = await getUsers();
         const brevoContactEmails = new Set(
             allBrevoContacts.map((contact) => contact.email)
         );

@@ -1,3 +1,4 @@
+/* eslint-disable no-alert */
  
 
 import React, { useState, useEffect } from "react";
@@ -43,7 +44,7 @@ const CopyLessonHelperModal: React.FC<ThankYouModalProps> = ({ onClose }) => {
 
   const handleContinueBtnClick = async () => {
     if (!lessonToCopy) {
-      alert(
+      globalThis.alert?.(
         "ERROR! Cannot determine what lesson you chose. Please refresh the page and try again."
       );
       return;

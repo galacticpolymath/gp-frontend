@@ -47,8 +47,8 @@ const CarouselContainer = ({
     const headerContainerClassNames = `d-flex justify-content-center align-items-center ${headerContainerClassNamesDynamic ?? ""}`
     let cardStyles = `autoCarouselContainerCard ${pics ? 'mt-3 picsCardContainer' : ''}`;
     cardStyles = isCardOnly ? (cardStyles + 'cardOnlyStyles mt-3 fw245') : cardStyles
-    let customBulletPtsSecCss = _customBulletPtsSecCss ? `mt-md-0 mb-2 position-absolute ${_customBulletPtsSecCss}` : 'mt-md-0 mb-2 position-absolute'
-    let autoCarouselContainerStyles = `autoCarouselContainer ${_autoCarouselContainerStyles}`
+    const customBulletPtsSecCss = _customBulletPtsSecCss ? `mt-md-0 mb-2 position-absolute ${_customBulletPtsSecCss}` : 'mt-md-0 mb-2 position-absolute'
+    const autoCarouselContainerStyles = `autoCarouselContainer ${_autoCarouselContainerStyles}`
     const userInputs = _userInputs?.isTeachersAndStudentsTestimonies ? _userInputs.arr : _userInputs;
 
     if (customCardStyles) {

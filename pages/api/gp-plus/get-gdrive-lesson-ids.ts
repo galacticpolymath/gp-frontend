@@ -35,7 +35,7 @@ const getAllLatestUserItemIdsOfLessonFolders = async (
 ) => {
   try {
     const userLessonItemsLatestVersion: TUserLessonItemsLatestVersion = new Map();
-    let retrieveLessonItemsResults = await Promise.all(lessonFolderIds.flatMap(async lessonFolderId => {
+    const retrieveLessonItemsResults = await Promise.all(lessonFolderIds.flatMap(async lessonFolderId => {
       const childItemsRetrievedResult = await getAllChildItemsOfFolder(lessonFolderId, gdriveAccessToken, gdriveRefreshToken, clientOrigin, 3)
 
       if ("didErr" in childItemsRetrievedResult) {

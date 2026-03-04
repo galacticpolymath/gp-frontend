@@ -211,12 +211,12 @@
       const currentDateStr = getCurrentDate(true, '/');
       const text = deadLinks.length
         ? `A git push has been made. Dead links check has been executed. A total of ${allLinks.length
-        } ${allLinks.length == 1 ? 'link' : 'links'} ${allLinks.length == 1 ? 'was' : 'were'
-        } scanned. There ${deadLinks.length == 1 ? 'is' : 'are'} ${deadLinks.length
-        } dead ${deadLinks.length == 1 ? 'link' : 'links'
+        } ${allLinks.length === 1 ? 'link' : 'links'} ${allLinks.length === 1 ? 'was' : 'were'
+        } scanned. There ${deadLinks.length === 1 ? 'is' : 'are'} ${deadLinks.length
+        } dead ${deadLinks.length === 1 ? 'link' : 'links'
         }. See attached file.`
         : `A git push has been made. Dead links check has been executed. A total of ${allLinks.length
-        } ${allLinks.length == 1 ? 'link' : 'links'} ${allLinks.length == 1 ? 'was' : 'were'
+        } ${allLinks.length === 1 ? 'link' : 'links'} ${allLinks.length === 1 ? 'was' : 'were'
         } scanned.  No dead links found.`;
       console.log('text: ', text);
       let attachments = [];

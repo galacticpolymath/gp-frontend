@@ -5,7 +5,7 @@ import { getLinkPreview } from 'link-preview-js';
 import { UNITS_URL_PATH } from './shared/constants';
 
 export const createPaginationArr = (arr) => {
-  let pgsArr = [];
+  const pgsArr = [];
   let pgOfDataArr = [];
 
   arr.forEach((val, index) => {
@@ -21,10 +21,10 @@ export const createPaginationArr = (arr) => {
 };
 
 export const getGpVids = (lessons) => {
-  let gpVideos = [];
+  const gpVideos = [];
 
   for (const lesson of lessons) {
-    let lessonMultiMediaArr = [];
+    const lessonMultiMediaArr = [];
     const { Section, Title, numID, ReleaseDate } = lesson;
 
     if (
@@ -75,10 +75,10 @@ export const getGpVids = (lessons) => {
 };
 
 export const getGpLessons = (lessons) => {
-  let lessonPartsForUI = [];
+  const lessonPartsForUI = [];
   const todaysDate = new Date();
 
-  for (let lesson of lessons) {
+  for (const lesson of lessons) {
     if (
       !lesson?.LsnStatuses?.length ||
             !SHOWABLE_LESSONS_STATUSES.includes(lesson.PublicationStatus)
@@ -86,13 +86,13 @@ export const getGpLessons = (lessons) => {
       continue;
     }
 
-    let lessonParts = lesson?.Section?.['teaching-materials']?.Data?.lesson;
-    let lessonPartsFromClassRoomObj =
+    const lessonParts = lesson?.Section?.['teaching-materials']?.Data?.lesson;
+    const lessonPartsFromClassRoomObj =
             lesson?.Section?.['teaching-materials']?.Data?.classroom?.resources?.[0]
               ?.lessons;
 
     if (lessonParts?.length) {
-      for (let lsnStatus of lesson.LsnStatuses) {
+      for (const lsnStatus of lesson.LsnStatuses) {
         if (!SHOWABLE_LESSONS_STATUSES.includes(lsnStatus.status)) {
           continue;
         }
@@ -106,7 +106,7 @@ export const getGpLessons = (lessons) => {
 
         if (lessonPart && wasLessonReleased) {
           const lessonPartFromClassroomObj = lessonPartsFromClassRoomObj.find(
-            ({ lsn }) => lsn == lsnStatus.lsn
+            ({ lsn }) => lsn === lsnStatus.lsn
           );
           let tags = Array.isArray(lessonPartFromClassroomObj?.tags?.[0])
             ? lessonPartFromClassroomObj?.tags.flat()
@@ -143,8 +143,8 @@ export const getGpLessons = (lessons) => {
         { sort_by_date: sortByDateLessonA },
         { sort_by_date: sortByDateLessonB }
       ) => {
-        let _sortByDateLessonA = new Date(sortByDateLessonA);
-        let _sortByDateLessonB = new Date(sortByDateLessonB);
+        const _sortByDateLessonA = new Date(sortByDateLessonA);
+        const _sortByDateLessonB = new Date(sortByDateLessonB);
 
         if (_sortByDateLessonA > _sortByDateLessonB) {
           return -1;
@@ -163,7 +163,7 @@ export const getGpLessons = (lessons) => {
 };
 
 export const getShowableUnits = (units) => {
-  let uniqueUnits = [];
+  const uniqueUnits = [];
   const todaysDate = new Date();
 
   for (const unit of units) {
@@ -179,10 +179,10 @@ export const getShowableUnits = (units) => {
 
     if (
       STATUSES_OF_SHOWABLE_LESSONS.includes(unit.PublicationStatus) &&
-            uniqueUnits.some((uniqueUnit) => unit.numID == uniqueUnit.numID)
+            uniqueUnits.some((uniqueUnit) => unit.numID === uniqueUnit.numID)
     ) {
       const targetUnitIndex = uniqueUnits.findIndex(
-        (uniqueUnit) => unit.numID == uniqueUnit.numID
+        (uniqueUnit) => unit.numID === uniqueUnit.numID
       );
       let targetUnit = uniqueUnits[targetUnitIndex];
 
@@ -228,7 +228,7 @@ export const getIsValObj = (val) =>
 
 export const getObjVals = (obj) => {
   const keys = Object.keys(obj);
-  let vals = [];
+  const vals = [];
 
   keys.forEach((key) => {
     const val = obj[key];
@@ -368,7 +368,7 @@ export const convertMapToObj = (map) => Object.fromEntries(map.entries());
  * */
 export const getAllUrlVals = (router, willCreateSubTuples = false) => {
   const pathsStr = router.asPath.split('?')[1];
-  let urlKeysAndVals = pathsStr?.split('&');
+  const urlKeysAndVals = pathsStr?.split('&');
 
   if (urlKeysAndVals?.length && willCreateSubTuples) {
     const urlKeysAndValsTuples = urlKeysAndVals.map((keyAndValStr) => {
@@ -392,7 +392,7 @@ export const getChunks = (arr, chunkSize) => {
   let chunkWindow = [];
 
   for (let index = 0; index < arr.length; index++) {
-    let val = arr[index];
+    const val = arr[index];
 
     if (chunkWindow.length === chunkSize) {
       chunks.push(chunkWindow);
@@ -414,7 +414,7 @@ export const createChunks = (arr, chunkSize) => {
   let chunkWindow = [];
 
   for (let index = 0; index < arr.length; index++) {
-    let val = arr[index];
+    const val = arr[index];
 
     if (chunkWindow.length === chunkSize) {
       chunks.push(chunkWindow);
@@ -465,7 +465,7 @@ export const getIsWithinParentElement = (
   }
 
   if (
-    element?.parentElement != null &&
+    element?.parentElement !== null &&
         typeof element?.parentElement === 'object' &&
         typeof element.parentElement[classNameOrId] === 'string' &&
         element.parentElement[classNameOrId].includes(specifier)

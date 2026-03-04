@@ -1,3 +1,4 @@
+/* eslint-disable no-alert */
  
  
  
@@ -212,7 +213,7 @@ export const useUserEntry = () => {
         "An error has occurred. Failed to send form to the server. Reason: ",
         error
       );
-      alert(
+      globalThis.alert?.(
         "An error has occurred during the login process. Please refresh the page. If this error persists, please contact support."
       );
     }

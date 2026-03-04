@@ -1,3 +1,4 @@
+/* eslint-disable no-alert */
 import React, { useEffect, useState } from 'react';
 import { Spinner } from 'react-bootstrap';
 import Button from '../components/General/Button';
@@ -114,7 +115,7 @@ const SignUpPage: React.FC = () => {
     const errors = await validateForm('credentials');
 
     if (errors.size > 0) {
-      alert('An error has occurred. Please check your inputs.');
+      globalThis.alert?.('An error has occurred. Please check your inputs.');
       setTimeout(() => {
         setErrors(errors);
         setIsLoadingSpinnerOn(false);
@@ -176,7 +177,7 @@ const SignUpPage: React.FC = () => {
 
     if (errors.has('isUserTeacherErr')) {
       setTimeout(() => {
-        alert('An error has occurred. Please check your inputs.');
+        globalThis.alert?.('An error has occurred. Please check your inputs.');
         setErrors(errors);
         setIsGoogleLoadingSpinnerOn(false);
       }, 250);

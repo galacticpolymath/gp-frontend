@@ -88,7 +88,8 @@ export default async function proxy(request) {
     /**
      * @type {{ pathname: string, search: string }}
      */
-    let { pathname, search } = nextUrl;
+    const { pathname } = nextUrl;
+    let { search } = nextUrl;
 
     console.log(`Request origin: ${nextUrl.origin}`);
 
@@ -140,7 +141,7 @@ export default async function proxy(request) {
     if (
       !nextUrl.href.includes('api') &&
       nextUrl.pathname.includes(UNITS_PATH_NAME) &&
-      nextUrl?.pathname?.split('/')?.filter((val) => val)?.length == 2 &&
+      nextUrl?.pathname?.split('/')?.filter((val) => val)?.length === 2 &&
       Number.isInteger(getUnitNum(nextUrl.pathname))
     ) {
       console.log(
@@ -210,7 +211,7 @@ export default async function proxy(request) {
       // unit with a locale value is present in the url
       !nextUrl.href.includes('api') &&
       nextUrl.pathname.includes(UNITS_PATH_NAME) &&
-      nextUrl?.pathname?.split('/')?.filter((val) => val)?.length == 3 &&
+      nextUrl?.pathname?.split('/')?.filter((val) => val)?.length === 3 &&
       Number.isInteger(getUnitNum(nextUrl.pathname))
     ) {
       // checking if the unit exist
@@ -256,12 +257,12 @@ export default async function proxy(request) {
       }
 
       let targetUnit = units.find(
-        ({ numID, locale }) => locale === receivedLocale && numID == unitNum
+        ({ numID, locale }) => locale === receivedLocale && numID === unitNum
       );
 
       if (!targetUnit) {
         targetUnit = lessons.find(
-          ({ numID, locale }) => locale === receivedLocale && numID == unitNum
+          ({ numID, locale }) => locale === receivedLocale && numID === unitNum
         );
       }
 
@@ -287,7 +288,7 @@ export default async function proxy(request) {
 
     const authorizationStr = headers.get('authorization');
     const isGettingJwtToken =
-      nextUrl.pathname == '/api/get-jwt-token' && method === 'POST';
+      nextUrl.pathname === '/api/get-jwt-token' && method === 'POST';
     let email = null;
 
     if (isGettingJwtToken) {
@@ -421,73 +422,73 @@ export default async function proxy(request) {
     }
 
     if (
-      (nextUrl.pathname == '/api/update-lessons' &&
+      (nextUrl.pathname === '/api/update-lessons' &&
         method === 'PUT' &&
         authorizationStr) ||
-      (nextUrl.pathname == '/api/admin/delete-users' &&
+      (nextUrl.pathname === '/api/admin/delete-users' &&
         method === 'DELETE' &&
         authorizationStr) ||
-      (nextUrl.pathname == '/api/admin/insert-users' &&
+      (nextUrl.pathname === '/api/admin/insert-users' &&
         method === 'POST' &&
         authorizationStr) ||
-      (nextUrl.pathname == '/api/admin/migrate-to-v2-users' &&
+      (nextUrl.pathname === '/api/admin/migrate-to-v2-users' &&
         method === 'PUT' &&
         authorizationStr) ||
-      (nextUrl.pathname == '/api/insert-lesson' &&
+      (nextUrl.pathname === '/api/insert-lesson' &&
         method === 'POST' &&
         authorizationStr) ||
-      (nextUrl.pathname == '/api/insert-unit' &&
+      (nextUrl.pathname === '/api/insert-unit' &&
         method === 'POST' &&
         authorizationStr) ||
-      (nextUrl.pathname == '/api/update-unit' &&
+      (nextUrl.pathname === '/api/update-unit' &&
         method === 'PUT' &&
         authorizationStr) ||
-      (nextUrl.pathname == '/api/delete-lesson' &&
+      (nextUrl.pathname === '/api/delete-lesson' &&
         method === 'DELETE' &&
         authorizationStr) ||
-      (nextUrl.pathname == '/api/delete-unit' &&
+      (nextUrl.pathname === '/api/delete-unit' &&
         method === 'DELETE' &&
         authorizationStr) ||
-      (nextUrl.pathname == '/api/delete-user' &&
+      (nextUrl.pathname === '/api/delete-user' &&
         method === 'DELETE' &&
         authorizationStr) ||
-      (nextUrl.pathname == '/api/save-about-user-form' &&
+      (nextUrl.pathname === '/api/save-about-user-form' &&
         method === 'PUT' &&
         authorizationStr) ||
-      (nextUrl.pathname == '/api/update-user' &&
+      (nextUrl.pathname === '/api/update-user' &&
         method === 'PUT' &&
         authorizationStr) ||
-      (nextUrl.pathname == '/api/user-confirms-mailing-list-sub' &&
+      (nextUrl.pathname === '/api/user-confirms-mailing-list-sub' &&
         method === 'PUT' &&
         authorizationStr) ||
-      (nextUrl.pathname == '/api/get-users' &&
+      (nextUrl.pathname === '/api/get-users' &&
         method === 'GET' &&
         authorizationStr) ||
-      (nextUrl.pathname == '/api/get-signed-in-user-brevo-status' &&
+      (nextUrl.pathname === '/api/get-signed-in-user-brevo-status' &&
         method === 'GET' &&
         authorizationStr) ||
-      (nextUrl.pathname == '/api/get-user-account-data' &&
+      (nextUrl.pathname === '/api/get-user-account-data' &&
         method === 'GET' &&
         authorizationStr) ||
-      (nextUrl.pathname == '/api/admin/update-user' &&
+      (nextUrl.pathname === '/api/admin/update-user' &&
         method === 'POST' &&
         authorizationStr) ||
-      (nextUrl.pathname == '/api/gp-plus/copy-lesson' &&
+      (nextUrl.pathname === '/api/gp-plus/copy-lesson' &&
         method === 'GET' &&
         authorizationStr) ||
-      (nextUrl.pathname == '/api/gp-plus/resolve-lesson-folder' &&
+      (nextUrl.pathname === '/api/gp-plus/resolve-lesson-folder' &&
         method === 'GET' &&
         authorizationStr) ||
-      (nextUrl.pathname == '/api/job-tours/create' &&
+      (nextUrl.pathname === '/api/job-tours/create' &&
         method === 'POST' &&
         authorizationStr) ||
-      (nextUrl.pathname == '/api/job-tours/get' &&
+      (nextUrl.pathname === '/api/job-tours/get' &&
         method === 'GET' &&
         authorizationStr) ||
-      (nextUrl.pathname == '/api/job-tours/update' &&
+      (nextUrl.pathname === '/api/job-tours/update' &&
         method === 'PUT' &&
         authorizationStr) ||
-      (nextUrl.pathname == '/api/job-tours/delete' &&
+      (nextUrl.pathname === '/api/job-tours/delete' &&
         method === 'DELETE' &&
         authorizationStr)
     ) {

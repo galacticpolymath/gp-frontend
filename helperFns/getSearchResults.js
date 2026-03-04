@@ -12,7 +12,7 @@ const getSearchResultsAsync = (searchInput) => {
     return new Promise((resolve, reject) => {
         try {
             const searchResultsFiltered = jobVizDataObj.data.filter(({ title }) => title.toLowerCase().includes(searchInput))
-            let groupedSearchResults = [];
+            const groupedSearchResults = [];
 
             searchResultsFiltered.forEach(job => {
                 const firstLetter = job.title[0];

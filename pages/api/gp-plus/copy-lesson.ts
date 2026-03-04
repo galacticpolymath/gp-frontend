@@ -158,11 +158,11 @@ export default async function handler(
   const reqQueryParams = request.query as unknown as TCopyLessonReqQueryParams;
   let parentFolder: { id: string; permissionId: string } | null = null;
   let wasUserRolesAndFileMetaDataReseted = false;
-  let _fileIds =
+  const _fileIds =
     typeof reqQueryParams.fileIds === "string"
       ? [reqQueryParams.fileIds]
       : reqQueryParams.fileIds;
-  let _fileNames =
+  const _fileNames =
     typeof reqQueryParams.fileNames === "string"
       ? [reqQueryParams.fileNames]
       : reqQueryParams.fileNames;
@@ -1036,7 +1036,7 @@ export default async function handler(
       msg: `'${reqQueryParams.unitName}' folder was created.`,
     });
 
-    let unitGDriveLesson: IUnitGDriveLesson = {
+    const unitGDriveLesson: IUnitGDriveLesson = {
       unitDriveId: targetUnitFolderCreation.folderId,
       unitId: reqQueryParams.unitId,
       gmail: userGmail,

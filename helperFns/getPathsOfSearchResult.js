@@ -17,7 +17,7 @@ const exceptionsAtLevel2 = []
 
 
 const getAllParentJobCategories = (jobCategory, _num) => {
-    let targetLevels = [];
+    const targetLevels = [];
     let num = _num;
 
     // check if num is a number
@@ -33,10 +33,10 @@ const getAllParentJobCategories = (jobCategory, _num) => {
         if (jobCategory.soc_code !== levelN) {
             // if on level 2 and "level2": "15-1200", then insert "15-1200" into levelN 
             const isOnLevel2 = levelFieldName === "level2"
-            let levelNSplitted = levelN.split("-")
-            let levelNFirstNumStr = levelNSplitted[0]
+            const levelNSplitted = levelN.split("-")
+            const levelNFirstNumStr = levelNSplitted[0]
             let levelNLastNumStr = levelNSplitted[1]
-            let isThereANonZeroNumInHundredsPlace = (levelNLastNumStr % 1000) > 0
+            const isThereANonZeroNumInHundredsPlace = (levelNLastNumStr % 1000) > 0
 
             if (isOnLevel2 && isThereANonZeroNumInHundredsPlace) {
                 levelNLastNumStr = levelNLastNumStr - (levelNLastNumStr % 1000)
@@ -68,7 +68,7 @@ const getPathsOfSearchResult = jobCategory => {
     console.log('getPathsOfSearchResult: jobCategory = ', jobCategory);
     const { hierarchy, occupation_type } = jobCategory;
     const numForWhileLoop = ((hierarchy === 1) || (hierarchy === 2) || ((hierarchy === 3) && !(occupation_type === "Line item"))) ? hierarchy : (hierarchy - 1)
-    let { targetLevels, didErr } = getAllParentJobCategories(jobCategory, numForWhileLoop);
+    const { targetLevels, didErr } = getAllParentJobCategories(jobCategory, numForWhileLoop);
 
     if (didErr) {
         return { didErr: true }

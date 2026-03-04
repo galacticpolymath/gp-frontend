@@ -15,7 +15,7 @@ const GP_DATA_EXPIRATION_TIME_MS = 3_600_000 * 12;
 
 export const cacheGpUnitData = async () => {
   try {
-    let { data: units } = await retrieveUnits({}, {});
+    const { data: units } = await retrieveUnits({}, {});
 
     if (!units?.length) {
       throw new CustomError("Failed to get gp units from the db.", 500);
@@ -86,7 +86,7 @@ export const getCachedGpUnitData = async <
     let totalItemsNum = gpDataArr?.length ? gpDataArr?.flat()?.length : null;
 
     if (!gpDataArr?.length) {
-      let { data: units, errMsg } = await retrieveUnits({}, {}, 0, {
+      const { data: units, errMsg } = await retrieveUnits({}, {}, 0, {
         ReleaseDate: -1,
       });
 

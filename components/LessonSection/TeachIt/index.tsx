@@ -102,7 +102,7 @@ export const DisplayLessonTile: React.FC<IDisplayLessonTileProps> = ({
 };
 
 const TeachIt: React.FC<TeachItProps> = (props) => {
-  let {
+  const {
     _sectionDots,
     SectionTitle,
     ForGrades,
@@ -116,7 +116,7 @@ const TeachIt: React.FC<TeachItProps> = (props) => {
     unitId,
     itemsOfLessons
   } = props;
-  let Data = props?.Data ?? props;
+  const Data = props?.Data ?? props;
   const [, setSectionDots] = _sectionDots;
   const ref = useRef(null);
 
@@ -183,7 +183,7 @@ const TeachIt: React.FC<TeachItProps> = (props) => {
       : ({} as IResource<ILessonForUI>)
   );
 
-  let resources = allResources?.length
+  const resources = allResources?.length
     ? allResources.find(
       ({ gradePrefix }) => gradePrefix === selectedGrade.gradePrefix
     )
@@ -206,7 +206,7 @@ const TeachIt: React.FC<TeachItProps> = (props) => {
     dataLesson = Data.lesson;
   }
 
-  let parts = selectedGrade.lessons ?? [];
+  const parts = selectedGrade.lessons ?? [];
 
   useEffect(() => {
     const lessonPartPath = window.location.href.split("#").at(-1);

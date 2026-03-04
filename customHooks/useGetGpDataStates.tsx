@@ -1,3 +1,4 @@
+/* eslint-disable no-alert */
  
  
  
@@ -59,7 +60,7 @@ export const useGetGpDataStates = <TData extends TGpData>(
       );
 
       if (gpVideosResponse.errType === "timeout") {
-        alert(
+        globalThis.alert?.(
           `Failed to get ${gpDataType}. Please refesh the page and try again.`
         );
         throw new Error('"axios" request error timeout has occurred.');

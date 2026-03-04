@@ -41,7 +41,7 @@ export default function ChunkGraph({
     const width = svgWidth - 5;
     const height = 70 + plotDisplace;
 
-    let svg = d3
+    const svg = d3
       .select(container.current)
       .append("svg")
       .attr("viewBox", `0 0 ${svgWidth} ${height}`)
@@ -59,13 +59,13 @@ export default function ChunkGraph({
     const range = [...Array(minutes + 1).keys()];
 
     // x coords for every bar and tick
-    let xcoords = [];
+    const xcoords = [];
     for (let i = 0; i < minutes + 1; i++) {
       xcoords[i] = range[i] * barSpacing + gap * i + endGap;
     }
 
     // x coords for numbers
-    let numCoords = [];
+    const numCoords = [];
     for (let i = 0; i < minutes + 1; i++) {
       if (i % 5 === 0 && i < 10) {
         numCoords.push({ value: i, coord: xcoords[i] });

@@ -105,7 +105,7 @@ export default async function handler(
       });
     }
 
-    let user = await getUserByEmail<TUserSchemaV2>(
+    const user = await getUserByEmail<TUserSchemaV2>(
       jwtVerificationResult.payload.email,
       {
         _id: 0,

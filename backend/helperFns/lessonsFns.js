@@ -12,7 +12,7 @@ export const getUnits = async (projectedFields = PROJECTED_LESSONS_FIELDS) => {
             true,
         );
 
-        let units = await Lessons.find({}, projectedFields).sort({ ReleaseDate: -1 }).lean();
+        const units = await Lessons.find({}, projectedFields).sort({ ReleaseDate: -1 }).lean();
 
         return units;
     } catch (error) {

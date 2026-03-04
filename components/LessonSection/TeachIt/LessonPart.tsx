@@ -1,3 +1,4 @@
+/* eslint-disable no-alert */
 import { PiArrowsSplit } from "react-icons/pi";
 import { RxMagnifyingGlass } from "react-icons/rx";
 import Accordion from "../../Accordion";
@@ -169,7 +170,7 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
     console.log("sharedGDriveLessonFolders: ", sharedGDriveLessonFolders);
 
     const targetLessonFolder = sharedGDriveLessonFolders.find((folder) => {
-      if (lsnNum == 100) {
+      if (lsnNum === 100) {
         return folder.name === "assessments";
       }
 
@@ -214,14 +215,14 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
   let _itemList = itemList;
 
   const targetLessonsResources = resources?.lessons?.find((lesson) => {
-    return lesson?.lsn == lsnNum;
+    return lesson?.lsn === lsnNum;
   });
-  let {
+  const {
     lsnTags,
     tags: _allTags,
     itemList: linkResources,
   } = targetLessonsResources ?? {};
-  let allTags = lsnTags ?? _allTags;
+  const allTags = lsnTags ?? _allTags;
   _itemList = (_itemList ?? linkResources) as IItemForClient[] | null;
   let lsnNumParsed = NaN;
 
@@ -254,7 +255,7 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
 
   const handlePreviewDownloadBtnClick = (lessonItemIndex: number) => {
     if (!lsnNum) {
-      alert(
+      globalThis.alert?.(
         "Error: Unable to preview lesson. Please contact the administrator."
       );
       return;
@@ -363,9 +364,9 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
   const highlightedGlow = "inset 0px 0px 20px 0px rgba(44,131,195,0.25)";
   let _borderTop = "none";
 
-  if (isExpanded && lsnNumParsed == 1) {
+  if (isExpanded && lsnNumParsed === 1) {
     _borderTop = "none";
-  } else if (!isExpanded && lsnNumParsed == 1) {
+  } else if (!isExpanded && lsnNumParsed === 1) {
     _borderTop = defaultBorder;
   }
 
@@ -384,16 +385,16 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
 
   let _borderTopAccordionWrapper = "none";
 
-  if (isExpanded && lsnNumParsed == 1) {
+  if (isExpanded && lsnNumParsed === 1) {
     _borderTopAccordionWrapper = highlightedBorder;
   }
 
-  if (!isExpanded && lsnNumParsed == 1) {
+  if (!isExpanded && lsnNumParsed === 1) {
     _borderTopAccordionWrapper = "none";
   }
 
   const _borderBottomAccordionWrapper =
-    numsOfLessonPartsThatAreExpanded.find((num) => num == lsnNumParsed) ||
+    numsOfLessonPartsThatAreExpanded.find((num) => num === lsnNumParsed) ||
       isExpanded
       ? highlightedBorder
       : "none";
@@ -406,7 +407,7 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
     pointerEvent: "none",
   };
   const lessonsFolder =
-    lsnNum == 100
+    lsnNum === 100
       ? // will use the assessments folder itself as the parent folder
       {
         name: sharedGDriveLessonFolder?.name,
@@ -650,7 +651,7 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
               <i className="bi bi-ui-checks-grid me-2 fw-bolder"></i>
               <h5 className="fw-bold" id="materials-title">
                 Materials for{" "}
-                {lsnNum == 100
+                {lsnNum === 100
                   ? "Assessments"
                   : `${selectedGrade.gradePrefix} (Lesson ${lsnNum})`}
               </h5>
@@ -936,7 +937,7 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                   key={i}
                   chunkNum={i}
                   chunkDur={durList[i]}
-                  durList={durList.filter((dur) => dur != null)}
+                  durList={durList.filter((dur) => dur !== null)}
                   lessonNum={lsnNum as number}
                   chunkTitle={chunk.chunkTitle}
                   steps={chunk.steps as IStep[]}

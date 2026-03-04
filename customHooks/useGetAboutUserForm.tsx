@@ -117,7 +117,7 @@ export const getAboutUserFormForClient = (
   }
 
 
-  if (institution || institution == null) {
+  if (institution || institution === null) {
     userAccountForClient = {
       ...userAccountForClient,
       institution,
@@ -172,7 +172,7 @@ export const getAboutUserFormForClient = (
       ...userAccountForClient,
       subjects: subjectsTeaching as Map<string, string>,
     };
-  } else if (subjects && Object.entries(subjects).length == 0) {
+  } else if (subjects && Object.entries(subjects).length === 0) {
     userAccountForClient.subjects = userAccountDefault.subjects;
   }
 
@@ -442,7 +442,7 @@ export const useGetAboutUserForm = (
           }
 
 
-          if (institution || institution == null) {
+          if (institution || institution === null) {
             userAccountForClient = {
               ...userAccountForClient,
               institution,
@@ -497,7 +497,7 @@ export const useGetAboutUserForm = (
               ...userAccountForClient,
               subjects: subjectsTeaching as Map<string, string>,
             };
-          } else if (subjects && Object.entries(subjects).length == 0) {
+          } else if (subjects && Object.entries(subjects).length === 0) {
             userAccountForClient.subjects = userAccountDefault.subjects;
           }
 

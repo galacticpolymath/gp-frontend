@@ -51,7 +51,7 @@ const JobCategoriesSec = ({ dynamicJobResults, currentHierarchyNum, resetSearch 
 
         resetSearch()
 
-        if (pathname == '/jobviz') {
+        if (pathname === '/jobviz') {
             const baseUrl = `${window.location.origin}/jobviz/${nextLevelHierarchyNum}/${level}/${currentJobsCategoryId}`
             const urlUpdated = searchParamsStr.length ? `${baseUrl}?${searchParamsStr}` : baseUrl;
             router.push(urlUpdated, null, { scroll: false, shallow: true })
@@ -62,7 +62,7 @@ const JobCategoriesSec = ({ dynamicJobResults, currentHierarchyNum, resetSearch 
 
         // TODO: handle the following case: the search-results parameter is not present in the url
 
-        let jobCategoryIds = [...query[`search-results`]]
+        const jobCategoryIds = [...query[`search-results`]]
         jobCategoryIds.splice(0, 2)
         jobCategoryIds.push(currentJobsCategoryId)
         const baseUrl = `${window.location.origin}/jobviz/${nextLevelHierarchyNum}/${level}/${jobCategoryIds.join('/')}`

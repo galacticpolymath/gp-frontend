@@ -200,7 +200,7 @@ export const shareFilesWithRetries = async (
       console.log("Shared file: ", targetFile.name);
 
       if (
-        result.status == "rejected" &&
+        result.status === "rejected" &&
         result?.reason?.response?.data?.error?.code === 400
       ) {
         console.log("Name of restricted file: ", targetFile.name);
