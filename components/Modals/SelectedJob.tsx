@@ -61,7 +61,7 @@ const SelectedJob: React.FC = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [selectedJob, setSelectedJob] = _selectedJob;
-  const [, setIsJobModal] = _isJobModalOn;
+  const [isJobModalOn, setIsJobModal] = _isJobModalOn;
   const [, setJobToursModalCssProps] = _jobToursModalCssProps;
   const [jobvizReturnPath, setJobvizReturnPath] = _jobvizReturnPath;
   const [, setIsLoginModalDisplayed] = _isLoginModalDisplayed;
@@ -358,7 +358,7 @@ const SelectedJob: React.FC = () => {
   }, [setIsJobModal]);
 
   const handleOnHide = () => {
-    const paramsStr = searchParams.toString();
+    const paramsStr = searchParams?.toString() ?? "";
     if (jobvizReturnPath) {
       router.push(jobvizReturnPath, undefined, {
         scroll: false,
@@ -392,6 +392,7 @@ const SelectedJob: React.FC = () => {
       }
     }
 
+    setIsJobModal(false);
     setSelectedJob(null);
     setInfoModal(null);
     setModalHistory(null);
@@ -614,7 +615,7 @@ const SelectedJob: React.FC = () => {
   return (
     <>
       <Modal
-        show={!!visibleJob}
+        show={!!visibleJob && isJobModalOn}
         onHide={handleOnHide}
         className="selectedJobModalRoot"
         contentClassName="selectedJobModal"

@@ -1,8 +1,9 @@
 import { Html, Head, Main, NextScript } from 'next/document';
 
 export default function Document() {
-  const outsetaDomain =
-    process.env.NEXT_PUBLIC_OUTSETA_DOMAIN || "galactic-polymath.outseta.com";
+  const outsetaDomain = process.env.NEXT_PUBLIC_OUTSETA_DOMAIN || "";
+  const shouldLoadOutseta =
+    process.env.NODE_ENV === "production" && Boolean(outsetaDomain);
   return (
     <Html lang="en" data-scroll-behavior="smooth">
       <Head>
@@ -12,23 +13,27 @@ export default function Document() {
           href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700&family=Noto+Sans+Mono:wght@300;400;500&display=swap"
           rel="stylesheet"
         />
-        <script
-          type="text/javascript"
-          dangerouslySetInnerHTML={{
-            __html: `
-              var o_options = {
-                domain: '${outsetaDomain}',
-                load: 'auth,customForm,emailList,leadCapture,profile,support',
-                monitorDom: true,
-              };
-            `,
-          }}
-        />
-        <script
-          src="https://cdn.outseta.com/outseta.min.js"
-          data-options="o_options"
-          async
-        />
+        {shouldLoadOutseta && (
+          <>
+            <script
+              type="text/javascript"
+              dangerouslySetInnerHTML={{
+                __html: `
+                  var o_options = {
+                    domain: '${outsetaDomain}',
+                    load: 'auth,customForm,emailList,leadCapture,profile,support',
+                    monitorDom: true,
+                  };
+                `,
+              }}
+            />
+            <script
+              src="https://cdn.outseta.com/outseta.min.js"
+              data-options="o_options"
+              async
+            />
+          </>
+        )}
       </Head>
       <body>
         <Main />

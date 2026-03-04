@@ -19,15 +19,7 @@ const CreditsTab: React.FC<TCreditsTabProps> = ({
 }) => {
   return (
     <section className={`${styles.unitSection} ${styles.unitTabFadeIn}`}>
-      <h2 className={styles.sectionTitle}>Credits, Acknowledgments, and Versions</h2>
-      <p className={styles.sectionIntro}>
-        This unit was made possible by hundreds of hours of work by tons of
-        people. Thank you!
-      </p>
-      <div
-        id="unit-search-credits-content"
-        className={styles.unitOverviewCardWide}
-      >
+      <div className={styles.unitOverviewCardWide}>
         {hasCreditsTabContent ? (
           <div className={styles.creditsLayout}>
             {!!creditsContent && (

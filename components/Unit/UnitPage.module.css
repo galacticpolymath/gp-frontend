@@ -168,6 +168,78 @@
   color: #5d647c;
 }
 
+.unitHeroShareRow {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding-top: 12px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.unitTabHero {
+  max-width: 1280px;
+  margin: 14px auto 0;
+  padding: 14px 16px 12px;
+  border: 1px solid rgba(107, 122, 177, 0.28);
+  border-radius: 14px;
+  background:
+    radial-gradient(
+      circle at 12% 18%,
+      rgba(44, 131, 195, 0.2),
+      transparent 38%
+    ),
+    linear-gradient(
+      135deg,
+      rgba(238, 247, 255, 0.99),
+      rgba(246, 251, 255, 0.99)
+    );
+  box-shadow: 0 10px 24px rgba(40, 52, 89, 0.14);
+}
+
+.unitTabHeroCredits {
+  background:
+    radial-gradient(
+      circle at 14% 20%,
+      rgba(44, 131, 195, 0.22),
+      transparent 40%
+    ),
+    linear-gradient(
+      140deg,
+      rgba(240, 248, 255, 0.99),
+      rgba(248, 252, 255, 0.99)
+    );
+}
+
+.unitTabHeroContent {
+  display: grid;
+  gap: 6px;
+}
+
+.unitTabHeroEyebrow {
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 12px;
+  font-weight: 700;
+  color: #34507d;
+}
+
+.unitTabHeroTitle {
+  margin: 0;
+  font-size: clamp(24px, 4vw, 34px);
+  line-height: 1.14;
+  color: #1a2748;
+}
+
+.unitTabHeroLead {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.45;
+  color: #354669;
+  max-width: 82ch;
+}
+
 .unitStickyHeader {
   position: sticky;
   top: var(--portal-nav-offset, 0px);
@@ -212,7 +284,7 @@
   justify-content: flex-start;
   gap: 12px;
   min-width: 0;
-  padding-right: clamp(170px, 34vw, 500px);
+  padding-right: clamp(160px, 28vw, 360px);
 }
 
 .unitLocaleSwitcher {
@@ -221,10 +293,6 @@
   flex: 0 0 auto;
   min-width: 0;
   font-size: 15px;
-  color: var(--sticky-offwhite);
-}
-
-.unitLocaleSwitcher * {
   color: var(--sticky-offwhite);
 }
 
@@ -246,12 +314,82 @@
   color: var(--sticky-offwhite);
 }
 
-.unitLocaleSwitcher :global(.ReactFlagsSelect-module__selectBtn *) {
+.unitLocaleSwitcher :global([class*="ReactFlagsSelect-module_selectBtn"]),
+.unitLocaleSwitcher :global([class*="ReactFlagsSelect-module__selectBtn"]) {
+  min-height: var(--field-height);
+  height: var(--field-height);
+  display: inline-flex;
+  align-items: center;
+}
+
+.unitLocaleSwitcher :global(.unit-locDropdownButton) {
+  border-color: rgba(173, 216, 255, 0.35) !important;
+  background: rgba(255, 255, 255, 0.08) !important;
   color: var(--sticky-offwhite) !important;
+}
+
+.unitLocaleSwitcher :global(.unit-locDropdownButton:after) {
+  border-top-color: var(--sticky-offwhite) !important;
+}
+
+.unitLocaleSwitcher :global(.unit-locDropdownButton[aria-expanded='true']:after) {
+  border-bottom-color: var(--sticky-offwhite) !important;
+}
+
+.unitLocaleSwitcher :global(.unit-locDropdownValue),
+.unitLocaleSwitcher :global(.unit-locDropdownLabel),
+.unitLocaleSwitcher :global(.unit-locDropdownGlobe),
+.unitLocaleSwitcher :global(.unit-locDropdownGlobe i) {
+  color: var(--sticky-offwhite) !important;
+}
+
+.unitLocaleSwitcher :global([class*="ReactFlagsSelect-module_selectBtn"] [class*="ReactFlagsSelect-module_label"]),
+.unitLocaleSwitcher :global([class*="ReactFlagsSelect-module__selectBtn"] [class*="ReactFlagsSelect-module__label"]) {
+  color: var(--sticky-offwhite) !important;
+}
+
+.unitLocaleSwitcher :global([class*="ReactFlagsSelect-module_selectBtn"] svg),
+.unitLocaleSwitcher :global([class*="ReactFlagsSelect-module__selectBtn"] svg) {
+  fill: var(--sticky-offwhite) !important;
 }
 
 .unitLocaleSwitcher :global(.ReactFlagsSelect-module__selectBtn svg) {
   fill: var(--sticky-offwhite);
+}
+
+.unitLocaleSwitcher :global([class*="ReactFlagsSelect-module_selectOptions"]),
+.unitLocaleSwitcher :global([class*="ReactFlagsSelect-module__selectOptions"]) {
+  background: #ffffff !important;
+  border: 1px solid rgba(41, 56, 92, 0.22) !important;
+  box-shadow: 0 14px 26px rgba(8, 16, 40, 0.24) !important;
+}
+
+.unitLocaleSwitcher :global([class*="ReactFlagsSelect-module_selectOptions"] *),
+.unitLocaleSwitcher :global([class*="ReactFlagsSelect-module__selectOptions"] *) {
+  color: #25365f !important;
+}
+
+.unitLocaleSwitcher :global([class*="ReactFlagsSelect-module_selectOption"]),
+.unitLocaleSwitcher :global([class*="ReactFlagsSelect-module__selectOption"]) {
+  color: #25365f !important;
+}
+
+.unitLocaleSwitcher :global([class*="ReactFlagsSelect-module_selectOption"] span),
+.unitLocaleSwitcher :global([class*="ReactFlagsSelect-module__selectOption"] span) {
+  color: #25365f !important;
+}
+
+.unitLocaleSwitcher :global([class*="ReactFlagsSelect-module_label"]),
+.unitLocaleSwitcher :global([class*="ReactFlagsSelect-module__label"]) {
+  color: #25365f !important;
+  font-weight: 600;
+}
+
+.unitLocaleSwitcher :global([class*="ReactFlagsSelect-module_selectOption"]:hover),
+.unitLocaleSwitcher :global([class*="ReactFlagsSelect-module__selectOption"]:hover),
+.unitLocaleSwitcher :global([class*="ReactFlagsSelect-module_selectOption"][aria-selected="true"]),
+.unitLocaleSwitcher :global([class*="ReactFlagsSelect-module__selectOption"][aria-selected="true"]) {
+  background: rgba(44, 131, 195, 0.14) !important;
 }
 
 .unitLocaleSwitcher :global(.ReactFlagsSelect-module__selectBtn):focus {
@@ -284,7 +422,7 @@
 
 .unitSearchRow {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 8px;
   min-width: 0;
   width: auto;
@@ -296,13 +434,6 @@
   --field-height: 44px;
   --locale-width: 160px;
   --search-expanded-width: 420px;
-}
-
-.unitLocaleSwitcher :global(.ReactFlagsSelect-module__selectBtn) {
-  min-height: var(--field-height);
-  height: var(--field-height);
-  display: flex;
-  align-items: center;
 }
 
 .unitSearchInputWrap {
@@ -414,32 +545,8 @@
   box-shadow: 0 0 0 2px rgba(120, 130, 150, 0.2);
 }
 
-.stickyShareAction {
-  padding: 0;
-  font-size: 15px;
-  line-height: 1;
-  font-weight: 600;
-  border: 0;
-  background: transparent;
-  color: #dce9ff;
-  min-height: 30px;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  cursor: pointer;
-}
-
-.stickyShareAction:hover,
-.stickyShareAction:focus {
-  color: #f7fbff;
-}
-
-.stickyShareAction i {
-  font-size: 15px;
-}
-
 .unitNavVisibilityToggle {
-  padding: 0 10px;
+  padding: 0 12px;
   font-size: 15px;
   line-height: 1;
   font-weight: 600;
@@ -447,7 +554,8 @@
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.08);
   color: var(--sticky-offwhite);
-  min-height: 34px;
+  min-height: var(--field-height);
+  height: var(--field-height);
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -539,6 +647,30 @@
   display: grid;
   gap: 6px;
   box-shadow: 0 12px 24px rgba(24, 30, 61, 0.12);
+}
+
+.unitMainShareAction {
+  padding: 0;
+  font-size: 15px;
+  line-height: 1;
+  font-weight: 600;
+  border: 0;
+  background: transparent;
+  color: #1f355a;
+  min-height: 32px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+.unitMainShareAction:hover,
+.unitMainShareAction:focus {
+  color: #0f203f;
+}
+
+.unitMainShareAction i {
+  font-size: 15px;
 }
 
 .lessonSubtabBar {
@@ -4327,6 +4459,16 @@
     padding-bottom: 132px;
   }
 
+  .unitHeroShareRow {
+    padding-top: 10px;
+  }
+
+  .unitTabHero {
+    margin-top: 10px;
+    border-radius: 12px;
+    padding: 12px 12px 10px;
+  }
+
   .lessonMaterialsGrid {
     grid-template-columns: minmax(0, 1fr);
     position: static;
@@ -4456,8 +4598,8 @@
   .unitSearchRow {
     --locale-width: 120px;
     --search-expanded-width: 300px;
-    flex-wrap: wrap;
-    align-items: flex-start;
+    flex-wrap: nowrap;
+    align-items: center;
     justify-content: flex-end;
     width: auto;
   }

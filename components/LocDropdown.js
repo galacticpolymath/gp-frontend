@@ -113,6 +113,8 @@ const LocDropdown = ({ id, availLocs, loc }) => {
         selected={loc}
         countries={countries}
         customLabels={labels}
+        className="unit-locDropdown"
+        selectButtonClassName="unit-locDropdownButton"
         onSelect={(countryCode) => {
           changeLoc(countryCode, id);
         }}
@@ -121,15 +123,15 @@ const LocDropdown = ({ id, availLocs, loc }) => {
         }}
         disabled={isSpinnerDisplayed}
         placeholder={(
-          <div className="d-flex position-relative">
-            <section className={`d-flex justify-content-center align-items-center pe-1 opacity-${isSpinnerDisplayed ? '0' : '100'}`}>
+          <div className="d-flex position-relative unit-locDropdownValue">
+            <section className={`d-flex justify-content-center align-items-center pe-1 unit-locDropdownGlobe opacity-${isSpinnerDisplayed ? '0' : '100'}`}>
               <i className="bi bi-globe" />
             </section>
-            <section className={`d-flex justify-content-center align-items-center opacity-${isSpinnerDisplayed ? '0' : '100'}`}>
+            <section className={`d-flex justify-content-center align-items-center unit-locDropdownLabel opacity-${isSpinnerDisplayed ? '0' : '100'}`}>
               {loc}
             </section>
             <div className={`center-absolutely d-${isSpinnerDisplayed ? 'block' : 'none'}`}>
-              <Spinner size="sm" className="text-black" />
+              <Spinner size="sm" className="text-light" />
             </div>
           </div>
         )}

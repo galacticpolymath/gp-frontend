@@ -257,13 +257,7 @@ const scrollToTop = () => {
   if (typeof window === 'undefined') {
     return;
   }
-  const portalNav = document.querySelector(
-    'nav[data-nav-hidden]'
-  ) as HTMLElement | null;
-  const isNavHidden = portalNav?.dataset.navHidden === 'true';
-  const navLayoutHeight = portalNav?.offsetHeight ?? 0;
-  const targetTop = isNavHidden ? navLayoutHeight : 0;
-  window.scrollTo({ top: targetTop, behavior: 'auto' });
+  window.scrollTo({ top: 0, behavior: 'auto' });
 };
 
 const parseGradesFromString = (value: string) => {
@@ -1535,6 +1529,10 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
   } = useSiteSession();
   const { setAppCookie } = useCustomCookies();
   const isAuthenticated = status === 'authenticated';
+  const authorizationHeader =
+    typeof token === 'string' && token.startsWith('Bearer ')
+      ? token
+      : `Bearer ${token ?? ''}`;
   const isUserTeacher = Boolean(
     (user as { isTeacher?: boolean } | undefined)?.isTeacher
   );
@@ -1542,23 +1540,23 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
   const [profileAvatarUrl, setProfileAvatarUrl] = useState<string | null>(null);
   const [avatarCandidateIndex, setAvatarCandidateIndex] = useState(0);
   const [isAvatarHydrated, setIsAvatarHydrated] = useState(false);
+  const sessionAvatarImage =
+    typeof (user as { image?: unknown } | undefined)?.image === 'string'
+      ? ((user as { image?: string }).image ?? '').trim()
+      : '';
+  const sessionAvatarPicture =
+    typeof (user as { picture?: unknown } | undefined)?.picture === 'string'
+      ? ((user as { picture?: string }).picture ?? '').trim()
+      : '';
   const avatarCandidates = useMemo(() => {
-    const imageValue =
-      typeof (user as { image?: unknown } | undefined)?.image === 'string'
-        ? ((user as { image?: string }).image ?? '').trim()
-        : '';
-    const pictureValue =
-      typeof (user as { picture?: unknown } | undefined)?.picture === 'string'
-        ? ((user as { picture?: string }).picture ?? '').trim()
-        : '';
     const profileValue = profileAvatarUrl?.trim() ?? '';
     const localValue = localAvatarUrl?.trim() ?? '';
 
-    return [imageValue, pictureValue, profileValue, localValue].filter(
+    return [sessionAvatarImage, sessionAvatarPicture, profileValue, localValue].filter(
       (value, index, arr): value is string => Boolean(value) && arr.indexOf(value) === index
     );
-  }, [localAvatarUrl, profileAvatarUrl, user]);
-  const effectiveAvatarUrl = isAvatarHydrated
+  }, [localAvatarUrl, profileAvatarUrl, sessionAvatarImage, sessionAvatarPicture]);
+  const effectiveAvatarUrl = isAvatarHydrated && isAuthenticated
     ? avatarCandidates[avatarCandidateIndex] ?? null
     : null;
   const isGpPlusUser = isGpPlusMember === true;
@@ -1638,7 +1636,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
   const [visibleTagCount, setVisibleTagCount] = useState(0);
   const [activeMaterialIndex, setActiveMaterialIndex] = useState(0);
   const [activeLessonPreviewMode, setActiveLessonPreviewMode] =
-    useState<TActiveLessonPreviewMode>('materials');
+    useState<TActiveLessonPreviewMode>('featured-media');
   const [standalonePreviewMode, setStandalonePreviewMode] = useState<
     'none' | 'procedure' | 'background'
   >('none');
@@ -1702,10 +1700,6 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
 
   useEffect(() => {
     if (!isAvatarHydrated || !isAuthenticated) return;
-    const hasSessionAvatar =
-      Boolean((user as { image?: string | null } | undefined)?.image) ||
-      Boolean((user as { picture?: string | null } | undefined)?.picture);
-    if (hasSessionAvatar) return;
 
     const localAvatarUrl = (() => {
       if (typeof window === 'undefined') return null;
@@ -1724,9 +1718,9 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
 
     if (localAvatarUrl) {
       setLocalAvatarUrl(localAvatarUrl);
-      return;
     }
 
+    if (profileAvatarUrl) return;
     if (!token) return;
 
     let isCancelled = false;
@@ -1736,7 +1730,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
           '/api/get-user-account-data',
           {
             headers: {
-              Authorization: `Bearer ${token}`,
+              Authorization: authorizationHeader,
             },
           }
         );
@@ -1754,7 +1748,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
     return () => {
       isCancelled = true;
     };
-  }, [isAvatarHydrated, isAuthenticated, token, user]);
+  }, [authorizationHeader, isAvatarHydrated, isAuthenticated, profileAvatarUrl, token]);
   const shouldShowGradeBandChooser = classroomResources.some(
     (resource) =>
       Boolean(resource?.gradePrefix?.trim() || resource?.grades?.trim())
@@ -1924,7 +1918,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
       const previewValue = previewParamValue
         ? parsePreviewFromUrlValue(previewParamValue)
         : undefined;
-      if (previewValue) {
+      if (previewValue && previewValue !== 'materials' && previewValue !== 'featured-media') {
         setActiveLessonPreviewMode(previewValue);
       }
 
@@ -2028,8 +2022,14 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
       currentParams.delete(URL_PARAM_LESSON);
     }
 
-    if (tab === TAB_MATERIALS && previewMode && PREVIEW_TO_URL[previewMode]) {
-      currentParams.set(URL_PARAM_PREVIEW, PREVIEW_TO_URL[previewMode]);
+    const previewUrlValue =
+      tab === TAB_MATERIALS && previewMode ? PREVIEW_TO_URL[previewMode] : null;
+    if (
+      previewUrlValue &&
+      previewUrlValue !== PREVIEW_TO_URL['materials'] &&
+      previewUrlValue !== PREVIEW_TO_URL['featured-media']
+    ) {
+      currentParams.set(URL_PARAM_PREVIEW, previewUrlValue);
     } else {
       currentParams.delete(URL_PARAM_PREVIEW);
     }
@@ -2071,12 +2071,14 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
       suppressPortalNavReveal();
     }
     setActiveLessonId(lessonId);
+    setActiveLessonPreviewMode('featured-media');
+    setActiveMaterialIndex(0);
     setActiveTab(TAB_MATERIALS);
     updateUrlState({
       tab: TAB_MATERIALS,
       lessonId,
-      previewMode: activeLessonPreviewMode,
-      materialIndex: activeMaterialIndex,
+      previewMode: 'featured-media',
+      materialIndex: 0,
     });
     trackUnitEvent('unit_lesson_selected', { lesson_id: lessonId });
     scrollToTop();
@@ -2799,7 +2801,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
 
   useEffect(() => {
     setActiveMaterialIndex(0);
-    setActiveLessonPreviewMode('materials');
+    setActiveLessonPreviewMode('featured-media');
   }, [activeLessonId]);
   useEffect(() => {
     return () => {
@@ -3715,29 +3717,9 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                   />
                 </div>
                 {availLocs.length > 0 && numID != null && (
-                  <div className={styles.unitLocaleActions}>
-                    <div className={styles.unitLocaleSwitcher}>
-                      <LocDropdown availLocs={availLocs} loc={locale} id={numID} />
-                    </div>
-                    <button
-                      className={styles.stickyShareAction}
-                      type="button"
-                      onClick={handleShare}
-                    >
-                      <i className="bi bi-share" aria-hidden="true" />
-                      Share
-                    </button>
+                  <div className={styles.unitLocaleSwitcher}>
+                    <LocDropdown availLocs={availLocs} loc={locale} id={numID} />
                   </div>
-                )}
-                {!(availLocs.length > 0 && numID != null) && (
-                  <button
-                    className={styles.stickyShareAction}
-                    type="button"
-                    onClick={handleShare}
-                  >
-                    <i className="bi bi-share" aria-hidden="true" />
-                    Share
-                  </button>
                 )}
                 <button
                   type="button"
@@ -3881,10 +3863,11 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
       )}
 
       {activeTab === TAB_OVERVIEW && (
-        <section
-          id="unit-search-overview-hero"
-          className={`${styles.unitHero} ${styles.unitTabFadeIn}`}
-        >
+        <>
+          <section
+            id="unit-search-overview-hero"
+            className={`${styles.unitHero} ${styles.unitTabFadeIn}`}
+          >
           <div className={styles.unitHeroIntro}>
             <div className={styles.unitEyebrowRow}>
               <p className={styles.unitEyebrow}>Galactic Polymath · Unit</p>
@@ -3968,6 +3951,91 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                 </>
               )}
             </div>
+          </div>
+          <div className={styles.unitHeroShareRow}>
+            <button
+              className={styles.unitMainShareAction}
+              type="button"
+              onClick={handleShare}
+            >
+              <i className="bi bi-share" aria-hidden="true" />
+              Share
+            </button>
+          </div>
+          </section>
+        </>
+      )}
+
+      {activeTab === TAB_MATERIALS && (
+        <section className={`${styles.unitTabHero} ${styles.unitTabFadeIn}`}>
+          <div className={styles.unitTabHeroContent}>
+            <p className={styles.unitTabHeroEyebrow}>Lessons Resources</p>
+            <h2 className={styles.unitTabHeroTitle}>Preview and Download</h2>
+            <p className={styles.unitTabHeroLead}>
+              Browse featured media, teaching resources, and lesson support materials
+              in one place.
+            </p>
+          </div>
+          <div className={styles.unitHeroShareRow}>
+            <button
+              className={styles.unitMainShareAction}
+              type="button"
+              onClick={handleShare}
+            >
+              <i className="bi bi-share" aria-hidden="true" />
+              Share
+            </button>
+          </div>
+        </section>
+      )}
+
+      {activeTab === TAB_STANDARDS && (
+        <section className={`${styles.unitTabHero} ${styles.unitTabFadeIn}`}>
+          <div className={styles.unitTabHeroContent}>
+            <p className={styles.unitTabHeroEyebrow}>Standards</p>
+            <h2 className={styles.unitTabHeroTitle}>Interdisciplinary by Design</h2>
+            <p className={styles.unitTabHeroLead}>
+              We align to standards across subjects. Our units are ready for STEAM
+              or team teaching, and project based learning.
+            </p>
+          </div>
+          <div className={styles.unitHeroShareRow}>
+            <button
+              className={styles.unitMainShareAction}
+              type="button"
+              onClick={handleShare}
+            >
+              <i className="bi bi-share" aria-hidden="true" />
+              Share
+            </button>
+          </div>
+        </section>
+      )}
+
+      {activeTab === TAB_CREDITS && (
+        <section
+          id="unit-search-credits-content"
+          className={`${styles.unitTabHero} ${styles.unitTabHeroCredits} ${styles.unitTabFadeIn}`}
+        >
+          <div className={styles.unitTabHeroContent}>
+            <p className={styles.unitTabHeroEyebrow}>Credits</p>
+            <h2 className={styles.unitTabHeroTitle}>
+              Credits, Acknowledgments, and Versions
+            </h2>
+            <p className={styles.unitTabHeroLead}>
+              This unit was made possible by hundreds of hours of work by tons of
+              people. Thank you!
+            </p>
+          </div>
+          <div className={styles.unitHeroShareRow}>
+            <button
+              className={styles.unitMainShareAction}
+              type="button"
+              onClick={handleShare}
+            >
+              <i className="bi bi-share" aria-hidden="true" />
+              Share
+            </button>
           </div>
         </section>
       )}

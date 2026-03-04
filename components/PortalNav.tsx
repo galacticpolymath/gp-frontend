@@ -69,11 +69,16 @@ const PortalNav: React.FC<PortalNavProps> = ({
   const suppressUnhideUntil = useRef(0);
   const { status, user, token, isGpPlusMember, logUserOut } = useSiteSession();
   const isAuthenticated = status === "authenticated";
+  const authorizationHeader =
+    typeof token === "string" && token.startsWith("Bearer ")
+      ? token
+      : `Bearer ${token ?? ""}`;
   const avatarUrl = user?.image ?? profileAvatarUrl ?? null;
   const isPlusMember = isGpPlusMember === true;
   const effectiveIsAuthenticated = isHydrated ? isAuthenticated : false;
   const effectiveIsPlusMember = isHydrated ? isPlusMember : false;
-  const effectiveAvatarUrl = isHydrated ? avatarUrl : null;
+  const effectiveAvatarUrl =
+    isHydrated && isAuthenticated ? avatarUrl : null;
 
   useEffect(() => {
     setIsHydrated(true);
@@ -84,8 +89,13 @@ const PortalNav: React.FC<PortalNavProps> = ({
   }, [effectiveAvatarUrl]);
 
   useEffect(() => {
+    if (isAuthenticated) return;
+    setProfileAvatarUrl(null);
+    setAvatarError(false);
+  }, [isAuthenticated]);
+
+  useEffect(() => {
     if (!isHydrated || !isAuthenticated) return;
-    if (user?.image) return;
 
     const localAvatarUrl = (() => {
       if (typeof window === "undefined") return null;
@@ -106,9 +116,9 @@ const PortalNav: React.FC<PortalNavProps> = ({
 
     if (localAvatarUrl) {
       setProfileAvatarUrl(localAvatarUrl);
-      return;
     }
 
+    if (profileAvatarUrl) return;
     if (!token) return;
 
     let isCancelled = false;
@@ -118,7 +128,7 @@ const PortalNav: React.FC<PortalNavProps> = ({
           "/api/get-user-account-data",
           {
             headers: {
-              Authorization: `Bearer ${token}`,
+              Authorization: authorizationHeader,
             },
           }
         );
@@ -136,7 +146,7 @@ const PortalNav: React.FC<PortalNavProps> = ({
     return () => {
       isCancelled = true;
     };
-  }, [isHydrated, isAuthenticated, token, user?.image]);
+  }, [authorizationHeader, isHydrated, isAuthenticated, profileAvatarUrl, token]);
 
 
   useEffect(() => {
@@ -494,6 +504,8 @@ const PortalNav: React.FC<PortalNavProps> = ({
                 className={styles.accountMenuItem}
                 type="button"
                 onClick={() => {
+                  setProfileAvatarUrl(null);
+                  setAvatarError(false);
                   setAccountMenuOpen(false);
                   logUserOut();
                 }}

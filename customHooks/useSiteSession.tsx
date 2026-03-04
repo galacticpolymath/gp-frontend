@@ -1,7 +1,7 @@
 import { signOut, useSession } from "next-auth/react";
 import { IUserSession } from "../types/global";
 import { useCustomCookies } from "./useCustomCookies";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import axios from "axios";
 
 const GP_PLUS_STATUS_STORAGE_KEY = "isGpPlusUser";
@@ -14,27 +14,36 @@ const useSiteSession = () => {
   const session = useSession();
   const { data, status } = session ?? {};
   const { user, token } = (data ?? {}) as IUserSession;
+  const authorizationHeader =
+    typeof token === "string" && token.startsWith("Bearer ")
+      ? token
+      : `Bearer ${token ?? ""}`;
+  const lastFetchedGpPlusEmailRef = useRef<string | null>(null);
   const [resolvedIsGpPlusMember, setResolvedIsGpPlusMember] = useState<
     boolean | undefined
   >(undefined);
-  const normalizedUser = user
-    ? {
-        ...user,
-        image:
-          typeof user.image === "string" && user.image
-            ? user.image
-            : typeof (user as any).picture === "string" &&
-                (user as any).picture
-              ? (user as any).picture
-              : undefined,
-        userId:
-          typeof user.userId === "string"
-            ? user.userId
-            : user.userId
-              ? String(user.userId)
-              : undefined,
-      }
-    : user;
+  const normalizedUser = useMemo(
+    () =>
+      user
+        ? {
+            ...user,
+            image:
+              typeof user.image === "string" && user.image
+                ? user.image
+                : typeof (user as any).picture === "string" &&
+                    (user as any).picture
+                  ? (user as any).picture
+                  : undefined,
+            userId:
+              typeof user.userId === "string"
+                ? user.userId
+                : user.userId
+                  ? String(user.userId)
+                  : undefined,
+          }
+        : user,
+    [user]
+  );
   const { clearCookies, getCookies } = useCustomCookies();
   const gdriveTokensInfo = getCookies([
     "gdriveAccessToken",
@@ -92,17 +101,19 @@ const useSiteSession = () => {
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    if (status !== "authenticated") return;
+    if (status !== "authenticated") {
+      lastFetchedGpPlusEmailRef.current = null;
+      return;
+    }
     if (!token) return;
-    if (typeof normalizedCookieGpPlus === "boolean") return;
-    if (typeof storedGpPlusMember === "boolean") return;
-    if (typeof resolvedIsGpPlusMember === "boolean") return;
 
     const userEmail =
       typeof normalizedUser?.email === "string"
         ? normalizedUser.email.toLowerCase()
         : "";
     if (!userEmail) return;
+    if (lastFetchedGpPlusEmailRef.current === userEmail) return;
+    lastFetchedGpPlusEmailRef.current = userEmail;
 
     let isCancelled = false;
     const fetchGpPlusStatus = async () => {
@@ -110,7 +121,7 @@ const useSiteSession = () => {
         gpPlusStatusInFlight = axios
           .get<{ isGpPlusMember?: boolean }>("/api/get-user-account-data", {
             headers: {
-              Authorization: `Bearer ${token}`,
+              Authorization: authorizationHeader,
             },
           })
           .then(({ data }) => {
@@ -146,11 +157,9 @@ const useSiteSession = () => {
       isCancelled = true;
     };
   }, [
-    normalizedCookieGpPlus,
     normalizedUser?.email,
-    resolvedIsGpPlusMember,
     status,
-    storedGpPlusMember,
+    authorizationHeader,
     token,
   ]);
 

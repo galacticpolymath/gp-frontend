@@ -960,6 +960,8 @@ const JobVizSearchResults = ({
     );
 
     if (node.occupation_type === "Line item") {
+      setSelectedJob({ ...node, wasSelectedFromJobToursCard: false });
+      setIsJobModalOn(true);
       setPersistedGridItems(filteredGridItems);
       setJobvizReturnPath(buildReturnUrlForNode(node));
     }
@@ -1345,7 +1347,6 @@ const JobVizSearchResults = ({
     }
 
     setIsJobModalOn(false);
-    setSelectedJob(null);
     setJobvizReturnPath(null);
   }, [activeNode, setIsJobModalOn, setSelectedJob, setJobvizReturnPath]);
 
