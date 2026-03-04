@@ -4,24 +4,19 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { ToastContainer } from 'react-toastify';
 import { connectToMongodb } from '../../../../backend/utils/connection';
 import SendFeedback from '../../../../components/LessonSection/SendFeedback';
-import { getLinkPreviewObj } from '../../../../globalFns';
 import { useModalContext } from '../../../../providers/ModalProvider';
 import axios from 'axios';
 import { useUserContext } from '../../../../providers/UserProvider';
 import {
-  INewUnitSchema,
   ISections,
   TSectionsForUI,
   TUnitForUI,
 } from '../../../../backend/models/Unit/types/unit';
 import Units from '../../../../backend/models/Unit';
 import {
-  IItemForUI,
-  INewUnitLesson,
-  IResource,
-  ISharedGDriveLessonFolder,
   ITeachingMaterialsDataForUI,
   ILessonDetail,
+  INewUnitLesson,
 } from '../../../../backend/models/Unit/types/teachingMaterials';
 import { TUserSchemaForClient } from '../../../../backend/models/User/types';
 import LessonItemsModal from '../../../../components/LessonSection/Modals/LessonItemsModal';
@@ -34,15 +29,14 @@ import {
   setSessionStorageItem,
 } from '../../../../shared/fns';
 import useSiteSession from '../../../../customHooks/useSiteSession';
-import { getUnitGDriveChildItems } from '../../../../backend/services/gdriveServices';
 import CopyLessonHelperModal from '../../../../components/GpPlus/CopyLessonHelperModal';
 import FailedCopiedFilesReportModal from '../../../../components/GpPlus/FailedCopiedFilesReportModal';
 import WelcomeNewUserModal from '../../../../components/Modals/WelcomeNewUserModal';
 import { IOverviewProps } from '../../../../components/LessonSection/Overview';
 import { buildUnitUrl, DEFAULT_LOCALE, getSiteUrl } from '../../../../shared/seo';
 import UnitPage from '../../../../components/Unit/UnitPage';
+import { getUnitPageData } from '../../../../backend/services/units/getUnitPageData';
 
-const GOOGLE_DRIVE_THUMBNAIL_URL = 'https://drive.google.com/thumbnail?id=';
 const providePlainText = (value?: string | null) =>
   value
     ? sanitizeHtml(value, { allowedTags: [], allowedAttributes: {} })
@@ -682,27 +676,6 @@ const LessonDetails: React.FC<IProps> = ({ unit }) => {
   );
 };
 
-const getGoogleDriveFileIdFromUrl = (url: string) => {
-  if (typeof url !== 'string') {
-    return null;
-  }
-
-  const urlSplitted = url.split('/');
-  const indexOfDInSplittedUrl = urlSplitted.findIndex((str) => str === 'd');
-
-  if (indexOfDInSplittedUrl === -1) {
-    return null;
-  }
-
-  const id = urlSplitted[indexOfDInSplittedUrl + 1];
-
-  if (!id) {
-    return null;
-  }
-
-  return id;
-};
-
 export const getStaticPaths = async () => {
   try {
     await connectToMongodb(15_000, 0, true);
@@ -743,459 +716,12 @@ export const getStaticProps = async (arg: {
       throw new Error('Failed to connect to the database.');
     }
 
-    const targetUnits = (await Units.find<INewUnitSchema>(
-      { numID: parseInt(id) },
-      { __v: 0 }
-    ).lean()) as INewUnitSchema[];
-    const availUnitLocales = targetUnits
-      .map(({ locale }) => locale)
-      .filter(Boolean) as string[];
-    let targetUnitForUI: TUnitForUI | undefined = undefined;
-
-    if (targetUnits?.length) {
-      const availLocs = targetUnits
-        .map(({ locale }) => locale)
-        .filter(Boolean) as string[];
-      const targetUnit = targetUnits.find(({ numID, locale }) => {
-        return numID === parseInt(id) && locale === loc;
-      });
-
-      if (!targetUnit) {
-        throw new Error('Unit is not found.');
-      }
-
-      const unitGDriveChildItemsAll = targetUnit.GdrivePublicID
-        ? await getUnitGDriveChildItems(targetUnit.GdrivePublicID)
-        : [];
-      const gpGDriveLessonItems = unitGDriveChildItemsAll?.filter(item => item.mimeType !== "application/vnd.google-apps.folder")
-      const unitGDriveChildItems = unitGDriveChildItemsAll?.filter((item) => item.mimeType?.includes('folder'));
-      const headLinks = targetUnits
-        .filter(({ locale, numID }) => locale && numID)
-        .map(({ locale, numID }) => [
-          buildUnitUrl(locale ?? DEFAULT_LOCALE, (numID ?? '').toString()),
-          locale ?? DEFAULT_LOCALE,
-        ]) as [string, string][];
-      const resources =
-        targetUnit.Sections?.teachingMaterials?.classroom?.resources;
-      targetUnitForUI = targetUnit as TUnitForUI;
-      targetUnitForUI = {
-        ...targetUnitForUI,
-        headLinks,
-      };
-
-      if (targetUnitForUI.FeaturedMultimedia) {
-        targetUnitForUI.FeaturedMultimedia =
-          targetUnitForUI.FeaturedMultimedia.map((multiMedia) => {
-            if (multiMedia?.mainLink?.includes('www.youtube.com/shorts')) {
-              multiMedia.mainLink = multiMedia.mainLink.replace(
-                'shorts',
-                'embed'
-              );
-            }
-
-            return multiMedia;
-          });
-      }
-
-      const isVidOrWebAppPresent = targetUnitForUI?.FeaturedMultimedia?.length
-        ? targetUnitForUI.FeaturedMultimedia.some((multiMedia) => {
-          return multiMedia.type === 'web-app' || multiMedia.type === 'video';
-        })
-        : false;
-
-      // preview images for all of the multimedia content
-      if (isVidOrWebAppPresent && targetUnitForUI.FeaturedMultimedia) {
-        const featuredMultimediaWithImgPreviewsPromises =
-          targetUnitForUI.FeaturedMultimedia.map(async (multiMediaItem) => {
-            if (
-              multiMediaItem.type === 'video' &&
-              multiMediaItem?.mainLink?.includes('drive.google')
-            ) {
-              const videoId = multiMediaItem.mainLink.split('/').at(-2);
-              multiMediaItem = {
-                ...multiMediaItem,
-                webAppPreviewImg: `https://drive.google.com/thumbnail?id=${videoId}`,
-                webAppImgAlt: `'${multiMediaItem.title}' video`,
-              };
-            }
-
-            if (multiMediaItem.type === 'web-app' && multiMediaItem?.mainLink) {
-              const { errMsg, images, title } = (await getLinkPreviewObj(
-                multiMediaItem?.mainLink
-              )) as { errMsg: string; images: string[]; title: string };
-
-              if (errMsg && !images?.length) {
-                console.error(
-                  'Failed to get the image preview of web app. Error message: ',
-                  errMsg
-                );
-              }
-
-              multiMediaItem = {
-                ...multiMediaItem,
-                webAppPreviewImg: errMsg || !images?.length ? null : images[0],
-                webAppImgAlt:
-                  errMsg || !images?.length ? null : `${title}'s preview image`,
-              };
-
-              return multiMediaItem;
-            }
-
-            return multiMediaItem;
-          });
-        const featuredMultimediaWithImgPreviews = await Promise.all(
-          featuredMultimediaWithImgPreviewsPromises
-        );
-
-        targetUnitForUI.FeaturedMultimedia = featuredMultimediaWithImgPreviews;
-      }
-
-      // get the preview image for the google drive files and check the status of the lesson
-      if (
-        targetUnitForUI.Sections?.teachingMaterials?.classroom?.resources
-          ?.length &&
-        resources?.length
-      ) {
-
-        const resourcesForUIPromises = resources.map(async (resource) => {
-          if (resource?.lessons?.length) {
-            resource.lessons = resource.lessons.filter((lesson) => {
-              if (!lesson.title || lesson?.status?.toLowerCase() === 'proto') {
-                return false;
-              }
-
-              return true;
-            });
-            resource.lessons = resource?.lessons.map(lesson => {
-              if (lesson.itemList?.length) {
-                lesson.itemList = lesson.itemList.map(item => {
-                  const gdriveRoot = "gdriveRoot" in item && item.gdriveRoot as string
-                  const itemId = gdriveRoot ? gdriveRoot.split('/').at(-1) : undefined;
-                  const targetItemInGpGDrive = itemId ? gpGDriveLessonItems?.find(lessonItem => lessonItem.id === itemId) : undefined;
-
-                  if (targetItemInGpGDrive?.id) {
-                    return {
-                      ...item,
-                      gpGDriveItemId: targetItemInGpGDrive.id
-                    }
-                  }
-
-                  return item;
-                });
-              };
-
-              return lesson;
-            });
-          }
-          const allUnitLessons: Pick<
-            INewUnitLesson,
-            'allUnitLessons'
-          >['allUnitLessons'] = [];
-
-          if (resource.lessons && unitGDriveChildItems?.length) {
-            for (const lesson of resource.lessons) {
-              const targetUnitGDriveItem = unitGDriveChildItems.find((item) => {
-                const itemName = item?.name?.split('_').at(-1);
-
-                return (
-                  itemName &&
-                  lesson.title &&
-                  itemName.toLowerCase() === lesson.title.toLowerCase()
-                );
-              });
-
-              if (targetUnitGDriveItem?.id && lesson.lsn) {
-                allUnitLessons.push({
-                  id: lesson.lsn.toString(),
-                  sharedGDriveId: targetUnitGDriveItem.id,
-                });
-              }
-            }
-          }
-
-          let lessonsFolder:
-            | Pick<INewUnitLesson, 'lessonsFolder'>['lessonsFolder']
-            | undefined = undefined;
-          const lessonsWithFilePreviewImgsPromises = resource.lessons?.map(
-            async (lesson) => {
-              if (!lessonsFolder && unitGDriveChildItems) {
-                for (const unitGDriveChildItem of unitGDriveChildItems) {
-                  const lessonTitle = lesson.title?.toLowerCase();
-
-                  if (
-                    lessonTitle === 'assessments' &&
-                    lessonTitle !== unitGDriveChildItem.name?.toLowerCase()
-                  ) {
-                    continue;
-                  }
-
-                  let lessonName = unitGDriveChildItem.name;
-
-                  if (unitGDriveChildItem.name?.includes('_')) {
-                    lessonName = unitGDriveChildItem.name
-                      ?.split('_')
-                      .at(-1)
-                      ?.toLowerCase();
-                  }
-
-                  if (
-                    lessonName &&
-                    lesson.title &&
-                    lessonName.toLowerCase() === lessonTitle
-                  ) {
-                    const targetUnitGDriveChildItem =
-                      unitGDriveChildItems.find((item) => {
-                        if (lessonTitle === 'assessments') {
-                          return item.name === 'assessments';
-                        }
-
-                        return (
-                          item.id &&
-                          item.id === unitGDriveChildItem.parentFolderId
-                        );
-                      }) ?? {};
-
-                    const { name, id } = targetUnitGDriveChildItem;
-                    lessonsFolder =
-                      name && id
-                        ? {
-                          name: name,
-                          sharedGDriveId: id,
-                        }
-                        : undefined;
-                  }
-                }
-              }
-
-              const targetGDriveSharedLessonFolders:
-                | ISharedGDriveLessonFolder[]
-                | undefined = unitGDriveChildItems
-                  ?.filter((item) => {
-                    const lessonName = item?.name?.split('_').at(-1);
-
-                    return (
-                      lessonName &&
-                      lesson.title &&
-                      lessonName.toLowerCase() === lesson.title.toLowerCase()
-                    );
-                  })
-                  ?.map((itemA) => {
-
-                    const lessonsFolder = unitGDriveChildItems.find((itemB) => {
-                      return itemB.id === itemA.parentFolderId;
-                    });
-
-
-                    // if lessonsFolder.pathFile === '', then the item is located at the root of the google drive folder
-                    const parentFolder = lessonsFolder
-                      ? { id: lessonsFolder.id!, name: lessonsFolder.name! }
-                      : {
-                        id: targetUnit.GdrivePublicID!,
-                        name: targetUnit.MediumTitle!,
-                      };
-
-                    return {
-                      id: itemA.id!,
-                      name: itemA.name!,
-                      parentFolder,
-                    };
-                  });
-
-              if (targetGDriveSharedLessonFolders?.length) {
-                lesson = {
-                  ...lesson,
-                  sharedGDriveLessonFolders: targetGDriveSharedLessonFolders,
-                  allUnitLessons,
-                  lessonsFolder,
-                };
-              }
-
-
-              if (!lesson.tile && lesson.status === 'Upcoming') {
-                lesson = {
-                  ...lesson,
-                  tile: 'https://storage.googleapis.com/gp-cloud/icons/coming-soon_tile.png',
-                };
-              }
-
-              lesson = {
-                ...lesson,
-                status: lesson.status ?? 'Proto',
-              };
-
-              const itemListWithFilePreviewImgsPromises = lesson.itemList?.map(
-                async (item) => {
-                  const { links, itemCat } = item;
-                  const linkObj = links?.[0];
-                  const url = linkObj?.url?.[0];
-
-                  if (!url) {
-                    return item;
-                  }
-
-                  if (itemCat === 'web resource') {
-                    const linkPreviewObj = await getLinkPreviewObj(url);
-                    const filePreviewImg =
-                      'images' in linkPreviewObj
-                        ? linkPreviewObj.images?.[0]
-                        : null;
-
-                    return {
-                      ...item,
-                      filePreviewImg,
-                    } as IItemForUI;
-                  }
-
-                  const googleDriveFileId = getGoogleDriveFileIdFromUrl(url);
-
-                  if (googleDriveFileId) {
-                    const filePreviewImg = `${GOOGLE_DRIVE_THUMBNAIL_URL}${googleDriveFileId}`;
-
-                    return {
-                      ...item,
-                      filePreviewImg,
-                    } as IItemForUI;
-                  }
-
-                  return item as IItemForUI;
-                }
-              );
-
-              if (itemListWithFilePreviewImgsPromises) {
-                const itemListWithFilePreviewImgs = await Promise.all(
-                  itemListWithFilePreviewImgsPromises
-                );
-
-                return {
-                  ...lesson,
-                  itemList: itemListWithFilePreviewImgs,
-                } as INewUnitLesson<IItemForUI>;
-              }
-
-              return lesson as INewUnitLesson<IItemForUI>;
-            }
-          );
-
-          if (lessonsWithFilePreviewImgsPromises) {
-            const lessonsWithFilePreviewImgs = await Promise.all(
-              lessonsWithFilePreviewImgsPromises
-            );
-
-            return {
-              ...resource,
-              lessons: lessonsWithFilePreviewImgs,
-            } as IResource<INewUnitLesson<IItemForUI>>;
-          }
-
-          return resource as IResource<INewUnitLesson<IItemForUI>>;
-        });
-
-        const resourcesForUI = await Promise.all(resourcesForUIPromises);
-
-        targetUnitForUI.Sections.teachingMaterials.classroom.resources =
-          resourcesForUI;
-      }
-
-      const sectionsEntries = Object.entries(
-        targetUnitForUI.Sections ?? {}
-      ) as [keyof ISections, any][];
-      // get the root fields for specific sections that required them
-      let sectionsUpdated = sectionsEntries.reduce(
-        (sectionsAccum, [sectionKey, section]) => {
-          // if the section.Content is null, then return the sectionsAccum
-          if (
-            !section ||
-            (typeof section === 'object' &&
-              section &&
-              (('Content' in section && !section.Content) ||
-                ('Data' in section && !section.Data))) ||
-            (sectionKey === 'preview' && !targetUnitForUI?.FeaturedMultimedia)
-          ) {
-            return sectionsAccum;
-          }
-
-          if (
-            targetUnitForUI &&
-            typeof section === 'object' &&
-            section &&
-            section?.rootFieldsToRetrieveForUI &&
-            Array.isArray(section.rootFieldsToRetrieveForUI)
-          ) {
-            for (const rootFieldToRetrieveForUI of section.rootFieldsToRetrieveForUI) {
-              if (
-                rootFieldToRetrieveForUI?.name &&
-                typeof rootFieldToRetrieveForUI.name === 'string' &&
-                rootFieldToRetrieveForUI?.as &&
-                typeof rootFieldToRetrieveForUI.as === 'string' &&
-                targetUnitForUI[
-                rootFieldToRetrieveForUI?.name as keyof TUnitForUI
-                ]
-              ) {
-                const val =
-                  targetUnitForUI[
-                  rootFieldToRetrieveForUI.name as keyof TUnitForUI
-                  ];
-
-                if (!val) {
-                  continue;
-                }
-
-                section = {
-                  ...section,
-                  [rootFieldToRetrieveForUI.as as string]: val,
-                };
-              }
-            }
-
-
-            delete section.rootFieldsToRetrieveForUI;
-
-            return {
-              ...sectionsAccum,
-              [sectionKey]: section,
-            };
-          }
-
-          return {
-            ...sectionsAccum,
-            [sectionKey]: section,
-          };
-        },
-        {} as Record<keyof ISections, any>
-      ) as TSectionsForUI;
-      sectionsUpdated = {
-        ...sectionsUpdated,
-        overview: {
-          ...sectionsUpdated.overview,
-          availLocs,
-        },
-      };
-      const versionsSection = sectionsUpdated.overview?.versions
-        ? {
-          __component: 'lesson-plan.versions',
-          SectionTitle: 'Version notes',
-          InitiallyExpanded: true,
-          Data: sectionsUpdated.overview?.versions,
-        }
-        : null;
-
-      if (versionsSection) {
-        sectionsUpdated = {
-          ...sectionsUpdated,
-          versions: versionsSection,
-        };
-      }
-
-      targetUnitForUI.Sections = sectionsUpdated;
-    }
-
-    if (targetUnitForUI) {
+    const unitPageData = await getUnitPageData(id, loc);
+    if (unitPageData) {
       return {
         props: {
-          unit: targetUnitForUI
-            ? JSON.parse(JSON.stringify(targetUnitForUI))
-            : null,
-          availLocs: availUnitLocales,
+          unit: JSON.parse(JSON.stringify(unitPageData.unit)),
+          availLocs: unitPageData.availLocs,
         },
         revalidate: 30,
       };
