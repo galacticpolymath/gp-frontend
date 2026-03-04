@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import QRCode from 'react-qr-code';
@@ -26,7 +26,6 @@ import {
   FileStack,
   FileText,
   FileVideo,
-  Filter,
   GraduationCap,
   Link2,
   MonitorPlay,
@@ -71,6 +70,22 @@ import {
 } from '../JobViz/jobvizUtils';
 import { LucideIcon } from '../JobViz/LucideIcon';
 import ProfileAvatarRing from '../ProfileAvatarRing';
+import StandardsTab from './tabs/StandardsTab';
+import CreditsTab from './tabs/CreditsTab';
+import {
+  parsePreviewFromUrlValue,
+  parseTabFromUrlValue,
+  PREVIEW_TO_URL,
+  TAB_TO_URL,
+  URL_PARAM_AUTOPRINT,
+  URL_PARAM_LESSON,
+  URL_PARAM_PREVIEW,
+  URL_PARAM_RESOURCE,
+  URL_PARAM_STANDALONE,
+  URL_PARAM_TAB,
+  URL_STANDALONE_BACKGROUND,
+  URL_STANDALONE_PROCEDURE,
+} from './urlState';
 
 const TAB_OVERVIEW = 'overview';
 const TAB_MATERIALS = 'materials';
@@ -1933,53 +1948,56 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
     });
   }, [availableGradeBands]);
 
-  const applyHashState = () => {
-    if (typeof window === 'undefined') {
-      return;
-    }
-    const rawHash = window.location.hash.replace(/^#/, '');
-    if (!rawHash) {
-      return;
-    }
-    const params = new URLSearchParams(rawHash.includes('=') ? rawHash : '');
-    const legacyParts = rawHash.includes('=') ? [] : rawHash.split(':');
-    const tabValue = params.get('tab') ?? legacyParts[0] ?? '';
-    const lessonValue = params.get('lesson') ?? legacyParts[1] ?? '';
-    const previewValue = params.get('preview') ?? '';
-    if (tabValue) {
-      const isValid = availableTabs.some((tab) => tab.key === tabValue);
-      if (isValid) {
-        setActiveTab(tabValue as TTabKey);
+  useEffect(() => {
+    const applyUrlState = () => {
+      if (typeof window === 'undefined') {
+        return;
       }
-    }
-    if (lessonValue) {
-      const parsed = Number.parseInt(lessonValue, 10);
-      if (!Number.isNaN(parsed)) {
-        const hasLesson = lessons.some(
-          (lesson, index) => getLessonIdentifier(lesson, index) === parsed
-        );
-        if (hasLesson) {
-          setActiveLessonId(parsed);
+      const params = new URLSearchParams(window.location.search);
+      const tabParamValue = params.get(URL_PARAM_TAB) ?? '';
+      const lessonValue = params.get(URL_PARAM_LESSON) ?? '';
+      const previewParamValue = params.get(URL_PARAM_PREVIEW) ?? '';
+      const resourceParamValue = params.get(URL_PARAM_RESOURCE) ?? '';
+      const tabValue = tabParamValue
+        ? parseTabFromUrlValue(tabParamValue)
+        : undefined;
+
+      if (tabValue) {
+        const isValid = availableTabs.some((tab) => tab.key === tabValue);
+        if (isValid) {
+          setActiveTab(tabValue);
         }
       }
-    }
-    if (
-      previewValue === 'materials' ||
-      previewValue === 'procedure' ||
-      previewValue === 'background' ||
-      previewValue === 'featured-media' ||
-      previewValue === 'going-further' ||
-      previewValue === 'jobviz'
-    ) {
-      setActiveLessonPreviewMode(previewValue);
-    }
-  };
+      if (lessonValue) {
+        const parsed = Number.parseInt(lessonValue, 10);
+        if (!Number.isNaN(parsed)) {
+          const hasLesson = lessons.some(
+            (lesson, index) => getLessonIdentifier(lesson, index) === parsed
+          );
+          if (hasLesson) {
+            setActiveLessonId(parsed);
+          }
+        }
+      }
+      const previewValue = previewParamValue
+        ? parsePreviewFromUrlValue(previewParamValue)
+        : undefined;
+      if (previewValue) {
+        setActiveLessonPreviewMode(previewValue);
+      }
 
-  useEffect(() => {
-    applyHashState();
-    const handleHashChange = () => applyHashState();
-    window.addEventListener('hashchange', handleHashChange);
-    return () => window.removeEventListener('hashchange', handleHashChange);
+      if (resourceParamValue) {
+        const parsed = Number.parseInt(resourceParamValue, 10);
+        if (!Number.isNaN(parsed) && parsed >= 0) {
+          setActiveMaterialIndex(parsed);
+        }
+      }
+    };
+
+    applyUrlState();
+    const handleNavigation = () => applyUrlState();
+    window.addEventListener('popstate', handleNavigation);
+    return () => window.removeEventListener('popstate', handleNavigation);
   }, [availableTabs, lessons]);
 
   useEffect(() => {
@@ -1987,15 +2005,18 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
       return;
     }
     const searchParams = new URLSearchParams(window.location.search);
-    const shouldShowProcedureOnly =
-      searchParams.has('procedure-only') || searchParams.get('procedure') === '1';
-    const shouldShowBackgroundOnly = searchParams.has('background-only');
+    const standaloneParam = searchParams.get(URL_PARAM_STANDALONE);
+    const shouldShowProcedureOnly = standaloneParam === URL_STANDALONE_PROCEDURE;
+    const shouldShowBackgroundOnly = standaloneParam === URL_STANDALONE_BACKGROUND;
 
     if (shouldShowProcedureOnly || shouldShowBackgroundOnly) {
       setStandalonePreviewMode(
         shouldShowProcedureOnly ? 'procedure' : 'background'
       );
-      const lessonFromQuery = Number.parseInt(searchParams.get('lesson') ?? '', 10);
+      const lessonFromQuery = Number.parseInt(
+        searchParams.get(URL_PARAM_LESSON) ?? '',
+        10
+      );
       if (!Number.isNaN(lessonFromQuery)) {
         setActiveLessonId(lessonFromQuery);
       }
@@ -2015,7 +2036,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
     }
 
     const searchParams = new URLSearchParams(window.location.search);
-    const shouldAutoPrint = searchParams.get('autoprint') === '1';
+    const shouldAutoPrint = searchParams.get(URL_PARAM_AUTOPRINT) === '1';
     if (!shouldAutoPrint || hasAutoPrintedStandaloneRef.current) {
       return;
     }
@@ -2041,26 +2062,64 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
     setActiveLessonId(getLessonIdentifier(lessons[0], 0));
   }, [activeTab, activeLessonId, lessons]);
 
-  const updateHash = (tab: TTabKey, lessonId?: number | null) => {
+  const updateUrlState = useCallback(({
+    tab,
+    lessonId,
+    previewMode,
+    materialIndex,
+  }: {
+    tab: TTabKey;
+    lessonId?: number | null;
+    previewMode?: TActiveLessonPreviewMode | null;
+    materialIndex?: number | null;
+  }) => {
     if (typeof window === 'undefined') {
       return;
     }
-    const params = new URLSearchParams();
-    params.set('tab', tab);
+    const currentParams = new URLSearchParams(window.location.search);
+
+    currentParams.set(URL_PARAM_TAB, TAB_TO_URL[tab]);
+
     if (tab === TAB_MATERIALS && lessonId != null) {
-      params.set('lesson', String(lessonId));
+      currentParams.set(URL_PARAM_LESSON, String(lessonId));
+    } else {
+      currentParams.delete(URL_PARAM_LESSON);
     }
-    const nextHash = params.toString();
-    const nextUrl = `${window.location.pathname}${window.location.search}#${nextHash}`;
+
+    if (tab === TAB_MATERIALS && previewMode && PREVIEW_TO_URL[previewMode]) {
+      currentParams.set(URL_PARAM_PREVIEW, PREVIEW_TO_URL[previewMode]);
+    } else {
+      currentParams.delete(URL_PARAM_PREVIEW);
+    }
+
+    if (
+      tab === TAB_MATERIALS &&
+      typeof materialIndex === 'number' &&
+      materialIndex >= 0
+    ) {
+      currentParams.set(URL_PARAM_RESOURCE, String(materialIndex));
+    } else {
+      currentParams.delete(URL_PARAM_RESOURCE);
+    }
+
+    const nextQuery = currentParams.toString();
+    const nextUrl = nextQuery
+      ? `${window.location.pathname}?${nextQuery}`
+      : window.location.pathname;
     window.history.replaceState(null, '', nextUrl);
-  };
+  }, []);
 
   const handleTabChange = (tab: TTabKey) => {
     if (isPortalNavHidden()) {
       suppressPortalNavReveal(1200);
     }
     setActiveTab(tab);
-    updateHash(tab, tab === TAB_MATERIALS ? activeLessonId : null);
+    updateUrlState({
+      tab,
+      lessonId: tab === TAB_MATERIALS ? activeLessonId : null,
+      previewMode: tab === TAB_MATERIALS ? activeLessonPreviewMode : null,
+      materialIndex: tab === TAB_MATERIALS ? activeMaterialIndex : null,
+    });
     trackUnitEvent('unit_tab_selected', { tab });
     scrollToTop();
   };
@@ -2071,10 +2130,35 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
     }
     setActiveLessonId(lessonId);
     setActiveTab(TAB_MATERIALS);
-    updateHash(TAB_MATERIALS, lessonId);
+    updateUrlState({
+      tab: TAB_MATERIALS,
+      lessonId,
+      previewMode: activeLessonPreviewMode,
+      materialIndex: activeMaterialIndex,
+    });
     trackUnitEvent('unit_lesson_selected', { lesson_id: lessonId });
     scrollToTop();
   };
+
+  useEffect(() => {
+    if (typeof window === 'undefined' || isStandalonePreview) {
+      return;
+    }
+
+    updateUrlState({
+      tab: activeTab,
+      lessonId: activeTab === TAB_MATERIALS ? activeLessonId : null,
+      previewMode: activeTab === TAB_MATERIALS ? activeLessonPreviewMode : null,
+      materialIndex: activeTab === TAB_MATERIALS ? activeMaterialIndex : null,
+    });
+  }, [
+    activeLessonId,
+    activeLessonPreviewMode,
+    activeMaterialIndex,
+    activeTab,
+    isStandalonePreview,
+    updateUrlState,
+  ]);
 
   const handleSearchSelect = (entry: TSearchResult) => {
     const term = searchTerm.trim();
@@ -3419,13 +3503,18 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
 
     const nextUrl = new URL(window.location.href);
     nextUrl.hash = '';
-    nextUrl.search =
+    const searchParams = new URLSearchParams();
+    searchParams.set(
+      URL_PARAM_STANDALONE,
       mode === 'procedure'
-        ? `?procedure-only&lesson=${activeLessonId}`
-        : `?background-only&lesson=${activeLessonId}`;
+        ? URL_STANDALONE_PROCEDURE
+        : URL_STANDALONE_BACKGROUND
+    );
+    searchParams.set(URL_PARAM_LESSON, String(activeLessonId));
     if (autoPrint) {
-      nextUrl.search += '&autoprint=1';
+      searchParams.set(URL_PARAM_AUTOPRINT, '1');
     }
+    nextUrl.search = `?${searchParams.toString()}`;
     window.open(nextUrl.toString(), '_blank', 'noopener,noreferrer');
   };
 
@@ -3901,29 +3990,32 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
       ? 'Assessment'
       : `Lesson ${activeLessonId ?? ''}`;
   const procedureReturnHref = useMemo(() => {
-    const lessonHash = `tab=${TAB_MATERIALS}&lesson=${activeLessonId ?? ''}`;
+    const params = new URLSearchParams();
+    params.set(URL_PARAM_TAB, TAB_TO_URL[TAB_MATERIALS]);
+    params.set(URL_PARAM_LESSON, String(activeLessonId ?? ''));
+    const materialsPathWithQuery = `?${params.toString()}`;
 
     if (typeof window !== 'undefined') {
       const currentUrl = new URL(window.location.href);
-      currentUrl.search = '';
-      currentUrl.hash = lessonHash;
-      return `${currentUrl.pathname}${currentUrl.hash ? `#${currentUrl.hash.replace(/^#/, '')}` : ''}`;
+      currentUrl.hash = '';
+      currentUrl.search = materialsPathWithQuery;
+      return `${currentUrl.pathname}${currentUrl.search}`;
     }
 
     if (typeof unit.URL === 'string' && unit.URL.trim()) {
       try {
         const sourceUrl = new URL(unit.URL.trim());
-        sourceUrl.search = '';
-        sourceUrl.hash = lessonHash;
-        return `${sourceUrl.pathname}${sourceUrl.hash ? `#${sourceUrl.hash.replace(/^#/, '')}` : ''}`;
+        sourceUrl.hash = '';
+        sourceUrl.search = materialsPathWithQuery;
+        return `${sourceUrl.pathname}${sourceUrl.search}`;
       } catch (error) {}
     }
 
     if (numID != null) {
-      return `/units/${locale}/${numID}#${lessonHash}`;
+      return `/units/${locale}/${numID}${materialsPathWithQuery}`;
     }
 
-    return `/units/${locale}#${lessonHash}`;
+    return `/units/${locale}${materialsPathWithQuery}`;
   }, [activeLessonId, locale, numID, unit.URL]);
   const procedureReturnQrUrl = useMemo(() => {
     if (typeof window !== 'undefined') {
@@ -3933,8 +4025,11 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
     if (typeof unit.URL === 'string' && unit.URL.trim()) {
       try {
         const fallback = new URL(unit.URL.trim());
-        fallback.search = '';
-        fallback.hash = `tab=${TAB_MATERIALS}&lesson=${activeLessonId ?? ''}`;
+        const params = new URLSearchParams();
+        params.set(URL_PARAM_TAB, TAB_TO_URL[TAB_MATERIALS]);
+        params.set(URL_PARAM_LESSON, String(activeLessonId ?? ''));
+        fallback.hash = '';
+        fallback.search = `?${params.toString()}`;
         return fallback.toString();
       } catch (error) {}
     }
@@ -5604,506 +5699,39 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
         )}
 
         {activeTab === TAB_STANDARDS && (
-          <section className={`${styles.unitSection} ${styles.unitTabFadeIn}`}>
-            <div className={styles.unitOverviewCardWide}>
-              {!!flatStandards.length ? (
-                <div
-                  id="unit-search-standards-content"
-                  className={styles.standardsLayout}
-                >
-                  <div className={styles.standardsIntroPanel}>
-                    <div className={styles.standardsIntroHeading}>
-                      <h2 className={styles.standardsIntroTitle}>
-                        Interdisciplinary by Design
-                      </h2>
-                      <p className={styles.standardsIntroLead}>
-                        We align to standards across subjects. Our units are
-                        ready for STEAM or team teaching, and project based
-                        learning (PBLs) with no modification!
-                      </p>
-                    </div>
-                    {overview?.SteamEpaulette && (
-                      <div className={styles.standardsEpaulette}>
-                        <Image
-                          src={overview.SteamEpaulette}
-                          alt="STEAM standards alignment epaulette"
-                          width={280}
-                          height={120}
-                          unoptimized
-                        />
-                      </div>
-                    )}
-                    <p className={styles.standardsIntroCopy}>
-                      This figure visualizes the percentages of standards aligned to each subject.
-                    </p>
-                  </div>
-                  <button
-                    type="button"
-                    className={styles.mobileFilterDockTrigger}
-                    onClick={() => setIsStandardsFilterDockOpen(true)}
-                  >
-                    <Filter size={15} aria-hidden="true" />
-                    <span>Filter standards</span>
-                    {!isStandardsFilterDockOpen && activeFilterCount > 0 && (
-                      <span className={styles.mobileFilterCount}>
-                        {activeFilterCount}
-                      </span>
-                    )}
-                  </button>
-                  {isStandardsFilterDockOpen && (
-                    <button
-                      type="button"
-                      className={styles.mobileFilterDockBackdrop}
-                      aria-label="Close standards filters"
-                      onClick={() => setIsStandardsFilterDockOpen(false)}
-                    />
-                  )}
-                  <div
-                    className={`${styles.standardsFilters} ${
-                      isStandardsFilterDockOpen ? styles.standardsFiltersOpen : ''
-                    }`}
-                  >
-                    <div className={styles.standardsFiltersHeader}>
-                      <div className={styles.standardsFiltersTitle}>
-                        <Filter size={15} aria-hidden="true" />
-                        <span>Filter standards</span>
-                      </div>
-                      {activeFilterCount > 0 && (
-                        <button
-                          type="button"
-                          className={styles.standardsFiltersReset}
-                          onClick={handleResetStandardsFilters}
-                        >
-                          Reset
-                        </button>
-                      )}
-                      <button
-                        type="button"
-                        className={styles.standardsFiltersClose}
-                        aria-label="Close standards filters"
-                        onClick={() => setIsStandardsFilterDockOpen(false)}
-                      >
-                        <X size={15} aria-hidden="true" />
-                      </button>
-                    </div>
-                    <div className={styles.standardsFiltersBody}>
-                      <div className={styles.standardsGradeFilters}>
-                      {STANDARDS_GRADE_BANDS.map((band) => (
-                        (() => {
-                          const isSelected = selectedGradeBands.includes(band.key);
-                          const isUnavailable =
-                            band.key !== 'all' && !availableGradeBands.has(band.key);
-                          return (
-                        <button
-                          key={band.key}
-                          type="button"
-                          className={
-                            isSelected
-                              ? `${styles.standardsFilterButton} ${styles.standardsFilterButtonActive}`
-                              : isUnavailable
-                              ? `${styles.standardsFilterButton} ${styles.standardsFilterButtonDisabled}`
-                              : styles.standardsFilterButton
-                          }
-                          disabled={isUnavailable}
-                          onClick={() => handleGradeBandFilter(band.key)}
-                        >
-                          {band.label}
-                        </button>
-                          );
-                        })()
-                      ))}
-                      </div>
-                      <div className={styles.standardsSubjectFilters}>
-                      <button
-                        type="button"
-                        className={
-                          selectedSubjects.includes('all')
-                            ? `${styles.standardsFilterButton} ${styles.standardsFilterButtonActive}`
-                            : styles.standardsFilterButton
-                        }
-                        onClick={() => handleSubjectToggle('all')}
-                      >
-                        All subjects
-                      </button>
-                      {standardSubjects.map((subject) => (
-                        (() => {
-                          const isSelected = selectedSubjects.includes(subject);
-                          const isUnavailable = !availableSubjects.has(subject);
-                          return (
-                        <button
-                          key={subject}
-                          type="button"
-                          className={
-                            isSelected
-                              ? `${styles.standardsFilterButton} ${styles.standardsFilterButtonActive}`
-                              : isUnavailable
-                              ? `${styles.standardsFilterButton} ${styles.standardsFilterButtonDisabled}`
-                              : styles.standardsFilterButton
-                          }
-                          disabled={isUnavailable}
-                          onClick={() => handleSubjectToggle(subject)}
-                        >
-                          <span
-                            className={styles.subjectColorChip}
-                            style={{ backgroundColor: getSubjectColor(subject) }}
-                            aria-hidden="true"
-                          />
-                          <span>{subject}</span>
-                        </button>
-                          );
-                        })()
-                      ))}
-                      </div>
-                    </div>
-                  </div>
-                  <div className={styles.standardsSection}>
-                    <h3>
-                      <Target size={16} aria-hidden="true" />
-                      Target standards
-                      <span>{targetStandards.length}</span>
-                    </h3>
-                    <p className={styles.sectionIntro}>
-                      Skills and concepts directly taught or reinforced by this
-                      lesson.
-                    </p>
-                    {targetStandardsBySubject.length ? (
-                      <div className={styles.standardsList}>
-                        {targetStandardsBySubject.map((subjectGroup) => {
-                          const mergedByDimension = mergeStandardsByDimension(
-                            subjectGroup.standards,
-                            subjectGroup.sets
-                          );
-
-                          return (
-                            <section
-                              key={`target-${subjectGroup.subject}`}
-                              className={styles.standardSubjectGroup}
-                              style={
-                                {
-                                  '--subject-color': getSubjectColor(
-                                    subjectGroup.subject
-                                  ),
-                                } as React.CSSProperties
-                              }
-                            >
-                              <header className={styles.standardSubjectHeader}>
-                                <div className={styles.subjectHeadingWrap}>
-                                  <span
-                                    className={styles.subjectColorChip}
-                                    style={{
-                                      backgroundColor: getSubjectColor(
-                                        subjectGroup.subject
-                                      ),
-                                    }}
-                                    aria-hidden="true"
-                                  />
-                                  <h4>{subjectGroup.subject}</h4>
-                                  {subjectGroup.sets.map((setName) => (
-                                    <span key={setName} className={styles.standardSetPill}>
-                                      {setName}
-                                    </span>
-                                  ))}
-                                </div>
-                              </header>
-                              <div className={styles.standardRows}>
-                                {mergedByDimension.map((standard) => (
-                                  <article key={standard.id} className={styles.standardRow}>
-                                    <div className={styles.standardMetaRow}>
-                                      <p className={styles.standardDimensionText}>
-                                        <Blocks size={14} aria-hidden="true" />
-                                        <span>{standard.dimensionName}</span>
-                                      </p>
-                                      <p className={styles.standardGradeText}>
-                                        <i className="bi bi-mortarboard-fill" aria-hidden="true" />
-                                        <span>{formatGradeValue(standard.grades)}</span>
-                                      </p>
-                                    </div>
-                                    <div className={styles.standardStatementWrap}>
-                                      {standard.lines.map((line, idx) => (
-                                        <div
-                                          key={`${standard.id}-line-${idx}`}
-                                          className={styles.standardStatementBlock}
-                                        >
-                                          <p className={styles.standardStatementLine}>
-                                            <span className={styles.standardCode}>
-                                              {line.code}:
-                                            </span>{' '}
-                                            <span>{line.statement}</span>
-                                          </p>
-                                          {!!line.alignmentNote && (
-                                            <div className={styles.standardAlignmentNotes}>
-                                              <RichText content={line.alignmentNote} />
-                                            </div>
-                                          )}
-                                        </div>
-                                      ))}
-                                    </div>
-                                  </article>
-                                ))}
-                              </div>
-                            </section>
-                          );
-                        })}
-                      </div>
-                    ) : (
-                      <p className={styles.unitMutedText}>
-                        No target standards match these filters.
-                      </p>
-                    )}
-                  </div>
-                  <div className={styles.standardsSection}>
-                    <h3>
-                      <Network size={16} aria-hidden="true" />
-                      Connected standards
-                      <span>{connectedStandards.length}</span>
-                    </h3>
-                    <p className={styles.sectionIntro}>
-                      Skills and concepts reviewed or hinted at in this lesson
-                      (for building upon).
-                    </p>
-                    {connectedStandardsBySubject.length ? (
-                      <div className={styles.standardsList}>
-                        {connectedStandardsBySubject.map((subjectGroup) => {
-                          const mergedByDimension = mergeStandardsByDimension(
-                            subjectGroup.standards,
-                            subjectGroup.sets
-                          );
-
-                          return (
-                            <section
-                              key={`connected-${subjectGroup.subject}`}
-                              className={styles.standardSubjectGroup}
-                              style={
-                                {
-                                  '--subject-color': getSubjectColor(
-                                    subjectGroup.subject
-                                  ),
-                                } as React.CSSProperties
-                              }
-                            >
-                              <header className={styles.standardSubjectHeader}>
-                                <div className={styles.subjectHeadingWrap}>
-                                  <span
-                                    className={styles.subjectColorChip}
-                                    style={{
-                                      backgroundColor: getSubjectColor(
-                                        subjectGroup.subject
-                                      ),
-                                    }}
-                                    aria-hidden="true"
-                                  />
-                                  <h4>{subjectGroup.subject}</h4>
-                                  {subjectGroup.sets.map((setName) => (
-                                    <span key={setName} className={styles.standardSetPill}>
-                                      {setName}
-                                    </span>
-                                  ))}
-                                </div>
-                              </header>
-                              <div className={styles.standardRows}>
-                                {mergedByDimension.map((standard) => (
-                                  <article key={standard.id} className={styles.standardRow}>
-                                    <div className={styles.standardMetaRow}>
-                                      <p className={styles.standardDimensionText}>
-                                        <Blocks size={14} aria-hidden="true" />
-                                        <span>{standard.dimensionName}</span>
-                                      </p>
-                                      <p className={styles.standardGradeText}>
-                                        <i className="bi bi-mortarboard-fill" aria-hidden="true" />
-                                        <span>{formatGradeValue(standard.grades)}</span>
-                                      </p>
-                                    </div>
-                                    <div className={styles.standardStatementWrap}>
-                                      {standard.lines.map((line, idx) => (
-                                        <div
-                                          key={`${standard.id}-line-${idx}`}
-                                          className={styles.standardStatementBlock}
-                                        >
-                                          <p className={styles.standardStatementLine}>
-                                            <span className={styles.standardCode}>
-                                              {line.code}:
-                                            </span>{' '}
-                                            <span>{line.statement}</span>
-                                          </p>
-                                          {!!line.alignmentNote && (
-                                            <div className={styles.standardAlignmentNotes}>
-                                              <RichText content={line.alignmentNote} />
-                                            </div>
-                                          )}
-                                        </div>
-                                      ))}
-                                    </div>
-                                  </article>
-                                ))}
-                              </div>
-                            </section>
-                          );
-                        })}
-                      </div>
-                    ) : (
-                      <p className={styles.unitMutedText}>
-                        No connected standards match these filters.
-                      </p>
-                    )}
-                  </div>
-                </div>
-              ) : (
-                <div className={styles.standardsIntroPanel}>
-                  <div className={styles.standardsIntroHeading}>
-                    <h2 className={styles.standardsIntroTitle}>
-                      Interdisciplinary by Design
-                    </h2>
-                    <p className={styles.standardsIntroLead}>
-                      We align to standards across subjects. Our units are ready
-                      for STEAM or team teaching, and project based learning
-                      (PBLs) with no modification!
-                    </p>
-                  </div>
-                  <p className={styles.unitMutedText}>
-                    Standards will appear here once aligned.
-                  </p>
-                </div>
-              )}
-            </div>
-          </section>
+          <StandardsTab
+            flatStandards={flatStandards}
+            overview={overview}
+            isStandardsFilterDockOpen={isStandardsFilterDockOpen}
+            setIsStandardsFilterDockOpen={setIsStandardsFilterDockOpen}
+            activeFilterCount={activeFilterCount}
+            handleResetStandardsFilters={handleResetStandardsFilters}
+            standardsGradeBands={STANDARDS_GRADE_BANDS}
+            selectedGradeBands={selectedGradeBands}
+            availableGradeBands={availableGradeBands}
+            handleGradeBandFilter={handleGradeBandFilter}
+            selectedSubjects={selectedSubjects}
+            handleSubjectToggle={handleSubjectToggle}
+            standardSubjects={standardSubjects}
+            availableSubjects={availableSubjects}
+            getSubjectColor={getSubjectColor}
+            targetStandards={targetStandards}
+            targetStandardsBySubject={targetStandardsBySubject}
+            connectedStandards={connectedStandards}
+            connectedStandardsBySubject={connectedStandardsBySubject}
+            mergeStandardsByDimension={mergeStandardsByDimension}
+            formatGradeValue={formatGradeValue}
+          />
         )}
 
         {activeTab === TAB_CREDITS && (
-          <section className={`${styles.unitSection} ${styles.unitTabFadeIn}`}>
-            <h2 className={styles.sectionTitle}>Credits, Acknowledgments, and Versions</h2>
-            <p className={styles.sectionIntro}>
-              This unit was made possible by hundreds of hours of work by tons of
-              people. Thank you!
-            </p>
-            <div
-              id="unit-search-credits-content"
-              className={styles.unitOverviewCardWide}
-            >
-              {hasCreditsTabContent ? (
-                <div className={styles.creditsLayout}>
-                  {!!creditsContent && (
-                    <section className={styles.creditsPanel}>
-                      <h3>Credits</h3>
-                      <div className={styles.richTextBlock}>
-                        <RichText content={creditsContent} />
-                      </div>
-                    </section>
-                  )}
-                  {!!acknowledgmentsEntries.length && (
-                    <section className={styles.creditsPanel}>
-                      <h3>Acknowledgments</h3>
-                      <div className={styles.acknowledgmentsList}>
-                        {acknowledgmentsEntries.map((entry: any, index: number) => (
-                          <article
-                            key={`${entry.role}-${index}`}
-                            className={styles.acknowledgmentEntry}
-                          >
-                            <h4>{entry.role}</h4>
-                            {entry.def && (
-                              <div className={styles.richTextBlock}>
-                                <RichText content={entry.def} />
-                              </div>
-                            )}
-                            {entry.records?.length ? (
-                              <ul>
-                                {entry.records
-                                  .map((record: any, idx: number) => {
-                                    const name = record?.name?.trim?.() ?? '';
-                                    const title = record?.title?.trim?.() ?? '';
-                                    const affiliation =
-                                      record?.affiliation?.trim?.() ?? '';
-                                    const location = record?.location?.trim?.() ?? '';
-
-                                    if (!name && !title && !affiliation && !location) {
-                                      return null;
-                                    }
-
-                                    const recordMarkdown = `${name}${
-                                      title ? `${name ? ' · ' : ''}${title}` : ''
-                                    }${
-                                      affiliation
-                                        ? `${name || title ? ', ' : ''}${affiliation}`
-                                        : ''
-                                    }${location ? ` (${location})` : ''}`;
-
-                                    return (
-                                      <li key={`${name || 'record'}-${idx}`}>
-                                        <div className={styles.richTextBlock}>
-                                          <RichText content={recordMarkdown} />
-                                        </div>
-                                      </li>
-                                    );
-                                  })
-                                  .filter(Boolean)}
-                              </ul>
-                            ) : null}
-                          </article>
-                        ))}
-                      </div>
-                    </section>
-                  )}
-                  <section
-                    ref={versionNotesAnchorRef}
-                    id="major-release-updates"
-                    className={styles.creditsPanel}
-                  >
-                    <h3>Versions</h3>
-                    {versionReleases.length ? (
-                      <div className={styles.versionNotes}>
-                        {versionReleases.map((release: any, index: number) => (
-                          <article
-                            key={`${release.major_release}-${index}`}
-                            className={styles.versionEntry}
-                          >
-                            <h4>{release.major_release}</h4>
-                            {release.sub_releases?.length ? (
-                              <ul>
-                                {release.sub_releases.map((sub: any, idx: number) => (
-                                  <li key={`${sub.version}-${idx}`}>
-                                    <p className={styles.versionMeta}>
-                                      {sub.version ?? 'Unlabeled version'}
-                                      {sub.date ? ` · ${sub.date}` : ''}
-                                    </p>
-                                    {sub.summary ? (
-                                      <div className={styles.richTextBlock}>
-                                        <RichText content={sub.summary} />
-                                      </div>
-                                    ) : null}
-                                    {sub.notes ? (
-                                      <div className={styles.richTextBlock}>
-                                        <RichText content={sub.notes} />
-                                      </div>
-                                    ) : null}
-                                    {sub.acknowledgments ? (
-                                      <div className={styles.richTextBlock}>
-                                        <RichText content={sub.acknowledgments} />
-                                      </div>
-                                    ) : null}
-                                  </li>
-                                ))}
-                              </ul>
-                            ) : (
-                              <p className={styles.unitMutedText}>
-                                Version details will appear here.
-                              </p>
-                            )}
-                          </article>
-                        ))}
-                      </div>
-                    ) : (
-                      <p className={styles.unitMutedText}>
-                        Version notes will appear here.
-                      </p>
-                    )}
-                  </section>
-                </div>
-              ) : (
-                <p className={styles.unitMutedText}>
-                  Credits, acknowledgments, and version notes will appear here.
-                </p>
-              )}
-            </div>
-          </section>
+          <CreditsTab
+            hasCreditsTabContent={hasCreditsTabContent}
+            creditsContent={creditsContent}
+            acknowledgmentsEntries={acknowledgmentsEntries}
+            versionNotesAnchorRef={versionNotesAnchorRef}
+            versionReleases={versionReleases}
+          />
         )}
         {!isStandalonePreview &&
         ((activeTab === TAB_MATERIALS && nextLessonId != null) ||

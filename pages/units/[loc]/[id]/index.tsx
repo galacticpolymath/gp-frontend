@@ -36,7 +36,6 @@ import {
   ITeachingMaterialsDataForUI,
   ILessonDetail,
 } from '../../../../backend/models/Unit/types/teachingMaterials';
-import { UNITS_URL_PATH } from '../../../../shared/constants';
 import { TUserSchemaForClient } from '../../../../backend/models/User/types';
 import LessonItemsModal from '../../../../components/LessonSection/Modals/LessonItemsModal';
 import GpPlusModal from '../../../../components/LessonSection/Modals/GpPlusModal';
@@ -55,7 +54,7 @@ import FailedCopiedFilesReportModal from '../../../../components/GpPlus/FailedCo
 import WelcomeNewUserModal from '../../../../components/Modals/WelcomeNewUserModal';
 import { IOverviewProps } from '../../../../components/LessonSection/Overview';
 import { buildUnitUrl, DEFAULT_LOCALE, getSiteUrl } from '../../../../shared/seo';
-import UnitPage from '../../../../components/UnitPreview/UnitPage';
+import UnitPage from '../../../../components/Unit/UnitPage';
 
 const IS_ON_PROD = process.env.NODE_ENV === 'production';
 const GOOGLE_DRIVE_THUMBNAIL_URL = 'https://drive.google.com/thumbnail?id=';
@@ -524,21 +523,6 @@ const SECTION_SORT_ORDER: Record<keyof ISections, number> = {
   acknowledgments: 10,
   versions: 11,
 };
-export const SECTION_SORT_ORDER_REVERSE: (keyof ISections)[] = [
-  'overview',
-  'preview',
-  'teachingMaterials',
-  'feedback',
-  'jobvizConnections',
-  'extensions',
-  'bonus',
-  'background',
-  'standards',
-  'credits',
-  'acknowledgments',
-  'versions',
-];
-
 const UNIT_DOCUMENT_ORIGINS = new Set([
   'https://storage.googleapis.com',
   'https://docs.google.com',
@@ -1155,11 +1139,9 @@ const LessonDetails: React.FC<IProps> = ({ lesson, unit }) => {
       return;
     }
     const searchParams = new URLSearchParams(window.location.search);
-    const isProcedureOnly =
-      searchParams.has('procedure-only') ||
-      searchParams.get('procedure') === '1' ||
-      searchParams.get('procedure') === 'true';
-    const isBackgroundOnly = searchParams.has('background-only');
+    const standaloneMode = searchParams.get('sp');
+    const isProcedureOnly = standaloneMode === 'pro';
+    const isBackgroundOnly = standaloneMode === 'bg';
     setIsStandalonePreview(isProcedureOnly || isBackgroundOnly);
   }, []);
 
