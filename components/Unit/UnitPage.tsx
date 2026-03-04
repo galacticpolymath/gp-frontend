@@ -9,12 +9,9 @@ import {
   Apple,
   BookA,
   BookOpenText,
-  BowArrow,
-  CircleAlert,
   ChevronUp,
   Clock3,
   BrainCog,
-  Eye,
   FileArchive,
   FileImage,
   FileSpreadsheet,
@@ -22,8 +19,6 @@ import {
   FileVideo,
   GraduationCap,
   Link2,
-  MonitorPlay,
-  Network,
   NotebookPen,
   Printer,
   Split,
@@ -39,7 +34,6 @@ import {
   INewUnitLesson,
   IResource,
 } from '../../backend/models/Unit/types/teachingMaterials';
-import LessonsCarousel from '../LessonSection/Preview/LessonsCarousel';
 import { useModalContext } from '../../providers/ModalProvider';
 import LocDropdown from '../LocDropdown';
 import ChunkGraph from '../LessonSection/TeachIt/ChunkGraph';
@@ -58,7 +52,6 @@ import {
   getJobSpecificIconName,
   getNodeBySocCode,
 } from '../JobViz/jobvizUtils';
-import { LucideIcon } from '../JobViz/LucideIcon';
 import ProfileAvatarRing from '../ProfileAvatarRing';
 import OverviewTab from './tabs/OverviewTab';
 import StandardsTab from './tabs/StandardsTab';
@@ -66,6 +59,12 @@ import CreditsTab from './tabs/CreditsTab';
 import MaterialsStandalonePreview from './materials/MaterialsStandalonePreview';
 import MaterialsResourcesPanel from './materials/MaterialsResourcesPanel';
 import MaterialsPreviewPane from './materials/MaterialsPreviewPane';
+import FeaturedMediaPreview from './materials/previews/FeaturedMediaPreview';
+import ProcedurePreview from './materials/previews/ProcedurePreview';
+import BackgroundPreview from './materials/previews/BackgroundPreview';
+import GoingFurtherPreview from './materials/previews/GoingFurtherPreview';
+import JobVizPreview from './materials/previews/JobVizPreview';
+import MaterialItemPreview from './materials/previews/MaterialItemPreview';
 import NextNavigationCta from './shared/NextNavigationCta';
 import UnitLicenseBanner from './shared/UnitLicenseBanner';
 import {
@@ -4572,549 +4571,53 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                       activeLessonPreviewMode={activeLessonPreviewMode}
                     >
                       {isFeaturedMediaOpen ? (
-                        <article className={styles.lessonPreviewItem}>
-                          <header className={styles.lessonPreviewHeader}>
-                            <h3 className={styles.lessonCardHeading}>
-                              <MonitorPlay size={16} aria-hidden="true" />
-                              <span>Featured Media</span>
-                            </h3>
-                          </header>
-                          {hasFeaturedMedia ? (
-                            <div
-                              className={`${styles.previewCarousel} ${styles.featuredMediaViewport}`}
-                            >
-                              <LessonsCarousel mediaItems={[...activeLessonFeaturedMedia]} />
-                            </div>
-                          ) : (
-                            <p className={styles.unitMutedText}>
-                              No featured media is linked to this lesson yet.
-                            </p>
-                          )}
-                        </article>
+                        <FeaturedMediaPreview
+                          hasFeaturedMedia={hasFeaturedMedia}
+                          activeLessonFeaturedMedia={activeLessonFeaturedMedia}
+                        />
                       ) : isDetailedFlowOpen ? (
-                        renderProcedurePanel(true)
+                        <ProcedurePreview renderProcedurePanel={renderProcedurePanel} />
                       ) : isBackgroundOpen ? (
-                        renderBackgroundPanel(true)
+                        <BackgroundPreview renderBackgroundPanel={renderBackgroundPanel} />
                       ) : isGoingFurtherOpen ? (
-                        <article
-                          className={`${styles.lessonPreviewItem} ${styles.goingFurtherPreviewItem}`}
-                        >
-                          <header className={styles.lessonPreviewHeader}>
-                            <h3 className={styles.lessonCardHeading}>
-                              <BowArrow size={16} aria-hidden="true" />
-                              <span>Going Further</span>
-                            </h3>
-                          </header>
-                          <p className={styles.goingFurtherSubheading}>
-                            Resources to expand this learning experience
-                          </p>
-                          {hasGoingFurther ? (
-                            <div className={styles.goingFurtherList}>
-                              {activeLessonGoingFurther.map((entry, idx) => {
-                                const title =
-                                  entry.itemTitle?.trim() || `Resource ${idx + 1}`;
-                                const description = entry.itemDescription?.trim();
-                                const href = entry.itemLink?.trim() ?? '';
-                                const canOpen = href.length > 0;
-
-                                return (
-                                  <article
-                                    key={`${title}-${idx}`}
-                                    className={styles.goingFurtherItem}
-                                  >
-                                    {canOpen ? (
-                                      <a
-                                        href={href}
-                                        target="_blank"
-                                        rel="noreferrer"
-                                        className={styles.goingFurtherLink}
-                                      >
-                                        <span>{title}</span>
-                                        <SquareArrowOutUpRight size={13} aria-hidden="true" />
-                                      </a>
-                                    ) : (
-                                      <strong>{title}</strong>
-                                    )}
-                                    {description ? <p>{description}</p> : null}
-                                  </article>
-                                );
-                              })}
-                            </div>
-                          ) : (
-                            <p className={styles.unitMutedText}>
-                              Going Further links will appear here once added.
-                            </p>
-                          )}
-                        </article>
+                        <GoingFurtherPreview
+                          hasGoingFurther={hasGoingFurther}
+                          activeLessonGoingFurther={activeLessonGoingFurther}
+                        />
                       ) : isJobVizPreviewOpen ? (
-                        <article className={`${styles.lessonPreviewItem} ${styles.jobVizPreviewCard}`}>
-                          <header className={styles.lessonPreviewHeader}>
-                            <div className={styles.jobVizPreviewTitleRow}>
-                              <h3 className={styles.lessonCardHeading}>
-                                <Image
-                                  alt="JobViz Career Connections icon"
-                                  width={20}
-                                  height={20}
-                                  src="/imgs/jobViz/jobviz_rocket_logo_black.svg"
-                                  className={styles.jobVizActionIcon}
-                                />
-                                <span>JobViz Career Connections</span>
-                              </h3>
-                              <Image
-                                alt="GP+ icon"
-                                width={18}
-                                height={18}
-                                src="/plus/plus.png"
-                              />
-                            </div>
-                          </header>
-                          {hasJobVizConnections ? (
-                            <div className={styles.jobVizPreviewPane}>
-                              <p className={styles.jobVizPreviewContext}>
-                                JobViz connects classroom learning to the real
-                                world—helping students see how knowledge links
-                                to jobs, industries, and the wider economy. With
-                                data on 800+ jobs, it&apos;s a
-                                springboard for systems thinking and exploring
-                                the full landscape of opportunity.
-                              </p>
-                              <div className={styles.jobVizTourStopsBubble}>
-                                <p className={styles.jobVizPreviewHeading}>
-                                  Jobs and careers related to the {unitTitle} unit:
-                                </p>
-                                <ul className={styles.jobVizPreviewList}>
-                                  {jobVizConnections.map((jobConnection, index) => (
-                                    <li
-                                      key={`${jobConnection.soc_code}-${index}`}
-                                      className={styles.jobVizPreviewListItem}
-                                    >
-                                      <span className={styles.jobVizJobIconStack}>
-                                        <span className={styles.jobVizJobIconBubblePrimary}>
-                                          <LucideIcon
-                                            name={
-                                              jobVizConnectionIcons.get(jobConnection.soc_code)
-                                                ?.primaryIconName ?? 'BriefcaseBusiness'
-                                            }
-                                            width={14}
-                                            height={14}
-                                          />
-                                        </span>
-                                        <span className={styles.jobVizJobIconBubbleSecondary}>
-                                          <LucideIcon
-                                            name={
-                                              jobVizConnectionIcons.get(jobConnection.soc_code)
-                                                ?.secondaryIconName ?? 'Sparkles'
-                                            }
-                                            width={11}
-                                            height={11}
-                                          />
-                                        </span>
-                                      </span>
-                                      <span>
-                                        {jobConnection.job_title}
-                                        {!isGpPlusUser && index >= 2 && (
-                                          <span className={styles.jobVizPreviewLocked}>
-                                            {' '}
-                                            - Unlock with GP+
-                                          </span>
-                                        )}
-                                      </span>
-                                    </li>
-                                  ))}
-                                </ul>
-                              </div>
-                              <div className={styles.jobVizPreviewActions}>
-                                <button
-                                  type="button"
-                                  className={`${styles.gpFunctionActionBtn} ${styles.jobVizPreviewActionBtn} ${styles.jobVizPreviewGpBtn}`}
-                                  onClick={handlePreviewJobVizAssignmentClick}
-                                >
-                                  <span className={styles.lessonProcedureToggleText}>
-                                    <Network size={16} aria-hidden="true" />
-                                    <span>Preview Job Exploration Assignment</span>
-                                  </span>
-                                </button>
-                                {isGpPlusUser && isAuthenticated ? (
-                                  <button
-                                    type="button"
-                                    className={`${styles.gpFunctionActionBtn} ${styles.jobVizPreviewActionBtn} ${styles.jobVizPreviewGpBtn}`}
-                                    onClick={handleSaveJobVizTourClick}
-                                    disabled={isSavingJobVizTour}
-                                  >
-                                    <span className={styles.lessonProcedureToggleText}>
-                                      <NotebookPen size={16} aria-hidden="true" />
-                                      <span>
-                                        {isSavingJobVizTour
-                                          ? 'Saving tour...'
-                                          : 'Save Tour (Allows Edit)'}
-                                      </span>
-                                    </span>
-                                  </button>
-                                ) : (
-                                  <Link
-                                    href="/plus"
-                                    className={`${styles.gpFunctionActionBtn} ${styles.jobVizPreviewActionBtn} ${styles.jobVizPreviewGpBtn}`}
-                                  >
-                                    <span className={styles.lessonProcedureToggleText}>
-                                      <Image
-                                        alt="GP+ icon"
-                                        width={16}
-                                        height={16}
-                                        src="/plus/plus.png"
-                                      />
-                                      <span>Get GP+</span>
-                                    </span>
-                                  </Link>
-                                )}
-                              </div>
-                              {!!jobVizSaveMessage && (
-                                <p className={styles.copyAllHelperText}>
-                                  {jobVizSaveMessage}{' '}
-                                  <Link href="/search?typeFilter=Job%20Tour&mine=1">
-                                    Open My JobViz Tours
-                                  </Link>
-                                </p>
-                              )}
-                              {!!jobVizSaveError && (
-                                <p className={styles.copyAllHelperText}>
-                                  {jobVizSaveError}
-                                </p>
-                              )}
-                            </div>
-                          ) : (
-                            <p className={styles.unitMutedText}>
-                              JobViz connections are not available for this unit yet.
-                            </p>
-                          )}
-                        </article>
+                        <JobVizPreview
+                          hasJobVizConnections={hasJobVizConnections}
+                          unitTitle={unitTitle}
+                          jobVizConnections={jobVizConnections}
+                          jobVizConnectionIcons={jobVizConnectionIcons}
+                          isGpPlusUser={isGpPlusUser}
+                          isAuthenticated={isAuthenticated}
+                          isSavingJobVizTour={isSavingJobVizTour}
+                          handlePreviewJobVizAssignmentClick={handlePreviewJobVizAssignmentClick}
+                          handleSaveJobVizTourClick={handleSaveJobVizTourClick}
+                          jobVizSaveMessage={jobVizSaveMessage}
+                          jobVizSaveError={jobVizSaveError}
+                        />
                       ) : !!activeLessonItems.length ? (
-                        (() => {
-                          const safeIndex =
-                            activeMaterialIndex > activeLessonItems.length - 1
-                              ? 0
-                              : activeMaterialIndex;
-                          const selectedItem = activeLessonItems[safeIndex];
-                          const selectedPreviewItem = selectedItem as TPreviewItem;
-                          const {
-                            openUrl,
-                            previewUrl,
-                            embedUrl,
-                            pdfDownloadUrl,
-                            officeDownloadUrl,
-                            officeFormat,
-                          } =
-                            getMaterialUrls(selectedPreviewItem);
-                          const previewPdfDownloadUrl =
-                            pdfDownloadUrl ??
-                            (() => {
-                              if (selectedPreviewItem?.gdriveRoot) {
-                                return (
-                                  toGooglePdfExportUrl(
-                                    getNormalizedGDriveRoot(
-                                      selectedPreviewItem.gdriveRoot
-                                    )
-                                  ) ?? null
-                                );
-                              }
-                              const firstUrl = getFirstItemUrl(selectedPreviewItem);
-                              return firstUrl
-                                ? toGooglePdfExportUrl(firstUrl) ?? null
-                                : null;
-                            })();
-                          const previewImg =
-                            (
-                              selectedItem as {
-                                filePreviewImg?: string;
-                              }
-                            )?.filePreviewImg ?? null;
-                          const previewTitle =
-                            selectedItem?.itemTitle ?? `Resource ${safeIndex + 1}`;
-                          const previewDescription =
-                            selectedItem?.itemDescription ??
-                            'Preview details will appear for this material.';
-                          const itemTypeLabel =
-                            selectedPreviewItem?.itemType?.toLowerCase() ?? '';
-                          const selectedIsTeacherOnly =
-                            typeof selectedItem?.itemTitle === 'string' &&
-                            selectedItem.itemTitle.toLowerCase().includes('teacher');
-                          const isPresentation = itemTypeLabel === 'presentation';
-                          const itemCatLabel =
-                            selectedPreviewItem?.itemCat?.toLowerCase() ?? '';
-                          const fileTypeLabel =
-                            selectedPreviewItem?.fileType?.toLowerCase() ?? '';
-                          const isWebResource =
-                            itemCatLabel === 'web resource' ||
-                            fileTypeLabel === 'web resource';
-                          const hasExternalOpenUrl = Boolean(
-                            openUrl && /^https?:\/\//i.test(openUrl)
-                          );
-                          const allowOpenInNewTab =
-                            isPresentation || (isWebResource && hasExternalOpenUrl);
-                          const frameSrc = isPresentation
-                            ? embedUrl ?? previewUrl ?? openUrl
-                            : embedUrl ?? previewUrl;
-                          const isGoogleDrivePreviewFrame = Boolean(
-                            frameSrc &&
-                              /(?:docs\.google\.com|drive\.google\.com)/i.test(frameSrc)
-                          );
-                          const isPreviewLockedLoggedOut = !isAuthenticated;
-                          const isPreviewLockedTeacher =
-                            isAuthenticated && !isUserTeacher && selectedIsTeacherOnly;
-                          const isPreviewLocked =
-                            isPreviewLockedLoggedOut || isPreviewLockedTeacher;
-                          const canOpenSelected =
-                            allowOpenInNewTab && !!openUrl && !isPreviewLocked;
-                          const hasOfficeDownload =
-                            !!officeDownloadUrl && !!officeFormat;
-                          const canAccessOffice =
-                            hasOfficeDownload &&
-                            !isPreviewLockedTeacher &&
-                            isAuthenticated &&
-                            isGpPlusUser;
-                          const canUpsellOffice =
-                            hasOfficeDownload &&
-                            !isPreviewLockedTeacher &&
-                            isAuthenticated &&
-                            isGpPlusMember === false;
-                          const hasGoogleDriveSource = Boolean(
-                            selectedPreviewItem.gdriveRoot ||
-                              selectedPreviewItem.links?.some((linkObj) => {
-                                const urlValue = linkObj?.url;
-                                if (Array.isArray(urlValue)) {
-                                  return urlValue.some((url: string) =>
-                                    /(docs\.google\.com|drive\.google\.com)/i.test(
-                                      String(url)
-                                    )
-                                  );
-                                }
-                                return typeof urlValue === 'string'
-                                  ? /(docs\.google\.com|drive\.google\.com)/i.test(urlValue)
-                                  : false;
-                              })
-                          );
-
-                          return (
-                            <article className={styles.lessonPreviewItem}>
-                              <header className={styles.lessonPreviewHeader}>
-                                <h3 className={styles.lessonCardHeading}>
-                                  <Eye size={16} aria-hidden="true" />
-                                  <span>Item preview</span>
-                                </h3>
-                                {canOpenSelected ? (
-                                  <a
-                                    className={styles.materialOpenLink}
-                                    href={openUrl}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                  >
-                                    <span>Open in new tab</span>
-                                    <SquareArrowOutUpRight size={13} aria-hidden="true" />
-                                  </a>
-                                ) : isPreviewLocked || !allowOpenInNewTab ? null : (
-                                  <span className={styles.materialOpenLinkDisabled}>
-                                    No file link
-                                  </span>
-                                )}
-                              </header>
-                              <div
-                                className={`${styles.lessonPreviewSurface} ${
-                                  isPreviewLocked ? styles.lessonPreviewSurfaceLocked : ''
-                                }`}
-                              >
-                                <div
-                                  className={`${styles.lessonPreviewMedia} ${
-                                    isPreviewLocked ? styles.lessonPreviewMediaBlurred : ''
-                                  }`}
-                                >
-                                  {frameSrc ? (
-                                    <iframe
-                                      title={`${previewTitle} preview`}
-                                      src={frameSrc}
-                                      className={
-                                        isGoogleDrivePreviewFrame
-                                          ? styles.lessonPreviewIFrameGoogle
-                                          : undefined
-                                      }
-                                    />
-                                  ) : previewImg ? (
-                                    <img
-                                      src={previewImg}
-                                      alt={`${previewTitle} preview`}
-                                      loading="lazy"
-                                    />
-                                  ) : previewUrl && isImageUrl(previewUrl) ? (
-                                    <img
-                                      src={previewUrl}
-                                      alt={`${previewTitle} preview`}
-                                      loading="lazy"
-                                    />
-                                  ) : (
-                                    <p className={styles.unitMutedText}>
-                                      Preview unavailable for this file type.
-                                    </p>
-                                  )}
-                                </div>
-                                {isPreviewLocked && (
-                                  <div className={styles.lessonPreviewGate}>
-                                    <p>
-                                      {isPreviewLockedLoggedOut
-                                        ? (
-                                            <span className={styles.lessonPreviewGateWarning}>
-                                              <CircleAlert size={18} aria-hidden="true" />
-                                              <span>Must Be Logged in to View Teaching Materials</span>
-                                            </span>
-                                          )
-                                        : 'Only viewable by teachers. If you are a teacher, please update your account.'}
-                                    </p>
-                                    {isPreviewLockedLoggedOut ? (
-                                      <div className={styles.lessonPreviewGateActions}>
-                                        <Link
-                                          href="/gp-plus"
-                                          className={styles.lessonPreviewGateButton}
-                                          onClick={handleGateNavigateToGpPlus}
-                                        >
-                                          Create a Free Account
-                                        </Link>
-                                        <Link
-                                          href="/account"
-                                          className={styles.lessonPreviewGateButton}
-                                          onClick={handleGateNavigateToAccount}
-                                        >
-                                          Sign In
-                                        </Link>
-                                      </div>
-                                    ) : (
-                                      <Link
-                                        href="/account?show_about_user_form=true"
-                                        className={styles.lessonPreviewGateButton}
-                                      >
-                                        Update your account
-                                      </Link>
-                                    )}
-                                  </div>
-                                )}
-                              </div>
-                              <div className={styles.lessonPreviewMeta}>
-                                <strong>{previewTitle}</strong>
-                                <p>{previewDescription}</p>
-                                {(selectedPreviewItem.itemType ||
-                                  selectedPreviewItem.itemCat) && (
-                                  <span className={styles.lessonPreviewType}>
-                                    {(selectedPreviewItem.itemType ??
-                                      selectedPreviewItem.itemCat ??
-                                      '').toString()}
-                                  </span>
-                                )}
-                                {(previewPdfDownloadUrl || hasOfficeDownload) && (
-                                  <div className={styles.materialDownloadRow}>
-                                    {hasGoogleDriveSource && (
-                                      <button
-                                        type="button"
-                                        className={styles.materialCopyAllBtn}
-                                        onClick={handleCopyAllMaterialsClick}
-                                        disabled={isCopyAllDisabledForGpPlus}
-                                      >
-                                        <Image
-                                          alt="GP+ icon"
-                                          width={14}
-                                          height={14}
-                                          src="/plus/plus.png"
-                                        />
-                                        <span>Copy All to my Google Drive</span>
-                                      </button>
-                                    )}
-                                    <span className={styles.materialDownloadLabel}>
-                                      Download
-                                    </span>
-                                    <div className={styles.materialDownloadActions}>
-                                      {previewPdfDownloadUrl && isAuthenticated && !isPreviewLockedTeacher ? (
-                                        <a
-                                          className={styles.materialPdfLink}
-                                          href={previewPdfDownloadUrl}
-                                          target="_blank"
-                                          rel="noreferrer"
-                                        >
-                                          PDF
-                                        </a>
-                                      ) : previewPdfDownloadUrl ? (
-                                        <span className={styles.materialPdfLinkDisabled}>
-                                          PDF
-                                        </span>
-                                      ) : null}
-                                      {hasOfficeDownload &&
-                                        (canAccessOffice ? (
-                                          <a
-                                            className={`${styles.materialPdfLink} ${styles.materialOfficeLink}`}
-                                            href={officeDownloadUrl ?? undefined}
-                                            target="_blank"
-                                            rel="noreferrer"
-                                          >
-                                            <span className={styles.materialOfficeLinkContent}>
-                                              <Image
-                                                alt="GP+ icon"
-                                                width={13}
-                                                height={13}
-                                                src="/plus/plus.png"
-                                                className={styles.materialOfficeLinkPlusIcon}
-                                              />
-                                              <span>{officeFormat}</span>
-                                            </span>
-                                          </a>
-                                        ) : canUpsellOffice ? (
-                                          <button
-                                            type="button"
-                                            className={`${styles.materialPdfLink} ${styles.materialOfficeLink} ${styles.materialOfficeLinkLocked}`}
-                                            onClick={() =>
-                                              handleOpenOfficeUpsell(
-                                                officeFormat ?? 'Office'
-                                              )
-                                            }
-                                          >
-                                            <span className={styles.materialOfficeLinkContent}>
-                                              <Image
-                                                alt="GP+ icon"
-                                                width={13}
-                                                height={13}
-                                                src="/plus/plus.png"
-                                                className={styles.materialOfficeLinkPlusIcon}
-                                              />
-                                              <span>{officeFormat}</span>
-                                            </span>
-                                          </button>
-                                        ) : (
-                                          <span
-                                            className={`${styles.materialPdfLinkDisabled} ${styles.materialOfficeLink} ${styles.materialOfficeLinkLocked}`}
-                                          >
-                                            <span className={styles.materialOfficeLinkContent}>
-                                              <Image
-                                                alt="GP+ icon"
-                                                width={13}
-                                                height={13}
-                                                src="/plus/plus.png"
-                                                className={styles.materialOfficeLinkPlusIcon}
-                                              />
-                                              <span>{officeFormat}</span>
-                                            </span>
-                                          </span>
-                                        ))}
-                                    </div>
-                                  </div>
-                                )}
-                                {latestCopiedLessonFolderUrl ? (
-                                  <a
-                                    className={styles.gpPlusFileVersionsLink}
-                                    href={latestCopiedLessonFolderUrl}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                  >
-                                    <SquareArrowOutUpRight size={15} aria-hidden="true" />
-                                    <span>My file versions</span>
-                                  </a>
-                                ) : null}
-                              </div>
-                            </article>
-                          );
-                        })()
+                        <MaterialItemPreview
+                          activeLessonItems={activeLessonItems}
+                          activeMaterialIndex={activeMaterialIndex}
+                          getMaterialUrls={getMaterialUrls}
+                          toGooglePdfExportUrl={toGooglePdfExportUrl}
+                          getNormalizedGDriveRoot={getNormalizedGDriveRoot}
+                          getFirstItemUrl={getFirstItemUrl}
+                          isImageUrl={isImageUrl}
+                          isAuthenticated={isAuthenticated}
+                          isUserTeacher={isUserTeacher}
+                          isGpPlusUser={isGpPlusUser}
+                          isGpPlusMember={isGpPlusMember}
+                          handleGateNavigateToGpPlus={handleGateNavigateToGpPlus}
+                          handleGateNavigateToAccount={handleGateNavigateToAccount}
+                          handleCopyAllMaterialsClick={handleCopyAllMaterialsClick}
+                          handleOpenOfficeUpsell={handleOpenOfficeUpsell}
+                          isCopyAllDisabledForGpPlus={isCopyAllDisabledForGpPlus}
+                          latestCopiedLessonFolderUrl={latestCopiedLessonFolderUrl}
+                        />
                       ) : (
                         <p className={styles.unitMutedText}>
                           Item previews will appear here.
