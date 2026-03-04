@@ -78,7 +78,7 @@ export default async function handler(
           firstLessonDebug,
           topLevelKeys:
             newUnit && typeof newUnit === "object"
-              ? Object.keys(newUnit as Record<string, unknown>)
+              ? Object.keys(newUnit)
               : [],
         },
         null,
