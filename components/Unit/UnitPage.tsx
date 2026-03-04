@@ -3,28 +3,17 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { format } from 'date-fns';
 import axios from 'axios';
-import RichText from '../RichText';
 import styles from './UnitPage.module.css';
 import {
-  Apple,
-  BookA,
-  BookOpenText,
   ChevronUp,
-  Clock3,
-  BrainCog,
   FileArchive,
   FileImage,
   FileSpreadsheet,
   FileText,
   FileVideo,
-  GraduationCap,
   Link2,
   NotebookPen,
-  Printer,
-  Split,
-  Lightbulb,
   TextSearch,
-  SquareArrowOutUpRight,
 } from 'lucide-react';
 import { TUnitForUI } from '../../backend/models/Unit/types/unit';
 import { IConnectionJobViz } from '../../backend/models/Unit/JobViz';
@@ -36,7 +25,6 @@ import {
 } from '../../backend/models/Unit/types/teachingMaterials';
 import { useModalContext } from '../../providers/ModalProvider';
 import LocDropdown from '../LocDropdown';
-import ChunkGraph from '../LessonSection/TeachIt/ChunkGraph';
 import { ISubject } from '../../backend/models/Unit/types/standards';
 import { setSessionStorageItem } from '../../shared/fns';
 import useSiteSession from '../../customHooks/useSiteSession';
@@ -59,6 +47,8 @@ import CreditsTab from './tabs/CreditsTab';
 import MaterialsStandalonePreview from './materials/MaterialsStandalonePreview';
 import MaterialsResourcesPanel from './materials/MaterialsResourcesPanel';
 import MaterialsPreviewPane from './materials/MaterialsPreviewPane';
+import LessonSummaryCard from './materials/LessonSummaryCard';
+import GradeBandSelectorCard from './materials/GradeBandSelectorCard';
 import FeaturedMediaPreview from './materials/previews/FeaturedMediaPreview';
 import ProcedurePreview from './materials/previews/ProcedurePreview';
 import BackgroundPreview from './materials/previews/BackgroundPreview';
@@ -343,26 +333,6 @@ const formatGradeValue = (grades: string[]) => {
   return labels.length === 1
     ? `Grade ${labels[0]}`
     : `Grades ${labels[0]}-${labels[labels.length - 1]}`;
-};
-
-const getStepDuration = (step: {
-  StepDur?: number | string | null;
-  StepDuration?: number | string | null;
-  stepDur?: number | string | null;
-}) => {
-  const candidates = [step.StepDur, step.StepDuration, step.stepDur];
-  for (const candidate of candidates) {
-    if (typeof candidate === 'number' && Number.isFinite(candidate) && candidate > 0) {
-      return candidate;
-    }
-    if (typeof candidate === 'string') {
-      const parsed = Number.parseFloat(candidate);
-      if (!Number.isNaN(parsed) && parsed > 0) {
-        return parsed;
-      }
-    }
-  }
-  return null;
 };
 
 const flattenStandards = (standardsData?: ISubject[] | null): TFlatStandard[] => {
@@ -2465,6 +2435,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
   }, [activeLessonId, unit.FeaturedMultimedia]);
   const hasFeaturedMedia = activeLessonFeaturedMedia.length > 0;
   const hasBackgroundContent = Boolean(unit.Sections?.background?.Content?.trim());
+  const backgroundContent = unit.Sections?.background?.Content?.trim() ?? '';
   const isDetailedFlowOpen = activeLessonPreviewMode === 'procedure';
   const isBackgroundOpen = activeLessonPreviewMode === 'background';
   const isFeaturedMediaOpen = activeLessonPreviewMode === 'featured-media';
@@ -3573,331 +3544,6 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
         }
       : fixedLessonPaneStyle;
 
-  const renderProcedurePanel = (
-    showLinkOutAction: boolean,
-    showPanelHeading = true,
-    panelClassName?: string
-  ) => {
-    const prep = activeLesson?.lsnPrep;
-    const prepTitle = prep?.prepTitle;
-    const prepDur = prep?.prepDur;
-    const prepQuickDescription = prep?.prepQuickDescription;
-    const prepDetails = prep?.prepDetails;
-    const prepTeachingTips = prep?.prepTeachingTips;
-    const prepVariantNotes = prep?.prepVariantNotes;
-    const hasPrepContent = Boolean(
-      prep &&
-        (prepTitle ||
-          prepDur != null ||
-          prepQuickDescription ||
-          prepDetails ||
-          prepTeachingTips ||
-          prepVariantNotes)
-    );
-
-    return (
-      <div
-        className={
-          panelClassName
-            ? `${styles.lessonProcedureInPreview} ${panelClassName}`
-            : styles.lessonProcedureInPreview
-        }
-      >
-        <div className={styles.lessonProcedureHeader}>
-          {(showPanelHeading || showLinkOutAction) && (
-            <div className={styles.lessonProcedureHeaderTop}>
-              {showPanelHeading ? (
-                <h3 className={styles.lessonCardHeading}>
-                  <Apple size={16} aria-hidden="true" />
-                  <span>Lesson Procedure</span>
-                </h3>
-              ) : (
-                <span />
-              )}
-              {showLinkOutAction && (
-                <div className={styles.lessonPreviewHeaderActions}>
-                  <button
-                    type="button"
-                    className={styles.procedureLinkOutBtn}
-                    onClick={handlePrintProcedureFromPreview}
-                  >
-                    <span>Print</span>
-                    <Printer size={13} aria-hidden="true" />
-                  </button>
-                  <button
-                    type="button"
-                    className={styles.procedureLinkOutBtn}
-                    onClick={handleOpenProcedureInNewTab}
-                  >
-                    <span>Open in New Tab</span>
-                    <SquareArrowOutUpRight size={13} aria-hidden="true" />
-                  </button>
-                </div>
-              )}
-            </div>
-          )}
-          {showPanelHeading && (
-            <span>Chunk-by-chunk guidance with vocab and teacher notes.</span>
-          )}
-        </div>
-        <div className={styles.lessonProcedureContent}>
-          {hasPrepContent && (
-            <section className={styles.lessonPrepSection}>
-              <div className={styles.lessonPrepHeader}>
-                <Clock3 size={16} aria-hidden="true" />
-                {prepDur != null && (
-                  <span className={styles.lessonPrepDuration}>
-                    {prepDur} min
-                  </span>
-                )}
-                <h4>{prepTitle ?? 'Prep'}</h4>
-              </div>
-              {prepQuickDescription && (
-                <div className={styles.lessonStepQuickDescription}>
-                  <RichText content={prepQuickDescription} />
-                </div>
-              )}
-              {prepDetails && (
-                <div className={styles.lessonStepDetails}>
-                  <RichText content={prepDetails} />
-                </div>
-              )}
-              <aside className={styles.lessonPrepAside}>
-                {!!prepTeachingTips && (
-                  <div
-                    className={`${styles.stepInfoBlock} ${styles.stepInfoBlockTeachingTips}`}
-                  >
-                    <h6 className={styles.stepInfoHeading}>
-                      <Lightbulb size={14} aria-hidden="true" />
-                      <span>Teaching tips</span>
-                    </h6>
-                    <RichText content={prepTeachingTips} />
-                  </div>
-                )}
-                {!!prepVariantNotes && (
-                  <div
-                    className={`${styles.stepInfoBlock} ${styles.stepInfoBlockVariantNotes}`}
-                  >
-                    <h6 className={styles.stepInfoHeading}>
-                      <Split size={14} aria-hidden="true" />
-                      <span>Variant notes</span>
-                    </h6>
-                    <RichText content={prepVariantNotes} />
-                  </div>
-                )}
-              </aside>
-            </section>
-          )}
-          {activeLesson?.chunks?.map((chunk, index) => (
-          <article
-            key={`${chunk.chunkTitle}-${index}`}
-            className={styles.lessonChunk}
-          >
-            <div className={styles.lessonChunkTimeline}>
-              <div
-                className={`${styles.lessonChunkHeader} ${
-                  chunkDurations.length
-                    ? styles.lessonChunkHeaderOverGraph
-                    : ''
-                }`}
-              >
-                {typeof chunk.chunkDur === 'number' ? (
-                  <span className={styles.lessonChunkDuration}>
-                    <Clock3 size={12} aria-hidden="true" />
-                    <span>{chunk.chunkDur} min:</span>
-                  </span>
-                ) : null}
-                <h5 className={styles.lessonChunkTitle}>
-                  {chunk.chunkTitle ?? 'Lesson segment'}
-                </h5>
-              </div>
-              {!!chunkDurations.length && (
-                <ChunkGraph
-                  className={styles.lessonChunkGraph}
-                  durList={chunkDurations}
-                  chunkNum={index}
-                />
-              )}
-            </div>
-            {(() => {
-              return chunk.steps?.map((step, idx) => {
-                const rawStep = (
-                  step as { Step?: number | string | null }
-                ).Step;
-                const stepNumber =
-                  typeof rawStep === 'number'
-                    ? rawStep
-                    : typeof rawStep === 'string'
-                    ? Number.parseInt(rawStep.replace(/[^\d-]/g, ''), 10)
-                    : Number.NaN;
-                const safeStepNumber =
-                  Number.isFinite(stepNumber) && stepNumber > 0
-                    ? stepNumber
-                    : idx + 1;
-                const stepDuration = getStepDuration(
-                  step as {
-                    StepDur?: number | string | null;
-                    StepDuration?: number | string | null;
-                    stepDur?: number | string | null;
-                  }
-                );
-                const hasStepAsideContent = Boolean(
-                  step.Vocab || step.TeachingTips || step.VariantNotes
-                );
-
-                return (
-                  <div
-                    key={`${step.StepTitle}-${idx}`}
-                    className={`${styles.lessonStep} ${
-                      hasStepAsideContent
-                        ? styles.lessonStepWithAside
-                        : styles.lessonStepFullWidth
-                    }`}
-                  >
-                    <div className={styles.lessonStepMain}>
-                      <div className={styles.lessonStepTitleRow}>
-                        <strong>
-                          {step.StepTitle
-                            ? `${safeStepNumber}. ${step.StepTitle}`
-                            : `${safeStepNumber}.`}
-                        </strong>
-                        {stepDuration != null && (
-                          <span className={styles.lessonStepDuration}>
-                            {stepDuration} min
-                          </span>
-                        )}
-                      </div>
-                      {step.StepQuickDescription && (
-                        <div className={styles.lessonStepQuickDescription}>
-                          <RichText content={step.StepQuickDescription} />
-                        </div>
-                      )}
-                      {step.StepDetails && (
-                        <div className={styles.lessonStepDetails}>
-                          <RichText content={step.StepDetails} />
-                        </div>
-                      )}
-                    </div>
-                    {hasStepAsideContent && (
-                      <aside className={styles.lessonStepAside}>
-                        {!!step.Vocab && (
-                          <div className={styles.stepInfoBlock}>
-                            <h6 className={styles.stepInfoHeading}>
-                              <BookA size={14} aria-hidden="true" />
-                              <span>Vocabulary</span>
-                            </h6>
-                            <RichText content={step.Vocab} />
-                          </div>
-                        )}
-                        {!!step.TeachingTips && (
-                          <div
-                            className={`${styles.stepInfoBlock} ${styles.stepInfoBlockTeachingTips}`}
-                          >
-                            <h6 className={styles.stepInfoHeading}>
-                              <Lightbulb size={14} aria-hidden="true" />
-                              <span>Teaching tips</span>
-                            </h6>
-                            <RichText content={step.TeachingTips} />
-                          </div>
-                        )}
-                        {!!step.VariantNotes && (
-                          <div
-                            className={`${styles.stepInfoBlock} ${styles.stepInfoBlockVariantNotes}`}
-                          >
-                            <h6 className={styles.stepInfoHeading}>
-                              <Split size={14} aria-hidden="true" />
-                              <span>Variant notes</span>
-                            </h6>
-                            <RichText content={step.VariantNotes} />
-                          </div>
-                        )}
-                      </aside>
-                    )}
-                  </div>
-                );
-              });
-            })()}
-          </article>
-        ))}
-        {!activeLesson?.chunks?.length && (
-          <p className={styles.unitMutedText}>
-            Detailed steps will appear here once added.
-          </p>
-        )}
-        <p className={styles.procedureEndMarker}>End</p>
-      </div>
-    </div>
-    );
-  };
-
-  const renderBackgroundPanel = (
-    showLinkOutAction: boolean,
-    showPanelHeading = true,
-    panelClassName?: string
-  ) => {
-    const backgroundContent = unit.Sections?.background?.Content?.trim() ?? '';
-
-    return (
-      <div
-        className={
-          panelClassName
-            ? `${styles.lessonProcedureInPreview} ${panelClassName}`
-            : styles.lessonProcedureInPreview
-        }
-      >
-        <div className={styles.lessonProcedureHeader}>
-          {(showPanelHeading || showLinkOutAction) && (
-            <div className={styles.lessonProcedureHeaderTop}>
-              {showPanelHeading ? (
-                <h3 className={styles.lessonCardHeading}>
-                  <BookOpenText size={16} aria-hidden="true" />
-                  <span>Background</span>
-                </h3>
-              ) : (
-                <span />
-              )}
-              {showLinkOutAction && (
-                <div className={styles.lessonPreviewHeaderActions}>
-                  <button
-                    type="button"
-                    className={styles.procedureLinkOutBtn}
-                    onClick={handlePrintBackgroundFromPreview}
-                  >
-                    <span>Print</span>
-                    <Printer size={13} aria-hidden="true" />
-                  </button>
-                  <button
-                    type="button"
-                    className={styles.procedureLinkOutBtn}
-                    onClick={handleOpenBackgroundInNewTab}
-                  >
-                    <span>Open in New Tab</span>
-                    <SquareArrowOutUpRight size={13} aria-hidden="true" />
-                  </button>
-                </div>
-              )}
-            </div>
-          )}
-          {showPanelHeading && (
-            <span>Context and real-world connections for this unit.</span>
-          )}
-        </div>
-        <div
-          id="unit-search-background-content"
-          className={styles.lessonProcedureContent}
-        >
-          {backgroundContent ? (
-            <div className={styles.richTextBlock}>
-              <RichText content={backgroundContent} />
-            </div>
-          ) : (
-            <p className={styles.unitMutedText}>Background content will appear here.</p>
-          )}
-        </div>
-      </div>
-    );
-  };
-
   const handleGradeBandFilter = (gradeBand: TGradeBand) => {
     setSelectedGradeBands((current) => {
       if (gradeBand === 'all') {
@@ -4353,8 +3999,27 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                     activeLesson={activeLesson}
                     lessonTileFallbackSrc={LESSON_TILE_FALLBACK_SRC}
                     procedureReturnQrUrl={procedureReturnQrUrl}
-                    renderBackgroundPanel={renderBackgroundPanel}
-                    renderProcedurePanel={renderProcedurePanel}
+                    backgroundPanel={(
+                      <BackgroundPreview
+                        backgroundContent={backgroundContent}
+                        onPrint={handlePrintBackgroundFromPreview}
+                        onOpenInNewTab={handleOpenBackgroundInNewTab}
+                        showLinkOutAction={false}
+                        showPanelHeading={false}
+                        panelClassName={styles.lessonProcedureStandalonePanel}
+                      />
+                    )}
+                    procedurePanel={(
+                      <ProcedurePreview
+                        activeLesson={activeLesson ?? null}
+                        chunkDurations={chunkDurations}
+                        onPrint={handlePrintProcedureFromPreview}
+                        onOpenInNewTab={handleOpenProcedureInNewTab}
+                        showLinkOutAction={false}
+                        showPanelHeading={false}
+                        panelClassName={styles.lessonProcedureStandalonePanel}
+                      />
+                    )}
                   />
                 ) : (
                 <div
@@ -4366,144 +4031,24 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                   }
                   className={`${styles.lessonLayout} ${styles.unitTabFadeIn}`}
                 >
-                  <div className={styles.lessonSummaryCard}>
-                    <div className={styles.lessonSummaryMain}>
-                      {!isAssessmentLesson(activeLesson, activeLessonIndex) && (
-                        <div className={styles.lessonEyebrowRow}>
-                          <p className={styles.lessonEyebrow}>
-                            Lesson {getLessonIdentifier(activeLesson, activeLessonIndex)}
-                          </p>
-                          {typeof activeLesson.lsnDur === 'number' && (
-                            <button
-                              type="button"
-                              className={styles.lessonDurationPill}
-                              onClick={() => setActiveLessonPreviewMode('procedure')}
-                              aria-label="Open lesson procedure preview"
-                            >
-                              <i className="bi bi-clock-history" aria-hidden="true" />
-                              {activeLesson.lsnDur} min
-                            </button>
-                          )}
-                        </div>
-                      )}
-                      <div className={styles.lessonTitleMarkdown}>
-                        <RichText content={activeLesson.title ?? 'Untitled lesson'} />
-                      </div>
-                      {activeLesson.lsnPreface && (
-                        <RichText
-                          className={styles.lessonPreface}
-                          content={activeLesson.lsnPreface}
-                        />
-                      )}
-                      {!!activeLesson.learningObj?.length && (
-                        <div className={styles.lessonObjectives}>
-                          <h4 className={styles.lessonObjectivesLead}>
-                            <BrainCog size={16} aria-hidden="true" />
-                            Students will be able to:
-                          </h4>
-                          <ul>
-                            {activeLesson.learningObj.map((item, idx) => (
-                              <li key={`${item}-${idx}`}>
-                                <RichText content={item} />
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      )}
-                      {!!(activeLesson.lsnTags ?? activeLesson.tags ?? []).length && (
-                        <div className={styles.lessonTileTags}>
-                          {(activeLesson.lsnTags ?? activeLesson.tags ?? []).map(
-                            (tag, tagIndex) => (
-                              <span
-                                key={`${tag}-${tagIndex}`}
-                                className={styles.lessonTileTagWrap}
-                              >
-                                <button
-                                  type="button"
-                                  className={styles.lessonTileTag}
-                                  title="Search for related resources"
-                                  aria-label={`Search for related resources: ${tag}`}
-                                  onClick={() => handleTagSearchClick(tag, 'lesson_tile')}
-                                >
-                                  {tag}
-                                </button>
-                              </span>
-                            )
-                          )}
-                        </div>
-                      )}
-                    </div>
-                    <div className={styles.lessonSummaryMeta}>
-                      <div className={styles.lessonTileMediaLarge} aria-hidden="true">
-                        <Image
-                          src={activeLesson.tile || LESSON_TILE_FALLBACK_SRC}
-                          alt={`${activeLesson.title ?? 'Lesson'} tile`}
-                          width={180}
-                          height={180}
-                        />
-                      </div>
-                      {activeLesson.status &&
-                        ['beta', 'upcoming'].includes(
-                          activeLesson.status.toLowerCase()
-                        ) && (
-                          <span
-                            className={`${styles.lessonStatusPill} ${
-                              activeLesson.status.toLowerCase() === 'beta'
-                                ? styles.lessonStatusPillBeta
-                                : styles.lessonStatusPillUpcoming
-                            }`}
-                          >
-                            {activeLesson.status}
-                          </span>
-                        )}
-                    </div>
-                  </div>
-                  {(teachingMaterialsPreface || shouldShowGradeBandChooser) && (
-                    <div
-                      id="unit-search-materials-preface"
-                      className={styles.gradeBandSelectorCard}
-                    >
-                      {teachingMaterialsPreface && (
-                        <div className={styles.gradeBandPreface}>
-                          <RichText content={teachingMaterialsPreface} />
-                        </div>
-                      )}
-                      {shouldShowGradeBandChooser && (
-                        <div className={styles.gradeBandChooser}>
-                          <h4 className={styles.gradeBandHeading}>
-                            <GraduationCap size={15} aria-hidden="true" />
-                            <span>Available Grade Bands</span>
-                          </h4>
-                          <div className={styles.gradeBandOptions}>
-                            {classroomResources.map((resource, index) => {
-                              const label =
-                                resource.gradePrefix?.trim() ||
-                                resource.grades?.trim() ||
-                                `Option ${index + 1}`;
-                              const optionId = `grade-band-${unitId}-${index}`;
-                              return (
-                                <label
-                                  key={optionId}
-                                  htmlFor={optionId}
-                                  className={styles.gradeBandOption}
-                                >
-                                  <input
-                                    id={optionId}
-                                    type="radio"
-                                    name={`grade-band-${unitId}`}
-                                    checked={selectedResourceIndex === index}
-                                    onChange={() => setSelectedResourceIndex(index)}
-                                    disabled={!hasMultipleGradeBandOptions}
-                                  />
-                                  <span>{label}</span>
-                                </label>
-                              );
-                            })}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  )}
+                  <LessonSummaryCard
+                    activeLesson={activeLesson}
+                    activeLessonIndex={activeLessonIndex}
+                    lessonTileFallbackSrc={LESSON_TILE_FALLBACK_SRC}
+                    getLessonIdentifier={getLessonIdentifier}
+                    isAssessmentLesson={isAssessmentLesson}
+                    setActiveLessonPreviewMode={setActiveLessonPreviewMode}
+                    onTagSearchClick={(tag) => handleTagSearchClick(tag, 'lesson_tile')}
+                  />
+                  <GradeBandSelectorCard
+                    teachingMaterialsPreface={teachingMaterialsPreface}
+                    shouldShowGradeBandChooser={shouldShowGradeBandChooser}
+                    classroomResources={classroomResources}
+                    unitId={unitId}
+                    selectedResourceIndex={selectedResourceIndex}
+                    hasMultipleGradeBandOptions={hasMultipleGradeBandOptions}
+                    setSelectedResourceIndex={setSelectedResourceIndex}
+                  />
                   <div
                     ref={lessonMaterialsGridRef}
                     className={styles.lessonMaterialsGrid}
@@ -4576,9 +4121,18 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                           activeLessonFeaturedMedia={activeLessonFeaturedMedia}
                         />
                       ) : isDetailedFlowOpen ? (
-                        <ProcedurePreview renderProcedurePanel={renderProcedurePanel} />
+                        <ProcedurePreview
+                          activeLesson={activeLesson ?? null}
+                          chunkDurations={chunkDurations}
+                          onPrint={handlePrintProcedureFromPreview}
+                          onOpenInNewTab={handleOpenProcedureInNewTab}
+                        />
                       ) : isBackgroundOpen ? (
-                        <BackgroundPreview renderBackgroundPanel={renderBackgroundPanel} />
+                        <BackgroundPreview
+                          backgroundContent={backgroundContent}
+                          onPrint={handlePrintBackgroundFromPreview}
+                          onOpenInNewTab={handleOpenBackgroundInNewTab}
+                        />
                       ) : isGoingFurtherOpen ? (
                         <GoingFurtherPreview
                           hasGoingFurther={hasGoingFurther}

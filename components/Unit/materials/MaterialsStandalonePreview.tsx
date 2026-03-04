@@ -15,16 +15,8 @@ type TMaterialsStandalonePreviewProps = {
   activeLesson: { title?: string | null; tile?: string | null };
   lessonTileFallbackSrc: string;
   procedureReturnQrUrl: string;
-  renderBackgroundPanel: (
-    showLinkOutAction: boolean,
-    showPanelHeading?: boolean,
-    panelClassName?: string
-  ) => React.ReactNode;
-  renderProcedurePanel: (
-    showLinkOutAction: boolean,
-    showPanelHeading?: boolean,
-    panelClassName?: string
-  ) => React.ReactNode;
+  backgroundPanel: React.ReactNode;
+  procedurePanel: React.ReactNode;
 };
 
 const MaterialsStandalonePreview: React.FC<TMaterialsStandalonePreviewProps> = ({
@@ -38,8 +30,8 @@ const MaterialsStandalonePreview: React.FC<TMaterialsStandalonePreviewProps> = (
   activeLesson,
   lessonTileFallbackSrc,
   procedureReturnQrUrl,
-  renderBackgroundPanel,
-  renderProcedurePanel,
+  backgroundPanel,
+  procedurePanel,
 }) => {
   return (
     <div className={styles.procedureStandaloneLayout}>
@@ -104,17 +96,7 @@ const MaterialsStandalonePreview: React.FC<TMaterialsStandalonePreviewProps> = (
           </div>
         </div>
       </div>
-      {isBackgroundStandaloneView
-        ? renderBackgroundPanel(
-            false,
-            false,
-            styles.lessonProcedureStandalonePanel
-          )
-        : renderProcedurePanel(
-            false,
-            false,
-            styles.lessonProcedureStandalonePanel
-          )}
+      {isBackgroundStandaloneView ? backgroundPanel : procedurePanel}
     </div>
   );
 };
