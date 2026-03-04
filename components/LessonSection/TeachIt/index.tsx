@@ -105,7 +105,7 @@ const TeachIt: React.FC<TeachItProps> = (props) => {
   const {
     _sectionDots,
     SectionTitle,
-    ForGrades,
+    ForGrades: initialForGrades,
     GradesOrYears,
     classroom,
     unitDur,
@@ -116,6 +116,7 @@ const TeachIt: React.FC<TeachItProps> = (props) => {
     unitId,
     itemsOfLessons
   } = props;
+  let ForGrades = initialForGrades;
   const Data = props?.Data ?? props;
   const [, setSectionDots] = _sectionDots;
   const ref = useRef(null);
