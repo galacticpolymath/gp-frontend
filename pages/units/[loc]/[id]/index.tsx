@@ -1,26 +1,13 @@
 import Layout from '../../../../components/Layout';
 import sanitizeHtml from 'sanitize-html';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import ParentLessonSection from '../../../../components/LessonSection/ParentLessonSection';
 import { ToastContainer } from 'react-toastify';
-import LessonsSecsNavDots from '../../../../components/LessonSection/LessonSecsNavDots';
-import ShareWidget from '../../../../components/AboutPgComps/ShareWidget';
-import { useRouter } from 'next/router';
-import useScrollHandler from '../../../../customHooks/useScrollHandler';
 import { connectToMongodb } from '../../../../backend/utils/connection';
 import SendFeedback from '../../../../components/LessonSection/SendFeedback';
-import {
-  getIsWithinParentElement,
-  getLinkPreviewObj,
-} from '../../../../globalFns';
-import {
-  defautlNotifyModalVal,
-  useModalContext,
-} from '../../../../providers/ModalProvider';
-import { CustomNotifyModalFooter } from '../../../../components/Modals/Notify';
+import { getLinkPreviewObj } from '../../../../globalFns';
+import { useModalContext } from '../../../../providers/ModalProvider';
 import axios from 'axios';
 import { useUserContext } from '../../../../providers/UserProvider';
-import { TSetter } from '../../../../types/global';
 import {
   INewUnitSchema,
   ISections,
@@ -42,7 +29,6 @@ import GpPlusModal from '../../../../components/LessonSection/Modals/GpPlusModal
 import ThankYouModal from '../../../../components/GpPlus/ThankYouModal';
 import {
   getLocalStorageItem,
-  getSessionStorageItem,
   removeLocalStorageItem,
   setLocalStorageItem,
   setSessionStorageItem,
@@ -56,16 +42,7 @@ import { IOverviewProps } from '../../../../components/LessonSection/Overview';
 import { buildUnitUrl, DEFAULT_LOCALE, getSiteUrl } from '../../../../shared/seo';
 import UnitPage from '../../../../components/Unit/UnitPage';
 
-const IS_ON_PROD = process.env.NODE_ENV === 'production';
 const GOOGLE_DRIVE_THUMBNAIL_URL = 'https://drive.google.com/thumbnail?id=';
-const NAV_CLASSNAMES = [
-  'sectionNavDotLi',
-  'sectionNavDot',
-  'sectionTitleParent',
-  'sectionTitleLi',
-  'sectionTitleSpan',
-];
-const NAV_CLASSNAMES_SET = new Set(NAV_CLASSNAMES);
 const providePlainText = (value?: string | null) =>
   value
     ? sanitizeHtml(value, { allowedTags: [], allowedAttributes: {} })
@@ -441,92 +418,11 @@ const createUnitStructuredData = (
   return schema;
 };
 
-const getSectionDotsDefaultVal = <T extends TSectionsForUI>(
-  sectionComps: (T | null)[]
-) =>
-  sectionComps.map((section, index: number) => {
-    const _sectionTitle = `${index}. ${section && 'SectionTitle' in section ? section.SectionTitle : 'Overview'
-      }`;
-    const sectionId = _sectionTitle.replace(/[\s!]/gi, '_').toLowerCase();
-
-    return {
-      isInView: index === 0,
-      sectionTitleForDot:
-        section && 'SectionTitle' in section
-          ? section.SectionTitle
-          : 'Overview',
-      sectionId: sectionId,
-      willShowTitle: false,
-      sectionDotId: `sectionDot-${sectionId}`,
-    };
-  });
-
-const getLessonSections = <T extends TSectionsForUI>(
-  sectionComps: (T | null)[]
-): any[] =>
-  sectionComps.map((section: TSectionsForUI | null, index: number) => {
-    const sectionClassNameForTesting = 'section-testing';
-
-
-    return {
-      ...section,
-      sectionClassNameForTesting,
-      sectionTitleFromDb: section && 'SectionTitle' in section ? section.SectionTitle : 'n/a',
-      SectionTitle: `${index}. ${section && 'SectionTitle' in section ? section.SectionTitle : 'Overview'
-        }`,
-    };
-  });
-const addGradesOrYearsProperty = (
-  sectionComps: any,
-  ForGrades: string,
-  GradesOrYears: string
-) => {
-  return sectionComps.map((section: any) => {
-    if (section?.SectionTitle?.includes('Teaching Materials')) {
-      return {
-        ...section,
-        ForGrades: ForGrades,
-        GradesOrYears: GradesOrYears,
-      };
-    }
-
-    if (['lesson-plan.standards']?.includes(section.__component)) {
-      return {
-        ...section,
-        GradesOrYears: GradesOrYears,
-      };
-    }
-
-    return section;
-  });
-};
-
 interface IProps {
-  /** @deprecated Use `unit` property instead. */
-  lesson?: any;
   unit?: TUnitForUI;
-  unitGDriveChildItems: Awaited<ReturnType<typeof getUnitGDriveChildItems>>;
 }
 
 const SECTIONS_TO_FILTER_OUT: Set<keyof ISections> = new Set([] as (keyof ISections)[]);
-const SECTION_SORT_ORDER: Record<keyof ISections, number> = {
-  overview: 0,
-  preview: 1,
-  teachingMaterials: 2,
-  feedback: 3,
-  jobvizConnections: 4,
-  extensions: 5,
-  bonus: 6,
-  background: 7,
-  standards: 8,
-  credits: 9,
-  acknowledgments: 10,
-  versions: 11,
-};
-const UNIT_DOCUMENT_ORIGINS = new Set([
-  'https://storage.googleapis.com',
-  'https://docs.google.com',
-]);
 
 type TUpdateSection = (sectionVal: object, unit: TUnitForUI) => object;
 
@@ -544,8 +440,8 @@ export const updateOverviewSection = (sectionVal: object, unit: TUnitForUI) => {
   const jobTitleAndSocCodePairs: [string, string][] = [];
 
   for (const previewJob of previewJobsSliced) {
-    let jobTitle = Array.isArray(previewJob.job_title) ? previewJob.job_title.at(0) : previewJob.job_title;
-    let socCode = Array.isArray(previewJob.job_title) ? previewJob.job_title.at(0) : previewJob.job_title;
+    const jobTitle = Array.isArray(previewJob.job_title) ? previewJob.job_title.at(0) : previewJob.job_title;
+    const socCode = Array.isArray(previewJob.job_title) ? previewJob.job_title.at(0) : previewJob.job_title;
 
     if (!socCode || !jobTitle) {
       console.error('Developer Error: Missing job title or SOC code in JobViz preview jobs.', { previewJob });
@@ -580,39 +476,21 @@ const SECTION_UPDATERS: Partial<Record<keyof TSectionsForUI, TUpdateSection>> = 
   overview: updateOverviewSection,
 };
 
-const LessonDetails: React.FC<IProps> = ({ lesson, unit }) => {
-
+const LessonDetails: React.FC<IProps> = ({ unit }) => {
   useMemo(() => {
     if (unit?.Sections) {
       const unitSections = Object.entries(unit.Sections).reduce(
-        (
-          sections: TSectionsForUI,
-          sectionKeyAndSection
-        ) => {
-          let [sectionKey, sectionVal] = sectionKeyAndSection as [
-            keyof TSectionsForUI,
-            object
-          ];
+        (sections: TSectionsForUI, sectionKeyAndSection) => {
+          const sectionKey = sectionKeyAndSection[0] as keyof TSectionsForUI;
+          let sectionVal = sectionKeyAndSection[1] as object;
 
-
-          if (
-            SECTIONS_TO_FILTER_OUT.size &&
-            SECTIONS_TO_FILTER_OUT.has(sectionKey)
-          ) {
+          if (SECTIONS_TO_FILTER_OUT.size && SECTIONS_TO_FILTER_OUT.has(sectionKey)) {
             return sections;
           }
 
           const updateSectionFn = SECTION_UPDATERS[sectionKey];
-
-
           if (updateSectionFn) {
-
             sectionVal = updateSectionFn(sectionVal, unit);
-
-            return {
-              ...sections,
-              [sectionKey]: sectionVal,
-            };
           }
 
           return {
@@ -625,9 +503,8 @@ const LessonDetails: React.FC<IProps> = ({ lesson, unit }) => {
 
       unit.Sections = unitSections;
     }
-  }, []);
+  }, [unit]);
 
-  const router = useRouter();
   const {
     _isUserTeacher,
     _isGpPlusMember,
@@ -636,8 +513,7 @@ const LessonDetails: React.FC<IProps> = ({ lesson, unit }) => {
     _userLatestCopyUnitFolderId,
   } = useUserContext();
   const session = useSiteSession();
-  const { status, token, gdriveAccessToken, gdriveRefreshToken, gdriveEmail } =
-    session;
+  const { status, token, gdriveAccessToken, gdriveRefreshToken, gdriveEmail } = session;
   const statusRef = useRef(status);
 
   useMemo(() => {
@@ -646,389 +522,16 @@ const LessonDetails: React.FC<IProps> = ({ lesson, unit }) => {
     }
   }, []);
 
-  const {
-    _notifyModal,
-    _customModalFooter,
-    _isGpPlusModalDisplayed,
-    _lessonItemModal,
-    _isThankYouModalDisplayed,
-  } = useModalContext();
+  const { _isGpPlusModalDisplayed, _lessonItemModal, _isThankYouModalDisplayed } =
+    useModalContext();
   const [, setIsThankYouModalDisplayed] = _isThankYouModalDisplayed;
   const [, setIsUserTeacher] = _isUserTeacher;
   const [, setIsGpPlusMember] = _isGpPlusMember;
-  const [, setNotifyModal] = _notifyModal;
   const [, setIsCopyUnitBtnDisabled] = _isCopyUnitBtnDisabled;
-  const [, setCustomModalFooter] = _customModalFooter;
   const [, setUserLatestCopyUnitFolderId] = _userLatestCopyUnitFolderId;
   const [, setDidAttemptRetrieveUserData] = _didAttemptRetrieveUserData;
   const [, setIsGpPlusModalDisplayed] = _isGpPlusModalDisplayed;
   const [, setLessonItemModal] = _lessonItemModal;
-
-  useEffect(() => {
-    const lessonsContainer = document.querySelector('.lessonsPartContainer');
-    if (lessonsContainer) {
-      lessonsContainer.addEventListener('mousemove', (event) => {
-        localStorage.setItem('isWithinLessons', 'true');
-      });
-      lessonsContainer.addEventListener('mouseleave', (event) => {
-        localStorage.setItem('isWithinLessons', 'false');
-      });
-    }
-  }, []);
-
-  const lessonSectionObjEntries = lesson?.Section
-    ? Object.entries(lesson.Section)
-    : [];
-  let lessonStandardsIndexesToFilterOut: number[] = [];
-  let lessonStandardsSections = lessonSectionObjEntries.filter(
-    ([sectionName], index) => {
-      if (
-        sectionName?.includes('standards') ||
-        sectionName === 'learning-chart'
-      ) {
-        lessonStandardsIndexesToFilterOut.push(index);
-        return true;
-      }
-
-      return false;
-    }
-  ) as any;
-  const isTheLessonSectionInOneObj = lessonSectionObjEntries?.length
-    ? lessonStandardsSections?.length === 1
-    : false;
-  let sectionComps = (
-    lesson?.Section &&
-      typeof lesson?.Section === 'object' &&
-      lesson?.Section !== null
-      ? Object.values(lesson.Section).filter((section) => {
-        return (section as any).SectionTitle !== 'Procedure';
-      })
-      : null
-  ) as any;
-
-  if (sectionComps?.length) {
-    const firstSection = sectionComps[0] as any;
-    sectionComps[0] = { ...firstSection, SectionTitle: 'Overview' };
-  }
-
-  if (
-    lesson &&
-    !isTheLessonSectionInOneObj &&
-    lessonStandardsSections?.length
-  ) {
-    lessonStandardsSections = structuredClone(
-      lessonStandardsSections.map((section: any) => {
-        const [, lessonStandardsObj] = section;
-
-        return lessonStandardsObj;
-      })
-    );
-    let lessonStandardsObj = lessonStandardsSections
-      .map((lessonStandards: any) => {
-        delete lessonStandards.__component;
-
-        return lessonStandards;
-      })
-      .reduce((lessonStandardObj: any, lessonStandardsAccumulatedObj: any) => {
-        let _lessonStandardsAccumulated = { ...lessonStandardsAccumulatedObj };
-
-        if (
-          !lessonStandardsAccumulatedObj?.SectionTitle &&
-          lessonStandardObj?.SectionTitle
-        ) {
-          _lessonStandardsAccumulated = {
-            ..._lessonStandardsAccumulated,
-            SectionTitle: lessonStandardObj.SectionTitle,
-          };
-        }
-
-        if (
-          !lessonStandardsAccumulatedObj.Footnote &&
-          lessonStandardObj.Footnote
-        ) {
-          _lessonStandardsAccumulated = {
-            ..._lessonStandardsAccumulated,
-            Footnote: lessonStandardObj.Footnote,
-          };
-        }
-
-        return _lessonStandardsAccumulated;
-      }, {});
-
-    // create the standards section
-    lessonStandardsObj = {
-      ...lessonStandardsObj,
-      __component: 'lesson-plan.standards',
-      InitiallyExpanded: true,
-    };
-    sectionComps = sectionComps
-      ? sectionComps.filter(
-        (_: any, index: number) =>
-          !lessonStandardsIndexesToFilterOut?.includes(index)
-      )
-      : [];
-    let lessonsStandardsSectionIndex = sectionComps.findIndex(
-      (section: any) => {
-        return section.SectionTitle === 'Background';
-      }
-    );
-
-    if (lessonsStandardsSectionIndex === -1) {
-      lessonsStandardsSectionIndex = sectionComps.findIndex((section: any) => {
-        return section.SectionTitle === 'Bonus Content';
-      });
-    }
-
-    if (lessonsStandardsSectionIndex === -1) {
-      lessonsStandardsSectionIndex = sectionComps.findIndex((section: any) => {
-        return section.SectionTitle === 'Teaching Materials';
-      });
-    }
-
-    if (lessonsStandardsSectionIndex === -1) {
-      console.error('The background section DOES NOT EXIST!');
-    }
-
-    //if the background section does not exist, find the index of the bonus content section and place the background seection in front of it
-    // else if the bonus content does not exist, find the teaching materials, and place the lesson standards in front it
-
-    sectionComps.splice(
-      lessonsStandardsSectionIndex + 1,
-      0,
-      lessonStandardsObj
-    );
-  }
-
-  sectionComps = useMemo(() => {
-    if (!sectionComps?.length) {
-      return [];
-    }
-
-    sectionComps = sectionComps.filter((section: any) => {
-      if ('Data' in section && !section['Data']) {
-        return false;
-      }
-
-      return true;
-    });
-
-    return addGradesOrYearsProperty(
-      sectionComps,
-      lesson.ForGrades,
-      lesson.GradesOrYears
-    );
-  }, []);
-
-  sectionComps = useMemo(() => {
-    const sectionCompsCopy = structuredClone(sectionComps);
-    const teachingMaterialsSecIndex = sectionCompsCopy.findIndex(
-      (sectionComp: any) => {
-        const sectionTitle = sectionComp.SectionTitle.replace(
-          /[0-9.]/g,
-          ''
-        ).trim();
-
-        return sectionTitle === 'Teaching Materials';
-      }
-    );
-    const feedbackSecIndex = sectionCompsCopy.findIndex((sectionComp: any) => {
-      const sectionTitle = sectionComp.SectionTitle.replace(
-        /[0-9.]/g,
-        ''
-      ).trim();
-
-      return sectionTitle === 'Feedback';
-    });
-
-    if (teachingMaterialsSecIndex === -1 || feedbackSecIndex === -1) {
-      return sectionCompsCopy;
-    }
-
-    const feedBackSec = sectionCompsCopy[feedbackSecIndex];
-
-    sectionCompsCopy.splice(feedbackSecIndex, 1);
-
-    sectionCompsCopy.splice(teachingMaterialsSecIndex + 1, 0, feedBackSec);
-
-    return sectionCompsCopy;
-  }, []);
-
-  let _sections = useMemo(
-    () => (sectionComps?.length ? getLessonSections(sectionComps) : []),
-    []
-  );
-
-  const unitSections: (TSectionsForUI | null)[] = useMemo(() => {
-    const unitSectionAndTitlePairs = Object.entries(unit?.Sections ?? {}) as [
-      keyof TSectionsForUI,
-      any | null
-    ][];
-
-
-    unitSectionAndTitlePairs.sort(([sectionAName], [sectionBName]) => {
-      const sectionASortNum = SECTION_SORT_ORDER[sectionAName];
-      const sectionBSortNum = SECTION_SORT_ORDER[sectionBName];
-
-      return sectionASortNum - sectionBSortNum;
-    });
-
-    return unitSectionAndTitlePairs
-      .map(([, section]) => section)
-      .filter((section) => {
-        return section?.__component;
-      });
-  }, []);
-
-  const _unitSections = useMemo(() => {
-    const unitSectionsWithTitles = unitSections?.length
-      ? getLessonSections(unitSections.filter(Boolean))
-      : [];
-
-    return unitSectionsWithTitles;
-  }, []);
-  const unitDots = useMemo(
-    () =>
-      unitSections?.length
-        ? getSectionDotsDefaultVal(unitSections.filter(Boolean))
-        : [],
-    []
-  );
-
-  const [unitSectionDots, setUnitSectionDots] = useState<{
-    dots: any;
-    clickedSectionId: null | string;
-  }>({
-    dots: unitDots,
-    clickedSectionId: null,
-  });
-
-  const [willGoToTargetSection, setWillGoToTargetSection] = useState(false);
-  const [isScrollListenerOn, setIsScrollListenerOn] =
-    useScrollHandler(setUnitSectionDots);
-
-  const scrollSectionIntoView = (sectionId: string) => {
-    const targetSection = document.getElementById(sectionId);
-    let url = router.asPath;
-
-    if (targetSection) {
-      url.indexOf('#') !== -1 && router.replace(url.split('#')[0]);
-      targetSection.scrollIntoView({
-        behavior: 'smooth',
-        block: sectionId === 'lessonTitleId' ? 'center' : 'start',
-      });
-    }
-  };
-
-  const handleDocumentClick = (event: MouseEvent) => {
-    const viewPortWidth = Math.max(
-      document.documentElement.clientWidth || 0,
-      window.innerWidth || 0
-    );
-
-    const isNavElementClicked = NAV_CLASSNAMES_SET.has(
-      (event.target as HTMLElement).className
-    );
-
-
-    if (!isNavElementClicked && viewPortWidth <= 767) {
-      setUnitSectionDots((sectionDots) => {
-        const _sectionDots = {
-          ...sectionDots,
-          dots: sectionDots?.dots.map((sectionDot: any) => {
-            return {
-              ...sectionDot,
-              willShowTitle: false,
-            };
-          }),
-        };
-
-        return _sectionDots;
-      });
-    }
-  };
-  const handleUserNeedsAnAccountHideModal = () => {
-    setNotifyModal(defautlNotifyModalVal);
-    setCustomModalFooter(null);
-  };
-
-  const handleIsUserEntryModalDisplayed =
-    (setIsModalOn: TSetter<boolean>) => () => {
-      setNotifyModal((state) => ({ ...state, isDisplayed: false }));
-
-      setTimeout(() => {
-        handleUserNeedsAnAccountHideModal();
-        setIsModalOn(true);
-      }, 250);
-    };
-
-  const handleBonusContentDocumentClick = (event: MouseEvent) => {
-    const isWithinBonusContentSec = getIsWithinParentElement(
-      event.target,
-      'Bonus_Content',
-      'className'
-    );
-    const { tagName, origin } = (event.target ?? {}) as {
-      tagName: string;
-      origin: string;
-    } & EventTarget;
-    const isGpPlusUser = getSessionStorageItem('isGpPlusUser');
-
-    if (
-      statusRef.current !== 'authenticated' &&
-      isWithinBonusContentSec &&
-      tagName === 'A' &&
-      UNIT_DOCUMENT_ORIGINS.has(origin)
-    ) {
-      event.preventDefault();
-      setCustomModalFooter(
-        <CustomNotifyModalFooter
-          // sign in button
-          closeNotifyModal={() => {
-            router.push('/account');
-          }}
-          leftBtnTxt="Sign In"
-          customBtnTxt="Sign Up"
-          footerClassName="d-flex justify-content-center"
-          leftBtnClassName="border"
-          leftBtnStyles={{ width: '150px', backgroundColor: '#898F9C' }}
-          rightBtnStyles={{ backgroundColor: '#007BFF', width: '150px' }}
-          // sign up button
-          handleCustomBtnClick={() => {
-            router.push('/gp-plus');
-          }}
-        />
-      );
-      setNotifyModal({
-        headerTxt: 'You must have an account to access this content.',
-        isDisplayed: true,
-        handleOnHide: () => {
-          setNotifyModal((state) => ({ ...state, isDisplayed: false }));
-
-          setTimeout(() => {
-            setNotifyModal(defautlNotifyModalVal);
-            setCustomModalFooter(null);
-          }, 250);
-        },
-        bodyTxt: '',
-      });
-    } else if (
-      statusRef.current === 'authenticated' &&
-      isWithinBonusContentSec &&
-      tagName === 'A' &&
-      UNIT_DOCUMENT_ORIGINS.has(origin) &&
-      !isGpPlusUser
-    ) {
-      event.preventDefault();
-      setIsGpPlusModalDisplayed(true);
-    }
-  };
-
-  useEffect(() => {
-    if (willGoToTargetSection && unitSectionDots.clickedSectionId) {
-      scrollSectionIntoView(unitSectionDots.clickedSectionId);
-      setWillGoToTargetSection(false);
-    }
-  }, [willGoToTargetSection]);
 
   useEffect(() => {
     statusRef.current = status;
@@ -1051,7 +554,6 @@ const LessonDetails: React.FC<IProps> = ({ lesson, unit }) => {
             },
           };
 
-
           const { status, data } = await axios.get<TUserSchemaForClient>(
             '/api/get-user-account-data',
             paramsAndHeaders
@@ -1062,7 +564,6 @@ const LessonDetails: React.FC<IProps> = ({ lesson, unit }) => {
               'An error has occurred. Failed to check if the user is a teacher.'
             );
           }
-
 
           setIsUserTeacher(!!data?.isTeacher);
           setIsGpPlusMember(!!data?.isGpPlusMember);
@@ -1097,41 +598,17 @@ const LessonDetails: React.FC<IProps> = ({ lesson, unit }) => {
         setDidAttemptRetrieveUserData(true);
       }
     })();
-  }, [status]);
+  }, [gdriveAccessToken, gdriveEmail, gdriveRefreshToken, setDidAttemptRetrieveUserData, setIsCopyUnitBtnDisabled, setIsGpPlusMember, setIsThankYouModalDisplayed, setIsUserTeacher, setUserLatestCopyUnitFolderId, status, token, unit?._id]);
 
   useEffect(() => {
-    document.body.addEventListener('click', handleDocumentClick);
-
-    document.body.addEventListener('click', handleBonusContentDocumentClick);
-
     return () => {
-      document.body.removeEventListener('click', handleDocumentClick);
-      document.body.removeEventListener(
-        'click',
-        handleBonusContentDocumentClick
-      );
       setIsGpPlusModalDisplayed(false);
-      setLessonItemModal((state) => {
-        return {
-          ...state,
-          isDisplayed: false,
-        };
-      });
+      setLessonItemModal((state) => ({
+        ...state,
+        isDisplayed: false,
+      }));
     };
-  }, []);
-
-  useEffect(() => {
-    const lessonId = getLocalStorageItem('lessonIdToViewAfterRedirect');
-
-    if (lessonId) {
-      const lessonElement = document.getElementById(lessonId);
-      lessonElement?.scrollIntoView({ behavior: 'smooth' });
-      removeLocalStorageItem('lessonIdToViewAfterRedirect');
-    }
-  }, []);
-
-  useEffect(() => {
-  });
+  }, [setIsGpPlusModalDisplayed, setLessonItemModal]);
 
   const [isStandalonePreview, setIsStandalonePreview] = useState(false);
   useEffect(() => {
@@ -1145,172 +622,62 @@ const LessonDetails: React.FC<IProps> = ({ lesson, unit }) => {
     setIsStandalonePreview(isProcedureOnly || isBackgroundOnly);
   }, []);
 
-  if (!unit && !lesson && typeof window === 'undefined') {
+  if (!unit) {
     return null;
   }
 
-  if (!unit && (!lesson || !_sections?.length)) {
-    router.replace('/error');
-    return null;
-  }
-
-  let unitBanner = unit?.UnitBanner ?? '';
-
-  if (!unit && typeof lesson === 'object' && !lesson) {
-    const { CoverImage, LessonBanner } = lesson;
-    unitBanner = (CoverImage?.url ?? LessonBanner) || '';
-  }
-
-  const _unit = (unit ?? lesson) as TUnitForUI;
-  const shareWidgetFixedProps = IS_ON_PROD
-    ? {
-      pinterestMedia: unitBanner,
-      shareWidgetStyle: {
-        borderTopRightRadius: '1rem',
-        borderBottomRightRadius: '1rem',
-        boxShadow:
-          '0 4px 6px 0 rgba(0,0,0,.4), 0 7px 5px -5px rgba(0,0,0,.2)',
-        top: 150,
-        width: '60px',
-      },
-    }
-    : {
-      pinterestMedia: unitBanner,
-      developmentUrl: `${_unit.URL}/`,
-      shareWidgetStyle: {
-        borderTopRightRadius: '1rem',
-        borderBottomRightRadius: '1rem',
-        boxShadow:
-          '0 4px 6px 0 rgba(0,0,0,.4), 0 7px 5px -5px rgba(0,0,0,.2)',
-        top: 150,
-        width: '60px',
-      },
-    };
-  const canonicalLocale =
-    typeof router.query.loc === 'string'
-      ? router.query.loc
-      : _unit.locale ?? DEFAULT_LOCALE;
-  const canonicalUrl = buildUnitUrl(
-    canonicalLocale,
-    (_unit.numID ?? '').toString()
-  );
-  const defaultLocale =
-    _unit.DefaultLocale ?? canonicalLocale ?? DEFAULT_LOCALE;
-  const defaultLocaleUrl = buildUnitUrl(
-    defaultLocale,
-    (_unit.numID ?? '').toString()
-  );
-  const seoContent = collectUnitSeoContent(_unit);
-  const keywordsMeta = seoContent.keywords?.length
-    ? seoContent.keywords.join(', ')
-    : undefined;
-  const structuredData = createUnitStructuredData(
-    _unit,
-    canonicalUrl,
-    unitBanner,
-    seoContent
-  );
+  const unitBanner = unit.UnitBanner ?? '';
+  const canonicalLocale = unit.locale ?? DEFAULT_LOCALE;
+  const canonicalUrl = buildUnitUrl(canonicalLocale, (unit.numID ?? '').toString());
+  const defaultLocale = unit.DefaultLocale ?? canonicalLocale ?? DEFAULT_LOCALE;
+  const defaultLocaleUrl = buildUnitUrl(defaultLocale, (unit.numID ?? '').toString());
+  const seoContent = collectUnitSeoContent(unit);
+  const keywordsMeta = seoContent.keywords?.length ? seoContent.keywords.join(', ') : undefined;
+  const structuredData = createUnitStructuredData(unit, canonicalUrl, unitBanner, seoContent);
 
   const layoutProps: Record<string, unknown> = {
-    title: `${_unit.Title} | GP Unit`,
-    description: _unit?.Sections?.overview?.TheGist
-      ? sanitizeHtml(_unit.Sections.overview.TheGist)
-      : `Description for ${_unit.Title}.`,
+    title: `${unit.Title} | GP Unit`,
+    description: unit.Sections?.overview?.TheGist
+      ? sanitizeHtml(unit.Sections.overview.TheGist)
+      : `Description for ${unit.Title}.`,
     imgSrc: unitBanner,
     url: canonicalUrl,
-    imgAlt: `${_unit.Title} cover image`,
+    imgAlt: `${unit.Title} cover image`,
     className: 'selected-unit-pg',
     canonicalLink: canonicalUrl,
     defaultLink: defaultLocaleUrl,
-    langLinks: _unit.headLinks ?? ([] as TUnitForUI['headLinks']),
+    langLinks: unit.headLinks ?? ([] as TUnitForUI['headLinks']),
     structuredData,
-    locale: _unit.locale ?? DEFAULT_LOCALE,
+    locale: unit.locale ?? DEFAULT_LOCALE,
     keywords: keywordsMeta,
     showFooter: !isStandalonePreview,
   };
 
   return (
     <Layout {...(layoutProps as any)}>
-      <ToastContainer
-        stacked
-        autoClose={false}
-        position="bottom-right"
-      />
-      {unit ? (
-        <>
-          {_unit.PublicationStatus === 'Beta' && (
-            <SendFeedback
-              closeBtnDynamicStyles={{
-                position: 'absolute',
-                top: '30px',
-                right: '5px',
-                fontSize: '28px',
-              }}
-              containerClassName="mt-4"
-              parentDivStyles={{
-                backgroundColor: '#EBD0FF',
-                width: '100vw',
-              }}
-            />
-          )}
-          <UnitPage unit={unit} />
-          <GpPlusModal />
-          <LessonItemsModal />
-          <ThankYouModal />
-          <CopyLessonHelperModal />
-          <FailedCopiedFilesReportModal />
-          <WelcomeNewUserModal />
-        </>
-      ) : (
-        <>
-          {_unit.PublicationStatus === 'Beta' && (
-            <SendFeedback
-              closeBtnDynamicStyles={{
-                position: 'absolute',
-                top: '30px',
-                right: '5px',
-                fontSize: '28px',
-              }}
-              containerClassName="mt-4"
-              parentDivStyles={{
-                backgroundColor: '#EBD0FF',
-                width: '100vw',
-              }}
-            />
-          )}
-          <LessonsSecsNavDots
-            _sectionDots={[unitSectionDots, setUnitSectionDots]}
-            setIsScrollListenerOn={setIsScrollListenerOn as TSetter<boolean>}
-            isScrollListenerOn={isScrollListenerOn as boolean}
-          />
-          <ShareWidget {...shareWidgetFixedProps} />
-          <div className="col-12 col-lg-10 col-xxl-12 px-3 px-xxl-0 container min-vh-100">
-            <div className="p-sm-3 pt-0">
-              {_unitSections ? (
-                _unitSections.map((section: any, index: number) => (
-                  <ParentLessonSection
-                    key={index}
-                    section={section}
-                    ForGrades={_unit.ForGrades}
-                    index={index}
-                    _sectionDots={[unitSectionDots, setUnitSectionDots]}
-                  />
-                ))
-              ) : (
-                <span className="mt-5">
-                  DEVELOPMENT ERROR: No sections to display.
-                </span>
-              )}
-            </div>
-          </div>
-          <GpPlusModal />
-          <LessonItemsModal />
-          <ThankYouModal />
-          <CopyLessonHelperModal />
-          <FailedCopiedFilesReportModal />
-          <WelcomeNewUserModal />
-        </>
+      <ToastContainer stacked autoClose={false} position="bottom-right" />
+      {unit.PublicationStatus === 'Beta' && (
+        <SendFeedback
+          closeBtnDynamicStyles={{
+            position: 'absolute',
+            top: '30px',
+            right: '5px',
+            fontSize: '28px',
+          }}
+          containerClassName="mt-4"
+          parentDivStyles={{
+            backgroundColor: '#EBD0FF',
+            width: '100vw',
+          }}
+        />
       )}
+      <UnitPage unit={unit} />
+      <GpPlusModal />
+      <LessonItemsModal />
+      <ThankYouModal />
+      <CopyLessonHelperModal />
+      <FailedCopiedFilesReportModal />
+      <WelcomeNewUserModal />
     </Layout>
   );
 };
@@ -1553,7 +920,7 @@ export const getStaticProps = async (arg: {
             async (lesson) => {
               if (!lessonsFolder && unitGDriveChildItems) {
                 for (const unitGDriveChildItem of unitGDriveChildItems) {
-                  let lessonTitle = lesson.title?.toLowerCase();
+                  const lessonTitle = lesson.title?.toLowerCase();
 
                   if (
                     lessonTitle === 'assessments' &&
@@ -1825,7 +1192,6 @@ export const getStaticProps = async (arg: {
     if (targetUnitForUI) {
       return {
         props: {
-          lesson: null,
           unit: targetUnitForUI
             ? JSON.parse(JSON.stringify(targetUnitForUI))
             : null,
@@ -1839,13 +1205,10 @@ export const getStaticProps = async (arg: {
 
     throw new Error('Target unit not found.');
   } catch (error) {
-    console.error('Failed to get lesson. Error message: ', error);
+    console.error('Failed to get unit. Error message: ', error);
 
     return {
-      props: {
-        lesson: null,
-        availLocs: null,
-      },
+      notFound: true,
       revalidate: 30,
     };
   }
