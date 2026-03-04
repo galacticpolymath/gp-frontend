@@ -766,6 +766,37 @@ const summarizeList = (items: string[], maxItems: number) => {
 
 const buildUnitPath = (unitId: string) => `/units/en-US/${unitId}`;
 
+const buildLessonPath = (unitId: string, lessonId: number | string) => {
+  const params = new URLSearchParams({
+    tab: "materials",
+    lesson: String(lessonId),
+  });
+  return `${buildUnitPath(unitId)}?${params.toString()}`;
+};
+
+const normalizeLegacyLessonPath = (href?: string | null) => {
+  if (!href) return null;
+  const trimmedHref = href.trim();
+  if (!trimmedHref) return null;
+
+  try {
+    const url = new URL(trimmedHref, "https://galacticpolymath.local");
+    const hashLessonMatch = url.hash.match(/^#lesson(?:_part)?_(\d+)$/i);
+    const lessonId = url.searchParams.get("lesson") ?? hashLessonMatch?.[1] ?? null;
+
+    if (lessonId) {
+      url.searchParams.set("tab", "materials");
+      url.searchParams.set("lesson", lessonId);
+      url.hash = "";
+    }
+
+    const query = url.searchParams.toString();
+    return `${url.pathname}${query ? `?${query}` : ""}${url.hash}`;
+  } catch (error) {
+    return trimmedHref;
+  }
+};
+
 const getYoutubeId = (url?: string | null) => {
   if (!url) return null;
   const shortMatch = url.match(/youtu\.be\/([a-zA-Z0-9_-]+)/);
@@ -1144,11 +1175,13 @@ export default function HomePage({
         );
       }) ?? null;
 
-    const href = sciJourneysLesson?.lessonPartPath?.trim()
-      ? sciJourneysLesson.lessonPartPath.trim()
-      : sciJourneysUnit?.id
-        ? `${buildUnitPath(sciJourneysUnit.id)}#lesson_part_1`
-        : "/search?q=SciJourneys&typeFilter=Lesson";
+    const href =
+      sciJourneysUnit?.id && sciJourneysLesson?.lessonPartNum != null
+        ? buildLessonPath(sciJourneysUnit.id, sciJourneysLesson.lessonPartNum)
+        : normalizeLegacyLessonPath(sciJourneysLesson?.lessonPartPath) ??
+          (sciJourneysUnit?.id
+            ? buildLessonPath(sciJourneysUnit.id, 1)
+            : "/search?q=SciJourneys&typeFilter=Lesson");
 
     const tile =
       sciJourneysLesson?.tile?.trim() ||
@@ -1765,13 +1798,10 @@ export default function HomePage({
             ? lesson.tags
             : [];
       const lessonHref =
-        typeof lesson.lessonPartPath === "string" && lesson.lessonPartPath.trim()
-          ? lesson.lessonPartPath.trim()
-          : unit?.id && lesson.lessonPartNum
-            ? `${buildUnitPath(unit.id)}#lesson_part_${lesson.lessonPartNum}`
-            : unit?.id
-              ? buildUnitPath(unit.id)
-              : null;
+        unit?.id && lesson.lessonPartNum != null
+          ? buildLessonPath(unit.id, lesson.lessonPartNum)
+          : normalizeLegacyLessonPath(lesson.lessonPartPath) ??
+            (unit?.id ? buildUnitPath(unit.id) : null);
       const lessonResourceId = `lesson-${unit?.id ?? "unknown"}-${
         lesson.lessonPartNum ?? "x"
       }-${index}`;
