@@ -1,4 +1,5 @@
 import { IAcknowledgments } from '../Acknowledgments';
+import { IAuthorData, IUnitSectionObj as IAuthorSectionObj } from '../Authors';
 import { IJobVizSection } from '../JobViz';
 import { IUnitPreview } from '../Preview';
 import { TGeneralSection } from '../Section';
@@ -206,6 +207,7 @@ interface ISections<
   acknowledgments: TAcknowledgments | null;
   versions: IVersionNotes | null;
   jobvizConnections: IJobVizSection | null;
+  authors: (IAuthorSectionObj & IAuthorData) | null;
 }
 
 export type TSectionsForUI = ISections<TOverviewForUI, TStandardsForUI, IUnitTeachingMaterialsForUI>; 
