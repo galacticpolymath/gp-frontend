@@ -1,14 +1,11 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import QRCode from 'react-qr-code';
 import { format } from 'date-fns';
 import axios from 'axios';
 import RichText from '../RichText';
 import styles from './UnitPage.module.css';
 import {
-  Blocks,
-  ArrowRight,
   Apple,
   BookA,
   BookOpenText,
@@ -16,14 +13,11 @@ import {
   CircleAlert,
   ChevronUp,
   Clock3,
-  Copy,
   BrainCog,
-  Download,
   Eye,
   FileArchive,
   FileImage,
   FileSpreadsheet,
-  FileStack,
   FileText,
   FileVideo,
   GraduationCap,
@@ -36,8 +30,6 @@ import {
   Lightbulb,
   TextSearch,
   SquareArrowOutUpRight,
-  Target,
-  X,
 } from 'lucide-react';
 import { TUnitForUI } from '../../backend/models/Unit/types/unit';
 import { IConnectionJobViz } from '../../backend/models/Unit/JobViz';
@@ -54,9 +46,7 @@ import ChunkGraph from '../LessonSection/TeachIt/ChunkGraph';
 import { ISubject } from '../../backend/models/Unit/types/standards';
 import { setSessionStorageItem } from '../../shared/fns';
 import useSiteSession from '../../customHooks/useSiteSession';
-import CopyLessonBtn, {
-  ensureValidToken,
-} from '../LessonSection/TeachIt/CopyLessonBtn';
+import { ensureValidToken } from '../LessonSection/TeachIt/CopyLessonBtn';
 import { useCustomCookies } from '../../customHooks/useCustomCookies';
 import { createJobTour } from '../JobViz/JobTours/jobTourApi';
 import {
@@ -70,8 +60,14 @@ import {
 } from '../JobViz/jobvizUtils';
 import { LucideIcon } from '../JobViz/LucideIcon';
 import ProfileAvatarRing from '../ProfileAvatarRing';
+import OverviewTab from './tabs/OverviewTab';
 import StandardsTab from './tabs/StandardsTab';
 import CreditsTab from './tabs/CreditsTab';
+import MaterialsStandalonePreview from './materials/MaterialsStandalonePreview';
+import MaterialsResourcesPanel from './materials/MaterialsResourcesPanel';
+import MaterialsPreviewPane from './materials/MaterialsPreviewPane';
+import NextNavigationCta from './shared/NextNavigationCta';
+import UnitLicenseBanner from './shared/UnitLicenseBanner';
 import {
   parsePreviewFromUrlValue,
   parseTabFromUrlValue,
@@ -142,29 +138,6 @@ type TMergedStandardByDimension = {
   grades: string[];
   lines: TMergedStandardLine[];
 };
-
-const SquareArrowRightExitIcon: React.FC<{
-  size?: number;
-  className?: string;
-}> = ({ size = 15, className }) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width={size}
-    height={size}
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    className={className}
-    aria-hidden="true"
-  >
-    <path d="M10 12h11" />
-    <path d="m17 16 4-4-4-4" />
-    <path d="M21 6.344V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-1.344" />
-  </svg>
-);
 
 const STANDARDS_GRADE_BANDS: { key: TGradeBand; label: string }[] = [
   { key: 'all', label: 'All grade bands' },
@@ -4356,142 +4329,13 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
 
       <main className={styles.unitMain}>
         {activeTab === TAB_OVERVIEW && (
-          <section className={`${styles.unitSection} ${styles.unitTabFadeIn}`}>
-            <div className={styles.unitOverviewGrid}>
-              <div
-                id="unit-search-overview-gist"
-                className={`${styles.unitOverviewCard} ${styles.unitOverviewCardPrimary}`}
-              >
-                <h3 className={styles.unitOverviewSectionTitle}>
-                  <span className={styles.unitOverviewSectionTitleIcon} aria-hidden="true">
-                    <NotebookPen size={16} />
-                  </span>
-                  The Gist
-                </h3>
-                {overview?.TheGist && (
-                  <div className={`${styles.richTextBlock} ${styles.unitLeadMarkdown}`}>
-                    <RichText content={overview.TheGist} />
-                  </div>
-                )}
-                {(overview as { Description?: string })?.Description && (
-                  <div className={`${styles.richTextBlock} ${styles.unitSummaryMarkdown}`}>
-                    <RichText content={(overview as { Description?: string }).Description ?? ''} />
-                  </div>
-                )}
-                {overview?.Text && (
-                  <div className={styles.richTextBlock}>
-                    <RichText content={overview.Text} />
-                  </div>
-                )}
-              </div>
-              <div
-                className={`${styles.unitOverviewCard} ${styles.unitOverviewCardCompact}`}
-              >
-                <h3 className={styles.unitOverviewSectionTitle}>
-                  <span className={styles.unitOverviewSectionTitleIcon} aria-hidden="true">
-                    <Blocks size={16} />
-                  </span>
-                  At a glance
-                </h3>
-                <div className={styles.atGlanceGrid}>
-                  {overview?.EstUnitTime && (
-                    <div className={styles.atGlanceItem}>
-                      <span className={styles.atGlanceIcon} aria-hidden="true">
-                        <Clock3 size={18} />
-                      </span>
-                      <div className={styles.atGlanceContent}>
-                        <span className={styles.atGlanceLabel}>Estimated time</span>
-                        <strong className={styles.atGlanceValue}>
-                          {overview.EstUnitTime}
-                        </strong>
-                      </div>
-                    </div>
-                  )}
-                  {unit.ForGrades && (
-                    <div className={styles.atGlanceItem}>
-                      <span className={styles.atGlanceIcon} aria-hidden="true">
-                        <GraduationCap size={18} />
-                      </span>
-                      <div className={styles.atGlanceContent}>
-                        <span className={styles.atGlanceLabel}>Grades</span>
-                        <strong className={styles.atGlanceValue}>{unit.ForGrades}</strong>
-                      </div>
-                    </div>
-                  )}
-                  {overview?.TargetSubject && (
-                    <button
-                      type="button"
-                      className={`${styles.atGlanceItem} ${styles.atGlanceItemAction}`}
-                      onClick={() => handleTabChange(TAB_STANDARDS)}
-                    >
-                      <span className={styles.atGlanceIcon} aria-hidden="true">
-                        <NotebookPen size={18} />
-                      </span>
-                      <div className={styles.atGlanceContent}>
-                        <span className={styles.atGlanceLabel}>Subject focus</span>
-                        <strong className={styles.atGlanceValue}>
-                          {overview.TargetSubject}
-                        </strong>
-                      </div>
-                      {overview?.SteamEpaulette && (
-                        <div className={styles.learningEpaulette}>
-                          <Image
-                            src={overview.SteamEpaulette}
-                            alt="GP learning epaulette"
-                            width={240}
-                            height={240}
-                            style={{ width: '100%', height: 'auto' }}
-                          />
-                        </div>
-                      )}
-                      {!!additionalAlignedSubjects.length && (
-                        <span className={styles.alignedSubjectsText}>
-                          Also aligned to {additionalAlignedSubjects.join(', ')}
-                        </span>
-                      )}
-                    </button>
-                  )}
-                  {targetStandardsSummary && (
-                    <button
-                      type="button"
-                      className={`${styles.atGlanceItem} ${styles.atGlanceItemAction}`}
-                      onClick={() => handleTabChange(TAB_STANDARDS)}
-                    >
-                      <span className={styles.atGlanceIcon} aria-hidden="true">
-                        <Target size={18} />
-                      </span>
-                      <div className={styles.atGlanceContent}>
-                        <span className={styles.atGlanceLabel}>Target standards</span>
-                        <span
-                          className={`${styles.atGlanceValue} ${styles.atGlanceValueCompact}`}
-                        >
-                          <strong>{targetStandardsSummary.set} |</strong>{' '}
-                          {targetStandardsSummary.details}
-                        </span>
-                      </div>
-                    </button>
-                  )}
-                </div>
-              </div>
-              <div id="unit-search-overview-media" className={styles.unitOverviewCardWide}>
-                <h3 className={styles.unitOverviewSectionTitle}>
-                  <span className={styles.unitOverviewSectionTitleIcon} aria-hidden="true">
-                    <MonitorPlay size={16} />
-                  </span>
-                  Supporting Multimedia
-                </h3>
-                {unit.FeaturedMultimedia?.length ? (
-                  <div className={styles.previewCarousel}>
-                    <LessonsCarousel mediaItems={unit.FeaturedMultimedia} />
-                  </div>
-                ) : (
-                  <p className={styles.unitMutedText}>
-                    Featured media will appear here once curated.
-                  </p>
-                )}
-              </div>
-            </div>
-          </section>
+          <OverviewTab
+            unit={unit}
+            overview={overview}
+            onGoToStandards={() => handleTabChange(TAB_STANDARDS)}
+            additionalAlignedSubjects={additionalAlignedSubjects}
+            targetStandardsSummary={targetStandardsSummary}
+          />
         )}
 
         {activeTab === TAB_MATERIALS && (
@@ -4499,84 +4343,20 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
             <div className={styles.materialsLayout}>
               {activeLesson ? (
                 isStandalonePreview ? (
-                  <div className={styles.procedureStandaloneLayout}>
-                    <div className={styles.procedureStandaloneHeader}>
-                      <div className={styles.procedureStandaloneTopRow}>
-                        <p className={styles.procedureStandaloneLabel}>
-                          {isBackgroundStandaloneView
-                            ? 'Background from:'
-                            : 'Procedure from:'}
-                        </p>
-                        <button
-                          type="button"
-                          className={styles.procedurePrintButton}
-                          onClick={handlePrintPreview}
-                          aria-label={
-                            isBackgroundStandaloneView
-                              ? 'Print background'
-                              : 'Print procedure'
-                          }
-                        >
-                          <Printer size={15} aria-hidden="true" />
-                          <span>Print</span>
-                        </button>
-                      </div>
-                      <div className={styles.procedureStandaloneHeaderRow}>
-                        <a
-                          href={procedureReturnHref}
-                          className={styles.procedureReturnLink}
-                          onClick={handleProcedureReturnClick}
-                        >
-                          {unitBanner && (
-                            <span className={styles.procedureReturnBanner} aria-hidden="true">
-                              <Image
-                                src={unitBanner}
-                                alt=""
-                                fill
-                                sizes="140px"
-                                style={{ objectFit: 'cover' }}
-                              />
-                            </span>
-                          )}
-                          <span className={styles.procedureReturnText}>
-                            <span>{unitTitle}</span>
-                            <span>
-                              {currentLessonLabel}
-                              {activeLesson.title ? `: ${activeLesson.title}` : ''}
-                            </span>
-                          </span>
-                          <span className={styles.procedureReturnTile} aria-hidden="true">
-                            <Image
-                              src={activeLesson.tile || LESSON_TILE_FALLBACK_SRC}
-                              alt=""
-                              fill
-                              sizes="74px"
-                              style={{ objectFit: 'cover' }}
-                            />
-                          </span>
-                        </a>
-                        <div className={styles.procedureReturnQr}>
-                          <QRCode
-                            value={procedureReturnQrUrl}
-                            size={86}
-                            bgColor="#ffffff"
-                            fgColor="#111111"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                    {isBackgroundStandaloneView
-                      ? renderBackgroundPanel(
-                          false,
-                          false,
-                          styles.lessonProcedureStandalonePanel
-                        )
-                      : renderProcedurePanel(
-                          false,
-                          false,
-                          styles.lessonProcedureStandalonePanel
-                        )}
-                  </div>
+                  <MaterialsStandalonePreview
+                    isBackgroundStandaloneView={isBackgroundStandaloneView}
+                    handlePrintPreview={handlePrintPreview}
+                    procedureReturnHref={procedureReturnHref}
+                    handleProcedureReturnClick={handleProcedureReturnClick}
+                    unitBanner={unitBanner}
+                    unitTitle={unitTitle}
+                    currentLessonLabel={currentLessonLabel}
+                    activeLesson={activeLesson}
+                    lessonTileFallbackSrc={LESSON_TILE_FALLBACK_SRC}
+                    procedureReturnQrUrl={procedureReturnQrUrl}
+                    renderBackgroundPanel={renderBackgroundPanel}
+                    renderProcedurePanel={renderProcedurePanel}
+                  />
                 ) : (
                 <div
                   key={`lesson-content-${activeLessonId ?? 'none'}`}
@@ -4729,412 +4509,68 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                     ref={lessonMaterialsGridRef}
                     className={styles.lessonMaterialsGrid}
                   >
-                    {!isGpPlusUser && !isGpPlusBannerDismissed && (
-                      <div className={styles.gpPlusBannerWrapInGrid}>
-                        <div className={styles.gpPlusBanner}>
-                          <button
-                            type="button"
-                            className={styles.gpPlusBannerClose}
-                            aria-label="Dismiss GP+ upgrade banner"
-                            onClick={() => setIsGpPlusBannerDismissed(true)}
-                          >
-                            <X size={16} aria-hidden="true" />
-                          </button>
-                          <div className={styles.gpPlusLogo}>
-                            <Image
-                              alt="GP+ logo"
-                              width={88}
-                              height={88}
-                              src="/imgs/gp-logos/gp_submark.png"
-                            />
-                          </div>
-                          <div className={styles.gpPlusCopy}>
-                            <div className={styles.gpPlusHeadline}>
-                              Download &amp; Edit lessons in one-click
-                            </div>
-                            <div className={styles.gpPlusSubhead}>Get 50% off GP+</div>
-                          </div>
-                          <button
-                            type="button"
-                            className={styles.gpPlusCta}
-                            onClick={() => setIsGpPlusModalDisplayed(true)}
-                          >
-                            <span className={styles.gpPlusCtaIcon}>
-                              <Image
-                                alt="GP+ icon"
-                                width={48}
-                                height={48}
-                                src="/plus/plus.png"
-                              />
-                            </span>
-                            <span>Upgrade to GP+</span>
-                          </button>
-                        </div>
-                      </div>
-                    )}
-                    <div className={styles.lessonResourcesCard}>
-                      <section
-                        className={`${styles.resourceSection} ${styles.quickStartSection}`}
-                      >
-                        <h3 className={styles.lessonCardHeading}>
-                          <Blocks size={16} aria-hidden="true" />
-                          <span>Quick Start</span>
-                        </h3>
-                        <div className={styles.quickStartActions}>
-                          <button
-                            type="button"
-                            className={`${styles.lessonProcedureToggle} ${
-                              isFeaturedMediaOpen ? styles.lessonProcedureToggleActive : ''
-                            }`}
-                            onClick={() => setActiveLessonPreviewMode('featured-media')}
-                            aria-pressed={isFeaturedMediaOpen}
-                            disabled={!hasFeaturedMedia}
-                          >
-                            <span className={styles.lessonProcedureToggleText}>
-                              <MonitorPlay size={16} aria-hidden="true" />
-                              <span>Featured Media</span>
-                            </span>
-                          </button>
-                          <button
-                            type="button"
-                            className={`${styles.lessonProcedureToggle} ${
-                              isDetailedFlowOpen ? styles.lessonProcedureToggleActive : ''
-                            }`}
-                            onClick={() => setActiveLessonPreviewMode('procedure')}
-                            aria-pressed={isDetailedFlowOpen}
-                            disabled={!hasDetailedFlow}
-                          >
-                            <span className={styles.lessonProcedureToggleText}>
-                              <Apple size={16} aria-hidden="true" />
-                              <span>Procedure</span>
-                            </span>
-                          </button>
-                          <button
-                            type="button"
-                            className={`${styles.lessonProcedureToggle} ${
-                              isBackgroundOpen ? styles.lessonProcedureToggleActive : ''
-                            }`}
-                            onClick={() => setActiveLessonPreviewMode('background')}
-                            aria-pressed={isBackgroundOpen}
-                            disabled={!hasBackgroundContent}
-                          >
-                            <span className={styles.lessonProcedureToggleText}>
-                              <BookOpenText size={16} aria-hidden="true" />
-                              <span>Background</span>
-                            </span>
-                          </button>
-                          <button
-                            type="button"
-                            className={`${styles.lessonProcedureToggle} ${
-                              isGoingFurtherOpen ? styles.lessonProcedureToggleActive : ''
-                            }`}
-                            onClick={() => setActiveLessonPreviewMode('going-further')}
-                            aria-pressed={isGoingFurtherOpen}
-                            disabled={!hasGoingFurther}
-                          >
-                            <span className={styles.lessonProcedureToggleText}>
-                              <BowArrow size={16} aria-hidden="true" />
-                              <span>Going Further</span>
-                            </span>
-                          </button>
-                        </div>
-                      </section>
-                      <section
-                        className={`${styles.resourceSection} ${styles.gpPlusFunctionsSection}`}
-                      >
-                        <h3 className={styles.lessonCardHeading}>
-                          <Image
-                            alt="GP+ icon"
-                            width={18}
-                            height={18}
-                            src="/plus/plus.png"
-                          />
-                          <span>GP Plus Functions</span>
-                        </h3>
-                        <div className={styles.gpFunctionActions}>
-                          <button
-                            type="button"
-                            className={`${styles.lessonProcedureToggle} ${styles.gpFunctionActionBtn} ${
-                              isJobVizPreviewOpen ? styles.lessonProcedureToggleActive : ''
-                            }`}
-                            onClick={() => setActiveLessonPreviewMode('jobviz')}
-                            aria-pressed={isJobVizPreviewOpen}
-                            disabled={!hasJobVizConnections}
-                          >
-                            <span className={styles.lessonProcedureToggleText}>
-                              <Image
-                                alt="JobViz Career Connections icon"
-                                width={24}
-                                height={24}
-                                src="/imgs/jobViz/jobviz_rocket_logo_black.svg"
-                                className={styles.jobVizActionIcon}
-                              />
-                              <span>JobViz Career Connections</span>
-                            </span>
-                          </button>
-                          <button
-                            type="button"
-                            className={`${styles.lessonProcedureToggle} ${styles.gpFunctionActionBtn}`}
-                            onClick={handleBrowseAllMaterialsClick}
-                            disabled={isBrowseDisabledForGpPlus}
-                          >
-                            <span className={styles.lessonProcedureToggleText}>
-                              <Eye size={16} aria-hidden="true" />
-                              <span>Browse on Gdrive (View Only)</span>
-                            </span>
-                          </button>
-                          <button
-                            type="button"
-                            className={`${styles.lessonProcedureToggle} ${styles.gpFunctionActionBtn}`}
-                            onClick={handleCopyAllMaterialsClick}
-                            disabled={isCopyAllDisabledForGpPlus}
-                          >
-                            <span className={styles.lessonProcedureToggleText}>
-                              <FileStack size={16} aria-hidden="true" />
-                              <span>Copy All to my Google Drive</span>
-                            </span>
-                          </button>
-                          {latestCopiedLessonFolderUrl ? (
-                            <a
-                              className={styles.gpPlusFileVersionsLink}
-                              href={latestCopiedLessonFolderUrl}
-                              target="_blank"
-                              rel="noreferrer"
-                            >
-                              <SquareArrowOutUpRight size={15} aria-hidden="true" />
-                              <span>My file versions</span>
-                            </a>
-                          ) : null}
-                          {isBrowseDisabledForGpPlus && (
-                            <p className={styles.copyAllHelperText}>
-                              {browseUnavailableReason}
-                            </p>
-                          )}
-                          {isCopyAllDisabledForGpPlus && (
-                            <p className={styles.copyAllHelperText}>
-                              {copyAllUnavailableReason}
-                            </p>
-                          )}
-                        </div>
-                        {isGpPlusUser && canShowCopyAllToGoogleDriveBtn && (
-                          <CopyLessonBtn
-                            btnRef={copyLessonBtnRef}
-                            unitId={unitId}
-                            unitTitle={unit.Title}
-                            MediumTitle={unit.MediumTitle ?? unit.Title ?? 'Unit'}
-                            lessonId={activeLessonId ?? ''}
-                            lessonName={activeLesson.title ?? 'Lesson'}
-                            lessonsGrades={
-                              lessonsGradesForCopy
-                            }
-                            sharedGDriveLessonFolderId={resolvedSharedFolderIdForCopy}
-                            lessonSharedDriveFolderName={resolvedSharedFolderNameForCopy}
-                            userGDriveLessonFolderId={
-                              activeLesson.userGDriveLessonFolderId
-                            }
-                            allUnitLessons={allUnitLessonsForCopy}
-                            GdrivePublicID={unit.GdrivePublicID}
-                            lessonsFolder={effectiveLessonsFolderForCopy}
-                            isRetrievingLessonFolderIds={isRetrievingLessonFolderIds}
-                            setParts={setLessons as any}
-                            btnClassName={styles.hiddenCopyLessonBtn}
-                            childrenClassName={styles.hiddenCopyLessonBtn}
-                            btnWrapperClassName={styles.hiddenCopyLessonBtn}
-                          />
-                        )}
-                      </section>
-                      <section
-                        className={`${styles.resourceSection} ${styles.previewDownloadSection}`}
-                      >
-                        <h3 className={styles.lessonCardHeading}>
-                          <Download size={16} aria-hidden="true" />
-                          <span>Preview and Download</span>
-                        </h3>
-                        {!!activeLessonItems.length ? (
-                          <div className={styles.lessonDownloadList}>
-                            {activeLessonItems.map((item, idx) => {
-                              const previewItem = item as TPreviewItem;
-                              const {
-                                pdfDownloadUrl,
-                                officeDownloadUrl,
-                                officeFormat,
-                              } = getMaterialUrls(previewItem);
-                              const isActive =
-                                activeLessonPreviewMode === 'materials' &&
-                                idx === activeMaterialIndex;
-                              const resourceTitle =
-                                item.itemTitle ?? `Resource ${idx + 1}`;
-                              const isTeacherOnlyItem =
-                                typeof item.itemTitle === 'string' &&
-                                item.itemTitle.toLowerCase().includes('teacher');
-                              const isTeacherLocked =
-                                isAuthenticated && !isUserTeacher && isTeacherOnlyItem;
-                              const canAccessPdf = !!pdfDownloadUrl && !isTeacherLocked && isAuthenticated;
-                              const hasOfficeDownload =
-                                !!officeDownloadUrl && !!officeFormat;
-                              const canAccessOffice =
-                                hasOfficeDownload &&
-                                !isTeacherLocked &&
-                                isAuthenticated &&
-                                isGpPlusUser;
-                              const canUpsellOffice =
-                                hasOfficeDownload &&
-                                !isTeacherLocked &&
-                                isAuthenticated &&
-                                isGpPlusMember === false;
-
-                              return (
-                                <article
-                                  key={`${item.itemTitle}-${idx}`}
-                                  className={`${styles.materialRow} ${
-                                    isActive ? styles.materialRowActive : ''
-                                  }`}
-                                  onClick={(event) => {
-                                    const target = event.target as HTMLElement;
-                                    if (target.closest('a') || target.closest('button')) {
-                                      return;
-                                    }
-                                    selectMaterialItem(idx, item.itemTitle);
-                                  }}
-                                >
-                                  <div className={styles.materialRowTop}>
-                                    <button
-                                      type="button"
-                                      className={styles.materialSelectButton}
-                                      onClick={(event) => {
-                                        event.stopPropagation();
-                                        selectMaterialItem(idx, item.itemTitle);
-                                      }}
-                                      aria-pressed={isActive}
-                                    >
-                                      <span className={styles.materialRowIcon} aria-hidden="true">
-                                        {getMaterialTypeIcon(
-                                          previewItem.itemType,
-                                          previewItem.itemCat
-                                        )}
-                                      </span>
-                                      <span className={styles.materialRowMain}>
-                                        <strong>{resourceTitle}</strong>
-                                        {(previewItem.itemType || previewItem.itemCat) && (
-                                          <span>
-                                            {(previewItem.itemType ?? previewItem.itemCat ?? '').toString()}
-                                          </span>
-                                        )}
-                                      </span>
-                                    </button>
-                                  </div>
-                                  {(pdfDownloadUrl || hasOfficeDownload) && (
-                                    <div className={styles.materialRowPdfWrap}>
-                                      <div className={styles.materialDownloadRow}>
-                                        <span
-                                          className={`${styles.materialDownloadLabel} ${styles.materialDownloadLabelLeading}`}
-                                        >
-                                          Download
-                                        </span>
-                                        <div className={styles.materialDownloadActions}>
-                                          {pdfDownloadUrl &&
-                                            (canAccessPdf ? (
-                                              <a
-                                                className={styles.materialPdfLink}
-                                                href={pdfDownloadUrl}
-                                                target="_blank"
-                                                rel="noreferrer"
-                                              >
-                                                PDF
-                                              </a>
-                                            ) : (
-                                              <span className={styles.materialPdfLinkDisabled}>
-                                                PDF
-                                              </span>
-                                            ))}
-                                          {hasOfficeDownload &&
-                                            (canAccessOffice ? (
-                                              <a
-                                                className={`${styles.materialPdfLink} ${styles.materialOfficeLink}`}
-                                                href={officeDownloadUrl ?? undefined}
-                                                target="_blank"
-                                                rel="noreferrer"
-                                              >
-                                                <span className={styles.materialOfficeLinkContent}>
-                                                  <Image
-                                                    alt="GP+ icon"
-                                                    width={13}
-                                                    height={13}
-                                                    src="/plus/plus.png"
-                                                    className={styles.materialOfficeLinkPlusIcon}
-                                                  />
-                                                  <span>{officeFormat}</span>
-                                                </span>
-                                              </a>
-                                            ) : canUpsellOffice ? (
-                                              <button
-                                                type="button"
-                                                className={`${styles.materialPdfLink} ${styles.materialOfficeLink} ${styles.materialOfficeLinkLocked}`}
-                                                onClick={() =>
-                                                  handleOpenOfficeUpsell(
-                                                    officeFormat ?? 'Office'
-                                                  )
-                                                }
-                                              >
-                                                <span className={styles.materialOfficeLinkContent}>
-                                                  <Image
-                                                    alt="GP+ icon"
-                                                    width={13}
-                                                    height={13}
-                                                    src="/plus/plus.png"
-                                                    className={styles.materialOfficeLinkPlusIcon}
-                                                  />
-                                                  <span>{officeFormat}</span>
-                                                </span>
-                                              </button>
-                                            ) : (
-                                              <span
-                                                className={`${styles.materialPdfLinkDisabled} ${styles.materialOfficeLink} ${styles.materialOfficeLinkLocked}`}
-                                              >
-                                                <span className={styles.materialOfficeLinkContent}>
-                                                  <Image
-                                                    alt="GP+ icon"
-                                                    width={13}
-                                                    height={13}
-                                                    src="/plus/plus.png"
-                                                    className={styles.materialOfficeLinkPlusIcon}
-                                                  />
-                                                  <span>{officeFormat}</span>
-                                                </span>
-                                              </span>
-                                            ))}
-                                        </div>
-                                      </div>
-                                      {isGpPlusResolved &&
-                                        isGpPlusMember === false &&
-                                        hasOfficeDownload &&
-                                        isAuthenticated && (
-                                        <span className={styles.officeUpsellTag}>
-                                          GP+ editable files
-                                        </span>
-                                      )}
-                                    </div>
-                                  )}
-                                </article>
-                              );
-                            })}
-                          </div>
-                        ) : (
-                          <p className={styles.unitMutedText}>
-                            Materials will appear here once added.
-                          </p>
-                        )}
-                      </section>
-                    </div>
-                    <div
-                      ref={lessonPreviewsCardRef}
-                      className={styles.lessonPreviewsCard}
-                      style={previewPaneStickyStyle}
+                    <MaterialsResourcesPanel
+                      isGpPlusUser={isGpPlusUser}
+                      isGpPlusBannerDismissed={isGpPlusBannerDismissed}
+                      setIsGpPlusBannerDismissed={setIsGpPlusBannerDismissed}
+                      setIsGpPlusModalDisplayed={setIsGpPlusModalDisplayed}
+                      quickStartProps={{
+                        isFeaturedMediaOpen,
+                        isDetailedFlowOpen,
+                        isBackgroundOpen,
+                        isGoingFurtherOpen,
+                        hasFeaturedMedia,
+                        hasDetailedFlow,
+                        hasBackgroundContent,
+                        hasGoingFurther,
+                        setActiveLessonPreviewMode,
+                      }}
+                      gpPlusFunctionsProps={{
+                        isJobVizPreviewOpen,
+                        hasJobVizConnections,
+                        setActiveLessonPreviewMode,
+                        handleBrowseAllMaterialsClick,
+                        handleCopyAllMaterialsClick,
+                        isBrowseDisabledForGpPlus,
+                        isCopyAllDisabledForGpPlus,
+                        latestCopiedLessonFolderUrl,
+                        browseUnavailableReason,
+                        copyAllUnavailableReason,
+                        isGpPlusUser,
+                        canShowCopyAllToGoogleDriveBtn,
+                        copyLessonBtnRef,
+                        unitId,
+                        unit,
+                        activeLessonId,
+                        activeLesson,
+                        lessonsGradesForCopy,
+                        resolvedSharedFolderIdForCopy,
+                        resolvedSharedFolderNameForCopy,
+                        allUnitLessonsForCopy,
+                        effectiveLessonsFolderForCopy,
+                        isRetrievingLessonFolderIds,
+                        setLessons,
+                      }}
+                      previewDownloadProps={{
+                        activeLessonItems,
+                        activeLessonPreviewMode,
+                        activeMaterialIndex,
+                        isAuthenticated,
+                        isUserTeacher,
+                        isGpPlusUser,
+                        isGpPlusMember,
+                        isGpPlusResolved,
+                        getMaterialTypeIcon,
+                        getMaterialUrls,
+                        selectMaterialItem,
+                        handleOpenOfficeUpsell,
+                      }}
+                    />
+                    <MaterialsPreviewPane
+                      lessonPreviewsCardRef={lessonPreviewsCardRef}
+                      previewPaneStickyStyle={previewPaneStickyStyle}
+                      activeLessonPreviewMode={activeLessonPreviewMode}
                     >
-                      <div
-                        key={`lesson-preview-${activeLessonPreviewMode}`}
-                        className={`${styles.unitTabFadeIn} ${styles.lessonPreviewPaneContent}`}
-                      >
                       {isFeaturedMediaOpen ? (
                         <article className={styles.lessonPreviewItem}>
                           <header className={styles.lessonPreviewHeader}>
@@ -5684,8 +5120,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                           Item previews will appear here.
                         </p>
                       )}
-                      </div>
-                    </div>
+                    </MaterialsPreviewPane>
                   </div>
                 </div>
                 )
@@ -5733,162 +5168,25 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
             versionReleases={versionReleases}
           />
         )}
-        {!isStandalonePreview &&
-        ((activeTab === TAB_MATERIALS && nextLessonId != null) ||
-          (activeTab !== TAB_CREDITS && nextTab)) ? (
-          <div className={styles.nextTabCtaWrap}>
-            {activeTab === TAB_MATERIALS && nextLessonId != null && (
-              <button
-                type="button"
-                className={styles.nextLessonCta}
-                onClick={() => handleLessonChange(nextLessonId)}
-              >
-                <span>Lesson {nextLessonId}</span>
-                <ArrowRight size={15} aria-hidden="true" />
-              </button>
-            )}
-            {nextTab && (
-              <button
-                type="button"
-                className={styles.nextTabCta}
-                onClick={() => handleTabChange(nextTab.key as TTabKey)}
-              >
-                <span>Next: {nextTab.label}</span>
-                <SquareArrowRightExitIcon size={15} />
-              </button>
-            )}
-          </div>
-        ) : null}
-        <aside className={styles.licenseBanner} aria-label="Creative Commons license notice">
-            <div className={styles.licenseBannerInner}>
-              <div className={styles.licenseTopRow}>
-                <Image
-                  src="/imgs/creative-commons_by-nc-sa.svg"
-                  alt=""
-                  aria-hidden="true"
-                  width={126}
-                  height={44}
-                />
-                <div className={styles.licenseMeta}>
-                  <p className={styles.licenseBannerText}>
-                    <strong>CC BY-NC-SA 4.0.</strong> Share + Remix, with attribution. Don&apos;t sell.
-                  </p>
-                  {isStandalonePreview ? (
-                    <p className={styles.citationText}>
-                      {attributionDisplayParts.titleByAuthors} Source:{' '}
-                      <a
-                        href={attributionDisplayParts.sourceHref}
-                        target="_blank"
-                        rel="noreferrer"
-                        className={styles.citationInlineLink}
-                      >
-                        {attributionDisplayParts.sourceLabel}
-                      </a>
-                      . License:{' '}
-                      <a
-                        href={attributionDisplayParts.licenseHref}
-                        target="_blank"
-                        rel="noreferrer"
-                        className={styles.citationInlineLink}
-                      >
-                        Creative Commons Attribution-NonCommercial-ShareAlike 4.0
-                        International (CC BY-NC-SA 4.0)
-                      </a>
-                      .
-                    </p>
-                  ) : (
-                    <>
-                      <a
-                        href="https://creativecommons.org/licenses/by-nc-sa/4.0/"
-                        target="_blank"
-                        rel="noreferrer"
-                        className={styles.licenseBannerLink}
-                      >
-                        License details
-                      </a>
-                      <details className={styles.citationAccordion}>
-                        <summary className={styles.citationAccordionSummary}>
-                          <span>How to cite and attribute</span>
-                          <ChevronUp
-                            size={14}
-                            aria-hidden="true"
-                            className={styles.citationAccordionChevron}
-                          />
-                        </summary>
-                        <div className={styles.citationBlock}>
-                          <div className={styles.citationEntry}>
-                            <p className={styles.citationLabel}>Give Attribution</p>
-                            <p className={styles.citationText}>
-                              {attributionDisplayParts.titleByAuthors}{' '}
-                              Source:{' '}
-                              <a
-                                href={attributionDisplayParts.sourceHref}
-                                target="_blank"
-                                rel="noreferrer"
-                                className={styles.citationInlineLink}
-                              >
-                                {attributionDisplayParts.sourceLabel}
-                              </a>
-                              . License:{' '}
-                              <a
-                                href={attributionDisplayParts.licenseHref}
-                                target="_blank"
-                                rel="noreferrer"
-                                className={styles.citationInlineLink}
-                              >
-                                {attributionDisplayParts.licenseLabel}
-                              </a>
-                              .
-                            </p>
-                            <div className={styles.citationEntryFooter}>
-                              {copiedEntry === 'attribution' && (
-                                <span className={styles.citationStatus}>Copied</span>
-                              )}
-                              {copyErrorEntry === 'attribution' && (
-                                <span className={styles.citationStatusError}>Unable to copy</span>
-                              )}
-                              <button
-                                type="button"
-                                className={styles.copyCitationButton}
-                                onClick={() => handleCopyCitation(attributionText, 'attribution')}
-                                aria-label="Copy attribution"
-                                title="Copy attribution"
-                              >
-                                <Copy size={13} aria-hidden="true" />
-                                <span>Copy</span>
-                              </button>
-                            </div>
-                          </div>
-                          <div className={styles.citationEntry}>
-                            <p className={styles.citationLabel}>Cite this Work</p>
-                            <p className={styles.citationText}>{vancouverCitation}</p>
-                            <div className={styles.citationEntryFooter}>
-                              {copiedEntry === 'citation' && (
-                                <span className={styles.citationStatus}>Copied</span>
-                              )}
-                              {copyErrorEntry === 'citation' && (
-                                <span className={styles.citationStatusError}>Unable to copy</span>
-                              )}
-                              <button
-                                type="button"
-                                className={styles.copyCitationButton}
-                                onClick={() => handleCopyCitation(vancouverCitation, 'citation')}
-                                aria-label="Copy citation"
-                                title="Copy citation"
-                              >
-                                <Copy size={13} aria-hidden="true" />
-                                <span>Copy</span>
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                      </details>
-                    </>
-                  )}
-                </div>
-              </div>
-            </div>
-        </aside>
+        <NextNavigationCta
+          activeTab={activeTab}
+          materialsTabKey={TAB_MATERIALS}
+          creditsTabKey={TAB_CREDITS}
+          isStandalonePreview={isStandalonePreview}
+          nextLessonId={nextLessonId}
+          nextTab={nextTab}
+          handleLessonChange={handleLessonChange}
+          handleTabChange={(tabKey) => handleTabChange(tabKey as TTabKey)}
+        />
+        <UnitLicenseBanner
+          isStandalonePreview={isStandalonePreview}
+          attributionDisplayParts={attributionDisplayParts}
+          copiedEntry={copiedEntry}
+          copyErrorEntry={copyErrorEntry}
+          handleCopyCitation={handleCopyCitation}
+          attributionText={attributionText}
+          vancouverCitation={vancouverCitation}
+        />
         {officeUpsellFormat && (
           <div
             className={styles.officeUpsellModalBackdrop}
