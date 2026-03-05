@@ -36,6 +36,7 @@ notes.txt
 .vscode
 .DS_Store
 *.pem
+*.tsbuildinfo
 
 # debug
 npm-debug.log*
