@@ -15,12 +15,24 @@
     transform 180ms ease,
     box-shadow 180ms ease,
     background-color 220ms ease,
+    color 220ms ease,
     border-color 220ms ease;
-  background: rgba(255, 255, 255, 0.14);
-  color: #f0f4ff;
   box-shadow: 0 6px 14px rgba(11, 16, 40, 0.2);
   -webkit-backdrop-filter: blur(8px);
   backdrop-filter: blur(8px);
+}
+
+.colorWhite {
+  background: #ffffff;
+  color: #2c83c3;
+  border-color: rgba(44, 131, 195, 0.35);
+}
+
+.colorHydro {
+  background: #2c83c3;
+  color: #ffffff;
+  border-color: #2c83c3;
+  box-shadow: 0 6px 14px rgba(44, 131, 195, 0.2);
 }
 
 .button:link,
@@ -28,14 +40,15 @@
 .button:hover,
 .button:focus-visible,
 .button:active {
-  color: #f0f4ff;
   text-decoration: none;
 }
 
 .button:hover,
 .button:focus-visible {
-  background: rgba(255, 255, 255, 0.24);
-  border-color: rgba(240, 244, 255, 0.9);
+  background: #6c2d82;
+  color: #ffffff;
+  border-color: transparent;
   box-shadow: 0 10px 18px rgba(11, 16, 40, 0.28);
   transform: translateY(-1px);
+  font-weight: 800;
 }

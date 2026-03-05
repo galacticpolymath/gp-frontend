@@ -29,6 +29,7 @@ import {
   School,
   Search,
   Sparkles,
+  SquareArrowOutUpRight,
   SquareCheckBig,
   Youtube,
   WandSparkles,
@@ -4726,7 +4727,10 @@ export default function HomePage({
                 </div>
               </section>
 
-              <section className={`${styles.sectionAlt} ${styles.reveal}`} data-animate>
+              <section
+                className={`${styles.sectionAlt} ${styles.sectionWithInnerGutter} ${styles.reveal}`}
+                data-animate
+              >
                 <div className={styles.sectionInner}>
                   <div className={styles.sectionHeader}>
                     <div>
@@ -4739,14 +4743,25 @@ export default function HomePage({
                     </div>
                   </div>
                   <div className={styles.blogGrid}>
-                    {displayedBlogPosts.map((post, index) => (
+                    {displayedBlogPosts.map((post, index) => {
+                      const blogHref = post.url?.startsWith("http")
+                        ? post.url
+                        : `https://www.galacticpolymath.com${
+                            post.url?.startsWith("/") ? post.url : `/${post.url ?? ""}`
+                          }`;
+                      return (
                       <article
                         key={post.id}
                         className={`${styles.blogCard} ${styles.reveal}`}
                         style={{ transitionDelay: `${index * 120}ms` }}
                         data-animate
                       >
-                        <a href={post.url} className={styles.blogCardLink}>
+                        <a
+                          href={blogHref}
+                          className={styles.blogCardLink}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
                           <div className={styles.blogImage}>
                             {post.imageUrl ? (
                               <img src={post.imageUrl} alt="" loading="lazy" />
@@ -4763,11 +4778,33 @@ export default function HomePage({
                             <p className={styles.blogExcerpt}>
                               {post.excerpt || "Read the latest from GP."}
                             </p>
-                            <span className={styles.blogButton}>Read More</span>
+                            <span className={styles.blogButton}>
+                              Read More
+                              <SquareArrowOutUpRight
+                                aria-hidden="true"
+                                className={styles.blogButtonIcon}
+                              />
+                            </span>
                           </div>
                         </a>
                       </article>
-                    ))}
+                      );
+                    })}
+                  </div>
+                  <div className={styles.blogCtaRow}>
+                    <PortalLiftButton
+                      href="https://www.galacticpolymath.com/blog"
+                      color="hydro"
+                      className={styles.blogCtaButton}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      See all blogs
+                      <SquareArrowOutUpRight
+                        aria-hidden="true"
+                        className={styles.blogCtaIcon}
+                      />
+                    </PortalLiftButton>
                   </div>
                 </div>
               </section>
@@ -4802,7 +4839,7 @@ export default function HomePage({
                   <div className={styles.jobvizToursShowcase}>
                     <Link
                       href="/search?typeFilter=Job%20Tour&tourScope=unit"
-                      className={styles.jobvizToursTile}
+                      className={`${styles.jobvizToursTile} textyCardHover`}
                     >
                       <span
                         className={`${styles.resourceBadgePlus} ${styles.jobvizToursPillPlus}`}
@@ -4819,7 +4856,7 @@ export default function HomePage({
                     </Link>
                     <Link
                       href="/search?typeFilter=Job%20Tour&tourScope=community"
-                      className={styles.jobvizToursTile}
+                      className={`${styles.jobvizToursTile} textyCardHover`}
                     >
                       <span
                         className={`${styles.resourceBadgePlus} ${styles.jobvizToursPillPlus}`}
@@ -4843,7 +4880,10 @@ export default function HomePage({
                 aria-hidden="true"
               />
 
-              <section className={`${styles.section} ${styles.reveal}`} data-animate>
+              <section
+                className={`${styles.section} ${styles.sectionWithInnerGutter} ${styles.reveal}`}
+                data-animate
+              >
                 <div className={styles.sectionInner}>
                   <div className={styles.sectionHeader}>
                     <div>

@@ -353,6 +353,21 @@ a>span {
   text-decoration: none;
 }
 
+// for dense text cards where global anchor hover styling is too aggressive
+.textyCardHover:hover,
+.textyCardHover:focus-visible,
+.textyCardHover:active {
+  color: inherit !important;
+  text-decoration: none !important;
+}
+
+.textyCardHover:hover *,
+.textyCardHover:focus-visible *,
+.textyCardHover:active * {
+  color: inherit;
+  text-decoration: none !important;
+}
+
 .no-x-mobile-margin {
   @media (max-width: 576px) {
     margin-right: 0px;

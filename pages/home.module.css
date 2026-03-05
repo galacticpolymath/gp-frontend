@@ -949,6 +949,14 @@
   padding: 0 24px;
 }
 
+.sectionAlt > .sectionInner {
+  padding: 0 24px;
+}
+
+.sectionWithInnerGutter > .sectionInner {
+  padding: 0 24px;
+}
+
 .sectionAlt {
   position: relative;
   padding: 6.6vmax 0;
@@ -1252,6 +1260,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 8px;
   padding: 6px 16px;
   border-radius: 999px;
   border: 1px solid rgba(44, 131, 195, 0.5);
@@ -1268,6 +1277,27 @@
   color: #ffffff;
   border-color: #2c83c3;
 }
+
+.blogButtonIcon {
+  width: 14px;
+  height: 14px;
+}
+
+.blogCtaRow {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.blogCtaButton {
+  gap: 8px;
+}
+
+.blogCtaIcon {
+  width: 16px;
+  height: 16px;
+}
+
 .newUnitGrid {
   display: flex;
   flex-direction: column;
@@ -1305,7 +1335,8 @@
   border: 1px solid rgba(240, 244, 255, 0.3);
   position: relative;
   backdrop-filter: blur(12px);
-  width: 100%;
+  width: min(100%, 600px);
+  max-width: 600px;
 }
 
 .newUnitCard h3 {
@@ -1313,7 +1344,7 @@
 }
 
 .newUnitCard .cardSubtitle {
-  color: rgba(240, 244, 255, 0.78);
+  color: #e5f0ff;
 }
 
 .newUnitCard .cardMeta {
@@ -1341,11 +1372,7 @@
   content: none;
 }
 
-@media (min-width: 1024px) {
-  .newUnitCard {
-    width: min(100%, 600px);
-  }
-
+@media (min-width: 768px) {
   .newUnitCardLeft {
     align-self: flex-start;
   }
@@ -1361,6 +1388,14 @@
   }
 
   .sectionFresh .sectionInner {
+    padding: 0 16px;
+  }
+
+  .sectionAlt .sectionInner {
+    padding: 0 16px;
+  }
+
+  .sectionWithInnerGutter .sectionInner {
     padding: 0 16px;
   }
 
@@ -1504,7 +1539,7 @@
 .gistBlock {
   display: grid;
   gap: 6px;
-  background: rgba(255, 255, 255, 0.32);
+  background: rgba(255, 255, 255, 0.1);
   border-radius: 14px;
   padding: 12px;
   border: 1px solid rgba(240, 244, 255, 0.28);
@@ -1520,7 +1555,7 @@
 
 .gistBlock p {
   margin: 0;
-  color: rgba(245, 249, 255, 0.95);
+  color: #e5f0ff;
   line-height: 1.5;
 }
 
@@ -4224,6 +4259,10 @@ details:not([open]) .filterSummary::after {
     box-shadow 180ms ease,
     border-color 180ms ease,
     background-color 180ms ease;
+}
+
+.jobvizToursTile p {
+  font-weight: 400;
 }
 
 .jobvizToursTile::after {
