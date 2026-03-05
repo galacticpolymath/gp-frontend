@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useEffect, useRef, useState } from "react";
-import { Home, ListFilter, Menu, Search } from "lucide-react";
+import { Home, Menu, Search } from "lucide-react";
 import useSiteSession from "../customHooks/useSiteSession";
 import styles from "./PortalNav.module.css";
 import GpLogo from "../public/GP_bubbleLogo300px.png";
@@ -43,6 +43,9 @@ const PortalNav: React.FC<PortalNavProps> = ({
   onBrandClick,
 }) => {
   const router = useRouter();
+  const isUnitRoute =
+    router.pathname === "/units/[loc]/[id]" ||
+    (typeof router.asPath === "string" && router.asPath.startsWith("/units/"));
   const disableNavbar = (() => {
     const value = router.query?.[DISABLE_NAVBAR_PARAM_NAME];
     if (Array.isArray(value)) {
@@ -50,21 +53,6 @@ const PortalNav: React.FC<PortalNavProps> = ({
     }
     return value === "true";
   })();
-  const isUnitRoute =
-    router.route.startsWith("/units") ||
-    router.pathname.startsWith("/units") ||
-    (typeof router.asPath === "string" && router.asPath.startsWith("/units"));
-  const isCurrentUnitPath = () => {
-    if (typeof window !== "undefined") {
-      return window.location.pathname.startsWith("/units/");
-    }
-    return isUnitRoute;
-  };
-  const isNavAutohideDisabled = () => {
-    if (typeof document === "undefined") return false;
-    return document.documentElement.dataset.navAutohide === "off";
-  };
-
   const [navOpen, setNavOpen] = useState(false);
   const [accountMenuOpen, setAccountMenuOpen] = useState(false);
   const [avatarError, setAvatarError] = useState(false);
@@ -73,12 +61,7 @@ const PortalNav: React.FC<PortalNavProps> = ({
   const [isNavHidden, setIsNavHidden] = useState(false);
   const navRef = useRef<HTMLElement | null>(null);
   const accountMenuRef = useRef<HTMLDivElement | null>(null);
-  const lastScrollY = useRef(0);
-  const ticking = useRef(false);
-  const navOpenRef = useRef(false);
-  const accountMenuOpenRef = useRef(false);
   const navHiddenRef = useRef(false);
-  const suppressUnhideUntil = useRef(0);
   const { status, user, isGpPlusMember, logUserOut } = useSiteSession();
   const isAuthenticated = status === "authenticated";
   const avatarUrl = user?.image ?? profileAvatarUrl ?? null;
@@ -142,128 +125,16 @@ const PortalNav: React.FC<PortalNavProps> = ({
   }, [accountMenuOpen]);
 
   useEffect(() => {
-    accountMenuOpenRef.current = accountMenuOpen;
-    if (accountMenuOpen) {
-      setIsNavHidden(false);
-    }
-  }, [accountMenuOpen]);
-
-  useEffect(() => {
     navHiddenRef.current = isNavHidden;
   }, [isNavHidden]);
 
   useEffect(() => {
     if (disableNavbar) return;
-    navOpenRef.current = navOpen;
-    if (navOpen) {
+    if (isUnitRoute) return;
+    if (navOpen || accountMenuOpen) {
       setIsNavHidden(false);
     }
-  }, [disableNavbar, navOpen]);
-
-  useEffect(() => {
-    if (disableNavbar) return;
-    if (typeof window === "undefined") return;
-    const root = document.documentElement;
-
-    const applyOffset = (hidden: boolean) => {
-      const navHeight = navRef.current?.getBoundingClientRect().height ?? 0;
-      const offset = hidden ? 0 : Math.max(0, Math.round(navHeight));
-      root.style.setProperty("--portal-nav-offset", `${offset}px`);
-    };
-
-    const handleScroll = () => {
-      if (isCurrentUnitPath() || isNavAutohideDisabled()) {
-        if (navHiddenRef.current) {
-          navHiddenRef.current = false;
-          setIsNavHidden(false);
-          applyOffset(false);
-        }
-        return;
-      }
-      if (navOpenRef.current) return;
-      if (accountMenuOpenRef.current) return;
-      if (ticking.current) return;
-      ticking.current = true;
-      window.requestAnimationFrame(() => {
-        const currentY = window.scrollY || 0;
-        const previousY = lastScrollY.current;
-        const delta = currentY - previousY;
-        const isUnhideSuppressed = Date.now() < suppressUnhideUntil.current;
-
-        if (currentY < 80) {
-          if (!isUnhideSuppressed) {
-            navHiddenRef.current = false;
-            setIsNavHidden(false);
-            applyOffset(false);
-          } else {
-            applyOffset(navHiddenRef.current);
-          }
-        } else if (delta > 5) {
-          navHiddenRef.current = true;
-          setIsNavHidden(true);
-          applyOffset(true);
-        } else if (delta < -5) {
-          if (!isUnhideSuppressed) {
-            navHiddenRef.current = false;
-            setIsNavHidden(false);
-            applyOffset(false);
-          } else {
-            applyOffset(navHiddenRef.current);
-          }
-        }
-
-        lastScrollY.current = currentY;
-        ticking.current = false;
-      });
-    };
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [disableNavbar, router.asPath, isUnitRoute]);
-
-  useEffect(() => {
-    if (disableNavbar) return;
-    if (typeof window === "undefined") return;
-    const root = document.documentElement;
-
-    const handleSuppressNavUnhide = (event: Event) => {
-      if (isCurrentUnitPath() || isNavAutohideDisabled()) {
-        return;
-      }
-      const customEvent = event as CustomEvent<{ durationMs?: number }>;
-      const durationMs =
-        typeof customEvent.detail?.durationMs === "number"
-          ? customEvent.detail.durationMs
-          : 700;
-      suppressUnhideUntil.current = Date.now() + Math.max(0, durationMs);
-      if (navHiddenRef.current) {
-        root.style.setProperty("--portal-nav-offset", "0px");
-      }
-    };
-
-    window.addEventListener(
-      "gp:suppress-nav-unhide",
-      handleSuppressNavUnhide as EventListener
-    );
-
-    return () => {
-      window.removeEventListener(
-        "gp:suppress-nav-unhide",
-        handleSuppressNavUnhide as EventListener
-      );
-    };
-  }, [disableNavbar, router.asPath, isUnitRoute]);
-
-  useEffect(() => {
-    if (disableNavbar) return;
-    if (!isCurrentUnitPath() && !isNavAutohideDisabled()) return;
-    if (typeof window === "undefined") return;
-    const root = document.documentElement;
-    navHiddenRef.current = false;
-    setIsNavHidden(false);
-    const navHeight = navRef.current?.getBoundingClientRect().height ?? 0;
-    root.style.setProperty("--portal-nav-offset", `${Math.max(0, Math.round(navHeight))}px`);
-  }, [disableNavbar, router.asPath]);
+  }, [disableNavbar, isUnitRoute, navOpen, accountMenuOpen]);
 
   useEffect(() => {
     if (disableNavbar) return;
@@ -271,8 +142,12 @@ const PortalNav: React.FC<PortalNavProps> = ({
     const root = document.documentElement;
 
     const handleSetNavHidden = (
-      event: CustomEvent<{ hidden?: boolean }>
+      event: CustomEvent<{ hidden?: boolean; source?: string }>
     ) => {
+      const source = event.detail?.source;
+      if (isUnitRoute && source !== "unit-manual") {
+        return;
+      }
       const hidden = event.detail?.hidden === true;
       navHiddenRef.current = hidden;
       setIsNavHidden(hidden);
@@ -293,7 +168,32 @@ const PortalNav: React.FC<PortalNavProps> = ({
         handleSetNavHidden as EventListener
       );
     };
-  }, [disableNavbar]);
+  }, [disableNavbar, isUnitRoute]);
+
+  useEffect(() => {
+    if (disableNavbar) return;
+    if (typeof window === "undefined") return;
+    if (isUnitRoute) return;
+    if (!navHiddenRef.current) return;
+
+    navHiddenRef.current = false;
+    setIsNavHidden(false);
+    const navHeight = navRef.current?.getBoundingClientRect().height ?? 0;
+    document.documentElement.style.setProperty(
+      "--portal-nav-offset",
+      `${Math.max(0, Math.round(navHeight))}px`
+    );
+  }, [disableNavbar, isUnitRoute]);
+
+  useEffect(() => {
+    if (disableNavbar) return;
+    if (typeof window === "undefined") return;
+    if (!isUnitRoute) return;
+
+    navHiddenRef.current = true;
+    setIsNavHidden(true);
+    document.documentElement.style.setProperty("--portal-nav-offset", "0px");
+  }, [disableNavbar, isUnitRoute]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -341,9 +241,7 @@ const PortalNav: React.FC<PortalNavProps> = ({
   return (
     <nav
       ref={navRef}
-      className={`${styles.nav} ${isNavHidden ? styles.navHidden : ""} ${
-        isUnitRoute && isNavHidden ? styles.navUnitCollapsed : ""
-      }`}
+      className={`${styles.nav} ${isUnitRoute ? styles.navFixedForUnits : ""} ${isNavHidden ? styles.navHidden : ""}`}
       data-nav-hidden={isNavHidden ? "true" : "false"}
     >
       <button

@@ -196,15 +196,6 @@ const trackUnitEvent = (name: string, params: TGtagParams = {}) => {
   });
 };
 
-const suppressPortalNavReveal = (durationMs = 700) => {
-  if (typeof window === 'undefined') {
-    return;
-  }
-  window.dispatchEvent(
-    new CustomEvent('gp:suppress-nav-unhide', { detail: { durationMs } })
-  );
-};
-
 const setPortalNavHidden = (hidden: boolean) => {
   if (typeof window === 'undefined') {
     return;
@@ -213,7 +204,11 @@ const setPortalNavHidden = (hidden: boolean) => {
   const portalNav = document.querySelector('nav[data-nav-hidden]') as HTMLElement | null;
   const navHeight = portalNav?.getBoundingClientRect().height ?? 0;
   root.style.setProperty('--portal-nav-offset', hidden ? '0px' : `${Math.max(0, Math.round(navHeight))}px`);
-  window.dispatchEvent(new CustomEvent('gp:set-nav-hidden', { detail: { hidden } }));
+  window.dispatchEvent(
+    new CustomEvent('gp:set-nav-hidden', {
+      detail: { hidden, source: 'unit-manual' },
+    })
+  );
 };
 
 const isPortalNavHidden = () => {
@@ -1735,9 +1730,6 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
   }, []);
 
   const handleTabChange = (tab: TTabKey) => {
-    if (isPortalNavHidden()) {
-      suppressPortalNavReveal(1200);
-    }
     setActiveTab(tab);
     updateUrlState({
       tab,
@@ -1750,9 +1742,6 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
   };
 
   const handleLessonChange = (lessonId: number) => {
-    if (isPortalNavHidden()) {
-      suppressPortalNavReveal();
-    }
     setActiveLessonId(lessonId);
     setActiveLessonPreviewMode('featured-media');
     setActiveMaterialIndex(0);
@@ -1897,9 +1886,6 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
     const nextCollapsed = !isPortalNavCollapsed;
     setPortalNavHidden(nextCollapsed);
     setIsPortalNavCollapsed(nextCollapsed);
-    if (nextCollapsed) {
-      suppressPortalNavReveal(1200);
-    }
   };
 
   useEffect(() => {
@@ -2479,14 +2465,11 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
       return;
     }
 
-    document.documentElement.dataset.navAutohide = 'off';
     setPortalNavHidden(true);
     const syncTimer = window.setTimeout(() => setPortalNavHidden(true), 120);
-    suppressPortalNavReveal(1200);
     setIsPortalNavCollapsed(true);
     return () => {
       window.clearTimeout(syncTimer);
-      delete document.documentElement.dataset.navAutohide;
     };
   }, []);
 

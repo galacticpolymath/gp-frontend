@@ -174,9 +174,10 @@
   --field-height: 44px;
   --locale-width: 160px;
   --search-expanded-width: 420px;
+  --search-row-gap: 14px;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--search-row-gap);
   min-width: 0;
   width: auto;
   justify-content: flex-end;
@@ -206,8 +207,8 @@
 }
 
 .unitSearchInputWrapExpanded {
-  width: min(var(--search-expanded-width), calc(100vw - 40px - var(--locale-width) - 8px));
-  max-width: calc(100vw - 40px - var(--locale-width) - 8px);
+  width: min(var(--search-expanded-width), calc(100vw - 40px - var(--locale-width) - var(--search-row-gap)));
+  max-width: calc(100vw - 40px - var(--locale-width) - var(--search-row-gap));
   border-radius: 12px;
   background: #ffffff;
 }
@@ -323,6 +324,10 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
+}
+
+.unitNavMenuHintIcon {
+  color: rgba(220, 233, 255, 0.9);
 }
 
 .unitTabList {
@@ -552,6 +557,7 @@
   .unitSearchRow {
     --locale-width: 120px;
     --search-expanded-width: 300px;
+    --search-row-gap: 10px;
     flex-wrap: nowrap;
     align-items: center;
     justify-content: flex-end;

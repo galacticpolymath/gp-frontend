@@ -19,13 +19,16 @@
   will-change: transform, opacity;
 }
 
+.navFixedForUnits {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
 .navHidden {
   transform: translateY(-115%);
   opacity: 0.92;
-}
-
-.navUnitCollapsed {
-  display: none !important;
 }
 
 .brandButton {

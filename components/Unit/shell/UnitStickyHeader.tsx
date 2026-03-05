@@ -1,6 +1,6 @@
 import React from 'react';
 import Image from 'next/image';
-import { ChevronUp, NotebookPen, TextSearch } from 'lucide-react';
+import { ChevronUp, Menu, NotebookPen, TextSearch } from 'lucide-react';
 import {
   IItemForUI,
   INewUnitLesson,
@@ -180,6 +180,7 @@ const UnitStickyHeader: React.FC<TUnitStickyHeaderProps> = ({
             />
             {isPortalNavCollapsed ? (
               <span className={styles.unitNavProfileSummary}>
+                <Menu size={14} aria-hidden="true" className={styles.unitNavMenuHintIcon} />
                 <ProfileAvatarRing
                   avatarUrl={effectiveAvatarUrl}
                   isPlusMember={isGpPlusUser}
