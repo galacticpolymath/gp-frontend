@@ -24,8 +24,7 @@ import {
   IChunk,
   IGoingFurtherVal,
   IItemForUI,
-  IItemV2,
-  IItemV2Props,
+  IItemV2, IItemV2Props as _IItemV2Props ,
   ILsnExt,
   INewUnitLesson,
   IResource,
@@ -51,7 +50,7 @@ import CopyLessonBtn, { ICopyLessonBtnProps } from "./CopyLessonBtn";
 import { INewUnitSchema } from "../../../backend/models/Unit/types/unit";
 import useSiteSession from "../../../customHooks/useSiteSession";
 import { EXTERNAL_LINK_HELPER_TXT } from "../Modals/LessonItemsModal";
-import { IUserGDriveItemCopy } from "./TeachItUI";
+import { IUserGDriveItemCopy as _IUserGDriveItemCopy } from "./TeachItUI";
 
 const LESSON_PART_BTN_COLOR = "#2C83C3";
 

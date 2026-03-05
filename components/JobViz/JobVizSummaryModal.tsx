@@ -5,7 +5,7 @@ import sanitizeHtml from "sanitize-html";
 import styles from "../../styles/jobvizBurst.module.scss";
 import { useModalContext } from "../../providers/ModalProvider";
 import { LucideIcon } from "./LucideIcon";
-import QRCode from "react-qr-code";
+import _QRCode from "react-qr-code";
 import {
   encodeJobvizSharePayload,
   JOBVIZ_REPORT_PARAM_NAME,
@@ -535,7 +535,7 @@ const JobVizSummaryModal: React.FC = () => {
     try {
       await copyToClipboard(buildReportText());
       announceStatus("Report text copied");
-    } catch (error) {
+    } catch (_error) {
       announceStatus("Unable to copy report");
     }
   };
@@ -546,7 +546,7 @@ const JobVizSummaryModal: React.FC = () => {
       const row = await buildSpreadsheetRow();
       await copyToClipboard(row);
       announceStatus("Spreadsheet row copied");
-    } catch (error) {
+    } catch (_error) {
       announceStatus("Unable to copy spreadsheet data");
     }
   };
@@ -602,7 +602,7 @@ const JobVizSummaryModal: React.FC = () => {
       setIsJobModalOn(false);
       setSummaryState((prev) => ({ ...prev, isDisplayed: true }));
       announceStatus("Share link copied");
-    } catch (error) {
+    } catch (_error) {
       announceStatus("Unable to copy link");
     }
   };
@@ -623,7 +623,7 @@ const JobVizSummaryModal: React.FC = () => {
       } else {
         announceStatus("Email is only available in the browser");
       }
-    } catch (error) {
+    } catch (_error) {
       announceStatus("Unable to start email");
     }
   };

@@ -9,7 +9,7 @@ import {
   getGDriveItem,
   getUserChildItemsOfFolder,
 } from '../../../backend/services/gdriveServices';
-import { drive_v3 } from 'googleapis';
+import { drive_v3 as _drive_v3 } from 'googleapis';
 import { ILessonGDriveId } from '../../../backend/models/User/types';
 import { TUserGDriveData } from '../../../components/LessonSection/TeachIt/TeachItUI';
 

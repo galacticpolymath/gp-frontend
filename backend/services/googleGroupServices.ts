@@ -1,6 +1,6 @@
 import { admin_directory_v1 } from 'googleapis';
 import { createGoogleAdminService as _createGoogleAdminService } from './gdriveServices';
-import { OAuth2Client } from 'google-auth-library';
+import { OAuth2Client as _OAuth2Client } from 'google-auth-library';
 
 const GP_PLUS_GROUP_ID = '01fob9te1logy92';
 

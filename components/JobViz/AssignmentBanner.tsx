@@ -24,7 +24,7 @@ import { useModalContext } from "../../providers/ModalProvider";
 import {
   useAssignmentDockViewport,
   toRectLike,
-  type RectLike,
+  type RectLike as _RectLike,
 } from "./useAssignmentDockViewport";
 import {
   computeScrollTipOverlay,
@@ -78,7 +78,7 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
   const modalContext = useModalContext();
   const [, setJobvizSummaryModal] = modalContext._jobvizSummaryModal;
   const [, setJobvizCompletionModal] = modalContext._jobvizCompletionModal;
-  const [isJobModalOn, setIsJobModalOn] = modalContext._isJobModalOn;
+  const [_isJobModalOn, setIsJobModalOn] = modalContext._isJobModalOn;
   const [, setSelectedJob] = modalContext._selectedJob;
   const [clickedSocCodes, setClickedSocCodes] = React.useState<Set<string>>(
     new Set()

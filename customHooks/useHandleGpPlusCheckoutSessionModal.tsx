@@ -13,9 +13,9 @@ import {
   getLocalStorageItem,
   setLocalStorageItem,
 } from '../shared/fns';
-import { AiOutlineConsoleSql } from 'react-icons/ai';
+import { AiOutlineConsoleSql as _AiOutlineConsoleSql } from 'react-icons/ai';
 
-const getBillingType = () => {
+const _getBillingType = () => {
   const selectedGpPlusBillingType = getLocalStorageItem(
     'selectedGpPlusBillingType'
   );

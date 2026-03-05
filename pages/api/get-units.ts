@@ -5,7 +5,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { connectToMongodb } from "../../backend/utils/connection";
 import { CustomError } from "../../backend/utils/errors";
 import { retrieveUnits } from "../../backend/services/unitServices";
-import { INewUnitSchema, IUnit } from "../../backend/models/Unit/types/unit";
+import { INewUnitSchema, IUnit as _IUnit } from "../../backend/models/Unit/types/unit";
 
 type TReqQuery = Partial<{
   filterObj: string;

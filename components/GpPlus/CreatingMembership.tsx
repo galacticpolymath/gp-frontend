@@ -14,7 +14,7 @@ const CreatingMembership = ({ canSubmitPasswordForm }: IProps) => {
   const [isCreatingGpAccount] = _isCreatingGpPlusAccount;
   const [wasOutsetaPasswordSet, setWasOutsetaPasswordSet] = useState(false);
 
-  const handleOnHide = () => {
+  const _handleOnHide = () => {
     const backDropOutseta = document.querySelector(".o--Widget--popupBg");
 
     if (backDropOutseta) {

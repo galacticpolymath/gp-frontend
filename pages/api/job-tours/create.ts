@@ -3,10 +3,10 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { connectToMongodb } from '../../../backend/utils/connection';
 import { CustomError } from '../../../backend/utils/errors';
-import { IJobTour } from '../../../backend/models/JobTour';
+import { IJobTour as _IJobTour } from '../../../backend/models/JobTour';
 import { insertJobTour, TJobTourToInsert } from '../../../backend/services/jobTourServices';
 import { verifyJwt } from '../../../nondependencyFns';
-import { getUser, getUserByEmail } from '../../../backend/services/userServices';
+import { getUser as _getUser , getUserByEmail } from '../../../backend/services/userServices';
 
 const VALID_GP_USERS = process.env.GP_JOB_TOURS_USERS
     ? new Set(process.env.GP_JOB_TOURS_USERS.split(","))

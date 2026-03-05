@@ -17,7 +17,7 @@ export interface IMultimedia {
     otherLink: string;
 }
 
-const MultimediaSchema = new Schema<IMultimedia>({
+const _MultimediaSchema = new Schema<IMultimedia>({
   order: String,
   type: String,
   forLsn: String,

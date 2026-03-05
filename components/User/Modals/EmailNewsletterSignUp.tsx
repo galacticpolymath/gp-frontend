@@ -46,7 +46,7 @@ const JoinMailingListTitleModalTitle: React.FC<IJoinMailingListTitle> = ({
   );
 };
 
-interface EmailNewsletterSignUpProps {
+interface _EmailNewsletterSignUpProps {
   show: boolean;
   onHide?: () => void;
 }

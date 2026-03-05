@@ -84,7 +84,7 @@ export default async function handler(
 
     const jwtVerified = await verifyJwt(authSplit[1]);
     const { payload } = jwtVerified;
-    const { email, userId } = payload;
+    const { email, _userId } = payload;
     const { wasSuccessful } = await connectToMongodb(15_000, 0, true);
 
     if (!wasSuccessful) {

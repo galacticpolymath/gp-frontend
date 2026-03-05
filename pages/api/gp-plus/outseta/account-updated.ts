@@ -5,8 +5,7 @@ import {
   deleteAccount,
   deletePerson,
   getGpPlusMembership,
-  TAccountStageLabel,
-  TGpPlusMembership,
+  TAccountStageLabel, TGpPlusMembership as _TGpPlusMembership ,
 } from "../../../../backend/services/outsetaServices";
 import {
   getUser,

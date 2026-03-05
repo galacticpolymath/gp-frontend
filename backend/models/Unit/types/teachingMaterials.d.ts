@@ -1,6 +1,6 @@
-import { ILessonForUI } from '../../../../types/global';
+import { ILessonForUI as _ILessonForUI } from '../../../../types/global';
 import { IUnitSectionObj } from '../Section';
-import { IOverview, IUnitOverview, TUnitOverviewPropsForUI } from './overview';
+import { IOverview as _IOverview , IUnitOverview as _IUnitOverview , TUnitOverviewPropsForUI } from './overview';
 
 export interface ILink {
   linkText: string | null;
@@ -41,7 +41,7 @@ export interface IItemForUI extends IItem {
 }
 
 // contains the props of the old database schema
-export interface ILesson<TItem extends IItem = IItem> {
+export interface ILesson<_TItem extends IItem = IItem> {
   _id: string | null;
   lsn: string | null;
   title: string | null;
@@ -243,7 +243,7 @@ interface ITeachingMaterialsPreviewInfo {
   gatheredVocab: IVocab[];
 }
 
-interface IResourceObj<TLesson extends INewUnitLesson = INewUnitLesson> {
+interface IResourceObj<_TLesson extends INewUnitLesson = INewUnitLesson> {
   resources: IResource<INewUnitLesson>[]
 }
 

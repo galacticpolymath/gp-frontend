@@ -1,4 +1,4 @@
-import { ObjectId } from 'mongodb';
+import { ObjectId as _ObjectId } from 'mongodb';
 import { Model, Schema, model, models } from 'mongoose';
 
 export interface IJobTour {

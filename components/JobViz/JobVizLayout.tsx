@@ -1,8 +1,7 @@
 import * as React from "react";
 import Image from "next/image";
 import styles from "../../styles/jobvizBurst.module.scss";
-import {
-  averageLineItemGrowth,
+import { averageLineItemGrowth as _averageLineItemGrowth ,
   growthRange,
   totalLineItems,
   totalTopLevelCategories,

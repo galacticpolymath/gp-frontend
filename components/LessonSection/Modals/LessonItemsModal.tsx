@@ -12,9 +12,7 @@ import useSiteSession from "../../../customHooks/useSiteSession";
 import Image from "next/image";
 import { FcGoogle } from "react-icons/fc";
 import Dropdown from "react-bootstrap/Dropdown";
-import { GiFilmStrip } from "react-icons/gi";
 import { IoOpenOutline } from "react-icons/io5";
-import { IItemV2 } from "../../../backend/models/Unit/types/teachingMaterials";
 import ItemsCarousel, { CarouselItem } from "../LessonItemsModalCarousel";
 import { getMediaComponent } from "../Preview/utils";
 import { SignInSuggestion } from "../TeachIt/LessonPart";
@@ -25,89 +23,13 @@ const NAV_BTN_DIMENSION = '40px';
 export const EXTERNAL_LINK_HELPER_TXT = 'Open/Present';
 export const LESSON_ITEMS_MODAL_BG_COLOR = "#E2F0FD";
 
-interface ILessonItemCard extends Pick<IItemV2, "itemCat"> {
-  previewUrl: string;
-  viewUrl: string;
-  index: number;
-}
-
-interface INavBtn {
+interface _INavBtn {
   onClick: Function;
   className: string;
   style: React.CSSProperties;
   next: boolean;
   prev: boolean;
 }
-
-const LessonItemCard: React.FC<ILessonItemCard> = ({
-  previewUrl,
-  viewUrl,
-  index,
-  itemCat
-}) => {
-  const [isMsgHidden, setIsMsgHidden] = useState(false);
-
-  return (
-    <div key={`image-${index}`} className="h-100 position-relative w-100">
-      <div
-        style={{
-          zIndex: 10000,
-          backgroundColor: LESSON_ITEMS_MODAL_BG_COLOR,
-          height: "10vh",
-          minHeight: "65px",
-          maxHeight: "75px",
-        }}
-        className={`top-0 w-100 position-absolute ${isMsgHidden ? "d-none" : "d-block"
-          } d-xl-none`}
-      >
-        <div className="w-100 h-100 px-2 py-1 position-relative d-flex justify-content-center align-items-center">
-          <div style={{ maxWidth: "400px" }} className="position-relative">
-            <Button
-              style={{ top: "-5px" }}
-              className="position-absolute end-0 no-btn-styles"
-              onClick={() => {
-                setIsMsgHidden(true);
-              }}
-            >
-              <i
-                className="fa fa-times text-black"
-                aria-hidden="true"
-                style={{ fontSize: "12px" }}
-              />
-            </Button>
-            <div className="w-100 px-3 py-2 rounded bg-white justify-content-center align-items-center">
-              <div className="d-flex">
-                <div className="d-flex justify-content-center align-items-center">
-                  <GiFilmStrip size={40} />
-                </div>
-                <span
-                  style={{ fontSize: 14, lineHeight: 1.4 }}
-                  className="ms-1"
-                >
-                  <b>Preview</b>. To view slide deck, open on a desktop.
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      {itemCat === "presentation" ?
-        <>
-          <div className="w-100 h-100 position-relative d-none d-xl-block">
-            <iframe src={viewUrl} className="w-100 h-100" />
-          </div>
-          <div className="w-100 h-100 position-relative d-xl-none d-block">
-            <iframe src={previewUrl} className="w-100 h-100" />
-          </div>
-        </>
-        :
-        <div className="w-100 h-100 position-relative d-xl-none d-block">
-          <iframe src={previewUrl} className="w-100 h-100" />
-        </div>
-      }
-    </div>
-  );
-};
 
 const LessonItemDownloadBtnsDropDown: React.FC<{
   lessonItem: ILessonItem;
@@ -225,7 +147,8 @@ const LESSON_ITEM_URL_CREATOR_FNS: Record<string, TLessonItemUrlCreatorFn> = {
 }
 
 const LessonItemsModal: React.FC = () => {
-  const { _lessonItemModal, _isGpPlusModalDisplayed } = useModalContext();
+  const { _lessonItemModal, _isGpPlusModalDisplayed: isGpPlusModalDisplayedState } =
+    useModalContext();
   const { _isGpPlusMember, _isUserTeacher: [isUserTeacher] } = useUserContext();
   const [canShowTeacherItems, setCanShowTeacherItems] = useState(false);
   const { _idsOfLessonsBeingCopied } = useLessonContext();
@@ -233,8 +156,8 @@ const LessonItemsModal: React.FC = () => {
   const [idsOfLessonsBeingCopied] = _idsOfLessonsBeingCopied;
   const router = useRouter();
   const [lessonItemModal, setLessonItemModal] = _lessonItemModal;
-  const [isGpPlusModalDisplayed, setIsGpPlusModalDisplayed] =
-    _isGpPlusModalDisplayed;
+  const [_isGpPlusModalDisplayed, setIsGpPlusModalDisplayed] =
+    isGpPlusModalDisplayedState;
   const [isGpPlusMember] = _isGpPlusMember;
   const {
     currentIndex,
@@ -330,7 +253,7 @@ const LessonItemsModal: React.FC = () => {
     );
   };
 
-  const handlePlayBtnClick = () => {
+  const _handlePlayBtnClick = () => {
     window.open(`${currentLessonItem.gdriveRoot}/present`);
   };
 

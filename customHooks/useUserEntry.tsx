@@ -7,13 +7,10 @@ import { signIn } from "next-auth/react";
 import { ChangeEvent, useState } from "react";
 import { constructUrlWithSearchQuery, validateEmail } from "../globalFns";
 import { useCustomCookies } from "./useCustomCookies";
-import {
-  getLocalStorageItem,
-  getSessionStorageItem,
-  removeLocalStorageItem,
-  removeSessionStorageItem,
+import { getLocalStorageItem as _getLocalStorageItem ,
+  getSessionStorageItem, removeLocalStorageItem as _removeLocalStorageItem , removeSessionStorageItem as _removeSessionStorageItem ,
 } from "../shared/fns";
-import { ICallbackUrl } from "../pages/sign-up";
+import { ICallbackUrl as _ICallbackUrl } from "../pages/sign-up";
 
 type TLoginForm = {
   email: string;
@@ -39,7 +36,7 @@ interface ICanLoginResBody {
   canLogin: boolean;
   errType: TUserLoginErrType;
 }
-type TForm = { login: TLoginForm; createAccount: TCreateAccount } & {
+type _TForm = { login: TLoginForm; createAccount: TCreateAccount } & {
   callbackUrl: string;
 };
 

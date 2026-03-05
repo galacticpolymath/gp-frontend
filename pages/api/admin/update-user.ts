@@ -3,7 +3,7 @@
  
 import { NextApiRequest, NextApiResponse } from "next";
 import { CustomError } from "../../../backend/utils/errors";
-import { updateUser, updateUserCustom } from "../../../backend/services/userServices";
+import { updateUser as _updateUser , updateUserCustom } from "../../../backend/services/userServices";
 import { connectToMongodb } from "../../../backend/utils/connection";
 
 interface IReqBody{

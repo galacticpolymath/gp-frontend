@@ -80,7 +80,7 @@ export const JobVizCard: React.FC<JobVizCardProps> = ({
   jobsCount,
   growthPercent,
   wage,
-  education,
+  education: _education,
   jobIconName,
   socCode,
   isAssignmentJob,

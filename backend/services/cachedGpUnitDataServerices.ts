@@ -2,7 +2,7 @@
  
  
 import { createPaginationArr } from "../../globalFns";
-import { getUnits } from "../helperFns/lessonsFns";
+import { getUnits as _getUnits } from "../helperFns/lessonsFns";
 import { CustomError } from "../utils/errors";
 import cache from "../utils/cache";
 import { getGpMultiMedia, getUnitLessons, retrieveUnits } from "./unitServices";

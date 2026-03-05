@@ -32,7 +32,7 @@ const LinkSchema = new Schema<ILink>(
   },
   { _id: false }
 );
-const ItemSchema = new Schema<IItem>(
+const _ItemSchema = new Schema<IItem>(
   {
     itemTitle: String,
     itemDescription: String,

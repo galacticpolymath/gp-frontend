@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState as _useState } from "react";
 import { Button, Modal } from "react-bootstrap";
 import Image from "next/image";
 import Wave from "react-wavify";

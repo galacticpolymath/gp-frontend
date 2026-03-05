@@ -7,7 +7,7 @@ import { useState } from "react";
 import { TGpData } from "../types/global";
 
 export type TGpUnitDataType = "videos" | "lessons" | "units";
-type TGpDataRetrievalPaths = "cached-gp-data" | "cached-gp-units-data";
+type _TGpDataRetrievalPaths = "cached-gp-data" | "cached-gp-units-data";
 
 const getGpUnitData = async (typeStr: TGpUnitDataType, pageNum: number) => {
   try {

@@ -1,7 +1,7 @@
 import { ICustomProp, IRootFieldToRetrieve, RootFieldToRetrieve } from './RootFieldsToRetrieve';
-import { IUnitSectionObj, unitSectionObj } from './Section';
+import { IUnitSectionObj as _IUnitSectionObj , unitSectionObj } from './Section';
 import mongoose from 'mongoose';
-import { IDimension, ISet, IStandard, IStandards, IStandardsGroup, ISubject } from './types/standards';
+import { IDimension, ISet, IStandard, IStandards, IStandardsGroup as _IStandardsGroup , ISubject } from './types/standards';
 
 const { Schema } = mongoose;
 

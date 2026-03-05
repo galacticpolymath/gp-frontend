@@ -39,7 +39,7 @@ interface IProps {
   errObj?: object;
 }
 
-type TFn = () => void;
+type _TFn = () => void;
 
 interface IGpPlusBtn extends PropsWithChildren{
   styles?: React.CSSProperties,
@@ -151,7 +151,7 @@ const GpPlus: React.FC<IProps> = ({ liveUnitsTotal, plusPlanPercentSaved }) => {
     handleGpPlusAccountBtnClick,
     anchorElement,
     gpPlusSubscription,
-    isFetching,
+    isFetching: _isFetching,
   } = useHandleOpeningGpPlusAccount(true, setWasGpPlusSubRetrieved);
   const [wasGpPlusBtnClicked, setWasGpPlusBtnClicked] = _wasGpPlusBtnClicked;
   const router = useRouter();

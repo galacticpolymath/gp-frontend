@@ -25,7 +25,7 @@ import {
   ITeachingMaterialsDataForUI,
 } from "../../../backend/models/Unit/types/teachingMaterials";
 import { ILessonForUI } from "../../../types/global";
-import TeachItUI, { THandleOnChange } from "./TeachItUI";
+import TeachItUI, { THandleOnChange as _THandleOnChange } from "./TeachItUI";
 
 export const GRADE_VARIATION_ID = "gradeVariation";
 
@@ -170,7 +170,7 @@ const TeachIt: React.FC<TeachItProps> = (props) => {
   }
   const [selectedGradeResources, setSelectedGradeResources] =
     useState<ILink | null>(allResources?.[0]?.links ?? ({} as ILink));
-  const handleOnChangeForNewUnitResources = (
+  const _handleOnChangeForNewUnitResources = (
     selectedGrade: IResource<INewUnitLesson>
   ) => {
     setSelectedGradeResources(selectedGrade.links as ILink);

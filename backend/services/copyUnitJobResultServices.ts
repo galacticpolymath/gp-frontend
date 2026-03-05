@@ -271,7 +271,7 @@ export const getAllExistingGDriveFolders = async (
       existingFolders,
       nonexistingFolders,
     };
-  } catch (error) {
+  } catch (_error) {
     return {
       errType: 'retrievalErr',
     };

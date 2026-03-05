@@ -7,26 +7,25 @@ import {
   ModalTitle,
   Spinner,
 } from "react-bootstrap";
-import { useContext, useRef, useState } from "react";
-import {
-  ModalContext,
+import { useContext as _useContext , useRef, useState } from "react";
+import { ModalContext as _ModalContext ,
   useModalContext,
 } from "../../../providers/ModalProvider";
 import { CustomCloseButton } from "../../../ModalsContainer";
 import { IoMdClose } from "react-icons/io";
 import CheckBox from "../../General/CheckBox";
 import Button from "../../General/Button";
-import { getIsParsable, resetUrl } from "../../../globalFns";
+import { getIsParsable as _getIsParsable , resetUrl as _resetUrl } from "../../../globalFns";
 import {
   deleteUserFromServerCache,
   sendDeleteUserReq,
   updateUser,
 } from "../../../apiServices/user/crudFns";
-import { signOut, useSession } from "next-auth/react";
+import { signOut, useSession as _useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import CustomLink from "../../CustomLink";
 import { CONTACT_SUPPORT_EMAIL } from "../../../globalVars";
-import Image from "next/image";
+import _Image from "next/image";
 import {
   getLocalStorageItem,
   setLocalStorageItem,
@@ -48,7 +47,7 @@ const AccountSettings = () => {
     {}
   );
   const { token, user, gdriveAccessToken, session } = useSiteSession();
-  const { email, name } = user ?? {};
+  const { email, name: _name } = user ?? {};
   const [isDeletingAccount, setIsDeletingAccount] = useState(false);
   const [didServerErrOccur, setDidServerErrOccur] = useState(false);
   const router = useRouter();

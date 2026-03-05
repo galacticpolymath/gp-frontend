@@ -561,7 +561,7 @@ export default async function handler(
       throw new Error(errMsg);
     }
 
-    const email = jwtPayload.payload.email;
+    const _email = jwtPayload.payload.email;
     gdriveAccessToken = _gdriveAccessToken;
 
     if (

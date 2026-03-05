@@ -220,7 +220,7 @@ export const getIsValidFileId = (id: unknown) =>
 
 export const createDrive = async (
   scopes: TGoogleAuthScopes[] = ['https://www.googleapis.com/auth/drive'],
-  clientOptions?: GoogleAuthOptions['clientOptions']
+  _clientOptions?: GoogleAuthOptions['clientOptions']
 ) => {
   const drive = google.drive('v3');
   const creds = new GoogleServiceAccountAuthCreds();

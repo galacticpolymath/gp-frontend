@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState as _useState } from 'react';
 import useSiteSession from './useSiteSession';
 import CustomLink from '../components/CustomLink';
 import { CONTACT_SUPPORT_EMAIL } from '../globalVars';
@@ -6,7 +6,7 @@ import { defautlNotifyModalVal, useModalContext } from '../providers/ModalProvid
 import { updateUser } from '../apiServices/user/crudFns';
 
 const useOutsetaEmailInputValidation = () => {
-  const { status, token, user } = useSiteSession();
+  const { status, token: _token, user } = useSiteSession();
   const { _notifyModal } = useModalContext();
   const [, setNotifyModal] = _notifyModal;
 

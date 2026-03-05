@@ -17,7 +17,7 @@ import { sendEmail } from "../../backend/services/emailServices";
 import { z } from 'zod';
 import { getJwtPayloadPromise } from "../../nondependencyFns";
 
-const QueryParamsSchema = z.object({
+const _QueryParamsSchema = z.object({
   dbType: z.string().min(1),
   userIds: z.union([
     z.string().min(1),

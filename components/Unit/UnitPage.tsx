@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { format } from 'date-fns';
-import axios from 'axios';
+import _axios from 'axios';
 import styles from './UnitPage.module.css';
 import materialStyles from './materials/UnitMaterials.module.css';
 import {
@@ -1239,7 +1239,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
   } = useSiteSession();
   const { setAppCookie } = useCustomCookies();
   const isAuthenticated = status === 'authenticated';
-  const authorizationHeader =
+  const _authorizationHeader =
     typeof token === 'string' && token.startsWith('Bearer ')
       ? token
       : `Bearer ${token ?? ''}`;
@@ -3056,7 +3056,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
     try {
       await navigator.clipboard.writeText(shareUrl);
       trackUnitEvent('unit_shared', { share_method: 'clipboard' });
-    } catch (error) {
+    } catch (_error) {
       trackUnitEvent('unit_share_failed', { reason: 'clipboard_write_failed' });
     }
   };
@@ -3229,7 +3229,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
       await navigator.clipboard.writeText(text);
       setStatusWithReset('copied');
       return;
-    } catch (error) {}
+    } catch (_error) {}
 
     try {
       const textarea = document.createElement('textarea');
@@ -3242,7 +3242,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
       const wasCopied = document.execCommand('copy');
       document.body.removeChild(textarea);
       setStatusWithReset(wasCopied ? 'copied' : 'error');
-    } catch (error) {
+    } catch (_error) {
       setStatusWithReset('error');
     }
   };
@@ -3342,7 +3342,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
         sourceUrl.hash = '';
         sourceUrl.search = materialsPathWithQuery;
         return `${sourceUrl.pathname}${sourceUrl.search}`;
-      } catch (error) {}
+      } catch (_error) {}
     }
 
     if (numID != null) {
@@ -3365,7 +3365,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
         fallback.hash = '';
         fallback.search = `?${params.toString()}`;
         return fallback.toString();
-      } catch (error) {}
+      } catch (_error) {}
     }
 
     return procedureReturnHref;

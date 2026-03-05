@@ -1,5 +1,5 @@
  
-import { DeleteResult, ProjectionType } from 'mongoose';
+import { DeleteResult as _DeleteResult , ProjectionType } from 'mongoose';
 import { IJobTour } from '../models/JobTour';
 import JobTour from '../models/JobTour';
 import { TJobUpdates } from '../../pages/api/job-tours/update';

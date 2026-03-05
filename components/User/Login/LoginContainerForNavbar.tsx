@@ -15,10 +15,8 @@ import {
   TGpPlusSubscriptionForClient,
 } from "../../../backend/models/User/types";
 import { Spinner } from "react-bootstrap";
-import {
-  getIsWithinParentElement,
-  getLocalStorageItem,
-  setLocalStorageItem,
+import { getIsWithinParentElement as _getIsWithinParentElement ,
+  getLocalStorageItem, setLocalStorageItem as _setLocalStorageItem ,
   setSessionStorageItem,
 } from "../../../shared/fns";
 import {
@@ -28,7 +26,7 @@ import {
 import useSiteSession from "../../../customHooks/useSiteSession";
 import { TAccountStageLabel } from "../../../backend/services/outsetaServices";
 import axios from "axios";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams as _useSearchParams } from "next/navigation";
 import { useCreateUnitSectionUrl } from "../../../customHooks/useCreateUnitSectionUrl";
 import { NAV_DOT_HIGHLIGHTED_CLASS } from "../../LessonSection/NavDots/LiNavDot";
 

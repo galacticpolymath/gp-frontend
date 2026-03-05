@@ -2,7 +2,7 @@
  
 import { useRouter } from "next/router";
 import LiNavDot from "./NavDots/LiNavDot";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import ClickMeArrow from "../ClickMeArrow";
 import throttle from "lodash.throttle";
 import { ISectionDots, TSetter, TUseStateReturnVal } from "../../types/global";

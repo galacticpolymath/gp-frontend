@@ -18,8 +18,7 @@ import {
 } from "../../../types/global";
 import RichText from "../../RichText";
 import { DisplayLessonTile, GRADE_VARIATION_ID } from ".";
-import {
-  IItem,
+import { IItem as _IItem ,
   IItemForUI,
   IItemV2,
   ILesson,
@@ -36,7 +35,7 @@ import throttle from "lodash.throttle";
 import SendFeedback, { SIGN_UP_FOR_EMAIL_LINK } from "../SendFeedback";
 import { UNVIEWABLE_LESSON_STR } from "../../../globalVars";
 import Link from "next/link";
-import Sparkles from "../../SparklesAnimation";
+import _Sparkles from "../../SparklesAnimation";
 import { useUserContext } from "../../../providers/UserProvider";
 import { useRouter } from "next/router";
 import { setLocalStorageItem } from "../../../shared/fns";

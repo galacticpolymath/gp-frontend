@@ -7,8 +7,7 @@ import {
 } from "../../../backend/services/userServices";
 import { verifyJwt } from "../../../nondependencyFns";
 import cache from "../../../backend/utils/cache";
-import {
-  TUserSchemaForClient,
+import { TUserSchemaForClient as _TUserSchemaForClient ,
   TUserSchemaV2,
 } from "../../../backend/models/User/types";
 import { connectToMongodb } from "../../../backend/utils/connection";

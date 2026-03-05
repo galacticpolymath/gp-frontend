@@ -164,11 +164,11 @@ type TSort = Partial<{
 }>;
 export type TProjections = { [key in keyof IUnit | '__v']: 0 | 1 };
 
-type TQueryPredicate = "$in" | "$eq"
+type _TQueryPredicate = "$in" | "$eq"
 
 // "$in": { key, val[]}
 
-type TSearchQueryIn<TKey extends keyof IUnit = keyof IUnit> = {
+type _TSearchQueryIn<TKey extends keyof IUnit = keyof IUnit> = {
   key: TKey,
   vals: (IUnit[TKey])[]
 }

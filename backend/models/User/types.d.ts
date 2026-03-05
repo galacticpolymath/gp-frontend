@@ -6,8 +6,7 @@ import {
   getGpPlusMembership,
 } from '../../services/outsetaServices';
 import {
-  TAccountStageLabel,
-  TGpPlusMembershipRetrieved,
+  TAccountStageLabel, TGpPlusMembershipRetrieved as _TGpPlusMembershipRetrieved ,
 } from '../../services/userServices';
 import { TAboutUserFormDeprecated } from './deprecated';
 

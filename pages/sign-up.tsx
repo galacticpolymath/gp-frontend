@@ -1,5 +1,5 @@
 /* eslint-disable no-alert */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect as _useEffect, useState } from 'react';
 import { Spinner } from 'react-bootstrap';
 import Button from '../components/General/Button';
 import CreateAccountWithGoogle from '../components/User/GoogleSignIn';

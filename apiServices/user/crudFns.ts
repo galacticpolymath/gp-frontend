@@ -2,8 +2,8 @@
 
  
 
-import axios, { AxiosError, AxiosHeaders } from "axios";
-import cookies from "js-cookie";
+import axios, { AxiosError as _AxiosError, AxiosHeaders } from "axios";
+import _cookies from "js-cookie";
 import {
   TGpPlusSubscriptionForClient,
   TUserSchemaV2,

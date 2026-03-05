@@ -15,7 +15,7 @@ import {
 } from "../shared/fns";
 import { useCustomCookies } from "./useCustomCookies";
 import { useModalContext } from "../providers/ModalProvider";
-import { useRouter } from "next/router";
+import { useRouter as _useRouter } from "next/router";
 
 export const getAboutUserFormForClient = (
   userAccount: TUserSchemaForClient<TUserSchemaV2 & IUserSchema>
@@ -233,7 +233,7 @@ export const getAboutUserFormForClient = (
   return { userAccountForClient, gpPlusSubscription };
 };
 
-const getUserAccountData = async (token: string) => {
+const _getUserAccountData = async (token: string) => {
   try {
     const paramsAndHeaders = {
       headers: {

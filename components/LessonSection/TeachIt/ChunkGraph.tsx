@@ -17,16 +17,6 @@ export default function ChunkGraph({
   const container = useRef(null);
   const [didRendered, setDidRendered] = useState(false);
 
-  useEffect(() => {
-    if (!didRendered) {
-      setDidRendered(true);
-    }
-
-    if (didRendered) {
-      update();
-    }
-  }, [didRendered, update]);
-
   const update = useCallback(() => {
     if (durList === null || chunkNum === null) {
       console.error("`durList` or `chunkNum` cannot be null");
@@ -168,6 +158,16 @@ export default function ChunkGraph({
       .attr("font-family", '"Montserrat", "Helvetica", "Arial", sans-serif')
       .attr("class", "chunkGraphTimeLabel");
   }, [chunkNum, durList]);
+
+  useEffect(() => {
+    if (!didRendered) {
+      setDidRendered(true);
+    }
+
+    if (didRendered) {
+      update();
+    }
+  }, [didRendered, update]);
 
   return <div ref={container} className={className} />;
 }

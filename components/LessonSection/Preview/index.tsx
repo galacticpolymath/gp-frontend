@@ -1,4 +1,4 @@
-import PropTypes from 'prop-types';
+import _PropTypes from 'prop-types';
 import { useRef } from 'react';
 import useLessonElementInView from '../../../customHooks/useLessonElementInView';
 import CollapsibleLessonSection from '../../CollapsibleLessonSection';

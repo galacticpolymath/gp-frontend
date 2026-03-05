@@ -7,8 +7,7 @@ import {
   FiGrid,
   FiLayers,
   FiPlayCircle,
-  FiShare2,
-  FiStar,
+  FiShare2, FiStar as _FiStar ,
   FiUsers,
 } from "react-icons/fi";
 import { useRouter } from "next/router";
@@ -767,7 +766,7 @@ const getCareerConnections = (unit: INewUnitSchema) => {
   return Array.from(new Set(careers));
 };
 
-const summarizeList = (items: string[], maxItems: number) => {
+const _summarizeList = (items: string[], maxItems: number) => {
   if (!items.length) return null;
   if (items.length <= maxItems) return items.join(", ");
   return `${items.slice(0, maxItems).join(", ")} (+${items.length - maxItems})`;
@@ -801,7 +800,7 @@ const normalizeLegacyLessonPath = (href?: string | null) => {
 
     const query = url.searchParams.toString();
     return `${url.pathname}${query ? `?${query}` : ""}${url.hash}`;
-  } catch (error) {
+  } catch (_error) {
     return trimmedHref;
   }
 };
@@ -841,7 +840,7 @@ const buildShareableMediaLink = (link?: string | null) => {
     }
     url.searchParams.delete("autoplay");
     return url.toString();
-  } catch (error) {
+  } catch (_error) {
     return link;
   }
 };
@@ -1342,7 +1341,12 @@ export default function HomePage({
     const source = text ?? "";
     const query = queryValue.trim();
     if (!query) return source;
-    const tokens = tokenizeSearch(query).filter((token) => token.length >= 2);
+    const tokens = query
+      .toLowerCase()
+      .split(/[\s,;|/]+/)
+      .map((token) => token.trim())
+      .filter(Boolean)
+      .filter((token) => token.length >= 2);
     if (!tokens.length) return source;
     const escaped = tokens
       .map((token) => token.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))
@@ -1359,7 +1363,7 @@ export default function HomePage({
         <React.Fragment key={`${part}-${index}`}>{part}</React.Fragment>
       )
     );
-  }, [tokenizeSearch]);
+  }, []);
 
   const summarizeCategoryValues = useCallback((values: string[], limit = 3) => {
     if (!values.length) return [];
@@ -3758,7 +3762,7 @@ export default function HomePage({
                               resource.type === "Job Tour" ||
                               Boolean(lessonHref) ||
                               Boolean(unitHref);
-                            const showLessons =
+                            const _showLessons =
                               (resource.type === "Unit" || resource.type === "Lesson") &&
                               Boolean(resource.timeLabel?.trim());
                             const animationDelay =
@@ -3770,7 +3774,7 @@ export default function HomePage({
                               if (resource.tourIsGp) return "GP Team";
                               return resource.ownerName || "Teacher";
                             })();
-                            const visibilityLabel =
+                            const _visibilityLabel =
                               resource.tourVisibility === "me"
                                 ? "Private"
                                 : resource.tourVisibility === "just-teachers"
@@ -5021,7 +5025,7 @@ export default function HomePage({
                         await navigator.clipboard.writeText(shareLink);
                         toast.success("Link Copied");
                         return;
-                      } catch (error) {
+                      } catch (_error) {
                         // Fall back to a basic copy method.
                       }
                       try {
@@ -5034,7 +5038,7 @@ export default function HomePage({
                         document.execCommand("copy");
                         document.body.removeChild(textarea);
                         toast.success("Link Copied");
-                      } catch (error) {
+                      } catch (_error) {
                         toast.error("Unable to copy link");
                       }
                     }}

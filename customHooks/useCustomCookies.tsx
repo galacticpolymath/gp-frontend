@@ -1,4 +1,4 @@
-import { useCookies } from 'react-cookie';
+import { useCookies as _useCookies } from 'react-cookie';
 import cookies from 'js-cookie';
 
 interface IAppCookies {

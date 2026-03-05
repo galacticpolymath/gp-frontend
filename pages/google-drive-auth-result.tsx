@@ -26,7 +26,7 @@ export const EXPIRATION_DATE_TIME = new Date(
 
 const GoogleDriveAuthResult = () => {
   const { status } = useSiteSession();
-  const { setAppCookie, cookies } = useCustomCookies();
+  const { setAppCookie, _cookies } = useCustomCookies();
   const { token } = useSiteSession();
   const { _isLoginModalDisplayed } = useModalContext();
   const [isHydrated, setIsHydrated] = useState(false);

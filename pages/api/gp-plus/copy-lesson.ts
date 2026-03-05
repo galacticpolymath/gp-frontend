@@ -166,7 +166,7 @@ export default async function handler(
     typeof reqQueryParams.fileNames === "string"
       ? [reqQueryParams.fileNames]
       : reqQueryParams.fileNames;
-  const clientOrigin = new URL(request.headers.referer ?? "").origin;
+  const _clientOrigin = new URL(request.headers.referer ?? "").origin;
 
   response.on("close", async () => {
     console.log("The user closed the stream.");
@@ -191,7 +191,7 @@ export default async function handler(
       for (const fileId of _fileIds) {
         const drive = await createDrive();
         // @ts-ignore
-        const fileUpdated = await drive.files.update({
+        const _fileUpdated = await drive.files.update({
           fileId: fileId,
           supportsAllDrives: true,
           requestBody: {
@@ -1258,7 +1258,7 @@ export default async function handler(
 
     console.log("Will share the parent folder with the target user.");
 
-    const result = await shareFileWithUser(parentFolderIdInSharedGDrive, email);
+    const _result = await shareFileWithUser(parentFolderIdInSharedGDrive, email);
 
     // throw new Error("python, yo");
 
@@ -1379,7 +1379,7 @@ export default async function handler(
   } finally {
     if (parentFolder) {
       const drive = await createDrive();
-      const filePermissionsUpdated = await drive.permissions.update({
+      const _filePermissionsUpdated = await drive.permissions.update({
         permissionId: parentFolder.permissionId,
         fileId: parentFolder.id,
         supportsAllDrives: true,
@@ -1395,7 +1395,7 @@ export default async function handler(
 
       for (const fileId of _fileIds) {
         // @ts-ignore
-        const fileUpdated = await drive.files.update({
+        const _fileUpdated = await drive.files.update({
           fileId: fileId,
           supportsAllDrives: true,
           requestBody: {

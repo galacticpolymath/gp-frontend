@@ -61,10 +61,10 @@ export const getStandards = (TargetStandardsCodes: TUnitForUI['TargetStandardsCo
 }
 
 const Overview: React.FC<IOverviewProps> = ({
-  LearningSummary,
+  LearningSummary: _LearningSummary,
   jobVizCareerConnections,
   Description,
-  EstLessonTime,
+  EstLessonTime: _EstLessonTime,
   ForGrades,
   TargetSubject,
   SteamEpaulette,
@@ -72,7 +72,7 @@ const Overview: React.FC<IOverviewProps> = ({
   Text,
   Tags: _Tags,
   UnitTags,
-  GradesOrYears,
+  GradesOrYears: _GradesOrYears,
   _sectionDots,
   SectionTitle,
   TheGist,

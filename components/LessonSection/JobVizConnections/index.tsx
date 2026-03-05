@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { IJobVizConnection } from "../../../backend/models/Unit/JobViz";
 import { IConnectionJobViz } from "../../../backend/models/Unit/JobViz";
 import { GpPlusBtn } from "../../../pages/gp-plus";
-import { useRouter, usePathname } from "next/navigation";
+import { useRouter as _useRouter , usePathname } from "next/navigation";
 import JobToursModal from "../Modals/JobToursModal";
 import { DISABLE_FOOTER_PARAM_NAME } from "../../../components/Footer";
 import { DISABLE_NAVBAR_PARAM_NAME } from "../../../components/PortalNav";
@@ -12,10 +12,9 @@ import { getSessionStorageItem } from "../../../shared/fns";
 import { useUserContext } from "../../../providers/UserProvider";
 import { MdOutlineRocketLaunch } from "react-icons/md";
 import {
-  showJobNotFoundToast,
-  useCreateHandleJobTitleTxtClick,
+  showJobNotFoundToast, useCreateHandleJobTitleTxtClick as _useCreateHandleJobTitleTxtClick ,
 } from "../../JobViz/JobTours/JobToursCard";
-import { toast } from "react-toastify";
+import { toast as _toast } from "react-toastify";
 import jobVizDataObj from "../../../data/Jobviz/jobVizDataObj.json";
 import {
   ISelectedJob,
@@ -75,12 +74,12 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
   useEffect(() => {
     console.log("jobVizConnections: ", jobVizConnections);
   })
-  const pathname = usePathname();
+  const _pathname = usePathname();
   const {
     _selectedJob: [, setSelectedJob],
   } = useModalContext();
   const {
-    _isGpPlusMember: [isGpPlusMember],
+    _isGpPlusMember: [_isGpPlusMember],
   } = useUserContext();
   const didInitialRenderOccur = useRef(false);
   const isUserAGpPlusMember = useMemo(() => {

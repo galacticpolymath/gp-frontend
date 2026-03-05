@@ -9,10 +9,10 @@ import { verifyJwt } from "../../../nondependencyFns";
 import { getUserByEmail } from "../../../backend/services/userServices";
 import { getGpPlusMembership, getPlans, getSavings } from "../../../backend/services/outsetaServices";
 import { CustomError } from "../../../backend/utils/errors";
-import { calculatePercentSaved } from "../../../shared/fns";
+import { calculatePercentSaved as _calculatePercentSaved } from "../../../shared/fns";
 import { IPlanDetails } from "../../../apiServices/user/crudFns";
 
-type TReqQueryParams = {
+type _TReqQueryParams = {
   willComputeSavings: boolean
   willGetUserPlan: boolean
 }

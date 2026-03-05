@@ -309,7 +309,7 @@ const CopyLessonBtn: React.FC<
     const {
       _isGpPlusMember,
       _isCopyUnitBtnDisabled,
-      _willShowGpPlusCopyLessonHelperModal,
+      _willShowGpPlusCopyLessonHelperModal: willShowGpPlusCopyLessonHelperModalState,
     } = useUserContext();
     const {
       _lessonsCopyJobs,
@@ -343,14 +343,14 @@ const CopyLessonBtn: React.FC<
     const [isCopyLessonBtnDisabled] = _isCopyUnitBtnDisabled;
     const [, setIsCopyLessonHelperModalDisplayed] =
       _isCopyLessonHelperModalDisplayed;
-    const [willShowGpPlusCopyLessonHelperModal] =
-      _willShowGpPlusCopyLessonHelperModal;
+    const [_willShowGpPlusCopyLessonHelperModal] =
+      willShowGpPlusCopyLessonHelperModalState;
     const [, setIsGpPlusModalDisplayed] = _isGpPlusModalDisplayed;
     const didInitialRenderOccur = useRef(false);
     const openGDrivePickerToCopyLessonRef = useRef<(() => Promise<void>) | null>(
       null
     );
-    const [copyLessonJobLatestMsg, setCopyLessonJobLatestMsg] = useState<Partial<
+    const [_copyLessonJobLatestMsg, setCopyLessonJobLatestMsg] = useState<Partial<
       TCopyFilesMsg & { toastId: string }
     > | null>(null);
     const copyingLessonNameTxt =

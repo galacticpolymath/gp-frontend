@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { IOverview, IUnitAccessibility, IUnitOverview, IUnitVersions } from './types/overview';
+import { IOverview as _IOverview , IUnitAccessibility, IUnitOverview, IUnitVersions } from './types/overview';
 import { ICustomProp, IRootFieldToRetrieve, RootFieldToRetrieve } from './RootFieldsToRetrieve';
 
 const { Schema } = mongoose;
@@ -26,7 +26,7 @@ const AccessibilitySchema = new Schema<IAccessibility>({
   Abbrev_Descr: String,
   Link: String,
 }, { _id: false });
-const UnitAccessibilitySchema = new Schema<IUnitAccessibility>({
+const _UnitAccessibilitySchema = new Schema<IUnitAccessibility>({
   Type: String,
   Description: String,
   Abbrev_Descr: String,

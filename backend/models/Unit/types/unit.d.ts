@@ -9,7 +9,7 @@ import { IVersionNotes } from '../VersionNotes';
 import { TAcknowledgments } from './acknowledgments';
 import { IOverview, IUnitOverview, TOverviewForUI } from './overview';
 import { IPreview } from './preview';
-import { IStandards, IStandardsSec, ITargetStandardsCode, TStandardsForUI } from './standards';
+import { IStandards, IStandardsSec as _IStandardsSec , ITargetStandardsCode, TStandardsForUI } from './standards';
 import { IUnitTeachingMaterials, IUnitTeachingMaterialsForUI } from './teachingMaterials';
 
 export interface ILsnStatus {

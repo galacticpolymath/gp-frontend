@@ -1,5 +1,5 @@
-import React, { useMemo, useState } from "react";
-import { Button, Modal, Spinner } from "react-bootstrap";
+import React, { useMemo as _useMemo, useState } from "react";
+import { Button, Modal, Spinner as _Spinner } from "react-bootstrap";
 import useSiteSession from "../../../customHooks/useSiteSession";
 import { TUseStateReturnVal } from "../../../types/global";
 import { GpPlusBtn } from "../../../pages/gp-plus";
@@ -34,7 +34,7 @@ const JOBS_TOURS_DEMO_UNIT_NAME =
 
 const JobToursModal: React.FC<GpPlusModalProps> = ({ _isModalDisplayed }) => {
   const {
-    _jobToursModalCssProps: [jobToursModalCssProps, setJobToursModalCssProps],
+    _jobToursModalCssProps: [jobToursModalCssProps, _setJobToursModalCssProps],
   } = useModalContext();
   const [isModalDisplayed, setIsModalDisplayed] = _isModalDisplayed;
   const [isDoneLoading, setIsDoneLoading] = useState(false);

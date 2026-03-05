@@ -28,14 +28,14 @@ export const getSubmitBtn = () => {
 const GpSignUpResult: React.FC = () => {
   const { _isCreatingGpPlusAccount } = useModalContext();
   const router = useRouter();
-  const { confirmationToken } = router.query;
+  const { _confirmationToken } = router.query;
   const [isCreatingGpPlusAccount, setIsCreatingGpPlusAccount] = useState(true);
   const [, setIsCreatingGpPlusAccountModalDisplayed] = _isCreatingGpPlusAccount;
   const [canSubmitPasswordForm, setCanSubmitPasswordForm] = useState(false);
   const [passwordInput, setPasswordInput] = useState<Node | null>(null);
 
   useEffect(() => {
-    const observer = new MutationObserver((element) => {
+    const observer = new MutationObserver((_element) => {
 
       const outsetaModal = document.querySelector(".o--App--authWidget");
 

@@ -1,5 +1,5 @@
-import axios, { AxiosHeaders } from 'axios';
-import { sleep, waitWithExponentialBackOff } from '../../globalFns';
+import axios, { AxiosHeaders as _AxiosHeaders } from 'axios';
+import { sleep as _sleep , waitWithExponentialBackOff } from '../../globalFns';
 import { calculatePercentSaved } from '../../shared/fns';
 
 const OUTSETA_API_ORIGIN = 'https://galactic-polymath.outseta.com';
