@@ -47,6 +47,7 @@ import {
 } from "../backend/services/userStatsService";
 import { IUnitLesson } from "../types/global";
 import PortalNav from "../components/PortalNav";
+import PortalLiftButton from "../components/PortalLiftButton";
 import Footer from "../components/Footer";
 import { ensureAbsoluteUrl } from "../shared/seo";
 import {
@@ -208,6 +209,13 @@ const buildJobTourUrl = (resource: PreviewResource) => {
   }
   return "/jobviz";
 };
+
+type HeroStat = {
+  label: string;
+  value: string;
+};
+
+type HeroVisualType = "all" | "unit" | "app" | "video" | "lesson" | "jobviz";
 
 const getJobTitleFromSocCode = (socCode: string) => {
   const node = getNodeBySocCode(socCode);
@@ -2394,6 +2402,91 @@ export default function HomePage({
     if (resolvedTab === "JobViz") return `Explore ${totalJobTours} JobViz Tours`;
     return `Explore ${totalResources} Resources`;
   })();
+  const allHeroConfig = (() => {
+    const sharedLead =
+      "Filter by grade band, subject focus, and classroom format to find the best-fit resources fast.";
+
+    if (resolvedTab === "Units") {
+      return {
+        kicker: "Unit library",
+        lead:
+          "Browse full interdisciplinary units with standards alignment, lesson sequences, and classroom-ready supports.",
+        stats: [
+          { label: "Total units", value: `${totalUnits}` },
+          { label: "Typical format", value: "Multi-lesson units" },
+          { label: "Built for", value: "Grade bands 5-12+" },
+        ] as HeroStat[],
+        visualType: "unit" as HeroVisualType,
+      };
+    }
+
+    if (resolvedTab === "Apps") {
+      return {
+        kicker: "Interactive apps",
+        lead:
+          "Launch classroom-friendly interactive tools that connect unit concepts to hands-on exploration.",
+        stats: [
+          { label: "Total apps", value: `${totalApps}` },
+          { label: "Format", value: "Interactive experiences" },
+          { label: "Use case", value: "Whole class or stations" },
+        ] as HeroStat[],
+        visualType: "app" as HeroVisualType,
+      };
+    }
+
+    if (resolvedTab === "Videos") {
+      return {
+        kicker: "Classroom videos",
+        lead:
+          "Find short, engaging videos tied to unit storylines and real scientific research.",
+        stats: [
+          { label: "Total videos", value: `${totalVideos}` },
+          { label: "Best for", value: "Hooks + mini-lessons" },
+          { label: "Connected to", value: "Unit investigations" },
+        ] as HeroStat[],
+        visualType: "video" as HeroVisualType,
+      };
+    }
+
+    if (resolvedTab === "Lessons") {
+      return {
+        kicker: "Lesson plans",
+        lead:
+          "Locate lesson-level teaching materials, procedures, and supports ready for classroom implementation.",
+        stats: [
+          { label: "Total lessons", value: `${totalLessons}` },
+          { label: "Includes", value: "Teacher-ready resources" },
+          { label: "Designed for", value: "Flexible pacing" },
+        ] as HeroStat[],
+        visualType: "lesson" as HeroVisualType,
+      };
+    }
+
+    if (resolvedTab === "JobViz") {
+      return {
+        kicker: "JobViz tours",
+        lead:
+          "Explore curated JobViz paths connecting classroom topics to real careers and labor-market context.",
+        stats: [
+          { label: "Total tours", value: `${totalJobTours}` },
+          { label: "Focus", value: "Career exploration" },
+          { label: "Built by", value: "GP team + teachers" },
+        ] as HeroStat[],
+        visualType: "jobviz" as HeroVisualType,
+      };
+    }
+
+    return {
+      kicker: "All resources",
+      lead: sharedLead,
+      stats: [
+        { label: "Total resources", value: `${totalResources}` },
+        { label: "Units", value: `${totalUnits}` },
+        { label: "Apps + videos", value: `${totalApps + totalVideos}` },
+      ] as HeroStat[],
+      visualType: "all" as HeroVisualType,
+    };
+  })();
   const pageTitle = isHomeView
     ? "Home | GP Portal"
     : hasCommittedSearch
@@ -3088,26 +3181,67 @@ export default function HomePage({
               <div className={styles.allHeroGlow} aria-hidden="true" />
               <div className={styles.allHeroInner}>
                 <div className={styles.allHeroCopy}>
-                  <p className={styles.kicker}>All resources</p>
+                  <p className={styles.kicker}>{allHeroConfig.kicker}</p>
                   <h1 className={styles.allHeroTitle}>{allHeroTitle}</h1>
                   <p className={styles.allHeroLead}>
-                    Filter by grade band, subject focus, and classroom format to
-                    find the best-fit resources fast.
+                    {allHeroConfig.lead}
                   </p>
                   <div className={styles.allHeroStats}>
-                    <div className={styles.allStatCard}>
-                      <span>Total resources</span>
-                      <strong>{totalResources}</strong>
-                    </div>
-                    <div className={styles.allStatCard}>
-                      <span>Units</span>
-                      <strong>{totalUnits}</strong>
-                    </div>
-                    <div className={styles.allStatCard}>
-                      <span>Apps + videos</span>
-                      <strong>{totalApps + totalVideos}</strong>
-                    </div>
+                    {allHeroConfig.stats.map((stat) => (
+                      <div key={`${allHeroConfig.kicker}-${stat.label}`} className={styles.allStatCard}>
+                        <span>{stat.label}</span>
+                        <strong>{stat.value}</strong>
+                      </div>
+                    ))}
                   </div>
+                </div>
+                <div className={styles.allHeroVisual} aria-hidden="true">
+                  <div className={styles.allHeroIconPanel}>
+                    {allHeroConfig.visualType === "all" ? (
+                      <div className={styles.allHeroLogoGridWrap}>
+                        <div className={styles.allHeroLogoGrid}>
+                          <span className={styles.allHeroLogoTile}>
+                            <FiBookOpen />
+                          </span>
+                          <span className={styles.allHeroLogoTile}>
+                            <AppWindow />
+                          </span>
+                          <span className={styles.allHeroLogoTile}>
+                            <FiPlayCircle />
+                          </span>
+                          <span className={styles.allHeroLogoTile}>
+                            <NotebookPen />
+                          </span>
+                        </div>
+                        <span className={styles.allHeroLogoCenter}>
+                          <img
+                            src="/imgs/jobViz/jobviz_rocket_logo_purple_bold.svg"
+                            alt=""
+                            aria-hidden="true"
+                          />
+                        </span>
+                      </div>
+                    ) : (
+                      <span className={styles.allHeroIconSingle}>
+                        {allHeroConfig.visualType === "unit" && <FiBookOpen />}
+                        {allHeroConfig.visualType === "app" && <AppWindow />}
+                        {allHeroConfig.visualType === "video" && <FiPlayCircle />}
+                        {allHeroConfig.visualType === "lesson" && <NotebookPen />}
+                        {allHeroConfig.visualType === "jobviz" && (
+                          <img
+                            src="/imgs/jobViz/jobviz_rocket_logo_white_bold.svg"
+                            alt=""
+                            aria-hidden="true"
+                          />
+                        )}
+                      </span>
+                    )}
+                  </div>
+                  {allHeroConfig.visualType === "jobviz" && (
+                    <PortalLiftButton href="/jobviz">
+                      Open App
+                    </PortalLiftButton>
+                  )}
                 </div>
               </div>
             </header>

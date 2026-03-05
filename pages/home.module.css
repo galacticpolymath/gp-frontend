@@ -914,6 +914,7 @@
 .sectionOrientation > .sectionInner {
   position: relative;
   z-index: 2;
+  padding: 0 24px;
 }
 
 
@@ -1355,6 +1356,10 @@
 }
 
 @media (max-width: 1024px) {
+  .sectionOrientation .sectionInner {
+    padding: 0 16px;
+  }
+
   .sectionFresh .sectionInner {
     padding: 0 16px;
   }
@@ -2124,9 +2129,10 @@
 .allHeroInner {
   max-width: none;
   margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  gap: 32px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 28px;
   position: relative;
   z-index: 1;
   width: 100%;
@@ -2157,6 +2163,99 @@
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 12px;
   max-width: 720px;
+}
+
+.allHeroVisual {
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: 12px;
+}
+
+.allHeroIconPanel {
+  width: 168px;
+  height: 168px;
+  border-radius: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+}
+
+.allHeroLogoGridWrap {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  display: grid;
+  place-items: center;
+}
+
+.allHeroLogoGrid {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.allHeroLogoTile {
+  border-radius: 16px;
+  border: 1px solid rgba(240, 244, 255, 0.26);
+  background: rgba(24, 38, 92, 0.28);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #f0f4ff;
+}
+
+.allHeroLogoTile svg {
+  width: 26px;
+  height: 26px;
+}
+
+.allHeroLogoCenter {
+  position: absolute;
+  width: 72px;
+  height: 72px;
+  border-radius: 999px;
+  border: 1px solid rgba(240, 244, 255, 0.35);
+  background: rgba(240, 244, 255, 0.96);
+  box-shadow: 0 8px 14px rgba(11, 16, 40, 0.2);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.allHeroLogoCenter img {
+  width: 58px;
+  height: 58px;
+  object-fit: contain;
+}
+
+.allHeroIconSingle {
+  width: 100%;
+  height: 100%;
+  border-radius: 16px;
+  border: 1px solid rgba(240, 244, 255, 0.26);
+  background: rgba(24, 38, 92, 0.28);
+  color: #f0f4ff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.allHeroIconSingle svg {
+  width: 78px;
+  height: 78px;
+}
+
+.allHeroIconSingle img {
+  width: 108px;
+  height: 108px;
+  object-fit: contain;
 }
 
 .allStatCard {
@@ -3390,6 +3489,15 @@ details:not([open]) .filterSummary::after {
     grid-template-columns: 1fr;
   }
 
+  .allHeroInner {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .allHeroVisual {
+    justify-items: start;
+  }
+
   .allHeroStats {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -3607,6 +3715,37 @@ details:not([open]) .filterSummary::after {
 
   .allHero {
     padding: 56px 20px 40px;
+  }
+
+  .allHeroIconPanel {
+    width: 140px;
+    height: 140px;
+    border-radius: 18px;
+  }
+
+  .allHeroLogoCenter {
+    width: 58px;
+    height: 58px;
+  }
+
+  .allHeroLogoCenter img {
+    width: 46px;
+    height: 46px;
+  }
+
+  .allHeroLogoTile svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  .allHeroIconSingle svg {
+    width: 62px;
+    height: 62px;
+  }
+
+  .allHeroIconSingle img {
+    width: 84px;
+    height: 84px;
   }
 
   .allHeroStats {
