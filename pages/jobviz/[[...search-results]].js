@@ -106,6 +106,7 @@ const JobVizSearchResults = ({
   }
   const [, setSelectedJob] = modalContext._selectedJob;
   const [, setIsJobModalOn] = modalContext._isJobModalOn;
+  const [, setIsLoginModalDisplayed] = modalContext._isLoginModalDisplayed;
   const [jobvizReturnPath, setJobvizReturnPath] =
     modalContext._jobvizReturnPath;
   const [, setJobvizSummaryModal] = modalContext._jobvizSummaryModal;
@@ -1998,21 +1999,35 @@ const JobVizSearchResults = ({
           <div className={styles.jobvizIntroDialog} role="dialog" aria-modal="true">
             <h3>Save jobs for later</h3>
             <p>Create a free account to save jobs for later.</p>
-            <div className={styles.jobvizIntroActions}>
+            <div
+              className={`${styles.jobvizIntroActions} ${styles.jobvizSavedJobsActions}`}
+            >
+              <div className={styles.jobvizSavedJobsPrimaryActions}>
+                <button
+                  type="button"
+                  className={styles.jobvizIntroLogin}
+                  onClick={() => {
+                    setShowSavedJobsUpsell(false);
+                    setIsLoginModalDisplayed(true);
+                  }}
+                >
+                  Login
+                </button>
+                <Link
+                  href="/plus"
+                  className={styles.jobvizIntroContinue}
+                  onClick={() => setShowSavedJobsUpsell(false)}
+                >
+                  Create free account
+                </Link>
+              </div>
               <button
                 type="button"
-                className={styles.jobvizIntroDismiss}
+                className={styles.jobvizIntroNotNow}
                 onClick={() => setShowSavedJobsUpsell(false)}
               >
                 Not now
               </button>
-              <Link
-                href="/plus"
-                className={styles.jobvizIntroContinue}
-                onClick={() => setShowSavedJobsUpsell(false)}
-              >
-                Create free account
-              </Link>
             </div>
           </div>
         </div>

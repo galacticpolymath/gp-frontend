@@ -4107,6 +4107,19 @@ $jobviz-nav-height: 64px;
   flex-wrap: wrap;
 }
 
+.jobvizSavedJobsActions {
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.55rem;
+}
+
+.jobvizSavedJobsPrimaryActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
 .jobvizIntroDismiss,
 .jobvizIntroContinue {
   border-radius: 999px;
@@ -4125,6 +4138,26 @@ $jobviz-nav-height: 64px;
   color: #ffffff;
   background: linear-gradient(120deg, #1c6dea, #6f3dff);
   border-color: rgba(255, 255, 255, 0.35);
+}
+
+.jobvizIntroLogin {
+  border-radius: 999px;
+  border: 1px solid rgba(130, 169, 255, 0.48);
+  padding: 0.35rem 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  color: #e7f0ff;
+  background: rgba(35, 86, 185, 0.28);
+}
+
+.jobvizIntroNotNow {
+  border: 0;
+  background: transparent;
+  color: rgba(221, 232, 255, 0.9);
+  font-weight: 700;
+  padding: 0.1rem 0.25rem;
+  text-decoration: underline;
+  cursor: pointer;
 }
 
 .tourBuilderPlaceholder {

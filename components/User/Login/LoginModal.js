@@ -36,18 +36,33 @@ const LoginModal = () => {
     useState(false);
   const [errors, setErrors] = useState(new Map());
   const [loginForm, setLoginForm] = _loginForm;
-  const redirectUrl =
-    typeof window === "undefined"
-      ? ""
-      : (getSessionStorageItem("userEntryRedirectUrl") || window.location.href);
+  const [redirectUrl, setRedirectUrl] = useState("");
+
+  const resolveRedirectUrl = () => {
+    if (typeof window === "undefined") return "";
+    const currentUrl = window.location.href;
+    const storedRedirect = getSessionStorageItem("userEntryRedirectUrl");
+    const pathname = window.location.pathname;
+    const isAuthPage =
+      pathname === "/account" ||
+      pathname === "/sign-up" ||
+      pathname === "/student/login" ||
+      pathname === "/student/sign-up";
+
+    if (!isAuthPage) {
+      return currentUrl;
+    }
+
+    return storedRedirect || currentUrl;
+  };
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
-    const existing = getSessionStorageItem("userEntryRedirectUrl");
-    if (!existing) {
-      setSessionStorageItem("userEntryRedirectUrl", window.location.href);
-    }
-  }, []);
+    if (!isLoginModalDisplayed) return;
+    const nextRedirectUrl = resolveRedirectUrl();
+    if (!nextRedirectUrl) return;
+    setSessionStorageItem("userEntryRedirectUrl", nextRedirectUrl);
+    setRedirectUrl(nextRedirectUrl);
+  }, [isLoginModalDisplayed]);
 
   const handleOnInputChange = (event) => {
     const { name, value } = event.target;

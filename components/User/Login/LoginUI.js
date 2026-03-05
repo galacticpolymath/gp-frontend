@@ -64,19 +64,46 @@ const LoginUI = ({
   };
 
   const redirectUrl = useMemo(() => {
+    if (typeof window === "undefined") {
+      return "";
+    }
+
+    const fromParamRaw = router?.query?.from;
+    const fromParam = Array.isArray(fromParamRaw) ? fromParamRaw[0] : fromParamRaw;
+    let decodedFromParam = "";
+    if (typeof fromParam === "string" && fromParam) {
+      try {
+        decodedFromParam = decodeURIComponent(fromParam);
+      } catch {
+        decodedFromParam = "";
+      }
+    }
+    const origin = window.location.origin;
+    const isValidFromParam =
+      !!decodedFromParam &&
+      decodedFromParam.startsWith(origin) &&
+      !decodedFromParam.includes("/account");
+    if (isValidFromParam) {
+      return decodedFromParam;
+    }
+
     const redirectUrl = getSessionStorageItem("userEntryRedirectUrl");
 
     if (redirectUrl) {
       return redirectUrl;
     }
 
-    return typeof window === "undefined" ? "" : window.location.href;
-  }, []);
+    return window.location.href;
+  }, [router?.query?.from]);
+
+  useEffect(() => {
+    if (!redirectUrl) return;
+    setSessionStorageItem("userEntryRedirectUrl", redirectUrl);
+  }, [redirectUrl]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    const existing = getSessionStorageItem("userEntryRedirectUrl");
-    if (!existing) {
+    if (!getSessionStorageItem("userEntryRedirectUrl")) {
       setSessionStorageItem("userEntryRedirectUrl", window.location.href);
     }
   }, []);
