@@ -54,7 +54,6 @@ import UnitStickyHeader from './shell/UnitStickyHeader';
 import UnitOverviewHero from './shell/UnitOverviewHero';
 import UnitTabHero from './shell/UnitTabHero';
 import UnitOfficeUpsellModal from './shell/UnitOfficeUpsellModal';
-import stickyHeaderStyles from './styles/UnitStickyHeader.module.css';
 import {
   flattenStandards,
   formatGradeValue,
@@ -1252,7 +1251,6 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
     (user as { isTeacher?: boolean } | undefined)?.isTeacher
   );
   const [localAvatarUrl, setLocalAvatarUrl] = useState<string | null>(null);
-  const [profileAvatarUrl, setProfileAvatarUrl] = useState<string | null>(null);
   const [avatarCandidateIndex, setAvatarCandidateIndex] = useState(0);
   const [isAvatarHydrated, setIsAvatarHydrated] = useState(false);
   const sessionAvatarImage =
@@ -1264,13 +1262,12 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
       ? ((user as { picture?: string }).picture ?? '').trim()
       : '';
   const avatarCandidates = useMemo(() => {
-    const profileValue = profileAvatarUrl?.trim() ?? '';
     const localValue = localAvatarUrl?.trim() ?? '';
 
-    return [sessionAvatarImage, sessionAvatarPicture, profileValue, localValue].filter(
+    return [sessionAvatarImage, sessionAvatarPicture, localValue].filter(
       (value, index, arr): value is string => Boolean(value) && arr.indexOf(value) === index
     );
-  }, [localAvatarUrl, profileAvatarUrl, sessionAvatarImage, sessionAvatarPicture]);
+  }, [localAvatarUrl, sessionAvatarImage, sessionAvatarPicture]);
   const effectiveAvatarUrl = isAvatarHydrated && isAuthenticated
     ? avatarCandidates[avatarCandidateIndex] ?? null
     : null;
@@ -1385,10 +1382,9 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
   const hasAutoPrintedStandaloneRef = useRef(false);
   const lessonMaterialsGridRef = useRef<HTMLDivElement>(null);
   const lessonPreviewsCardRef = useRef<HTMLDivElement>(null);
+  const unitStickyHeaderRef = useRef<HTMLDivElement>(null);
+  const [unitStickyHeaderHeightPx, setUnitStickyHeaderHeightPx] = useState(140);
   const [lessonPreviewsCardHeight, setLessonPreviewsCardHeight] = useState<
-    number | null
-  >(null);
-  const [lessonMaterialsStickyTop, setLessonMaterialsStickyTop] = useState<
     number | null
   >(null);
   const citationStatusTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(
@@ -1434,36 +1430,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
     if (localAvatarUrl) {
       setLocalAvatarUrl(localAvatarUrl);
     }
-
-    if (profileAvatarUrl) return;
-    if (!token) return;
-
-    let isCancelled = false;
-    (async () => {
-      try {
-        const { data } = await axios.get<{ picture?: string }>(
-          '/api/get-user-account-data',
-          {
-            headers: {
-              Authorization: authorizationHeader,
-            },
-          }
-        );
-
-        if (isCancelled) return;
-
-        if (typeof data?.picture === 'string' && data.picture) {
-          setProfileAvatarUrl(data.picture);
-        }
-      } catch {
-        // no-op: fallback initials remain visible
-      }
-    })();
-
-    return () => {
-      isCancelled = true;
-    };
-  }, [authorizationHeader, isAvatarHydrated, isAuthenticated, profileAvatarUrl, token]);
+  }, [isAvatarHydrated, isAuthenticated]);
   const shouldShowGradeBandChooser = classroomResources.some(
     (resource) =>
       Boolean(resource?.gradePrefix?.trim() || resource?.grades?.trim())
@@ -2044,6 +2011,59 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
       return;
     }
 
+    if (isStandalonePreview) {
+      document.documentElement.style.setProperty('--unit-sticky-header-height', '0px');
+      return;
+    }
+
+    let rafId = 0;
+    const measureHeaderHeight = () => {
+      const height = unitStickyHeaderRef.current?.getBoundingClientRect().height ?? 0;
+      if (height > 0) {
+        setUnitStickyHeaderHeightPx((current) => {
+          if (Math.abs(current - height) < 1) {
+            return current;
+          }
+          return Math.round(height);
+        });
+      }
+      document.documentElement.style.setProperty(
+        '--unit-sticky-header-height',
+        `${Math.max(0, Math.round(height))}px`
+      );
+    };
+
+    const scheduleMeasure = () => {
+      window.cancelAnimationFrame(rafId);
+      rafId = window.requestAnimationFrame(measureHeaderHeight);
+    };
+
+    scheduleMeasure();
+    window.addEventListener('resize', scheduleMeasure);
+    window.addEventListener('gp:set-nav-hidden', scheduleMeasure as EventListener);
+
+    const resizeObserver =
+      typeof ResizeObserver !== 'undefined'
+        ? new ResizeObserver(scheduleMeasure)
+        : null;
+    if (resizeObserver && unitStickyHeaderRef.current) {
+      resizeObserver.observe(unitStickyHeaderRef.current);
+    }
+
+    return () => {
+      window.cancelAnimationFrame(rafId);
+      window.removeEventListener('resize', scheduleMeasure);
+      window.removeEventListener('gp:set-nav-hidden', scheduleMeasure as EventListener);
+      resizeObserver?.disconnect();
+      document.documentElement.style.setProperty('--unit-sticky-header-height', '0px');
+    };
+  }, [activeTab, isStandalonePreview]);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
     if (activeTab !== TAB_MATERIALS || isStandalonePreview) {
       setLessonPreviewsCardHeight(null);
       return;
@@ -2058,7 +2078,6 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
 
       if (window.innerWidth < 768) {
         setLessonPreviewsCardHeight(null);
-        setLessonMaterialsStickyTop(null);
         return;
       }
 
@@ -2066,22 +2085,16 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
       const portalNavOffset = Number.parseFloat(
         rootStyles.getPropertyValue('--portal-nav-offset')
       );
-      const unitStickyHeader = document.querySelector(
-        `.${stickyHeaderStyles.unitStickyHeader}`
-      ) as HTMLElement | null;
-      const unitStickyHeaderHeight = unitStickyHeader
-        ? unitStickyHeader.getBoundingClientRect().height
-        : 0;
+      const unitStickyHeaderHeight =
+        unitStickyHeaderRef.current?.getBoundingClientRect().height ?? 0;
       const stickyTopOffset =
         (Number.isFinite(portalNavOffset) ? portalNavOffset : 0) +
-        unitStickyHeaderHeight +
-        0;
+        unitStickyHeaderHeight;
       const viewportBottomPadding = 14;
       const nextHeight = Math.max(
         380,
         Math.floor(window.innerHeight - stickyTopOffset - viewportBottomPadding)
       );
-      setLessonMaterialsStickyTop(stickyTopOffset);
 
       setLessonPreviewsCardHeight((currentHeight) => {
         if (currentHeight != null && Math.abs(currentHeight - nextHeight) < 2) {
@@ -2108,11 +2121,8 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
     if (resizeObserver && lessonMaterialsGridRef.current) {
       resizeObserver.observe(lessonMaterialsGridRef.current);
     }
-    const unitStickyHeader = document.querySelector(
-      `.${stickyHeaderStyles.unitStickyHeader}`
-    ) as HTMLElement | null;
-    if (resizeObserver && unitStickyHeader) {
-      resizeObserver.observe(unitStickyHeader);
+    if (resizeObserver && unitStickyHeaderRef.current) {
+      resizeObserver.observe(unitStickyHeaderRef.current);
     }
 
     return () => {
@@ -3251,15 +3261,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
           maxHeight: `${lessonPreviewsCardHeight}px`,
         }
       : undefined;
-  const previewPaneStickyStyle =
-    lessonMaterialsStickyTop != null
-      ? {
-          ...fixedLessonPaneStyle,
-          position: 'sticky' as const,
-          top: `${lessonMaterialsStickyTop}px`,
-          alignSelf: 'start' as const,
-        }
-      : fixedLessonPaneStyle;
+  const previewPaneStickyStyle = fixedLessonPaneStyle;
 
   const handleGradeBandFilter = (gradeBand: TGradeBand) => {
     setSelectedGradeBands((current) => {
@@ -3380,6 +3382,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
     >
       {!isStandalonePreview && (
         <UnitStickyHeader
+          headerRef={unitStickyHeaderRef}
           unitTitle={unitTitle}
           unitSubtitle={unitSubtitle}
           isSearchExpanded={isSearchExpanded}
@@ -3410,6 +3413,15 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
           searchResults={searchResults}
           handleSearchSelect={handleSearchSelect}
           renderHighlightedText={renderHighlightedText}
+        />
+      )}
+      {!isStandalonePreview && (
+        <div
+          className={styles.unitStickyHeaderSpacer}
+          style={{
+            height: `calc(var(--portal-nav-offset, 0px) + ${unitStickyHeaderHeightPx}px)`,
+          }}
+          aria-hidden="true"
         />
       )}
 

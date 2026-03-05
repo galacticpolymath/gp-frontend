@@ -27,6 +27,7 @@ type TSearchResultEntry = {
 };
 
 type TUnitStickyHeaderProps = {
+  headerRef: React.RefObject<HTMLDivElement | null>;
   unitTitle: string;
   unitSubtitle: string;
   isSearchExpanded: boolean;
@@ -67,6 +68,7 @@ type TUnitStickyHeaderProps = {
 };
 
 const UnitStickyHeader: React.FC<TUnitStickyHeaderProps> = ({
+  headerRef,
   unitTitle,
   unitSubtitle,
   isSearchExpanded,
@@ -98,7 +100,15 @@ const UnitStickyHeader: React.FC<TUnitStickyHeaderProps> = ({
   handleSearchSelect,
   renderHighlightedText,
 }) => (
-  <div className={styles.unitStickyHeader}>
+  <div
+    ref={headerRef}
+    className={styles.unitStickyHeader}
+    style={{
+      position: 'fixed',
+      top: 'var(--portal-nav-offset, 0px)',
+      zIndex: 60,
+    }}
+  >
     <div className={styles.unitStickyInner}>
       <div className={styles.unitStickyTopRow}>
         <div className={styles.unitStickyTitle}>

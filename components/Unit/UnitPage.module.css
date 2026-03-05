@@ -4,6 +4,10 @@
   --free-tier-blue-surface: #eef7ff;
   --materials-active-blue: #1669ac;
   --sticky-offwhite: rgba(220, 233, 255, 0.9);
+  --unit-sticky-header-height: 0px;
+  --lesson-preview-sticky-top: calc(
+    var(--portal-nav-offset, 0px) + var(--unit-sticky-header-height, 0px)
+  );
   font-family: var(--font-family-base, "Noto Sans", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif);
   color: #1c2233;
   background: radial-gradient(circle at top, rgba(44, 131, 195, 0.18), transparent 45%),
@@ -57,6 +61,10 @@
   padding: 6px 16px 24px;
   display: grid;
   gap: 14px;
+}
+
+.unitStickyHeaderSpacer {
+  min-height: 140px;
 }
 
 .unitMainOverview {
@@ -3469,6 +3477,8 @@
 
   .lessonPreviewsCard {
     position: sticky;
+    top: var(--lesson-preview-sticky-top, 0px);
+    align-self: start;
   }
 
   .licenseBannerInner {

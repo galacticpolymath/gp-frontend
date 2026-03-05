@@ -3,7 +3,6 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useEffect, useRef, useState } from "react";
 import { Home, ListFilter, Menu, Search } from "lucide-react";
-import axios from "axios";
 import useSiteSession from "../customHooks/useSiteSession";
 import styles from "./PortalNav.module.css";
 import GpLogo from "../public/GP_bubbleLogo300px.png";
@@ -51,7 +50,9 @@ const PortalNav: React.FC<PortalNavProps> = ({
     }
     return value === "true";
   })();
-  const isUnitRoute = router.pathname.startsWith("/units");
+  const isUnitRoute =
+    router.pathname.startsWith("/units") ||
+    (typeof router.asPath === "string" && router.asPath.startsWith("/units"));
 
   const [navOpen, setNavOpen] = useState(false);
   const [accountMenuOpen, setAccountMenuOpen] = useState(false);
@@ -67,12 +68,8 @@ const PortalNav: React.FC<PortalNavProps> = ({
   const accountMenuOpenRef = useRef(false);
   const navHiddenRef = useRef(false);
   const suppressUnhideUntil = useRef(0);
-  const { status, user, token, isGpPlusMember, logUserOut } = useSiteSession();
+  const { status, user, isGpPlusMember, logUserOut } = useSiteSession();
   const isAuthenticated = status === "authenticated";
-  const authorizationHeader =
-    typeof token === "string" && token.startsWith("Bearer ")
-      ? token
-      : `Bearer ${token ?? ""}`;
   const avatarUrl = user?.image ?? profileAvatarUrl ?? null;
   const isPlusMember = isGpPlusMember === true;
   const effectiveIsAuthenticated = isHydrated ? isAuthenticated : false;
@@ -118,35 +115,7 @@ const PortalNav: React.FC<PortalNavProps> = ({
       setProfileAvatarUrl(localAvatarUrl);
     }
 
-    if (profileAvatarUrl) return;
-    if (!token) return;
-
-    let isCancelled = false;
-    (async () => {
-      try {
-        const { data } = await axios.get<{ picture?: string }>(
-          "/api/get-user-account-data",
-          {
-            headers: {
-              Authorization: authorizationHeader,
-            },
-          }
-        );
-
-        if (isCancelled) return;
-
-        if (typeof data?.picture === "string" && data.picture) {
-          setProfileAvatarUrl(data.picture);
-        }
-      } catch {
-        // no-op: fallback initials remain visible
-      }
-    })();
-
-    return () => {
-      isCancelled = true;
-    };
-  }, [authorizationHeader, isHydrated, isAuthenticated, profileAvatarUrl, token]);
+  }, [isHydrated, isAuthenticated]);
 
 
   useEffect(() => {
@@ -235,7 +204,7 @@ const PortalNav: React.FC<PortalNavProps> = ({
   }, [disableNavbar, isUnitRoute]);
 
   useEffect(() => {
-    if (disableNavbar) return;
+    if (disableNavbar || isUnitRoute) return;
     if (typeof window === "undefined") return;
     const root = document.documentElement;
 
@@ -262,7 +231,7 @@ const PortalNav: React.FC<PortalNavProps> = ({
         handleSuppressNavUnhide as EventListener
       );
     };
-  }, [disableNavbar]);
+  }, [disableNavbar, isUnitRoute]);
 
   useEffect(() => {
     if (disableNavbar) return;

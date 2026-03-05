@@ -1,7 +1,11 @@
 .unitStickyHeader {
-  position: sticky;
+  position: fixed;
+  left: 0;
+  right: 0;
+  width: 100%;
+  top: 0;
   top: var(--portal-nav-offset, 0px);
-  z-index: 20;
+  z-index: 60;
   backdrop-filter: blur(12px);
   background: linear-gradient(120deg, rgba(13, 18, 34, 0.94), rgba(21, 34, 64, 0.94));
   border-top: 1px solid rgba(173, 216, 255, 0.12);

@@ -112,6 +112,16 @@ const useSiteSession = () => {
         ? normalizedUser.email.toLowerCase()
         : "";
     if (!userEmail) return;
+
+    const cachedEmail = (
+      window.sessionStorage.getItem(GP_PLUS_EMAIL_STORAGE_KEY) || ""
+    ).toLowerCase();
+    const cachedStatus = window.sessionStorage.getItem(GP_PLUS_STATUS_STORAGE_KEY);
+    const hasCachedStatusForUser =
+      cachedEmail === userEmail &&
+      (cachedStatus === "true" || cachedStatus === "false");
+    if (hasCachedStatusForUser) return;
+
     if (lastFetchedGpPlusEmailRef.current === userEmail) return;
     lastFetchedGpPlusEmailRef.current = userEmail;
 

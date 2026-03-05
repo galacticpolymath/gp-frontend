@@ -1,13 +1,11 @@
-import React, { createContext, PropsWithChildren, useContext, useEffect, useRef, useState } from 'react';
+import React, { createContext, PropsWithChildren, useContext, useEffect, useState } from 'react';
 import cookies from 'js-cookie';
-import { useSession } from 'next-auth/react';
-import axios from 'axios';
-import { IUserSession } from '../types/global';
 import { TUseStateReturnVal } from '../types/global';
 import {
   TAboutUserForm,
   TUserSchemaForClient,
 } from '../backend/models/User/types';
+import useSiteSession from '../customHooks/useSiteSession';
 
 /**
  * @typedef {Object} TGradesOrYears
@@ -91,14 +89,11 @@ const GP_PLUS_STATUS_STORAGE_KEY = 'isGpPlusUser';
 const GP_PLUS_EMAIL_STORAGE_KEY = 'isGpPlusUserEmail';
 
 export const UserProvider: React.FC<PropsWithChildren> = ({ children }) => {
-  const { data, status } = useSession();
-  const sessionData = data as IUserSession | null;
-  const authToken = sessionData?.token ?? null;
+  const { status, user, isGpPlusMember: sessionGpPlusMember } = useSiteSession();
   const userEmail =
-    typeof sessionData?.user?.email === 'string'
-      ? sessionData.user.email.toLowerCase()
+    typeof user?.email === 'string'
+      ? user.email.toLowerCase()
       : '';
-  const didAttemptGpPlusFetch = useRef(false);
   const [aboutUserForm, setAboutUserForm] = useState(userAccountDefault);
   const [isCopyUnitBtnDisabled, setIsCopyUnitBtnDisabled] = useState(true);
   const [accountForm, setAccountForm] = useState({
@@ -140,45 +135,10 @@ export const UserProvider: React.FC<PropsWithChildren> = ({ children }) => {
 
   useEffect(() => {
     if (status !== 'authenticated') return;
-    if (!authToken) return;
-    if (didAttemptGpPlusFetch.current) return;
-    if (typeof window === 'undefined') return;
-
-    const cachedEmail = (
-      window.sessionStorage.getItem(GP_PLUS_EMAIL_STORAGE_KEY) || ''
-    ).toLowerCase();
-    const hasCachedStatusForUser =
-      cachedEmail === userEmail &&
-      typeof window.sessionStorage.getItem(GP_PLUS_STATUS_STORAGE_KEY) ===
-        'string';
-
-    if (hasCachedStatusForUser) {
-      return;
-    }
-
-    didAttemptGpPlusFetch.current = true;
-    axios
-      .get('/api/get-user-account-data', {
-        headers: { Authorization: `Bearer ${authToken}` },
-      })
-      .then((response) => {
-        const isGpPlus = response?.data?.isGpPlusMember;
-        if (typeof isGpPlus === 'boolean') {
-          window.sessionStorage.setItem(
-            GP_PLUS_STATUS_STORAGE_KEY,
-            String(isGpPlus)
-          );
-          if (userEmail) {
-            window.sessionStorage.setItem(GP_PLUS_EMAIL_STORAGE_KEY, userEmail);
-          }
-          cookies.set('isGpPlusMember', String(isGpPlus), { path: '/' });
-          setIsGpPlusMember(isGpPlus);
-        }
-      })
-      .catch(() => {
-        didAttemptGpPlusFetch.current = false;
-      });
-  }, [authToken, status, userEmail]);
+    if (typeof sessionGpPlusMember !== 'boolean') return;
+    if (sessionGpPlusMember === isGpPlusMember) return;
+    setIsGpPlusMember(sessionGpPlusMember);
+  }, [isGpPlusMember, sessionGpPlusMember, status]);
   const value: TUserProviderValue = {
     _aboutUserForm: [aboutUserForm, setAboutUserForm],
     _willShowGpPlusCopyLessonHelperModal: [
