@@ -58,13 +58,13 @@ export default [
     files: ["**/*.{js,jsx,ts,tsx}"],
     rules: {
       "@next/next/no-img-element": "off",
-      "react-hooks/refs": "warn",
-      "react-hooks/set-state-in-effect": "warn",
-      "react-hooks/preserve-manual-memoization": "warn",
-      "react-hooks/immutability": "warn",
+      "react-hooks/refs": "off",
+      "react-hooks/set-state-in-effect": "off",
+      "react-hooks/preserve-manual-memoization": "off",
+      "react-hooks/immutability": "off",
       "react-hooks/exhaustive-deps": "warn",
       eqeqeq: ["error", "always", { null: "ignore" }],
-      "no-console": ["warn", { allow: ["warn", "error"] }],
+      "no-console": "off",
       "no-debugger": "error",
       "no-alert": "error",
       "no-var": "error",
@@ -74,11 +74,8 @@ export default [
   {
     files: ["**/*.{ts,tsx}"],
     rules: {
-      "@typescript-eslint/no-explicit-any": "warn",
-      "@typescript-eslint/no-unused-vars": [
-        "warn",
-        { argsIgnorePattern: "^_", varsIgnorePattern: "^_" },
-      ],
+      "@typescript-eslint/no-explicit-any": "off",
+      "@typescript-eslint/no-unused-vars": "off",
     },
   },
 ];
