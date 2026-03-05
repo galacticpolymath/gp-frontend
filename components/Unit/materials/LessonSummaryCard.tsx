@@ -2,7 +2,7 @@ import React from 'react';
 import Image from 'next/image';
 import { BrainCog } from 'lucide-react';
 import RichText from '../../RichText';
-import styles from '../UnitPage.module.css';
+import styles from './UnitMaterials.module.css';
 import { IItemForUI, INewUnitLesson } from '../../../backend/models/Unit/types/teachingMaterials';
 
 type TLessonSummaryCardProps = {

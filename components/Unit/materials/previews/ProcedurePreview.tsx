@@ -10,7 +10,7 @@ import {
 } from 'lucide-react';
 import RichText from '../../../RichText';
 import ChunkGraph from '../../../LessonSection/TeachIt/ChunkGraph';
-import styles from '../../UnitPage.module.css';
+import styles from '../UnitMaterials.module.css';
 import { IItemForUI, INewUnitLesson } from '../../../../backend/models/Unit/types/teachingMaterials';
 
 type TProcedurePreviewProps = {

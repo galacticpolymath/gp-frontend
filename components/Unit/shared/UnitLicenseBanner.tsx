@@ -1,7 +1,7 @@
 import React from 'react';
 import Image from 'next/image';
 import { ChevronUp, Copy } from 'lucide-react';
-import styles from '../UnitPage.module.css';
+import styles from './UnitLicenseBanner.module.css';
 
 type TAttributionDisplay = {
   titleByAuthors: string;

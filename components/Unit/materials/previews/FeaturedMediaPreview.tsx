@@ -1,7 +1,7 @@
 import React from 'react';
 import { MonitorPlay } from 'lucide-react';
 import LessonsCarousel from '../../../LessonSection/Preview/LessonsCarousel';
-import styles from '../../UnitPage.module.css';
+import styles from '../UnitMaterials.module.css';
 
 type TFeaturedMediaPreviewProps = {
   hasFeaturedMedia: boolean;

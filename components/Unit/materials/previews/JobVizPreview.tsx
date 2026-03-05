@@ -3,7 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Network, NotebookPen } from 'lucide-react';
 import { LucideIcon } from '../../../JobViz/LucideIcon';
-import styles from '../../UnitPage.module.css';
+import styles from '../UnitMaterials.module.css';
 
 type TJobVizPreviewProps = {
   hasJobVizConnections: boolean;

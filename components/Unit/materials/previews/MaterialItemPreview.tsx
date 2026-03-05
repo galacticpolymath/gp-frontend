@@ -2,7 +2,7 @@ import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { CircleAlert, Eye, SquareArrowOutUpRight } from 'lucide-react';
-import styles from '../../UnitPage.module.css';
+import styles from '../UnitMaterials.module.css';
 
 type TMaterialItemPreviewProps = {
   activeLessonItems: any[];

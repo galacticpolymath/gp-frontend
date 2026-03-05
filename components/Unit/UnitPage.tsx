@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { format } from 'date-fns';
 import axios from 'axios';
 import styles from './UnitPage.module.css';
+import materialStyles from './materials/UnitMaterials.module.css';
 import {
   FileArchive,
   FileImage,
@@ -2478,11 +2479,15 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
       return;
     }
 
+    document.documentElement.dataset.navAutohide = 'off';
     setPortalNavHidden(true);
     const syncTimer = window.setTimeout(() => setPortalNavHidden(true), 120);
     suppressPortalNavReveal(1200);
     setIsPortalNavCollapsed(true);
-    return () => window.clearTimeout(syncTimer);
+    return () => {
+      window.clearTimeout(syncTimer);
+      delete document.documentElement.dataset.navAutohide;
+    };
   }, []);
 
   useEffect(() => {
@@ -3477,8 +3482,8 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
         )}
 
         {activeTab === TAB_MATERIALS && (
-          <section className={`${styles.unitSection} ${styles.unitTabFadeIn}`}>
-            <div className={styles.materialsLayout}>
+          <section className={`${materialStyles.unitSection} ${styles.unitTabFadeIn}`}>
+            <div className={materialStyles.materialsLayout}>
               {activeLesson ? (
                 isStandalonePreview ? (
                   <MaterialsStandalonePreview
@@ -3499,7 +3504,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                         onOpenInNewTab={handleOpenBackgroundInNewTab}
                         showLinkOutAction={false}
                         showPanelHeading={false}
-                        panelClassName={styles.lessonProcedureStandalonePanel}
+                        panelClassName={materialStyles.lessonProcedureStandalonePanel}
                       />
                     )}
                     procedurePanel={(
@@ -3510,7 +3515,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                         onOpenInNewTab={handleOpenProcedureInNewTab}
                         showLinkOutAction={false}
                         showPanelHeading={false}
-                        panelClassName={styles.lessonProcedureStandalonePanel}
+                        panelClassName={materialStyles.lessonProcedureStandalonePanel}
                       />
                     )}
                   />
@@ -3522,7 +3527,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                       ? getLessonSearchAnchorId(activeLessonId)
                       : undefined
                   }
-                  className={`${styles.lessonLayout} ${styles.unitTabFadeIn}`}
+                  className={`${materialStyles.lessonLayout} ${styles.unitTabFadeIn}`}
                 >
                   <LessonSummaryCard
                     activeLesson={activeLesson}
@@ -3545,7 +3550,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                   />
                   <div
                     ref={lessonMaterialsGridRef}
-                    className={styles.lessonMaterialsGrid}
+                    className={materialStyles.lessonMaterialsGrid}
                   >
                     <MaterialsResourcesPanel
                       isGpPlusUser={isGpPlusUser}
@@ -3667,7 +3672,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                           latestCopiedLessonFolderUrl={latestCopiedLessonFolderUrl}
                         />
                       ) : (
-                        <p className={styles.unitMutedText}>
+                        <p className={materialStyles.unitMutedText}>
                           Item previews will appear here.
                         </p>
                       )}
@@ -3676,7 +3681,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                 </div>
                 )
               ) : (
-                <p className={styles.unitMutedText}>
+                <p className={materialStyles.unitMutedText}>
                   Choose a lesson to explore teaching materials.
                 </p>
               )}

@@ -1,6 +1,6 @@
 import React from 'react';
 import { BowArrow, SquareArrowOutUpRight } from 'lucide-react';
-import styles from '../../UnitPage.module.css';
+import styles from '../UnitMaterials.module.css';
 
 type TGoingFurtherPreviewProps = {
   hasGoingFurther: boolean;

@@ -2,7 +2,7 @@ import React from 'react';
 import Image from 'next/image';
 import { Eye, FileStack, SquareArrowOutUpRight } from 'lucide-react';
 import CopyLessonBtn from '../../LessonSection/TeachIt/CopyLessonBtn';
-import styles from '../UnitPage.module.css';
+import styles from './UnitMaterials.module.css';
 
 type TMaterialsGpPlusFunctionsSectionProps = {
   isJobVizPreviewOpen: boolean;

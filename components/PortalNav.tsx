@@ -51,8 +51,19 @@ const PortalNav: React.FC<PortalNavProps> = ({
     return value === "true";
   })();
   const isUnitRoute =
+    router.route.startsWith("/units") ||
     router.pathname.startsWith("/units") ||
     (typeof router.asPath === "string" && router.asPath.startsWith("/units"));
+  const isCurrentUnitPath = () => {
+    if (typeof window !== "undefined") {
+      return window.location.pathname.startsWith("/units/");
+    }
+    return isUnitRoute;
+  };
+  const isNavAutohideDisabled = () => {
+    if (typeof document === "undefined") return false;
+    return document.documentElement.dataset.navAutohide === "off";
+  };
 
   const [navOpen, setNavOpen] = useState(false);
   const [accountMenuOpen, setAccountMenuOpen] = useState(false);
@@ -151,7 +162,6 @@ const PortalNav: React.FC<PortalNavProps> = ({
 
   useEffect(() => {
     if (disableNavbar) return;
-    if (isUnitRoute) return;
     if (typeof window === "undefined") return;
     const root = document.documentElement;
 
@@ -162,6 +172,14 @@ const PortalNav: React.FC<PortalNavProps> = ({
     };
 
     const handleScroll = () => {
+      if (isCurrentUnitPath() || isNavAutohideDisabled()) {
+        if (navHiddenRef.current) {
+          navHiddenRef.current = false;
+          setIsNavHidden(false);
+          applyOffset(false);
+        }
+        return;
+      }
       if (navOpenRef.current) return;
       if (accountMenuOpenRef.current) return;
       if (ticking.current) return;
@@ -201,14 +219,17 @@ const PortalNav: React.FC<PortalNavProps> = ({
 
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [disableNavbar, isUnitRoute]);
+  }, [disableNavbar, router.asPath, isUnitRoute]);
 
   useEffect(() => {
-    if (disableNavbar || isUnitRoute) return;
+    if (disableNavbar) return;
     if (typeof window === "undefined") return;
     const root = document.documentElement;
 
     const handleSuppressNavUnhide = (event: Event) => {
+      if (isCurrentUnitPath() || isNavAutohideDisabled()) {
+        return;
+      }
       const customEvent = event as CustomEvent<{ durationMs?: number }>;
       const durationMs =
         typeof customEvent.detail?.durationMs === "number"
@@ -231,7 +252,18 @@ const PortalNav: React.FC<PortalNavProps> = ({
         handleSuppressNavUnhide as EventListener
       );
     };
-  }, [disableNavbar, isUnitRoute]);
+  }, [disableNavbar, router.asPath, isUnitRoute]);
+
+  useEffect(() => {
+    if (disableNavbar) return;
+    if (!isCurrentUnitPath() && !isNavAutohideDisabled()) return;
+    if (typeof window === "undefined") return;
+    const root = document.documentElement;
+    navHiddenRef.current = false;
+    setIsNavHidden(false);
+    const navHeight = navRef.current?.getBoundingClientRect().height ?? 0;
+    root.style.setProperty("--portal-nav-offset", `${Math.max(0, Math.round(navHeight))}px`);
+  }, [disableNavbar, router.asPath]);
 
   useEffect(() => {
     if (disableNavbar) return;

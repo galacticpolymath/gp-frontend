@@ -1,0 +1,248 @@
+.unitSection {
+  width: 100%;
+}
+
+.unitTabFadeIn {
+  animation: unitTabFadeIn 300ms ease-out both;
+}
+
+@keyframes unitTabFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.unitMutedText {
+  font-size: 15px;
+  line-height: 1.5;
+  color: #6a7087;
+}
+
+.richTextBlock :global(p) {
+  font-size: 16px;
+  color: #4c5269;
+  line-height: 1.5;
+}
+
+.richTextBlock :global(h3),
+.richTextBlock :global(h4) {
+  margin: 0 0 8px;
+  font-size: 16px;
+  line-height: 1.2;
+  color: #1f355a;
+}
+
+.richTextBlock :global(ol),
+.richTextBlock :global(ul),
+.richTextBlock :global(li) {
+  font-size: 16px;
+  line-height: 1.5;
+  color: #4c5269;
+}
+
+.unitLeadMarkdown {
+  padding-bottom: 10px;
+}
+
+.unitLeadMarkdown :global(p) {
+  margin: 0 0 8px;
+  color: #1f355a;
+}
+
+.unitSummaryMarkdown :global(p) {
+  margin: 0 0 8px;
+}
+
+.unitOverviewGrid {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+}
+
+.unitOverviewCard,
+.unitOverviewCardWide {
+  min-width: 0;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.27);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  padding: 12px;
+}
+
+.unitOverviewCardWide {
+  grid-column: 1 / -1;
+}
+
+.unitOverviewCardPrimary :global(li) {
+  margin-bottom: 4px;
+}
+
+.unitOverviewCardPrimary :global(li:last-child) {
+  margin-bottom: 0;
+}
+
+.unitOverviewSectionTitle {
+  margin: 0 0 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 16px;
+  line-height: 1.2;
+}
+
+.unitOverviewSectionTitleIcon {
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #1f355a;
+  border: 1px solid rgba(44, 131, 195, 0.2);
+  background: rgba(44, 131, 195, 0.16);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.52);
+}
+
+.atGlanceGrid {
+  display: grid;
+  gap: 8px;
+  height: 100%;
+}
+
+.atGlanceItem {
+  width: 100%;
+  padding: 8px;
+  text-align: left;
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  align-items: start;
+  gap: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.27);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+}
+
+.atGlanceItemAction {
+  border: 0;
+  appearance: none;
+  cursor: pointer;
+  font: inherit;
+}
+
+.atGlanceItemAction:hover,
+.atGlanceItemAction:focus-visible {
+  background: rgba(255, 255, 255, 0.35);
+}
+
+.atGlanceIcon {
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #1f355a;
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  background: linear-gradient(145deg, rgba(44, 131, 195, 0.18), rgba(108, 45, 130, 0.12));
+  box-shadow: 0 4px 10px rgba(44, 131, 195, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.52);
+}
+
+.atGlanceContent {
+  display: grid;
+  gap: 2px;
+}
+
+.atGlanceLabel {
+  font-size: 13px;
+  line-height: 1.3;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #4c5269;
+}
+
+.atGlanceValue {
+  font-size: 16px;
+  line-height: 1.35;
+  font-weight: 600;
+  color: #1f355a;
+}
+
+.atGlanceValue strong {
+  font-weight: 700;
+}
+
+.learningEpaulette {
+  width: 100%;
+  margin-top: 4px;
+  grid-column: 1 / -1;
+}
+
+.learningEpaulette :global(img) {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.alignedSubjectsText {
+  grid-column: 1 / -1;
+  margin-top: 2px;
+  font-size: 14px;
+  color: #2c83c3;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.previewCarousel {
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-start;
+}
+
+.previewCarousel :global(.carousel-root),
+.previewCarousel :global(.carousel),
+.previewCarousel :global(.carousel .slider-wrapper),
+.previewCarousel :global(.carousel .slider),
+.previewCarousel :global(.carousel .slide) {
+  width: 100%;
+  min-width: 0;
+}
+
+.previewCarousel :global(.carousel .slide img) {
+  width: 100%;
+  max-height: 26vh;
+  object-fit: contain;
+}
+
+.previewCarousel :global(.autoCarouselContainer) {
+  width: 100%;
+  min-height: 0;
+  padding: 6px 6px 2px;
+  border-radius: 14px;
+  border: 1px solid rgba(108, 45, 130, 0.16);
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.76), rgba(246, 250, 255, 0.78));
+  box-shadow: 0 10px 20px rgba(22, 34, 56, 0.09);
+}
+
+@media (min-width: 768px) {
+  .unitOverviewGrid {
+    grid-template-columns: minmax(0, 2.15fr) minmax(0, 1fr);
+  }
+
+  .unitOverviewCardCompact {
+    grid-column: 2;
+    height: 100%;
+    display: flex;
+  }
+}

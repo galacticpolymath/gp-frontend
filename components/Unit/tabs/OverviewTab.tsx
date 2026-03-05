@@ -3,7 +3,7 @@ import Image from 'next/image';
 import { Clock3, GraduationCap, MonitorPlay, NotebookPen, Target } from 'lucide-react';
 import RichText from '../../RichText';
 import LessonsCarousel from '../../LessonSection/Preview/LessonsCarousel';
-import styles from '../UnitPage.module.css';
+import styles from './OverviewTab.module.css';
 
 type TOverviewTabProps = {
   unit: any;
@@ -114,7 +114,7 @@ const OverviewTab: React.FC<TOverviewTabProps> = ({
               </span>
               <div className={styles.atGlanceContent}>
                 <span className={styles.atGlanceLabel}>Target standards</span>
-                <span className={`${styles.atGlanceValue} ${styles.atGlanceValueCompact}`}>
+                <span className={styles.atGlanceValue}>
                   <strong>{targetStandardsSummary.set} |</strong>{' '}
                   {targetStandardsSummary.details}
                 </span>

@@ -1,6 +1,6 @@
 import React from 'react';
 import RichText from '../../RichText';
-import styles from '../UnitPage.module.css';
+import styles from './CreditsTab.module.css';
 
 type TCreditsTabProps = {
   hasCreditsTabContent: boolean;

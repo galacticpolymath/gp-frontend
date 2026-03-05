@@ -2,7 +2,7 @@ import React from 'react';
 import Image from 'next/image';
 import QRCode from 'react-qr-code';
 import { Printer } from 'lucide-react';
-import styles from '../UnitPage.module.css';
+import styles from './UnitMaterials.module.css';
 
 type TMaterialsStandalonePreviewProps = {
   isBackgroundStandaloneView: boolean;

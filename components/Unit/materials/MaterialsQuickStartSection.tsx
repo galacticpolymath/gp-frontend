@@ -1,6 +1,6 @@
 import React from 'react';
 import { Apple, BookOpenText, BowArrow, MonitorPlay } from 'lucide-react';
-import styles from '../UnitPage.module.css';
+import styles from './UnitMaterials.module.css';
 
 type TMaterialsQuickStartSectionProps = {
   isFeaturedMediaOpen: boolean;

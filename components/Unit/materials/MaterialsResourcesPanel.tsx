@@ -1,7 +1,7 @@
 import React from 'react';
 import Image from 'next/image';
 import { X } from 'lucide-react';
-import styles from '../UnitPage.module.css';
+import styles from './UnitMaterials.module.css';
 import MaterialsQuickStartSection from './MaterialsQuickStartSection';
 import MaterialsGpPlusFunctionsSection from './MaterialsGpPlusFunctionsSection';
 import MaterialsPreviewDownloadSection from './MaterialsPreviewDownloadSection';

@@ -1,6 +1,6 @@
 import React from 'react';
 import { ArrowRight } from 'lucide-react';
-import styles from '../UnitPage.module.css';
+import styles from './NextNavigationCta.module.css';
 
 const SquareArrowRightExitIcon: React.FC<{
   size?: number;

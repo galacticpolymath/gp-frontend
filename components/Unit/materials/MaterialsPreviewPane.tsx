@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from '../UnitPage.module.css';
+import styles from './UnitMaterials.module.css';
 
 type TMaterialsPreviewPaneProps = {
   lessonPreviewsCardRef: React.RefObject<HTMLDivElement | null>;

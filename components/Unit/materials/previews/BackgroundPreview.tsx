@@ -1,7 +1,7 @@
 import React from 'react';
 import { BookOpenText, Printer, SquareArrowOutUpRight } from 'lucide-react';
 import RichText from '../../../RichText';
-import styles from '../../UnitPage.module.css';
+import styles from '../UnitMaterials.module.css';
 
 type TBackgroundPreviewProps = {
   backgroundContent: string;

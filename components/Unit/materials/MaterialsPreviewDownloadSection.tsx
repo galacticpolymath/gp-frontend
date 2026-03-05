@@ -1,7 +1,7 @@
 import React from 'react';
 import Image from 'next/image';
 import { Download } from 'lucide-react';
-import styles from '../UnitPage.module.css';
+import styles from './UnitMaterials.module.css';
 
 type TMaterialsPreviewDownloadSectionProps = {
   activeLessonItems: any[];

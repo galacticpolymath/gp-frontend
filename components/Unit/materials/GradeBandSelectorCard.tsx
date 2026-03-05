@@ -1,7 +1,7 @@
 import React from 'react';
 import { GraduationCap } from 'lucide-react';
 import RichText from '../../RichText';
-import styles from '../UnitPage.module.css';
+import styles from './UnitMaterials.module.css';
 import { IItemForUI, INewUnitLesson, IResource } from '../../../backend/models/Unit/types/teachingMaterials';
 
 type TGradeBandSelectorCardProps = {

@@ -2,7 +2,7 @@ import React from 'react';
 import Image from 'next/image';
 import { Blocks, Filter, Network, Target, X } from 'lucide-react';
 import RichText from '../../RichText';
-import styles from '../UnitPage.module.css';
+import styles from './StandardsTab.module.css';
 
 type TStandardsTabProps = {
   flatStandards: any[];
