@@ -92,66 +92,77 @@ const UnitLicenseBanner: React.FC<TUnitLicenseBannerProps> = ({
                 <div className={styles.citationBlock}>
                   <div className={styles.citationEntry}>
                     <p className={styles.citationLabel}>Give Attribution</p>
-                    <p className={styles.citationText}>
-                      {attributionDisplayParts.titleByAuthors} Source:{' '}
-                      <a
-                        href={attributionDisplayParts.sourceHref}
-                        target="_blank"
-                        rel="noreferrer"
-                        className={styles.citationInlineLink}
-                      >
-                        {attributionDisplayParts.sourceLabel}
-                      </a>
-                      . License:{' '}
-                      <a
-                        href={attributionDisplayParts.licenseHref}
-                        target="_blank"
-                        rel="noreferrer"
-                        className={styles.citationInlineLink}
-                      >
-                        {attributionDisplayParts.licenseLabel}
-                      </a>
-                      .
+                    <p className={styles.citationDescriptor}>
+                      When reusing or sharing materials from this unit, copy &amp; paste this exact text.
                     </p>
-                    <div className={styles.citationEntryFooter}>
-                      {copiedEntry === 'attribution' && (
-                        <span className={styles.citationStatus}>Copied</span>
-                      )}
-                      {copyErrorEntry === 'attribution' && (
-                        <span className={styles.citationStatusError}>Unable to copy</span>
-                      )}
-                      <button
-                        type="button"
-                        className={styles.copyCitationButton}
-                        onClick={() => handleCopyCitation(attributionText, 'attribution')}
-                        aria-label="Copy attribution"
-                        title="Copy attribution"
-                      >
-                        <Copy size={13} aria-hidden="true" />
-                        <span>Copy</span>
-                      </button>
+                    <div className={styles.citationContentRow}>
+                      <p className={styles.citationText}>
+                        {attributionDisplayParts.titleByAuthors} Source:{' '}
+                        <a
+                          href={attributionDisplayParts.sourceHref}
+                          target="_blank"
+                          rel="noreferrer"
+                          className={styles.citationInlineLink}
+                        >
+                          {attributionDisplayParts.sourceLabel}
+                        </a>
+                        . License:{' '}
+                        <a
+                          href={attributionDisplayParts.licenseHref}
+                          target="_blank"
+                          rel="noreferrer"
+                          className={styles.citationInlineLink}
+                        >
+                          {attributionDisplayParts.licenseLabel}
+                        </a>
+                        .
+                      </p>
+                      <div className={styles.citationEntryFooter}>
+                        {copiedEntry === 'attribution' && (
+                          <span className={styles.citationStatus}>Copied</span>
+                        )}
+                        {copyErrorEntry === 'attribution' && (
+                          <span className={styles.citationStatusError}>Unable to copy</span>
+                        )}
+                        <button
+                          type="button"
+                          className={styles.copyCitationButton}
+                          onClick={() => handleCopyCitation(attributionText, 'attribution')}
+                          aria-label="Copy attribution"
+                          title="Copy attribution"
+                        >
+                          <Copy size={13} aria-hidden="true" />
+                          <span>Copy</span>
+                        </button>
+                      </div>
                     </div>
                   </div>
+                  <br />
                   <div className={styles.citationEntry}>
                     <p className={styles.citationLabel}>Cite this Work</p>
-                    <p className={styles.citationText}>{vancouverCitation}</p>
-                    <div className={styles.citationEntryFooter}>
-                      {copiedEntry === 'citation' && (
-                        <span className={styles.citationStatus}>Copied</span>
-                      )}
-                      {copyErrorEntry === 'citation' && (
-                        <span className={styles.citationStatusError}>Unable to copy</span>
-                      )}
-                      <button
-                        type="button"
-                        className={styles.copyCitationButton}
-                        onClick={() => handleCopyCitation(vancouverCitation, 'citation')}
-                        aria-label="Copy citation"
-                        title="Copy citation"
-                      >
-                        <Copy size={13} aria-hidden="true" />
-                        <span>Copy</span>
-                      </button>
+                    <p className={styles.citationDescriptor}>
+                      For scholarly work citing this resource
+                    </p>
+                    <div className={styles.citationContentRow}>
+                      <p className={styles.citationText}>{vancouverCitation}</p>
+                      <div className={styles.citationEntryFooter}>
+                        {copiedEntry === 'citation' && (
+                          <span className={styles.citationStatus}>Copied</span>
+                        )}
+                        {copyErrorEntry === 'citation' && (
+                          <span className={styles.citationStatusError}>Unable to copy</span>
+                        )}
+                        <button
+                          type="button"
+                          className={styles.copyCitationButton}
+                          onClick={() => handleCopyCitation(vancouverCitation, 'citation')}
+                          aria-label="Copy citation"
+                          title="Copy citation"
+                        >
+                          <Copy size={13} aria-hidden="true" />
+                          <span>Copy</span>
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>

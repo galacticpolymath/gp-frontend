@@ -1,6 +1,6 @@
 import React from 'react';
 import Image from 'next/image';
-import { ChevronUp, Menu, NotebookPen, TextSearch } from 'lucide-react';
+import { ChevronUp, FileSearch2, Menu, NotebookPen } from 'lucide-react';
 import {
   IItemForUI,
   INewUnitLesson,
@@ -135,7 +135,7 @@ const UnitStickyHeader: React.FC<TUnitStickyHeaderProps> = ({
               aria-expanded={isSearchExpanded}
               onClick={handleSearchToggle}
             >
-              <TextSearch size={16} aria-hidden="true" />
+              <FileSearch2 size={16} aria-hidden="true" />
             </button>
             <input
               id="unit-search"

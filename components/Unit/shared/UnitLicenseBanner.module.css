@@ -85,6 +85,9 @@
   display: grid;
   gap: 7px;
   padding-top: 7px;
+  margin-left: 8px;
+  padding-left: 12px;
+  border-left: 2px solid rgba(31, 53, 90, 0.16);
 }
 
 .citationEntry {
@@ -92,19 +95,40 @@
   gap: 4px;
 }
 
+.citationContentRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  width: 100%;
+}
+
 .citationLabel {
   margin: 0;
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 700;
   color: #1f355a;
+}
+
+.citationDescriptor {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.35;
+  color: #6a7087;
 }
 
 .citationEntryFooter {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 8px;
+  margin-left: auto;
+  flex: 0 0 auto;
+}
+
+.citationContentRow .citationText {
+  min-width: 0;
+  flex: 1 1 auto;
 }
 
 .copyCitationButton {
