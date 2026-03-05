@@ -165,7 +165,7 @@ const useHandleOpeningGpPlusAccount = (
         setWasGpPlusBtnClicked(false);
       }
     }
-  }, [isFetching]);
+  }, [gpPlusSubscription, setNotifyModal]);
 
   useEffect(() => {
     const url = new URL(window.location.href);
@@ -190,7 +190,7 @@ const useHandleOpeningGpPlusAccount = (
         setWasGpPlusBtnClicked(false);
       }, 500);
     }
-  }, [status]);
+  }, [gpPlusSubscription?.membership?.AccountStageLabel, status]);
 
   return {
     handleGpPlusAccountBtnClick,

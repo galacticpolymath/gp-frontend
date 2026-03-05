@@ -208,6 +208,7 @@ export const JobVizGrid: React.FC<JobVizGridProps> = ({
       dy: 0,
     });
   }, [
+    navigationHint,
     navigationHint?.anchor,
     navigationHint?.direction,
     navigationHint?.pivotId,

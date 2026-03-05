@@ -193,7 +193,7 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
     });
 
     return targetLessonFolder;
-  }, [selectedGrade]);
+  }, [lsnNum, selectedGrade, sharedGDriveLessonFolders]);
 
   const { _isUserTeacher } = useUserContext();
   const { _isLoginModalDisplayed, _lessonItemModal } = useModalContext();
@@ -251,7 +251,7 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
         docUrl: itemDocUrl,
       };
     });
-  }, [itemList]);
+  }, [_itemList]);
 
   const handlePreviewDownloadBtnClick = (lessonItemIndex: number) => {
     if (!lsnNum) {
@@ -323,7 +323,14 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
       });
       setIsExpanded(true);
     }
-  }, []);
+  }, [
+    ComingSoonLessonEmailSignUp,
+    _accordionId,
+    isExpanded,
+    lsnNum,
+    partsArr.length,
+    setNumsOfLessonPartsThatAreExpanded,
+  ]);
 
   const handleAccordionBtnOnClick = (
     event: React.MouseEvent<HTMLDivElement, MouseEvent>

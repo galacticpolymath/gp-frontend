@@ -30,7 +30,7 @@ export const useHandleGpPlusLogin = () => {
       (window as any).Outseta.setMagicLinkIdToken(idToken);
       resetUrl(router);
     }
-  }, [status, checkForOutsetaPropCount]);
+  }, [status, checkForOutsetaPropCount, router]);
 
   return;
 };

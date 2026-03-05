@@ -348,7 +348,7 @@ const JobVizSearchResults = ({
       assignment: activeTour.assignment ?? DEFAULT_JOB_TOUR_ASSIGNMENT,
       selectedJobs: [...(activeTour.selectedJobs ?? [])].sort(),
     });
-  }, [activeTour, isTeacherEditMode]);
+  }, [activeTour, isTeacherEditMode, preservedUnitName]);
 
   useEffect(() => {
     if (!isTeacherEditMode) return;
@@ -680,23 +680,6 @@ const JobVizSearchResults = ({
     [assignmentParams, sortQueryParams]
   );
 
-  const handleAssignmentJobClick = (socCode) => {
-    const node = jobVizData.find((n) => n.soc_code === socCode);
-    if (!node) return;
-
-    setSelectedJob({ ...node, wasSelectedFromJobToursCard: false });
-    setIsJobModalOn(true);
-    setPersistedGridItems(filteredGridItems);
-    setJobvizReturnPath(buildReturnUrlForNode(node));
-
-    const url = buildJobvizUrl(
-      { fromNode: node },
-      assignmentParams,
-      sortQueryParams
-    );
-    router.push(url, undefined, { scroll: false, shallow: true });
-  };
-
   const filteredSlice = useMemo(() => {
     return hierarchySlice;
   }, [hierarchySlice]);
@@ -714,7 +697,7 @@ const JobVizSearchResults = ({
     ? `${getDisplayTitle(activeNode)} | JobViz Career Explorer`
     : layoutTitleBase;
 
-  const scrollToBreadcrumb = () => {
+  const scrollToBreadcrumb = useCallback(() => {
     if (typeof window === "undefined") return;
     window.requestAnimationFrame(() => {
       const el = document.getElementById(JOBVIZ_BREADCRUMB_ID);
@@ -723,7 +706,20 @@ const JobVizSearchResults = ({
       const top = el.getBoundingClientRect().top + window.scrollY - offset;
       window.scrollTo({ top, behavior: "smooth" });
     });
-  };
+  }, []);
+  const scrollToViewingHeader = useCallback(() => {
+    if (typeof window === "undefined") return;
+    window.requestAnimationFrame(() => {
+      const target =
+        document.getElementById(JOBVIZ_HIERARCHY_HEADING_ID) ??
+        document.getElementById(JOBVIZ_CATEGORIES_ANCHOR_ID) ??
+        document.getElementById(JOBVIZ_BREADCRUMB_ID);
+      if (!target) return;
+      const offset = 32;
+      const top = target.getBoundingClientRect().top + window.scrollY - offset;
+      window.scrollTo({ top, behavior: "smooth" });
+    });
+  }, []);
 
   const gridItems = useMemo(() => {
     return filteredSlice.map((node) => ({
@@ -938,12 +934,39 @@ const JobVizSearchResults = ({
 
   const showIntroHeading = chainNodes.length === 0;
 
-  const handleAssignmentGridClick = (item) => {
+  const handleAssignmentJobClick = useCallback((socCode) => {
+    const node = jobVizData.find((n) => n.soc_code === socCode);
+    if (!node) return;
+
+    setSelectedJob({ ...node, wasSelectedFromJobToursCard: false });
+    setIsJobModalOn(true);
+    setPersistedGridItems(filteredGridItems);
+    setJobvizReturnPath(buildReturnUrlForNode(node));
+
+    const url = buildJobvizUrl(
+      { fromNode: node },
+      assignmentParams,
+      sortQueryParams
+    );
+    router.push(url, undefined, { scroll: false, shallow: true });
+  }, [
+    assignmentParams,
+    buildReturnUrlForNode,
+    filteredGridItems,
+    router,
+    setIsJobModalOn,
+    setJobvizReturnPath,
+    setPersistedGridItems,
+    setSelectedJob,
+    sortQueryParams,
+  ]);
+
+  const handleAssignmentGridClick = useCallback((item) => {
     if (!item?.socCode) return;
     handleAssignmentJobClick(item.socCode);
-  };
+  }, [handleAssignmentJobClick]);
 
-  const handleGridClick = (item) => {
+  const handleGridClick = useCallback((item) => {
     const node = jobVizNodeById.get(Number(item.id));
     if (!node) return;
 
@@ -959,14 +982,33 @@ const JobVizSearchResults = ({
       sortQueryParams
     );
 
-    if (node.occupation_type === "Line item") {
+    const isLineItem = node.occupation_type === "Line item";
+    if (isLineItem) {
       setSelectedJob({ ...node, wasSelectedFromJobToursCard: false });
       setIsJobModalOn(true);
       setPersistedGridItems(filteredGridItems);
       setJobvizReturnPath(buildReturnUrlForNode(node));
     }
-    router.push(nextUrl, undefined, { scroll: false, shallow: true });
-  };
+    const pushPromise = router.push(nextUrl, undefined, {
+      scroll: false,
+      shallow: true,
+    });
+    if (!isLineItem) {
+      pushPromise.finally(scrollToViewingHeader);
+    }
+    return pushPromise;
+  }, [
+    assignmentParams,
+    buildReturnUrlForNode,
+    filteredGridItems,
+    router,
+    scrollToViewingHeader,
+    setIsJobModalOn,
+    setJobvizReturnPath,
+    setPersistedGridItems,
+    setSelectedJob,
+    sortQueryParams,
+  ]);
   const [navigationHint, setNavigationHint] = useState(null);
 
   useEffect(() => {

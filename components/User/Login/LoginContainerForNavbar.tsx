@@ -128,7 +128,7 @@ const LoginContainerForNavbar: React.FC<IProps> = ({ _modalAnimation }) => {
     } else if (status === "unauthenticated") {
       setWasUIDataLoaded(true);
     }
-  }, [status]);
+  }, [status, token, wasUIDataLoaded]);
 
   const isGpPlusMember =
     gpPlusSubscription?.AccountStageLabel &&

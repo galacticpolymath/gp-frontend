@@ -20,7 +20,7 @@ export const useGetJobCategories = (hierarchyNum, level) => {
             setHierarchyNumAndLevel({ hierarchyNum: hierarchyNum, level: level });
         }
         
-    }, [hierarchyNum, level])
+    }, [hierarchyNum, hierarchyNumAndLevel, level])
 
 
 

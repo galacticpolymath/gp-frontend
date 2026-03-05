@@ -63,7 +63,7 @@ const Title: React.FC<ITitleProps> = (props) => {
     window.location.href = `${window.location.origin}/${UNITS_URL_PATH}/${router.query.loc}/${router.query.id}#version-notes`;
   };
 
-  const lastSubRelease = useMemo(() => getLatestSubRelease(versions), []);
+  const lastSubRelease = useMemo(() => getLatestSubRelease(versions), [versions]);
 
   let UnitBanner = null;
 

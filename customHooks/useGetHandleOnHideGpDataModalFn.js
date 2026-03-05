@@ -1,15 +1,15 @@
  
  
  
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 
 
 export const useGetHandleOnHidegpDataModalFn = (_isModalShown, setSelectedGpData) => {
     const [isModalShown, setIsModalShown] = _isModalShown;
 
-    const handleOnHide = () => {
+    const handleOnHide = useCallback(() => {
         setIsModalShown(false);
-    };
+    }, [setIsModalShown]);
 
     useEffect(() => {
         if (!isModalShown) {
@@ -17,7 +17,7 @@ export const useGetHandleOnHidegpDataModalFn = (_isModalShown, setSelectedGpData
                 setSelectedGpData(null);
             }, 250);
         }
-    }, [isModalShown]);
+    }, [isModalShown, setSelectedGpData]);
 
     useEffect(() => {
         const listenForEscKeyPress = window.addEventListener('keyup', event => {
@@ -29,7 +29,7 @@ export const useGetHandleOnHidegpDataModalFn = (_isModalShown, setSelectedGpData
         return () => {
             window.removeEventListener('keyup', listenForEscKeyPress);
         };
-    }, []);
+    }, [handleOnHide]);
 
     return handleOnHide;
 };

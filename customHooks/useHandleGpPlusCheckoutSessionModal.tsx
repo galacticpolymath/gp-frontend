@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   defautlNotifyModalVal,
   useModalContext,
@@ -40,7 +40,7 @@ export const useHandleGpPlusCheckoutSessionModal = () => {
   const { user, token, logUserOut, status } = useSiteSession();
   const mutationOberserverRef = useRef<MutationObserver | null>(null);
 
-  const handleOnClickPlanChangeLogic = (event: MouseEvent) => {
+  const handleOnClickPlanChangeLogic = useCallback((event: MouseEvent) => {
     console.log('plan change occurred');
     const _target = event.target as HTMLElement;
 
@@ -99,7 +99,7 @@ export const useHandleGpPlusCheckoutSessionModal = () => {
         savingsElement.classList.add('text-decoration-line-through');
       }
     }
-  };
+  }, [selectedBillingPeriod]);
 
   const [billingTypeOptsContainer, setBillingTypeOptsContainer] =
     useState<HTMLDivElement | null>(null);
@@ -110,7 +110,7 @@ export const useHandleGpPlusCheckoutSessionModal = () => {
     }
   }, [billingTypeOptsContainer]);
 
-  const handleUserInteractionWithGpPlusModal = async () => {
+  const handleUserInteractionWithGpPlusModal = useCallback(async () => {
     const { percentageSaved } = (await getUserPlanDetails(token, false)) ?? {};
 
     console.log('percentageSaved: ', percentageSaved);
@@ -149,7 +149,7 @@ export const useHandleGpPlusCheckoutSessionModal = () => {
       subtree: true,
     });
     mutationOberserverRef.current = mutationOberserver;
-  };
+  }, [token]);
 
   useEffect(() => {
     if (status === 'authenticated') {
@@ -162,7 +162,7 @@ export const useHandleGpPlusCheckoutSessionModal = () => {
         document.removeEventListener('click', handleOnClickPlanChangeLogic);
       };
     }
-  }, [status]);
+  }, [status, handleOnClickPlanChangeLogic, handleUserInteractionWithGpPlusModal]);
 
   useEffect(() => {
     if (isSignupModalDisplayed && status === 'authenticated') {
@@ -296,5 +296,14 @@ export const useHandleGpPlusCheckoutSessionModal = () => {
         }
       });
     }
-  }, [isSignupModalDisplayed, status, getEmailInputRetryCount]);
+  }, [
+    getEmailInputRetryCount,
+    isSignupModalDisplayed,
+    logUserOut,
+    setIsSignupModalDisplayed,
+    setNotifyModal,
+    status,
+    token,
+    user.email,
+  ]);
 };

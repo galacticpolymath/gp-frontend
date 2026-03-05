@@ -181,7 +181,7 @@ const GpPlus: React.FC<IProps> = ({ liveUnitsTotal, plusPlanPercentSaved }) => {
     }
 
     return 'Sign up';
-  }, [gpPlusSubscription, isFetching]);
+  }, [gpPlusSubscription]);
   const gpLiteBtnTxt = useMemo(() => {
 
     if (status === 'authenticated') {
@@ -288,7 +288,7 @@ const GpPlus: React.FC<IProps> = ({ liveUnitsTotal, plusPlanPercentSaved }) => {
         return false;
       });
     }
-  }, [status, isSignupModalDisplayed]);
+  }, [siteSession, status, user?.email]);
 
   const outsetaEmbeddedRef = useRef<HTMLDivElement | null>(null);
   const outsetaEmbeddedCallback = () => {
@@ -447,7 +447,15 @@ const GpPlus: React.FC<IProps> = ({ liveUnitsTotal, plusPlanPercentSaved }) => {
         }
       });
     }
-  }, [isSignupModalDisplayed]);
+  }, [
+    billingPeriod,
+    isSignupModalDisplayed,
+    logUserOut,
+    setIsSignupModalDisplayed,
+    setNotifyModal,
+    token,
+    user.email,
+  ]);
 
   const isGpLiteBtnDisabled = !wasGpPlusSubRetrieved || wasGpLiteBtnClicked;
 

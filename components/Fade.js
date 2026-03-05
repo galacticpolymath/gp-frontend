@@ -23,7 +23,7 @@ const Fade = ({ showElement, children, containerId }) => {
     if(!renderToggled && document?.getElementById(containerId)){
       document.getElementById(containerId).style.opacity = "1";
     }
-  },[renderToggled]);
+  }, [containerId, renderToggled]);
 
   return (
     renderToggled && (

@@ -126,7 +126,7 @@ const Overview: React.FC<IOverviewProps> = ({
           typeof val.Description === 'string' && typeof val.Link === 'string'
       )
     );
-  }, []);
+  }, [Accessibility]);
 
   return (
     <div

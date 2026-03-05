@@ -39,8 +39,10 @@ const JobCategoriesSec = ({ dynamicJobResults, currentHierarchyNum, resetSearch 
     const searchParamsStr = useSearchParams().toString();
     const { _selectedJob } = useContext(ModalContext);
     const [, setSelectedJob] = _selectedJob;
-    let jobResults = dynamicJobResults ?? startingJobResults;
-    jobResults = useMemo(() => sortJobResults(jobResults), [dynamicJobResults])
+    const jobResults = useMemo(
+        () => sortJobResults(dynamicJobResults ?? startingJobResults),
+        [dynamicJobResults]
+    );
 
     const handleMoreJobsBtnClick = (level, currentJobsCategoryId) => {
         const nextLevelHierarchyNum = (currentHierarchyNum + 1)

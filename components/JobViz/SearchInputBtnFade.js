@@ -30,7 +30,7 @@ const SearchInputBtnFade = ({ showElement, children, containerId }) => {
         if (!renderToggled && document?.getElementById("container")) {
             document.getElementById(containerId).style.opacity = "1";
         }
-    }, [renderToggled]);
+    }, [containerId, renderToggled]);
 
     return (
         renderToggled && (

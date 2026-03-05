@@ -347,6 +347,9 @@ const CopyLessonBtn: React.FC<
       _willShowGpPlusCopyLessonHelperModal;
     const [, setIsGpPlusModalDisplayed] = _isGpPlusModalDisplayed;
     const didInitialRenderOccur = useRef(false);
+    const openGDrivePickerToCopyLessonRef = useRef<(() => Promise<void>) | null>(
+      null
+    );
     const [copyLessonJobLatestMsg, setCopyLessonJobLatestMsg] = useState<Partial<
       TCopyFilesMsg & { toastId: string }
     > | null>(null);
@@ -1676,14 +1679,15 @@ const CopyLessonBtn: React.FC<
         });
       }
     };
+    openGDrivePickerToCopyLessonRef.current = openGDrivePickerToCopyLesson;
 
     useEffect(() => {
       console.log('lessonToCopy: ', lessonToCopy);
 
       if (lessonToCopy?.willOpenGDrivePicker && lessonToCopy.id === lessonId) {
-        openGDrivePickerToCopyLesson();
+        openGDrivePickerToCopyLessonRef.current?.();
       }
-    }, [lessonToCopy]);
+    }, [lessonId, lessonToCopy]);
 
     return (
       <div style={{ width: 'fit-content' }} className={btnWrapperClassName}>

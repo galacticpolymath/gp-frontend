@@ -34,9 +34,9 @@ const SearchInputSec = ({
     forceUpdate();
   };
 
-  const closeSearchResultsModal = () => {
+  const closeSearchResultsModal = useCallback(() => {
     setIsSearchResultsModalOn(false);
-  };
+  }, [setIsSearchResultsModalOn]);
 
   const handleInput = (event) => {
     if (event.target.value) {
@@ -67,15 +67,16 @@ const SearchInputSec = ({
     setIsHighlighterOn(event.target.checked);
   };
 
-  const handleEscapeKey = (event) => {
+  const handleEscapeKey = useCallback((event) => {
     if (event.key === "Escape") {
       closeSearchResultsModal();
     }
-  };
+  }, [closeSearchResultsModal]);
 
   useEffect(() => {
     document.addEventListener("keydown", handleEscapeKey);
-  }, []);
+    return () => document.removeEventListener("keydown", handleEscapeKey);
+  }, [handleEscapeKey]);
 
   return (
     <section className="w-100 pt-5 mt-3 d-flex justify-content-center align-items-center flex-column overflow-hidden">

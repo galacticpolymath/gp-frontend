@@ -92,17 +92,19 @@ const HeroForGpPlusUsers: React.FC<IHeroForGpPlusUsersProps> = ({
     ],
   } = useLessonContext();
 
-  const cleanup = () => {
-    console.log("Cleanup function called");
-    if (pathname !== "/jobviz") {
-      setWillRenderJobToursStickTopCard(false);
-      setIsJobToursStickyTopCardDisplayed(false);
-    }
-  };
-
   useEffect(() => {
-    return cleanup;
-  }, []);
+    return () => {
+      console.log("Cleanup function called");
+      if (pathname !== "/jobviz") {
+        setWillRenderJobToursStickTopCard(false);
+        setIsJobToursStickyTopCardDisplayed(false);
+      }
+    };
+  }, [
+    pathname,
+    setIsJobToursStickyTopCardDisplayed,
+    setWillRenderJobToursStickTopCard,
+  ]);
 
   useEffect(() => {
     console.log(`inView: ${inView}`);
@@ -138,7 +140,14 @@ const HeroForGpPlusUsers: React.FC<IHeroForGpPlusUsersProps> = ({
       setIsJobToursStickyTopCardDisplayed(false);
       return;
     }
-  }, [inView]);
+  }, [
+    didRenderInitially,
+    inView,
+    isJobToursStickTopCardDisplayed,
+    setIsJobToursStickyTopCardDisplayed,
+    willRenderJobToursStickyTopCard,
+    willTrackIsInViewport,
+  ]);
 
   useEffect(() => {
     didRenderInitially.current = true;

@@ -53,7 +53,7 @@ const Accordion = ({
         setContentId(contentId.current);
       }
     }
-  }, []);
+  }, [setContentId, willUseGetId]);
 
   return (
     <div className={className}>

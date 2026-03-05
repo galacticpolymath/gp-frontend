@@ -89,7 +89,7 @@ const CopyLessonHelperModal: React.FC<ThankYouModalProps> = ({ onClose }) => {
           setWillUpdateUser(false);
         });
     }
-  }, [willUpdateUser]);
+  }, [token, willUpdateUser]);
 
   return (
     <Modal

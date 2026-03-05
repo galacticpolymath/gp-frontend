@@ -5,7 +5,7 @@
  
  
 
-import { useContext, useEffect, useRef } from "react";
+import { useCallback, useContext, useEffect, useRef } from "react";
 import {
     defautlNotifyModalVal,
     ModalContext,
@@ -29,19 +29,19 @@ const useCanUserAccessMaterial = (willListenForRestrictedItemClick) => {
     const statusRef = useRef(session.status);
     statusRef.current = session.status;
 
-    const handleUserNeedsAnAccountHideModal = () => {
+    const handleUserNeedsAnAccountHideModal = useCallback(() => {
         setNotifyModal(defautlNotifyModalVal);
         setCustomModalFooter(null);
-    };
-    const handleIsUserEntryModalDisplayed = (setIsModalOn) => () => {
+    }, [setCustomModalFooter, setNotifyModal]);
+    const handleIsUserEntryModalDisplayed = useCallback((setIsModalOn) => () => {
         setNotifyModal((state) => ({ ...state, isDisplayed: false }));
 
         setTimeout(() => {
             handleUserNeedsAnAccountHideModal();
             setIsModalOn(true);
         }, 250);
-    };
-    const openCanAccessContentModal = () => {
+    }, [handleUserNeedsAnAccountHideModal, setNotifyModal]);
+    const openCanAccessContentModal = useCallback(() => {
         setCustomModalFooter(
             <CustomNotifyModalFooter
                 closeNotifyModal={handleIsUserEntryModalDisplayed(
@@ -70,7 +70,13 @@ const useCanUserAccessMaterial = (willListenForRestrictedItemClick) => {
                 }, 250);
             },
         });
-    };
+    }, [
+        handleIsUserEntryModalDisplayed,
+        setCustomModalFooter,
+        setIsCreateAccountModalDisplayed,
+        setIsLoginModalDisplayed,
+        setNotifyModal,
+    ]);
     const handleRestrictedItemBtnClick = (event) => {
         console.log('statusRef: ', statusRef);
 
@@ -79,7 +85,7 @@ const useCanUserAccessMaterial = (willListenForRestrictedItemClick) => {
             openCanAccessContentModal();
         }
     };
-    const handleOnDocumentBodyClick = (
+    const handleOnDocumentBodyClick = useCallback((
         event,
         id,
         htmlElementAttributeOfId,
@@ -119,7 +125,7 @@ const useCanUserAccessMaterial = (willListenForRestrictedItemClick) => {
             event.preventDefault();
             openCanAccessContentModal();
         }
-    };
+    }, [openCanAccessContentModal]);
 
     useEffect(() => {
         if (willListenForRestrictedItemClick) {
@@ -131,7 +137,7 @@ const useCanUserAccessMaterial = (willListenForRestrictedItemClick) => {
                 document.body.removeEventListener("click", handleOnDocumentBodyClick);
             }
         };
-    }, []);
+    }, [handleOnDocumentBodyClick, willListenForRestrictedItemClick]);
 
     return {
         handleRestrictedItemBtnClick,

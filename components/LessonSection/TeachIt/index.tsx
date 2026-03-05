@@ -132,7 +132,7 @@ const TeachIt: React.FC<TeachItProps> = (props) => {
       : [];
 
     return environments;
-  }, []);
+  }, [Data]);
   let gradeVariations:
     | IResource<ILessonForUI>[]
     | undefined
@@ -245,7 +245,7 @@ const TeachIt: React.FC<TeachItProps> = (props) => {
         }),
       }));
     }
-  }, []);
+  }, [parts.length, setSectionDots]);
 
   // the user clicks on lesson to copy
   // todo: fx BUG: the wrong lesson folder is being presented onto the ui

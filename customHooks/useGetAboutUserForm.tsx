@@ -572,7 +572,17 @@ export const useGetAboutUserForm = (
     } else if (status === "unauthenticated") {
       setIsRetrievingUserData(false);
     }
-  }, [status]);
+  }, [
+    aboutUserForm,
+    setAboutUserForm,
+    setAppCookie,
+    setEmailNewsletterSignUpModal,
+    setIsGpPlusMember,
+    status,
+    token,
+    willGetData,
+    willSetEmailNewsletterSignUpModal,
+  ]);
 
   return {
     _aboutUserForm,

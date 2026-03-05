@@ -472,8 +472,7 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
     return computeScrollTipOverlay(assignmentFooterRect, assignmentWindowSize);
   }, [
     assignmentFooterRect,
-    assignmentWindowSize.height,
-    assignmentWindowSize.width,
+    assignmentWindowSize,
     shouldShowScrollTip,
   ]);
 

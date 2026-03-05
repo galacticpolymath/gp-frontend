@@ -107,7 +107,7 @@ const CarouselContainer = ({
                 resetTimeout();
             };
         }
-    }, [index, isCarouselPaused]);
+    }, [index, isCardOnly, isCarouselPaused, pics, userInputs]);
 
     return (
         isCardOnly ?

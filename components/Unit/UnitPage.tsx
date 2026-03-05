@@ -1271,7 +1271,10 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
   const isGpPlusResolved = typeof isGpPlusMember === 'boolean';
   const overview = unit.Sections?.overview;
   const teachingMaterials = unit.Sections?.teachingMaterials;
-  const standardsData = (unit.Sections?.standards?.Data ?? []) as ISubject[];
+  const standardsData = useMemo(
+    () => (unit.Sections?.standards?.Data ?? []) as ISubject[],
+    [unit.Sections?.standards?.Data]
+  );
   const flatStandards = useMemo(
     () => flattenStandards(standardsData),
     [standardsData]
@@ -1280,7 +1283,10 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
     unit.Sections?.versions?.Data ??
     ((unit.Sections as { versionNotes?: { Data?: any[] } })?.versionNotes?.Data ??
       []);
-  const classroomResources = teachingMaterials?.classroom?.resources ?? [];
+  const classroomResources = useMemo(
+    () => teachingMaterials?.classroom?.resources ?? [],
+    [teachingMaterials?.classroom?.resources]
+  );
   const unitId = unit?._id ? String(unit._id) : '';
   const gradeBandStorageKey = `unit-materials-grade-band:${unitId}`;
   const [selectedResourceIndex, setSelectedResourceIndex] = useState(0);
@@ -2212,7 +2218,10 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
   }, [jobVizSocCodes, unitTitle]);
   const unitBanner = unit.UnitBanner ?? '';
   const creditsContent = unit.Sections?.credits?.Content?.trim() ?? '';
-  const acknowledgmentsEntries = unit.Sections?.acknowledgments?.Data ?? [];
+  const acknowledgmentsEntries = useMemo(
+    () => unit.Sections?.acknowledgments?.Data ?? [],
+    [unit.Sections?.acknowledgments?.Data]
+  );
   const hasCreditsTabContent = Boolean(
     creditsContent || acknowledgmentsEntries.length || versionReleases.length
   );

@@ -35,7 +35,7 @@ const CreatingMembership = ({ canSubmitPasswordForm }: IProps) => {
 
       setWasOutsetaPasswordSet(true);
     }
-  }, [canSubmitPasswordForm]);
+  }, [canSubmitPasswordForm, wasOutsetaPasswordSet]);
 
   return (
     <Modal

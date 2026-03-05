@@ -86,7 +86,7 @@ const GpSignUpResult: React.FC = () => {
         observer.disconnect();
       }
     };
-  }, []);
+  }, [setIsCreatingGpPlusAccountModalDisplayed]);
 
   useEffect(() => {
     console.log("passwordInput element: ", passwordInput);

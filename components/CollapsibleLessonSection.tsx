@@ -134,7 +134,7 @@ const CollapsibleLessonSection: React.FC<CollapsibleLessonSectionProps> = ({
       SectionTitle.split(' ')
         .filter((_, index) => index !== 0)
         .join('_'),
-    []
+    [SectionTitle]
   );
   const sectionTitleAttributes = {
     ref,

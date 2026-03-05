@@ -293,7 +293,7 @@ const LessonItemsModal: React.FC = () => {
     }
 
     return null;
-  }, [currentIndex, isDisplayed])
+  }, [itemCat, userGDriveItemCopyId])
   const isTeacherItem = currentLessonItemName ? currentLessonItemName.toLowerCase().includes('teacher') : false;
 
   const handleDownloadPdfBtnClick = () => {

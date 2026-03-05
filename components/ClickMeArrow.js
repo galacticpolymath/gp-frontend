@@ -20,7 +20,7 @@ const ClickMeArrow = ({
         if (typeof handleElementVisibility === 'function') {
             handleElementVisibility(inViewport);
         }
-    }, [inViewport]);
+    }, [handleElementVisibility, inViewport]);
 
     return (
         <div

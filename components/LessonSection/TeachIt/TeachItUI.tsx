@@ -231,7 +231,7 @@ const TeachItUI = <
 
       return gpGDriveItemId.length ? gpGDriveItemId?.filter(Boolean) : [];
     });
-  }, []);
+  }, [_parts]);
 
   const ensureValidToken = async () =>
     await _ensureValidToken(gdriveAccessTokenExp!, setAppCookie);

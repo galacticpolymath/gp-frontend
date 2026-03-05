@@ -97,7 +97,7 @@ const useOutsetaEmailInputValidation = () => {
         subtree: true,
       });
     }
-  }, [status]);
+  }, [setNotifyModal, status, user.email]);
 };
 
 export default useOutsetaEmailInputValidation;

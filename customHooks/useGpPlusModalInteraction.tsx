@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import useSiteSession from './useSiteSession';
 import { useUserContext } from '../providers/UserProvider';
 import { TGpPlusSubscriptionForClient } from '../backend/models/User/types';
@@ -16,7 +16,7 @@ export const useGpPlusModalInteraction = (
   const { status, token } = useSiteSession();
   const mutationOberserverRef = useRef<MutationObserver | null>(null);
 
-  const handleOnClickPlanChangeLogic = (event: MouseEvent) => {
+  const handleOnClickPlanChangeLogic = useCallback((event: MouseEvent) => {
 
     const _target = event.target as HTMLElement;
 
@@ -71,9 +71,9 @@ export const useGpPlusModalInteraction = (
         savingsElement.classList.add('text-decoration-line-through');
       }
     }
-  };
+  }, [gpPlusBillingTerm]);
 
-  const handleUserInteractionWithGpPlusModal = async () => {
+  const handleUserInteractionWithGpPlusModal = useCallback(async () => {
     const { percentageSaved } =
       (await getUserPlanDetails(token, willGetUserPlan)) ?? {};
 
@@ -228,7 +228,7 @@ export const useGpPlusModalInteraction = (
       subtree: true,
     });
     mutationOberserverRef.current = mutationOberserver;
-  };
+  }, [gpPlusBillingTerm, handleOnClickPlanChangeLogic, token, willGetUserPlan]);
 
   useEffect(() => {
     if (status === 'authenticated' && gpPlusBillingTerm) {
@@ -238,5 +238,5 @@ export const useGpPlusModalInteraction = (
         mutationOberserverRef.current?.disconnect();
       };
     }
-  }, [status, gpPlusBillingTerm]);
+  }, [status, gpPlusBillingTerm, handleUserInteractionWithGpPlusModal]);
 };

@@ -1,4 +1,4 @@
-import { useState, useEffect, } from 'react';
+import { useCallback, useState, useEffect, } from 'react';
 import {
   defautlNotifyModalVal,
   useModalContext,
@@ -17,7 +17,7 @@ const useOutsetaInputValidation = () => {
   const { token, status, user } = useSiteSession();
   const [didUserSignUp, setDidUserSignUp] = useState(false);
 
-  const mututationCallback = (mutationsList: MutationRecord[]) => {
+  const mututationCallback = useCallback((mutationsList: MutationRecord[]) => {
     let isGpPlusSignUpModalDisplayed = false;
 
     for (const mutation of mutationsList) {
@@ -161,7 +161,7 @@ const useOutsetaInputValidation = () => {
         }
       });
     }
-  };
+  }, [setIsSignupModalDisplayed, setNotifyModal, token, user?.email]);
 
   useEffect(() => {
     let observer: MutationObserver | undefined;
@@ -180,7 +180,7 @@ const useOutsetaInputValidation = () => {
         observer.disconnect();
       }
     };
-  }, [status]);
+  }, [mututationCallback, status]);
 
   return {
     _isSignupModalDisplayed: [

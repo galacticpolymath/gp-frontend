@@ -1359,7 +1359,7 @@ export default function HomePage({
         <React.Fragment key={`${part}-${index}`}>{part}</React.Fragment>
       )
     );
-  }, []);
+  }, [tokenizeSearch]);
 
   const summarizeCategoryValues = useCallback((values: string[], limit = 3) => {
     if (!values.length) return [];
@@ -1942,14 +1942,14 @@ export default function HomePage({
   const normalizeSearchValue = (value: string) =>
     value.toLowerCase().replace(/\s+/g, "");
 
-  const tokenizeSearch = (value: string) =>
+  const tokenizeSearch = useCallback((value: string) =>
     value
       .toLowerCase()
       .split(/[\s,;|/]+/)
       .map((token) => token.trim())
-      .filter(Boolean);
+      .filter(Boolean), []);
 
-  const fuzzyTokenMatch = (token: string, text: string) => {
+  const fuzzyTokenMatch = useCallback((token: string, text: string) => {
     const normalizedText = text.toLowerCase();
     if (!token || !normalizedText) return false;
 
@@ -1962,16 +1962,16 @@ export default function HomePage({
     const compactToken = normalizeSearchValue(token);
     const compactText = normalizeSearchValue(normalizedText);
     return compactToken.length >= 4 && compactText.includes(compactToken);
-  };
+  }, []);
 
-  const getMatchedValues = (tokens: string[], values: string[]) => {
+  const getMatchedValues = useCallback((tokens: string[], values: string[]) => {
     if (!tokens.length || !values.length) return [];
     return values.filter((value) =>
       tokens.some((token) => fuzzyTokenMatch(token, value))
     );
-  };
+  }, [fuzzyTokenMatch]);
 
-  const getSnippet = (text: string, query: string) => {
+  const getSnippet = useCallback((text: string, query: string) => {
     if (!text || !query) return "";
     const loweredText = text.toLowerCase();
     const loweredQuery = query.toLowerCase();
@@ -1993,9 +1993,9 @@ export default function HomePage({
     const prefix = start > 0 ? "..." : "";
     const suffix = end < text.length ? "..." : "";
     return `${prefix}${text.slice(start, end).trim()}${suffix}`;
-  };
+  }, [tokenizeSearch]);
 
-  const buildSearchMatchResult = (
+  const buildSearchMatchResult = useCallback((
     resource: PreviewResource,
     queryValue: string
   ): ResourceSearchMatchResult => {
@@ -2168,7 +2168,7 @@ export default function HomePage({
       hiddenCategories,
       relevanceScore,
     };
-  };
+  }, [fuzzyTokenMatch, getMatchedValues, getSnippet, tokenizeSearch]);
 
   const searchMatchByResourceId = useMemo(() => {
     const map = new Map<string, ResourceSearchMatchResult>();
@@ -2176,7 +2176,7 @@ export default function HomePage({
       map.set(resource.id, buildSearchMatchResult(resource, searchQuery));
     });
     return map;
-  }, [allResources, searchQuery]);
+  }, [allResources, buildSearchMatchResult, searchQuery]);
 
   const filteredResources = useMemo(() => {
     const query = searchQuery.trim().toLowerCase();

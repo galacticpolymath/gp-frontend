@@ -76,11 +76,10 @@ const getPathsOfSearchResult = jobCategory => {
 
     const firstParentJobCategory = getFirstParentJobCategory(targetLevels);
     const { hierarchy: firstParentJobCategoryHierarchy, soc_code } = firstParentJobCategory
-    targetLevels = targetLevels.sort((levelA, levelB) => levelA.hierarchy - levelB.hierarchy);
+    const sortedTargetLevels = [...targetLevels].sort((levelA, levelB) => levelA.hierarchy - levelB.hierarchy);
+    const pathLevels = [...sortedTargetLevels, jobCategory];
 
-    targetLevels.push(jobCategory)
-
-    return `/${firstParentJobCategoryHierarchy + 1}/${soc_code}/${targetLevels.map(({ id }) => id).join('/')}`
+    return `/${firstParentJobCategoryHierarchy + 1}/${soc_code}/${pathLevels.map(({ id }) => id).join('/')}`
 }
 
 module.exports = { getPathsOfSearchResult }

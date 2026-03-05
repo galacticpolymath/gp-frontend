@@ -73,23 +73,19 @@ const useScrollHandler = setSectionDots => {
     });
   }, 100);
 
-  const handleScroll = () => {
-    scrollAction();
-  };
-
   useEffect(() => {
     if (isScrollListenerOn) {
-      window.addEventListener('scroll', handleScroll);
+      window.addEventListener('scroll', scrollAction);
     }
 
     if (!isScrollListenerOn) {
-      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('scroll', scrollAction);
     }
 
     return () => {
-      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('scroll', scrollAction);
     };
-  }, [isScrollListenerOn]);
+  }, [isScrollListenerOn, scrollAction]);
 
   return [isScrollListenerOn, setIsScrollListenerOn];
 };

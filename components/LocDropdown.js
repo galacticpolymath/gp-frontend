@@ -78,7 +78,7 @@ const LocDropdown = ({ id, availLocs, loc }) => {
     return () => {
       clearTimeout(timer);
     };
-  }, []);
+  }, [countries.length]);
 
   if (countries.length === 1) {
     const { language } = countriesByLanguage.find(({ countries }) =>

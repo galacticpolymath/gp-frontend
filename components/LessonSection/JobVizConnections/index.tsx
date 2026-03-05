@@ -85,11 +85,11 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
   const didInitialRenderOccur = useRef(false);
   const isUserAGpPlusMember = useMemo(() => {
     return !!getSessionStorageItem("isGpPlusUser");
-  }, [isGpPlusMember]);
+  }, []);
   const [isJobsToursUpSellModalOn, setIsJobsToursUpSellModalOn] =
     useState(false);
   const jobVizConnectionsArr = useMemo(() => {
-    const _jobVizConnections = jobVizConnections?.filter((jobVizConnection) => {
+    const filteredJobVizConnections = jobVizConnections?.filter((jobVizConnection) => {
       return (
         // check for nulls
         jobVizConnection &&
@@ -97,9 +97,8 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
         jobVizConnection?.soc_code
       );
     }) as IJobVizConnection[] | IConnectionJobViz[];
-    jobVizConnections = _jobVizConnections;
 
-    if (!jobVizConnections?.length) {
+    if (!filteredJobVizConnections?.length) {
       console.error(
         "Developer Error: jobVizConnections is empty or undefined in JobVizConnections component."
       );
@@ -109,9 +108,9 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
 
     let jobVizConnectionsDeprecated: IJobVizConnection[] | null = null;
 
-    for (const { soc_code, job_title } of jobVizConnections) {
+    for (const { soc_code, job_title } of filteredJobVizConnections) {
       if (Array.isArray(soc_code) || Array.isArray(job_title)) {
-        jobVizConnectionsDeprecated = jobVizConnections as IJobVizConnection[];
+        jobVizConnectionsDeprecated = filteredJobVizConnections as IJobVizConnection[];
         break;
       }
     }
@@ -134,8 +133,8 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
         .filter(Boolean) as IConnectionJobViz[];
     }
 
-    return jobVizConnections as IConnectionJobViz[];
-  }, []);
+    return filteredJobVizConnections as IConnectionJobViz[];
+  }, [jobVizConnections]);
   const jobTitleAndSocCodePairs: [string, string][] = jobVizConnectionsArr.map(
     (job) => [job.job_title, job.soc_code]
   );
@@ -158,7 +157,7 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
     }
 
     return url.href;
-  }, []);
+  }, [jobVizConnectionsArr, unitName]);
 
   useEffect(() => {
     didInitialRenderOccur.current = true;

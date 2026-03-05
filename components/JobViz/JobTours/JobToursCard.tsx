@@ -315,7 +315,12 @@ const JobToursCard: React.FC<IJobToursCard> = ({
       });
       setSelectedJobOnJobVizPg(null);
     }
-  }, [selectedJobOnJobVizPg, willRenderJobToursStickyTopCard]);
+  }, [
+    router,
+    selectedJobOnJobVizPg,
+    setSelectedJob,
+    willRenderJobToursStickyTopCard,
+  ]);
 
   const handleJobTitleTxtClick = (socCode: string) => () => {
     if (onJobTitleTxtCick) {

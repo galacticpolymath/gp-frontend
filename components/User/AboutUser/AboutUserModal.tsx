@@ -273,7 +273,7 @@ const AboutUserModal = () => {
       const height = modalBodyRef.current.clientHeight * 0.27;
       setTextareaMaxHeight(height);
     }
-  }, [isAboutMeFormModalDisplayed]);
+  }, [isAboutMeFormModalDisplayed, textareaMaxHeight]);
 
   return (
     <Modal

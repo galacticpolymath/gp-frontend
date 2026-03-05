@@ -184,7 +184,7 @@ const AccountPg: React.FC = () => {
     }
 
     return undefined;
-  }, []);
+  }, [gpPlusSub?.BillingRenewalTerm, selectedBillingPeriod]);
 
   console.log("gpPlusSub: ", gpPlusSub);
 
@@ -441,7 +441,7 @@ const AccountPg: React.FC = () => {
       (window as any).Outseta.setMagicLinkIdToken(idToken);
       resetUrl(router);
     }
-  }, [status, gpPlusSub]);
+  }, [router, setIsThankYouModalDisplayed, setNotifyModal, status, gpPlusSub]);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -551,7 +551,14 @@ const AccountPg: React.FC = () => {
         return false;
       });
     }
-  }, [status]);
+  }, [
+    email,
+    gpPlusSub?.AccountStageLabel,
+    setIsAboutMeFormModalDisplayed,
+    setIsAccountSettingsModalOn,
+    status,
+    token,
+  ]);
 
   useOutsetaInputValidation();
 

@@ -1,6 +1,6 @@
  
  
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState, useCallback } from "react";
 import * as d3 from "d3";
 
 interface IProps {
@@ -25,9 +25,9 @@ export default function ChunkGraph({
     if (didRendered) {
       update();
     }
-  }, [didRendered]);
+  }, [didRendered, update]);
 
-  function update() {
+  const update = useCallback(() => {
     if (durList === null || chunkNum === null) {
       console.error("`durList` or `chunkNum` cannot be null");
       return;
@@ -167,7 +167,7 @@ export default function ChunkGraph({
       .attr("text-anchor", "middle")
       .attr("font-family", '"Montserrat", "Helvetica", "Arial", sans-serif')
       .attr("class", "chunkGraphTimeLabel");
-  }
+  }, [chunkNum, durList]);
 
   return <div ref={container} className={className} />;
 }
