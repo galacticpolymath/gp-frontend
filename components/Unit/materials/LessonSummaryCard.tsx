@@ -13,6 +13,7 @@ type TLessonSummaryCardProps = {
   isAssessmentLesson: (lesson: INewUnitLesson<IItemForUI>, index: number) => boolean;
   setActiveLessonPreviewMode: (mode: 'procedure') => void;
   onTagSearchClick: (tag: string) => void;
+  onShare: () => void;
 };
 
 const LessonSummaryCard: React.FC<TLessonSummaryCardProps> = ({
@@ -23,6 +24,7 @@ const LessonSummaryCard: React.FC<TLessonSummaryCardProps> = ({
   isAssessmentLesson,
   setActiveLessonPreviewMode,
   onTagSearchClick,
+  onShare,
 }) => {
   return (
     <div className={styles.lessonSummaryCard}>
@@ -108,6 +110,14 @@ const LessonSummaryCard: React.FC<TLessonSummaryCardProps> = ({
               {activeLesson.status}
             </span>
           )}
+        <button
+          type="button"
+          className={styles.lessonSummaryShareAction}
+          onClick={onShare}
+        >
+          <i className="bi bi-share" aria-hidden="true" />
+          Share
+        </button>
       </div>
     </div>
   );

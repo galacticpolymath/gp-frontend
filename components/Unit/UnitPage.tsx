@@ -3434,28 +3434,6 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
         </div>
       )}
 
-      {activeTab === TAB_MATERIALS && (
-        <div className={styles.unitTabFadeIn}>
-          <UnitTabHero
-            eyebrow="Lessons Resources"
-            title="Preview and Download"
-            lead="Browse featured media, teaching resources, and lesson support materials in one place."
-            handleShare={handleShare}
-          />
-        </div>
-      )}
-
-      {activeTab === TAB_STANDARDS && (
-        <div className={styles.unitTabFadeIn}>
-          <UnitTabHero
-            eyebrow="Standards"
-            title="Interdisciplinary by Design"
-            lead="We align to standards across subjects. Our units are ready for STEAM or team teaching, and project based learning."
-            handleShare={handleShare}
-          />
-        </div>
-      )}
-
       {activeTab === TAB_CREDITS && (
         <div className={styles.unitTabFadeIn}>
           <UnitTabHero
@@ -3469,7 +3447,13 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
         </div>
       )}
 
-      <main className={styles.unitMain}>
+      <main
+        className={
+          activeTab === TAB_OVERVIEW
+            ? `${styles.unitMain} ${styles.unitMainOverview}`
+            : styles.unitMain
+        }
+      >
         {activeTab === TAB_OVERVIEW && (
           <OverviewTab
             unit={unit}
@@ -3536,6 +3520,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                     isAssessmentLesson={isAssessmentLesson}
                     setActiveLessonPreviewMode={setActiveLessonPreviewMode}
                     onTagSearchClick={(tag) => handleTagSearchClick(tag, 'lesson_tile')}
+                    onShare={handleShare}
                   />
                   <GradeBandSelectorCard
                     teachingMaterialsPreface={teachingMaterialsPreface}
@@ -3691,6 +3676,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
           <StandardsTab
             flatStandards={flatStandards}
             overview={overview}
+            onShare={handleShare}
             isStandardsFilterDockOpen={isStandardsFilterDockOpen}
             setIsStandardsFilterDockOpen={setIsStandardsFilterDockOpen}
             activeFilterCount={activeFilterCount}

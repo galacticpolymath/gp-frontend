@@ -7,6 +7,7 @@ import styles from '../UnitPage.module.css';
 type TStandardsTabProps = {
   flatStandards: any[];
   overview?: { SteamEpaulette?: string | null } | null;
+  onShare: () => void;
   isStandardsFilterDockOpen: boolean;
   setIsStandardsFilterDockOpen: (isOpen: boolean) => void;
   activeFilterCount: number;
@@ -31,6 +32,7 @@ type TStandardsTabProps = {
 const StandardsTab: React.FC<TStandardsTabProps> = ({
   flatStandards,
   overview,
+  onShare,
   isStandardsFilterDockOpen,
   setIsStandardsFilterDockOpen,
   activeFilterCount,
@@ -85,6 +87,16 @@ const StandardsTab: React.FC<TStandardsTabProps> = ({
                 This figure visualizes the percentages of standards aligned to
                 each subject.
               </p>
+              <div className={styles.standardsShareRow}>
+                <button
+                  type="button"
+                  className={styles.standardsShareAction}
+                  onClick={onShare}
+                >
+                  <i className="bi bi-share" aria-hidden="true" />
+                  Share
+                </button>
+              </div>
             </div>
             <button
               type="button"

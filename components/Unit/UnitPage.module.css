@@ -59,6 +59,11 @@
   gap: 14px;
 }
 
+.unitMainOverview {
+  padding-top: 2px;
+  gap: 10px;
+}
+
 .sectionTitle {
   margin: 0 0 4px;
   font-size: 19px;
@@ -73,22 +78,20 @@
 
 .unitOverviewGrid {
   display: grid;
-  gap: 14px;
+  gap: 10px;
   min-width: 0;
 }
 
 .unitOverviewCard,
 .unitOverviewCardWide {
   position: relative;
-  background: rgba(240, 248, 255, 0.34);
-  border-radius: 18px;
-  padding: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.66);
-  box-shadow:
-    0 10px 24px rgba(24, 30, 61, 0.12),
-    inset 0 1px 0 rgba(255, 255, 255, 0.58);
-  backdrop-filter: blur(16px) saturate(125%);
-  -webkit-backdrop-filter: blur(16px) saturate(125%);
+  background: rgba(255, 255, 255, 0.27);
+  border-radius: 16px;
+  padding: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
   min-width: 0;
 }
 
@@ -133,11 +136,6 @@
   grid-column: 1 / -1;
 }
 
-.unitOverviewCardCompact {
-  background: rgba(229, 243, 255, 0.3);
-  border-color: rgba(44, 131, 195, 0.28);
-}
-
 .unitLead {
   font-size: 16px;
   color: #1f355a;
@@ -148,11 +146,6 @@
   font-size: 16px;
   color: #4c5269;
   line-height: 1.5;
-}
-
-.unitOverviewCardPrimary {
-  background: rgba(244, 238, 255, 0.3);
-  border-color: rgba(108, 45, 130, 0.24);
 }
 
 .unitLeadMarkdown :global(p) {
@@ -205,6 +198,14 @@
   color: #4c5269;
 }
 
+.unitOverviewCardPrimary :global(li) {
+  margin-bottom: 4px;
+}
+
+.unitOverviewCardPrimary :global(li:last-child) {
+  margin-bottom: 0;
+}
+
 .unitDetailsList {
   display: grid;
   gap: 10px;
@@ -212,14 +213,9 @@
 
 .atGlanceGrid {
   display: grid;
-  gap: 0;
-  border-radius: 12px;
-  background: rgba(255, 255, 255, 0.24);
-  border: 1px solid rgba(44, 131, 195, 0.22);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.48);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  overflow: hidden;
+  gap: 10px;
+  border-radius: 16px;
+  height: 100%;
 }
 
 .atGlanceItem {
@@ -228,12 +224,12 @@
   align-items: start;
   gap: 10px;
   padding: 10px;
-  border-radius: 0;
-  background: rgba(255, 255, 255, 0.26);
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  backdrop-filter: blur(10px) saturate(118%);
-  -webkit-backdrop-filter: blur(10px) saturate(118%);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.27);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
 }
 
 .atGlanceItemAction {
@@ -268,10 +264,6 @@
   box-shadow:
     0 4px 10px rgba(44, 131, 195, 0.14),
     inset 0 1px 0 rgba(255, 255, 255, 0.52);
-}
-
-.atGlanceGrid > * + * {
-  border-top: 1px solid rgba(44, 131, 195, 0.2);
 }
 
 .atGlanceContent {
@@ -1480,6 +1472,30 @@
   margin-top: 12px;
   display: grid;
   gap: 10px;
+  align-content: start;
+  height: 100%;
+}
+
+.lessonSummaryShareAction {
+  padding: 0;
+  font-size: 15px;
+  line-height: 1;
+  font-weight: 600;
+  border: 0;
+  background: transparent;
+  color: #1f355a;
+  min-height: 32px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  margin-top: auto;
+  justify-self: end;
+}
+
+.lessonSummaryShareAction:hover,
+.lessonSummaryShareAction:focus {
+  color: #0f203f;
 }
 
 .lessonCardHeading {
@@ -2867,6 +2883,33 @@
   line-height: 1.45;
 }
 
+.standardsShareRow {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-top: 2px;
+}
+
+.standardsShareAction {
+  padding: 0;
+  font-size: 15px;
+  line-height: 1;
+  font-weight: 600;
+  border: 0;
+  background: transparent;
+  color: #1f355a;
+  min-height: 32px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+.standardsShareAction:hover,
+.standardsShareAction:focus {
+  color: #0f203f;
+}
+
 .mobileFilterDockTrigger {
   width: fit-content;
   border: 1px solid rgba(44, 131, 195, 0.28);
@@ -3439,13 +3482,15 @@
 
   .unitOverviewCardCompact {
     grid-column: 2;
-    align-self: start;
+    align-self: stretch;
+    height: 100%;
+    display: flex;
   }
 
   .unitOverviewCard,
   .unitOverviewCardWide {
     padding: 12px;
-    border-radius: 12px;
+    border-radius: 16px;
   }
 
   .unitBanner {
@@ -3466,7 +3511,9 @@
   }
 
   .atGlanceGrid {
-    gap: 0;
+    gap: 8px;
+    width: 100%;
+    height: 100%;
   }
 
   .atGlanceItem {

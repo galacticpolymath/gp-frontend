@@ -1,18 +1,18 @@
 .unitHero {
-  padding: 32px 16px 20px;
+  padding: 20px 16px 8px;
 }
 
 .unitHeroIntro {
   max-width: 1280px;
-  margin: 0 auto 12px;
+  margin: 0 auto 8px;
 }
 
 .unitHeroGrid {
   display: grid;
-  gap: 24px;
+  gap: 12px;
   max-width: 1280px;
   margin: 0 auto;
-  align-items: center;
+  align-items: start;
   grid-template-columns: minmax(0, 1fr);
   grid-template-areas:
     'media'
@@ -26,6 +26,7 @@
   position: relative;
   height: 100%;
   align-content: start;
+  min-width: 0;
 }
 
 .unitEyebrow {
@@ -81,6 +82,7 @@
   justify-content: center;
   width: 100%;
   grid-area: media;
+  min-width: 0;
 }
 
 .unitBanner,
@@ -99,6 +101,7 @@
   width: 100%;
   height: auto;
   display: block;
+  object-fit: contain;
 }
 
 .unitBannerFallback {
@@ -112,14 +115,14 @@
 .unitHeroShareRow {
   max-width: 1280px;
   margin: 0 auto;
-  padding-top: 12px;
+  padding-top: 4px;
   display: flex;
   justify-content: flex-end;
   align-items: center;
 }
 
 .unitTabHero {
-  max-width: 1280px;
+  width: min(1280px, calc(100% - 32px));
   margin: 14px auto 0;
   padding: 14px 16px 12px;
   border: 1px solid rgba(107, 122, 177, 0.28);
@@ -248,6 +251,20 @@
 }
 
 @media (min-width: 768px) {
+  .unitHero {
+    padding: 10px 24px 4px;
+  }
+
+  .unitHeroIntro {
+    margin-bottom: 8px;
+  }
+
+  .unitHeroGrid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.65fr);
+    grid-template-areas: 'header media';
+    gap: 14px;
+  }
+
   .unitTitle {
     font-size: clamp(24px, 2.2vw, 34px);
   }
@@ -258,8 +275,7 @@
 
   .unitBanner {
     border-radius: 14px;
-    aspect-ratio: auto;
-    max-height: none;
+    max-width: 900px;
   }
 
   .unitBanner img {
@@ -276,13 +292,19 @@
 
 @media (min-width: 1024px) {
   .unitHeroGrid {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+    grid-template-columns: minmax(320px, 1fr) minmax(620px, 1.55fr);
+    grid-template-areas: 'header media';
     align-items: start;
+    gap: 16px;
+  }
+
+  .unitHeroMedia {
+    justify-content: flex-end;
   }
 }
 
 @media (min-width: 1440px) {
   .unitHero {
-    padding: 64px 0 32px;
+    padding: 12px 0 6px;
   }
 }
