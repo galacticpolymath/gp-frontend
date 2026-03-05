@@ -1,19 +1,14 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
 import { format } from 'date-fns';
 import axios from 'axios';
 import styles from './UnitPage.module.css';
 import {
-  ChevronUp,
   FileArchive,
   FileImage,
   FileSpreadsheet,
   FileText,
   FileVideo,
   Link2,
-  NotebookPen,
-  TextSearch,
 } from 'lucide-react';
 import { TUnitForUI } from '../../backend/models/Unit/types/unit';
 import { IConnectionJobViz } from '../../backend/models/Unit/JobViz';
@@ -24,7 +19,6 @@ import {
   IResource,
 } from '../../backend/models/Unit/types/teachingMaterials';
 import { useModalContext } from '../../providers/ModalProvider';
-import LocDropdown from '../LocDropdown';
 import { ISubject } from '../../backend/models/Unit/types/standards';
 import { setSessionStorageItem } from '../../shared/fns';
 import useSiteSession from '../../customHooks/useSiteSession';
@@ -40,7 +34,6 @@ import {
   getJobSpecificIconName,
   getNodeBySocCode,
 } from '../JobViz/jobvizUtils';
-import ProfileAvatarRing from '../ProfileAvatarRing';
 import OverviewTab from './tabs/OverviewTab';
 import StandardsTab from './tabs/StandardsTab';
 import CreditsTab from './tabs/CreditsTab';
@@ -57,6 +50,22 @@ import JobVizPreview from './materials/previews/JobVizPreview';
 import MaterialItemPreview from './materials/previews/MaterialItemPreview';
 import NextNavigationCta from './shared/NextNavigationCta';
 import UnitLicenseBanner from './shared/UnitLicenseBanner';
+import UnitStickyHeader from './shell/UnitStickyHeader';
+import UnitOverviewHero from './shell/UnitOverviewHero';
+import UnitTabHero from './shell/UnitTabHero';
+import UnitOfficeUpsellModal from './shell/UnitOfficeUpsellModal';
+import stickyHeaderStyles from './styles/UnitStickyHeader.module.css';
+import {
+  flattenStandards,
+  formatGradeValue,
+  groupStandardsBySubject,
+  isStandardInBand,
+  mergeStandardsByDimension,
+  STANDARDS_GRADE_BANDS,
+  TFlatStandard,
+  TGradeBand,
+  TStandardsSubjectFilter,
+} from './standardsUtils';
 import {
   parsePreviewFromUrlValue,
   parseTabFromUrlValue,
@@ -98,42 +107,6 @@ type TSearchEntry = {
 type TSearchResult = TSearchEntry & {
   snippet: string;
 };
-
-type TGradeBand = 'all' | 'k-2' | '3-5' | '6-8' | '9-12';
-
-type TStandardsSubjectFilter = 'all' | string;
-
-type TFlatStandard = {
-  id: string;
-  target: boolean;
-  subject: string;
-  setName: string;
-  dimensionName: string;
-  codes: string[];
-  statements: string[];
-  alignmentNotes: string;
-  grades: string[];
-};
-
-type TMergedStandardLine = {
-  code: string;
-  statement: string;
-  alignmentNote: string;
-};
-
-type TMergedStandardByDimension = {
-  id: string;
-  dimensionName: string;
-  grades: string[];
-  lines: TMergedStandardLine[];
-};
-
-const STANDARDS_GRADE_BANDS: { key: TGradeBand; label: string }[] = [
-  { key: 'all', label: 'All grade bands' },
-  { key: '3-5', label: 'advanced 5' },
-  { key: '6-8', label: '6-8' },
-  { key: '9-12', label: '9-12' },
-];
 const STANDARD_BAND_OPTIONS = STANDARDS_GRADE_BANDS.filter(
   (band) => band.key !== 'all'
 );
@@ -260,264 +233,6 @@ const scrollToTop = () => {
   window.scrollTo({ top: 0, behavior: 'auto' });
 };
 
-const parseGradesFromString = (value: string) => {
-  const lowered = value.trim().toLowerCase();
-  if (!lowered) {
-    return [];
-  }
-
-  if (lowered.includes('k')) {
-    return [0];
-  }
-
-  const numericTokens = lowered.match(/\d+/g);
-  if (!numericTokens?.length) {
-    return [];
-  }
-
-  if (numericTokens.length === 1) {
-    const grade = Number.parseInt(numericTokens[0], 10);
-    return Number.isNaN(grade) ? [] : [grade];
-  }
-
-  const start = Number.parseInt(numericTokens[0], 10);
-  const end = Number.parseInt(numericTokens[1], 10);
-  if (Number.isNaN(start) || Number.isNaN(end) || end < start) {
-    return [];
-  }
-
-  return Array.from({ length: end - start + 1 }, (_, index) => start + index);
-};
-
-const parseGrades = (grades: string[]) =>
-  grades
-    .flatMap((grade) => parseGradesFromString(grade))
-    .filter((grade, index, arr) => arr.indexOf(grade) === index)
-    .sort((a, b) => a - b);
-
-const isStandardInBand = (grades: string[], gradeBand: TGradeBand) => {
-  if (gradeBand === 'all') {
-    return true;
-  }
-
-  const parsed = parseGrades(grades);
-  if (!parsed.length) {
-    return false;
-  }
-
-  const range =
-    gradeBand === 'k-2'
-      ? [0, 2]
-      : gradeBand === '3-5'
-      ? [3, 5]
-      : gradeBand === '6-8'
-      ? [6, 8]
-      : [9, 12];
-
-  return parsed.some((grade) => grade >= range[0] && grade <= range[1]);
-};
-
-const formatGradeValue = (grades: string[]) => {
-  const parsed = parseGrades(grades);
-  if (!parsed.length) {
-    return 'Grade band not specified';
-  }
-
-  const labels = parsed.map((grade) => (grade === 0 ? 'K' : `${grade}`));
-  return labels.length === 1
-    ? `Grade ${labels[0]}`
-    : `Grades ${labels[0]}-${labels[labels.length - 1]}`;
-};
-
-const flattenStandards = (standardsData?: ISubject[] | null): TFlatStandard[] => {
-  if (!Array.isArray(standardsData)) {
-    if (standardsData && typeof standardsData === 'object') {
-      standardsData = Object.values(standardsData as Record<string, ISubject>);
-    } else {
-      return [];
-    }
-  }
-
-  const flat: TFlatStandard[] = [];
-  const toList = <T,>(value: T[] | Record<string, T> | null | undefined): T[] => {
-    if (Array.isArray(value)) {
-      return value;
-    }
-    if (value && typeof value === 'object') {
-      return Object.values(value);
-    }
-    return [];
-  };
-
-  standardsData.forEach((subjectGroup, subjectIndex) => {
-    const subject = subjectGroup?.subject?.trim();
-    if (!subject) {
-      return;
-    }
-
-    toList(subjectGroup?.sets as any).forEach((set: any, setIndex) => {
-      const setName = set?.name?.trim() || `Set ${setIndex + 1}`;
-      toList(set?.dimensions).forEach((dimension: any, dimIndex) => {
-        const dimensionName = dimension?.name?.trim() || `Dimension ${dimIndex + 1}`;
-        toList(dimension?.standardsGroup).forEach(
-          (groupOrStandard: any, groupIndex) => {
-            const standards: any[] = toList(groupOrStandard?.standardsGroup).length
-              ? toList(groupOrStandard?.standardsGroup)
-              : [groupOrStandard];
-          standards.forEach((standard, standardIndex) => {
-            const codes = Array.isArray(standard?.codes)
-              ? standard.codes.filter(Boolean)
-              : standard?.codes
-              ? [standard.codes]
-              : [];
-            const statements = Array.isArray(standard?.statements)
-              ? standard.statements.filter(Boolean)
-              : standard?.statements
-              ? [standard.statements]
-              : [];
-            const grades = Array.isArray(standard?.grades)
-              ? standard.grades.filter(Boolean)
-              : standard?.grades
-              ? [standard.grades]
-              : [];
-
-            flat.push({
-              id: `${subjectIndex}-${setIndex}-${dimIndex}-${groupIndex}-${standardIndex}`,
-              target: !!subjectGroup?.target,
-              subject,
-              setName,
-              dimensionName,
-              codes,
-              statements,
-              alignmentNotes: standard?.alignmentNotes ?? '',
-              grades,
-            });
-          });
-          }
-        );
-      });
-    });
-  });
-
-  return flat;
-};
-
-const groupStandardsBySubject = (standards: TFlatStandard[]) => {
-  const grouped = standards.reduce((accum, standard) => {
-    if (!accum[standard.subject]) {
-      accum[standard.subject] = [];
-    }
-    accum[standard.subject].push(standard);
-    return accum;
-  }, {} as Record<string, TFlatStandard[]>);
-
-  return Object.entries(grouped)
-    .map(([subject, subjectStandards]) => ({
-      subject,
-      standards: subjectStandards,
-      sets: Array.from(new Set(subjectStandards.map((item) => item.setName))),
-    }))
-    .sort((a, b) => a.subject.localeCompare(b.subject));
-};
-
-const getNgssDimensionOrder = (dimensionName: string) => {
-  const normalized = dimensionName
-    .toLowerCase()
-    .replace(/&/g, 'and')
-    .replace(/-/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim();
-
-  const NGSS_DIMENSION_ORDER: Record<string, number> = {
-    'performance expectation': 0,
-    'disciplinary core ideas': 1,
-    'disciplinary core idea': 1,
-    'science and engineering practices': 2,
-    'science and engineering practice': 2,
-    'cross cutting concepts': 3,
-    'cross cutting concept': 3,
-  };
-
-  return NGSS_DIMENSION_ORDER[normalized];
-};
-
-const mergeStandardsByDimension = (
-  standards: TFlatStandard[],
-  setNames: string[]
-): TMergedStandardByDimension[] => {
-  const groupedByDimension = standards.reduce((accum, standard) => {
-    const dimensionKey = standard.dimensionName?.trim() || 'Unspecified dimension';
-    if (!accum[dimensionKey]) {
-      accum[dimensionKey] = {
-        id: `${dimensionKey}-${standard.subject}`.replace(/\s+/g, '-').toLowerCase(),
-        dimensionName: dimensionKey,
-        grades: [],
-        lines: [],
-      };
-    }
-
-    const lineCount = Math.max(standard.codes.length, standard.statements.length, 1);
-    for (let idx = 0; idx < lineCount; idx += 1) {
-      const code =
-        standard.codes[idx] ?? standard.codes[0] ?? 'Code not specified';
-      const statement = standard.statements[idx] ?? standard.statements[0] ?? '';
-
-      accum[dimensionKey].lines.push({
-        code,
-        statement,
-        alignmentNote: standard.alignmentNotes?.trim() ?? '',
-      });
-    }
-
-    accum[dimensionKey].grades.push(...standard.grades);
-
-    return accum;
-  }, {} as Record<string, TMergedStandardByDimension>);
-
-  const isNgssAligned = setNames.some(
-    (setName) => setName.trim().toLowerCase() === 'ngss'
-  );
-
-  return Object.values(groupedByDimension)
-    .map((entry) => ({
-      ...entry,
-      grades: Array.from(new Set(entry.grades)),
-      lines: entry.lines
-        .sort((a, b) =>
-          `${a.code} ${a.statement} ${a.alignmentNote}`.localeCompare(
-            `${b.code} ${b.statement} ${b.alignmentNote}`
-          )
-        )
-        .filter(
-          (line, index, arr) =>
-            arr.findIndex(
-              (item) =>
-                item.code === line.code &&
-                item.statement === line.statement &&
-                item.alignmentNote === line.alignmentNote
-            ) === index
-        ),
-    }))
-    .sort((a, b) => {
-      if (!isNgssAligned) {
-        return a.dimensionName.localeCompare(b.dimensionName);
-      }
-
-      const orderA = getNgssDimensionOrder(a.dimensionName);
-      const orderB = getNgssDimensionOrder(b.dimensionName);
-
-      if (typeof orderA === 'number' && typeof orderB === 'number') {
-        return orderA - orderB;
-      }
-      if (typeof orderA === 'number') {
-        return -1;
-      }
-      if (typeof orderB === 'number') {
-        return 1;
-      }
-      return a.dimensionName.localeCompare(b.dimensionName);
-    });
-};
 
 const stripHtml = (value?: string | null) => {
   if (!value) {
@@ -2352,7 +2067,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
         rootStyles.getPropertyValue('--portal-nav-offset')
       );
       const unitStickyHeader = document.querySelector(
-        `.${styles.unitStickyHeader}`
+        `.${stickyHeaderStyles.unitStickyHeader}`
       ) as HTMLElement | null;
       const unitStickyHeaderHeight = unitStickyHeader
         ? unitStickyHeader.getBoundingClientRect().height
@@ -2394,7 +2109,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
       resizeObserver.observe(lessonMaterialsGridRef.current);
     }
     const unitStickyHeader = document.querySelector(
-      `.${styles.unitStickyHeader}`
+      `.${stickyHeaderStyles.unitStickyHeader}`
     ) as HTMLElement | null;
     if (resizeObserver && unitStickyHeader) {
       resizeObserver.observe(unitStickyHeader);
@@ -3664,380 +3379,94 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
       }`}
     >
       {!isStandalonePreview && (
-        <div className={styles.unitStickyHeader}>
-          <div className={styles.unitStickyInner}>
-            <div className={styles.unitStickyTopRow}>
-              <div className={styles.unitStickyTitle}>
-                <span className={styles.unitStickyText}>
-                  {unitTitle}
-                  {unitSubtitle ? `: ${unitSubtitle}` : ''}
-                </span>
-              </div>
-            </div>
-            <div className={styles.unitSearch}>
-              <div className={styles.unitSearchRow}>
-                <div
-                  className={
-                    isSearchExpanded
-                      ? `${styles.unitSearchInputWrap} ${styles.unitSearchInputWrapExpanded}`
-                      : `${styles.unitSearchInputWrap} ${styles.unitSearchInputWrapCollapsed}`
-                  }
-                >
-                  <button
-                    type="button"
-                    className={styles.unitSearchIcon}
-                    aria-label={
-                      isSearchExpanded ? 'Collapse unit search' : 'Expand unit search'
-                    }
-                    aria-controls="unit-search"
-                    aria-expanded={isSearchExpanded}
-                    onClick={handleSearchToggle}
-                  >
-                    <TextSearch size={16} aria-hidden="true" />
-                  </button>
-                  <input
-                    id="unit-search"
-                    ref={searchInputRef}
-                    className={
-                      isSearchExpanded
-                        ? `${styles.unitSearchInput} ${styles.unitSearchInputExpanded}`
-                        : `${styles.unitSearchInput} ${styles.unitSearchInputCollapsed}`
-                    }
-                    type="search"
-                    placeholder="Search within this unit"
-                    value={searchTerm}
-                    onChange={(event) => setSearchTerm(event.target.value)}
-                    onKeyDown={(event) => {
-                      if (event.key === 'Escape') {
-                        setSearchTerm('');
-                        setIsSearchExpanded(false);
-                      }
-                    }}
-                    tabIndex={isSearchExpanded ? 0 : -1}
-                  />
-                </div>
-                {availLocs.length > 0 && numID != null && (
-                  <div className={styles.unitLocaleSwitcher}>
-                    <LocDropdown availLocs={availLocs} loc={locale} id={numID} />
-                  </div>
-                )}
-                <button
-                  type="button"
-                  className={styles.unitNavVisibilityToggle}
-                  onClick={handlePortalNavToggle}
-                  aria-label={isPortalNavCollapsed ? 'Profile menu' : 'Collapse menu'}
-                >
-                  <ChevronUp
-                    size={18}
-                    aria-hidden="true"
-                    className={
-                      isPortalNavCollapsed
-                        ? styles.unitNavVisibilityToggleIconCollapsed
-                        : styles.unitNavVisibilityToggleIconExpanded
-                    }
-                  />
-                  {isPortalNavCollapsed ? (
-                    <span className={styles.unitNavProfileSummary}>
-                      <ProfileAvatarRing
-                        avatarUrl={effectiveAvatarUrl}
-                        isPlusMember={isGpPlusUser}
-                        size={22}
-                        onError={() =>
-                          setAvatarCandidateIndex((currentIndex) =>
-                            currentIndex + 1 < avatarCandidates.length
-                              ? currentIndex + 1
-                              : avatarCandidates.length
-                          )
-                        }
-                      />
-                    </span>
-                  ) : (
-                    <span>Collapse</span>
-                  )}
-                </button>
-              </div>
-            </div>
-            <div className={styles.unitTabList}>
-              {availableTabs.map((tab) => (
-                <button
-                  key={tab.key}
-                  type="button"
-                  className={
-                    tab.key === activeTab
-                      ? `${styles.unitTabButton} ${styles.unitTabButtonActive}`
-                      : styles.unitTabButton
-                  }
-                  onClick={() => handleTabChange(tab.key as TTabKey)}
-                >
-                  {tab.label}
-                </button>
-              ))}
-            </div>
-            {activeTab === TAB_MATERIALS && lessons.length > 0 && (
-              <div className={styles.lessonSubtabBar}>
-                <span className={styles.lessonSubtabLabel}>Lessons:</span>
-                <div className={styles.lessonSubtabList}>
-                  {lessons.map((lesson, index) => {
-                    const lessonId = getLessonIdentifier(lesson, index);
-                    const isActive = lessonId === activeLessonId;
-                    const isAssessment = isAssessmentLesson(lesson, index);
-                    return (
-                      <button
-                        key={`sticky-lesson-tab-${lessonId}`}
-                        type="button"
-                        className={
-                          isActive
-                            ? `${styles.lessonSubtabButton} ${styles.lessonSubtabButtonActive}`
-                            : styles.lessonSubtabButton
-                        }
-                        onClick={() => handleLessonChange(lessonId)}
-                      >
-                        {isAssessment ? (
-                          <span
-                            className={`${styles.lessonSubtabThumb} ${styles.lessonSubtabThumbAssessment}`}
-                            aria-hidden="true"
-                          >
-                            <NotebookPen size={13} />
-                          </span>
-                        ) : lesson.tile ? (
-                          <span className={styles.lessonSubtabThumb} aria-hidden="true">
-                            <Image
-                              src={lesson.tile}
-                              alt=""
-                              width={22}
-                              height={22}
-                            />
-                          </span>
-                        ) : (
-                          <span className={styles.lessonSubtabThumb} aria-hidden="true">
-                            <Image
-                              src={LESSON_TILE_FALLBACK_SRC}
-                              alt=""
-                              width={22}
-                              height={22}
-                            />
-                          </span>
-                        )}
-                        <span>{isAssessment ? 'Assess' : lessonId}</span>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
-            {isSearchExpanded && searchTerm.length > 1 && (
-              <div className={styles.unitSearchResults}>
-                {searchResults.length ? (
-                  searchResults.map((entry) => (
-                    <button
-                      key={entry.id}
-                      type="button"
-                      className={styles.unitSearchResult}
-                      onClick={() => handleSearchSelect(entry)}
-                    >
-                      <span className={styles.searchResultTitle}>
-                        {renderHighlightedText(
-                          entry.title,
-                          searchTerm,
-                          styles.searchResultHighlight
-                        )}
-                      </span>
-                      <span className={styles.searchResultExcerpt}>
-                        {renderHighlightedText(
-                          entry.snippet,
-                          searchTerm,
-                          styles.searchResultHighlight
-                        )}
-                      </span>
-                    </button>
-                  ))
-                ) : (
-                  <p className={styles.searchResultEmpty}>
-                    No matches yet. Try a different keyword.
-                  </p>
-                )}
-              </div>
-            )}
-          </div>
-        </div>
+        <UnitStickyHeader
+          unitTitle={unitTitle}
+          unitSubtitle={unitSubtitle}
+          isSearchExpanded={isSearchExpanded}
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
+          setIsSearchExpanded={setIsSearchExpanded}
+          searchInputRef={searchInputRef}
+          handleSearchToggle={handleSearchToggle}
+          availLocs={availLocs}
+          numID={numID}
+          locale={locale}
+          handlePortalNavToggle={handlePortalNavToggle}
+          isPortalNavCollapsed={isPortalNavCollapsed}
+          effectiveAvatarUrl={effectiveAvatarUrl}
+          isGpPlusUser={isGpPlusUser}
+          avatarCandidates={avatarCandidates}
+          setAvatarCandidateIndex={setAvatarCandidateIndex}
+          availableTabs={availableTabs}
+          activeTab={activeTab}
+          onTabChange={(tab) => handleTabChange(tab as TTabKey)}
+          materialsTabKey={TAB_MATERIALS}
+          lessons={lessons}
+          activeLessonId={activeLessonId}
+          getLessonIdentifier={getLessonIdentifier}
+          isAssessmentLesson={isAssessmentLesson}
+          lessonTileFallbackSrc={LESSON_TILE_FALLBACK_SRC}
+          handleLessonChange={handleLessonChange}
+          searchResults={searchResults}
+          handleSearchSelect={handleSearchSelect}
+          renderHighlightedText={renderHighlightedText}
+        />
       )}
 
       {activeTab === TAB_OVERVIEW && (
-        <>
-          <section
-            id="unit-search-overview-hero"
-            className={`${styles.unitHero} ${styles.unitTabFadeIn}`}
-          >
-          <div className={styles.unitHeroIntro}>
-            <div className={styles.unitEyebrowRow}>
-              <p className={styles.unitEyebrow}>Galactic Polymath · Unit</p>
-              {unitVersionText && (
-                <button
-                  type="button"
-                  className={styles.unitVersionInfo}
-                  onClick={handleVersionInfoClick}
-                >
-                  {unitVersionText}
-                </button>
-              )}
-            </div>
-          </div>
-          <div className={styles.unitHeroGrid}>
-            <div className={styles.unitHeroMedia}>
-              {unitBanner ? (
-                <div className={styles.unitBanner}>
-                  <Image
-                    src={unitBanner}
-                    alt={unit.Title ? `${unit.Title} banner` : 'Unit banner'}
-                    width={1400}
-                    height={720}
-                    priority
-                  />
-                </div>
-              ) : (
-                <div className={styles.unitBannerFallback}>
-                  <p>Unit banner coming soon</p>
-                </div>
-              )}
-            </div>
-            <div className={styles.unitHeroHeader}>
-              <h1 className={styles.unitTitle}>{unitTitle}</h1>
-              {unitSubtitle && (
-                <p className={styles.unitSubtitle}>{unitSubtitle}</p>
-              )}
-              {!!heroUnitTags.length && (
-                <>
-                  <div
-                    id="unit-search-overview-tags"
-                    ref={unitTagListRef}
-                    className={styles.unitTagList}
-                  >
-                    {tagsToDisplay.map((tag, index) => (
-                      <button
-                        key={`${tag}-${index}`}
-                        type="button"
-                        className={`${styles.unitTag} ${styles.unitTagButton}`}
-                        title="Search for related resources"
-                        aria-label={`Search for related resources: ${tag}`}
-                        onClick={() => handleTagSearchClick(tag, 'unit_hero')}
-                      >
-                        {tag}
-                      </button>
-                    ))}
-                    {hiddenTagCount > 0 && (
-                      <button
-                        type="button"
-                        className={`${styles.unitTag} ${styles.unitTagToggle}`}
-                        aria-expanded={isTagListExpanded}
-                        onClick={() => setIsTagListExpanded((current) => !current)}
-                      >
-                        {isTagListExpanded ? 'Show fewer' : `+${hiddenTagCount} more`}
-                      </button>
-                    )}
-                  </div>
-                  <div className={styles.unitTagMeasureList} aria-hidden="true">
-                    {heroUnitTags.map((tag, index) => (
-                      <span
-                        key={`measure-${tag}-${index}`}
-                        className={styles.unitTag}
-                        ref={(element) => {
-                          unitTagMeasureRefs.current[index] = element;
-                        }}
-                      >
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                </>
-              )}
-            </div>
-          </div>
-          <div className={styles.unitHeroShareRow}>
-            <button
-              className={styles.unitMainShareAction}
-              type="button"
-              onClick={handleShare}
-            >
-              <i className="bi bi-share" aria-hidden="true" />
-              Share
-            </button>
-          </div>
-          </section>
-        </>
+        <div className={styles.unitTabFadeIn}>
+          <UnitOverviewHero
+            unitTitle={unitTitle}
+            unitSubtitle={unitSubtitle}
+            unitBanner={unitBanner}
+            unitVersionText={unitVersionText}
+            handleVersionInfoClick={handleVersionInfoClick}
+            heroUnitTags={heroUnitTags}
+            tagsToDisplay={tagsToDisplay}
+            hiddenTagCount={hiddenTagCount}
+            isTagListExpanded={isTagListExpanded}
+            setIsTagListExpanded={setIsTagListExpanded}
+            handleTagSearchClick={handleTagSearchClick}
+            unitTagListRef={unitTagListRef}
+            unitTagMeasureRefs={unitTagMeasureRefs}
+            handleShare={handleShare}
+          />
+        </div>
       )}
 
       {activeTab === TAB_MATERIALS && (
-        <section className={`${styles.unitTabHero} ${styles.unitTabFadeIn}`}>
-          <div className={styles.unitTabHeroContent}>
-            <p className={styles.unitTabHeroEyebrow}>Lessons Resources</p>
-            <h2 className={styles.unitTabHeroTitle}>Preview and Download</h2>
-            <p className={styles.unitTabHeroLead}>
-              Browse featured media, teaching resources, and lesson support materials
-              in one place.
-            </p>
-          </div>
-          <div className={styles.unitHeroShareRow}>
-            <button
-              className={styles.unitMainShareAction}
-              type="button"
-              onClick={handleShare}
-            >
-              <i className="bi bi-share" aria-hidden="true" />
-              Share
-            </button>
-          </div>
-        </section>
+        <div className={styles.unitTabFadeIn}>
+          <UnitTabHero
+            eyebrow="Lessons Resources"
+            title="Preview and Download"
+            lead="Browse featured media, teaching resources, and lesson support materials in one place."
+            handleShare={handleShare}
+          />
+        </div>
       )}
 
       {activeTab === TAB_STANDARDS && (
-        <section className={`${styles.unitTabHero} ${styles.unitTabFadeIn}`}>
-          <div className={styles.unitTabHeroContent}>
-            <p className={styles.unitTabHeroEyebrow}>Standards</p>
-            <h2 className={styles.unitTabHeroTitle}>Interdisciplinary by Design</h2>
-            <p className={styles.unitTabHeroLead}>
-              We align to standards across subjects. Our units are ready for STEAM
-              or team teaching, and project based learning.
-            </p>
-          </div>
-          <div className={styles.unitHeroShareRow}>
-            <button
-              className={styles.unitMainShareAction}
-              type="button"
-              onClick={handleShare}
-            >
-              <i className="bi bi-share" aria-hidden="true" />
-              Share
-            </button>
-          </div>
-        </section>
+        <div className={styles.unitTabFadeIn}>
+          <UnitTabHero
+            eyebrow="Standards"
+            title="Interdisciplinary by Design"
+            lead="We align to standards across subjects. Our units are ready for STEAM or team teaching, and project based learning."
+            handleShare={handleShare}
+          />
+        </div>
       )}
 
       {activeTab === TAB_CREDITS && (
-        <section
-          id="unit-search-credits-content"
-          className={`${styles.unitTabHero} ${styles.unitTabHeroCredits} ${styles.unitTabFadeIn}`}
-        >
-          <div className={styles.unitTabHeroContent}>
-            <p className={styles.unitTabHeroEyebrow}>Credits</p>
-            <h2 className={styles.unitTabHeroTitle}>
-              Credits, Acknowledgments, and Versions
-            </h2>
-            <p className={styles.unitTabHeroLead}>
-              This unit was made possible by hundreds of hours of work by tons of
-              people. Thank you!
-            </p>
-          </div>
-          <div className={styles.unitHeroShareRow}>
-            <button
-              className={styles.unitMainShareAction}
-              type="button"
-              onClick={handleShare}
-            >
-              <i className="bi bi-share" aria-hidden="true" />
-              Share
-            </button>
-          </div>
-        </section>
+        <div className={styles.unitTabFadeIn}>
+          <UnitTabHero
+            id="unit-search-credits-content"
+            eyebrow="Credits"
+            title="Credits, Acknowledgments, and Versions"
+            lead="This unit was made possible by hundreds of hours of work by tons of people. Thank you!"
+            isCredits
+            handleShare={handleShare}
+          />
+        </div>
       )}
 
       <main className={styles.unitMain}>
@@ -4313,37 +3742,10 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
           vancouverCitation={vancouverCitation}
         />
         {officeUpsellFormat && (
-          <div
-            className={styles.officeUpsellModalBackdrop}
-            role="presentation"
-            onClick={handleCloseOfficeUpsell}
-          >
-            <div
-              className={styles.officeUpsellModal}
-              role="dialog"
-              aria-modal="true"
-              aria-labelledby="office-upsell-title"
-              onClick={(event) => event.stopPropagation()}
-            >
-              <h3 id="office-upsell-title">Editable {officeUpsellFormat} files are GP+ only</h3>
-              <p>
-                With a GP+ subscription, you can download editable Office files for
-                teaching materials and unlock the full GP+ toolkit.
-              </p>
-              <div className={styles.officeUpsellActions}>
-                <Link href="/plus" className={styles.officeUpsellPrimary}>
-                  Explore GP+ Benefits
-                </Link>
-                <button
-                  type="button"
-                  className={styles.officeUpsellSecondary}
-                  onClick={handleCloseOfficeUpsell}
-                >
-                  Not now
-                </button>
-              </div>
-            </div>
-          </div>
+          <UnitOfficeUpsellModal
+            format={officeUpsellFormat}
+            onClose={handleCloseOfficeUpsell}
+          />
         )}
       </main>
     </div>

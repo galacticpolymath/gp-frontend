@@ -1,0 +1,68 @@
+.officeUpsellModalBackdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(17, 25, 38, 0.44);
+  display: grid;
+  place-items: center;
+  z-index: 80;
+  padding: 14px;
+}
+
+.officeUpsellModal {
+  width: min(480px, 100%);
+  border-radius: 16px;
+  border: 1px solid rgba(87, 118, 183, 0.3);
+  background:
+    radial-gradient(circle at 14% 18%, rgba(72, 135, 214, 0.12), transparent 55%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.97), rgba(243, 247, 255, 0.95));
+  box-shadow: 0 22px 38px rgba(22, 33, 50, 0.3);
+  padding: 16px;
+  display: grid;
+  gap: 10px;
+}
+
+.officeUpsellModal h3 {
+  margin: 0;
+  font-size: 22px;
+  line-height: 1.2;
+  color: #1f355a;
+}
+
+.officeUpsellModal p {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.45;
+  color: #4c5269;
+}
+
+.officeUpsellActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.officeUpsellPrimary,
+.officeUpsellSecondary {
+  min-height: 36px;
+  border-radius: 999px;
+  padding: 0 14px;
+  font-size: 14px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+
+.officeUpsellPrimary {
+  border: 1px solid rgba(72, 107, 167, 0.5);
+  background: linear-gradient(120deg, rgba(78, 136, 220, 0.2), rgba(121, 95, 196, 0.2));
+  color: #1f355a;
+}
+
+.officeUpsellSecondary {
+  border: 1px solid rgba(76, 90, 122, 0.3);
+  background: rgba(255, 255, 255, 0.9);
+  color: #4c5269;
+}
