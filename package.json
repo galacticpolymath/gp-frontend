@@ -28,7 +28,7 @@
     "@headlessui/react": "^2.2.9",
     "@ionic/react": "^8.8.0",
     "@magic-ext/oauth": "^24.0.0",
-    "@mui/icons-material": "^7.3.8",
+    "@mui/icons-material": "^7.3.9",
     "@mui/material": "^7.3.9",
     "@mui/styles": "^6.5.0",
     "@popperjs/core": "^2.11.8",
