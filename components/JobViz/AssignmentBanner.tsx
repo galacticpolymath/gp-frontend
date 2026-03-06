@@ -125,20 +125,6 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
     variant === "desktop"
       ? styles.assignmentDesktopDock
       : styles.assignmentMobileWrapper;
-  const desktopDockInlineStyle: React.CSSProperties | undefined =
-    isDesktopVariant
-      ? {
-          position: "sticky",
-          top: "var(--portal-nav-offset, var(--jobviz-nav-offset, 72px))",
-          height:
-            "calc(100vh - var(--portal-nav-offset, var(--jobviz-nav-offset, 72px)))",
-          maxHeight:
-            "calc(100vh - var(--portal-nav-offset, var(--jobviz-nav-offset, 72px)))",
-          overflowY: "auto",
-          overflowX: "hidden",
-          alignSelf: "start",
-        }
-      : undefined;
   const showAssignmentPanel = !isDesktopVariant || !isDockCollapsed;
   const isDockViewportEnabled =
     shouldRenderBanner && isDesktopVariant && !isDockCollapsed;
@@ -784,7 +770,6 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
     <>
       <div
       className={`${styles.assignmentBannerShell} ${wrapperClass}`}
-      style={desktopDockInlineStyle}
       data-mode={variant === "desktop" ? "docked" : "default"}
       data-collapsed={isMobile && mobileCollapsed ? "true" : "false"}
       data-dock-collapsed={isDockCollapsed ? "true" : "false"}
@@ -814,9 +799,7 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
       {showAssignmentPanel && (
         <div
           className={`${styles.assignmentBanner} ${styles.assignmentBannerSticky} ${
-            variant === "desktop"
-              ? styles.assignmentBannerDock
-              : styles.assignmentBannerDefault
+            variant === "desktop" ? "" : styles.assignmentBannerDefault
           }`}
           role="status"
           aria-live="polite"
