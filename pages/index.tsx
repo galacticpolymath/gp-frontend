@@ -210,6 +210,40 @@ const buildJobTourUrl = (resource: PreviewResource) => {
   return "/jobviz";
 };
 
+const buildJobTourPathFromResource = (
+  resource: PreviewResource,
+  {
+    student = false,
+    preview = false,
+    edit = false,
+  }: {
+    student?: boolean;
+    preview?: boolean;
+    edit?: boolean;
+  } = {}
+) => {
+  const params = new URLSearchParams();
+  if (resource.tourId) {
+    params.set("tourId", resource.tourId);
+  } else if (resource.selectedJobs?.length) {
+    params.set(SOC_CODES_PARAM_NAME, resource.selectedJobs.join(","));
+    if (resource.tourUnitTitle) {
+      params.set(UNIT_NAME_PARAM_NAME, resource.tourUnitTitle);
+    }
+  }
+  if (student) {
+    params.set("student", "1");
+  }
+  if (preview) {
+    params.set("preview", "1");
+  }
+  if (edit) {
+    params.set("edit", "1");
+  }
+  const query = params.toString();
+  return query ? `/jobviz?${query}` : "/jobviz";
+};
+
 type HeroStat = {
   label: string;
   value: string;
@@ -1138,10 +1172,6 @@ export default function HomePage({
   const [showStatsDebug, setShowStatsDebug] = useState(false);
   const [jobTourAccessResource, setJobTourAccessResource] =
     useState<PreviewResource | null>(null);
-  const [isCopyingStudentLink, setIsCopyingStudentLink] = useState(false);
-  const [jobTourAccessMode, setJobTourAccessMode] = useState<
-    "select-view" | "teacher-tools"
-  >("select-view");
   const isSearchRoute = router.pathname === "/search";
   const [carouselIndex, setCarouselIndex] = useState(0);
   const statsSectionRef = useRef<HTMLElement | null>(null);
@@ -1505,12 +1535,9 @@ export default function HomePage({
   };
   const handleCloseJobTourAccessModal = () => {
     setJobTourAccessResource(null);
-    setIsCopyingStudentLink(false);
-    setJobTourAccessMode("select-view");
   };
   const handleOpenJobTourAccessModal = (resource: PreviewResource) => {
     setJobTourAccessResource(resource);
-    setJobTourAccessMode("select-view");
   };
   const hasGpPlusAccess =
     status === "authenticated" &&
@@ -1528,40 +1555,41 @@ export default function HomePage({
     []
   );
   const handleOpenTourPreview = useCallback(() => {
-    if (!jobTourAccessResource?.tourId) return;
-    openStudentTour(jobTourAccessResource.tourId, true);
+    if (!jobTourAccessResource) return;
+    if (jobTourAccessResource.tourId) {
+      openStudentTour(jobTourAccessResource.tourId, true);
+      handleCloseJobTourAccessModal();
+      return;
+    }
+    const previewPath = buildJobTourPathFromResource(jobTourAccessResource, {
+      student: true,
+      preview: true,
+    });
+    router.push(previewPath);
     handleCloseJobTourAccessModal();
-  }, [jobTourAccessResource?.tourId, openStudentTour]);
+  }, [jobTourAccessResource, openStudentTour, router]);
   const handleOpenTourTeacherMode = useCallback(() => {
-    if (!jobTourAccessResource?.tourId) return;
-    router.push(`/jobviz?tourId=${encodeURIComponent(jobTourAccessResource.tourId)}&edit=1`);
+    if (!jobTourAccessResource) return;
+    const teacherPath = buildJobTourPathFromResource(jobTourAccessResource, {
+      edit: true,
+    });
+    router.push(teacherPath);
     handleCloseJobTourAccessModal();
-  }, [jobTourAccessResource?.tourId, router]);
-  const handleOpenTeacherTools = useCallback(() => {
-    setJobTourAccessMode("teacher-tools");
-  }, []);
+  }, [jobTourAccessResource, router]);
   const handleOpenTourStudentMode = useCallback(() => {
-    if (!jobTourAccessResource?.tourId) return;
-    openStudentTour(jobTourAccessResource.tourId, false);
-    handleCloseJobTourAccessModal();
-  }, [jobTourAccessResource?.tourId, openStudentTour]);
-  const handleCopyTourStudentLink = useCallback(async () => {
-    if (!jobTourAccessResource?.tourId || typeof window === "undefined") return;
-    setIsCopyingStudentLink(true);
-    const shareUrl = buildStudentTourUrl(jobTourAccessResource.tourId, {
-      host: window.location.host,
-      protocol: window.location.protocol,
+    if (!jobTourAccessResource) return;
+    if (jobTourAccessResource.tourId) {
+      openStudentTour(jobTourAccessResource.tourId, false);
+      handleCloseJobTourAccessModal();
+      return;
+    }
+    const studentPath = buildJobTourPathFromResource(jobTourAccessResource, {
+      student: true,
       preview: false,
     });
-    try {
-      await navigator.clipboard.writeText(shareUrl);
-      toast.success("Student link copied");
-    } catch {
-      toast.error("Unable to copy student link");
-    } finally {
-      setIsCopyingStudentLink(false);
-    }
-  }, [jobTourAccessResource?.tourId]);
+    router.push(studentPath);
+    handleCloseJobTourAccessModal();
+  }, [jobTourAccessResource, openStudentTour, router]);
   const handleOpenMedia = (media: MediaItem) => {
     setActiveMedia(media);
     setActiveModal("media");
@@ -3818,11 +3846,7 @@ export default function HomePage({
                                 return;
                               }
                               if (resource.type === "Job Tour" && jobTourUrl) {
-                                if (resource.tourId) {
-                                  handleOpenJobTourAccessModal(resource);
-                                } else {
-                                  navigateToInternalRoute(jobTourUrl, resource.id);
-                                }
+                                handleOpenJobTourAccessModal(resource);
                                 return;
                               }
                               if (resource.type === "App" && resource.mediaLink) {
@@ -5112,69 +5136,37 @@ export default function HomePage({
             <div className={styles.jobTourAccessBody}>
               <p className={styles.jobTourAccessDescription}>
                 {hasGpPlusAccess
-                  ? jobTourAccessMode === "teacher-tools"
-                    ? "Teacher tools let you edit this tour and share a student-ready link."
-                    : "Choose how you want to open this tour."
-                  : "Preview the first 2 jobs in student view. GP+ unlocks assigning and creating full tours."}
+                  ? "Choose how to open this tour. Student view simulates the learner experience, and teacher view opens edit mode."
+                  : "Job Tours are a GP+ feature for assigning and editing classroom career tours. You can preview the first 2 tour stops in student mode."}
               </p>
               <div className={styles.jobTourAccessActions}>
                 {hasGpPlusAccess ? (
-                  jobTourAccessMode === "teacher-tools" ? (
-                    <>
-                      <button
-                        className={styles.jobTourAccessPrimaryBtn}
-                        type="button"
-                        onClick={handleOpenTourTeacherMode}
-                      >
-                        <NotebookPen size={16} aria-hidden="true" />
-                        Edit Tour
-                      </button>
-                      <button
-                        className={styles.jobTourAccessSecondaryBtn}
-                        type="button"
-                        disabled={isCopyingStudentLink}
-                        onClick={handleCopyTourStudentLink}
-                      >
-                        <FiShare2 aria-hidden="true" />
-                        {isCopyingStudentLink ? "Copying..." : "Copy Student Link"}
-                      </button>
-                      <button
-                        className={styles.jobTourAccessGhostBtn}
-                        type="button"
-                        onClick={() => setJobTourAccessMode("select-view")}
-                      >
-                        <CircleArrowLeft size={16} aria-hidden="true" />
-                        Back
-                      </button>
-                    </>
-                  ) : (
-                    <>
-                      <button
-                        className={styles.jobTourAccessPrimaryBtn}
-                        type="button"
-                        onClick={handleOpenTeacherTools}
-                      >
-                        <Briefcase size={16} aria-hidden="true" />
-                        Open as Teacher
-                      </button>
-                      <button
-                        className={styles.jobTourAccessSecondaryBtn}
-                        type="button"
-                        onClick={handleOpenTourStudentMode}
-                      >
-                        <School size={16} aria-hidden="true" />
-                        Open as Student
-                      </button>
-                      <button
-                        className={styles.jobTourAccessGhostBtn}
-                        type="button"
-                        onClick={handleCloseJobTourAccessModal}
-                      >
-                        <X size={16} aria-hidden="true" />
-                        Not now
-                      </button>
-                    </>
-                  )
+                  <>
+                    <button
+                      className={styles.jobTourAccessPrimaryBtn}
+                      type="button"
+                      onClick={handleOpenTourTeacherMode}
+                    >
+                      <NotebookPen size={16} aria-hidden="true" />
+                      Preview as Teacher (Edit Mode)
+                    </button>
+                    <button
+                      className={styles.jobTourAccessSecondaryBtn}
+                      type="button"
+                      onClick={handleOpenTourStudentMode}
+                    >
+                      <School size={16} aria-hidden="true" />
+                      Preview as Student
+                    </button>
+                    <button
+                      className={styles.jobTourAccessGhostBtn}
+                      type="button"
+                      onClick={handleCloseJobTourAccessModal}
+                    >
+                      <X size={16} aria-hidden="true" />
+                      Not now
+                    </button>
+                  </>
                 ) : (
                   <>
                     <button
@@ -5185,9 +5177,9 @@ export default function HomePage({
                       <School size={16} aria-hidden="true" />
                       Preview as Student
                     </button>
-                    <Link href="/gp-plus" className={styles.jobTourAccessSecondaryBtn}>
+                    <Link href="/plus" className={styles.jobTourAccessSecondaryBtn}>
                       <Rocket size={16} aria-hidden="true" />
-                      Get GP+ to Assign or Create
+                      Get GP+
                     </Link>
                     <button
                       className={styles.jobTourAccessGhostBtn}

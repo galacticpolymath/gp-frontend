@@ -1438,7 +1438,7 @@ const JobVizSearchResults = ({
     canonicalLink: jobvizCanonicalUrl,
     keywords:
       "jobviz, job viz, career explorer, career exploration, career pathways, BLS jobs, career navigation",
-    showNav: viewMode !== "student",
+    showNav: true,
     showFooter: viewMode !== "student",
     structuredData: datasetStructuredData,
   };
