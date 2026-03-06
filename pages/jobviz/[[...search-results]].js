@@ -1259,7 +1259,7 @@ const JobVizSearchResults = ({
   const viewingTitle = isShowingSavedScope
     ? "Saved jobs"
     : isShowingAssignmentScope
-      ? "Assigned jobs"
+      ? "Featured jobs"
       : baseViewTitle;
   const viewingIconName = isShowingSavedScope
     ? "Star"
@@ -1816,7 +1816,7 @@ const JobVizSearchResults = ({
                     {isShowingAssignmentScope ? (
                       <div className={styles.assignedScopeMessage}>
                         <LucideIcon name="Sparkles" />
-                        Showing assigned jobs across multiple categories
+                        Showing featured jobs across multiple categories
                       </div>
                     ) : isShowingSavedScope ? (
                       <div className={styles.assignedScopeMessage}>
@@ -1875,6 +1875,7 @@ const JobVizSearchResults = ({
                   </div>
                   <div className={styles.gridFilterRow}>
                     <div className={styles.gridFilterActions}>
+                      <span className={styles.gridFilterLabel}>FILTER</span>
                       <button
                         type="button"
                         className={`${styles.assignedToggleButton} ${
@@ -1890,7 +1891,7 @@ const JobVizSearchResults = ({
                         aria-pressed={isShowingSavedScope}
                         aria-label={
                           status === "authenticated"
-                            ? "Show only saved jobs"
+                            ? "Only saved jobs"
                             : "Sign in required to view saved jobs"
                         }
                       >
@@ -1898,7 +1899,7 @@ const JobVizSearchResults = ({
                           className={styles.assignedToggleIndicator}
                           aria-hidden="true"
                         />
-                        Saved jobs
+                        Saved Jobs
                       </button>
                     {hasAssignmentList && (
                       <>
@@ -1917,7 +1918,7 @@ const JobVizSearchResults = ({
                             className={styles.assignedToggleIndicator}
                             aria-hidden="true"
                           />
-                          Show only assigned jobs
+                          Featured Jobs
                         </button>
                         {isStudentMode && !isShowingAssignmentScope && (
                           <button
@@ -1925,6 +1926,7 @@ const JobVizSearchResults = ({
                             className={styles.assignmentReturnButton}
                             onClick={() => setShowAssignmentOnly(true)}
                           >
+                            <LucideIcon name="ArrowLeft" />
                             Back to assignment
                           </button>
                         )}
