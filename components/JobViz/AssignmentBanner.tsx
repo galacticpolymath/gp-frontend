@@ -634,7 +634,7 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
   );
 
   React.useEffect(() => {
-    if (!shouldRenderBanner || variant !== "mobile") return undefined;
+    if (!shouldRenderBanner) return undefined;
     if (typeof window === "undefined") return undefined;
 
     const readNavOffset = () => {
@@ -701,6 +701,8 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
         navResizeObserver.observe(navTarget);
       }
     }
+    window.addEventListener("resize", updateNavOffset);
+    window.addEventListener("scroll", updateNavOffset, { passive: true });
 
     return () => {
       if (navTarget) {
@@ -712,10 +714,12 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
       if (navResizeObserver) {
         navResizeObserver.disconnect();
       }
+      window.removeEventListener("resize", updateNavOffset);
+      window.removeEventListener("scroll", updateNavOffset);
       document.documentElement.style.setProperty("--jobviz-nav-offset", "0px");
       emitNavOffsetChange(0);
     };
-  }, [shouldRenderBanner, variant]);
+  }, [shouldRenderBanner]);
 
   React.useEffect(() => {
     if (variant !== "mobile" || !shouldRenderBanner) return undefined;

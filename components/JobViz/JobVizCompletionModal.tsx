@@ -102,7 +102,7 @@ const JobVizCompletionModal: React.FC = () => {
       canvas.style.width = "100vw";
       canvas.style.height = "100vh";
       canvas.style.pointerEvents = "none";
-      canvas.style.zIndex = "12000150";
+      canvas.style.zIndex = "20000100";
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
       document.body.appendChild(canvas);
@@ -129,7 +129,7 @@ const JobVizCompletionModal: React.FC = () => {
       gravity: 0.9,
       ticks: 160,
       spread: 120,
-      zIndex: 12000100,
+      zIndex: 20000100,
       colors: ["#FFD369", "#FF5AB5", "#7B5BFF", "#6EC8FF", "#A3FFE9"],
       disableForReducedMotion: false,
     };
@@ -209,7 +209,7 @@ const JobVizCompletionModal: React.FC = () => {
       backdropClassName={styles.completionModalBackdrop}
       className={styles.completionModalRoot}
       fullscreen="md-down"
-      style={{ zIndex: 15000000 }}
+      style={{ zIndex: 20000000 }}
     >
       <Modal.Body className={styles.completionModalBody}>
         <div className={styles.completionHeader}>
