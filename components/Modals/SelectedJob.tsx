@@ -694,10 +694,10 @@ const SelectedJob: React.FC = () => {
                         jobTourEditor?.toggleJob(visibleJob.soc_code);
                       }}
                     >
-                      <span
-                        className={styles.jobvizBookmarkDot}
+                      <Star
+                        size={14}
                         aria-hidden="true"
-                        data-active={isBookmarked ? "true" : "false"}
+                        fill={isBookmarked ? "currentColor" : "none"}
                       />
                     </button>
                   )}

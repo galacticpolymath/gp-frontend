@@ -92,6 +92,15 @@ const GRID_NAVIGATION_HEADER_DELAY_MS = VIEWING_HEADER_TRANSITION_MS;
 const JOBVIZ_WELCOME_DISMISSED_KEY = "jobviz_intro_dismissed";
 const JOBVIZ_TOUR_WELCOME_DISMISSED_KEY = "jobviz_tour_intro_dismissed";
 const SAVED_JOBS_QUERY_PARAM = "saved";
+const areSetsEqual = (left, right) => {
+  if (left === right) return true;
+  if (!left || !right) return false;
+  if (left.size !== right.size) return false;
+  for (const value of left) {
+    if (!right.has(value)) return false;
+  }
+  return true;
+};
 
 const JobVizSearchResults = ({
   metaDescription,
@@ -251,10 +260,7 @@ const JobVizSearchResults = ({
     router.replace(nextUrl, undefined, { shallow: true, scroll: false });
   }, [isPreviewQuery, router, shouldForcePreviewMode]);
 
-  const allAssignmentSocCodes = useMemo(() => {
-    if (isTeacherEditMode && selectedTourJobs.size) {
-      return new Set(selectedTourJobs);
-    }
+  const sourceAssignmentSocCodes = useMemo(() => {
     if (activeTour?.selectedJobs?.length) {
       return new Set(activeTour.selectedJobs.filter(Boolean));
     }
@@ -264,12 +270,13 @@ const JobVizSearchResults = ({
     if (!value) return null;
 
     return new Set(value.split(",").filter(Boolean));
-  }, [
-    activeTour,
-    isTeacherEditMode,
-    router.query,
-    selectedTourJobs,
-  ]);
+  }, [activeTour, router.query]);
+  const allAssignmentSocCodes = useMemo(() => {
+    if (isTeacherEditMode) {
+      return selectedTourJobs;
+    }
+    return sourceAssignmentSocCodes;
+  }, [isTeacherEditMode, selectedTourJobs, sourceAssignmentSocCodes]);
   const assignmentSocCodes = useMemo(() => {
     if (!allAssignmentSocCodes?.size) {
       return allAssignmentSocCodes;
@@ -298,14 +305,13 @@ const JobVizSearchResults = ({
 
   useEffect(() => {
     if (!isTeacherEditMode) return;
-    const fallbackJobs = assignmentSocCodes
-      ? Array.from(assignmentSocCodes)
-      : [];
-    const nextJobs = activeTour?.selectedJobs?.length
-      ? activeTour.selectedJobs
-      : fallbackJobs;
-    setSelectedTourJobs(new Set(nextJobs));
-  }, [assignmentSocCodes, activeTour, isTeacherEditMode]);
+    const nextSelectedSet = sourceAssignmentSocCodes
+      ? new Set(sourceAssignmentSocCodes)
+      : new Set();
+    setSelectedTourJobs((prev) =>
+      areSetsEqual(prev, nextSelectedSet) ? prev : nextSelectedSet
+    );
+  }, [isTeacherEditMode, sourceAssignmentSocCodes]);
 
   useEffect(() => {
     if (!isTeacherEditMode) return;
@@ -1712,6 +1718,7 @@ const JobVizSearchResults = ({
       isSaved={!hasUnsavedChanges}
       validationErrors={saveErrors}
       selectedJobsCount={selectedTourJobsArray.length}
+      showSaveButton={false}
     />
   ) : null;
 

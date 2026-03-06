@@ -149,6 +149,8 @@ export const JobVizCard: React.FC<JobVizCardProps> = ({
     Boolean(jobTourEditor?.isEditing) && level === 2 && Boolean(socCode);
   const isBookmarked =
     canBookmark && socCode ? jobTourEditor?.isSelected(socCode) : false;
+  const showsAssignmentDot = level === 2 && (Boolean(isAssignmentJob) || canBookmark);
+  const isAssignmentSelected = canBookmark ? Boolean(isBookmarked) : Boolean(isAssignmentJob);
   const emitCardAction = React.useCallback(() => {
     const rect = cardRef.current?.getBoundingClientRect() ?? null;
     if (onCardAction) {
@@ -220,11 +222,7 @@ export const JobVizCard: React.FC<JobVizCardProps> = ({
             jobTourEditor?.toggleJob(socCode);
           }}
         >
-          <span
-            className={styles.jobvizBookmarkDot}
-            aria-hidden="true"
-            data-active={isBookmarked ? "true" : "false"}
-          />
+          <Star size={14} aria-hidden="true" />
         </button>
       )}
       {level === 1 ? (
@@ -266,30 +264,60 @@ export const JobVizCard: React.FC<JobVizCardProps> = ({
             </div>
           <div className={styles.cardHeading}>
             <h3 className={styles.cardTitle}>{compactTitle(title)}</h3>
-            {showBookmark && (
-              <span
-                className={styles.savedJobBadge}
-                title="Saved job"
-                aria-label="Saved job"
-              >
-                <Star size={13} fill="currentColor" aria-hidden="true" />
-              </span>
-            )}
-            {isAssignmentJob && (
-              <span
-                className={`${styles.assignmentBadgeDot} ${
-                  showBookmark ? styles.assignmentBadgeOffset : ""
-                }`}
-                title="Part of this assignment"
-                aria-hidden="true"
-              />
-            )}
-            {isLocked && (
-              <span className={styles.lockedCardBadge}>
-                <LucideIcon name="Lock" />
-                Locked
-              </span>
-            )}
+            <div className={styles.cardHeaderBadges}>
+              {showBookmark && !canBookmark && (
+                <span
+                  className={styles.savedJobBadge}
+                  title="Saved job"
+                  aria-label="Saved job"
+                >
+                  <Star size={13} fill="currentColor" aria-hidden="true" />
+                </span>
+              )}
+              {showsAssignmentDot &&
+                (canBookmark && socCode ? (
+                  <button
+                    type="button"
+                    className={styles.assignmentBadgeButton}
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      jobTourEditor?.toggleJob(socCode);
+                    }}
+                    title={
+                      isAssignmentSelected
+                        ? "Remove from assignment"
+                        : "Add to assignment"
+                    }
+                    aria-label={
+                      isAssignmentSelected
+                        ? "Remove from assignment"
+                        : "Add to assignment"
+                    }
+                    aria-pressed={isAssignmentSelected}
+                  >
+                    <span
+                      className={`${styles.assignmentBadgeDot} ${
+                        isAssignmentSelected ? styles.assignmentBadgeDotActive : ""
+                      }`}
+                      aria-hidden="true"
+                    />
+                  </button>
+                ) : (
+                  <span
+                    className={`${styles.assignmentBadgeDot} ${
+                      isAssignmentSelected ? styles.assignmentBadgeDotActive : ""
+                    }`}
+                    title="Part of this assignment"
+                    aria-hidden="true"
+                  />
+                ))}
+              {isLocked && (
+                <span className={styles.lockedCardBadge}>
+                  <LucideIcon name="Lock" />
+                  Locked
+                </span>
+              )}
+            </div>
           </div>
         </div>
         {level === 2 && isAssignmentJob && (

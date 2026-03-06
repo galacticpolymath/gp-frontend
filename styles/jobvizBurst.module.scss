@@ -876,23 +876,55 @@ $jobviz-nav-height: 64px;
 
 .cardHeading {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.cardHeaderBadges {
+  display: inline-flex;
+  align-items: center;
   gap: 0.5rem;
+  margin-left: auto;
+  flex-shrink: 0;
 }
 
 .assignmentBadgeDot {
   width: 18px;
   height: 18px;
   border-radius: 999px;
-  background: radial-gradient(circle at 30% 30%, rgba(103, 151, 255, 1), rgba(214, 132, 255, 0.85));
-  border: 1px solid rgba(255, 255, 255, 0.55);
-  box-shadow: 0 0 16px rgba(144, 158, 255, 0.45);
+  background: rgba(13, 8, 33, 0.82);
+  border: 1px solid rgba(255, 255, 255, 0.58);
+  box-shadow: inset 0 0 0 1px rgba(190, 158, 255, 0.12);
   flex-shrink: 0;
-  position: absolute;
-  top: 0.65rem;
-  right: 0.8rem;
-  z-index: 2;
+}
+
+.assignmentBadgeDotActive {
+  background: radial-gradient(circle at 30% 30%, rgba(103, 151, 255, 1), rgba(214, 132, 255, 0.85));
+  border-color: rgba(255, 255, 255, 0.62);
+  box-shadow: 0 0 16px rgba(144, 158, 255, 0.45);
+}
+
+.assignmentBadgeButton {
+  border: none;
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.assignmentBadgeButton:hover .assignmentBadgeDot,
+.assignmentBadgeButton:focus-visible .assignmentBadgeDot {
+  transform: scale(1.05);
+}
+
+.assignmentBadgeButton .assignmentBadgeDot {
+  transition: transform 0.16s ease;
 }
 
 .assignmentBadgePill {
@@ -915,6 +947,9 @@ $jobviz-nav-height: 64px;
   height: 11px;
   margin: 0;
   flex-shrink: 0;
+  background: radial-gradient(circle at 30% 30%, rgba(103, 151, 255, 1), rgba(214, 132, 255, 0.85));
+  border-color: rgba(255, 255, 255, 0.62);
+  box-shadow: 0 0 10px rgba(144, 158, 255, 0.35);
 }
 
 .assignmentBadgePillText {
@@ -924,13 +959,6 @@ $jobviz-nav-height: 64px;
   line-height: 1;
   color: rgba(255, 255, 255, 0.96);
   white-space: nowrap;
-}
-
-.assignmentBadgeOffset {
-  top: 0.82rem;
-  right: 2.8rem;
-  width: 13px;
-  height: 13px;
 }
 
 .savedJobBadge {
@@ -944,10 +972,8 @@ $jobviz-nav-height: 64px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  position: absolute;
-  top: 0.56rem;
-  right: 0.74rem;
-  z-index: 3;
+  position: relative;
+  z-index: 1;
 }
 
 .savedJobBadge :global(svg) {
@@ -5615,47 +5641,48 @@ $jobviz-nav-height: 64px;
   position: absolute;
   top: 12px;
   right: 12px;
-  width: 26px;
-  height: 26px;
+  width: 30px;
+  height: 30px;
   border-radius: 999px;
-  border: 1px solid rgba(44, 131, 195, 0.4);
-  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(255, 233, 150, 0.72);
+  background: rgba(18, 8, 35, 0.8);
+  color: #ffffff;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   padding: 0;
   cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, color 0.2s ease,
+    border-color 0.2s ease;
   z-index: 2;
 }
 
 .jobvizBookmarkButton:hover,
 .jobvizBookmarkButton:focus-visible {
   transform: scale(1.05);
-  box-shadow: 0 6px 14px rgba(44, 131, 195, 0.2);
+  box-shadow: 0 6px 14px rgba(255, 216, 118, 0.24);
+  color: #ffe070;
+}
+
+.jobvizBookmarkButton :global(svg) {
+  fill: transparent;
+  stroke: currentColor;
+  stroke-width: 2;
 }
 
 .jobvizBookmarkButtonActive {
-  border-color: rgba(255, 61, 172, 0.8);
-  background: rgba(255, 61, 172, 0.15);
+  border-color: rgba(255, 226, 120, 0.88);
+  color: #ffd86a;
+}
+
+.jobvizBookmarkButtonActive :global(svg) {
+  fill: currentColor;
 }
 
 .jobvizBookmarkButtonInline {
   position: relative;
   top: auto;
   right: auto;
-}
-
-.jobvizBookmarkDot {
-  width: 10px;
-  height: 10px;
-  border-radius: 999px;
-  background: rgba(44, 131, 195, 0.6);
-}
-
-.jobvizBookmarkDot[data-active="true"] {
-  background: #ff3dac;
-  box-shadow: 0 0 0 4px rgba(255, 61, 172, 0.2);
 }
 
 .modalHeaderActions {

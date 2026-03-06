@@ -27,6 +27,7 @@ export interface JobTourEditorFieldsProps {
   validationErrors?: string[];
   selectedJobsCount: number;
   isSaved?: boolean;
+  showSaveButton?: boolean;
 }
 
 const JobTourEditorFields: React.FC<JobTourEditorFieldsProps> = ({
@@ -38,6 +39,7 @@ const JobTourEditorFields: React.FC<JobTourEditorFieldsProps> = ({
   validationErrors = [],
   selectedJobsCount,
   isSaved = false,
+  showSaveButton = true,
 }) => {
   const hasErrors = validationErrors.length > 0;
   const showCustomSubject = value.classSubject === "Other";
@@ -257,15 +259,17 @@ const JobTourEditorFields: React.FC<JobTourEditorFieldsProps> = ({
             </span>
           )}
         </div>
-        <button
-          type="button"
-          className={styles.tourEditorSaveButton}
-          onClick={onSave}
-          disabled={isSaving || isSaved}
-          data-variant={isSaved ? "saved" : "default"}
-        >
-          {isSaving ? "Saving..." : isSaved ? "Saved" : "Save tour"}
-        </button>
+        {showSaveButton && (
+          <button
+            type="button"
+            className={styles.tourEditorSaveButton}
+            onClick={onSave}
+            disabled={isSaving || isSaved}
+            data-variant={isSaved ? "saved" : "default"}
+          >
+            {isSaving ? "Saving..." : isSaved ? "Saved" : "Save tour"}
+          </button>
+        )}
       </div>
     </div>
   );
