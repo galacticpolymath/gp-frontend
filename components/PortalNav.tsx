@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Home, Menu, Search } from "lucide-react";
 import useSiteSession from "../customHooks/useSiteSession";
 import styles from "./PortalNav.module.css";
@@ -16,6 +16,7 @@ interface PortalNavProps {
   activeTab?: NavTab | null;
   onTabClick?: (tab: NavTab) => void;
   onBrandClick?: () => void;
+  autoHide?: boolean;
 }
 
 export const DISABLE_NAVBAR_PARAM_NAME = "disableNavbar";
@@ -41,11 +42,9 @@ const PortalNav: React.FC<PortalNavProps> = ({
   activeTab = "All",
   onTabClick,
   onBrandClick,
+  autoHide: _autoHide = true,
 }) => {
   const router = useRouter();
-  const isUnitRoute =
-    router.pathname === "/units/[loc]/[id]" ||
-    (typeof router.asPath === "string" && router.asPath.startsWith("/units/"));
   const isJobvizRoute =
     router.pathname === "/jobviz/[[...search-results]]" ||
     (typeof router.asPath === "string" && router.asPath.startsWith("/jobviz"));
@@ -58,34 +57,56 @@ const PortalNav: React.FC<PortalNavProps> = ({
   })();
   const [navOpen, setNavOpen] = useState(false);
   const [accountMenuOpen, setAccountMenuOpen] = useState(false);
-  const [avatarError, setAvatarError] = useState(false);
   const [profileAvatarUrl, setProfileAvatarUrl] = useState<string | null>(null);
+  const [avatarCandidateIndex, setAvatarCandidateIndex] = useState(0);
   const [isHydrated, setIsHydrated] = useState(false);
-  const [isNavHidden, setIsNavHidden] = useState(false);
+  const hasFetchedAccountAvatarRef = useRef(false);
   const navRef = useRef<HTMLElement | null>(null);
   const accountMenuRef = useRef<HTMLDivElement | null>(null);
-  const navHiddenRef = useRef(false);
-  const { status, user, isGpPlusMember, logUserOut } = useSiteSession();
+  const { status, user, token, isGpPlusMember, logUserOut } = useSiteSession();
   const isAuthenticated = status === "authenticated";
-  const avatarUrl = user?.image ?? profileAvatarUrl ?? null;
+  const sessionAvatarImage =
+    typeof (user as { image?: unknown } | undefined)?.image === "string"
+      ? ((user as { image?: string }).image ?? "").trim()
+      : "";
+  const sessionAvatarPicture =
+    typeof (user as { picture?: unknown } | undefined)?.picture === "string"
+      ? ((user as { picture?: string }).picture ?? "").trim()
+      : "";
+  const fallbackAvatarUrl = profileAvatarUrl ?? null;
+  const avatarCandidates = useMemo(() => {
+    const localValue = fallbackAvatarUrl?.trim() ?? "";
+    return [sessionAvatarImage, sessionAvatarPicture, localValue].filter(
+      (value, index, arr): value is string =>
+        Boolean(value) && arr.indexOf(value) === index
+    );
+  }, [fallbackAvatarUrl, sessionAvatarImage, sessionAvatarPicture]);
+  const avatarUrl = avatarCandidates[avatarCandidateIndex] ?? null;
   const isPlusMember = isGpPlusMember === true;
   const effectiveIsAuthenticated = isHydrated ? isAuthenticated : false;
   const effectiveIsPlusMember = isHydrated ? isPlusMember : false;
   const effectiveAvatarUrl =
     isHydrated && isAuthenticated ? avatarUrl : null;
+  const navStyle = isJobvizRoute
+    ? ({
+        backgroundColor: "#0c101c",
+        backgroundImage: "none",
+        backdropFilter: "none",
+      } as React.CSSProperties)
+    : undefined;
 
   useEffect(() => {
     setIsHydrated(true);
   }, []);
 
   useEffect(() => {
-    setAvatarError(false);
-  }, [effectiveAvatarUrl]);
+    setAvatarCandidateIndex(0);
+  }, [avatarCandidates, isAuthenticated]);
 
   useEffect(() => {
     if (isAuthenticated) return;
     setProfileAvatarUrl(null);
-    setAvatarError(false);
+    hasFetchedAccountAvatarRef.current = false;
   }, [isAuthenticated]);
 
   useEffect(() => {
@@ -100,9 +121,11 @@ const PortalNav: React.FC<PortalNavProps> = ({
         if (!raw) return null;
         const parsed = JSON.parse(raw);
 
-        return typeof parsed?.picture === "string" && parsed.picture
-          ? parsed.picture
-          : null;
+        const candidatePicture =
+          typeof parsed?.picture === "string" ? parsed.picture.trim() : "";
+        const candidateImage =
+          typeof parsed?.image === "string" ? parsed.image.trim() : "";
+        return candidatePicture || candidateImage || null;
       } catch {
         return null;
       }
@@ -113,6 +136,43 @@ const PortalNav: React.FC<PortalNavProps> = ({
     }
 
   }, [isHydrated, isAuthenticated]);
+
+  useEffect(() => {
+    if (!isHydrated || !isAuthenticated) return;
+    if (avatarCandidates.length > 0) return;
+    if (hasFetchedAccountAvatarRef.current) return;
+    if (!token) return;
+
+    hasFetchedAccountAvatarRef.current = true;
+    const controller = new AbortController();
+    const authorizationHeader =
+      typeof token === "string" && token.startsWith("Bearer ")
+        ? token
+        : `Bearer ${token ?? ""}`;
+
+    fetch("/api/get-user-account-data?willNotRetrieveMailingListStatus=true", {
+      headers: { Authorization: authorizationHeader },
+      signal: controller.signal,
+    })
+      .then((response) => (response.ok ? response.json() : null))
+      .then((payload) => {
+        const candidatePicture =
+          typeof payload?.picture === "string" ? payload.picture.trim() : "";
+        const candidateImage =
+          typeof payload?.image === "string" ? payload.image.trim() : "";
+        const resolved = candidatePicture || candidateImage || null;
+        if (resolved) {
+          setProfileAvatarUrl(resolved);
+        }
+      })
+      .catch(() => {
+        // ignore avatar enrichment failures
+      });
+
+    return () => {
+      controller.abort();
+    };
+  }, [avatarCandidates.length, isAuthenticated, isHydrated, token]);
 
 
   useEffect(() => {
@@ -128,77 +188,6 @@ const PortalNav: React.FC<PortalNavProps> = ({
   }, [accountMenuOpen]);
 
   useEffect(() => {
-    navHiddenRef.current = isNavHidden;
-  }, [isNavHidden]);
-
-  useEffect(() => {
-    if (disableNavbar) return;
-    if (isUnitRoute) return;
-    if (navOpen || accountMenuOpen) {
-      setIsNavHidden(false);
-    }
-  }, [disableNavbar, isUnitRoute, navOpen, accountMenuOpen]);
-
-  useEffect(() => {
-    if (disableNavbar) return;
-    if (typeof window === "undefined") return;
-    const root = document.documentElement;
-
-    const handleSetNavHidden = (
-      event: CustomEvent<{ hidden?: boolean; source?: string }>
-    ) => {
-      const source = event.detail?.source;
-      if (isUnitRoute && source !== "unit-manual") {
-        return;
-      }
-      const hidden = event.detail?.hidden === true;
-      navHiddenRef.current = hidden;
-      setIsNavHidden(hidden);
-
-      const navHeight = navRef.current?.getBoundingClientRect().height ?? 0;
-      const offset = hidden ? 0 : Math.max(0, Math.round(navHeight));
-      root.style.setProperty("--portal-nav-offset", `${offset}px`);
-    };
-
-    window.addEventListener(
-      "gp:set-nav-hidden",
-      handleSetNavHidden as EventListener
-    );
-
-    return () => {
-      window.removeEventListener(
-        "gp:set-nav-hidden",
-        handleSetNavHidden as EventListener
-      );
-    };
-  }, [disableNavbar, isUnitRoute]);
-
-  useEffect(() => {
-    if (disableNavbar) return;
-    if (typeof window === "undefined") return;
-    if (isUnitRoute) return;
-    if (!navHiddenRef.current) return;
-
-    navHiddenRef.current = false;
-    setIsNavHidden(false);
-    const navHeight = navRef.current?.getBoundingClientRect().height ?? 0;
-    document.documentElement.style.setProperty(
-      "--portal-nav-offset",
-      `${Math.max(0, Math.round(navHeight))}px`
-    );
-  }, [disableNavbar, isUnitRoute]);
-
-  useEffect(() => {
-    if (disableNavbar) return;
-    if (typeof window === "undefined") return;
-    if (!isUnitRoute) return;
-
-    navHiddenRef.current = true;
-    setIsNavHidden(true);
-    document.documentElement.style.setProperty("--portal-nav-offset", "0px");
-  }, [disableNavbar, isUnitRoute]);
-
-  useEffect(() => {
     if (typeof window === "undefined") return;
     const root = document.documentElement;
 
@@ -209,7 +198,7 @@ const PortalNav: React.FC<PortalNavProps> = ({
 
     const syncOffset = () => {
       const navHeight = navRef.current?.getBoundingClientRect().height ?? 0;
-      const offset = isNavHidden ? 0 : Math.max(0, Math.round(navHeight));
+      const offset = Math.max(0, Math.round(navHeight));
       root.style.setProperty("--portal-nav-offset", `${offset}px`);
     };
 
@@ -228,7 +217,7 @@ const PortalNav: React.FC<PortalNavProps> = ({
       window.removeEventListener("resize", syncOffset);
       observer?.disconnect();
     };
-  }, [disableNavbar, isNavHidden, navOpen, accountMenuOpen]);
+  }, [disableNavbar, navOpen, accountMenuOpen]);
 
   useEffect(() => {
     if (typeof window === "undefined") return undefined;
@@ -244,10 +233,9 @@ const PortalNav: React.FC<PortalNavProps> = ({
   return (
     <nav
       ref={navRef}
-      className={`${styles.nav} ${isUnitRoute ? styles.navFixedForUnits : ""} ${
-        isJobvizRoute ? styles.navFixedForJobviz : ""
-      } ${isNavHidden ? styles.navHidden : ""}`}
-      data-nav-hidden={isNavHidden ? "true" : "false"}
+      className={`${styles.nav} ${isJobvizRoute ? styles.navFixedForJobviz : ""}`}
+      style={navStyle}
+      data-nav-hidden="false"
     >
       <button
         className={styles.brandButton}
@@ -285,7 +273,6 @@ const PortalNav: React.FC<PortalNavProps> = ({
         aria-label={navOpen ? "Close navigation menu" : "Open navigation menu"}
         aria-expanded={navOpen}
         onClick={() => {
-          setIsNavHidden(false);
           setNavOpen((prev) => !prev);
         }}
       >
@@ -331,14 +318,17 @@ const PortalNav: React.FC<PortalNavProps> = ({
               aria-haspopup="menu"
               aria-expanded={accountMenuOpen}
               onClick={() => {
-                setIsNavHidden(false);
                 setAccountMenuOpen((prev) => !prev);
               }}
             >
               <ProfileAvatarRing
-                avatarUrl={effectiveAvatarUrl && !avatarError ? effectiveAvatarUrl : null}
+                avatarUrl={effectiveAvatarUrl}
                 isPlusMember={effectiveIsPlusMember}
-                onError={() => setAvatarError(true)}
+                onError={() =>
+                  setAvatarCandidateIndex((previous) =>
+                    Math.min(previous + 1, avatarCandidates.length)
+                  )
+                }
               />
               <span className={styles.profileButton}>
                 <span
@@ -368,9 +358,13 @@ const PortalNav: React.FC<PortalNavProps> = ({
               }}
             >
               <ProfileAvatarRing
-                avatarUrl={effectiveAvatarUrl && !avatarError ? effectiveAvatarUrl : null}
+                avatarUrl={effectiveAvatarUrl}
                 isPlusMember={effectiveIsPlusMember}
-                onError={() => setAvatarError(true)}
+                onError={() =>
+                  setAvatarCandidateIndex((previous) =>
+                    Math.min(previous + 1, avatarCandidates.length)
+                  )
+                }
               />
               <span className={styles.profileButton}>
                 Log in
@@ -409,7 +403,7 @@ const PortalNav: React.FC<PortalNavProps> = ({
                 type="button"
                 onClick={() => {
                   setProfileAvatarUrl(null);
-                  setAvatarError(false);
+                  setAvatarCandidateIndex(0);
                   setAccountMenuOpen(false);
                   logUserOut();
                 }}

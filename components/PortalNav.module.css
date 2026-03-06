@@ -10,13 +10,20 @@
   position: sticky;
   top: 0;
   z-index: 100;
-  background: rgba(12, 16, 28, 0.92);
+  background: #0c101c;
   box-shadow: 0 12px 24px rgba(10, 14, 28, 0.35);
   border-bottom: 1px solid rgba(240, 244, 255, 0.15);
   transform: translateY(0);
   opacity: 1;
   transition: transform 0.5s cubic-bezier(0.19, 1, 0.22, 1), opacity 0.35s ease;
   will-change: transform, opacity;
+}
+
+.navFixedDefault {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
 }
 
 .navFixedForUnits {
@@ -27,13 +34,17 @@
 }
 
 .navFixedForJobviz {
-  position: fixed;
+  position: sticky;
   top: 0;
-  left: 0;
-  right: 0;
-  background: rgba(12, 16, 28, 0.96);
-  border-bottom: 1px solid rgba(240, 244, 255, 0.15);
-  box-shadow: 0 12px 24px rgba(10, 14, 28, 0.35);
+  background: #0c101c;
+  border-bottom: 1px solid rgba(232, 224, 255, 0.28);
+  box-shadow: 0 14px 28px rgba(14, 12, 38, 0.46);
+}
+
+.nav.navFixedForJobviz {
+  background-color: #0c101c !important;
+  background-image: none !important;
+  backdrop-filter: none !important;
 }
 
 .navHidden {
@@ -316,6 +327,11 @@
 }
 
 .accountMenu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 220px;
+  width: max-content;
   width: 0;
   max-width: 0;
   display: flex;
@@ -332,14 +348,15 @@
 }
 
 .profileSlotOpen .accountMenu {
-  max-height: 240px;
+  max-height: 320px;
   opacity: 1;
   transform: translateY(0);
-  margin-top: 6px;
-  padding-top: 8px;
+  margin-top: 0;
+  padding-top: 0;
   pointer-events: auto;
-  width: 100%;
-  max-width: 100%;
+  width: min(280px, calc(100vw - 24px));
+  max-width: min(280px, calc(100vw - 24px));
+  z-index: 140;
 }
 
 .accountMenuDivider {
@@ -425,6 +442,7 @@
     flex-direction: row;
     align-items: center;
     flex-wrap: wrap;
+    position: relative;
   }
 
   .brandButton {
@@ -487,5 +505,17 @@
 
   .profileSlot {
     margin-left: 0;
+    position: relative;
+    z-index: 2;
+  }
+
+  .profileSlotOpen {
+    position: absolute;
+    right: 14px;
+    top: calc(100% + 8px);
+    width: min(310px, calc(100vw - 28px));
+    max-width: min(310px, calc(100vw - 28px));
+    margin-left: 0;
+    z-index: 130;
   }
 }

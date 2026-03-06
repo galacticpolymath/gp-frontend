@@ -634,7 +634,7 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
   );
 
   React.useEffect(() => {
-    if (!shouldRenderBanner || variant !== "mobile") return undefined;
+    if (!shouldRenderBanner) return undefined;
     if (typeof window === "undefined") return undefined;
 
     const readNavOffset = () => {
@@ -712,7 +712,7 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
       document.documentElement.style.setProperty("--jobviz-nav-offset", "0px");
       emitNavOffsetChange(0);
     };
-  }, [shouldRenderBanner, variant]);
+  }, [shouldRenderBanner]);
 
   React.useEffect(() => {
     if (variant !== "mobile" || !shouldRenderBanner) return undefined;

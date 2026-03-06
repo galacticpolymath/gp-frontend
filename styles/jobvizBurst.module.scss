@@ -1272,7 +1272,7 @@ $jobviz-nav-height: 64px;
 
 .assignmentMobileWrapper {
   position: sticky;
-  top: calc(var(--jobviz-nav-offset, 0px));
+  top: calc(var(--portal-nav-offset, var(--jobviz-nav-offset, 0px)));
   z-index: $assignment-layer-z;
   width: 100%;
   max-width: 100%;
@@ -1309,7 +1309,7 @@ $jobviz-nav-height: 64px;
   left: 0;
   right: 0;
   bottom: 0;
-  top: calc(-1 * var(--jobviz-nav-offset, 64px));
+  top: calc(-1 * var(--portal-nav-offset, var(--jobviz-nav-offset, 64px)));
   pointer-events: none;
   z-index: 0;
 }
@@ -1392,10 +1392,12 @@ $jobviz-nav-height: 64px;
     display: flex;
     flex-direction: column;
     position: sticky;
-    top: var(--jobviz-nav-offset, #{$jobviz-nav-height});
+    top: var(--portal-nav-offset, var(--jobviz-nav-offset, #{$jobviz-nav-height}));
     align-self: flex-start;
     width: clamp(320px, 28vw, 360px);
-    height: calc(100vh - var(--jobviz-nav-offset, #{$jobviz-nav-height}) + 10px);
+    height: calc(100dvh - var(--portal-nav-offset, var(--jobviz-nav-offset, #{$jobviz-nav-height})) - 0.5rem);
+    max-height: calc(100dvh - var(--portal-nav-offset, var(--jobviz-nav-offset, #{$jobviz-nav-height})) - 0.5rem);
+    min-height: 0;
     animation: dockSlide 0.35s ease;
     z-index: $assignment-layer-z;
     padding: clamp(0.4rem, 1vw, 0.7rem);
@@ -1499,7 +1501,9 @@ $jobviz-nav-height: 64px;
   .assignmentDesktopDock[data-dock-collapsed="true"] {
     width: clamp(48px, 4vw, 60px);
     padding: clamp(0.35rem, 0.6vw, 0.5rem);
-    min-height: calc(100vh + 50px);
+    height: calc(100dvh - var(--portal-nav-offset, var(--jobviz-nav-offset, #{$jobviz-nav-height})) - 0.5rem);
+    max-height: calc(100dvh - var(--portal-nav-offset, var(--jobviz-nav-offset, #{$jobviz-nav-height})) - 0.5rem);
+    min-height: 0;
     justify-content: center;
     align-items: center;
   }
@@ -1598,7 +1602,7 @@ $jobviz-nav-height: 64px;
 
 .assignmentBannerSticky {
   position: sticky;
-  top: calc(var(--jobviz-nav-offset, 0px));
+  top: calc(var(--portal-nav-offset, var(--jobviz-nav-offset, 0px)));
   z-index: $assignment-layer-z;
 }
 

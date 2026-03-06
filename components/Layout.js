@@ -26,6 +26,7 @@ export default function Layout({
   defaultLink = "",
   langLinks,
   showNav = true,
+  navAutoHide = true,
   showFooter = true,
   structuredData = null,
   locale = "en-US",
@@ -136,7 +137,7 @@ export default function Layout({
           />
         ))}
       </Head>
-      {showNav && <PortalNav />}
+      {showNav && <PortalNav autoHide={navAutoHide} />}
       {imgSrc && (
         <img
           src={imgSrc}
