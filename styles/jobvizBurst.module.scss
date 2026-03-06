@@ -876,18 +876,28 @@ $jobviz-nav-height: 64px;
 
 .cardHeading {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   gap: 0.75rem;
   width: 100%;
+  padding-right: 6.6rem;
 }
 
 .cardHeaderBadges {
   display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.28rem;
   margin-left: auto;
   flex-shrink: 0;
+}
+
+.jobCard .cardHeaderBadges {
+  position: absolute;
+  top: 0.9rem;
+  right: 0.9rem;
+  margin-left: 0;
+  z-index: 3;
 }
 
 .assignmentBadgeDot {
@@ -908,19 +918,33 @@ $jobviz-nav-height: 64px;
 
 .assignmentBadgeButton {
   border: none;
-  background: transparent;
-  padding: 0;
+  background: rgba(255, 255, 255, 0.08);
+  padding: 0.16rem 0.5rem 0.16rem 0.34rem;
   margin: 0;
   border-radius: 999px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 0.34rem;
+  min-height: 24px;
+  color: #f7fbff;
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+  line-height: 1;
+  text-transform: uppercase;
   cursor: pointer;
+  transition: transform 0.2s ease, background 0.2s ease;
 }
 
 .assignmentBadgeButton:hover .assignmentBadgeDot,
 .assignmentBadgeButton:focus-visible .assignmentBadgeDot {
   transform: scale(1.05);
+}
+
+.assignmentBadgeButton:hover,
+.assignmentBadgeButton:focus-visible {
+  transform: translateY(-1px);
+  background: rgba(255, 255, 255, 0.14);
 }
 
 .assignmentBadgeButton .assignmentBadgeDot {
@@ -962,24 +986,42 @@ $jobviz-nav-height: 64px;
 }
 
 .savedJobBadge {
-  width: 24px;
-  height: 24px;
   border-radius: 999px;
   border: none;
-  background: transparent;
+  background: rgba(255, 255, 255, 0.08);
   box-shadow: none;
-  color: #ffd678;
+  color: #f7fbff;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 0.34rem;
+  min-height: 24px;
+  padding: 0.16rem 0.5rem 0.16rem 0.34rem;
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  line-height: 1;
+  white-space: nowrap;
   position: relative;
   z-index: 1;
 }
 
 .savedJobBadge :global(svg) {
-  width: 18px;
-  height: 18px;
-  fill: currentColor;
+  width: 14px;
+  height: 14px;
+  color: #ffd678;
+  fill: #ffd678;
+}
+
+.cardHeaderBadgeLabel {
+  color: rgba(255, 255, 255, 0.96);
+  white-space: nowrap;
+}
+
+.cardHeaderBadgeDot {
+  width: 12px;
+  height: 12px;
+  box-shadow: inset 0 0 0 1px rgba(190, 158, 255, 0.18);
 }
 
 
@@ -4493,6 +4535,18 @@ $jobviz-nav-height: 64px;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
+.assignedToggleButton:not(.assignedToggleButtonActive) .assignedToggleIndicator {
+  border-width: 1px;
+  border-color: #f8fbff;
+  box-shadow: none;
+}
+
+.assignedToggleButton:not(.savedJobsToggleButton):not(.assignedToggleButtonActive)
+  .assignedToggleIndicator {
+  width: 13px;
+  height: 13px;
+}
+
 .assignedToggleButtonActive {
   background: rgba(118, 159, 255, 0.18);
 }
@@ -4503,6 +4557,51 @@ $jobviz-nav-height: 64px;
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.5),
     0 0 12px rgba(118, 159, 255, 0.6);
+}
+
+.savedJobsToggleButton {
+  color: #f8fbff;
+}
+
+.savedJobsToggleButton .assignedToggleIndicator {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  width: 16px;
+  height: 16px;
+}
+
+.savedJobsToggleStar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.savedJobsToggleStarIcon {
+  width: 16px;
+  height: 16px;
+  color: #f8fbff;
+}
+
+.savedJobsToggleButton:hover,
+.savedJobsToggleButton:focus-visible {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.savedJobsToggleButton.assignedToggleButtonActive {
+  color: #f8fbff;
+  background: rgba(118, 159, 255, 0.18);
+}
+
+.savedJobsToggleButton.assignedToggleButtonActive .assignedToggleIndicator {
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.savedJobsToggleButton.assignedToggleButtonActive .savedJobsToggleStarIcon {
+  color: #ffd678;
 }
 
 .savedJobsToggleMuted {
@@ -4516,6 +4615,41 @@ $jobviz-nav-height: 64px;
 }
 
 @media (max-width: 640px) {
+  .gridFilterRow {
+    align-items: stretch;
+    gap: 0.55rem;
+  }
+
+  .gridFilterActions {
+    width: 100%;
+    border-radius: 16px;
+    padding: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.38rem;
+  }
+
+  .gridFilterLabel {
+    margin: 0 0 0.1rem 0.2rem;
+  }
+
+  .assignedToggleButton,
+  .assignmentReturnButton {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .gridFilterRow .sortControl {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .gridFilterRow .sortButton {
+    width: 100%;
+    justify-content: space-between;
+  }
+
   .viewingHeader {
     flex-direction: column;
   }

@@ -265,15 +265,6 @@ export const JobVizCard: React.FC<JobVizCardProps> = ({
           <div className={styles.cardHeading}>
             <h3 className={styles.cardTitle}>{compactTitle(title)}</h3>
             <div className={styles.cardHeaderBadges}>
-              {showBookmark && !canBookmark && (
-                <span
-                  className={styles.savedJobBadge}
-                  title="Saved job"
-                  aria-label="Saved job"
-                >
-                  <Star size={18} fill="currentColor" aria-hidden="true" />
-                </span>
-              )}
               {showsAssignmentDot &&
                 (canBookmark && socCode ? (
                   <button
@@ -285,32 +276,49 @@ export const JobVizCard: React.FC<JobVizCardProps> = ({
                     }}
                     title={
                       isAssignmentSelected
-                        ? "Remove from assignment"
-                        : "Add to assignment"
+                        ? "Remove from tour jobs"
+                        : "Add to tour jobs"
                     }
                     aria-label={
                       isAssignmentSelected
-                        ? "Remove from assignment"
-                        : "Add to assignment"
+                        ? "Remove from tour jobs"
+                        : "Add to tour jobs"
                     }
                     aria-pressed={isAssignmentSelected}
                   >
                     <span
-                      className={`${styles.assignmentBadgeDot} ${
+                      className={`${styles.assignmentBadgeDot} ${styles.cardHeaderBadgeDot} ${
                         isAssignmentSelected ? styles.assignmentBadgeDotActive : ""
                       }`}
                       aria-hidden="true"
                     />
+                    <span className={styles.cardHeaderBadgeLabel}>Tour</span>
                   </button>
                 ) : (
                   <span
-                    className={`${styles.assignmentBadgeDot} ${
-                      isAssignmentSelected ? styles.assignmentBadgeDotActive : ""
-                    }`}
-                    title="Part of this assignment"
-                    aria-hidden="true"
-                  />
+                    className={styles.savedJobBadge}
+                    title="Tour job"
+                    aria-label="Tour job"
+                  >
+                    <span
+                      className={`${styles.assignmentBadgeDot} ${styles.cardHeaderBadgeDot} ${
+                        isAssignmentSelected ? styles.assignmentBadgeDotActive : ""
+                      }`}
+                      aria-hidden="true"
+                    />
+                    <span className={styles.cardHeaderBadgeLabel}>Tour</span>
+                  </span>
                 ))}
+              {showBookmark && !canBookmark && (
+                <span
+                  className={styles.savedJobBadge}
+                  title="Saved job"
+                  aria-label="Saved job"
+                >
+                  <Star size={14} fill="currentColor" aria-hidden="true" />
+                  <span className={styles.cardHeaderBadgeLabel}>Saved</span>
+                </span>
+              )}
               {isLocked && (
                 <span className={styles.lockedCardBadge}>
                   <LucideIcon name="Lock" />

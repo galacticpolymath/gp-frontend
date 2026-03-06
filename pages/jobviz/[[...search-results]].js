@@ -1259,7 +1259,7 @@ const JobVizSearchResults = ({
   const viewingTitle = isShowingSavedScope
     ? "Saved jobs"
     : isShowingAssignmentScope
-      ? "Featured jobs"
+      ? "Tour jobs"
       : baseViewTitle;
   const viewingIconName = isShowingSavedScope
     ? "Star"
@@ -1816,7 +1816,7 @@ const JobVizSearchResults = ({
                     {isShowingAssignmentScope ? (
                       <div className={styles.assignedScopeMessage}>
                         <LucideIcon name="Sparkles" />
-                        Showing featured jobs across multiple categories
+                        Showing tour jobs across multiple categories
                       </div>
                     ) : isShowingSavedScope ? (
                       <div className={styles.assignedScopeMessage}>
@@ -1878,7 +1878,7 @@ const JobVizSearchResults = ({
                       <span className={styles.gridFilterLabel}>FILTER</span>
                       <button
                         type="button"
-                        className={`${styles.assignedToggleButton} ${
+                        className={`${styles.assignedToggleButton} ${styles.savedJobsToggleButton} ${
                           isShowingSavedScope
                             ? styles.assignedToggleButtonActive
                             : ""
@@ -1896,9 +1896,16 @@ const JobVizSearchResults = ({
                         }
                       >
                         <span
-                          className={styles.assignedToggleIndicator}
+                          className={`${styles.assignedToggleIndicator} ${styles.savedJobsToggleStar}`}
                           aria-hidden="true"
-                        />
+                        >
+                          <LucideIcon
+                            name="Star"
+                            className={styles.savedJobsToggleStarIcon}
+                            strokeWidth={1}
+                            fill={isShowingSavedScope ? "currentColor" : "none"}
+                          />
+                        </span>
                         Saved Jobs
                       </button>
                     {hasAssignmentList && (
@@ -1918,7 +1925,7 @@ const JobVizSearchResults = ({
                             className={styles.assignedToggleIndicator}
                             aria-hidden="true"
                           />
-                          Featured Jobs
+                          Tour Jobs
                         </button>
                         {isStudentMode && !isShowingAssignmentScope && (
                           <button
