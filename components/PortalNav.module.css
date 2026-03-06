@@ -26,6 +26,16 @@
   right: 0;
 }
 
+.navFixedForJobviz {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: rgba(12, 16, 28, 0.96);
+  border-bottom: 1px solid rgba(240, 244, 255, 0.15);
+  box-shadow: 0 12px 24px rgba(10, 14, 28, 0.35);
+}
+
 .navHidden {
   transform: translateY(-115%);
   opacity: 0.92;

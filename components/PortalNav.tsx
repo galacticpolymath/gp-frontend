@@ -46,6 +46,9 @@ const PortalNav: React.FC<PortalNavProps> = ({
   const isUnitRoute =
     router.pathname === "/units/[loc]/[id]" ||
     (typeof router.asPath === "string" && router.asPath.startsWith("/units/"));
+  const isJobvizRoute =
+    router.pathname === "/jobviz/[[...search-results]]" ||
+    (typeof router.asPath === "string" && router.asPath.startsWith("/jobviz"));
   const disableNavbar = (() => {
     const value = router.query?.[DISABLE_NAVBAR_PARAM_NAME];
     if (Array.isArray(value)) {
@@ -241,7 +244,9 @@ const PortalNav: React.FC<PortalNavProps> = ({
   return (
     <nav
       ref={navRef}
-      className={`${styles.nav} ${isUnitRoute ? styles.navFixedForUnits : ""} ${isNavHidden ? styles.navHidden : ""}`}
+      className={`${styles.nav} ${isUnitRoute ? styles.navFixedForUnits : ""} ${
+        isJobvizRoute ? styles.navFixedForJobviz : ""
+      } ${isNavHidden ? styles.navHidden : ""}`}
       data-nav-hidden={isNavHidden ? "true" : "false"}
     >
       <button

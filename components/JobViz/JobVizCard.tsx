@@ -222,7 +222,7 @@ export const JobVizCard: React.FC<JobVizCardProps> = ({
             jobTourEditor?.toggleJob(socCode);
           }}
         >
-          <Star size={14} aria-hidden="true" />
+          <Star size={18} aria-hidden="true" />
         </button>
       )}
       {level === 1 ? (
@@ -271,7 +271,7 @@ export const JobVizCard: React.FC<JobVizCardProps> = ({
                   title="Saved job"
                   aria-label="Saved job"
                 >
-                  <Star size={13} fill="currentColor" aria-hidden="true" />
+                  <Star size={18} fill="currentColor" aria-hidden="true" />
                 </span>
               )}
               {showsAssignmentDot &&

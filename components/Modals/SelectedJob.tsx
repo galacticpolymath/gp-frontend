@@ -660,18 +660,19 @@ const SelectedJob: React.FC = () => {
                     }
                   >
                     <Star
-                      size={14}
+                      size={16}
                       aria-hidden="true"
                       className={styles.saveJobButtonIcon}
-                      fill={isSavedJob ? "currentColor" : "none"}
+                      color={isSavedJob ? "#ffd678" : "currentColor"}
+                      fill={isSavedJob ? "#ffd678" : "none"}
                     />
                     <span>
                       {isSavingJob
                         ? "Updating..."
                         : isSavedJob
-                        ? "Saved (click to unsave)"
+                        ? "Saved"
                         : isAuthenticated
-                        ? "Save Job"
+                        ? "Save\u00A0job"
                         : "Sign in to save"}
                     </span>
                   </button>
@@ -722,15 +723,6 @@ const SelectedJob: React.FC = () => {
                 </div>
                 <div className={styles.modalTitleGroup}>
                   <h3 className={styles.modalTitle}>{jobTitle}</h3>
-                  {isSavedJob && (
-                    <span
-                      className={styles.savedJobInlineStar}
-                      title="Saved job"
-                      aria-label="Saved job"
-                    >
-                      <Star size={12} fill="currentColor" aria-hidden="true" />
-                    </span>
-                  )}
                   {isAssignmentJob && (
                     <span
                       className={styles.assignmentBadgePill}
