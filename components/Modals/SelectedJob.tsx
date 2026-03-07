@@ -598,8 +598,11 @@ const SelectedJob: React.FC = () => {
       },
     ]
     : [];
-  const disableExploreRelated = isFocusAssignmentView;
   const jobTourEditor = useJobTourEditorOptional();
+  const disableExploreRelated =
+    isFocusAssignmentView &&
+    !hasAssignmentParams &&
+    !jobTourEditor?.isEditing;
   const canBookmark =
     Boolean(jobTourEditor?.isEditing) && Boolean(visibleJob?.soc_code);
   const isBookmarked =
