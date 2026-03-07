@@ -17,6 +17,7 @@ import {
   getNodeBySocCode,
   getIconNameForNode,
   getJobSpecificIconName,
+  normalizeSocCode,
 } from "../JobViz/jobvizUtils";
 import {
   SOC_CODES_PARAM_NAME,
@@ -107,7 +108,12 @@ const SelectedJob: React.FC = () => {
       ? assignmentQueryParam.join(",")
       : assignmentQueryParam;
     if (!value) return null;
-    return new Set(value.split(",").filter(Boolean));
+    return new Set(
+      value
+        .split(",")
+        .map((socCode) => normalizeSocCode(socCode))
+        .filter(Boolean)
+    );
   }, [assignmentQueryParam]);
   const assignmentSocCodeList = useMemo(() => {
     const value = Array.isArray(assignmentQueryParam)
@@ -116,7 +122,7 @@ const SelectedJob: React.FC = () => {
     if (!value) return [];
     return value
       .split(",")
-      .map((socCode) => socCode.trim())
+      .map((socCode) => normalizeSocCode(socCode))
       .filter(Boolean);
   }, [assignmentQueryParam]);
   const hasAssignmentParams = Boolean(assignmentSocCodes?.size);
@@ -630,7 +636,28 @@ const SelectedJob: React.FC = () => {
     if (!nextUnratedSoc) return;
     const nextNode = getNodeBySocCode(nextUnratedSoc);
     if (!nextNode) return;
+    const socCodesStr = searchParams.get(SOC_CODES_PARAM_NAME);
+    const unitNameParam = searchParams.get(UNIT_NAME_PARAM_NAME);
+    const nextUrl = buildJobvizUrl(
+      { fromNode: nextNode },
+      {
+        socCodes: socCodesStr
+          ? new Set(socCodesStr.split(",").filter(Boolean))
+          : undefined,
+        unitName: unitNameParam ?? undefined,
+      },
+      {
+        ...(typeof router.query?.edit === "string"
+          ? { edit: router.query.edit }
+          : {}),
+        ...(typeof router.query?.tourId === "string"
+          ? { tourId: router.query.tourId }
+          : {}),
+      }
+    );
+    setIsJobModal(true);
     setSelectedJob(nextNode);
+    router.push(nextUrl, undefined, { scroll: false, shallow: true });
   };
 
   const jobTitle =
@@ -825,7 +852,7 @@ const SelectedJob: React.FC = () => {
               <p className={styles.modalSummary}>
                 {definition ?? "Definition unavailable from the BLS feed."}
               </p>
-              {isAssignmentJob ? (
+              {isAssignmentJob && !isTourEditMode ? (
                 <section className={styles.modalRatingBlock}>
                   <div className={styles.modalRatingGrid}>
                     <div className={styles.modalRatingColumn}>

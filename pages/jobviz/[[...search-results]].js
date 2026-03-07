@@ -27,6 +27,7 @@ import {
   getIconNameForNode,
   getJobSpecificIconName,
   getLineItemCountForNode,
+  normalizeSocCode,
   getSelectedSocCodeForLevel,
   getTargetLevelForNode,
   jobVizData,
@@ -145,9 +146,6 @@ const JobVizSearchResults = ({
 
   const tourIdParam =
     typeof router.query?.tourId === "string" ? router.query.tourId : null;
-  const isCopyMode =
-    typeof router.query?.copy === "string" &&
-    ["1", "true", "copy"].includes(router.query.copy.toLowerCase());
   const [activeTour, setActiveTour] = useState(null);
   const [tourLoadState, setTourLoadState] = useState({
     isLoading: false,
@@ -261,14 +259,23 @@ const JobVizSearchResults = ({
 
   const sourceAssignmentSocCodes = useMemo(() => {
     if (activeTour?.selectedJobs?.length) {
-      return new Set(activeTour.selectedJobs.filter(Boolean));
+      return new Set(
+        activeTour.selectedJobs
+          .map((socCode) => normalizeSocCode(socCode))
+          .filter(Boolean)
+      );
     }
     const param = router.query?.[SOC_CODES_PARAM_NAME];
     const value = Array.isArray(param) ? param.join(",") : param;
 
     if (!value) return null;
 
-    return new Set(value.split(",").filter(Boolean));
+    return new Set(
+      value
+        .split(",")
+        .map((socCode) => normalizeSocCode(socCode))
+        .filter(Boolean)
+    );
   }, [activeTour, router.query]);
   const allAssignmentSocCodes = useMemo(() => {
     if (isTeacherEditMode) {
@@ -541,9 +548,17 @@ const JobVizSearchResults = ({
   }, [persistSavedFilterInQuery, status]);
   const sortQueryParam =
     sortOptionId === JOBVIZ_DEFAULT_SORT_OPTION.id ? undefined : sortOptionId;
-  const sortQueryParams = useMemo(
-    () => (sortQueryParam ? { sort: sortQueryParam } : undefined),
-    [sortQueryParam]
+  const preservedJobvizQueryParams = useMemo(
+    () => ({
+      ...(sortQueryParam ? { sort: sortQueryParam } : {}),
+      ...(typeof router.query?.edit === "string"
+        ? { edit: router.query.edit }
+        : {}),
+      ...(typeof router.query?.tourId === "string"
+        ? { tourId: router.query.tourId }
+        : {}),
+    }),
+    [router.query?.edit, router.query?.tourId, sortQueryParam]
   );
   // filter state managed via button; when assignment data is absent the toggle is ignored.
   const focusAssignedActive = Boolean(showAssignmentOnly && hasAssignmentList);
@@ -673,17 +688,17 @@ const JobVizSearchResults = ({
         return buildJobvizUrl(
           { targetLevel: 1, selectedLevel: null, idPath: [] },
           assignmentParams,
-          sortQueryParams
+          preservedJobvizQueryParams
         );
       }
 
       return buildJobvizUrl(
         { targetLevel, selectedLevel, idPath: parentPath },
         assignmentParams,
-        sortQueryParams
+        preservedJobvizQueryParams
       );
     },
-    [assignmentParams, sortQueryParams]
+    [assignmentParams, preservedJobvizQueryParams]
   );
 
   const filteredSlice = useMemo(() => {
@@ -952,7 +967,7 @@ const JobVizSearchResults = ({
     const url = buildJobvizUrl(
       { fromNode: node },
       assignmentParams,
-      sortQueryParams
+      preservedJobvizQueryParams
     );
     router.push(url, undefined, { scroll: false, shallow: true });
   }, [
@@ -964,7 +979,7 @@ const JobVizSearchResults = ({
     setJobvizReturnPath,
     setPersistedGridItems,
     setSelectedJob,
-    sortQueryParams,
+    preservedJobvizQueryParams,
   ]);
 
   const handleAssignmentGridClick = useCallback((item) => {
@@ -985,7 +1000,7 @@ const JobVizSearchResults = ({
     const nextUrl = buildJobvizUrl(
       { targetLevel, selectedLevel: selectedLevelForNode, idPath },
       assignmentParams,
-      sortQueryParams
+      preservedJobvizQueryParams
     );
 
     const isLineItem = node.occupation_type === "Line item";
@@ -1013,7 +1028,7 @@ const JobVizSearchResults = ({
     setJobvizReturnPath,
     setPersistedGridItems,
     setSelectedJob,
-    sortQueryParams,
+    preservedJobvizQueryParams,
   ]);
   const [navigationHint, setNavigationHint] = useState(null);
 
@@ -1179,7 +1194,7 @@ const JobVizSearchResults = ({
                       buildJobvizUrl(
                         { targetLevel: 1, selectedLevel: null, idPath: [] },
                         assignmentParams,
-                        sortQueryParams
+                        preservedJobvizQueryParams
                       ),
                       undefined,
                       { scroll: false, shallow: true }
@@ -1228,7 +1243,7 @@ const JobVizSearchResults = ({
                         idPath: buildIdPathForNode(node),
                       },
                       assignmentParams,
-                      sortQueryParams
+                      preservedJobvizQueryParams
                     ),
                     undefined,
                     { scroll: false, shallow: true }
@@ -1247,7 +1262,7 @@ const JobVizSearchResults = ({
     router,
     scheduleNavigation,
     scrollToBreadcrumb,
-    sortQueryParams,
+    preservedJobvizQueryParams,
   ]);
   const isShowingAssignmentScope = showAssignmentOnly && hasAssignmentList;
   const isShowingSavedScope = showSavedJobsOnly && status === "authenticated";
@@ -1332,7 +1347,7 @@ const JobVizSearchResults = ({
     const nextUrl = buildJobvizUrl(
       { targetLevel: 1, selectedLevel: null, idPath: [] },
       assignmentParams,
-      sortQueryParams
+      preservedJobvizQueryParams
     );
     return scheduleNavigation("up", null, () =>
       router.push(nextUrl, undefined, { scroll: false, shallow: true })
@@ -1343,7 +1358,7 @@ const JobVizSearchResults = ({
     parsed.targetLevel,
     router,
     scheduleNavigation,
-    sortQueryParams,
+    preservedJobvizQueryParams,
   ]);
   const handleHeroStatAction = useHeroStatAction({
     onBrowseNavigate: ensureJobCategoriesLevel,
@@ -1473,7 +1488,7 @@ const JobVizSearchResults = ({
     isTourOwner && hasGpPlusMembership ? "Edit tour" : "Copy and edit";
 
   const buildEditUrl = useCallback(
-    ({ copy, tourIdOverride } = {}) => {
+    ({ tourIdOverride } = {}) => {
       const params = new URLSearchParams();
       if (assignmentSocCodes?.size) {
         params.set(SOC_CODES_PARAM_NAME, Array.from(assignmentSocCodes).join(","));
@@ -1486,9 +1501,6 @@ const JobVizSearchResults = ({
         params.set("tourId", resolvedTourId);
       }
       params.set("edit", "1");
-      if (copy) {
-        params.set("copy", "1");
-      }
       const queryString = params.toString();
       return queryString ? `/jobviz?${queryString}` : "/jobviz?edit=1";
     },
@@ -1500,11 +1512,7 @@ const JobVizSearchResults = ({
       setShowTourUpgradeModal(true);
       return;
     }
-    if (isTourOwner) {
-      router.push(buildEditUrl({ copy: false }));
-      return;
-    }
-    router.push(buildEditUrl({ copy: true }));
+    router.push(buildEditUrl());
   };
   const handleCopyStudentLink = async () => {
     const targetTourId = activeTour?._id ?? tourIdParam;
@@ -1680,7 +1688,7 @@ const JobVizSearchResults = ({
     };
     try {
       setIsSavingTour(true);
-      if (activeTour?._id && !isCopyMode) {
+      if (activeTour?._id && isTourOwner) {
         await updateJobTour(activeTour._id, payload);
         toast.success("Tour updated!");
       } else {
@@ -1688,7 +1696,7 @@ const JobVizSearchResults = ({
         toast.success("Tour saved!");
         if (result?.jobTourId) {
           router.replace(
-            buildEditUrl({ copy: false, tourIdOverride: result.jobTourId })
+            buildEditUrl({ tourIdOverride: result.jobTourId })
           );
         }
       }
@@ -1800,7 +1808,7 @@ const JobVizSearchResults = ({
 
               <JobVizSearch
                 assignmentParams={assignmentParams}
-                extraQueryParams={sortQueryParams}
+                extraQueryParams={preservedJobvizQueryParams}
               />
               <div id={JOBVIZ_BRACKET_SEARCH_ID} />
               <div className={styles.jobvizContextZone}>

@@ -31,14 +31,11 @@ export const JobVizSearch: React.FC<JobVizSearchProps> = ({
       ...(typeof router.query?.edit === "string"
         ? { edit: router.query.edit }
         : {}),
-      ...(typeof router.query?.copy === "string"
-        ? { copy: router.query.copy }
-        : {}),
       ...(typeof router.query?.tourId === "string"
         ? { tourId: router.query.tourId }
         : {}),
     }),
-    [extraQueryParams, router.query?.copy, router.query?.edit, router.query?.tourId]
+    [extraQueryParams, router.query?.edit, router.query?.tourId]
   );
 
   const normalizeSearchValue = (value: string) =>

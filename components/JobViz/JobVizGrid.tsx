@@ -141,7 +141,6 @@ export const JobVizGrid: React.FC<JobVizGridProps> = ({
   }, []);
 
   React.useEffect(() => {
-    signatureRef.current = itemsSignature;
     if (isExiting) {
       if (
         exitSignatureRef.current &&
@@ -152,8 +151,12 @@ export const JobVizGrid: React.FC<JobVizGridProps> = ({
       }
       return;
     }
+    const previousSignature = signatureRef.current;
+    signatureRef.current = itemsSignature;
     setDisplayItems(items);
-    setAnimationWave((prev) => prev + 1);
+    if (previousSignature !== itemsSignature) {
+      setAnimationWave((prev) => prev + 1);
+    }
   }, [items, itemsSignature, isExiting, maybeEnterNextWave]);
 
   React.useEffect(() => {

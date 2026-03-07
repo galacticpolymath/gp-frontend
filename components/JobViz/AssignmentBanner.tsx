@@ -845,7 +845,7 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
                 )}
               </div>
             )}
-            {shouldShowAssignmentBody && (
+            {shouldShowAssignmentBody && variant !== "desktop" && (
               <div
                 id={infoSectionId}
                 className={styles.assignmentInfoBlock}
@@ -892,6 +892,7 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
             )}
             {shouldShowRatings &&
               assignmentSocCodes.length > 0 &&
+              variant !== "desktop" &&
               (shouldShowAssignmentBody || isMobile) &&
               (isAssignmentComplete && allowShare ? (
                 variant === "mobile" ? (
@@ -952,6 +953,92 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
                     : undefined
                 }
               >
+              {variant === "desktop" && shouldShowAssignmentBody && (
+                <div
+                  id={infoSectionId}
+                  className={styles.assignmentInfoBlock}
+                  aria-hidden={hideInfoSection}
+                  data-hidden={hideInfoSection ? "true" : "false"}
+                  ref={infoBlockRef}
+                >
+                  {previewBanner && (
+                    <div className={styles.assignmentPreviewBanner}>
+                      {previewBanner}
+                    </div>
+                  )}
+                  {(resolvedUnitLabel || headerActions) && (
+                    <div className={styles.assignmentHeaderRow}>
+                      {resolvedUnitLabel && (
+                        <span className={styles.assignmentUnitLabelInline}>
+                          <span>{resolvedUnitLabel}</span>
+                        </span>
+                      )}
+                      {headerActions && (
+                        <div className={styles.assignmentHeaderActions}>
+                          {headerActions}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                  <div className={styles.assignmentMarker}>
+                    <span className={styles.assignmentMarkerLabel}>
+                      <img
+                        src={ASSIGNMENT_LOGO}
+                        alt="GP+"
+                        className={styles.assignmentMarkerLogo}
+                        width={26}
+                        height={26}
+                      />
+                      {markerLabel}
+                    </span>
+                    <p className={styles.assignmentCopy}>{resolvedAssignmentCopy}</p>
+                    {resolvedTeacherCtaCopy && (
+                      <p className={styles.assignmentCopy}>{resolvedTeacherCtaCopy}</p>
+                    )}
+                  </div>
+                </div>
+              )}
+              {variant === "desktop" &&
+                shouldShowRatings &&
+                assignmentSocCodes.length > 0 &&
+                shouldShowAssignmentBody &&
+                (isAssignmentComplete && allowShare ? (
+                  <button
+                    type="button"
+                    className={styles.assignmentSummaryButton}
+                    onClick={handleOpenSummaryModal}
+                    disabled={!jobItems.length}
+                  >
+                    <span>Finalize &amp; Share</span>
+                    <LucideIcon name="Sparkles" />
+                  </button>
+                ) : (
+                  <div className={styles.assignmentProgressRow}>
+                    <div className={styles.assignmentProgressLabel}>
+                      {isAssignmentComplete && !allowShare
+                        ? "Preview complete. Unlock GP+ to assign and share full tours."
+                        : `Rated ${safeDisplayedProgressRated}/${progress.total} jobs`}
+                    </div>
+                    <div
+                      className={`${styles.assignmentProgressTrack} ${
+                        shouldAnimateProgress ? styles.assignmentProgressTrackPulse : ""
+                      }`}
+                    >
+                      <div
+                        className={`${styles.assignmentProgressFill} ${
+                          shouldAnimateProgress ? styles.assignmentProgressFillPulse : ""
+                        }`}
+                        style={{
+                          width: `${
+                            progress.total
+                              ? (safeDisplayedProgressRated / progress.total) * 100
+                              : 0
+                          }%`,
+                        }}
+                      />
+                    </div>
+                  </div>
+                ))}
               {variant === "desktop" && splitJobs.length > 0 && (
                 <div className={styles.assignmentListWrap}>
                   {splitJobs.map((jobGroup, idx) => (

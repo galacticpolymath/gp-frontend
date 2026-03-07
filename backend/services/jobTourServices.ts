@@ -145,7 +145,7 @@ const updateJobTour = async (
             throw new Error('No `jobTourId` provided. Cannot update job tour.');
         }
 
-        const { modifiedCount, matchedCount } = await JobTour.updateMany(
+        const { modifiedCount, matchedCount } = await JobTour.updateOne(
             filterObj,
             {
                 $set: { ...updatedProps, lastEdited: new Date() },

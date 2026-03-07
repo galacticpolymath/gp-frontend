@@ -2012,6 +2012,12 @@ $jobviz-desktop-dock-top: max(
   backdrop-filter: none;
 }
 
+.assignmentDesktopDock .assignmentContent .assignmentInfoBlock,
+.assignmentDesktopDock .assignmentContent .assignmentProgressRow,
+.assignmentDesktopDock .assignmentContent .assignmentSummaryButton {
+  flex: 0 0 auto;
+}
+
 .assignmentProgressLabel {
   font-size: 0.93rem;
   color: rgba(230, 240, 255, 0.75);

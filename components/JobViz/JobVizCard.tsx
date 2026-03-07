@@ -313,7 +313,7 @@ export const JobVizCard: React.FC<JobVizCardProps> = ({
             </div>
           </div>
         </div>
-        {level === 2 && isAssignmentJob && (
+        {level === 2 && isAssignmentJob && !jobTourEditor?.isEditing && (
           <div
             className={`${styles.cardRatingRow} ${
               currentRating ? styles.cardRatingRowRated : styles.cardRatingRowIdle

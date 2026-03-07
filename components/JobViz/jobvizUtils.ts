@@ -39,6 +39,9 @@ export interface AssignmentParams {
   unitName?: string | null;
 }
 
+export const normalizeSocCode = (value?: string | null) =>
+  (value ?? "").toString().trim().replace(/[?&]+$/g, "");
+
 const clampLevel = (level: number) => Math.min(Math.max(level, 1), 4);
 
 export const jobVizData: JobVizNode[] = jobVizDataObj.data as JobVizNode[];
@@ -113,23 +116,25 @@ export const parseJobvizPath = (
   return { targetLevel, selectedLevel, idPath };
 };
 
-const normalizeSocCodes = (
+export const normalizeSocCodes = (
   socCodes?: AssignmentParams["socCodes"]
 ): string[] => {
   if (!socCodes) return [];
   if (typeof socCodes === "string") {
     return socCodes
       .split(",")
-      .map((code) => code.trim())
+      .map((code) => normalizeSocCode(code))
       .filter(Boolean);
   }
   if (Array.isArray(socCodes)) {
     return socCodes
-      .map((code) => code.toString().trim())
+      .map((code) => normalizeSocCode(code.toString()))
       .filter(Boolean);
   }
 
-  return Array.from(socCodes).map((code) => code.toString().trim());
+  return Array.from(socCodes)
+    .map((code) => normalizeSocCode(code.toString()))
+    .filter(Boolean);
 };
 
 export const filterJobsBySocCodes = (

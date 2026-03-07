@@ -5,8 +5,12 @@ import { connectToMongodb } from '../../../backend/utils/connection';
 import { CustomError } from '../../../backend/utils/errors';
 import { IJobTour as _IJobTour } from '../../../backend/models/JobTour';
 import { insertJobTour, TJobTourToInsert } from '../../../backend/services/jobTourServices';
+import {
+    getGpPlusMembership,
+    isActiveGpPlusMembership,
+} from '../../../backend/services/outsetaServices';
 import { verifyJwt } from '../../../nondependencyFns';
-import { getUser as _getUser , getUserByEmail } from '../../../backend/services/userServices';
+import { getUserByEmail } from '../../../backend/services/userServices';
 
 const VALID_GP_USERS = process.env.GP_JOB_TOURS_USERS
     ? new Set(process.env.GP_JOB_TOURS_USERS.split(","))
@@ -35,7 +39,6 @@ export default async function handler(
             });
         }
 
-        // Get user email from JWT token to check if it's matt@galacticpolymath.com
         const authorization = request?.headers?.authorization ?? '';
         const authToken = authorization.split(' ').at(-1);
 
@@ -54,29 +57,20 @@ export default async function handler(
 
         const isGpEmail = userEmail.toLowerCase().endsWith(GP_EMAIL_DOMAIN);
         const isAllowlisted = VALID_GP_USERS?.has(userEmail) ?? false;
+        const gpPlusMembership = await getGpPlusMembership(userEmail);
+        const hasActiveGpPlusMembership =
+            isGpEmail || isAllowlisted || isActiveGpPlusMembership(gpPlusMembership);
 
-        if (!isGpEmail) {
-            if (!VALID_GP_USERS) {
-                return response.status(500).json({
-                    msg: 'Valid GP job tour users are not set on the server. The environment variable `GP_JOB_TOURS_USERS` is missing or empty. Cannot create job tour.'
-                });
-            }
-
-            if (!VALID_GP_USERS?.size) {
-                return response.status(500).json({
-                    msg: 'Valid GP job tour users are not set on the server. The array has a length of zero. Cannot create job tour.'
-                });
-            }
-
-            if (!isAllowlisted) {
-                return response.status(403).json({
-                    msg: 'Only GP team members can create JobViz tours.'
-                });
-            }
+        if (!hasActiveGpPlusMembership) {
+            return response.status(403).json({
+                msg: 'An active GP+ membership is required to create JobViz tours.'
+            });
         }
 
         if (isGpEmail || isAllowlisted) {
             newJobTour.isGP = true;
+        } else {
+            newJobTour.isGP = false;
         }
 
         const { wasSuccessful } = await connectToMongodb(
