@@ -343,7 +343,12 @@
   transform: translateY(-4px);
   transition: max-height 0.22s ease, opacity 0.18s ease, transform 0.22s ease;
   margin-top: 0;
-  padding-top: 0;
+  padding: 0;
+  border-radius: 16px;
+  border: 1px solid rgba(192, 214, 255, 0.34);
+  background: #070e1e;
+  box-shadow: 0 24px 46px rgba(1, 6, 18, 0.58);
+  backdrop-filter: blur(8px);
   pointer-events: none;
 }
 
@@ -352,7 +357,7 @@
   opacity: 1;
   transform: translateY(0);
   margin-top: 0;
-  padding-top: 0;
+  padding: 8px;
   pointer-events: auto;
   width: min(280px, calc(100vw - 24px));
   max-width: min(280px, calc(100vw - 24px));
@@ -362,7 +367,8 @@
 .accountMenuDivider {
   width: 100%;
   height: 1px;
-  background: rgba(240, 244, 255, 0.2);
+  background: rgba(240, 244, 255, 0.14);
+  margin: 2px 0;
 }
 
 .accountMenuItem {
@@ -371,13 +377,13 @@
   gap: 6px;
   width: 100%;
   border: 0;
-  background: rgba(240, 244, 255, 0.08);
-  color: #f0f4ff;
+  background: rgba(240, 244, 255, 0.12);
+  color: #f7fbff;
   padding: 8px 12px;
   border-radius: 999px;
   text-align: left;
   font-size: 15px;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
   text-decoration: none;
 }
@@ -388,7 +394,7 @@
 
 .accountMenuItem:hover,
 .accountMenuItem:focus-visible {
-  background: rgba(240, 244, 255, 0.18);
+  background: rgba(240, 244, 255, 0.24);
   color: var(--profile-contrast-text);
   font-weight: 700;
 }
