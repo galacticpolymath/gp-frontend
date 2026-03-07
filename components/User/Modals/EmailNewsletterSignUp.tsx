@@ -218,6 +218,8 @@ const EmailNewsletterSignUp: React.FC = () => {
   }
 
   const handleOnClose = async () => {
+    setSessionStorageItem("didOptOutOfMailingList", true);
+
     if (onHide) {
       onHide();
     }

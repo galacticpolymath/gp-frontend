@@ -282,6 +282,9 @@ const SelectedJob: React.FC = () => {
     });
     return count;
   }, [assignmentSocCodes, ratings]);
+  const isAssignmentFullyRated =
+    Boolean(assignmentSocCodes?.size) &&
+    ratedAssignmentCount === (assignmentSocCodes?.size ?? 0);
   const nextUnratedSoc = useMemo(() => {
     if (!assignmentSocCodeList.length) return null;
     const currentIndex = visibleJob?.soc_code
@@ -851,7 +854,7 @@ const SelectedJob: React.FC = () => {
                           onClick={handleNextUnratedJob}
                           aria-label="Open next unrated job"
                         >
-                          <LucideIcon name="Check" />
+                          {isAssignmentFullyRated ? <LucideIcon name="Check" /> : null}
                           {`RATED ${ratedAssignmentCount}/${assignmentSocCodes?.size ?? 0}`}
                           <span className={styles.modalRatingStatusNext}>
                             <LucideIcon name="ArrowRight" />
@@ -862,7 +865,7 @@ const SelectedJob: React.FC = () => {
                           className={styles.modalRatingStatus}
                           data-animate={animateRatingStatus ? "true" : "false"}
                         >
-                          <LucideIcon name="Check" />
+                          {isAssignmentFullyRated ? <LucideIcon name="Check" /> : null}
                           {`RATED ${ratedAssignmentCount}/${assignmentSocCodes?.size ?? 0}`}
                         </span>
                       ))}

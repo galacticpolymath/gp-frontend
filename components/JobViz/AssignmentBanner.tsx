@@ -775,6 +775,11 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
       data-dock-collapsed={isDockCollapsed ? "true" : "false"}
       ref={bannerRef}
     >
+      <div
+        className={
+          isDesktopVariant ? styles.assignmentDesktopDockFrame : undefined
+        }
+      >
       {isDesktopVariant && (
         <button
           type="button"
@@ -1183,6 +1188,7 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
           <span>Show more</span>
         </div>
       )}
+      </div>
     </div>
     {shouldShowScrollTip &&
       scrollTipStyle && (

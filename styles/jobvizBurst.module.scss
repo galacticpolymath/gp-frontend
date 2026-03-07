@@ -1460,27 +1460,21 @@ $jobviz-desktop-dock-top: max(
 
   .jobvizPageShell[data-has-assignment="true"]
     > .assignmentBannerShell.assignmentDesktopDock {
-    display: flex;
-    flex-direction: column;
-    position: sticky;
-    top: $jobviz-desktop-dock-top;
+    display: block;
+    position: relative;
     align-self: start;
     width: clamp(320px, 28vw, 360px);
     height: calc(100dvh - #{$jobviz-desktop-dock-top});
     max-height: calc(100dvh - #{$jobviz-desktop-dock-top});
     min-height: calc(100dvh - #{$jobviz-desktop-dock-top});
-    overflow: hidden;
+    overflow: visible;
     z-index: $assignment-layer-z;
-    background: linear-gradient(
-      175deg,
-      rgba(12, 21, 66, 0.93),
-      rgba(33, 10, 72, 0.9),
-      rgba(54, 9, 60, 0.88)
-    );
+    background: transparent;
   }
 
   .jobvizPageShell[data-has-assignment="true"]
     > .assignmentBannerShell.assignmentDesktopDock
+    > .assignmentDesktopDockFrame
     > .assignmentBanner {
     display: flex;
     flex-direction: column;
@@ -1492,6 +1486,7 @@ $jobviz-desktop-dock-top: max(
 
   .jobvizPageShell[data-has-assignment="true"]
     > .assignmentBannerShell.assignmentDesktopDock
+    > .assignmentDesktopDockFrame
     .assignmentContent {
     flex: 1 1 auto;
     min-height: 0;
@@ -1502,27 +1497,33 @@ $jobviz-desktop-dock-top: max(
 
   .jobvizPageShell[data-has-assignment="true"]
     > .assignmentBannerShell.assignmentDesktopDock
+    > .assignmentDesktopDockFrame
     .assignmentClearFooter {
     margin-top: auto;
   }
 
   .assignmentBannerShell.assignmentDesktopDock {
-    position: sticky;
-    top: $jobviz-desktop-dock-top;
-    align-self: flex-start;
+    position: relative;
+    top: auto;
+    align-self: start;
     z-index: $assignment-layer-z;
     height: calc(100dvh - #{$jobviz-desktop-dock-top});
     max-height: calc(100dvh - #{$jobviz-desktop-dock-top});
     min-height: calc(100dvh - #{$jobviz-desktop-dock-top});
-    overflow: hidden;
-    background-color: rgb(21, 18, 57);
+    overflow: visible;
+    background-color: transparent;
   }
 
   .assignmentDesktopDock {
+    display: block;
+  }
+
+  .assignmentDesktopDockFrame {
     display: flex;
     flex-direction: column;
-    position: sticky;
+    position: fixed;
     top: $jobviz-desktop-dock-top;
+    right: 0;
     align-self: flex-start;
     width: clamp(320px, 28vw, 360px);
     height: calc(100dvh - #{$jobviz-desktop-dock-top});
@@ -1552,8 +1553,8 @@ $jobviz-desktop-dock-top: max(
       transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
-.assignmentDesktopDock::before,
-.assignmentDesktopDock::after {
+.assignmentDesktopDockFrame::before,
+.assignmentDesktopDockFrame::after {
     content: "";
     position: absolute;
     top: 0;
@@ -1564,7 +1565,7 @@ $jobviz-desktop-dock-top: max(
     border-radius: inherit;
   }
 
-  .assignmentDesktopDock::before {
+  .assignmentDesktopDockFrame::before {
     background: radial-gradient(
         circle at 18% 18%,
         rgba(147, 168, 255, 0.35),
@@ -1574,7 +1575,7 @@ $jobviz-desktop-dock-top: max(
     opacity: 0.7;
   }
 
-  .assignmentDesktopDock::after {
+  .assignmentDesktopDockFrame::after {
     background: linear-gradient(
       115deg,
       transparent 0%,
@@ -1586,7 +1587,7 @@ $jobviz-desktop-dock-top: max(
     animation: dockSweep 18s ease-in-out infinite;
   }
 
-  .assignmentDesktopDock > * {
+  .assignmentDesktopDockFrame > * {
     position: relative;
     z-index: 1;
   }
@@ -1635,7 +1636,7 @@ $jobviz-desktop-dock-top: max(
     display: none;
   }
 
-  .assignmentDesktopDock[data-dock-collapsed="true"] {
+  .assignmentBannerShell.assignmentDesktopDock[data-dock-collapsed="true"] .assignmentDesktopDockFrame {
     width: clamp(48px, 4vw, 60px);
     padding: clamp(0.35rem, 0.6vw, 0.5rem);
     height: calc(100dvh - #{$jobviz-desktop-dock-top} - 0.5rem);
@@ -1645,8 +1646,8 @@ $jobviz-desktop-dock-top: max(
     align-items: center;
   }
 
-  .assignmentDesktopDock[data-dock-collapsed="true"] .assignmentBanner,
-  .assignmentDesktopDock[data-dock-collapsed="true"] .assignmentClearFooter {
+  .assignmentBannerShell.assignmentDesktopDock[data-dock-collapsed="true"] .assignmentBanner,
+  .assignmentBannerShell.assignmentDesktopDock[data-dock-collapsed="true"] .assignmentClearFooter {
     opacity: 0;
     pointer-events: none;
   }
@@ -1657,16 +1658,20 @@ $jobviz-desktop-dock-top: max(
     flex-shrink: 0;
   }
 
-  .assignmentDesktopDock[data-dock-collapsed="true"]::before,
-  .assignmentDesktopDock[data-dock-collapsed="true"]::after {
+  .assignmentBannerShell.assignmentDesktopDock[data-dock-collapsed="true"] .assignmentDesktopDockFrame::before,
+  .assignmentBannerShell.assignmentDesktopDock[data-dock-collapsed="true"] .assignmentDesktopDockFrame::after {
     top: 0;
     bottom: 0;
   }
 
-  .assignmentDesktopDock[data-dock-collapsed="true"] .assignmentDockCollapsedLabel {
+  .assignmentBannerShell.assignmentDesktopDock[data-dock-collapsed="true"] .assignmentDockCollapsedLabel {
     display: flex;
     justify-content: center;
     align-items: center;
+  }
+
+  .assignmentDockToggle {
+    align-self: flex-start;
   }
 }
 
@@ -4557,13 +4562,13 @@ $jobviz-desktop-dock-top: max(
 }
 
 @media (min-width: 1200px) {
-  .jobvizPageShell {
+  .jobvizPageShell:not([data-has-assignment="true"]) {
     flex-direction: row;
     align-items: flex-start;
     gap: 0;
     overflow: visible;
   }
-  .jobvizMainColumn {
+  .jobvizPageShell:not([data-has-assignment="true"]) .jobvizMainColumn {
     flex: 1;
     min-width: 0;
     width: auto;
