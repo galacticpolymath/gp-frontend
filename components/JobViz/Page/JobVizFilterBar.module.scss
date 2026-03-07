@@ -14,17 +14,31 @@
   gap: 0.45rem;
 }
 
+.filterGroup {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(10, 16, 34, 0.4);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  padding: 0.26rem 0.4rem 0.26rem 0.5rem;
+}
+
 .gridFilterLabel {
-  font-size: 0.72rem;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.35rem;
+  font-size: 0.8rem;
   text-transform: uppercase;
-  letter-spacing: 0.14em;
-  color: rgba(212, 230, 255, 0.64);
-  font-weight: 700;
-  margin-right: 0.1rem;
+  letter-spacing: 0.08em;
+  color: rgba(230, 235, 255, 0.75);
+  font-weight: 600;
+  margin-right: 0.05rem;
 }
 
 .filterButton {
-  border: 1px solid rgba(162, 193, 235, 0.5);
+  border: none;
   background: rgba(15, 29, 58, 0.72);
   color: #e7f2ff;
   border-radius: 999px;
@@ -37,7 +51,6 @@
 }
 
 .filterButtonActive {
-  border-color: rgba(211, 230, 255, 0.84);
   background: rgba(75, 130, 213, 0.36);
 }
 
@@ -51,6 +64,10 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+}
+
+.filterIconSavedActive {
+  color: #ffd24d;
 }
 
 .filterIndicator {
