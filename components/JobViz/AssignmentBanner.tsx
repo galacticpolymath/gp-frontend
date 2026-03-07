@@ -853,6 +853,11 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
                 data-hidden={hideInfoSection ? "true" : "false"}
                 ref={infoBlockRef}
               >
+                {previewBanner && (
+                  <div className={styles.assignmentPreviewBanner}>
+                    {previewBanner}
+                  </div>
+                )}
                 {(resolvedUnitLabel || headerActions) && (
                   <div className={styles.assignmentHeaderRow}>
                     {resolvedUnitLabel && (
@@ -947,11 +952,6 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
                     : undefined
                 }
               >
-              {previewBanner && (
-                <div className={styles.assignmentPreviewBanner}>
-                  {previewBanner}
-                </div>
-              )}
               {variant === "desktop" && splitJobs.length > 0 && (
                 <div className={styles.assignmentListWrap}>
                   {splitJobs.map((jobGroup, idx) => (

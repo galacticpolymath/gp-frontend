@@ -206,25 +206,6 @@ export const JobVizCard: React.FC<JobVizCardProps> = ({
       }
       aria-describedby={isHovered ? tooltipId : undefined}
     >
-      {canBookmark && socCode && (
-        <button
-          type="button"
-          className={`${styles.jobvizBookmarkButton} ${
-            isBookmarked ? styles.jobvizBookmarkButtonActive : ""
-          }`}
-          aria-label={
-            isBookmarked ? "Remove job from tour" : "Click to add job to tour"
-          }
-          title={isBookmarked ? "Remove from tour" : "Click to add job to tour"}
-          data-active={isBookmarked ? "true" : "false"}
-          onClick={(event) => {
-            event.stopPropagation();
-            jobTourEditor?.toggleJob(socCode);
-          }}
-        >
-          <Star size={18} aria-hidden="true" />
-        </button>
-      )}
       {level === 1 ? (
         <>
           <div className={styles.categoryTop}>
@@ -269,7 +250,9 @@ export const JobVizCard: React.FC<JobVizCardProps> = ({
                 (canBookmark && socCode ? (
                   <button
                     type="button"
-                    className={styles.assignmentBadgeButton}
+                    className={`${styles.assignmentBadgeButton} ${
+                      isAssignmentSelected ? styles.assignmentBadgeButtonActive : ""
+                    }`}
                     onClick={(event) => {
                       event.stopPropagation();
                       jobTourEditor?.toggleJob(socCode);
@@ -285,18 +268,20 @@ export const JobVizCard: React.FC<JobVizCardProps> = ({
                         : "Add to tour jobs"
                     }
                     aria-pressed={isAssignmentSelected}
-                  >
-                    <span
-                      className={`${styles.assignmentBadgeDot} ${styles.cardHeaderBadgeDot} ${
-                        isAssignmentSelected ? styles.assignmentBadgeDotActive : ""
-                      }`}
-                      aria-hidden="true"
-                    />
-                    <span className={styles.cardHeaderBadgeLabel}>Tour</span>
+                    >
+                      <span
+                        className={`${styles.assignmentBadgeDot} ${styles.cardHeaderBadgeDot} ${
+                          isAssignmentSelected ? styles.assignmentBadgeDotActive : ""
+                        }`}
+                        aria-hidden="true"
+                      />
+                    <span className={styles.cardHeaderBadgeLabel}>
+                      {isAssignmentSelected ? "In Tour" : "Add to Tour"}
+                    </span>
                   </button>
                 ) : (
                   <span
-                    className={styles.savedJobBadge}
+                    className={styles.assignmentBadgePill}
                     title="Tour job"
                     aria-label="Tour job"
                   >
@@ -306,16 +291,16 @@ export const JobVizCard: React.FC<JobVizCardProps> = ({
                       }`}
                       aria-hidden="true"
                     />
-                    <span className={styles.cardHeaderBadgeLabel}>Tour</span>
+                    <span className={styles.cardHeaderBadgeLabel}>In Tour</span>
                   </span>
                 ))}
-              {showBookmark && !canBookmark && (
+              {showBookmark && (
                 <span
                   className={styles.savedJobBadge}
                   title="Saved job"
                   aria-label="Saved job"
                 >
-                  <Star size={14} fill="currentColor" aria-hidden="true" />
+                  <Star size={12} fill="currentColor" stroke="none" aria-hidden="true" />
                   <span className={styles.cardHeaderBadgeLabel}>Saved</span>
                 </span>
               )}

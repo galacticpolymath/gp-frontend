@@ -25,6 +25,21 @@ export const JobVizSearch: React.FC<JobVizSearchProps> = ({
   const inputId = "jobviz-search-field";
   const listboxId = React.useId();
   const resultRefs = React.useRef<(HTMLButtonElement | null)[]>([]);
+  const persistentQueryParams = React.useMemo(
+    () => ({
+      ...extraQueryParams,
+      ...(typeof router.query?.edit === "string"
+        ? { edit: router.query.edit }
+        : {}),
+      ...(typeof router.query?.copy === "string"
+        ? { copy: router.query.copy }
+        : {}),
+      ...(typeof router.query?.tourId === "string"
+        ? { tourId: router.query.tourId }
+        : {}),
+    }),
+    [extraQueryParams, router.query?.copy, router.query?.edit, router.query?.tourId]
+  );
 
   const normalizeSearchValue = (value: string) =>
     value.toLowerCase().replace(/\s+/g, "");
@@ -83,7 +98,7 @@ export const JobVizSearch: React.FC<JobVizSearchProps> = ({
     const url = buildJobvizUrl(
       { fromNode: node },
       assignmentParams,
-      extraQueryParams
+      persistentQueryParams
     );
     const isGroup = node.occupation_type !== "Line item";
     const pushPromise = router.push(url, undefined, {

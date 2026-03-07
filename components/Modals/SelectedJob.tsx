@@ -688,6 +688,7 @@ const SelectedJob: React.FC = () => {
     canBookmark && visibleJob?.soc_code
       ? jobTourEditor?.isSelected(visibleJob.soc_code)
       : false;
+  const isTourEditMode = Boolean(jobTourEditor?.isEditing);
   const activeJobId = visibleJob?.id != null ? String(visibleJob.id) : null;
   const isSavedJob = Boolean(
     (activeJobId && savedJobIds.has(activeJobId)) ||
@@ -927,21 +928,24 @@ const SelectedJob: React.FC = () => {
                         <LucideIcon name="Info" />
                       </button>
                     </div>
-                    <span className={styles.modalRatingStatus}>
-                      Assignment only
-                    </span>
                   </div>
-                  <p className={styles.modalRatingNotice}>
-                    Ratings unlock when this job is part of a JobViz+ Assignment (available with a{" "}
-                    <a
-                      href="https://www.galacticpolymath.com/plus"
-                      target="_blank"
-                      rel="noopener noreferrer"
+                  {isTourEditMode && visibleJob?.soc_code ? (
+                    <button
+                      type="button"
+                      className={isBookmarked ? styles.ghostButton : styles.primaryButton}
+                      onClick={() => jobTourEditor?.toggleJob(visibleJob.soc_code)}
                     >
-                      GP+ subscription
-                    </a>
-                    ).
-                  </p>
+                      <LucideIcon name={isBookmarked ? "Minus" : "Plus"} />
+                      {isBookmarked
+                        ? "Remove job from tour"
+                        : "Add job to tour assignment"}
+                    </button>
+                  ) : (
+                    <p className={styles.modalRatingNotice}>
+                      Add this job to an assignment to enable student ratings in
+                      JobViz.
+                    </p>
+                  )}
                 </section>
               )}
               <dl className={styles.modalStats}>

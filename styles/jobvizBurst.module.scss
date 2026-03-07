@@ -988,6 +988,10 @@ $jobviz-desktop-dock-top: max(
   transition: transform 0.2s ease, background 0.2s ease;
 }
 
+.assignmentBadgeButtonActive {
+  background: rgba(255, 255, 255, 0.14);
+}
+
 .assignmentBadgeButton:hover .assignmentBadgeDot,
 .assignmentBadgeButton:focus-visible .assignmentBadgeDot {
   transform: scale(1.05);
@@ -1059,10 +1063,11 @@ $jobviz-desktop-dock-top: max(
 }
 
 .savedJobBadge :global(svg) {
-  width: 14px;
-  height: 14px;
+  width: 12px;
+  height: 12px;
   color: #ffd678;
   fill: #ffd678;
+  stroke: none;
 }
 
 .cardHeaderBadgeLabel {
@@ -1406,30 +1411,29 @@ $jobviz-desktop-dock-top: max(
 }
 
 .assignmentPreviewBanner {
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-  padding: 0.9rem 1rem;
-  border-radius: 18px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(178, 202, 255, 0.18);
+  margin-bottom: 0.5rem;
 }
 
 .assignmentStudentPreviewBanner {
   display: flex;
   flex-direction: column;
   gap: 0.35rem;
-  padding: 0.95rem 1rem;
-  border-radius: 18px;
-  background: linear-gradient(140deg, rgba(15, 25, 63, 0.82), rgba(44, 17, 73, 0.72));
-  border: 1px solid rgba(145, 180, 255, 0.24);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  padding: 0.9rem 1rem 0;
+  border-radius: 22px 22px 0 0;
+  background: linear-gradient(
+    145deg,
+    rgba(170, 148, 235, 0.34),
+    rgba(132, 112, 208, 0.28)
+  );
+  border: 1px solid rgba(219, 209, 255, 0.32);
+  border-bottom: none;
+  box-shadow: none;
 }
 
 .assignmentStudentPreviewBanner p {
   margin: 0;
   font-size: 0.93rem;
-  color: rgba(230, 240, 255, 0.72);
+  color: rgba(248, 245, 255, 0.92);
   line-height: 1.45;
 }
 
@@ -1437,7 +1441,7 @@ $jobviz-desktop-dock-top: max(
   font-size: 0.74rem;
   text-transform: uppercase;
   letter-spacing: 0.18em;
-  color: rgba(202, 218, 255, 0.85);
+  color: rgba(251, 247, 255, 0.98);
   font-weight: 700;
 }
 
@@ -1448,7 +1452,9 @@ $jobviz-desktop-dock-top: max(
 @media (min-width: 1200px) {
   .jobvizPageShell[data-has-assignment="true"] {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) clamp(320px, 28vw, 360px);
+    grid-template-columns:
+      minmax(0, 1fr)
+      var(--jobviz-desktop-dock-width, clamp(320px, 28vw, 360px));
     align-items: start;
     gap: 0;
   }
@@ -1470,6 +1476,13 @@ $jobviz-desktop-dock-top: max(
     overflow: visible;
     z-index: $assignment-layer-z;
     background: transparent;
+  }
+
+  .jobvizPageShell[data-has-assignment="true"]
+    > .assignmentBannerShell.assignmentDesktopDock[data-dock-collapsed="true"] {
+    width: clamp(48px, 4vw, 60px);
+    max-width: clamp(48px, 4vw, 60px);
+    min-width: clamp(48px, 4vw, 60px);
   }
 
   .jobvizPageShell[data-has-assignment="true"]
@@ -1599,14 +1612,32 @@ $jobviz-desktop-dock-top: max(
     background: transparent;
     border: none;
     border-radius: 0;
-    padding: 0;
+    padding: 2.8rem 0 0;
     gap: 0.75rem;
     transition: opacity 0.3s ease;
   }
 
   .assignmentDesktopDock .assignmentMarker {
     width: 100%;
-    padding: 0.4rem 0.85rem;
+    padding: 0.75rem 0.95rem 0.95rem;
+    background: linear-gradient(
+      145deg,
+      rgba(170, 148, 235, 0.28),
+      rgba(128, 108, 208, 0.24)
+    );
+    border: 1px solid rgba(219, 209, 255, 0.32);
+    border-radius: 0 0 22px 22px;
+    box-shadow: none;
+    margin-top: -1px;
+    align-self: stretch;
+  }
+
+  .assignmentDesktopDock .assignmentMarkerLabel {
+    color: rgba(248, 245, 255, 0.96);
+  }
+
+  .assignmentDesktopDock .assignmentCopy {
+    color: rgba(243, 240, 255, 0.92);
   }
 
   .assignmentDesktopDock .assignmentInner {
@@ -1804,9 +1835,9 @@ $jobviz-desktop-dock-top: max(
 }
 
 .assignmentDockToggle {
-  position: sticky;
+  position: absolute;
   top: clamp(0.6rem, 1vw, 1rem);
-  align-self: flex-end;
+  right: clamp(0.6rem, 1vw, 1rem);
   width: 40px;
   height: 40px;
   border-radius: 999px;
@@ -1816,7 +1847,7 @@ $jobviz-desktop-dock-top: max(
   display: grid;
   place-items: center;
   cursor: pointer;
-  z-index: 3;
+  z-index: 8;
   transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
 }
 
@@ -1854,14 +1885,15 @@ $jobviz-desktop-dock-top: max(
   display: inline-flex;
   flex-direction: column;
   gap: 0.5rem;
-  padding: 0.45rem 1rem;
-  border-radius: 28px;
-  background: rgba(255, 255, 255, 1);
-  border: 1px solid #1826bc;
-  box-shadow: inset 0 0 10px rgba(24, 38, 188, 0.35);
-  width: fit-content;
+  padding: 0.8rem 1rem 0.95rem;
+  border-radius: 0 0 22px 22px;
+  background: linear-gradient(145deg, rgba(202, 189, 255, 0.28), rgba(183, 161, 247, 0.22));
+  border: 1px solid rgba(204, 192, 255, 0.32);
+  box-shadow: none;
+  width: 100%;
   text-align: left;
-  align-self: flex-start;
+  align-self: stretch;
+  margin-top: -1px;
 }
 
 .jobvizHeroMobileAssignment {
