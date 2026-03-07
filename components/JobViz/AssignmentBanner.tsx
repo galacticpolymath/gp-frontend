@@ -125,6 +125,20 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
     variant === "desktop"
       ? styles.assignmentDesktopDock
       : styles.assignmentMobileWrapper;
+  const desktopDockInlineStyle: React.CSSProperties | undefined =
+    isDesktopVariant
+      ? {
+          position: "sticky",
+          top: "var(--portal-nav-offset, var(--jobviz-nav-offset, 72px))",
+          height:
+            "calc(100vh - var(--portal-nav-offset, var(--jobviz-nav-offset, 72px)))",
+          maxHeight:
+            "calc(100vh - var(--portal-nav-offset, var(--jobviz-nav-offset, 72px)))",
+          overflowY: "auto",
+          overflowX: "hidden",
+          alignSelf: "start",
+        }
+      : undefined;
   const showAssignmentPanel = !isDesktopVariant || !isDockCollapsed;
   const isDockViewportEnabled =
     shouldRenderBanner && isDesktopVariant && !isDockCollapsed;
@@ -762,105 +776,6 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
     };
   }, [variant, shouldRenderBanner, mobileCollapsed, showAssignmentPanel]);
 
-  React.useEffect(() => {
-    if (!isMobile || !shouldRenderBanner) return undefined;
-    if (typeof window === "undefined") return undefined;
-    const element = bannerRef.current;
-    if (!element) return undefined;
-
-    let releaseTimeout: ReturnType<typeof setTimeout> | null = null;
-    const activateIntent = () => {
-      document.body.dataset.jobvizAssignmentScrollIntent = "true";
-      if (releaseTimeout) {
-        clearTimeout(releaseTimeout);
-        releaseTimeout = null;
-      }
-    };
-    const scheduleRelease = (delay = 450) => {
-      if (releaseTimeout) {
-        clearTimeout(releaseTimeout);
-      }
-      releaseTimeout = setTimeout(() => {
-        delete document.body.dataset.jobvizAssignmentScrollIntent;
-        releaseTimeout = null;
-      }, delay);
-    };
-
-    const containsTarget = (target: EventTarget | null) =>
-      target instanceof Node && element.contains(target);
-    const options: AddEventListenerOptions = { passive: true };
-
-    const handlePointerDown = (event: PointerEvent) => {
-      if (containsTarget(event.target)) {
-        activateIntent();
-      }
-    };
-
-    const handlePointerMove = (event: PointerEvent) => {
-      if (containsTarget(event.target)) {
-        activateIntent();
-      }
-    };
-
-    const handlePointerUp = () => {
-      scheduleRelease();
-    };
-
-    const handleWheel = (event: WheelEvent) => {
-      if (containsTarget(event.target)) {
-        activateIntent();
-        scheduleRelease();
-      }
-    };
-
-    document.addEventListener("pointerdown", handlePointerDown, options);
-    document.addEventListener("pointermove", handlePointerMove, options);
-    document.addEventListener("pointerup", handlePointerUp, options);
-    document.addEventListener("pointercancel", handlePointerUp, options);
-    document.addEventListener("wheel", handleWheel, options);
-
-    let touchCleanup: (() => void) | null = null;
-    if (!("PointerEvent" in window)) {
-      const handleTouchStart = (event: TouchEvent) => {
-        if (containsTarget(event.target)) {
-          activateIntent();
-        }
-      };
-      const handleTouchMove = (event: TouchEvent) => {
-        if (containsTarget(event.target)) {
-          activateIntent();
-        }
-      };
-      const handleTouchEnd = () => {
-        scheduleRelease();
-      };
-
-      document.addEventListener("touchstart", handleTouchStart, options);
-      document.addEventListener("touchmove", handleTouchMove, options);
-      document.addEventListener("touchend", handleTouchEnd, options);
-      document.addEventListener("touchcancel", handleTouchEnd, options);
-      touchCleanup = () => {
-        document.removeEventListener("touchstart", handleTouchStart);
-        document.removeEventListener("touchmove", handleTouchMove);
-        document.removeEventListener("touchend", handleTouchEnd);
-        document.removeEventListener("touchcancel", handleTouchEnd);
-      };
-    }
-
-    return () => {
-      document.removeEventListener("pointerdown", handlePointerDown);
-      document.removeEventListener("pointermove", handlePointerMove);
-      document.removeEventListener("pointerup", handlePointerUp);
-      document.removeEventListener("pointercancel", handlePointerUp);
-      document.removeEventListener("wheel", handleWheel);
-      touchCleanup?.();
-      if (releaseTimeout) {
-        window.clearTimeout(releaseTimeout);
-      }
-      delete document.body.dataset.jobvizAssignmentScrollIntent;
-    };
-  }, [isMobile, shouldRenderBanner]);
-
   if (!shouldRenderBanner) {
     return null;
   }
@@ -869,6 +784,7 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
     <>
       <div
       className={`${styles.assignmentBannerShell} ${wrapperClass}`}
+      style={desktopDockInlineStyle}
       data-mode={variant === "desktop" ? "docked" : "default"}
       data-collapsed={isMobile && mobileCollapsed ? "true" : "false"}
       data-dock-collapsed={isDockCollapsed ? "true" : "false"}

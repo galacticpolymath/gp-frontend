@@ -1408,10 +1408,11 @@ $jobviz-nav-height: 64px;
     top: var(--portal-nav-offset, var(--jobviz-nav-offset, #{$jobviz-nav-height}));
     align-self: start;
     width: clamp(320px, 28vw, 360px);
-    height: calc(100dvh - var(--portal-nav-offset, var(--jobviz-nav-offset, #{$jobviz-nav-height})) - 0.5rem);
-    max-height: calc(100dvh - var(--portal-nav-offset, var(--jobviz-nav-offset, #{$jobviz-nav-height})) - 0.5rem);
-    min-height: calc(100dvh - var(--portal-nav-offset, var(--jobviz-nav-offset, #{$jobviz-nav-height})) - 0.5rem);
-    overflow: hidden;
+    height: calc(100vh - var(--portal-nav-offset, var(--jobviz-nav-offset, #{$jobviz-nav-height})));
+    max-height: calc(100vh - var(--portal-nav-offset, var(--jobviz-nav-offset, #{$jobviz-nav-height})));
+    min-height: calc(100vh - var(--portal-nav-offset, var(--jobviz-nav-offset, #{$jobviz-nav-height})));
+    overflow-y: auto;
+    overflow-x: visible;
     z-index: $assignment-layer-z;
     background: linear-gradient(
       175deg,
@@ -1428,7 +1429,7 @@ $jobviz-nav-height: 64px;
     flex-direction: column;
     flex: 1 1 auto;
     min-height: 0;
-    overflow: hidden;
+    overflow: visible;
     background: inherit;
   }
 
@@ -1453,13 +1454,11 @@ $jobviz-nav-height: 64px;
     top: var(--portal-nav-offset, var(--jobviz-nav-offset, #{$jobviz-nav-height}));
     align-self: flex-start;
     z-index: $assignment-layer-z;
-    height: calc(100vh - var(--portal-nav-offset, var(--jobviz-nav-offset, #{$jobviz-nav-height})) - 0.5rem);
-    height: calc(100dvh - var(--portal-nav-offset, var(--jobviz-nav-offset, #{$jobviz-nav-height})) - 0.5rem);
-    max-height: calc(100vh - var(--portal-nav-offset, var(--jobviz-nav-offset, #{$jobviz-nav-height})) - 0.5rem);
-    max-height: calc(100dvh - var(--portal-nav-offset, var(--jobviz-nav-offset, #{$jobviz-nav-height})) - 0.5rem);
-    min-height: calc(100vh - var(--portal-nav-offset, var(--jobviz-nav-offset, #{$jobviz-nav-height})) - 0.5rem);
-    min-height: calc(100dvh - var(--portal-nav-offset, var(--jobviz-nav-offset, #{$jobviz-nav-height})) - 0.5rem);
-    overflow: hidden;
+    height: calc(100vh - var(--portal-nav-offset, var(--jobviz-nav-offset, #{$jobviz-nav-height})));
+    max-height: calc(100vh - var(--portal-nav-offset, var(--jobviz-nav-offset, #{$jobviz-nav-height})));
+    min-height: calc(100vh - var(--portal-nav-offset, var(--jobviz-nav-offset, #{$jobviz-nav-height})));
+    overflow-y: auto;
+    overflow-x: visible;
     background-color: rgb(21, 18, 57);
   }
 
@@ -1470,10 +1469,9 @@ $jobviz-nav-height: 64px;
     top: var(--portal-nav-offset, var(--jobviz-nav-offset, #{$jobviz-nav-height}));
     align-self: flex-start;
     width: clamp(320px, 28vw, 360px);
-    height: calc(100dvh - var(--portal-nav-offset, var(--jobviz-nav-offset, #{$jobviz-nav-height})) - 0.5rem);
-    max-height: calc(100dvh - var(--portal-nav-offset, var(--jobviz-nav-offset, #{$jobviz-nav-height})) - 0.5rem);
-    min-height: calc(100vh - var(--portal-nav-offset, var(--jobviz-nav-offset, #{$jobviz-nav-height})) - 0.5rem);
-    min-height: calc(100dvh - var(--portal-nav-offset, var(--jobviz-nav-offset, #{$jobviz-nav-height})) - 0.5rem);
+    height: calc(100vh - var(--portal-nav-offset, var(--jobviz-nav-offset, #{$jobviz-nav-height})));
+    max-height: calc(100vh - var(--portal-nav-offset, var(--jobviz-nav-offset, #{$jobviz-nav-height})));
+    min-height: calc(100vh - var(--portal-nav-offset, var(--jobviz-nav-offset, #{$jobviz-nav-height})));
     animation: dockSlide 0.35s ease;
     z-index: $assignment-layer-z;
     padding: clamp(0.4rem, 1vw, 0.7rem);
@@ -1488,7 +1486,8 @@ $jobviz-nav-height: 64px;
     border: none;
     box-shadow: -4px 0 28px rgba(5, 0, 20, 0.45);
     backdrop-filter: blur(14px);
-    overflow: hidden;
+    overflow-y: auto;
+    overflow-x: visible;
     isolation: isolate;
     transition:
       width 0.35s cubic-bezier(0.4, 0, 0.2, 1),
@@ -1538,22 +1537,15 @@ $jobviz-nav-height: 64px;
   }
 
   .assignmentDesktopDock .assignmentBanner {
-    height: auto;
-    flex: 1 1 auto;
-    min-height: 0;
+    height: 100%;
     display: flex;
     flex-direction: column;
-    background: inherit;
+    background: transparent;
     border: none;
     border-radius: 0;
     padding: clamp(0.4rem, 1vw, 0.65rem);
     gap: 0.9rem;
     transition: opacity 0.3s ease;
-  }
-
-  .assignmentDesktopDock .assignmentBannerSticky {
-    position: relative;
-    top: 0;
   }
 
   .assignmentDesktopDock .assignmentMarker {
@@ -1566,10 +1558,9 @@ $jobviz-nav-height: 64px;
   }
 
   .assignmentDesktopDock .assignmentContent {
-    overflow: visible;
+    overflow-y: auto;
     flex: 1;
     padding-right: 0.4rem;
-    min-height: 0;
   }
 
   .assignmentDesktopDock .assignmentListWrap {
@@ -1682,7 +1673,7 @@ $jobviz-nav-height: 64px;
   padding-right: 0;
   display: flex;
   flex-direction: column;
-  height: auto;
+  height: 100%;
   flex: 1 1 auto;
   min-height: 0;
   overflow-y: auto;
@@ -1691,13 +1682,15 @@ $jobviz-nav-height: 64px;
 }
 
 .assignmentBannerSticky {
-  position: sticky;
-  top: calc(var(--portal-nav-offset, var(--jobviz-nav-offset, 0px)));
+  position: relative;
+  top: 0;
   z-index: $assignment-layer-z;
 }
 
 @media (max-width: 1199px) {
   .assignmentBannerSticky {
+    position: sticky;
+    top: calc(var(--portal-nav-offset, var(--jobviz-nav-offset, 0px)));
     z-index: $assignment-layer-z;
   }
 }

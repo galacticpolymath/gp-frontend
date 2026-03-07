@@ -1540,9 +1540,8 @@ export default function HomePage({
   const handleOpenJobTourAccessModal = (resource: PreviewResource) => {
     setJobTourAccessResource(resource);
   };
-  const hasGpPlusAccess =
-    status === "authenticated" &&
-    isGpPlusMember === true;
+  const isAuthenticated = status === "authenticated";
+  const hasGpPlusAccess = isAuthenticated && isGpPlusMember === true;
   const openStudentTour = useCallback(
     (tourId: string, preview = false) => {
       if (typeof window === "undefined") return;
@@ -5172,10 +5171,24 @@ export default function HomePage({
             </div>
             <div className={styles.jobTourAccessBody}>
               <p className={styles.jobTourAccessDescription}>
-                Have students explore jobs connected to this unit&apos;s content!
+                {!isAuthenticated
+                  ? "Sign in or create a free account to access this JobViz tour."
+                  : "Have students explore jobs connected to this unit&apos;s content!"}
               </p>
               <div className={styles.jobTourAccessActions}>
-                {hasGpPlusAccess ? (
+                {!isAuthenticated ? (
+                  <>
+                    <Link href="/account" className={styles.jobTourAccessPrimaryBtn}>
+                      Log in
+                    </Link>
+                    <Link
+                      href="/choose-plan"
+                      className={styles.jobTourAccessSecondaryBtn}
+                    >
+                      Create free account
+                    </Link>
+                  </>
+                ) : hasGpPlusAccess ? (
                   <>
                     <button
                       className={styles.jobTourAccessPrimaryBtn}

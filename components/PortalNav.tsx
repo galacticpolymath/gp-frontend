@@ -234,10 +234,6 @@ const PortalNav: React.FC<PortalNavProps> = ({
         root.style.setProperty("--portal-nav-offset", "0px");
         return;
       }
-      if (isJobvizRoute) {
-        root.style.setProperty("--portal-nav-offset", "0px");
-        return;
-      }
       const navHeight = navRef.current?.getBoundingClientRect().height ?? 0;
       const offset = Math.max(0, Math.round(navHeight));
       root.style.setProperty("--portal-nav-offset", `${offset}px`);

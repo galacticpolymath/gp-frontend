@@ -5,7 +5,7 @@ export default function Document() {
   const shouldLoadOutseta =
     process.env.NODE_ENV === "production" && Boolean(outsetaDomain);
   return (
-    <Html lang="en" data-scroll-behavior="smooth">
+    <Html lang="en">
       <Head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />

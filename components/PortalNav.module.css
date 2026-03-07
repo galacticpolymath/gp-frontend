@@ -34,8 +34,10 @@
 }
 
 .navFixedForJobviz {
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
+  right: 0;
   background: #0c101c;
   border-bottom: 1px solid rgba(232, 224, 255, 0.28);
   box-shadow: 0 14px 28px rgba(14, 12, 38, 0.46);

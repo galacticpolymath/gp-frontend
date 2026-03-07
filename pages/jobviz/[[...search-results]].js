@@ -1903,11 +1903,9 @@ export const getServerSideProps = async ({ query, req, resolvedUrl }) => {
       ])
     : null;
   let metaDescription = null;
-  let isGpPlusMember = req?.cookies?.["isGpPlusMember"];
-
-  if (typeof isGpPlusMember === "string") {
-    isGpPlusMember = isGpPlusMember === "true";
-  }
+  const gpPlusCookie = req?.cookies?.["isGpPlusMember"];
+  const isGpPlusMember =
+    typeof gpPlusCookie === "string" ? gpPlusCookie === "true" : null;
 
   const pathWithoutQuery = resolvedUrl.split("?")[0];
   const pathSegments = pathWithoutQuery.split("/").slice(2);
