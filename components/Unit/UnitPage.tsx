@@ -196,31 +196,6 @@ const trackUnitEvent = (name: string, params: TGtagParams = {}) => {
   });
 };
 
-const setPortalNavHidden = (hidden: boolean) => {
-  if (typeof window === 'undefined') {
-    return;
-  }
-  const root = document.documentElement;
-  const portalNav = document.querySelector('nav[data-nav-hidden]') as HTMLElement | null;
-  const navHeight = portalNav?.getBoundingClientRect().height ?? 0;
-  root.style.setProperty('--portal-nav-offset', hidden ? '0px' : `${Math.max(0, Math.round(navHeight))}px`);
-  window.dispatchEvent(
-    new CustomEvent('gp:set-nav-hidden', {
-      detail: { hidden, source: 'unit-manual' },
-    })
-  );
-};
-
-const isPortalNavHidden = () => {
-  if (typeof window === 'undefined') {
-    return false;
-  }
-  const portalNav = document.querySelector(
-    'nav[data-nav-hidden]'
-  ) as HTMLElement | null;
-  return portalNav?.dataset.navHidden === 'true';
-};
-
 const scrollToTop = () => {
   if (typeof window === 'undefined') {
     return;
@@ -1246,27 +1221,6 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
   const isUserTeacher = Boolean(
     (user as { isTeacher?: boolean } | undefined)?.isTeacher
   );
-  const [localAvatarUrl, setLocalAvatarUrl] = useState<string | null>(null);
-  const [avatarCandidateIndex, setAvatarCandidateIndex] = useState(0);
-  const [isAvatarHydrated, setIsAvatarHydrated] = useState(false);
-  const sessionAvatarImage =
-    typeof (user as { image?: unknown } | undefined)?.image === 'string'
-      ? ((user as { image?: string }).image ?? '').trim()
-      : '';
-  const sessionAvatarPicture =
-    typeof (user as { picture?: unknown } | undefined)?.picture === 'string'
-      ? ((user as { picture?: string }).picture ?? '').trim()
-      : '';
-  const avatarCandidates = useMemo(() => {
-    const localValue = localAvatarUrl?.trim() ?? '';
-
-    return [sessionAvatarImage, sessionAvatarPicture, localValue].filter(
-      (value, index, arr): value is string => Boolean(value) && arr.indexOf(value) === index
-    );
-  }, [localAvatarUrl, sessionAvatarImage, sessionAvatarPicture]);
-  const effectiveAvatarUrl = isAvatarHydrated && isAuthenticated
-    ? avatarCandidates[avatarCandidateIndex] ?? null
-    : null;
   const isGpPlusUser = isGpPlusMember === true;
   const isGpPlusResolved = typeof isGpPlusMember === 'boolean';
   const overview = unit.Sections?.overview;
@@ -1345,7 +1299,6 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
     lessonId?: number | null;
   } | null>(null);
   const [isSearchExpanded, setIsSearchExpanded] = useState(false);
-  const [isPortalNavCollapsed, setIsPortalNavCollapsed] = useState(true);
   const [isTagListExpanded, setIsTagListExpanded] = useState(false);
   const [visibleTagCount, setVisibleTagCount] = useState(0);
   const [activeMaterialIndex, setActiveMaterialIndex] = useState(0);
@@ -1403,36 +1356,6 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
   );
   const [jobVizSaveError, setJobVizSaveError] = useState<string | null>(null);
 
-  useEffect(() => {
-    setIsAvatarHydrated(true);
-  }, []);
-
-  useEffect(() => {
-    setAvatarCandidateIndex(0);
-  }, [avatarCandidates]);
-
-  useEffect(() => {
-    if (!isAvatarHydrated || !isAuthenticated) return;
-
-    const localAvatarUrl = (() => {
-      if (typeof window === 'undefined') return null;
-
-      try {
-        const raw = window.localStorage.getItem('userAccount');
-        if (!raw) return null;
-        const parsed = JSON.parse(raw);
-        return typeof parsed?.picture === 'string' && parsed.picture
-          ? parsed.picture
-          : null;
-      } catch {
-        return null;
-      }
-    })();
-
-    if (localAvatarUrl) {
-      setLocalAvatarUrl(localAvatarUrl);
-    }
-  }, [isAvatarHydrated, isAuthenticated]);
   const shouldShowGradeBandChooser = classroomResources.some(
     (resource) =>
       Boolean(resource?.gradePrefix?.trim() || resource?.grades?.trim())
@@ -1886,12 +1809,6 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
     const params = new URLSearchParams();
     params.append('tag', term);
     window.location.assign(`/search?${params.toString()}`);
-  };
-
-  const handlePortalNavToggle = () => {
-    const nextCollapsed = !isPortalNavCollapsed;
-    setPortalNavHidden(nextCollapsed);
-    setIsPortalNavCollapsed(nextCollapsed);
   };
 
   useEffect(() => {
@@ -2468,43 +2385,6 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
       getLessonResourcePersistKey(selectedResource, selectedResourceIndex)
     );
   }, [classroomResources, gradeBandStorageKey, selectedResourceIndex]);
-
-  useEffect(() => {
-    if (typeof window === 'undefined') {
-      return;
-    }
-
-    setPortalNavHidden(true);
-    const syncTimer = window.setTimeout(() => setPortalNavHidden(true), 120);
-    setIsPortalNavCollapsed(true);
-    return () => {
-      window.clearTimeout(syncTimer);
-    };
-  }, []);
-
-  useEffect(() => {
-    if (typeof window === 'undefined') {
-      return;
-    }
-
-    const syncPortalNavState = () => {
-      setIsPortalNavCollapsed(isPortalNavHidden());
-    };
-
-    syncPortalNavState();
-    const portalNav = document.querySelector('nav[data-nav-hidden]');
-    if (!portalNav || typeof MutationObserver === 'undefined') {
-      return;
-    }
-
-    const observer = new MutationObserver(syncPortalNavState);
-    observer.observe(portalNav, {
-      attributes: true,
-      attributeFilter: ['data-nav-hidden'],
-    });
-
-    return () => observer.disconnect();
-  }, []);
 
   useEffect(() => {
     if (!lessons.length) {
@@ -3391,12 +3271,6 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
           availLocs={availLocs}
           numID={numID}
           locale={locale}
-          handlePortalNavToggle={handlePortalNavToggle}
-          isPortalNavCollapsed={isPortalNavCollapsed}
-          effectiveAvatarUrl={effectiveAvatarUrl}
-          isGpPlusUser={isGpPlusUser}
-          avatarCandidates={avatarCandidates}
-          setAvatarCandidateIndex={setAvatarCandidateIndex}
           availableTabs={availableTabs}
           activeTab={activeTab}
           onTabChange={(tab) => handleTabChange(tab as TTabKey)}

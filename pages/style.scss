@@ -88,10 +88,6 @@ body.modal-open {
   margin-right: 0 !important;
 }
 
-body {
-  padding-top: var(--portal-nav-offset, 0px);
-}
-
 .list-item:not(:last-child)::after {
   content: ", ";
 }
