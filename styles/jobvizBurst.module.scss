@@ -2747,9 +2747,9 @@ $jobviz-desktop-dock-top: max(
   left: 50%;
   bottom: clamp(0.75rem, 4vw, 1.25rem);
   transform: translate(-50%, 40px);
-  background: rgba(6, 10, 32, 0.92);
+  background: rgba(6, 10, 32, 0.98);
   border: 1px solid rgba(255, 255, 255, 0.18);
-  border-radius: 999px;
+  border-radius: 16px;
   padding: 0.45rem 1rem;
   display: inline-flex;
   align-items: center;
@@ -3023,11 +3023,80 @@ $jobviz-desktop-dock-top: max(
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
+  position: relative;
+}
+
+.modalRatingStatus[data-animate="true"] {
+  animation: modalRatingStatusReveal 0.32s ease-out;
 }
 
 .modalRatingStatus svg {
   width: 14px;
   height: 14px;
+}
+
+.modalRatingStatus::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -2px;
+  height: 2px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(103, 151, 255, 0.95), rgba(214, 132, 255, 0.95));
+  opacity: 1;
+  transform: scaleX(1);
+  transform-origin: left;
+  animation: modalRatingUnderline 1.1s ease-in-out infinite;
+}
+
+.modalRatingStatusButton {
+  border: none;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+}
+
+.modalRatingStatusButton:hover,
+.modalRatingStatusButton:focus-visible {
+  color: #ffffff;
+}
+
+.modalRatingStatusNext {
+  color: rgba(214, 132, 255, 0.95);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modalRatingStatusNext svg {
+  width: 14px;
+  height: 14px;
+  animation: modalRatingArrowPulse 1s ease-in-out infinite;
+}
+
+@keyframes modalRatingArrowPulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.18);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes modalRatingStatusReveal {
+  0% {
+    opacity: 0;
+    transform: translateY(8px) scale(0.96);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 .modalRatingButtons {

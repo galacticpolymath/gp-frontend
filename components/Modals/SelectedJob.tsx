@@ -14,6 +14,7 @@ import { createSelectedJobVizJobLink } from "../JobViz/JobTours/JobToursCard";
 import { JOBVIZ_BRACKET_SEARCH_ID } from "../JobViz/jobvizConstants";
 import {
   buildJobvizUrl,
+  getNodeBySocCode,
   getIconNameForNode,
   getJobSpecificIconName,
 } from "../JobViz/jobvizUtils";
@@ -78,12 +79,15 @@ const SelectedJob: React.FC = () => {
   const [isMobileViewport, setIsMobileViewport] = useState(false);
   const { ratings, setRating } = useJobRatings();
   const [ratingBurst, setRatingBurst] = useState<JobRatingValue | null>(null);
+  const [showRatingStatus, setShowRatingStatus] = useState(false);
+  const [animateRatingStatus, setAnimateRatingStatus] = useState(false);
   const [showRatingInfo, setShowRatingInfo] = useState(false);
   const [isFocusAssignmentView, setIsFocusAssignmentView] = useState(false);
   const CARD_TRANSITION_MS = 420;
   const transitionTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const modalScrollRef = useRef<HTMLDivElement | null>(null);
   const mobileCueDelayRef = useRef<number | null>(null);
+  const ratingStatusTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [visibleJob, setVisibleJob] = useState(selectedJob);
   const [cardPhase, setCardPhase] = useState<"enter" | "exit">(
     selectedJob ? "enter" : "exit"
@@ -104,6 +108,16 @@ const SelectedJob: React.FC = () => {
       : assignmentQueryParam;
     if (!value) return null;
     return new Set(value.split(",").filter(Boolean));
+  }, [assignmentQueryParam]);
+  const assignmentSocCodeList = useMemo(() => {
+    const value = Array.isArray(assignmentQueryParam)
+      ? assignmentQueryParam.join(",")
+      : assignmentQueryParam;
+    if (!value) return [];
+    return value
+      .split(",")
+      .map((socCode) => socCode.trim())
+      .filter(Boolean);
   }, [assignmentQueryParam]);
   const hasAssignmentParams = Boolean(assignmentSocCodes?.size);
 
@@ -196,6 +210,9 @@ const SelectedJob: React.FC = () => {
       if (transitionTimeoutRef.current) {
         clearTimeout(transitionTimeoutRef.current);
       }
+      if (ratingStatusTimeoutRef.current) {
+        clearTimeout(ratingStatusTimeoutRef.current);
+      }
     };
   }, []);
 
@@ -255,6 +272,58 @@ const SelectedJob: React.FC = () => {
   const isAssignmentJob =
     !!visibleJob?.soc_code &&
     Boolean(assignmentSocCodes?.has(visibleJob.soc_code));
+  const ratedAssignmentCount = useMemo(() => {
+    if (!assignmentSocCodes?.size) return 0;
+    let count = 0;
+    assignmentSocCodes.forEach((socCode) => {
+      if (ratings[socCode]) {
+        count += 1;
+      }
+    });
+    return count;
+  }, [assignmentSocCodes, ratings]);
+  const nextUnratedSoc = useMemo(() => {
+    if (!assignmentSocCodeList.length) return null;
+    const currentIndex = visibleJob?.soc_code
+      ? assignmentSocCodeList.indexOf(visibleJob.soc_code)
+      : -1;
+    const orderedSocCodes =
+      currentIndex >= 0
+        ? [
+            ...assignmentSocCodeList.slice(currentIndex + 1),
+            ...assignmentSocCodeList.slice(0, currentIndex + 1),
+          ]
+        : assignmentSocCodeList;
+    const nextSoc = orderedSocCodes.find((socCode) => !ratings[socCode]);
+    return nextSoc && nextSoc !== visibleJob?.soc_code ? nextSoc : null;
+  }, [assignmentSocCodeList, ratings, visibleJob?.soc_code]);
+
+  useEffect(() => {
+    if (ratingStatusTimeoutRef.current) {
+      clearTimeout(ratingStatusTimeoutRef.current);
+      ratingStatusTimeoutRef.current = null;
+    }
+
+    if (!currentRating) {
+      setShowRatingStatus(false);
+      setAnimateRatingStatus(false);
+      return;
+    }
+
+    if (ratingBurst) {
+      setShowRatingStatus(false);
+      setAnimateRatingStatus(false);
+      ratingStatusTimeoutRef.current = setTimeout(() => {
+        setShowRatingStatus(true);
+        setAnimateRatingStatus(true);
+        ratingStatusTimeoutRef.current = null;
+      }, 900);
+      return;
+    }
+
+    setShowRatingStatus(true);
+    setAnimateRatingStatus(false);
+  }, [currentRating, ratingBurst, visibleJob?.soc_code]);
 
   useEffect(() => {
     const shouldGlow = Boolean(isAssignmentJob && !currentRating);
@@ -554,6 +623,13 @@ const SelectedJob: React.FC = () => {
     }
   };
 
+  const handleNextUnratedJob = () => {
+    if (!nextUnratedSoc) return;
+    const nextNode = getNodeBySocCode(nextUnratedSoc);
+    if (!nextNode) return;
+    setSelectedJob(nextNode);
+  };
+
   const jobTitle =
     visibleJob?.soc_title ?? visibleJob?.title ?? "Job overview";
   const definition =
@@ -766,12 +842,30 @@ const SelectedJob: React.FC = () => {
                         <LucideIcon name="Info" />
                       </button>
                     </div>
-                    {currentRating && (
-                      <span className={styles.modalRatingStatus}>
-                        <LucideIcon name="Check" />
-                        Rated
-                      </span>
-                    )}
+                    {showRatingStatus &&
+                      (nextUnratedSoc ? (
+                        <button
+                          type="button"
+                          className={`${styles.modalRatingStatus} ${styles.modalRatingStatusButton}`}
+                          data-animate={animateRatingStatus ? "true" : "false"}
+                          onClick={handleNextUnratedJob}
+                          aria-label="Open next unrated job"
+                        >
+                          <LucideIcon name="Check" />
+                          {`RATED ${ratedAssignmentCount}/${assignmentSocCodes?.size ?? 0}`}
+                          <span className={styles.modalRatingStatusNext}>
+                            <LucideIcon name="ArrowRight" />
+                          </span>
+                        </button>
+                      ) : (
+                        <span
+                          className={styles.modalRatingStatus}
+                          data-animate={animateRatingStatus ? "true" : "false"}
+                        >
+                          <LucideIcon name="Check" />
+                          {`RATED ${ratedAssignmentCount}/${assignmentSocCodes?.size ?? 0}`}
+                        </span>
+                      ))}
                   </div>
                   <div className={styles.modalRatingButtons}>
                     {ratingOptions.map((option) => (
