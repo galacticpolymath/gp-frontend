@@ -371,6 +371,19 @@ $jobviz-desktop-dock-top: max(
   box-sizing: border-box;
 }
 
+.jobvizHeroPrimary {
+  display: flex;
+  flex: 1.35;
+  min-width: 0;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.jobvizHeroFooter {
+  position: relative;
+  z-index: 1;
+}
+
 @media (min-width: 900px) {
   .jobvizHeroContent {
     flex-direction: row;
@@ -503,6 +516,41 @@ $jobviz-desktop-dock-top: max(
   gap: 1rem;
   min-width: min(320px, 100%);
   align-self: stretch;
+}
+
+.jobvizHeroEditMode::before {
+  background:
+    linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.08) 0,
+      rgba(255, 255, 255, 0.08) 1px,
+      transparent 1px,
+      transparent 72px
+    ),
+    linear-gradient(
+      0deg,
+      rgba(255, 255, 255, 0.06) 0,
+      rgba(255, 255, 255, 0.06) 1px,
+      transparent 1px,
+      transparent 72px
+    ),
+    linear-gradient(
+      135deg,
+      rgba(99, 198, 255, 0.16) 0%,
+      rgba(96, 72, 255, 0.12) 48%,
+      rgba(255, 103, 205, 0.12) 100%
+    );
+  background-size: 72px 72px, 72px 72px, 100% 100%;
+  filter: none;
+  opacity: 0.5;
+  animation: none;
+}
+
+.jobvizHeroEditMode::after {
+  background:
+    radial-gradient(circle at 14% 18%, rgba(255, 255, 255, 0.08), transparent 32%),
+    linear-gradient(120deg, rgba(255, 255, 255, 0.04), transparent 45%);
+  animation: none;
 }
 
 @media (min-width: 900px) {
@@ -1275,30 +1323,22 @@ $jobviz-desktop-dock-top: max(
 }
 
 .assignmentMobileWrapper {
-  position: sticky;
-  top: calc(var(--portal-nav-offset, var(--jobviz-nav-offset, 0px)));
+  position: relative;
+  top: auto;
   z-index: $assignment-layer-z;
   width: 100%;
   max-width: 100%;
   margin-left: 0;
   margin-bottom: 0;
   padding: 0;
-  background: linear-gradient(
-    175deg,
-    rgba(12, 21, 66, 0.95),
-    rgba(30, 12, 68, 0.92),
-    rgba(47, 8, 50, 0.9)
-  );
-  border-top: 1px solid rgba(51, 82, 255, 0.45);
+  background: none;
+  border-top: none;
   border-bottom: none;
   box-shadow: none;
   box-sizing: border-box;
   overflow: visible;
   isolation: isolate;
-  transition:
-    margin-bottom 0.3s ease,
-    transform 0.35s cubic-bezier(0.4, 0, 0.2, 1),
-    box-shadow 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: none;
 }
 
 .assignmentMobileWrapper[data-collapsed="true"] {
@@ -1308,36 +1348,7 @@ $jobviz-desktop-dock-top: max(
 
 .assignmentMobileWrapper::before,
 .assignmentMobileWrapper::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  top: calc(-1 * var(--portal-nav-offset, var(--jobviz-nav-offset, 64px)));
-  pointer-events: none;
-  z-index: 0;
-}
-
-.assignmentMobileWrapper::before {
-  background: radial-gradient(
-      circle at 20% 18%,
-      rgba(147, 168, 255, 0.35),
-      transparent 55%
-    ),
-    radial-gradient(circle at 80% 12%, rgba(255, 119, 210, 0.2), transparent 50%);
-}
-
-.assignmentMobileWrapper::after {
-  background: linear-gradient(
-    120deg,
-    transparent 0%,
-    rgba(156, 126, 255, 0.2) 35%,
-    rgba(255, 146, 220, 0.12) 60%,
-    transparent 100%
-  );
-  background-size: 200% 200%;
-  animation: dockSweep 18s ease-in-out infinite;
-  opacity: 0.85;
+  display: none;
 }
 
 @media (min-width: 1200px) {
@@ -1353,6 +1364,13 @@ $jobviz-desktop-dock-top: max(
   margin-left: 0;
   margin-right: 0;
   margin-bottom: 0;
+}
+
+.assignmentMobileWrapper .assignmentBanner {
+  border-radius: 24px;
+  background: rgba(7, 15, 40, 0.74);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: clamp(0.9rem, 4vw, 1.2rem);
 }
 
 .assignmentMobileWrapper .assignmentContent {
@@ -1385,6 +1403,42 @@ $jobviz-desktop-dock-top: max(
 }
 .assignmentMobileWrapper .assignmentMobileControls {
   margin-bottom: 0.35rem;
+}
+
+.assignmentPreviewBanner {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 0.9rem 1rem;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(178, 202, 255, 0.18);
+}
+
+.assignmentStudentPreviewBanner {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 0.95rem 1rem;
+  border-radius: 18px;
+  background: linear-gradient(140deg, rgba(15, 25, 63, 0.82), rgba(44, 17, 73, 0.72));
+  border: 1px solid rgba(145, 180, 255, 0.24);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.assignmentStudentPreviewBanner p {
+  margin: 0;
+  font-size: 0.93rem;
+  color: rgba(230, 240, 255, 0.72);
+  line-height: 1.45;
+}
+
+.assignmentStudentPreviewLabel {
+  font-size: 0.74rem;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: rgba(202, 218, 255, 0.85);
+  font-weight: 700;
 }
 
 .assignmentDesktopDock {
@@ -1803,6 +1857,29 @@ $jobviz-desktop-dock-top: max(
   width: fit-content;
   text-align: left;
   align-self: flex-start;
+}
+
+.jobvizHeroMobileAssignment {
+  display: none;
+}
+
+.jobvizHeroMobileNote {
+  margin: 0 0 0.6rem;
+  color: rgba(230, 240, 255, 0.58);
+  font-size: 0.92rem;
+}
+
+@media (max-width: 1199px) {
+  .jobvizHeroMobileAssignment {
+    display: block;
+  }
+}
+
+@media (min-width: 1200px) {
+  .jobvizHeroMobileAssignment,
+  .jobvizHeroMobileNote {
+    display: none;
+  }
 }
 
 .assignmentMarkerLabel {
@@ -6024,10 +6101,17 @@ $jobviz-desktop-dock-top: max(
   display: flex;
   flex-direction: column;
   gap: 16px;
-  background: rgba(240, 244, 255, 0.7);
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.06) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(145deg, rgba(240, 244, 255, 0.86), rgba(226, 235, 255, 0.76));
+  background-size: 28px 28px, 28px 28px, 100% 100%;
   border-radius: 16px;
   padding: 16px;
-  border: 1px solid rgba(44, 131, 195, 0.15);
+  border: 1px solid rgba(129, 160, 210, 0.28);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.75),
+    0 18px 34px rgba(5, 17, 48, 0.16);
 }
 
 .tourEditorMeta {

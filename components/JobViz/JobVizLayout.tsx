@@ -16,6 +16,9 @@ interface JobVizLayoutProps {
   suppressHero?: boolean;
   heroEyebrow?: string;
   onStatAction?: (id: string) => void;
+  heroFooter?: React.ReactNode;
+  heroAside?: React.ReactNode;
+  heroMode?: "default" | "edit";
 }
 
 type HeroStatRange = {
@@ -39,6 +42,9 @@ export const JobVizLayout: React.FC<JobVizLayoutProps> = ({
   suppressHero = false,
   heroEyebrow = "JobViz Burst Edition",
   onStatAction,
+  heroFooter,
+  heroAside,
+  heroMode = "default",
 }) => {
   const effectiveSubtitle =
     heroSubtitle ??
@@ -105,56 +111,71 @@ export const JobVizLayout: React.FC<JobVizLayoutProps> = ({
     <>
       {!suppressHero &&
         (heroSlot ?? (
-          <section className={styles.jobvizHero} data-tone="burst">
+          <section
+            className={`${styles.jobvizHero} ${
+              heroMode === "edit" ? styles.jobvizHeroEditMode : ""
+            }`}
+            data-tone="burst"
+            data-mode={heroMode}
+          >
             <div className={styles.jobvizHeroContent}>
-              <div className={styles.jobvizHeroInner}>
-                <div className={styles.jobvizHeroLogo}>
-                  <Image
-                    src="/imgs/jobViz/jobviz_rocket_logo_white.svg"
-                    alt="JobViz logo"
-                    width={240}
-                    height={80}
-                    priority
-                    style={{ width: "100%", height: "auto" }}
-                  />
+              <div className={styles.jobvizHeroPrimary}>
+                <div className={styles.jobvizHeroInner}>
+                  <div className={styles.jobvizHeroLogo}>
+                    <Image
+                      src="/imgs/jobViz/jobviz_rocket_logo_white.svg"
+                      alt="JobViz logo"
+                      width={240}
+                      height={80}
+                      priority
+                      style={{ width: "100%", height: "auto" }}
+                    />
+                  </div>
+                  <p className={styles.heroEyebrow}>{heroEyebrow}</p>
+                  <h1 className={styles.heroTitle}>{heroTitle}</h1>
+                  <p className={styles.heroSubtitle}>{effectiveSubtitle}</p>
                 </div>
-                <p className={styles.heroEyebrow}>{heroEyebrow}</p>
-                <h1 className={styles.heroTitle}>{heroTitle}</h1>
-                <p className={styles.heroSubtitle}>{effectiveSubtitle}</p>
+                {heroFooter ? (
+                  <div className={styles.jobvizHeroFooter}>{heroFooter}</div>
+                ) : null}
               </div>
-              <div className={styles.heroStatsColumn}>
-                <div className={styles.heroStats}>
-                  {heroStats.map((stat) => (
-                    <button
-                      key={stat.id}
-                      type="button"
-                      className={styles.heroStat}
-                      onClick={() => onStatAction?.(stat.id)}
-                    >
-                      <span className={styles.heroStatLabel}>{stat.label}</span>
-                      <strong className={styles.heroStatValue}>
-                        {stat.range ? (
-                          <>
-                            <span
-                              className={`${styles.heroRangeValue} ${stat.range[0].colorClass}`}
-                            >
-                              {stat.range[0].arrow} {stat.range[0].label}
-                            </span>
-                            <span className={styles.heroRangeDivider}>·</span>
-                            <span
-                              className={`${styles.heroRangeValue} ${stat.range[1].colorClass}`}
-                            >
-                              {stat.range[1].arrow} {stat.range[1].label}
-                            </span>
-                          </>
-                        ) : (
-                          stat.value
-                        )}
-                      </strong>
-                    </button>
-                  ))}
+              {heroAside !== undefined ? (
+                <div className={styles.heroStatsColumn}>{heroAside}</div>
+              ) : heroMode !== "edit" ? (
+                <div className={styles.heroStatsColumn}>
+                  <div className={styles.heroStats}>
+                    {heroStats.map((stat) => (
+                      <button
+                        key={stat.id}
+                        type="button"
+                        className={styles.heroStat}
+                        onClick={() => onStatAction?.(stat.id)}
+                      >
+                        <span className={styles.heroStatLabel}>{stat.label}</span>
+                        <strong className={styles.heroStatValue}>
+                          {stat.range ? (
+                            <>
+                              <span
+                                className={`${styles.heroRangeValue} ${stat.range[0].colorClass}`}
+                              >
+                                {stat.range[0].arrow} {stat.range[0].label}
+                              </span>
+                              <span className={styles.heroRangeDivider}>·</span>
+                              <span
+                                className={`${styles.heroRangeValue} ${stat.range[1].colorClass}`}
+                              >
+                                {stat.range[1].arrow} {stat.range[1].label}
+                              </span>
+                            </>
+                          ) : (
+                            stat.value
+                          )}
+                        </strong>
+                      </button>
+                    ))}
+                  </div>
                 </div>
-              </div>
+              ) : null}
             </div>
           </section>
         ))}

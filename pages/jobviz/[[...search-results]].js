@@ -1721,6 +1721,40 @@ const JobVizSearchResults = ({
       showSaveButton={false}
     />
   ) : null;
+  const mobileEditNote = isTeacherEditMode ? (
+    <p className={styles.jobvizHeroMobileNote}>
+      Student preview unavailable on mobile.
+    </p>
+  ) : null;
+  const mobileHeroAssignment = shouldRenderAssignment ? (
+    <div className={styles.jobvizHeroMobileAssignment}>
+      {mobileEditNote}
+      <AssignmentBanner
+        variant="mobile"
+        unitName={preservedUnitName}
+        jobs={resolvedJobTitleAndSocCodePairs}
+        assignmentParams={assignmentParams}
+        onJobClick={handleAssignmentJobClick}
+        mode={isTeacherEditMode ? "tour-editor" : "assignment"}
+        headerActions={assignmentHeaderActions}
+        allowShare={!isTourPreviewMode}
+        markerLabelOverride={
+          isTourPreviewMode ? "JobViz+ | TOUR PREVIEW" : undefined
+        }
+        {...(assignmentBannerOverrides ?? {})}
+      />
+    </div>
+  ) : mobileEditNote;
+  const desktopPreviewBanner = isTeacherEditMode ? (
+    <div className={styles.assignmentStudentPreviewBanner}>
+      <span className={styles.assignmentStudentPreviewLabel}>
+        Student Preview
+      </span>
+      <p>
+        This side dock shows the assignment as students will see it on desktop.
+      </p>
+    </div>
+  ) : null;
 
   return (
     <JobTourEditorProvider
@@ -1731,26 +1765,7 @@ const JobVizSearchResults = ({
       lastToggled={lastToggledSoc}
     >
       <Layout {...layoutProps}>
-        {shouldRenderAssignment && (
-          <>
-            <AssignmentBanner
-              variant="mobile"
-              unitName={preservedUnitName}
-              jobs={resolvedJobTitleAndSocCodePairs}
-              assignmentParams={assignmentParams}
-              onJobClick={handleAssignmentJobClick}
-              mode={isTeacherEditMode ? "tour-editor" : "assignment"}
-              headerActions={assignmentHeaderActions}
-              allowShare={!isTourPreviewMode}
-              markerLabelOverride={
-                isTourPreviewMode ? "JobViz+ | TOUR PREVIEW" : undefined
-              }
-              editorFields={editorFields}
-              {...(assignmentBannerOverrides ?? {})}
-            />
-            <div id="jobviz-mobile-modal-anchor" />
-          </>
-        )}
+        <div id="jobviz-mobile-modal-anchor" />
         <div
           className={styles.jobvizPageShell}
           data-has-assignment={shouldRenderAssignment}
@@ -1762,6 +1777,10 @@ const JobVizSearchResults = ({
               heroSlot={heroSlot}
               heroEyebrow={heroEyebrow}
               onStatAction={handleHeroStatAction}
+              heroMode={isTeacherEditMode ? "edit" : "default"}
+              heroFooter={
+                isTeacherEditMode ? editorFields : mobileHeroAssignment
+              }
             >
               <JobVizNotices
                 tourLoadError={tourLoadState.error}
@@ -1840,7 +1859,7 @@ const JobVizSearchResults = ({
               markerLabelOverride={
                 isTourPreviewMode ? "JobViz+ | TOUR PREVIEW" : undefined
               }
-              editorFields={editorFields}
+              previewBanner={desktopPreviewBanner}
               {...(assignmentBannerOverrides ?? {})}
             />
           )}

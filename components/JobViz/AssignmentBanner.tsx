@@ -43,9 +43,9 @@ interface AssignmentBannerProps {
   teacherCtaCopy?: string | null;
   mode?: "assignment" | "tour-editor";
   headerActions?: React.ReactNode;
-  editorFields?: React.ReactNode;
   markerLabelOverride?: string | null;
   allowShare?: boolean;
+  previewBanner?: React.ReactNode;
 }
 
 const ASSIGNMENT_LOGO = "/plus/gp-plus-submark.png";
@@ -70,9 +70,9 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
   teacherCtaCopy,
   mode = "assignment",
   headerActions,
-  editorFields,
   markerLabelOverride,
   allowShare = true,
+  previewBanner,
 }) => {
   const router = useRouter();
   const modalContext = useModalContext();
@@ -942,9 +942,9 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
                     : undefined
                 }
               >
-              {editorFields && (
-                <div className={styles.assignmentEditorFields}>
-                  {editorFields}
+              {previewBanner && (
+                <div className={styles.assignmentPreviewBanner}>
+                  {previewBanner}
                 </div>
               )}
               {variant === "desktop" && splitJobs.length > 0 && (
