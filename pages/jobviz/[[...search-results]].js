@@ -8,17 +8,11 @@ import {
 } from "react";
 import axios from "axios";
 import { useRouter } from "next/router";
-import Link from "next/link";
 import Layout from "../../components/Layout";
 import { AssignmentBanner } from "../../components/JobViz/AssignmentBanner";
-import {
-  JobVizBreadcrumb,
-  JOBVIZ_BREADCRUMB_ID,
-} from "../../components/JobViz/JobVizBreadcrumb";
+import { JOBVIZ_BREADCRUMB_ID } from "../../components/JobViz/JobVizBreadcrumb";
 import { JobVizGrid } from "../../components/JobViz/JobVizGrid";
 import { JobVizLayout } from "../../components/JobViz/JobVizLayout";
-import { LucideIcon } from "../../components/JobViz/LucideIcon";
-import { JobVizSortControl } from "../../components/JobViz/JobVizSortControl";
 import HeroForFreeUsers from "../../components/JobViz/Heros/HeroForFreeUsers";
 import { JOBVIZ_BRACKET_SEARCH_ID } from "../../components/JobViz/jobvizConstants";
 import styles from "../../styles/jobvizBurst.module.scss";
@@ -81,6 +75,11 @@ import {
   isTruthyQueryFlag,
   JOBVIZ_PREVIEW_LIMIT,
 } from "../../components/JobViz/JobTours/tourAccess";
+import { JobVizNotices } from "../../components/JobViz/Page/JobVizNotices";
+import { JobVizGridHeader } from "../../components/JobViz/Page/JobVizGridHeader";
+import { JobVizFilterBar } from "../../components/JobViz/Page/JobVizFilterBar";
+import { JobVizSourceAndUpsell } from "../../components/JobViz/Page/JobVizSourceAndUpsell";
+import { JobVizOverlays } from "../../components/JobViz/Page/JobVizOverlays";
 import { toast } from "react-hot-toast";
 
 const JOBVIZ_DESCRIPTION =
@@ -1763,37 +1762,15 @@ const JobVizSearchResults = ({
               heroEyebrow={heroEyebrow}
               onStatAction={handleHeroStatAction}
             >
-              {tourLoadState.error && (
-                <div className={styles.jobvizNotice} role="alert">
-                  <strong>Tour unavailable:</strong> {tourLoadState.error}
-                </div>
-              )}
-              {teacherEditDenied && (
-                <div className={styles.jobvizNotice} role="alert">
-                  <strong>Looking for edit controls?</strong> GP+ members can turn on tour editing to build and save custom JobViz+ assignments. Sign in with a GP+ account or remove the <code>?edit=1</code> parameter to preview the student view.
-                </div>
-              )}
-              {showUnitPreviewAssignmentBanner && (
-                <div className={styles.jobvizNotice} role="status">
-                  <strong>GP+ JobViz Career Tour Assignment Preview</strong>
-                </div>
-              )}
-              {isTourPreviewMode && !isStudentLinkView && (
-                <div className={styles.jobvizPreviewNotice} role="status">
-                  <div>
-                    <strong>Preview mode:</strong> First {JOBVIZ_PREVIEW_LIMIT} jobs are unlocked.{" "}
-                    {previewLockedCount > 0
-                      ? `${previewLockedCount} additional jobs are locked.`
-                      : "This sample is ready to explore."}
-                  </div>
-                  <Link
-                    href="/gp-plus"
-                    className={styles.jobvizPreviewCta}
-                  >
-                    Get GP+ to Assign or Create Tours
-                  </Link>
-                </div>
-              )}
+              <JobVizNotices
+                tourLoadError={tourLoadState.error}
+                teacherEditDenied={teacherEditDenied}
+                showUnitPreviewAssignmentBanner={showUnitPreviewAssignmentBanner}
+                isTourPreviewMode={isTourPreviewMode}
+                isStudentLinkView={isStudentLinkView}
+                previewLimit={JOBVIZ_PREVIEW_LIMIT}
+                previewLockedCount={previewLockedCount}
+              />
               {showIntroHeading && (
                 <h2 className={styles.jobvizSectionHeading}>{sectionHeading}</h2>
               )}
@@ -1811,141 +1788,29 @@ const JobVizSearchResults = ({
                   className={styles.jobvizGridWrap}
                   id={JOBVIZ_CATEGORIES_ANCHOR_ID}
                 >
-                  <div className={styles.pathHeader}>
-                    <div className={styles.gridContextLabel}>Current Path</div>
-                    {isShowingAssignmentScope ? (
-                      <div className={styles.assignedScopeMessage}>
-                        <LucideIcon name="Sparkles" />
-                        Showing tour jobs across multiple categories
-                      </div>
-                    ) : isShowingSavedScope ? (
-                      <div className={styles.assignedScopeMessage}>
-                        <LucideIcon name="Star" />
-                        Showing your saved jobs
-                      </div>
-                    ) : (
-                      <JobVizBreadcrumb segments={breadcrumbs} />
-                    )}
-                  </div>
-                  <div className={styles.viewingHeader}>
-                    {outgoingViewingHeader && (
-                      <div
-                        className={`${styles.viewingHeaderLayer} ${styles.viewingHeaderLayerOutgoing}`}
-                        aria-hidden="true"
-                      >
-                        <div className={styles.viewingIdentity}>
-                          <span className={styles.viewingIcon}>
-                            <LucideIcon name={outgoingViewingHeader.iconName} />
-                          </span>
-                          <div>
-                            <h3 className={styles.viewingTitle}>
-                              {outgoingViewingHeader.title}
-                            </h3>
-                            <p className={styles.viewingMeta}>
-                              {outgoingViewingHeader.meta}
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-                    <div
-                      className={`${styles.viewingHeaderLayer} ${
-                        isViewingHeaderTransitioning
-                          ? styles.viewingHeaderLayerIncoming
-                          : ""
-                      }`}
-                    >
-                      <div className={styles.viewingIdentity}>
-                        <span className={styles.viewingIcon}>
-                          <LucideIcon name={activeViewingHeader.iconName} />
-                        </span>
-                        <div>
-                          <h3
-                            id={JOBVIZ_HIERARCHY_HEADING_ID}
-                            className={styles.viewingTitle}
-                          >
-                            {activeViewingHeader.title}
-                          </h3>
-                          <p className={styles.viewingMeta}>
-                            {activeViewingHeader.meta}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className={styles.gridFilterRow}>
-                    <div className={styles.gridFilterActions}>
-                      <span className={styles.gridFilterLabel}>FILTER</span>
-                      <button
-                        type="button"
-                        className={`${styles.assignedToggleButton} ${styles.savedJobsToggleButton} ${
-                          isShowingSavedScope
-                            ? styles.assignedToggleButtonActive
-                            : ""
-                        } ${
-                          status !== "authenticated"
-                            ? styles.savedJobsToggleMuted
-                            : ""
-                        }`}
-                        onClick={handleSavedToggleClick}
-                        aria-pressed={isShowingSavedScope}
-                        aria-label={
-                          status === "authenticated"
-                            ? "Only saved jobs"
-                            : "Sign in required to view saved jobs"
-                        }
-                      >
-                        <span
-                          className={`${styles.assignedToggleIndicator} ${styles.savedJobsToggleStar}`}
-                          aria-hidden="true"
-                        >
-                          <LucideIcon
-                            name="Star"
-                            className={styles.savedJobsToggleStarIcon}
-                            strokeWidth={1}
-                            fill={isShowingSavedScope ? "currentColor" : "none"}
-                          />
-                        </span>
-                        Saved Jobs
-                      </button>
-                    {hasAssignmentList && (
-                      <>
-                        <button
-                          type="button"
-                          className={`${styles.assignedToggleButton} ${
-                            isShowingAssignmentScope
-                              ? styles.assignedToggleButtonActive
-                              : ""
-                          }`}
-                          disabled={isTourPreviewMode}
-                          onClick={handleAssignedToggleClick}
-                          aria-pressed={isShowingAssignmentScope}
-                        >
-                          <span
-                            className={styles.assignedToggleIndicator}
-                            aria-hidden="true"
-                          />
-                          Tour Jobs
-                        </button>
-                        {isStudentMode && !isShowingAssignmentScope && (
-                          <button
-                            type="button"
-                            className={styles.assignmentReturnButton}
-                            onClick={() => setShowAssignmentOnly(true)}
-                          >
-                            <LucideIcon name="ArrowLeft" />
-                            Back to assignment
-                          </button>
-                        )}
-                      </>
-                    )}
-                    </div>
-                    <JobVizSortControl
-                      activeOptionId={sortOptionId}
-                      onChange={handleSortControlChange}
-                      options={JOBVIZ_SORT_OPTIONS}
-                    />
-                  </div>
+                  <JobVizGridHeader
+                    isShowingAssignmentScope={isShowingAssignmentScope}
+                    isShowingSavedScope={isShowingSavedScope}
+                    breadcrumbs={breadcrumbs}
+                    outgoingViewingHeader={outgoingViewingHeader}
+                    activeViewingHeader={activeViewingHeader}
+                    isViewingHeaderTransitioning={isViewingHeaderTransitioning}
+                    hierarchyHeadingId={JOBVIZ_HIERARCHY_HEADING_ID}
+                  />
+                  <JobVizFilterBar
+                    isShowingSavedScope={isShowingSavedScope}
+                    isShowingAssignmentScope={isShowingAssignmentScope}
+                    hasAssignmentList={hasAssignmentList}
+                    isTourPreviewMode={isTourPreviewMode}
+                    isStudentMode={isStudentMode}
+                    status={status}
+                    sortOptionId={sortOptionId}
+                    sortOptions={JOBVIZ_SORT_OPTIONS}
+                    onSavedToggleClick={handleSavedToggleClick}
+                    onAssignedToggleClick={handleAssignedToggleClick}
+                    onBackToAssignmentClick={() => setShowAssignmentOnly(true)}
+                    onSortChange={handleSortControlChange}
+                  />
                   <JobVizGrid
                     items={renderedGridItems}
                     onItemClick={handleGridItemClick}
@@ -1953,41 +1818,11 @@ const JobVizSearchResults = ({
                     onExitComplete={handleGridExitComplete}
                   />
                 </div>
-
-                <p className={`${styles.jobvizSource} ${styles.jobvizSourceFixed}`}>
-                  Data source:{" "}
-                  <a href={JOBVIZ_DATA_SOURCE} target="_blank" rel="noreferrer">
-                    US Bureau of Labor Statistics
-                  </a>
-                  {activeNode?.BLS_link && (
-                    <>
-                      {"  "}•{" "}
-                      <a href={activeNode.BLS_link} target="_blank" rel="noreferrer">
-                        View on BLS
-                      </a>
-                    </>
-                  )}
-                </p>
-                {showGpPlusUpsell && (
-                  <div className={styles.jobvizUpsellCard}>
-                    <div>
-                      <p className={styles.jobvizUpsellEyebrow}>For Teachers</p>
-                      <h3>Want to connect this resource to your classroom?</h3>
-                      <p>
-                        Unlock curated JobViz+ career tours, assignment tools, and ready-to-use lesson
-                        integrations with a GP+ subscription.
-                      </p>
-                    </div>
-                    <a
-                      href="https://www.galacticpolymath.com/plus"
-                      target="_blank"
-                      rel="noreferrer"
-                      className={styles.jobvizUpsellButton}
-                    >
-                      Explore GP+
-                    </a>
-                  </div>
-                )}
+                <JobVizSourceAndUpsell
+                  dataSourceUrl={JOBVIZ_DATA_SOURCE}
+                  activeNodeBlsLink={activeNode?.BLS_link}
+                  showGpPlusUpsell={showGpPlusUpsell}
+                />
               </div>
             </JobVizLayout>
           </div>
@@ -2010,122 +1845,44 @@ const JobVizSearchResults = ({
           )}
         </div>
       </Layout>
-      {showSavedJobsUpsell && (
-        <div className={styles.jobvizIntroOverlay} role="presentation">
-          <div className={styles.jobvizIntroDialog} role="dialog" aria-modal="true">
-            <h3>Save jobs for later</h3>
-            <p>Create a free account to save jobs for later.</p>
-            <div
-              className={`${styles.jobvizIntroActions} ${styles.jobvizSavedJobsActions}`}
-            >
-              <div className={styles.jobvizSavedJobsPrimaryActions}>
-                <button
-                  type="button"
-                  className={styles.jobvizIntroLogin}
-                  onClick={() => {
-                    setShowSavedJobsUpsell(false);
-                    setIsLoginModalDisplayed(true);
-                  }}
-                >
-                  Login
-                </button>
-                <Link
-                  href="/plus"
-                  className={styles.jobvizIntroContinue}
-                  onClick={() => setShowSavedJobsUpsell(false)}
-                >
-                  Create free account
-                </Link>
-              </div>
-              <button
-                type="button"
-                className={styles.jobvizIntroNotNow}
-                onClick={() => setShowSavedJobsUpsell(false)}
-              >
-                Not now
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-      {(showJobvizWelcome || showTourWelcome) && (
-        <div className={styles.jobvizIntroOverlay} role="presentation">
-          {showJobvizWelcome && (
-            <div className={styles.jobvizIntroDialog} role="dialog" aria-modal="true">
-              <h3>Welcome to JobViz</h3>
-              <p>
-                JobViz helps students explore real careers using wage, growth, and
-                education data from the U.S. Bureau of Labor Statistics.
-              </p>
-              <div className={styles.jobvizIntroActions}>
-                <button
-                  type="button"
-                  className={styles.jobvizIntroDismiss}
-                  onClick={() =>
-                    handleDismissWelcome(
-                      JOBVIZ_WELCOME_DISMISSED_KEY,
-                      setShowJobvizWelcome,
-                      true
-                    )
-                  }
-                >
-                  Don&apos;t show again
-                </button>
-                <button
-                  type="button"
-                  className={styles.jobvizIntroContinue}
-                  onClick={() =>
-                    handleDismissWelcome(
-                      JOBVIZ_WELCOME_DISMISSED_KEY,
-                      setShowJobvizWelcome,
-                      false
-                    )
-                  }
-                >
-                  Continue
-                </button>
-              </div>
-            </div>
-          )}
-          {showTourWelcome && (
-            <div className={styles.jobvizIntroDialog} role="dialog" aria-modal="true">
-              <h3>Tour preview</h3>
-              <p>
-                Explore this tour in student view. Teachers with GP+ can assign
-                full tours and build their own versions.
-              </p>
-              <div className={styles.jobvizIntroActions}>
-                <button
-                  type="button"
-                  className={styles.jobvizIntroDismiss}
-                  onClick={() =>
-                    handleDismissWelcome(
-                      JOBVIZ_TOUR_WELCOME_DISMISSED_KEY,
-                      setShowTourWelcome,
-                      true
-                    )
-                  }
-                >
-                  Don&apos;t show again
-                </button>
-                <button
-                  type="button"
-                  className={styles.jobvizIntroContinue}
-                  onClick={() =>
-                    handleDismissWelcome(
-                      JOBVIZ_TOUR_WELCOME_DISMISSED_KEY,
-                      setShowTourWelcome,
-                      false
-                    )
-                  }
-                >
-                  Continue
-                </button>
-              </div>
-            </div>
-          )}
-        </div>
-      )}
+      <JobVizOverlays
+        showSavedJobsUpsell={showSavedJobsUpsell}
+        showJobvizWelcome={showJobvizWelcome}
+        showTourWelcome={showTourWelcome}
+        onOpenLogin={() => {
+          setShowSavedJobsUpsell(false);
+          setIsLoginModalDisplayed(true);
+        }}
+        onCloseSavedJobsUpsell={() => setShowSavedJobsUpsell(false)}
+        onDismissWelcomeForever={() =>
+          handleDismissWelcome(
+            JOBVIZ_WELCOME_DISMISSED_KEY,
+            setShowJobvizWelcome,
+            true
+          )
+        }
+        onDismissWelcomeOnce={() =>
+          handleDismissWelcome(
+            JOBVIZ_WELCOME_DISMISSED_KEY,
+            setShowJobvizWelcome,
+            false
+          )
+        }
+        onDismissTourWelcomeForever={() =>
+          handleDismissWelcome(
+            JOBVIZ_TOUR_WELCOME_DISMISSED_KEY,
+            setShowTourWelcome,
+            true
+          )
+        }
+        onDismissTourWelcomeOnce={() =>
+          handleDismissWelcome(
+            JOBVIZ_TOUR_WELCOME_DISMISSED_KEY,
+            setShowTourWelcome,
+            false
+          )
+        }
+      />
       <JobTourUpgradeModal
         show={showTourUpgradeModal}
         onClose={() => setShowTourUpgradeModal(false)}

@@ -1,0 +1,49 @@
+.source {
+  margin: 1rem 0 0.8rem;
+  color: rgba(219, 235, 255, 0.72);
+  font-size: 0.84rem;
+}
+
+.source a {
+  color: #b8dbff;
+}
+
+.upsellCard {
+  border: 1px solid rgba(129, 168, 219, 0.42);
+  border-radius: 20px;
+  padding: 1rem;
+  background: rgba(7, 18, 39, 0.72);
+  color: #e9f3ff;
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.upsellEyebrow {
+  margin: 0 0 0.2rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 0.7rem;
+  color: rgba(203, 228, 255, 0.7);
+}
+
+.upsellCard h3 {
+  margin: 0 0 0.28rem;
+  font-size: 1.05rem;
+}
+
+.upsellCard p {
+  margin: 0;
+}
+
+.upsellButton {
+  border: 1px solid rgba(200, 223, 255, 0.66);
+  border-radius: 999px;
+  padding: 0.45rem 0.9rem;
+  text-decoration: none;
+  color: #f5fbff;
+  background: rgba(79, 138, 217, 0.34);
+  font-weight: 700;
+}

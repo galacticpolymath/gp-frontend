@@ -33,6 +33,7 @@ import CookieConsentBanner, {
   COOKIE_CONSENT_STORAGE_KEY,
 } from "../components/CookieConsentBanner";
 import HelpLauncher from "../components/HelpLauncher";
+import SiteLaunchNoticeBanner from "../components/SiteLaunchNoticeBanner";
 
 const queryClient = new QueryClient();
 
@@ -121,6 +122,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
                           <span className="gp-route-loader__label">Loading destination...</span>
                         </div>
                       )}
+                      <SiteLaunchNoticeBanner />
                       <Component {...pageProps} />
                       <HelpLauncher />
                       <ModalsContainer />

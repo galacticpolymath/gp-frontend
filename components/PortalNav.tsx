@@ -197,6 +197,10 @@ const PortalNav: React.FC<PortalNavProps> = ({
     }
 
     const syncOffset = () => {
+      if (isJobvizRoute) {
+        root.style.setProperty("--portal-nav-offset", "0px");
+        return;
+      }
       const navHeight = navRef.current?.getBoundingClientRect().height ?? 0;
       const offset = Math.max(0, Math.round(navHeight));
       root.style.setProperty("--portal-nav-offset", `${offset}px`);
@@ -217,7 +221,7 @@ const PortalNav: React.FC<PortalNavProps> = ({
       window.removeEventListener("resize", syncOffset);
       observer?.disconnect();
     };
-  }, [disableNavbar, navOpen, accountMenuOpen]);
+  }, [disableNavbar, navOpen, accountMenuOpen, isJobvizRoute]);
 
   useEffect(() => {
     if (typeof window === "undefined") return undefined;
@@ -233,7 +237,9 @@ const PortalNav: React.FC<PortalNavProps> = ({
   return (
     <nav
       ref={navRef}
-      className={`${styles.nav} ${isJobvizRoute ? styles.navFixedForJobviz : ""}`}
+      className={`${styles.nav} ${styles.navFixedDefault} ${
+        isJobvizRoute ? styles.navFixedForJobviz : ""
+      }`}
       style={navStyle}
       data-nav-hidden="false"
     >
