@@ -827,74 +827,76 @@ const SelectedJob: React.FC = () => {
               </p>
               {isAssignmentJob ? (
                 <section className={styles.modalRatingBlock}>
-                  <div className={styles.modalRatingHeader}>
-                    <div className={styles.modalRatingLabelGroup}>
-                      <span
-                        className={styles.modalRatingLabel}
-                        data-glow={shouldGlowRatingLabel ? "true" : "false"}
-                      >
-                        Rate this job
-                      </span>
-                      <button
-                        type="button"
-                        className={styles.inlineInfoButton}
-                        aria-pressed={showRatingInfo ? "true" : "false"}
-                        aria-expanded={showRatingInfo ? "true" : "false"}
-                        aria-label="How JobViz+ ratings work"
-                        onClick={() => setShowRatingInfo((prev) => !prev)}
-                      >
-                        <LucideIcon name="Info" />
-                      </button>
-                    </div>
-                    {showRatingStatus &&
-                      (nextUnratedSoc ? (
+                  <div className={styles.modalRatingGrid}>
+                    <div className={styles.modalRatingColumn}>
+                      <div className={styles.modalRatingLabelGroup}>
+                        <span
+                          className={styles.modalRatingLabel}
+                          data-glow={shouldGlowRatingLabel ? "true" : "false"}
+                        >
+                          Rate this job
+                        </span>
                         <button
                           type="button"
-                          className={`${styles.modalRatingStatus} ${styles.modalRatingStatusButton}`}
-                          data-animate={animateRatingStatus ? "true" : "false"}
-                          onClick={handleNextUnratedJob}
-                          aria-label="Open next unrated job"
+                          className={styles.inlineInfoButton}
+                          aria-pressed={showRatingInfo ? "true" : "false"}
+                          aria-expanded={showRatingInfo ? "true" : "false"}
+                          aria-label="How JobViz+ ratings work"
+                          onClick={() => setShowRatingInfo((prev) => !prev)}
                         >
-                          {isAssignmentFullyRated ? <LucideIcon name="Check" /> : null}
-                          {`RATED ${ratedAssignmentCount}/${assignmentSocCodes?.size ?? 0}`}
-                          <span className={styles.modalRatingStatusNext}>
-                            <LucideIcon name="ArrowRight" />
-                          </span>
+                          <LucideIcon name="Info" />
                         </button>
-                      ) : (
+                      </div>
+                      <div className={styles.modalRatingButtons}>
+                        {ratingOptions.map((option) => (
+                          <button
+                            type="button"
+                            key={option.value}
+                            className={`${styles.modalRatingButton} ${currentRating === option.value
+                              ? styles.modalRatingButtonActive
+                              : ""
+                              }`}
+                            onClick={() => handleRatingSelect(option.value)}
+                            aria-pressed={currentRating === option.value}
+                          >
+                            {ratingBurst === option.value && (
+                              <span
+                                className={`${styles.modalRatingConfetti} ${styles[`modalRatingConfetti-${ratingBurst}`]}`}
+                                aria-hidden="true"
+                              >
+                                {option.emoji}
+                              </span>
+                            )}
+                            <span className={styles.modalRatingEmoji}>{option.emoji}</span>
+                            <span>{option.label}</span>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                    <div className={styles.modalRatingColumn}>
+                      {showRatingStatus && (
                         <span
                           className={styles.modalRatingStatus}
                           data-animate={animateRatingStatus ? "true" : "false"}
                         >
                           {isAssignmentFullyRated ? <LucideIcon name="Check" /> : null}
-                          {`RATED ${ratedAssignmentCount}/${assignmentSocCodes?.size ?? 0}`}
+                          {`Rated ${ratedAssignmentCount}/${assignmentSocCodes?.size ?? 0}`}
                         </span>
-                      ))}
-                  </div>
-                  <div className={styles.modalRatingButtons}>
-                    {ratingOptions.map((option) => (
-                      <button
-                        type="button"
-                        key={option.value}
-                        className={`${styles.modalRatingButton} ${currentRating === option.value
-                          ? styles.modalRatingButtonActive
-                          : ""
-                          }`}
-                        onClick={() => handleRatingSelect(option.value)}
-                        aria-pressed={currentRating === option.value}
-                      >
-                        {ratingBurst === option.value && (
-                          <span
-                            className={`${styles.modalRatingConfetti} ${styles[`modalRatingConfetti-${ratingBurst}`]}`}
-                            aria-hidden="true"
-                          >
-                            {option.emoji}
+                      )}
+                      {showRatingStatus && nextUnratedSoc && (
+                        <button
+                          type="button"
+                          className={styles.modalRatingStatusButton}
+                          onClick={handleNextUnratedJob}
+                          aria-label="Open next unrated job"
+                        >
+                          <span className={styles.modalRatingStatusNext}>
+                            Next Job
+                            <LucideIcon name="ArrowRight" />
                           </span>
-                        )}
-                        <span className={styles.modalRatingEmoji}>{option.emoji}</span>
-                        <span>{option.label}</span>
-                      </button>
-                    ))}
+                        </button>
+                      )}
+                    </div>
                   </div>
                   {showRatingInfo && (
                     <div className={styles.modalRatingInfo}>
