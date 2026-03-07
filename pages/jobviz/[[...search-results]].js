@@ -1465,6 +1465,7 @@ const JobVizSearchResults = ({
   const isTeacherLoggedIn = status === "authenticated" && isUserTeacher;
   const shouldShowTourActions =
     shouldRenderAssignment &&
+    !isStudentLinkView &&
     !isTeacherEditMode &&
     !tourLoadState.isLoading &&
     (isTeacherLoggedIn || hasGpPlusMembership);

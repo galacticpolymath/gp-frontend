@@ -706,7 +706,7 @@ const LessonPart: React.FC<ILessonPartProps> = (props) => {
                         );
                         setSessionStorageItem("userEntryRedirectUrl", url);
 
-                        router.push("/sign-up");
+                        router.push("/choose-plan");
                       }}
                       className="mt-2 sign-in-teacher-materials-btn d-flex justify-content-center align-items-center underline-on-hover"
                     >

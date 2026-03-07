@@ -143,6 +143,7 @@ const GpPlus: React.FC<IProps> = ({ liveUnitsTotal, plusPlanPercentSaved }) => {
   const [, setNotifyModal] = _notifyModal;
   const siteSession = useSiteSession();
   const { token, status, user, logUserOut } = siteSession;
+  const userEmail = typeof user?.email === 'string' ? user.email : '';
   const [wasGpLiteBtnClicked, setWasGpLiteBtnClicked] = useState(false);
   const [isSignupModalDisplayed, setIsSignupModalDisplayed] = useState(false);
   const [wasGpPlusSubRetrieved, setWasGpPlusSubRetrieved] = useState(false);
@@ -388,7 +389,7 @@ const GpPlus: React.FC<IProps> = ({ liveUnitsTotal, plusPlanPercentSaved }) => {
           return;
         }
 
-        if (!user?.email || !token) {
+        if (!userEmail || !token) {
           setNotifyModal({
             headerTxt: 'An error has occurred',
             bodyTxt: (
@@ -414,7 +415,7 @@ const GpPlus: React.FC<IProps> = ({ liveUnitsTotal, plusPlanPercentSaved }) => {
         );
 
         const updateUserResponse = await updateUser(
-          { email: user.email },
+          { email: userEmail },
           { outsetaAccountEmail: outsetaEmail },
           {},
           token
@@ -454,7 +455,7 @@ const GpPlus: React.FC<IProps> = ({ liveUnitsTotal, plusPlanPercentSaved }) => {
     setIsSignupModalDisplayed,
     setNotifyModal,
     token,
-    user.email,
+    userEmail,
   ]);
 
   const isGpLiteBtnDisabled = !wasGpPlusSubRetrieved || wasGpLiteBtnClicked;

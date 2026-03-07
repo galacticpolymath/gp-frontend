@@ -25,7 +25,7 @@ const UnitOfficeUpsellModal: React.FC<TUnitOfficeUpsellModalProps> = ({
         materials and unlock the full GP+ toolkit.
       </p>
       <div className={styles.officeUpsellActions}>
-        <Link href="/plus" className={styles.officeUpsellPrimary}>
+        <Link href="/gp-plus" className={styles.officeUpsellPrimary}>
           Explore GP+ Benefits
         </Link>
         <button type="button" className={styles.officeUpsellSecondary} onClick={onClose}>

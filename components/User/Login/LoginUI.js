@@ -60,7 +60,7 @@ const LoginUI = ({
   };
 
   const handleCreateOneBtnClick = () => {
-    router.push("/sign-up");
+    router.push("/choose-plan");
   };
 
   const redirectUrl = useMemo(() => {

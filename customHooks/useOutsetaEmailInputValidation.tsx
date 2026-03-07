@@ -7,6 +7,7 @@ import { updateUser } from '../apiServices/user/crudFns';
 
 const useOutsetaEmailInputValidation = () => {
   const { status, token: _token, user } = useSiteSession();
+  const userEmail = typeof user?.email === 'string' ? user.email : '';
   const { _notifyModal } = useModalContext();
   const [, setNotifyModal] = _notifyModal;
 
@@ -24,14 +25,14 @@ const useOutsetaEmailInputValidation = () => {
             btnsContainer &&
             btnsContainer.firstChild?.nodeName === 'BUTTON' &&
             emailInput?.value &&
-            user?.email
+            userEmail
           ) {
             (btnsContainer.firstChild as HTMLButtonElement).addEventListener(
               'click',
               async (event) => {
                 event.preventDefault();
                 const updateUserResponse = await updateUser(
-                  { email: user.email as string },
+                  { email: userEmail },
                   { outsetaAccountEmail: emailInput?.value },
                   {},
                   token
@@ -97,7 +98,7 @@ const useOutsetaEmailInputValidation = () => {
         subtree: true,
       });
     }
-  }, [setNotifyModal, status, user.email]);
+  }, [setNotifyModal, status, userEmail]);
 };
 
 export default useOutsetaEmailInputValidation;

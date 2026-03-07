@@ -42,7 +42,7 @@ export const JobVizOverlays: React.FC<JobVizOverlaysProps> = ({
                   Login
                 </button>
                 <Link
-                  href="/plus"
+                  href="/choose-plan"
                   className={styles.introContinue}
                   onClick={onCloseSavedJobsUpsell}
                 >

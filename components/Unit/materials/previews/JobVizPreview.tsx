@@ -124,7 +124,7 @@ const JobVizPreview: React.FC<TJobVizPreviewProps> = ({
               </button>
             ) : (
               <Link
-                href="/plus"
+                href="/gp-plus"
                 className={`${styles.gpFunctionActionBtn} ${styles.jobVizPreviewActionBtn} ${styles.jobVizPreviewGpBtn}`}
               >
                 <span className={styles.lessonProcedureToggleText}>

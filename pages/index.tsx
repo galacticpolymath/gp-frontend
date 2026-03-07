@@ -32,6 +32,7 @@ import {
   SquareCheckBig,
   Youtube,
   WandSparkles,
+  Copy,
 } from "lucide-react";
 import type { IconBaseProps } from "react-icons";
 import { toast } from "react-hot-toast";
@@ -1579,7 +1580,14 @@ export default function HomePage({
   const handleOpenTourStudentMode = useCallback(() => {
     if (!jobTourAccessResource) return;
     if (jobTourAccessResource.tourId) {
-      openStudentTour(jobTourAccessResource.tourId, false);
+      if (typeof window !== "undefined") {
+        const fullUrl = buildStudentTourUrl(jobTourAccessResource.tourId, {
+          host: window.location.host,
+          protocol: window.location.protocol,
+          preview: false,
+        });
+        window.open(fullUrl, "_blank", "noopener,noreferrer");
+      }
       handleCloseJobTourAccessModal();
       return;
     }
@@ -1587,9 +1595,38 @@ export default function HomePage({
       student: true,
       preview: false,
     });
-    router.push(studentPath);
+    if (typeof window !== "undefined") {
+      window.open(studentPath, "_blank", "noopener,noreferrer");
+    } else {
+      router.push(studentPath);
+    }
     handleCloseJobTourAccessModal();
-  }, [jobTourAccessResource, openStudentTour, router]);
+  }, [jobTourAccessResource, router]);
+  const handleCopyStudentTourLink = useCallback(async () => {
+    if (!jobTourAccessResource || typeof window === "undefined") return;
+
+    const shareUrl = jobTourAccessResource.tourId
+      ? buildStudentTourUrl(jobTourAccessResource.tourId, {
+          host: window.location.host,
+          protocol: window.location.protocol,
+          preview: false,
+        })
+      : `${window.location.origin}${buildJobTourPathFromResource(
+          jobTourAccessResource,
+          {
+            student: true,
+            preview: false,
+          }
+        )}`;
+
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      toast.success("Student link copied.");
+      handleCloseJobTourAccessModal();
+    } catch {
+      toast.error("Unable to copy link. Please copy it from your browser URL.");
+    }
+  }, [jobTourAccessResource]);
   const handleOpenMedia = (media: MediaItem) => {
     setActiveMedia(media);
     setActiveModal("media");
@@ -4555,11 +4592,11 @@ export default function HomePage({
                     </div>
                   </div>
                   <div className={styles.statsCtaRow}>
-                    <Link className={styles.primaryButton} href="/account">
-                      Log in
-                    </Link>
-                    <Link className={styles.secondaryButton} href="/gp-plus">
+                    <Link className={styles.primaryButton} href="/choose-plan">
                       Create free account
+                    </Link>
+                    <Link className={styles.secondaryButton} href="/account">
+                      Log in
                     </Link>
                   </div>
                 </div>
@@ -5135,9 +5172,7 @@ export default function HomePage({
             </div>
             <div className={styles.jobTourAccessBody}>
               <p className={styles.jobTourAccessDescription}>
-                {hasGpPlusAccess
-                  ? "Choose how to open this tour. Student view simulates the learner experience, and teacher view opens edit mode."
-                  : "Job Tours are a GP+ feature for assigning and editing classroom career tours. You can preview the first 2 tour stops in student mode."}
+                Have students explore jobs connected to this unit&apos;s content!
               </p>
               <div className={styles.jobTourAccessActions}>
                 {hasGpPlusAccess ? (
@@ -5157,14 +5192,15 @@ export default function HomePage({
                     >
                       <School size={16} aria-hidden="true" />
                       Preview as Student
+                      <SquareArrowOutUpRight size={14} aria-hidden="true" />
                     </button>
                     <button
                       className={styles.jobTourAccessGhostBtn}
                       type="button"
-                      onClick={handleCloseJobTourAccessModal}
+                      onClick={handleCopyStudentTourLink}
                     >
-                      <X size={16} aria-hidden="true" />
-                      Not now
+                      <Copy size={16} aria-hidden="true" />
+                      Copy Student Link
                     </button>
                   </>
                 ) : (
@@ -5177,17 +5213,17 @@ export default function HomePage({
                       <School size={16} aria-hidden="true" />
                       Preview as Student
                     </button>
-                    <Link href="/plus" className={styles.jobTourAccessSecondaryBtn}>
+                    <Link href="/gp-plus" className={styles.jobTourAccessSecondaryBtn}>
                       <Rocket size={16} aria-hidden="true" />
                       Get GP+
                     </Link>
                     <button
                       className={styles.jobTourAccessGhostBtn}
                       type="button"
-                      onClick={handleCloseJobTourAccessModal}
+                      onClick={handleCopyStudentTourLink}
                     >
-                      <X size={16} aria-hidden="true" />
-                      Not now
+                      <Copy size={16} aria-hidden="true" />
+                      Copy Student Link
                     </button>
                   </>
                 )}

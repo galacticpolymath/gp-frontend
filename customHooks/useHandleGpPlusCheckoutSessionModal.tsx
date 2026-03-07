@@ -38,6 +38,7 @@ export const useHandleGpPlusCheckoutSessionModal = () => {
   }, []);
 
   const { user, token, logUserOut, status } = useSiteSession();
+  const userEmail = typeof user?.email === 'string' ? user.email : '';
   const mutationOberserverRef = useRef<MutationObserver | null>(null);
 
   const handleOnClickPlanChangeLogic = useCallback((event: MouseEvent) => {
@@ -182,7 +183,7 @@ export const useHandleGpPlusCheckoutSessionModal = () => {
       console.log('emailInput value: ', emailInput);
 
       if (emailInput) {
-        emailInput.value = user.email ?? '';
+        emailInput.value = userEmail;
         emailInput.dispatchEvent(new Event('input', { bubbles: true }));
       }
 
@@ -237,7 +238,7 @@ export const useHandleGpPlusCheckoutSessionModal = () => {
           return;
         }
 
-        if (!user?.email || !token) {
+        if (!userEmail || !token) {
           setNotifyModal({
             headerTxt: 'An error has occurred',
             bodyTxt: (
@@ -263,7 +264,7 @@ export const useHandleGpPlusCheckoutSessionModal = () => {
         );
 
         const updateUserResponse = await updateUser(
-          { email: user.email },
+          { email: userEmail },
           { outsetaAccountEmail: outsetaEmail },
           {},
           token
@@ -304,6 +305,6 @@ export const useHandleGpPlusCheckoutSessionModal = () => {
     setNotifyModal,
     status,
     token,
-    user.email,
+    userEmail,
   ]);
 };
