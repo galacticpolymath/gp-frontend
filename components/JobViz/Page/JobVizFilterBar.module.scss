@@ -73,8 +73,16 @@
 .filterIndicator {
   width: 10px;
   height: 10px;
+  min-width: 10px;
+  min-height: 10px;
+  aspect-ratio: 1 / 1;
+  flex: 0 0 10px;
   border-radius: 999px;
   border: 1px solid rgba(215, 232, 255, 0.72);
+  background: transparent;
+}
+
+.filterIndicatorActive {
   background: radial-gradient(circle at 30% 30%, #6797ff, #d684ff);
 }
 

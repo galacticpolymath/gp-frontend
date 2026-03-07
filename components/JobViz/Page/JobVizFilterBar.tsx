@@ -73,7 +73,12 @@ export const JobVizFilterBar: React.FC<JobVizFilterBarProps> = ({
               onClick={onAssignedToggleClick}
               aria-pressed={isShowingAssignmentScope}
             >
-              <span className={styles.filterIndicator} aria-hidden="true" />
+              <span
+                className={`${styles.filterIndicator} ${
+                  isShowingAssignmentScope ? styles.filterIndicatorActive : ""
+                }`}
+                aria-hidden="true"
+              />
               Tour Jobs
             </button>
           )}
