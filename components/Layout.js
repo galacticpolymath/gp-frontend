@@ -4,6 +4,7 @@ import Head from "next/head";
 import Footer from "./Footer";
 import PortalNav from "./PortalNav";
 import { useEffect, useMemo } from "react";
+import { useRouter } from "next/router";
 import { removeLocalStorageItem } from "../shared/fns";
 import {
   ensureAbsoluteUrl,
@@ -32,6 +33,7 @@ export default function Layout({
   locale = "en-US",
   indexable = true,
 }) {
+  const router = useRouter();
   const isOnProd = process.env.NEXT_PUBLIC_VERCEL_ENV === "production";
   const resolvedDescription = summarizeDescription(description);
   const resolvedUrl = ensureAbsoluteUrl(url || canonicalLink || "");
@@ -46,6 +48,10 @@ export default function Layout({
   }, [structuredData]);
   const ogLocale = toOgLocale(locale);
   const shouldBlockIndexing = !isOnProd || !indexable;
+  const isUnitsRoute =
+    router?.pathname === "/units/[loc]/[id]" ||
+    (typeof router?.asPath === "string" && router.asPath.startsWith("/units/"));
+  const shouldApplyNavOffset = showNav && !isUnitsRoute;
 
   useEffect(() => {
     window.Outseta?.on("signup", () => {
@@ -145,7 +151,15 @@ export default function Layout({
           style={{ display: "none" }}
         />
       )}
-      {children}
+      <div
+        style={
+          shouldApplyNavOffset
+            ? { paddingTop: "var(--portal-nav-offset, 0px)" }
+            : undefined
+        }
+      >
+        {children}
+      </div>
       {showFooter && <Footer />}
     </div>
   );

@@ -8,6 +8,7 @@
     #f7fbff;
   min-height: 100vh;
   width: 100%;
+  padding-top: var(--portal-nav-offset, 0px);
   opacity: 1;
   transition: opacity 220ms ease;
 }
