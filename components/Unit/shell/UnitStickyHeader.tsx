@@ -1,11 +1,12 @@
 import React from 'react';
 import Image from 'next/image';
-import { FileSearch2, NotebookPen } from 'lucide-react';
+import { ChevronUp, FileSearch2, Menu, NotebookPen } from 'lucide-react';
 import {
   IItemForUI,
   INewUnitLesson,
 } from '../../../backend/models/Unit/types/teachingMaterials';
 import LocDropdown from '../../LocDropdown';
+import ProfileAvatarRing from '../../ProfileAvatarRing';
 import styles from '../styles/UnitStickyHeader.module.css';
 
 type TTabOption = {
@@ -38,6 +39,12 @@ type TUnitStickyHeaderProps = {
   availLocs: string[];
   numID?: number;
   locale: string;
+  handlePortalNavToggle: () => void;
+  isPortalNavCollapsed: boolean;
+  effectiveAvatarUrl?: string | null;
+  isGpPlusUser: boolean;
+  avatarCandidates: string[];
+  setAvatarCandidateIndex: React.Dispatch<React.SetStateAction<number>>;
   availableTabs: TTabOption[];
   activeTab: string;
   onTabChange: (tab: string) => void;
@@ -73,6 +80,12 @@ const UnitStickyHeader: React.FC<TUnitStickyHeaderProps> = ({
   availLocs,
   numID,
   locale,
+  handlePortalNavToggle,
+  isPortalNavCollapsed,
+  effectiveAvatarUrl,
+  isGpPlusUser,
+  avatarCandidates,
+  setAvatarCandidateIndex,
   availableTabs,
   activeTab,
   onTabChange,
@@ -150,6 +163,41 @@ const UnitStickyHeader: React.FC<TUnitStickyHeaderProps> = ({
               <LocDropdown availLocs={availLocs} loc={locale} id={numID} />
             </div>
           )}
+          <button
+            type="button"
+            className={styles.unitNavVisibilityToggle}
+            onClick={handlePortalNavToggle}
+            aria-label={isPortalNavCollapsed ? 'Profile menu' : 'Collapse menu'}
+          >
+            <ChevronUp
+              size={18}
+              aria-hidden="true"
+              className={
+                isPortalNavCollapsed
+                  ? styles.unitNavVisibilityToggleIconCollapsed
+                  : styles.unitNavVisibilityToggleIconExpanded
+              }
+            />
+            {isPortalNavCollapsed ? (
+              <span className={styles.unitNavProfileSummary}>
+                <Menu size={14} aria-hidden="true" className={styles.unitNavMenuHintIcon} />
+                <ProfileAvatarRing
+                  avatarUrl={effectiveAvatarUrl}
+                  isPlusMember={isGpPlusUser}
+                  size={22}
+                  onError={() =>
+                    setAvatarCandidateIndex((currentIndex) =>
+                      currentIndex + 1 < avatarCandidates.length
+                        ? currentIndex + 1
+                        : avatarCandidates.length
+                    )
+                  }
+                />
+              </span>
+            ) : (
+              <span>Collapse</span>
+            )}
+          </button>
         </div>
       </div>
       <div className={styles.unitTabList}>

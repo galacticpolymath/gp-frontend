@@ -56,6 +56,7 @@ const PortalNav: React.FC<PortalNavProps> = ({
     return value === "true";
   })();
   const [navOpen, setNavOpen] = useState(false);
+  const [isNavManuallyHidden, setIsNavManuallyHidden] = useState(false);
   const [accountMenuOpen, setAccountMenuOpen] = useState(false);
   const [profileAvatarUrl, setProfileAvatarUrl] = useState<string | null>(null);
   const [avatarCandidateIndex, setAvatarCandidateIndex] = useState(0);
@@ -188,6 +189,28 @@ const PortalNav: React.FC<PortalNavProps> = ({
   }, [accountMenuOpen]);
 
   useEffect(() => {
+    if (typeof window === "undefined") return undefined;
+    const handleSetNavHidden = (
+      event: Event & { detail?: { hidden?: unknown } }
+    ) => {
+      const nextHidden = event?.detail?.hidden;
+      if (typeof nextHidden === "boolean") {
+        setIsNavManuallyHidden(nextHidden);
+      }
+    };
+    window.addEventListener(
+      "gp:set-nav-hidden",
+      handleSetNavHidden as EventListener
+    );
+    return () => {
+      window.removeEventListener(
+        "gp:set-nav-hidden",
+        handleSetNavHidden as EventListener
+      );
+    };
+  }, []);
+
+  useEffect(() => {
     if (typeof window === "undefined") return;
     const root = document.documentElement;
 
@@ -197,6 +220,10 @@ const PortalNav: React.FC<PortalNavProps> = ({
     }
 
     const syncOffset = () => {
+      if (isNavManuallyHidden) {
+        root.style.setProperty("--portal-nav-offset", "0px");
+        return;
+      }
       if (isJobvizRoute) {
         root.style.setProperty("--portal-nav-offset", "0px");
         return;
@@ -221,7 +248,7 @@ const PortalNav: React.FC<PortalNavProps> = ({
       window.removeEventListener("resize", syncOffset);
       observer?.disconnect();
     };
-  }, [disableNavbar, navOpen, accountMenuOpen, isJobvizRoute]);
+  }, [disableNavbar, navOpen, accountMenuOpen, isJobvizRoute, isNavManuallyHidden]);
 
   useEffect(() => {
     if (typeof window === "undefined") return undefined;
@@ -239,9 +266,9 @@ const PortalNav: React.FC<PortalNavProps> = ({
       ref={navRef}
       className={`${styles.nav} ${styles.navFixedDefault} ${
         isJobvizRoute ? styles.navFixedForJobviz : ""
-      }`}
+      } ${isNavManuallyHidden ? styles.navHidden : ""}`}
       style={navStyle}
-      data-nav-hidden="false"
+      data-nav-hidden={isNavManuallyHidden ? "true" : "false"}
     >
       <button
         className={styles.brandButton}
