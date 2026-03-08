@@ -218,7 +218,15 @@
   padding: 0.25rem 0.1rem 0;
 }
 
+.progressHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+}
+
 .progressLabel {
+  flex: 1;
   color: rgba(246, 248, 255, 0.94);
   font-size: 0.96rem;
   font-weight: 600;
@@ -533,18 +541,9 @@
   line-height: 1.35;
 }
 
-.clearFooter {
-  padding: 0.85rem 1rem 1rem;
-  display: flex;
-  justify-content: flex-end;
-  background: linear-gradient(180deg, rgba(71, 56, 134, 0), rgba(71, 56, 134, 0.85));
-}
-
-.clearFooter button {
-  border: 0;
-  background: none;
-  color: rgba(247, 249, 255, 0.88);
-  font-size: 0.95rem;
+.scrollFooterAnchor {
+  height: 1px;
+  width: 100%;
 }
 
 .scrollTip {
@@ -569,8 +568,7 @@
   width: 58px;
 }
 
-.desktopDock[data-collapsed="true"] .banner,
-.desktopDock[data-collapsed="true"] .clearFooter {
+.desktopDock[data-collapsed="true"] .banner {
   opacity: 0;
   pointer-events: none;
 }
@@ -603,16 +601,26 @@
     display: block;
     width: clamp(320px, 28vw, 360px);
     min-width: clamp(320px, 28vw, 360px);
-    height: calc(100dvh - var(--jobviz-nav-offset, 0px));
+    flex: 0 0 clamp(320px, 28vw, 360px);
+    align-self: flex-start;
+    height: calc(100dvh - var(--portal-nav-offset, 0px));
+  }
+
+  .desktopDock[data-collapsed="true"] {
+    width: 58px;
+    min-width: 58px;
+    flex-basis: 58px;
   }
 
   .desktopFrame {
     position: fixed;
-    top: var(--jobviz-nav-offset, 0px);
+    top: var(--portal-nav-offset, 0px);
     right: 0;
     width: clamp(320px, 28vw, 360px);
-    height: calc(100dvh - var(--jobviz-nav-offset, 0px));
+    max-height: calc(100dvh - var(--portal-nav-offset, 0px));
+    height: calc(100dvh - var(--portal-nav-offset, 0px));
     padding: 0;
+    border-left: 1px solid rgba(228, 232, 255, 0.16);
     background: linear-gradient(
       180deg,
       rgba(71, 56, 134, 0.98),
@@ -620,24 +628,32 @@
     );
     box-shadow: -8px 0 24px rgba(10, 8, 33, 0.18);
     transition: width 0.28s ease;
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: auto;
+    scrollbar-gutter: stable;
   }
 
   .desktopBanner {
-    height: 100%;
+    min-height: 100%;
   }
 
   .inner {
-    height: 100%;
-    padding: 1.2rem 1rem 0;
+    min-height: 100%;
+    padding: 4.2rem 1rem 1rem;
   }
 
   .desktopContent {
     flex: 1;
+    overflow: visible;
+    padding-right: 0;
   }
 
   .content {
     min-height: 0;
+  }
+
+  .headerRow {
+    padding-right: 3.15rem;
   }
 }
 

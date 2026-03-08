@@ -6,6 +6,7 @@ interface JobVizNoticesProps {
   tourLoadError: string | null;
   teacherEditDenied: boolean;
   showUnitPreviewAssignmentBanner: boolean;
+  isStudentMode: boolean;
   isTourPreviewMode: boolean;
   isStudentLinkView: boolean;
   previewLimit: number;
@@ -16,11 +17,14 @@ export const JobVizNotices: React.FC<JobVizNoticesProps> = ({
   tourLoadError,
   teacherEditDenied,
   showUnitPreviewAssignmentBanner,
+  isStudentMode,
   isTourPreviewMode,
   isStudentLinkView,
   previewLimit,
   previewLockedCount,
 }) => {
+  if (isStudentMode) return null;
+
   const hasNotices =
     Boolean(tourLoadError) ||
     teacherEditDenied ||
@@ -40,8 +44,7 @@ export const JobVizNotices: React.FC<JobVizNoticesProps> = ({
         <div className={styles.notice} role="alert">
           <strong>Looking for edit controls?</strong> GP+ members can turn on tour
           editing to build and save custom JobViz+ assignments. Sign in with a GP+
-          account or remove the <code>?edit=1</code> parameter to preview the
-          student view.
+          account to access editing tools.
         </div>
       )}
       {showUnitPreviewAssignmentBanner && (

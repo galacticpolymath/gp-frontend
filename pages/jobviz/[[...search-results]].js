@@ -566,6 +566,7 @@ const JobVizSearchResults = ({
                 tourLoadError={tourLoadState.error}
                 teacherEditDenied={teacherEditDenied}
                 showUnitPreviewAssignmentBanner={showUnitPreviewAssignmentBanner}
+                isStudentMode={isStudentMode}
                 isTourPreviewMode={isTourPreviewMode}
                 isStudentLinkView={isStudentLinkView}
                 previewLimit={JOBVIZ_PREVIEW_LIMIT}

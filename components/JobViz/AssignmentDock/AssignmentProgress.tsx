@@ -7,9 +7,11 @@ interface AssignmentProgressProps {
   hasJobs: boolean;
   isAssignmentComplete: boolean;
   jobItemsLength: number;
+  onClearRatings?: () => void;
   onOpenSummaryModal: () => void;
   progress: { rated: number; total: number };
   safeDisplayedProgressRated: number;
+  showClearButton?: boolean;
   shouldAnimateProgress: boolean;
   variant: "mobile" | "desktop";
 }
@@ -19,9 +21,11 @@ export const AssignmentProgress: React.FC<AssignmentProgressProps> = ({
   hasJobs,
   isAssignmentComplete,
   jobItemsLength,
+  onClearRatings,
   onOpenSummaryModal,
   progress,
   safeDisplayedProgressRated,
+  showClearButton = false,
   shouldAnimateProgress,
   variant,
 }) => {
@@ -56,10 +60,21 @@ export const AssignmentProgress: React.FC<AssignmentProgressProps> = ({
 
   return (
     <div className={styles.progressRow}>
-      <div className={styles.progressLabel}>
-        {isAssignmentComplete && !allowShare
-          ? "Preview complete. Unlock GP+ to assign and share full tours."
-          : `Rated ${safeDisplayedProgressRated}/${progress.total} jobs`}
+      <div className={styles.progressHeader}>
+        <div className={styles.progressLabel}>
+          {isAssignmentComplete && !allowShare
+            ? "Preview complete. Unlock GP+ to assign and share full tours."
+            : `Rated ${safeDisplayedProgressRated}/${progress.total} jobs`}
+        </div>
+        {showClearButton && onClearRatings ? (
+          <button
+            type="button"
+            className={styles.clearButtonInline}
+            onClick={onClearRatings}
+          >
+            Clear ratings
+          </button>
+        ) : null}
       </div>
       <div
         className={`${styles.progressTrack} ${

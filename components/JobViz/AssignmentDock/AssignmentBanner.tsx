@@ -572,9 +572,11 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
       hasJobs={assignmentSocCodes.length > 0}
       isAssignmentComplete={isAssignmentComplete}
       jobItemsLength={jobItems.length}
+      onClearRatings={isDesktopVariant ? clearRatings : undefined}
       onOpenSummaryModal={handleOpenSummaryModal}
       progress={progress}
       safeDisplayedProgressRated={safeDisplayedProgressRated}
+      showClearButton={isDesktopVariant}
       shouldAnimateProgress={shouldAnimateProgress}
       variant={variant}
     />
@@ -699,11 +701,7 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
             </div>
           </div>
           {isDesktopVariant && !isDockCollapsed ? (
-            <div ref={registerFooterNode} className={styles.clearFooter}>
-              <button type="button" onClick={clearRatings}>
-                Clear ratings
-              </button>
-            </div>
+            <div ref={registerFooterNode} className={styles.scrollFooterAnchor} />
           ) : null}
           {isDesktopVariant ? (
             <div className={styles.collapsedNotice}>
