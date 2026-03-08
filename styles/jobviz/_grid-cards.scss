@@ -1,0 +1,394 @@
+.jobvizGridStage {
+  position: relative;
+  width: 100%;
+}
+
+.jobvizGridStage > .row {
+  position: relative;
+  z-index: 1;
+}
+
+.categoryCardHighlight {
+  box-shadow:
+    0 0 0 2px rgba(118, 159, 255, 0.5),
+    0 28px 55px rgba(6, 8, 22, 0.65),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.jobCardHighlight {
+  box-shadow:
+    0 0 0 2px rgba(255, 168, 255, 0.5),
+    0 28px 60px rgba(12, 0, 20, 0.8),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+.jobCardVisited {
+  border-color: rgba(255, 168, 255, 0.45);
+  opacity: 0.95;
+}
+
+.jobvizCardLocked {
+  opacity: 0.65;
+  filter: saturate(0.55);
+  cursor: not-allowed;
+}
+
+.jobvizCardLocked::after {
+  opacity: 0.3;
+}
+
+.lockedCardBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 0.15rem 0.55rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: #dbe8ff;
+  background: rgba(9, 15, 35, 0.6);
+}
+
+.categoryBookmark {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.categoryBookmarkVisited {
+  border-color: rgba(255, 168, 255, 0.6);
+  background: rgba(255, 168, 255, 0.2);
+}
+
+.cardHeader {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.cardHeading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+  width: 100%;
+  padding-right: 6.6rem;
+}
+
+.cardHeaderBadges {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.28rem;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.jobCard .cardHeaderBadges {
+  position: absolute;
+  top: 0.9rem;
+  right: 0.9rem;
+  margin-left: 0;
+  z-index: 3;
+}
+
+.assignmentBadgeDot {
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  background: rgba(13, 8, 33, 0.82);
+  border: 1px solid rgba(255, 255, 255, 0.58);
+  box-shadow: inset 0 0 0 1px rgba(190, 158, 255, 0.12);
+  flex-shrink: 0;
+}
+
+.assignmentBadgeDotActive {
+  background: radial-gradient(circle at 30% 30%, rgba(103, 151, 255, 1), rgba(214, 132, 255, 0.85));
+  border-color: rgba(255, 255, 255, 0.62);
+  box-shadow: 0 0 16px rgba(144, 158, 255, 0.45);
+}
+
+.assignmentBadgeButton {
+  border: none;
+  background: rgba(255, 255, 255, 0.08);
+  padding: 0.22rem 0.62rem 0.22rem 0.42rem;
+  margin: 0;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.34rem;
+  min-height: 32px;
+  color: #f7fbff;
+  font-size: 16px;
+  letter-spacing: 0.04em;
+  line-height: 1;
+  text-transform: none;
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.assignmentBadgeButtonActive {
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.assignmentBadgeButton:hover .assignmentBadgeDot,
+.assignmentBadgeButton:focus-visible .assignmentBadgeDot {
+  transform: scale(1.05);
+}
+
+.assignmentBadgeButton:hover,
+.assignmentBadgeButton:focus-visible {
+  transform: translateY(-1px);
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.assignmentBadgeButton .assignmentBadgeDot {
+  transition: transform 0.16s ease;
+}
+
+.assignmentBadgePill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.34rem;
+  border-radius: 999px;
+  border: none;
+  background: rgba(255, 255, 255, 0.08);
+  padding: 0.22rem 0.62rem 0.22rem 0.42rem;
+  position: relative;
+  top: auto;
+  right: auto;
+  z-index: 1;
+  min-height: 32px;
+}
+
+.assignmentBadgeDotInline {
+  position: static;
+  width: 11px;
+  height: 11px;
+  margin: 0;
+  flex-shrink: 0;
+  background: radial-gradient(circle at 30% 30%, rgba(103, 151, 255, 1), rgba(214, 132, 255, 0.85));
+  border-color: rgba(255, 255, 255, 0.62);
+  box-shadow: 0 0 10px rgba(144, 158, 255, 0.35);
+}
+
+.assignmentBadgePillText {
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  line-height: 1;
+  color: rgba(255, 255, 255, 0.96);
+  white-space: nowrap;
+}
+
+.savedJobBadge {
+  border-radius: 999px;
+  border: none;
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: none;
+  color: #f7fbff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.34rem;
+  min-height: 32px;
+  padding: 0.22rem 0.62rem 0.22rem 0.42rem;
+  font-size: 16px;
+  letter-spacing: 0.04em;
+  text-transform: none;
+  line-height: 1;
+  white-space: nowrap;
+  position: relative;
+  z-index: 1;
+}
+
+.savedJobBadge :global(svg) {
+  width: 12px;
+  height: 12px;
+  color: #ffd678;
+  fill: #ffd678;
+  stroke: none;
+}
+
+.cardHeaderBadgeLabel {
+  color: rgba(255, 255, 255, 0.96);
+  white-space: nowrap;
+  font-size: 16px;
+  text-transform: none;
+}
+
+.cardHeaderBadgeDot {
+  width: 12px;
+  height: 12px;
+  box-shadow: inset 0 0 0 1px rgba(190, 158, 255, 0.18);
+}
+
+
+.cardRatingRow {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0.4rem 0;
+}
+
+.jobCard .statRow {
+  margin-top: auto;
+  padding-top: 0.4rem;
+}
+
+.cardRatingRowAssignment .cardRatingBadge {
+  box-shadow: 0 0 18px rgba(104, 168, 255, 0.45);
+}
+
+.cardRatingBadge {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.cardRating-love {
+  border-color: rgba(255, 118, 218, 0.7);
+}
+
+.cardRating-like {
+  border-color: rgba(126, 214, 255, 0.7);
+}
+
+.cardRating-dislike {
+  border-color: rgba(255, 140, 140, 0.7);
+}
+
+.cardRatingPlaceholder {
+  opacity: 0.85;
+  color: #c68dff;
+  background: rgba(80, 18, 120, 0.35);
+  border-color: rgba(198, 141, 255, 0.8);
+}
+
+.cardRatingLabel {
+  font-size: 0.93rem;
+  color: rgba(244, 247, 255, 0.85);
+}
+
+.iconBadge {
+  position: relative;
+  width: 64px;
+  height: 64px;
+  flex-shrink: 0;
+  border-radius: 18px;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.12), transparent);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  display: grid;
+  place-items: center;
+  box-shadow: inset 0 0 12px rgba(255, 255, 255, 0.15),
+    0 10px 25px rgba(7, 0, 13, 0.6);
+  color: #e08dff;
+}
+
+.iconBadge svg {
+  width: 28px;
+  height: 28px;
+  stroke-width: 1.5;
+  stroke: currentColor;
+  fill: none;
+}
+
+.nestedIcon {
+  position: absolute;
+  bottom: -6px;
+  right: -6px;
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  background: radial-gradient(circle at 25% 25%, rgba(115, 47, 148, 0.9), rgba(46, 12, 80, 0.95));
+  border: 1px solid rgba(197, 120, 255, 0.7);
+  display: grid;
+  place-items: center;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.45);
+}
+
+.nestedIcon svg {
+  width: 16px;
+  height: 16px;
+  stroke: #ffffff;
+  stroke-width: 1.6;
+}
+
+.cardTitle {
+  margin: 0;
+  font-size: 1.2rem;
+  color: #f8fbff;
+  flex: 1;
+}
+
+.cardDescriptor {
+  margin: 0;
+  color: rgba(230, 240, 255, 0.7);
+  font-size: 1.01rem;
+}
+
+.cardFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: rgba(230, 240, 255, 0.75);
+  font-size: 1.01rem;
+}
+
+.cardAction {
+  color: var(--preview-cyan);
+  font-weight: 600;
+}
+
+.statRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+
+.statChip {
+  flex: 1 1 110px;
+  min-width: 110px;
+  border-radius: 18px;
+  padding: 0.75rem 0.9rem;
+  background: rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(189, 121, 255, 0.35);
+  transition: transform 0.25s ease, border-color 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.statChip:hover {
+  transform: translateY(-4px);
+  border-color: rgba(255, 145, 255, 0.6);
+}
+
+.statLabel {
+  display: block;
+  font-size: 0.83rem;
+  color: rgba(230, 240, 255, 0.6);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.statValue {
+  display: block;
+  font-size: 1.1rem;
+  color: #f8fbff;
+  margin-top: 0.2rem;
+}
+

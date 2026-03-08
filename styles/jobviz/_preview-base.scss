@@ -1,0 +1,350 @@
+$assignment-layer-z: 1500; // base layer for assignment UI (below toasts/modals)
+$assignment-progress-z: $assignment-layer-z + 5;
+$assignment-tooltip-z: $assignment-layer-z + 10;
+$assignment-scrolltip-z: $assignment-layer-z + 15;
+$assignment-card-tooltip-z: $assignment-layer-z + 12;
+$jobviz-nav-height: 64px;
+$jobviz-desktop-dock-top: max(
+  var(--portal-nav-offset, 0px),
+  var(--jobviz-nav-offset, #{$jobviz-nav-height})
+);
+
+.previewPage {
+  --jobviz-horizontal-gutter: clamp(1rem, 3vw, 2.75rem);
+  --jobviz-desktop-gap: clamp(0.75rem, 2vw, 2rem);
+  --preview-blue-950: #020812;
+  --preview-blue-900: #061327;
+  --preview-blue-800: #0b2645;
+  --preview-blue-700: #0f2352;
+  --preview-blue-500: #1b47a1;
+  --preview-blue-300: #6ec8ff;
+  --preview-blue-200: #dff2ff;
+  --preview-glass: rgba(255, 255, 255, 0.08);
+  --preview-glass-strong: rgba(11, 38, 69, 0.65);
+  --preview-border: rgba(136, 174, 214, 0.35);
+  --preview-cyan: #00aceb;
+  --preview-indigo: #1826bc;
+  --preview-pulse: #ff5ab5;
+  --preview-shadow: 0 35px 60px rgba(3, 11, 24, 0.55);
+
+  position: relative;
+  min-height: 100vh;
+  padding: clamp(2rem, 3vw, 4rem) clamp(1.5rem, 5vw, 5rem) 5rem;
+  background:
+    linear-gradient(180deg, rgba(255, 95, 190, 0.24) 0%, rgba(18, 35, 95, 0) 30%),
+    linear-gradient(0deg, rgba(0, 172, 235, 0.18) 0%, rgba(11, 18, 53, 0) 40%),
+    linear-gradient(145deg, #030617 0%, #050b22 50%, #081740 100%);
+  color: var(--preview-blue-200);
+  font-family: "Noto Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+  overflow: hidden;
+}
+
+.previewPage[data-tone="accent"] {
+  background:
+    linear-gradient(180deg, rgba(255, 61, 172, 0.35) 0%, transparent 35%),
+    linear-gradient(0deg, rgba(32, 202, 255, 0.18) 0%, transparent 50%),
+    linear-gradient(145deg, #05011c 0%, #18043d 55%, #2a0a55 100%);
+}
+
+.previewSection {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.assignmentSection {
+  gap: 1.5rem;
+}
+
+.sectionHeading {
+  font-size: clamp(1.5rem, 2.2vw, 2rem);
+  margin: 0;
+  letter-spacing: 0.01em;
+}
+
+.sectionDescription {
+  margin: 0;
+  max-width: 48rem;
+  color: rgba(230, 240, 255, 0.7);
+  font-size: 1.04rem;
+}
+
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+
+.infoButton,
+.closeInfoButton {
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.05);
+  color: #f8fbff;
+  border-radius: 18px;
+  padding: 0.45rem 0.9rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  cursor: pointer;
+  font-size: 0.96rem;
+  transition: transform 0.25s ease, border-color 0.25s ease,
+    box-shadow 0.25s ease;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+}
+
+.infoButton svg,
+.closeInfoButton svg {
+  width: 18px;
+  height: 18px;
+}
+
+.infoButton:hover,
+.closeInfoButton:hover,
+.infoButton:focus-visible,
+.closeInfoButton:focus-visible {
+  transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.5);
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.45);
+}
+
+.tierInfoCard {
+  margin-top: 1rem;
+  border-radius: 24px;
+  border: 1px solid var(--preview-border);
+  background: rgba(4, 15, 32, 0.92);
+  box-shadow: var(--preview-shadow);
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transform-origin: top;
+  transition:
+    max-height 0.5s ease,
+    opacity 0.45s ease;
+}
+
+.tierInfoCardOpen {
+  max-height: 800px;
+  opacity: 1;
+  margin-bottom: 0.5rem;
+}
+
+.tierInfoInner {
+  padding: 0 1.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  animation: panelFade 0.45s ease forwards;
+}
+
+.tierInfoInner:first-child {
+  padding-top: 1.2rem;
+}
+
+.tierInfoInner:last-child {
+  padding-bottom: 1.2rem;
+}
+
+.tierInfoHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.tierInfoHeader h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  color: #f8fbff;
+}
+
+.tierList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 0.9rem;
+}
+
+.tierItem {
+  border: 1px solid rgba(0, 172, 235, 0.25);
+  border-radius: 20px;
+  padding: 0.9rem 1rem;
+  background: rgba(0, 172, 235, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.tierItem::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, rgba(255, 255, 255, 0.15), transparent 60%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.tierItem:hover::after {
+  opacity: 1;
+}
+
+.tierListHeading {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: nowrap;
+  align-items: center;
+}
+
+.tierLabel {
+  font-weight: 600;
+  color: #f8fbff;
+}
+
+.tierRange {
+  font-family: "Noto Sans Mono", ui-monospace;
+  font-size: 0.9rem;
+  color: rgba(230, 240, 255, 0.7);
+}
+
+.tierList p {
+  margin: 0;
+  color: rgba(230, 240, 255, 0.78);
+  font-size: 0.96rem;
+  line-height: 1.4;
+}
+
+.tierFootnote {
+  margin: 0;
+  font-size: 0.93rem;
+  color: rgba(230, 240, 255, 0.6);
+}
+
+.infoModalBackdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(2, 4, 10, 0.78);
+  backdrop-filter: blur(6px);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: clamp(1rem, 4vw, 2.5rem);
+  overflow-y: auto;
+  z-index: 10000020;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.infoModalBackdrop[data-state="open"] {
+  opacity: 1;
+}
+
+.infoModalBackdrop[data-state="closing"] {
+  opacity: 0;
+}
+
+.infoModal {
+  width: min(960px, 95vw);
+  max-height: min(90vh, 860px);
+  background: rgba(7, 20, 42, 0.95);
+  border-radius: 28px;
+  border: 1px solid var(--preview-border);
+  box-shadow: 0 40px 80px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: clamp(1.2rem, 3vw, 2rem);
+  overflow-y: auto;
+  position: relative;
+  margin: auto;
+  opacity: 0;
+  transform: translateY(-12px) scale(0.97);
+  transition:
+    opacity 0.35s ease,
+    transform 0.35s ease;
+}
+
+.infoModalBackdrop[data-state="open"] .infoModal {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.infoModalBackdrop[data-state="closing"] .infoModal {
+  opacity: 0;
+  transform: translateY(-16px) scale(0.96);
+}
+
+.infoModalHeader {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  background: rgba(7, 20, 42, 0.98);
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  z-index: 1;
+}
+
+.infoModalTitle {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+}
+
+.infoModalIcon {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: radial-gradient(circle at 35% 35%, rgba(255, 179, 255, 0.6), rgba(81, 23, 105, 0.9));
+  border: 1px solid rgba(255, 210, 255, 0.55);
+  display: grid;
+  place-items: center;
+  color: #fff5ff;
+  box-shadow:
+    inset 0 0 16px rgba(255, 255, 255, 0.3),
+    0 8px 22px rgba(0, 0, 0, 0.45);
+}
+
+.infoModalIcon svg {
+  width: 20px;
+  height: 20px;
+  stroke: currentColor;
+}
+
+.infoModalEyebrow {
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.infoModalHeading {
+  margin: 0.2rem 0 0;
+  font-size: 1.4rem;
+  color: #ffffff;
+}
+
+.infoModalBody {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  flex: 1 1 auto;
+  color: rgba(250, 252, 255, 0.95);
+  line-height: 1.65;
+}
+
+.infoModalBody p {
+  color: rgba(250, 252, 255, 0.95);
+}
+

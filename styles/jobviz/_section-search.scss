@@ -1,0 +1,624 @@
+.jobvizSection {
+  position: relative;
+  padding: clamp(2rem, 4vw, 4rem) 0 clamp(4rem, 7vw, 7rem);
+}
+
+.jobvizSectionBg {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(13, 18, 40, 0.9) 0%,
+    rgba(6, 8, 22, 0.95) 60%,
+    rgba(3, 5, 15, 0.95) 100%
+  );
+  opacity: 0.95;
+}
+
+.jobvizSectionPattern {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(
+      circle at 1px 1px,
+      rgba(255, 255, 255, 0.04) 1px,
+      transparent 0
+    ),
+    linear-gradient(
+      120deg,
+      rgba(255, 61, 172, 0.08),
+      transparent 60%
+    );
+  background-size: 12px 12px, 100% 100%;
+  opacity: 0.8;
+}
+
+.jobvizSectionInner {
+  position: relative;
+  z-index: 1;
+  padding-bottom: clamp(2rem, 5vw, 4rem);
+  margin-top: calc(var(--jobviz-hero-offset, 0px) * -1);
+  width: min(1200px, 100%);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--jobviz-horizontal-gutter, clamp(1rem, 3vw, 2.75rem));
+  padding-right: var(--jobviz-horizontal-gutter, clamp(1rem, 3vw, 2.75rem));
+  box-sizing: border-box;
+}
+
+@media (min-width: 1200px) {
+  .jobvizPageShell[data-has-assignment="true"] .jobvizSectionInner {
+    --jobviz-horizontal-gutter: clamp(0.65rem, 1.8vw, 1.5rem);
+    max-width: min(
+      1200px,
+      calc(100vw - var(--jobviz-desktop-dock-width, 0px) - var(--jobviz-desktop-gap, 1.5rem))
+    );
+  }
+}
+
+@media (min-width: 1400px) {
+  .jobvizPageShell[data-has-assignment="true"] .jobvizSectionInner {
+    --jobviz-horizontal-gutter: clamp(0.85rem, 2vw, 2.5rem);
+  }
+}
+
+.jobvizSectionHeading {
+  font-size: clamp(1.5rem, 2.5vw, 2.25rem);
+  color: #f4f7ff;
+  margin-bottom: 1.5rem;
+}
+
+.jobvizSearchAppeal {
+  font-size: clamp(1.15rem, 2vw, 1.5rem);
+  color: rgba(235, 240, 255, 0.9);
+  margin: -0.5rem 0 1rem;
+  font-weight: 200;
+}
+
+.jobvizContextZone {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding-bottom: 3.5rem;
+}
+
+.jobvizGridWrap {
+  border-radius: 32px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(5, 10, 24, 0.9);
+  padding: clamp(0.85rem, 2.5vw, 1.5rem);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 35px 60px rgba(0, 0, 0, 0.55);
+  box-sizing: border-box;
+}
+
+.jobvizGridWrap > .jobvizBreadcrumb {
+  margin-bottom: clamp(0.75rem, 2vw, 1.25rem);
+  padding-bottom: clamp(0.35rem, 1vw, 0.75rem);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.gridFilterRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  justify-content: flex-start;
+  margin-bottom: clamp(0.75rem, 2vw, 1.25rem);
+}
+
+.pathHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding-bottom: 0.6rem;
+  margin-bottom: 0.75rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.gridContextLabel {
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(230, 235, 255, 0.75);
+  margin-bottom: 0.1rem;
+}
+
+.gridFilterActions {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(10, 16, 34, 0.4);
+  padding: 0.28rem 0.45rem 0.28rem 0.7rem;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+.gridFilterLabel {
+  font-size: 0.83rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(230, 235, 255, 0.8);
+  font-weight: 600;
+}
+
+.gridFilterButton {
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(243, 247, 255, 0.9);
+  padding: 0.3rem 0.9rem;
+  font-size: 0.93rem;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+
+.gridFilterButton:not(.gridFilterButtonActive):hover,
+.gridFilterButton:not(.gridFilterButtonActive):focus-visible {
+  border-color: rgba(255, 255, 255, 0.45);
+  background: rgba(255, 255, 255, 0.14);
+  transform: translateY(-1px);
+}
+
+.gridFilterButtonActive {
+  border-color: rgba(103, 151, 255, 0.8);
+  background: linear-gradient(
+    135deg,
+    rgba(103, 151, 255, 0.3),
+    rgba(214, 132, 255, 0.35)
+  );
+  color: #f7fbff;
+}
+
+.gridFilterButtonActive:hover,
+.gridFilterButtonActive:focus-visible {
+  border-color: rgba(159, 198, 255, 0.95);
+  background: linear-gradient(
+    135deg,
+    rgba(123, 171, 255, 0.45),
+    rgba(224, 152, 255, 0.5)
+  );
+  transform: translateY(-1px);
+}
+
+.sortControl {
+  margin-left: auto;
+  position: relative;
+}
+
+.gridFilterRow > .sortControl:only-child {
+  margin-left: 0;
+}
+
+.sortButton {
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(10, 16, 34, 0.4);
+  color: rgba(243, 247, 255, 0.94);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.45rem 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    background 0.2s ease;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  position: relative;
+}
+
+.sortButton:hover,
+.sortButton:focus-visible {
+  border-color: rgba(255, 255, 255, 0.55);
+  background: rgba(13, 22, 40, 0.65);
+  transform: translateY(-1px);
+}
+
+.sortButton[data-pulse="true"] {
+  animation: heroPulse 1s ease;
+}
+
+.sortButtonOpen {
+  border-color: rgba(142, 181, 255, 0.8);
+  background: linear-gradient(
+    120deg,
+    rgba(103, 151, 255, 0.35),
+    rgba(214, 132, 255, 0.4)
+  );
+}
+
+.sortButtonLabel {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.8rem;
+  color: rgba(230, 235, 255, 0.75);
+}
+
+.sortButtonValue {
+  font-size: 0.96rem;
+  color: #ffffff;
+}
+
+.sortButtonDirectionIcon {
+  width: 1rem;
+  height: 1rem;
+  color: inherit;
+}
+
+.sortDropdown {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 0.5rem);
+  min-width: 220px;
+  background: rgba(5, 10, 24, 0.96);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  padding: 0.35rem;
+  z-index: 15;
+}
+
+.sortOption {
+  width: 100%;
+  border: 1px solid transparent;
+  background: none;
+  color: rgba(240, 245, 255, 0.95);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.5rem 0.65rem;
+  border-radius: 12px;
+  cursor: pointer;
+  text-align: left;
+  font-size: 0.98rem;
+}
+
+.sortOption:hover,
+.sortOption:focus-visible {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.sortOptionActive {
+  background: rgba(103, 151, 255, 0.22);
+  border: 1px solid rgba(103, 151, 255, 0.45);
+}
+
+.sortOptionPulse {
+  animation: sortOptionHighlightPulse 2.4s ease-in-out infinite;
+  will-change: border-color, border-width, background, box-shadow;
+}
+
+.sortOptionText {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.sortOptionDetail {
+  font-size: 0.88rem;
+  color: rgba(230, 235, 255, 0.65);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.sortOptionIcon {
+  width: 1rem;
+  height: 1rem;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.jobvizSource {
+  color: rgba(237, 243, 255, 0.86);
+  font-size: 1.01rem;
+  margin-top: 1.75rem;
+  margin-bottom: 2rem;
+  line-height: 1.6;
+}
+
+.jobvizSource a {
+  color: #9fe0ff;
+}
+
+.jobvizSource a:hover,
+.jobvizSource a:focus-visible {
+  color: #ffe0ff;
+}
+
+.jobvizSourceFixed {
+  margin-top: 1.25rem;
+}
+.jobvizBreadcrumb {
+  font-family: "Noto Sans Mono", ui-monospace, SFMono-Regular, Menlo, Monaco,
+    Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 0.94rem;
+  color: rgba(255, 255, 255, 0.95);
+  margin-bottom: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.45);
+}
+
+.breadcrumbButton {
+  border: none;
+  padding: 0;
+  margin: 0;
+  background: none;
+  cursor: pointer;
+}
+
+.breadcrumbButton:hover .breadcrumbLabel {
+  text-decoration: none;
+}
+
+.breadcrumbSegment,
+.breadcrumbSegmentActive {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.35rem;
+  color: rgba(255, 255, 255, 0.92);
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  text-align: left;
+}
+
+.breadcrumbSegment svg,
+.breadcrumbSegmentActive svg {
+  width: 14px;
+  height: 14px;
+  stroke-width: 2.1;
+  stroke: currentColor;
+}
+
+.breadcrumbSegmentActive {
+  font-weight: 700;
+  color: #ffffff;
+  background: rgba(86, 126, 255, 0.35);
+  border: 1px solid rgba(86, 126, 255, 0.65);
+  box-shadow: 0 0 15px rgba(86, 126, 255, 0.35);
+}
+
+.breadcrumbSeparator {
+  opacity: 0.6;
+  padding-inline: 0.2rem;
+}
+
+.breadcrumbLabel {
+  color: inherit;
+}
+
+.breadcrumbMobileCue {
+  display: none;
+}
+
+@media (max-width: 640px) {
+  .jobvizBreadcrumb {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.35rem;
+  }
+
+  .breadcrumbSeparator {
+    display: none;
+  }
+
+  .breadcrumbSegment,
+  .breadcrumbSegmentActive {
+    width: 100%;
+    justify-content: flex-start;
+    padding-left: 0;
+    gap: 0.45rem;
+    border-radius: 12px;
+    border: none;
+    padding-right: 0;
+    text-align: left;
+  }
+
+  .breadcrumbSegmentActive {
+    border: 1px solid rgba(86, 126, 255, 0.4);
+    padding: 0.3rem 0.6rem;
+  }
+
+  .breadcrumbSegment svg,
+  .breadcrumbSegmentActive svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .breadcrumbMobileCue {
+    display: inline-flex;
+    align-items: center;
+    color: rgba(255, 255, 255, 0.6);
+  }
+
+  .breadcrumbMobileCue svg {
+    width: 18px;
+    height: 18px;
+    stroke-width: 2;
+  }
+
+  .sortControl {
+    width: 100%;
+  }
+
+  .sortButton {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .sortDropdown {
+    position: static;
+    margin-top: 0.5rem;
+    width: 100%;
+  }
+}
+
+.jobvizSearch {
+  margin-bottom: 2rem;
+}
+
+.jobvizSearchField {
+  position: relative;
+}
+
+.jobvizSearchIcon {
+  position: absolute;
+  top: 50%;
+  left: 1rem;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 20px;
+  color: rgba(19, 28, 54, 0.6);
+  pointer-events: none;
+}
+
+.jobvizSearchInput,
+.jobvizSearchInput.form-control {
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.95);
+  color: #0b152d;
+  padding: 0.75rem 1rem 0.75rem 2.5rem !important;
+  flex: 1 1 auto;
+  width: 100%;
+}
+
+.jobvizSearchInput::placeholder {
+  color: rgba(11, 21, 45, 0.45);
+}
+
+.jobvizSearchInput:focus {
+  border-color: rgba(0, 172, 235, 0.7);
+  box-shadow: 0 0 0 2px rgba(0, 172, 235, 0.2);
+}
+
+.jobvizSearchResults {
+  margin-top: 0.75rem;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(3, 8, 22, 0.92);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+  display: grid;
+}
+
+.jobvizSearchResult {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: none;
+  background: transparent;
+  color: inherit;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  text-align: left;
+}
+
+.jobvizSearchResultActive {
+  background: rgba(255, 255, 255, 0.06);
+  border-left: 3px solid rgba(100, 200, 255, 0.9);
+}
+
+.jobvizSearchResult:last-of-type {
+  border-bottom: none;
+}
+
+.jobvizSearchResult:hover,
+.jobvizSearchResult:focus-visible {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.jobvizSearchTitle {
+  font-weight: 600;
+  color: #f9fbff;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.jobvizSearchMeta {
+  font-size: 0.93rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.resultGroupBadge,
+.resultJobBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.15rem 0.45rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.resultGroupBadge {
+  color: rgba(118, 200, 255, 0.95);
+  border-color: rgba(118, 200, 255, 0.5);
+}
+
+.resultJobBadge {
+  color: rgba(255, 173, 255, 0.95);
+  border-color: rgba(255, 173, 255, 0.55);
+}
+.cardTooltip {
+  position: absolute;
+  left: 50%;
+  top: -1.5rem;
+  transform: translate(-50%, -100%);
+  z-index: $assignment-card-tooltip-z;
+  background: rgba(7, 18, 44, 0.95);
+  color: #f8fbff;
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.86rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+  pointer-events: none;
+  animation: tooltipPop 0.25s ease;
+}
+
+.jobCard .cardTooltip,
+.categoryCard .cardTooltip {
+  top: -0.75rem;
+}
+
+.cardTooltip::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -6px;
+  transform: translateX(-50%);
+  width: 10px;
+  height: 10px;
+  background: inherit;
+  border-right: 1px solid rgba(255, 255, 255, 0.15);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  transform: translateX(-50%) rotate(45deg);
+}
+
+@keyframes tooltipPop {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -120%) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -100%) scale(1);
+  }
+}
+

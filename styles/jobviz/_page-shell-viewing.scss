@@ -1,0 +1,583 @@
+@keyframes dockSlide {
+  0% {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.jobvizPageShell {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  position: relative;
+}
+
+.jobvizPageShell a {
+  color: #8fd4ff;
+  text-decoration-color: rgba(143, 212, 255, 0.65);
+  transition: color 0.2s ease, text-shadow 0.2s ease,
+    text-decoration-color 0.2s ease;
+}
+
+.jobvizPageShell a:hover,
+.jobvizPageShell a:focus-visible {
+  color: #ffd5ff;
+  text-decoration-color: rgba(255, 213, 255, 0.9);
+  text-shadow: 0 0 14px rgba(255, 133, 255, 0.35);
+}
+
+.jobvizNotice {
+  margin-bottom: 1.25rem;
+  padding: 0.85rem 1rem;
+  border-radius: 1rem;
+  background: rgba(12, 14, 24, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  font-size: 1.01rem;
+  line-height: 1.5;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+}
+
+.jobvizNotice strong {
+  font-weight: 600;
+  display: inline-block;
+  margin-right: 0.35rem;
+}
+
+.jobvizNotice code {
+  font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+  font-size: 0.85em;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 0.1rem 0.3rem;
+  border-radius: 0.35rem;
+}
+
+.jobvizPreviewNotice {
+  margin-bottom: 1.25rem;
+  padding: 0.95rem 1rem;
+  border-radius: 1rem;
+  background: linear-gradient(120deg, rgba(10, 26, 70, 0.85), rgba(35, 13, 66, 0.8));
+  border: 1px solid rgba(117, 172, 255, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.85rem;
+  flex-wrap: wrap;
+  color: #f4f8ff;
+  font-weight: 500;
+  line-height: 1.45;
+}
+
+.jobvizPreviewNotice strong {
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.jobvizPreviewCta {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 0.4rem 0.9rem;
+  font-weight: 700;
+  color: #ffffff !important;
+  background: linear-gradient(120deg, #1c6dea, #6f3dff);
+  text-decoration: none;
+}
+
+.jobvizPreviewCta:hover,
+.jobvizPreviewCta:focus-visible {
+  color: #ffffff !important;
+  text-decoration: none;
+  filter: brightness(1.1);
+}
+
+.jobvizIntroOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2200;
+  background: rgba(2, 8, 26, 0.75);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.85rem;
+  padding: 1rem;
+  flex-wrap: wrap;
+}
+
+.jobvizIntroDialog {
+  width: min(520px, 100%);
+  background: rgba(10, 17, 42, 0.95);
+  border: 1px solid rgba(130, 169, 255, 0.35);
+  border-radius: 16px;
+  padding: 1rem 1.1rem;
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.45);
+}
+
+.jobvizIntroDialog h3 {
+  margin: 0 0 0.35rem;
+  color: #f4f8ff;
+}
+
+.jobvizIntroDialog p {
+  margin: 0;
+  color: rgba(229, 239, 255, 0.86);
+  line-height: 1.45;
+}
+
+.jobvizIntroActions {
+  margin-top: 0.9rem;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.jobvizSavedJobsActions {
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.55rem;
+}
+
+.jobvizSavedJobsPrimaryActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.jobvizIntroDismiss,
+.jobvizIntroContinue {
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  padding: 0.35rem 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.jobvizIntroDismiss {
+  color: #dde8ff;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.jobvizIntroContinue {
+  color: #ffffff;
+  background: linear-gradient(120deg, #1c6dea, #6f3dff);
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
+.jobvizIntroLogin {
+  border-radius: 999px;
+  border: 1px solid rgba(130, 169, 255, 0.48);
+  padding: 0.35rem 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  color: #e7f0ff;
+  background: rgba(35, 86, 185, 0.28);
+}
+
+.jobvizIntroNotNow {
+  border: 0;
+  background: transparent;
+  color: rgba(221, 232, 255, 0.9);
+  font-weight: 700;
+  padding: 0.1rem 0.25rem;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.tourBuilderPlaceholder {
+  margin-bottom: 1.5rem;
+  padding: 1rem 1.25rem;
+  border-radius: 1.25rem;
+  background: linear-gradient(
+    140deg,
+    rgba(55, 18, 100, 0.6),
+    rgba(12, 16, 35, 0.8)
+  );
+  border: 1px dashed rgba(255, 255, 255, 0.28);
+  box-shadow: 0 16px 45px rgba(7, 3, 19, 0.55);
+}
+
+.tourBuilderPlaceholder h3 {
+  margin: 0 0 0.35rem;
+  font-size: 1.05rem;
+}
+
+.tourBuilderPlaceholder p {
+  margin: 0 0 0.4rem;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.tourBuilderPlaceholder p:last-child {
+  margin-bottom: 0;
+}
+
+.assignmentReturnButton {
+  margin-left: 0.85rem;
+  padding: 0.42rem 0.95rem;
+  border-radius: 999px;
+  border: 1px solid rgba(183, 213, 255, 0.7);
+  background: rgba(14, 30, 74, 0.62);
+  color: #f6fbff;
+  font-weight: 600;
+  font-size: 0.93rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  white-space: nowrap;
+  box-shadow: 0 8px 20px rgba(3, 8, 24, 0.38);
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.assignmentReturnButton:hover,
+.assignmentReturnButton:focus-visible {
+  background: rgba(33, 74, 173, 0.35);
+  border-color: rgba(183, 213, 255, 0.92);
+}
+
+.assignmentReturnButton svg {
+  width: 14px;
+  height: 14px;
+}
+
+.assignmentReturnButton:focus-visible {
+  outline: 2px solid #6ec8ff;
+  outline-offset: 2px;
+}
+
+.jobvizMainColumn {
+  width: 100%;
+}
+
+@media (min-width: 1200px) {
+  .jobvizPageShell:not([data-has-assignment="true"]) {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 0;
+    overflow: visible;
+  }
+  .jobvizPageShell:not([data-has-assignment="true"]) .jobvizMainColumn {
+    flex: 1;
+    min-width: 0;
+    width: auto;
+  }
+}
+.assignmentUnitName {
+  font-style: italic;
+  color: inherit;
+}
+
+.assignmentHeaderDivider {
+  width: 100%;
+  border: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.25);
+  margin: 0.15rem 0 0.35rem;
+}
+.assignmentMobileContentSticky {
+  position: sticky;
+  top: clamp(5rem, 7vw, 5.5rem);
+  background: transparent;
+  padding-top: 0.4rem;
+  border-radius: 0;
+  z-index: $assignment-tooltip-z + 5;
+}
+.assignmentCarouselRow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  width: 100%;
+  justify-content: center;
+  flex-wrap: nowrap;
+  padding-top: 0.35rem;
+}
+
+@media (max-width: 480px) {
+  .assignmentCarouselLink {
+    padding: 0.25rem 0.4rem;
+    min-height: 46px;
+  }
+
+  .assignmentCarouselTitle {
+    font-size: 0.86rem;
+    line-height: 1.2;
+  }
+
+  .assignmentListIconWrap {
+    width: 38px;
+    height: 38px;
+  }
+}
+.assignmentCarousel {
+  position: relative;
+}
+
+.assignmentCarousel::before,
+.assignmentCarousel::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1rem;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.assignmentCarousel::before {
+  left: 0;
+  background: linear-gradient(
+    to right,
+    rgba(9, 13, 30, 0.95),
+    transparent
+  );
+}
+
+.assignmentCarousel::after {
+  right: 0;
+  background: linear-gradient(
+    to left,
+    rgba(9, 13, 30, 0.95),
+    transparent
+  );
+}
+
+.navPreviewSection {
+  gap: 1.25rem;
+}
+
+.jobvizPreviewShell {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.jobvizPreviewShell .jobvizGridWrap {
+  margin: 0;
+}
+
+.viewingHeader {
+  margin-top: 0.5rem;
+  position: relative;
+  min-height: 72px;
+}
+
+.viewingHeaderLayer {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.viewingHeaderLayerOutgoing {
+  position: absolute;
+  inset: 0;
+  animation: viewingHeaderPushOut 0.48s cubic-bezier(0.42, 0, 0.22, 1) forwards;
+  pointer-events: none;
+}
+
+.viewingHeaderLayerIncoming {
+  animation: viewingHeaderPushIn 0.48s cubic-bezier(0.42, 0, 0.22, 1) forwards;
+}
+
+.viewingIdentity {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.viewingIcon {
+  width: 54px;
+  height: 54px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, rgba(103, 151, 255, 0.25), rgba(214, 132, 255, 0.25));
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #f7fbff;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+
+.viewingTitle {
+  margin: 0;
+  font-size: 1.35rem;
+  color: #f8fbff;
+}
+
+.viewingMeta {
+  margin: 0.2rem 0 0;
+  color: rgba(230, 235, 255, 0.75);
+}
+
+.viewingHeader + .gridFilterRow {
+  margin-top: 1.25rem;
+}
+
+.assignedScopeMessage {
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(230, 235, 255, 0.75);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-bottom: 0.4rem;
+}
+
+.assignedScopeMessage svg {
+  width: 16px;
+  height: 16px;
+}
+
+.assignedToggleButton {
+  border-radius: 999px;
+  border: 0;
+  background: transparent;
+  color: #f8fbff;
+  padding: 0.38rem 0.75rem;
+  font-size: 0.96rem;
+  letter-spacing: 0.02em;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+}
+
+.assignedToggleButton:hover,
+.assignedToggleButton:focus-visible {
+  background: rgba(255, 255, 255, 0.08);
+  transform: translateY(-1px);
+}
+
+.assignedToggleIndicator {
+  width: 16px;
+  height: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 50%;
+  background: transparent;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.assignedToggleButton:not(.assignedToggleButtonActive) .assignedToggleIndicator {
+  border-width: 1px;
+  border-color: #f8fbff;
+  box-shadow: none;
+}
+
+.assignedToggleButton:not(.savedJobsToggleButton):not(.assignedToggleButtonActive)
+  .assignedToggleIndicator {
+  width: 13px;
+  height: 13px;
+}
+
+.assignedToggleButtonActive {
+  background: rgba(118, 159, 255, 0.18);
+}
+
+.assignedToggleButtonActive .assignedToggleIndicator {
+  border-color: transparent;
+  background: linear-gradient(130deg, rgba(103, 151, 255, 0.95), rgba(214, 132, 255, 0.95));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.5),
+    0 0 12px rgba(118, 159, 255, 0.6);
+}
+
+.savedJobsToggleButton {
+  color: #f8fbff;
+}
+
+.savedJobsToggleButton .assignedToggleIndicator {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  width: 16px;
+  height: 16px;
+}
+
+.savedJobsToggleStar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.savedJobsToggleStarIcon {
+  width: 16px;
+  height: 16px;
+  color: #f8fbff;
+}
+
+.savedJobsToggleButton:hover,
+.savedJobsToggleButton:focus-visible {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.savedJobsToggleButton.assignedToggleButtonActive {
+  color: #f8fbff;
+  background: rgba(118, 159, 255, 0.18);
+}
+
+.savedJobsToggleButton.assignedToggleButtonActive .assignedToggleIndicator {
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.savedJobsToggleButton.assignedToggleButtonActive .savedJobsToggleStarIcon {
+  color: #ffd678;
+}
+
+.savedJobsToggleMuted {
+  opacity: 0.62;
+}
+
+.savedJobsToggleMuted:hover,
+.savedJobsToggleMuted:focus-visible {
+  transform: none;
+  background: transparent;
+}
+
+@media (max-width: 640px) {
+  .gridFilterRow {
+    align-items: stretch;
+    gap: 0.55rem;
+  }
+
+  .gridFilterActions {
+    width: 100%;
+    border-radius: 16px;
+    padding: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.38rem;
+  }
+
+  .gridFilterLabel {
+    margin: 0 0 0.1rem 0.2rem;
+  }
+
+  .assignedToggleButton,
+  .assignmentReturnButton {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .gridFilterRow .sortControl {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .gridFilterRow .sortButton {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .viewingHeader {
+    flex-direction: column;
+  }
+}
+
