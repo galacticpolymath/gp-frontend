@@ -8,6 +8,7 @@ import axios from "axios";
 import { Star } from "lucide-react";
 import { LucideIcon } from "../JobViz/LucideIcon";
 import { useModalContext } from "../../providers/ModalProvider";
+import type { ISelectedJob } from "../../providers/ModalProvider";
 import useSiteSession from "../../customHooks/useSiteSession";
 import jobVizDataObj from "../../data/Jobviz/jobVizDataObj.json";
 import { createSelectedJobVizJobLink } from "../JobViz/JobTours/JobToursCard";
@@ -718,7 +719,7 @@ const SelectedJob: React.FC = () => {
       }
     );
     setIsJobModal(true);
-    setSelectedJob(nextNode);
+    setSelectedJob(nextNode as ISelectedJob);
     router.push(nextUrl, undefined, { scroll: false, shallow: true });
   };
 

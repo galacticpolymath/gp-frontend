@@ -34,6 +34,10 @@ export default async function handler(
             throw new CustomError('No `jobTourId` provided. Cannot update job tour.', 400);
         }
 
+        if (!updates || typeof updates !== "object") {
+            throw new CustomError('No updates provided; the `updates` object must have at least one property.', 400);
+        }
+
         if (!Object.keys(updates).length) {
             throw new CustomError('No updates provided; the `updates` object must have at least one property.', 400);
         }
@@ -73,7 +77,10 @@ export default async function handler(
             throw new CustomError('No user found for the provided email address.', 404);
         }
 
-        const targetTour = await JobTour.findById(jobTourId).lean();
+        const targetTourResult = await JobTour.findById(jobTourId).lean();
+        const targetTour = Array.isArray(targetTourResult)
+            ? targetTourResult[0]
+            : targetTourResult;
 
         if (!targetTour?._id) {
             throw new CustomError('No matching job tour was found in the database.', 404);
