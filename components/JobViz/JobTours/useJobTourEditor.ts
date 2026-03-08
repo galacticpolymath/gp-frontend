@@ -4,6 +4,7 @@ import {
   useCallback,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
 import { toast } from "react-hot-toast";
@@ -90,16 +91,36 @@ export const useJobTourEditor = ({
     useState<JobTourEditorFormState>(getDefaultFormState);
   const [lastSavedSnapshot, setLastSavedSnapshot] =
     useState<JobTourSnapshot | null>(null);
+  const selectionInitKeyRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    if (!isTeacherEditMode) {
+      selectionInitKeyRef.current = null;
+      return;
+    }
+    const key = activeTour?._id ? `tour:${activeTour._id}` : "tour:new";
+    if (selectionInitKeyRef.current !== key) {
+      selectionInitKeyRef.current = null;
+    }
+  }, [activeTour?._id, isTeacherEditMode]);
 
   useEffect(() => {
     if (!isTeacherEditMode) return;
+    const key = activeTour?._id ? `tour:${activeTour._id}` : "tour:new";
+    if (selectionInitKeyRef.current === key) return;
     const nextSelectedSet = sourceAssignmentSocCodes
       ? new Set(sourceAssignmentSocCodes)
       : new Set<string>();
     setSelectedTourJobs((prev) =>
       areSetsEqual(prev, nextSelectedSet) ? prev : nextSelectedSet
     );
-  }, [isTeacherEditMode, setSelectedTourJobs, sourceAssignmentSocCodes]);
+    selectionInitKeyRef.current = key;
+  }, [
+    activeTour?._id,
+    isTeacherEditMode,
+    setSelectedTourJobs,
+    sourceAssignmentSocCodes,
+  ]);
 
   useEffect(() => {
     if (!isTeacherEditMode) return;

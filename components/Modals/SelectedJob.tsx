@@ -101,6 +101,7 @@ const SelectedJob: React.FC = () => {
   const [savedJobIds, setSavedJobIds] = useState<Set<string>>(new Set());
   const [isSavingJob, setIsSavingJob] = useState(false);
   const { status, token } = useSiteSession();
+  const jobTourEditor = useJobTourEditorOptional();
   const isAuthenticated = status === "authenticated";
   const authorizationHeader =
     typeof token === "string" && token.startsWith("Bearer ")
@@ -305,37 +306,69 @@ const SelectedJob: React.FC = () => {
   const currentRating = visibleJob?.soc_code
     ? ratings[visibleJob.soc_code]
     : undefined;
+  const effectiveAssignmentSocCodes = useMemo(() => {
+    const next = new Set<string>();
+    assignmentSocCodeList.forEach((socCode) => next.add(socCode));
+    if (isTeacherEditQuery) {
+      if (jobTourEditor?.selectedJobs?.size) {
+        jobTourEditor.selectedJobs.forEach((socCode) => {
+          if (socCode?.trim()) next.add(socCode.trim());
+        });
+      } else {
+        fallbackTourSelectedJobs.forEach((socCode) => {
+          if (socCode?.trim()) next.add(socCode.trim());
+        });
+      }
+    }
+    return next;
+  }, [
+    assignmentSocCodeList,
+    fallbackTourSelectedJobs,
+    isTeacherEditQuery,
+    jobTourEditor?.selectedJobs,
+  ]);
+
+  const effectiveAssignmentSocCodeList = useMemo(() => {
+    const fromQuery = assignmentSocCodeList.filter((socCode) =>
+      effectiveAssignmentSocCodes.has(socCode)
+    );
+    const extras = Array.from(effectiveAssignmentSocCodes).filter(
+      (socCode) => !fromQuery.includes(socCode)
+    );
+    return [...fromQuery, ...extras];
+  }, [assignmentSocCodeList, effectiveAssignmentSocCodes]);
+
   const isAssignmentJob =
     !!visibleJob?.soc_code &&
-    Boolean(assignmentSocCodes?.has(visibleJob.soc_code));
+    effectiveAssignmentSocCodes.has(visibleJob.soc_code);
   const ratedAssignmentCount = useMemo(() => {
-    if (!assignmentSocCodes?.size) return 0;
+    if (!effectiveAssignmentSocCodes.size) return 0;
     let count = 0;
-    assignmentSocCodes.forEach((socCode) => {
+    effectiveAssignmentSocCodes.forEach((socCode) => {
       if (ratings[socCode]) {
         count += 1;
       }
     });
     return count;
-  }, [assignmentSocCodes, ratings]);
+  }, [effectiveAssignmentSocCodes, ratings]);
   const isAssignmentFullyRated =
-    Boolean(assignmentSocCodes?.size) &&
-    ratedAssignmentCount === (assignmentSocCodes?.size ?? 0);
+    Boolean(effectiveAssignmentSocCodes.size) &&
+    ratedAssignmentCount === effectiveAssignmentSocCodes.size;
   const nextUnratedSoc = useMemo(() => {
-    if (!assignmentSocCodeList.length) return null;
+    if (!effectiveAssignmentSocCodeList.length) return null;
     const currentIndex = visibleJob?.soc_code
-      ? assignmentSocCodeList.indexOf(visibleJob.soc_code)
+      ? effectiveAssignmentSocCodeList.indexOf(visibleJob.soc_code)
       : -1;
     const orderedSocCodes =
       currentIndex >= 0
         ? [
-            ...assignmentSocCodeList.slice(currentIndex + 1),
-            ...assignmentSocCodeList.slice(0, currentIndex + 1),
+            ...effectiveAssignmentSocCodeList.slice(currentIndex + 1),
+            ...effectiveAssignmentSocCodeList.slice(0, currentIndex + 1),
           ]
-        : assignmentSocCodeList;
+        : effectiveAssignmentSocCodeList;
     const nextSoc = orderedSocCodes.find((socCode) => !ratings[socCode]);
     return nextSoc && nextSoc !== visibleJob?.soc_code ? nextSoc : null;
-  }, [assignmentSocCodeList, ratings, visibleJob?.soc_code]);
+  }, [effectiveAssignmentSocCodeList, ratings, visibleJob?.soc_code]);
 
   useEffect(() => {
     if (ratingStatusTimeoutRef.current) {
@@ -734,7 +767,6 @@ const SelectedJob: React.FC = () => {
       },
     ]
     : [];
-  const jobTourEditor = useJobTourEditorOptional();
   const disableExploreRelated =
     isFocusAssignmentView &&
     !hasAssignmentParams &&
@@ -747,7 +779,7 @@ const SelectedJob: React.FC = () => {
         ? jobTourEditor.isSelected(visibleJob.soc_code)
         : fallbackTourSelectedJobs.has(visibleJob.soc_code)
       : false;
-  const isTourEditMode = Boolean(jobTourEditor?.isEditing);
+  const isTourEditMode = Boolean(jobTourEditor?.isEditing || isTeacherEditQuery);
   const activeJobId = visibleJob?.id != null ? String(visibleJob.id) : null;
   const isSavedJob = Boolean(
     (activeJobId && savedJobIds.has(activeJobId)) ||
@@ -788,6 +820,15 @@ const SelectedJob: React.FC = () => {
       jobTourEditor.toggleJob(visibleJob.soc_code);
       return;
     }
+    setFallbackTourSelectedJobs((prev) => {
+      const next = new Set(prev);
+      if (next.has(visibleJob.soc_code)) {
+        next.delete(visibleJob.soc_code);
+      } else {
+        next.add(visibleJob.soc_code);
+      }
+      return next;
+    });
     if (typeof window !== "undefined") {
       window.dispatchEvent(
         new CustomEvent("jobviz-tour-toggle-request", {
@@ -907,7 +948,7 @@ const SelectedJob: React.FC = () => {
                 </div>
                 <div className={styles.modalTitleGroup}>
                   <h3 className={styles.modalTitle}>{jobTitle}</h3>
-                  {isAssignmentJob && (
+                  {isAssignmentJob && !isTourEditMode && (
                     <span
                       className={styles.assignmentBadgePill}
                       title="Tour job"
@@ -926,7 +967,7 @@ const SelectedJob: React.FC = () => {
               <p className={styles.modalSummary}>
                 {definition ?? "Definition unavailable from the BLS feed."}
               </p>
-              {isAssignmentJob && !isTourEditMode ? (
+              {isAssignmentJob ? (
                 <section className={styles.modalRatingBlock}>
                   <div className={styles.modalRatingGrid}>
                     <div className={styles.modalRatingColumn}>
@@ -981,7 +1022,7 @@ const SelectedJob: React.FC = () => {
                           data-animate={animateRatingStatus ? "true" : "false"}
                         >
                           {isAssignmentFullyRated ? <LucideIcon name="Check" /> : null}
-                          {`Rated ${ratedAssignmentCount}/${assignmentSocCodes?.size ?? 0}`}
+                          {`Rated ${ratedAssignmentCount}/${effectiveAssignmentSocCodes.size}`}
                         </span>
                       )}
                       {showRatingStatus && nextUnratedSoc && (
@@ -1032,17 +1073,10 @@ const SelectedJob: React.FC = () => {
                       </button>
                     </div>
                   </div>
-                  {isTourEditMode && visibleJob?.soc_code ? (
-                    <button
-                      type="button"
-                      className={isBookmarked ? styles.ghostButton : styles.primaryButton}
-                      onClick={handleToggleTourJob}
-                    >
-                      <LucideIcon name={isBookmarked ? "Minus" : "Plus"} />
-                      {isBookmarked
-                        ? "Remove job from tour"
-                        : "Add job to tour assignment"}
-                    </button>
+                  {isTourEditMode ? (
+                    <p className={styles.modalRatingNotice}>
+                      Add this job to the tour to enable rating controls.
+                    </p>
                   ) : (
                     <p className={styles.modalRatingNotice}>
                       Add this job to an assignment to enable student ratings in

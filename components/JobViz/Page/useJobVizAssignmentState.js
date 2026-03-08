@@ -45,6 +45,7 @@ export const useJobVizAssignmentState = ({
   const [showSavedJobsOnly, setShowSavedJobsOnly] = useState(false);
   const [showSavedJobsUpsell, setShowSavedJobsUpsell] = useState(false);
   const [showAssignmentOnly, setShowAssignmentOnly] = useState(false);
+  const selectionInitKeyRef = useRef(null);
   const [sortOptionId, setSortOptionId] = useState(
     getSortOptionById(
       typeof router.query?.sort === "string" ? router.query.sort : undefined
@@ -186,18 +187,21 @@ export const useJobVizAssignmentState = ({
   );
 
   useEffect(() => {
-    if (!isTeacherEditMode) return;
+    if (!isTeacherEditMode) {
+      selectionInitKeyRef.current = null;
+      return;
+    }
+    const sourceKey = sourceAssignmentSocCodes
+      ? Array.from(sourceAssignmentSocCodes).sort().join("|")
+      : "";
+    const nextInitKey = activeTour?._id ? `tour:${activeTour._id}` : `query:${sourceKey}`;
+    if (selectionInitKeyRef.current === nextInitKey) return;
+    selectionInitKeyRef.current = nextInitKey;
     const nextSelectedSet = sourceAssignmentSocCodes
       ? new Set(sourceAssignmentSocCodes)
       : new Set();
-    setSelectedTourJobs((prev) => {
-      if (prev.size === nextSelectedSet.size) {
-        const matches = Array.from(prev).every((value) => nextSelectedSet.has(value));
-        if (matches) return prev;
-      }
-      return nextSelectedSet;
-    });
-  }, [isTeacherEditMode, setSelectedTourJobs, sourceAssignmentSocCodes]);
+    setSelectedTourJobs(nextSelectedSet);
+  }, [activeTour?._id, isTeacherEditMode, setSelectedTourJobs, sourceAssignmentSocCodes]);
 
   const chainNodes = useMemo(
     () => getChainFromIds(parsed.idPath),
