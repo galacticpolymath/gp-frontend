@@ -108,36 +108,12 @@ export const useJobVizAssignmentState = ({
       : "default";
   const teacherEditDenied = wantsTeacherEditMode && !hasGpPlusMembership;
   const isStudentMode = viewMode === "student";
-  const shouldForcePreviewMode =
-    Boolean(tourIdParam) && !hasGpPlusMembership && !wantsTeacherEditMode;
   const isPreviewQuery = isTruthyQueryFlag(router.query?.preview);
-  const isTourPreviewMode =
-    (isPreviewQuery || shouldForcePreviewMode) && !isTeacherEditMode;
+  const isTourPreviewMode = isPreviewQuery && !isTeacherEditMode;
   const isStudentLinkView = isTruthyQueryFlag(router.query?.student);
   const showUnitPreviewAssignmentBanner = isTruthyQueryFlag(
     router.query?.previewAssignmentBanner
   );
-
-  useEffect(() => {
-    if (!router.isReady) return;
-    if (!shouldForcePreviewMode || isPreviewQuery) return;
-    const params = new URLSearchParams();
-    Object.entries(router.query ?? {}).forEach(([key, value]) => {
-      if (Array.isArray(value)) {
-        value.forEach((entry) => params.append(key, String(entry)));
-        return;
-      }
-      if (value !== undefined && value !== null) {
-        params.set(key, String(value));
-      }
-    });
-    params.set("preview", "1");
-    params.set("student", "1");
-    router.replace(`${router.pathname}?${params.toString()}`, undefined, {
-      shallow: true,
-      scroll: false,
-    });
-  }, [isPreviewQuery, router, shouldForcePreviewMode]);
 
   const sourceAssignmentSocCodes = useMemo(() => {
     if (activeTour?.selectedJobs?.length) {
@@ -471,7 +447,6 @@ export const useJobVizAssignmentState = ({
     resolvedJobTitleAndSocCodePairs,
     resolvedSocCodesForBanner,
     selectedLevel,
-    shouldForcePreviewMode,
     shouldRenderAssignment,
     showAssignmentOnly,
     showSavedJobsOnly,

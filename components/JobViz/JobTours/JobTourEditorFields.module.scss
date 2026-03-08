@@ -459,6 +459,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 0.4rem;
   min-height: 38px;
   padding: 0.45rem 0.85rem;
   border-radius: 999px;
@@ -467,6 +468,39 @@
   color: rgba(247, 249, 255, 0.96);
   font-size: 0.84rem;
   font-weight: 700;
+  transition: transform 0.18s ease, border-color 0.18s ease,
+    background 0.18s ease, box-shadow 0.18s ease;
+}
+
+.tourEditorShareButton:hover,
+.tourEditorShareButton:focus-visible {
+  transform: translateY(-1px);
+  border-color: rgba(235, 242, 255, 0.58);
+  background: rgba(24, 33, 78, 0.94);
+}
+
+.tourEditorShareButton[data-copied="true"] {
+  border-color: rgba(179, 255, 208, 0.56);
+  background: rgba(34, 92, 63, 0.92);
+  box-shadow: 0 0 0 6px rgba(134, 232, 177, 0.12);
+  animation: shareCopyPulse 0.5s ease;
+}
+
+.tourEditorShareButton :global(svg) {
+  width: 14px;
+  height: 14px;
+}
+
+@keyframes shareCopyPulse {
+  0% {
+    transform: scale(0.98);
+  }
+  55% {
+    transform: scale(1.03);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 
 .tourEditorScrollTop svg {

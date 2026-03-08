@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from "react";
 import { createPortal } from "react-dom";
+import { toast } from "react-hot-toast";
 import styles from "./JobTourEditorFields.module.scss";
 import { LucideIcon } from "../LucideIcon";
 import {
@@ -55,6 +56,7 @@ const JobTourEditorFields: React.FC<JobTourEditorFieldsProps> = ({
   const [showScrollTopHelper, setShowScrollTopHelper] = useState(false);
   const [floatingSaveContext, setFloatingSaveContext] = useState<string | null>(null);
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+  const [didCopyShareLink, setDidCopyShareLink] = useState(false);
   const [isClient, setIsClient] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const formRootRef = React.useRef<HTMLDivElement | null>(null);
@@ -160,19 +162,34 @@ const JobTourEditorFields: React.FC<JobTourEditorFieldsProps> = ({
 
   const shareUrl = React.useMemo(() => {
     if (!tourId) return null;
-    if (typeof window === "undefined") {
-      return buildStudentTourUrl(tourId, { preview: false });
-    }
-    return buildStudentTourUrl(tourId, {
+    const rawUrl =
+      typeof window === "undefined"
+        ? buildStudentTourUrl(tourId, { preview: false })
+        : buildStudentTourUrl(tourId, {
       preview: false,
       host: window.location.host,
       protocol: window.location.protocol,
     });
+    if (typeof window === "undefined") return rawUrl;
+    try {
+      const parsed = new URL(rawUrl, window.location.origin);
+      parsed.searchParams.delete("preview");
+      return parsed.toString();
+    } catch {
+      return rawUrl;
+    }
   }, [tourId]);
 
   const handleCopyShareLink = React.useCallback(async () => {
     if (!shareUrl || typeof navigator === "undefined") return;
-    await navigator.clipboard.writeText(shareUrl);
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      setDidCopyShareLink(true);
+      toast.success("Link copied to clipboard.");
+      window.setTimeout(() => setDidCopyShareLink(false), 1200);
+    } catch {
+      toast.error("Could not copy link.");
+    }
   }, [shareUrl]);
 
   const handleOpenStudentView = React.useCallback(() => {
@@ -529,10 +546,12 @@ const JobTourEditorFields: React.FC<JobTourEditorFieldsProps> = ({
                   <button
                     type="button"
                     className={styles.tourEditorShareButton}
+                    data-copied={didCopyShareLink ? "true" : "false"}
                     onClick={() => {
                       void handleCopyShareLink();
                     }}
                   >
+                    <LucideIcon name="Copy" aria-hidden="true" />
                     Copy Link to Clipboard
                   </button>
                   <button
@@ -540,6 +559,7 @@ const JobTourEditorFields: React.FC<JobTourEditorFieldsProps> = ({
                     className={styles.tourEditorShareButton}
                     onClick={handleOpenStudentView}
                   >
+                    <LucideIcon name="SquareArrowOutUpRight" aria-hidden="true" />
                     Open Student View in New Tab
                   </button>
                 </div>

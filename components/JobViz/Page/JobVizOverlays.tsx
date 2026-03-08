@@ -6,6 +6,8 @@ interface JobVizOverlaysProps {
   showSavedJobsUpsell: boolean;
   showJobvizWelcome: boolean;
   showTourWelcome: boolean;
+  isStudentLinkView: boolean;
+  isTourPreviewMode: boolean;
   onOpenLogin: () => void;
   onCloseSavedJobsUpsell: () => void;
   onDismissWelcomeForever: () => void;
@@ -18,6 +20,8 @@ export const JobVizOverlays: React.FC<JobVizOverlaysProps> = ({
   showSavedJobsUpsell,
   showJobvizWelcome,
   showTourWelcome,
+  isStudentLinkView,
+  isTourPreviewMode,
   onOpenLogin,
   onCloseSavedJobsUpsell,
   onDismissWelcomeForever,
@@ -90,11 +94,23 @@ export const JobVizOverlays: React.FC<JobVizOverlaysProps> = ({
           )}
           {showTourWelcome && (
             <div className={styles.introDialog} role="dialog" aria-modal="true">
-              <h3>Tour preview</h3>
-              <p>
-                Explore this tour in student view. Teachers with GP+ can assign
-                full tours and build their own versions.
-              </p>
+              <h3>
+                {isStudentLinkView && !isTourPreviewMode
+                  ? "How to use this assignment"
+                  : "Tour preview"}
+              </h3>
+              {isStudentLinkView && !isTourPreviewMode ? (
+                <p>
+                  Open each assigned job, read the description, and use the wage and
+                  growth data to rate your interest. Work through all assigned jobs,
+                  then be ready to explain your ratings with evidence from the cards.
+                </p>
+              ) : (
+                <p>
+                  Explore this tour in student view. Teachers with GP+ can assign
+                  full tours and build their own versions.
+                </p>
+              )}
               <div className={styles.introActions}>
                 <button
                   type="button"

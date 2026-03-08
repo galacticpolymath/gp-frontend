@@ -740,6 +740,8 @@ const JobVizSearchResults = ({
         showSavedJobsUpsell={showSavedJobsUpsell}
         showJobvizWelcome={!isTeacherEditMode && showJobvizWelcome}
         showTourWelcome={!isTeacherEditMode && showTourWelcome}
+        isStudentLinkView={isStudentLinkView}
+        isTourPreviewMode={isTourPreviewMode}
         onOpenLogin={() => {
           closeSavedJobsUpsell();
           setIsLoginModalDisplayed(true);
