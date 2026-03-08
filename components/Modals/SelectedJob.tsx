@@ -85,6 +85,9 @@ const SelectedJob: React.FC = () => {
   const [animateRatingStatus, setAnimateRatingStatus] = useState(false);
   const [showRatingInfo, setShowRatingInfo] = useState(false);
   const [isFocusAssignmentView, setIsFocusAssignmentView] = useState(false);
+  const [fallbackTourSelectedJobs, setFallbackTourSelectedJobs] = useState<Set<string>>(
+    new Set()
+  );
   const CARD_TRANSITION_MS = 420;
   const transitionTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const modalScrollRef = useRef<HTMLDivElement | null>(null);
@@ -127,6 +130,9 @@ const SelectedJob: React.FC = () => {
       .filter(Boolean);
   }, [assignmentQueryParam]);
   const hasAssignmentParams = Boolean(assignmentSocCodes?.size);
+  const isTeacherEditQuery =
+    typeof router.query?.edit === "string" &&
+    ["1", "true", "edit"].includes(router.query.edit.toLowerCase());
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -156,6 +162,29 @@ const SelectedJob: React.FC = () => {
     window.addEventListener("jobviz-focus-toggle", handleToggle);
     return () => {
       window.removeEventListener("jobviz-focus-toggle", handleToggle);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return undefined;
+    const handleSelectionChange = (
+      event: Event
+    ) => {
+      const detail = (event as CustomEvent<{ selectedJobs?: unknown }>).detail;
+      const selectedJobs = Array.isArray(detail?.selectedJobs)
+        ? detail.selectedJobs
+        : [];
+      const nextSet = new Set(
+        selectedJobs
+          .map((value) => (typeof value === "string" ? value.trim() : ""))
+          .filter(Boolean)
+      );
+      setFallbackTourSelectedJobs(nextSet);
+    };
+    window.addEventListener("jobviz-tour-selection-change", handleSelectionChange);
+    window.dispatchEvent(new CustomEvent("jobviz-tour-selection-request"));
+    return () => {
+      window.removeEventListener("jobviz-tour-selection-change", handleSelectionChange);
     };
   }, []);
 
@@ -710,11 +739,13 @@ const SelectedJob: React.FC = () => {
     isFocusAssignmentView &&
     !hasAssignmentParams &&
     !jobTourEditor?.isEditing;
-  const canBookmark =
-    Boolean(jobTourEditor?.isEditing) && Boolean(visibleJob?.soc_code);
+  const canAddToTour =
+    Boolean(visibleJob?.soc_code) && (Boolean(jobTourEditor) || isTeacherEditQuery);
   const isBookmarked =
-    canBookmark && visibleJob?.soc_code
-      ? jobTourEditor?.isSelected(visibleJob.soc_code)
+    canAddToTour && visibleJob?.soc_code
+      ? jobTourEditor
+        ? jobTourEditor.isSelected(visibleJob.soc_code)
+        : fallbackTourSelectedJobs.has(visibleJob.soc_code)
       : false;
   const isTourEditMode = Boolean(jobTourEditor?.isEditing);
   const activeJobId = visibleJob?.id != null ? String(visibleJob.id) : null;
@@ -751,9 +782,19 @@ const SelectedJob: React.FC = () => {
   }, []);
 
   const handleToggleTourJob = React.useCallback(async () => {
-    if (!jobTourEditor?.isEditing || !visibleJob?.soc_code) return;
+    if (!visibleJob?.soc_code) return;
     await scrollToTourAnimationArea();
-    jobTourEditor.toggleJob(visibleJob.soc_code);
+    if (jobTourEditor) {
+      jobTourEditor.toggleJob(visibleJob.soc_code);
+      return;
+    }
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(
+        new CustomEvent("jobviz-tour-toggle-request", {
+          detail: { socCode: visibleJob.soc_code },
+        })
+      );
+    }
   }, [jobTourEditor, scrollToTourAnimationArea, visibleJob?.soc_code]);
 
   return (
@@ -784,8 +825,8 @@ const SelectedJob: React.FC = () => {
                   <div className={styles.modalPrimaryActions}>
                     <button
                       type="button"
-                      className={`${styles.saveJobButton} ${
-                        isSavedJob ? styles.saveJobButtonActive : ""
+                      className={`${styles.savedJobBadge} ${styles.modalPillButton} ${
+                        isSavedJob ? styles.jobvizBookmarkButtonActive : ""
                       }`}
                       aria-label={
                         isSavedJob
@@ -805,13 +846,12 @@ const SelectedJob: React.FC = () => {
                       disabled={isSavingJob}
                     >
                       <Star
-                        size={16}
+                        size={12}
                         aria-hidden="true"
-                        className={styles.saveJobButtonIcon}
-                        color={isSavedJob ? "#ffd678" : "currentColor"}
-                        fill={isSavedJob ? "#ffd678" : "none"}
+                        fill={isSavedJob ? "currentColor" : "none"}
+                        stroke="currentColor"
                       />
-                      <span>
+                      <span className={styles.cardHeaderBadgeLabel}>
                         {isSavingJob
                           ? "Updating..."
                           : isSavedJob
@@ -821,19 +861,28 @@ const SelectedJob: React.FC = () => {
                           : "Sign in to save"}
                       </span>
                     </button>
-                    {canBookmark && visibleJob?.soc_code && (
+                    {canAddToTour && visibleJob?.soc_code && (
                       <button
                         type="button"
-                        className={`${styles.saveJobButton} ${styles.addToTourButton} ${
-                          isBookmarked ? styles.addToTourButtonActive : ""
+                        className={`${styles.assignmentBadgeButton} ${styles.modalPillButton} ${
+                          isBookmarked ? styles.assignmentBadgeButtonActive : ""
                         }`}
                         aria-label={
                           isBookmarked ? "Remove job from tour" : "Add job to tour"
                         }
+                        title={isBookmarked ? "Remove from tour jobs" : "Add to tour jobs"}
+                        aria-pressed={isBookmarked}
                         onClick={handleToggleTourJob}
                       >
-                        <LucideIcon name={isBookmarked ? "Minus" : "Plus"} />
-                        <span>{isBookmarked ? "Remove from tour" : "Add to Tour"}</span>
+                        <span
+                          className={`${styles.assignmentBadgeDot} ${styles.cardHeaderBadgeDot} ${
+                            isBookmarked ? styles.assignmentBadgeDotActive : ""
+                          }`}
+                          aria-hidden="true"
+                        />
+                        <span className={styles.cardHeaderBadgeLabel}>
+                          {isBookmarked ? "In Tour" : "Add to Tour"}
+                        </span>
                       </button>
                     )}
                   </div>

@@ -32,6 +32,7 @@ import { AssignmentBannerHeader } from "./AssignmentBannerHeader";
 import { AssignmentDesktopList } from "./AssignmentDesktopList";
 import { AssignmentMobileCarousel } from "./AssignmentMobileCarousel";
 import { AssignmentProgress } from "./AssignmentProgress";
+import { useJobTourEditorOptional } from "../jobTourEditorContext";
 import styles from "./AssignmentDock.module.scss";
 
 interface AssignmentBannerProps {
@@ -74,6 +75,7 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
 }) => {
   const router = useRouter();
   const modalContext = useModalContext();
+  const jobTourEditor = useJobTourEditorOptional();
   const [, setJobvizSummaryModal] = modalContext._jobvizSummaryModal;
   const [, setJobvizCompletionModal] = modalContext._jobvizCompletionModal;
   const [, setIsJobModalOn] = modalContext._isJobModalOn;
@@ -223,6 +225,15 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
       });
     },
     [assignmentParams, onJobClick, router]
+  );
+
+  const handleRemoveTourJob = React.useCallback(
+    (socCode: string) => {
+      if (mode !== "tour-editor" || !jobTourEditor?.isEditing) return;
+      if (!socCode) return;
+      jobTourEditor.toggleJob(socCode);
+    },
+    [jobTourEditor, mode]
   );
 
   const closeJobModal = React.useCallback(() => {
@@ -662,7 +673,9 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
                       nextUnratedSoc={nextUnratedSoc}
                       normalizedRatings={emojiRatings}
                       onJobClick={handleJobClick}
+                      onRemoveJob={handleRemoveTourJob}
                       registerJobButtonRef={registerJobButtonRef}
+                      showRemoveControl={mode === "tour-editor"}
                       showRatingHint={showRatingHint}
                       shouldDelayAnimations={shouldDelayAnimations}
                       suppressedSocCodes={suppressedSocCodes}

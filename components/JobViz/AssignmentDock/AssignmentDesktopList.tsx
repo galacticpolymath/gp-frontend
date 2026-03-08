@@ -20,7 +20,9 @@ interface AssignmentDesktopListProps {
   nextUnratedSoc: string | null;
   normalizedRatings: Record<string, string | undefined>;
   onJobClick: (socCode: string) => void;
+  onRemoveJob?: (socCode: string) => void;
   registerJobButtonRef: (soc: string) => (node: HTMLButtonElement | null) => void;
+  showRemoveControl?: boolean;
   showRatingHint: boolean;
   shouldDelayAnimations: boolean;
   suppressedSocCodes: Set<string>;
@@ -37,7 +39,9 @@ export const AssignmentDesktopList: React.FC<AssignmentDesktopListProps> = ({
   nextUnratedSoc,
   normalizedRatings,
   onJobClick,
+  onRemoveJob,
   registerJobButtonRef,
+  showRemoveControl = false,
   showRatingHint,
   shouldDelayAnimations,
   suppressedSocCodes,
@@ -79,7 +83,7 @@ export const AssignmentDesktopList: React.FC<AssignmentDesktopListProps> = ({
                     clickedSocCodes.has(soc) ? styles.linkClicked : ""
                   } ${activeSocCode === soc ? styles.linkActive : ""} ${
                     shouldPulseDesktopJob ? styles.linkEntice : ""
-                  }`}
+                  } ${showRemoveControl ? styles.assignmentLinkWithRemove : ""}`}
                   onClick={() => onJobClick(soc)}
                   data-assignment-soc={soc}
                   ref={registerJobButtonRef(soc)}
@@ -111,6 +115,21 @@ export const AssignmentDesktopList: React.FC<AssignmentDesktopListProps> = ({
                     </span>
                   ) : null}
                 </button>
+                {showRemoveControl && onRemoveJob ? (
+                  <button
+                    type="button"
+                    className={styles.listRemoveButton}
+                    aria-label={`Remove ${title} from tour`}
+                    title="Remove from tour"
+                    onClick={(event) => {
+                      event.preventDefault();
+                      event.stopPropagation();
+                      onRemoveJob(soc);
+                    }}
+                  >
+                    <LucideIcon name="X" />
+                  </button>
+                ) : null}
               </li>
             );
           })}

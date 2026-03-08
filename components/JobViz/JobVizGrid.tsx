@@ -222,7 +222,7 @@ export const JobVizGrid: React.FC<JobVizGridProps> = ({
   const exitDirection = isExiting ? activeDirection : null;
   const entranceDirection = shouldAnimate ? activeDirection : "down";
   const gridColumnClass = hasDesktopSidebar
-    ? "col-12 col-md-6 col-xxl-4"
+    ? `col-12 col-md-6 ${styles.sidebarGridCol}`
     : "col-12 col-md-6 col-xl-4";
 
   return (

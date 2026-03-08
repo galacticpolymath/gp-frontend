@@ -197,6 +197,14 @@
   flex-direction: column;
   align-items: stretch;
   gap: 0.35rem;
+  width: 11rem;
+}
+
+.modalPillButton {
+  border: none;
+  cursor: pointer;
+  justify-content: center;
+  width: 100%;
 }
 
 .saveJobButton {

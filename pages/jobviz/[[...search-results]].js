@@ -172,6 +172,43 @@ const JobVizSearchResults = ({
     setLastToggledSoc(socCode);
   }, []);
 
+  useEffect(() => {
+    if (typeof window === "undefined") return undefined;
+    const emitSelection = () => {
+      window.dispatchEvent(
+        new CustomEvent("jobviz-tour-selection-change", {
+          detail: { selectedJobs: Array.from(selectedTourJobs) },
+        })
+      );
+    };
+    emitSelection();
+    return undefined;
+  }, [selectedTourJobs]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return undefined;
+    const handleToggleRequest = (
+      event
+    ) => {
+      const socCode = event?.detail?.socCode;
+      if (typeof socCode !== "string" || !socCode.trim()) return;
+      toggleTourJob(socCode.trim());
+    };
+    const handleSelectionRequest = () => {
+      window.dispatchEvent(
+        new CustomEvent("jobviz-tour-selection-change", {
+          detail: { selectedJobs: Array.from(selectedTourJobs) },
+        })
+      );
+    };
+    window.addEventListener("jobviz-tour-toggle-request", handleToggleRequest);
+    window.addEventListener("jobviz-tour-selection-request", handleSelectionRequest);
+    return () => {
+      window.removeEventListener("jobviz-tour-toggle-request", handleToggleRequest);
+      window.removeEventListener("jobviz-tour-selection-request", handleSelectionRequest);
+    };
+  }, [selectedTourJobs, toggleTourJob]);
+
   const isTourJobSelected = useCallback(
     (socCode) => selectedTourJobs.has(socCode),
     [selectedTourJobs]

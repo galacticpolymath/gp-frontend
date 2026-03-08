@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from "react";
+import { createPortal } from "react-dom";
 import styles from "./JobTourEditorFields.module.scss";
 import { LucideIcon } from "../LucideIcon";
 import {
@@ -47,6 +48,8 @@ const JobTourEditorFields: React.FC<JobTourEditorFieldsProps> = ({
   const requiresClassDetails = value.whoCanSee === "everyone";
   const [isUnitsOpen, setIsUnitsOpen] = useState(false);
   const [showScrollTopHelper, setShowScrollTopHelper] = useState(false);
+  const [isClient, setIsClient] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const formRootRef = React.useRef<HTMLDivElement | null>(null);
   const formTopSentinelRef = React.useRef<HTMLDivElement | null>(null);
   const selectedUnits = useMemo(
@@ -54,6 +57,24 @@ const JobTourEditorFields: React.FC<JobTourEditorFieldsProps> = ({
       unitOptions.filter((unit) => value.gpUnitsAssociated.includes(unit.id)),
     [unitOptions, value.gpUnitsAssociated]
   );
+
+  React.useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  React.useEffect(() => {
+    if (typeof window === "undefined") return undefined;
+    const syncModalState = () => {
+      setIsModalOpen(document.body.classList.contains("modal-open"));
+    };
+    syncModalState();
+    const observer = new MutationObserver(syncModalState);
+    observer.observe(document.body, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
+    return () => observer.disconnect();
+  }, []);
 
   React.useEffect(() => {
     if (typeof window === "undefined") return undefined;
@@ -354,16 +375,19 @@ const JobTourEditorFields: React.FC<JobTourEditorFieldsProps> = ({
           </button>
         )}
       </div>
-      {showScrollTopHelper ? (
-        <button
-          type="button"
-          className={styles.tourEditorScrollTop}
-          onClick={handleScrollToFormTop}
-        >
-          <LucideIcon name="ArrowUp" aria-hidden="true" />
-          <span>Scroll to top</span>
-        </button>
-      ) : null}
+      {isClient && showScrollTopHelper && !isModalOpen
+        ? createPortal(
+            <button
+              type="button"
+              className={styles.tourEditorScrollTop}
+              onClick={handleScrollToFormTop}
+            >
+              <LucideIcon name="ArrowUp" aria-hidden="true" />
+              <span>Scroll to top</span>
+            </button>,
+            document.body
+          )
+        : null}
     </div>
   );
 };
