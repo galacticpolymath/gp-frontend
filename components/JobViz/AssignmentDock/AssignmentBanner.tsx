@@ -206,8 +206,7 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
   );
   const resolvedTeacherCtaCopy = teacherCtaCopy?.trim() || null;
   const markerLabel =
-    markerLabelOverride?.trim() ||
-    (mode === "tour-editor" ? "JobViz+ | Tour Builder" : "JobViz+ | Assignment");
+    markerLabelOverride?.trim() || "JobViz+ | Assignment";
 
   const handleJobClick = React.useCallback(
     (socCode: string) => {

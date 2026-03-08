@@ -120,21 +120,43 @@ export const JobVizLayout: React.FC<JobVizLayoutProps> = ({
           >
             <div className={styles.jobvizHeroContent}>
               <div className={styles.jobvizHeroPrimary}>
-                <div className={styles.jobvizHeroInner}>
-                  <div className={styles.jobvizHeroLogo}>
-                    <Image
-                      src="/imgs/jobViz/jobviz_rocket_logo_white.svg"
-                      alt="JobViz logo"
-                      width={240}
-                      height={80}
-                      priority
-                      style={{ width: "100%", height: "auto" }}
-                    />
+                {heroMode === "edit" ? (
+                  <div className={styles.jobvizHeroEditTopRow}>
+                    <div className={styles.jobvizHeroInner}>
+                      <p className={styles.heroEyebrow}>{heroEyebrow}</p>
+                      <h1 className={styles.heroTitle}>{heroTitle}</h1>
+                      <p className={styles.heroSubtitle}>{effectiveSubtitle}</p>
+                    </div>
+                    <div className={styles.heroEditLogoPane}>
+                      <div className={styles.heroEditLogo}>
+                        <Image
+                          src="/imgs/jobViz/jobviz_rocket_logo_white.svg"
+                          alt="JobViz logo"
+                          width={400}
+                          height={132}
+                          priority
+                          style={{ width: "100%", height: "auto" }}
+                        />
+                      </div>
+                    </div>
                   </div>
-                  <p className={styles.heroEyebrow}>{heroEyebrow}</p>
-                  <h1 className={styles.heroTitle}>{heroTitle}</h1>
-                  <p className={styles.heroSubtitle}>{effectiveSubtitle}</p>
-                </div>
+                ) : (
+                  <div className={styles.jobvizHeroInner}>
+                    <div className={styles.jobvizHeroLogo}>
+                      <Image
+                        src="/imgs/jobViz/jobviz_rocket_logo_white.svg"
+                        alt="JobViz logo"
+                        width={240}
+                        height={80}
+                        priority
+                        style={{ width: "100%", height: "auto" }}
+                      />
+                    </div>
+                    <p className={styles.heroEyebrow}>{heroEyebrow}</p>
+                    <h1 className={styles.heroTitle}>{heroTitle}</h1>
+                    <p className={styles.heroSubtitle}>{effectiveSubtitle}</p>
+                  </div>
+                )}
                 {heroFooter ? (
                   <div className={styles.jobvizHeroFooter}>{heroFooter}</div>
                 ) : null}

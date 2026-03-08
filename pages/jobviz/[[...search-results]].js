@@ -260,10 +260,18 @@ const JobVizSearchResults = ({
   const studentHeroSubtitle = isTourPreviewMode
     ? `Preview mode unlocks the first ${JOBVIZ_PREVIEW_LIMIT} jobs in this tour. Upgrade to GP+ to assign and edit the full experience.`
     : `This assignment spotlights ${assignmentCountLabel} with quick descriptions, wages, and growth stats so you can rate how interested you are. Feel free to explore related careers as you rate the selected jobs. Discover what's possible!`;
-  const heroSubtitle = isStudentMode ? studentHeroSubtitle : baseHeroSubtitle;
-  const heroTitle = isStudentMode
-    ? "JobViz+ Career Tour Assignment"
-    : "JobViz Career Explorer+";
+  const editModeHeroSubtitle =
+    "Build your own Job Tour Assignment to connect your curriculum to economic knowledge and career opportunities.";
+  const heroSubtitle = isTeacherEditMode
+    ? editModeHeroSubtitle
+    : isStudentMode
+      ? studentHeroSubtitle
+      : baseHeroSubtitle;
+  const heroTitle = isTeacherEditMode
+    ? 'JobViz+ "Job Tour" Editor'
+    : isStudentMode
+      ? "JobViz+ Career Tour Assignment"
+      : "JobViz Career Explorer+";
   const isGpPlusHero = !!hasGpPlusMembership;
   const handleHeroStatAction = useHeroStatAction({
     onBrowseNavigate: ensureJobCategoriesLevel,
@@ -614,6 +622,7 @@ const JobVizSearchResults = ({
                   />
                   <JobVizGrid
                     items={renderedGridItems}
+                    hasDesktopSidebar={shouldRenderAssignment}
                     onItemClick={handleGridItemClick}
                     navigationHint={navigationHint}
                     onExitComplete={handleGridExitComplete}

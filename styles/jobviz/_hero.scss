@@ -32,6 +32,7 @@
 .jobvizHeroFooter {
   position: relative;
   z-index: 1;
+  width: 100%;
 }
 
 @media (min-width: 900px) {
@@ -166,6 +167,49 @@
   gap: 1rem;
   min-width: min(320px, 100%);
   align-self: stretch;
+}
+
+.jobvizHeroEditTopRow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 36%);
+  gap: clamp(1rem, 2.4vw, 1.8rem);
+  align-items: stretch;
+}
+
+.heroEditLogoPane {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 2;
+}
+
+.heroEditLogo {
+  width: min(100%, 380px);
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  filter: drop-shadow(0 10px 26px rgba(8, 10, 33, 0.45));
+  margin: 0 auto;
+}
+
+.heroEditLogo :global(img) {
+  width: 100% !important;
+  max-width: 100%;
+  max-height: 100%;
+  opacity: 1;
+  filter: none;
+}
+
+@media (max-width: 899px) {
+  .jobvizHeroEditTopRow {
+    grid-template-columns: 1fr;
+  }
+
+  .heroEditLogoPane {
+    min-height: 150px;
+  }
 }
 
 .jobvizHeroEditMode::before {
@@ -500,4 +544,3 @@
   will-change: opacity, transform;
   pointer-events: none;
 }
-

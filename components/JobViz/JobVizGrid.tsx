@@ -38,6 +38,7 @@ export interface JobVizNavigationHint {
 
 export interface JobVizGridProps {
   items: JobVizGridItem[];
+  hasDesktopSidebar?: boolean;
   onItemClick?: (
     item: JobVizGridItem,
     meta?: { cardRect?: CardAnchor | null; itemId?: string }
@@ -55,6 +56,7 @@ const GRID_ENTRANCE_HOLD_MS = 320;
 
 export const JobVizGrid: React.FC<JobVizGridProps> = ({
   items,
+  hasDesktopSidebar = false,
   onItemClick,
   navigationHint,
   onExitComplete,
@@ -219,12 +221,15 @@ export const JobVizGrid: React.FC<JobVizGridProps> = ({
 
   const exitDirection = isExiting ? activeDirection : null;
   const entranceDirection = shouldAnimate ? activeDirection : "down";
+  const gridColumnClass = hasDesktopSidebar
+    ? "col-12 col-md-6 col-xxl-4"
+    : "col-12 col-md-6 col-xl-4";
 
   return (
     <div className={styles.jobvizGridStage} ref={stageRef}>
       <div className="row g-4">
         {displayItems.map((item, index) => (
-          <div className="col-12 col-md-6 col-xl-4" key={item.id}>
+          <div className={gridColumnClass} key={item.id}>
           <JobVizCard
             title={item.title}
             iconName={item.iconName}
