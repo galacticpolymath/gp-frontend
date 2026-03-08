@@ -276,6 +276,30 @@
   border-color: rgba(161, 219, 162, 0.26);
 }
 
+.tourEditorScrollTop {
+  position: fixed;
+  right: calc(var(--jobviz-desktop-dock-width, 0px) + 1rem);
+  bottom: 1rem;
+  z-index: 1605;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 38px;
+  padding: 0.45rem 0.85rem;
+  border-radius: 999px;
+  border: 1px solid rgba(189, 207, 255, 0.34);
+  background: rgba(18, 24, 62, 0.94);
+  color: rgba(247, 249, 255, 0.96);
+  font-size: 0.86rem;
+  font-weight: 700;
+  box-shadow: 0 10px 24px rgba(6, 7, 26, 0.32);
+}
+
+.tourEditorScrollTop svg {
+  width: 14px;
+  height: 14px;
+}
+
 @media (max-width: 767px) {
   .tourEditorSectionFields {
     grid-template-columns: 1fr;
@@ -288,5 +312,11 @@
 
   .tourActionButton {
     width: 100%;
+  }
+}
+
+@media (max-width: 1199px) {
+  .tourEditorScrollTop {
+    right: 1rem;
   }
 }

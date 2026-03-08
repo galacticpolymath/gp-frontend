@@ -12,6 +12,7 @@ import useSiteSession from "../../customHooks/useSiteSession";
 import jobVizDataObj from "../../data/Jobviz/jobVizDataObj.json";
 import { createSelectedJobVizJobLink } from "../JobViz/JobTours/JobToursCard";
 import { JOBVIZ_BRACKET_SEARCH_ID } from "../JobViz/jobvizConstants";
+import { JOBVIZ_CATEGORIES_ANCHOR_ID } from "../JobViz/jobvizDomIds";
 import {
   buildJobvizUrl,
   getNodeBySocCode,
@@ -722,6 +723,39 @@ const SelectedJob: React.FC = () => {
       (visibleJob?.soc_code && savedJobIds.has(visibleJob.soc_code))
   );
 
+  const scrollToTourAnimationArea = React.useCallback(() => {
+    if (typeof window === "undefined") return Promise.resolve();
+    const target =
+      document.getElementById(JOBVIZ_CATEGORIES_ANCHOR_ID) ??
+      document.getElementById(JOBVIZ_BRACKET_SEARCH_ID);
+    if (!target) return Promise.resolve();
+    const rect = target.getBoundingClientRect();
+    const navOffsetRaw = getComputedStyle(document.documentElement)
+      .getPropertyValue("--portal-nav-offset")
+      .trim();
+    const navOffset = Number.parseFloat(navOffsetRaw) || 0;
+    const targetTop = rect.top + window.pageYOffset - navOffset - 24;
+    const isTargetVisible =
+      rect.top >= navOffset + 12 &&
+      rect.top <= window.innerHeight * 0.45;
+    if (isTargetVisible) {
+      return Promise.resolve();
+    }
+    window.scrollTo({
+      top: Math.max(0, targetTop),
+      behavior: "smooth",
+    });
+    return new Promise<void>((resolve) => {
+      window.setTimeout(resolve, 360);
+    });
+  }, []);
+
+  const handleToggleTourJob = React.useCallback(async () => {
+    if (!jobTourEditor?.isEditing || !visibleJob?.soc_code) return;
+    await scrollToTourAnimationArea();
+    jobTourEditor.toggleJob(visibleJob.soc_code);
+  }, [jobTourEditor, scrollToTourAnimationArea, visibleJob?.soc_code]);
+
   return (
     <>
       <Modal
@@ -747,71 +781,62 @@ const SelectedJob: React.FC = () => {
                   Job detail <span className={styles.modalSocCodeInline}>(SOC {visibleJob.soc_code})</span>
                 </p>
                 <div className={styles.modalHeaderActions}>
-                  <button
-                    type="button"
-                    className={`${styles.saveJobButton} ${
-                      isSavedJob ? styles.saveJobButtonActive : ""
-                    }`}
-                    onClick={handleSaveJob}
-                    disabled={isSavingJob}
-                    aria-label={
-                      isSavedJob
-                        ? "Unsave job"
-                        : isAuthenticated
-                        ? "Save job"
-                        : "Log in to save job"
-                    }
-                    title={
-                      isSavedJob
-                        ? "Unsave Job"
-                        : isAuthenticated
-                        ? "Save Job"
-                        : "Log in to save job"
-                    }
-                  >
-                    <Star
-                      size={16}
-                      aria-hidden="true"
-                      className={styles.saveJobButtonIcon}
-                      color={isSavedJob ? "#ffd678" : "currentColor"}
-                      fill={isSavedJob ? "#ffd678" : "none"}
-                    />
-                    <span>
-                      {isSavingJob
-                        ? "Updating..."
-                        : isSavedJob
-                        ? "Saved"
-                        : isAuthenticated
-                        ? "Save\u00A0job"
-                        : "Sign in to save"}
-                    </span>
-                  </button>
-                  {canBookmark && visibleJob?.soc_code && (
+                  <div className={styles.modalPrimaryActions}>
                     <button
                       type="button"
-                      className={`${styles.jobvizBookmarkButton} ${styles.jobvizBookmarkButtonInline} ${
-                        isBookmarked ? styles.jobvizBookmarkButtonActive : ""
+                      className={`${styles.saveJobButton} ${
+                        isSavedJob ? styles.saveJobButtonActive : ""
                       }`}
                       aria-label={
-                        isBookmarked
-                          ? "Remove job from tour"
-                          : "Click to add job to tour"
+                        isSavedJob
+                          ? "Unsave job"
+                          : isAuthenticated
+                          ? "Save job"
+                          : "Log in to save job"
                       }
                       title={
-                        isBookmarked ? "Remove from tour" : "Click to add job to tour"
+                        isSavedJob
+                          ? "Unsave Job"
+                          : isAuthenticated
+                          ? "Save Job"
+                          : "Log in to save job"
                       }
-                      data-active={isBookmarked ? "true" : "false"}
-                      onClick={() => {
-                        jobTourEditor?.toggleJob(visibleJob.soc_code);
-                      }}
+                      onClick={handleSaveJob}
+                      disabled={isSavingJob}
                     >
                       <Star
-                        size={14}
+                        size={16}
                         aria-hidden="true"
-                        fill={isBookmarked ? "currentColor" : "none"}
+                        className={styles.saveJobButtonIcon}
+                        color={isSavedJob ? "#ffd678" : "currentColor"}
+                        fill={isSavedJob ? "#ffd678" : "none"}
                       />
+                      <span>
+                        {isSavingJob
+                          ? "Updating..."
+                          : isSavedJob
+                          ? "Saved"
+                          : isAuthenticated
+                          ? "Save\u00A0job"
+                          : "Sign in to save"}
+                      </span>
                     </button>
-                  )}
+                    {canBookmark && visibleJob?.soc_code && (
+                      <button
+                        type="button"
+                        className={`${styles.saveJobButton} ${styles.addToTourButton} ${
+                          isBookmarked ? styles.addToTourButtonActive : ""
+                        }`}
+                        aria-label={
+                          isBookmarked ? "Remove job from tour" : "Add job to tour"
+                        }
+                        onClick={handleToggleTourJob}
+                      >
+                        <LucideIcon name={isBookmarked ? "Minus" : "Plus"} />
+                        <span>{isBookmarked ? "Remove from tour" : "Add to Tour"}</span>
+                      </button>
+                    )}
+                  </div>
                   <button
                     type="button"
                     className={styles.modalCloseButton}
@@ -962,7 +987,7 @@ const SelectedJob: React.FC = () => {
                     <button
                       type="button"
                       className={isBookmarked ? styles.ghostButton : styles.primaryButton}
-                      onClick={() => jobTourEditor?.toggleJob(visibleJob.soc_code)}
+                      onClick={handleToggleTourJob}
                     >
                       <LucideIcon name={isBookmarked ? "Minus" : "Plus"} />
                       {isBookmarked

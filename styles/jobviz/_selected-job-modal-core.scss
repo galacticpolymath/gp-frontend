@@ -192,6 +192,13 @@
   gap: 0.5rem;
 }
 
+.modalPrimaryActions {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.35rem;
+}
+
 .saveJobButton {
   border: none;
   background: rgba(255, 255, 255, 0.08);
@@ -224,6 +231,17 @@
 
 .saveJobButtonActive {
   color: #f7fbff;
+}
+
+.addToTourButton {
+  justify-content: center;
+  min-height: 32px;
+  font-size: 0.66rem;
+}
+
+.addToTourButtonActive {
+  border: 1px solid rgba(255, 226, 120, 0.88);
+  color: #ffd86a;
 }
 
 .saveJobButtonIcon {
@@ -490,4 +508,3 @@
 .modalRatingInfoText {
   flex: 1;
 }
-

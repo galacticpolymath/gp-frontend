@@ -46,13 +46,49 @@ const JobTourEditorFields: React.FC<JobTourEditorFieldsProps> = ({
   const showCustomSubject = value.classSubject === "Other";
   const requiresClassDetails = value.whoCanSee === "everyone";
   const [isUnitsOpen, setIsUnitsOpen] = useState(false);
+  const [showScrollTopHelper, setShowScrollTopHelper] = useState(false);
+  const formRootRef = React.useRef<HTMLDivElement | null>(null);
+  const formTopSentinelRef = React.useRef<HTMLDivElement | null>(null);
   const selectedUnits = useMemo(
     () =>
       unitOptions.filter((unit) => value.gpUnitsAssociated.includes(unit.id)),
     [unitOptions, value.gpUnitsAssociated]
   );
+
+  React.useEffect(() => {
+    if (typeof window === "undefined") return undefined;
+    const sentinel = formTopSentinelRef.current;
+    if (!sentinel) return undefined;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setShowScrollTopHelper(!entry.isIntersecting);
+      },
+      {
+        root: null,
+        threshold: 0,
+        rootMargin: "-80px 0px 0px 0px",
+      }
+    );
+    observer.observe(sentinel);
+    return () => observer.disconnect();
+  }, []);
+
+  const handleScrollToFormTop = React.useCallback(() => {
+    if (typeof window === "undefined" || !formRootRef.current) return;
+    const navOffsetRaw = getComputedStyle(document.documentElement)
+      .getPropertyValue("--portal-nav-offset")
+      .trim();
+    const navOffset = Number.parseFloat(navOffsetRaw) || 0;
+    const top = Math.max(
+      0,
+      window.scrollY + formRootRef.current.getBoundingClientRect().top - navOffset - 12
+    );
+    window.scrollTo({ top, behavior: "smooth" });
+  }, []);
+
   return (
-    <div className={styles.tourEditorFields}>
+    <div className={styles.tourEditorFields} ref={formRootRef}>
+      <div ref={formTopSentinelRef} aria-hidden="true" />
       <div className={styles.tourEditorMeta}>
         <section className={styles.tourEditorSection}>
           <div className={styles.tourEditorSectionHeader}>
@@ -318,6 +354,16 @@ const JobTourEditorFields: React.FC<JobTourEditorFieldsProps> = ({
           </button>
         )}
       </div>
+      {showScrollTopHelper ? (
+        <button
+          type="button"
+          className={styles.tourEditorScrollTop}
+          onClick={handleScrollToFormTop}
+        >
+          <LucideIcon name="ArrowUp" aria-hidden="true" />
+          <span>Scroll to top</span>
+        </button>
+      ) : null}
     </div>
   );
 };
