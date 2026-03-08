@@ -7,6 +7,7 @@ import {
   useState,
 } from "react";
 import axios from "axios";
+import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import Layout from "../../components/Layout";
 import { AssignmentBanner } from "../../components/JobViz/AssignmentBanner";
@@ -15,7 +16,7 @@ import { JobVizGrid } from "../../components/JobViz/JobVizGrid";
 import { JobVizLayout } from "../../components/JobViz/JobVizLayout";
 import HeroForFreeUsers from "../../components/JobViz/Heros/HeroForFreeUsers";
 import { JOBVIZ_BRACKET_SEARCH_ID } from "../../components/JobViz/jobvizConstants";
-import styles from "../../styles/jobvizBurst.module.scss";
+import styles from "../../styles/jobviz.module.scss";
 import {
   buildIdPathForNode,
   buildJobvizUrl,
@@ -25,12 +26,12 @@ import {
   getDisplayTitle,
   getHierarchySlice,
   getIconNameForNode,
+  getNodeBySocCode,
   getJobSpecificIconName,
   getLineItemCountForNode,
   normalizeSocCode,
   getSelectedSocCodeForLevel,
   getTargetLevelForNode,
-  jobVizData,
   jobVizNodeById,
   parseJobvizPath,
 } from "../../components/JobViz/jobvizUtils";
@@ -59,29 +60,26 @@ import {
 import useSiteSession from "../../customHooks/useSiteSession";
 import { useUserContext } from "../../providers/UserProvider";
 import { JobTourEditorProvider } from "../../components/JobViz/jobTourEditorContext";
-import {
-  createJobTour,
-  getJobTours,
-  updateJobTour,
-} from "../../components/JobViz/JobTours/jobTourApi";
-import JobTourUpgradeModal from "../../components/JobViz/JobTours/JobTourUpgradeModal";
+import { getJobTours } from "../../components/JobViz/JobTours/jobTourApi";
 import JobTourEditorFields from "../../components/JobViz/JobTours/JobTourEditorFields";
-import {
-  DEFAULT_JOB_TOUR_ASSIGNMENT,
-  DEFAULT_JOB_TOUR_VERSION_PREFIX,
-  CLASS_SUBJECT_OPTIONS,
-} from "../../components/JobViz/JobTours/jobTourConstants";
+import { DEFAULT_JOB_TOUR_ASSIGNMENT } from "../../components/JobViz/JobTours/jobTourConstants";
 import {
   buildStudentTourUrl,
   isTruthyQueryFlag,
   JOBVIZ_PREVIEW_LIMIT,
 } from "../../components/JobViz/JobTours/tourAccess";
+import { useJobTourEditor } from "../../components/JobViz/JobTours/useJobTourEditor";
 import { JobVizNotices } from "../../components/JobViz/Page/JobVizNotices";
 import { JobVizGridHeader } from "../../components/JobViz/Page/JobVizGridHeader";
 import { JobVizFilterBar } from "../../components/JobViz/Page/JobVizFilterBar";
 import { JobVizSourceAndUpsell } from "../../components/JobViz/Page/JobVizSourceAndUpsell";
 import { JobVizOverlays } from "../../components/JobViz/Page/JobVizOverlays";
 import { toast } from "react-hot-toast";
+import editorStyles from "../../components/JobViz/JobTours/JobTourEditorFields.module.scss";
+
+const JobTourUpgradeModal = dynamic(
+  () => import("../../components/JobViz/JobTours/JobTourUpgradeModal")
+);
 
 const JOBVIZ_DESCRIPTION =
   "Explore the full BLS hierarchy with the JobViz glass UI—glass cards, glowing breadcrumbs, and animated explore links keyed to real SOC data.";
@@ -92,15 +90,6 @@ const GRID_NAVIGATION_HEADER_DELAY_MS = VIEWING_HEADER_TRANSITION_MS;
 const JOBVIZ_WELCOME_DISMISSED_KEY = "jobviz_intro_dismissed";
 const JOBVIZ_TOUR_WELCOME_DISMISSED_KEY = "jobviz_tour_intro_dismissed";
 const SAVED_JOBS_QUERY_PARAM = "saved";
-const areSetsEqual = (left, right) => {
-  if (left === right) return true;
-  if (!left || !right) return false;
-  if (left.size !== right.size) return false;
-  for (const value of left) {
-    if (!right.has(value)) return false;
-  }
-  return true;
-};
 
 const JobVizSearchResults = ({
   metaDescription,
@@ -222,21 +211,6 @@ const JobVizSearchResults = ({
   const lastReportParamRef = useRef(null);
   const [selectedTourJobs, setSelectedTourJobs] = useState(new Set());
   const [lastToggledSoc, setLastToggledSoc] = useState(null);
-  const [unitOptions, setUnitOptions] = useState([]);
-  const [isSavingTour, setIsSavingTour] = useState(false);
-  const [saveError, setSaveError] = useState(null);
-  const [lastSavedSnapshot, setLastSavedSnapshot] = useState(null);
-  const [tourForm, setTourForm] = useState({
-    heading: "",
-    whoCanSee: "me",
-    classSubject: "",
-    classSubjectCustom: "",
-    gradeLevel: "",
-    tags: "",
-    gpUnitsAssociated: [],
-    explanation: "",
-    assignment: DEFAULT_JOB_TOUR_ASSIGNMENT,
-  });
 
   useEffect(() => {
     if (!router.isReady) return;
@@ -309,91 +283,6 @@ const JobVizSearchResults = ({
     [assignmentSocCodes, preservedUnitName]
   );
 
-  useEffect(() => {
-    if (!isTeacherEditMode) return;
-    const nextSelectedSet = sourceAssignmentSocCodes
-      ? new Set(sourceAssignmentSocCodes)
-      : new Set();
-    setSelectedTourJobs((prev) =>
-      areSetsEqual(prev, nextSelectedSet) ? prev : nextSelectedSet
-    );
-  }, [isTeacherEditMode, sourceAssignmentSocCodes]);
-
-  useEffect(() => {
-    if (!isTeacherEditMode) return;
-    if (!activeTour) {
-      setTourForm((prev) => ({
-        ...prev,
-        heading:
-          prev.heading || preservedUnitName
-            ? prev.heading || `${preservedUnitName} JobViz Tour`
-            : prev.heading,
-        assignment: prev.assignment || DEFAULT_JOB_TOUR_ASSIGNMENT,
-      }));
-      return;
-    }
-    const isDefaultSubject = CLASS_SUBJECT_OPTIONS.includes(
-      activeTour.classSubject
-    );
-    setTourForm({
-      heading: activeTour.heading ?? "",
-      whoCanSee: activeTour.whoCanSee ?? "me",
-      classSubject: isDefaultSubject ? activeTour.classSubject : "Other",
-      classSubjectCustom: isDefaultSubject ? "" : activeTour.classSubject ?? "",
-      gradeLevel: activeTour.gradeLevel ?? "",
-      tags: (activeTour.tags ?? []).join(", "),
-      gpUnitsAssociated: activeTour.gpUnitsAssociated ?? [],
-      explanation: activeTour.explanation ?? "",
-      assignment: activeTour.assignment ?? DEFAULT_JOB_TOUR_ASSIGNMENT,
-    });
-    setLastSavedSnapshot({
-      heading: activeTour.heading ?? "",
-      whoCanSee: activeTour.whoCanSee ?? "me",
-      classSubject: CLASS_SUBJECT_OPTIONS.includes(activeTour.classSubject)
-        ? activeTour.classSubject
-        : activeTour.classSubject ?? "",
-      gradeLevel: activeTour.gradeLevel ?? "",
-      tags: (activeTour.tags ?? [])
-        .map((tag) => tag.trim())
-        .filter(Boolean),
-      gpUnitsAssociated: [...(activeTour.gpUnitsAssociated ?? [])].sort(),
-      explanation: activeTour.explanation ?? "",
-      assignment: activeTour.assignment ?? DEFAULT_JOB_TOUR_ASSIGNMENT,
-      selectedJobs: [...(activeTour.selectedJobs ?? [])].sort(),
-    });
-  }, [activeTour, isTeacherEditMode, preservedUnitName]);
-
-  useEffect(() => {
-    if (!isTeacherEditMode) return;
-    let isMounted = true;
-    const params = new URLSearchParams();
-    params.set(
-      "projectionsObj",
-      JSON.stringify({ Title: 1, numID: 1, locale: 1 })
-    );
-    fetch(`/api/get-units?${params.toString()}`)
-      .then((response) => response.json())
-      .then((payload) => {
-        if (!isMounted) return;
-        const units = Array.isArray(payload?.units) ? payload.units : [];
-        const options = units
-          .map((unit) => ({
-            id: `${unit.numID ?? unit._id ?? unit.Title}`,
-            title: unit.Title ?? "Untitled unit",
-          }))
-          .filter((unit) => unit.id && unit.title)
-          .sort((a, b) => a.title.localeCompare(b.title));
-        setUnitOptions(options);
-      })
-      .catch(() => {
-        if (!isMounted) return;
-        setUnitOptions([]);
-      });
-    return () => {
-      isMounted = false;
-    };
-  }, [isTeacherEditMode]);
-
   const toggleTourJob = useCallback((socCode) => {
     setSelectedTourJobs((prev) => {
       const next = new Set(prev);
@@ -451,7 +340,7 @@ const JobVizSearchResults = ({
     }
     const pairs = source
       .map((soc) => {
-        const job = jobVizData.find((item) => item.soc_code === soc);
+        const job = getNodeBySocCode(soc);
         return job ? [job.title, soc] : null;
       })
       .filter(Boolean);
@@ -786,7 +675,7 @@ const JobVizSearchResults = ({
   const assignmentJobItems = useMemo(() => {
     if (!assignmentSocCodes?.size) return [];
     return Array.from(assignmentSocCodes)
-      .map((code) => jobVizData.find((node) => node.soc_code === code))
+      .map((code) => getNodeBySocCode(code))
       .filter(Boolean)
       .map((node) => ({
         id: String(node.id),
@@ -812,10 +701,7 @@ const JobVizSearchResults = ({
     return Array.from(savedJobIds)
       .map((savedId) => {
         const normalized = savedId.trim();
-        return (
-          jobVizData.find((node) => node.soc_code === normalized) ??
-          jobVizData.find((node) => String(node.id) === normalized)
-        );
+        return getNodeBySocCode(normalized) ?? jobVizNodeById.get(Number(normalized));
       })
       .filter(Boolean)
       .map((node) => ({
@@ -943,7 +829,7 @@ const JobVizSearchResults = ({
 
   const parentForHeading = useMemo(() => {
     if (selectedLevel) {
-      return jobVizData.find((node) => node.soc_code === selectedLevel) ?? null;
+      return getNodeBySocCode(selectedLevel) ?? null;
     }
     return null;
   }, [selectedLevel]);
@@ -956,7 +842,7 @@ const JobVizSearchResults = ({
   const showIntroHeading = chainNodes.length === 0;
 
   const handleAssignmentJobClick = useCallback((socCode) => {
-    const node = jobVizData.find((n) => n.soc_code === socCode);
+    const node = getNodeBySocCode(socCode);
     if (!node) return;
 
     setSelectedJob({ ...node, wasSelectedFromJobToursCard: false });
@@ -1456,25 +1342,6 @@ const JobVizSearchResults = ({
     showFooter: viewMode !== "student",
     structuredData: datasetStructuredData,
   };
-  const assignmentBannerOverrides = useMemo(() => {
-    const overrides = {};
-    if (activeTour?.heading) {
-      overrides.assignmentUnitLabelOverride = activeTour.heading;
-    }
-    if (activeTour?.assignment) {
-      overrides.assignmentCopyOverride = activeTour.assignment;
-    }
-    if (viewMode === "student" && !activeTour) {
-      const unitLabel = preservedUnitName
-        ? `Jobs connected to the "${preservedUnitName}" lesson`
-        : "Jobs your teacher wants you to explore first";
-      overrides.assignmentUnitLabelOverride = unitLabel;
-      overrides.assignmentCopyOverride =
-        "Explore each job, note how interested you are, and be ready to explain your rating using the data shown here.";
-    }
-    return Object.keys(overrides).length ? overrides : null;
-  }, [activeTour, preservedUnitName, viewMode]);
-
   const isTourOwner =
     Boolean(activeTour?._id) && Boolean(userId) && activeTour?.userId === userId;
   const isTeacherLoggedIn = status === "authenticated" && isUserTeacher;
@@ -1530,20 +1397,82 @@ const JobVizSearchResults = ({
     }
   };
 
+  const {
+    handleSaveTour,
+    hasUnsavedChanges,
+    saveErrors,
+    selectedTourJobsArray,
+    setTourForm,
+    tourForm,
+    unitOptions,
+    isSavingTour,
+  } = useJobTourEditor({
+    activeTour,
+    buildEditUrl,
+    isTeacherEditMode,
+    isTourOwner,
+    preservedUnitName,
+    replaceRoute: (url) => router.replace(url),
+    selectedTourJobs,
+    setSelectedTourJobs,
+    sourceAssignmentSocCodes,
+    token,
+  });
+
+  const assignmentBannerOverrides = useMemo(() => {
+    const overrides = {};
+    if (isTeacherEditMode) {
+      const liveHeading = tourForm.heading.trim();
+      const liveAssignment = tourForm.assignment.trim();
+      if (liveHeading) {
+        overrides.assignmentUnitLabelOverride = liveHeading;
+      }
+      overrides.assignmentCopyOverride =
+        liveAssignment || DEFAULT_JOB_TOUR_ASSIGNMENT;
+      return overrides;
+    }
+    if (activeTour?.heading) {
+      overrides.assignmentUnitLabelOverride = activeTour.heading;
+    }
+    if (activeTour?.assignment) {
+      overrides.assignmentCopyOverride = activeTour.assignment;
+    }
+    if (viewMode === "student" && !activeTour) {
+      const unitLabel = preservedUnitName
+        ? `Jobs connected to the "${preservedUnitName}" lesson`
+        : "Jobs your teacher wants you to explore first";
+      overrides.assignmentUnitLabelOverride = unitLabel;
+      overrides.assignmentCopyOverride =
+        "Explore each job, note how interested you are, and be ready to explain your rating using the data shown here.";
+    }
+    return Object.keys(overrides).length ? overrides : null;
+  }, [
+    activeTour,
+    isTeacherEditMode,
+    preservedUnitName,
+    tourForm.assignment,
+    tourForm.heading,
+    viewMode,
+  ]);
+
   const assignmentHeaderActions = shouldShowTourActions ? (
     <>
       <button
         type="button"
-        className={styles.tourActionButton}
+        className={editorStyles.tourActionButton}
         onClick={handleTourActionClick}
       >
-        <img src="/plus/plus.png" alt="GP+" className={styles.tourActionIcon} />
+        <img
+          src="/plus/plus.png"
+          alt="GP+"
+          className={editorStyles.tourActionIcon}
+        />
         {tourActionLabel}
       </button>
       {Boolean(activeTour?._id ?? tourIdParam) && (
         <button
           type="button"
-          className={styles.tourActionButton}
+          className={editorStyles.tourActionButton}
           onClick={handleCopyStudentLink}
         >
           Copy student link
@@ -1551,170 +1480,6 @@ const JobVizSearchResults = ({
       )}
     </>
   ) : null;
-
-  const getVersionString = () => {
-    const now = new Date();
-    const month = String(now.getMonth() + 1).padStart(2, "0");
-    const day = String(now.getDate()).padStart(2, "0");
-    return `${DEFAULT_JOB_TOUR_VERSION_PREFIX}.${now.getFullYear()}${month}${day}`;
-  };
-
-  const resolvedClassSubject =
-    tourForm.classSubject === "Other"
-      ? tourForm.classSubjectCustom.trim()
-      : tourForm.classSubject.trim();
-
-  const selectedTourJobsArray = useMemo(
-    () => Array.from(selectedTourJobs),
-    [selectedTourJobs]
-  );
-
-  const validationErrors = useMemo(() => {
-    if (!isTeacherEditMode) return [];
-    const errors = [];
-    const isPublic = tourForm.whoCanSee === "everyone";
-    if (!tourForm.heading.trim()) {
-      errors.push("Title required");
-    }
-    if (selectedTourJobsArray.length === 0) {
-      errors.push("Add at least one job");
-    }
-    if (isPublic) {
-      if (!resolvedClassSubject) {
-        errors.push("Class subject required");
-      }
-      if (!tourForm.gradeLevel.trim()) {
-        errors.push("Grade level required");
-      }
-      if (!tourForm.assignment.trim()) {
-        errors.push("Assignment required");
-      }
-      if (!tourForm.explanation.trim()) {
-        errors.push("Context required");
-      }
-    }
-    return errors;
-  }, [
-    isTeacherEditMode,
-    resolvedClassSubject,
-    selectedTourJobsArray.length,
-    tourForm.assignment,
-    tourForm.explanation,
-    tourForm.gradeLevel,
-    tourForm.heading,
-    tourForm.whoCanSee,
-  ]);
-
-  const saveErrors = useMemo(
-    () => (saveError ? [...validationErrors, saveError] : validationErrors),
-    [saveError, validationErrors]
-  );
-
-  const buildSnapshot = useCallback(() => {
-    const normalizedSubject =
-      tourForm.classSubject === "Other"
-        ? tourForm.classSubjectCustom.trim()
-        : tourForm.classSubject.trim();
-    return {
-      heading: tourForm.heading.trim(),
-      whoCanSee: tourForm.whoCanSee,
-      classSubject: normalizedSubject || "Other",
-      gradeLevel: tourForm.gradeLevel.trim() || "Middle school",
-      tags: tourForm.tags
-        .split(",")
-        .map((tag) => tag.trim())
-        .filter(Boolean),
-      gpUnitsAssociated: [...tourForm.gpUnitsAssociated].sort(),
-      explanation: tourForm.explanation.trim(),
-      assignment:
-        tourForm.assignment.trim() || DEFAULT_JOB_TOUR_ASSIGNMENT,
-      selectedJobs: Array.from(selectedTourJobs).sort(),
-    };
-  }, [
-    selectedTourJobs,
-    tourForm.assignment,
-    tourForm.classSubject,
-    tourForm.classSubjectCustom,
-    tourForm.explanation,
-    tourForm.gradeLevel,
-    tourForm.gpUnitsAssociated,
-    tourForm.heading,
-    tourForm.tags,
-    tourForm.whoCanSee,
-  ]);
-
-  const hasUnsavedChanges = useMemo(() => {
-    if (!isTeacherEditMode) return false;
-    const snapshot = buildSnapshot();
-    if (!lastSavedSnapshot) return true;
-    return (
-      snapshot.heading !== lastSavedSnapshot.heading ||
-      snapshot.whoCanSee !== lastSavedSnapshot.whoCanSee ||
-      snapshot.classSubject !== lastSavedSnapshot.classSubject ||
-      snapshot.gradeLevel !== lastSavedSnapshot.gradeLevel ||
-      snapshot.explanation !== lastSavedSnapshot.explanation ||
-      snapshot.assignment !== lastSavedSnapshot.assignment ||
-      snapshot.tags.join("|") !== lastSavedSnapshot.tags.join("|") ||
-      snapshot.gpUnitsAssociated.join("|") !==
-        lastSavedSnapshot.gpUnitsAssociated.join("|") ||
-      snapshot.selectedJobs.join("|") !==
-        lastSavedSnapshot.selectedJobs.join("|")
-    );
-  }, [
-    buildSnapshot,
-    isTeacherEditMode,
-    lastSavedSnapshot,
-  ]);
-
-  const handleSaveTour = async () => {
-    if (!isTeacherEditMode) return;
-    setSaveError(null);
-    if (validationErrors.length) {
-      setSaveError("Please complete the required fields.");
-      return;
-    }
-    if (!token) {
-      setSaveError("Please sign in to save.");
-      return;
-    }
-    const snapshot = buildSnapshot();
-    const payload = {
-      ...snapshot,
-      gpUnitsAssociated: snapshot.gpUnitsAssociated,
-      selectedJobs: snapshot.selectedJobs,
-      version: getVersionString(),
-      publishedDate:
-        snapshot.whoCanSee === "everyone" ? new Date().toISOString() : null,
-    };
-    try {
-      setIsSavingTour(true);
-      if (activeTour?._id && isTourOwner) {
-        await updateJobTour(activeTour._id, payload);
-        toast.success("Tour updated!");
-      } else {
-        const result = await createJobTour(payload, token);
-        toast.success("Tour saved!");
-        if (result?.jobTourId) {
-          router.replace(
-            buildEditUrl({ tourIdOverride: result.jobTourId })
-          );
-        }
-      }
-      setLastSavedSnapshot(snapshot);
-    } catch (error) {
-      const message =
-        error?.response?.data?.msg || error?.message || "Unable to save tour.";
-      if (tourForm.whoCanSee === "everyone" && /explanation/i.test(message)) {
-        setSaveError(
-          'Classroom Context is required when visibility is "Everyone".'
-        );
-      } else {
-        setSaveError(message);
-      }
-    } finally {
-      setIsSavingTour(false);
-    }
-  };
 
   const editorFields = isTeacherEditMode ? (
     <JobTourEditorFields
@@ -1754,8 +1519,8 @@ const JobVizSearchResults = ({
     </div>
   ) : mobileEditNote;
   const desktopPreviewBanner = isTeacherEditMode ? (
-    <div className={styles.assignmentStudentPreviewBanner}>
-      <span className={styles.assignmentStudentPreviewLabel}>
+    <div className={editorStyles.assignmentStudentPreviewBanner}>
+      <span className={editorStyles.assignmentStudentPreviewLabel}>
         Student Preview
       </span>
       <p>

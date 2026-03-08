@@ -23,7 +23,7 @@ import {
   SOC_CODES_PARAM_NAME,
   UNIT_NAME_PARAM_NAME,
 } from "../LessonSection/JobVizConnections";
-import styles from "../../styles/jobvizBurst.module.scss";
+import styles from "../../styles/jobviz.module.scss";
 import jobvizLogo from "../../assets/img/GP+JobViz_Horiz_white_400px.png";
 import {
   formatCurrency,
@@ -79,7 +79,7 @@ const SelectedJob: React.FC = () => {
   const [showMobileCue, setShowMobileCue] = useState(false);
   const [isMobileViewport, setIsMobileViewport] = useState(false);
   const { ratings, setRating } = useJobRatings();
-  const [ratingBurst, setRatingBurst] = useState<JobRatingValue | null>(null);
+  const [ratingPulse, setRatingPulse] = useState<JobRatingValue | null>(null);
   const [showRatingStatus, setShowRatingStatus] = useState(false);
   const [animateRatingStatus, setAnimateRatingStatus] = useState(false);
   const [showRatingInfo, setShowRatingInfo] = useState(false);
@@ -319,7 +319,7 @@ const SelectedJob: React.FC = () => {
       return;
     }
 
-    if (ratingBurst) {
+    if (ratingPulse) {
       setShowRatingStatus(false);
       setAnimateRatingStatus(false);
       ratingStatusTimeoutRef.current = setTimeout(() => {
@@ -332,7 +332,7 @@ const SelectedJob: React.FC = () => {
 
     setShowRatingStatus(true);
     setAnimateRatingStatus(false);
-  }, [currentRating, ratingBurst, visibleJob?.soc_code]);
+  }, [currentRating, ratingPulse, visibleJob?.soc_code]);
 
   useEffect(() => {
     const shouldGlow = Boolean(isAssignmentJob && !currentRating);
@@ -385,11 +385,11 @@ const SelectedJob: React.FC = () => {
     const socCode = visibleJob.soc_code;
     dispatchRatingEvent(socCode, "start");
     setRating(socCode, value);
-    setRatingBurst(value);
+    setRatingPulse(value);
     setShouldGlowRatingLabel(false);
     setShowMobileCue(false);
     setTimeout(() => {
-      setRatingBurst(null);
+      setRatingPulse(null);
       dispatchRatingEvent(socCode, "finish");
     }, 900);
   };
@@ -886,9 +886,9 @@ const SelectedJob: React.FC = () => {
                             onClick={() => handleRatingSelect(option.value)}
                             aria-pressed={currentRating === option.value}
                           >
-                            {ratingBurst === option.value && (
+                            {ratingPulse === option.value && (
                               <span
-                                className={`${styles.modalRatingConfetti} ${styles[`modalRatingConfetti-${ratingBurst}`]}`}
+                                className={`${styles.modalRatingConfetti} ${styles[`modalRatingConfetti-${ratingPulse}`]}`}
                                 aria-hidden="true"
                               >
                                 {option.emoji}
@@ -1057,7 +1057,7 @@ const SelectedJob: React.FC = () => {
               <div className={styles.modalBrand}>
                 <Image
                   src={jobvizLogo}
-                  alt="JobViz Burst logo"
+                  alt="JobViz logo"
                   width={240}
                   height={21}
                   priority

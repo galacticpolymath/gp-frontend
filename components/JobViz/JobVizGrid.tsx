@@ -1,6 +1,6 @@
 import * as React from "react";
 import { JobVizCard } from "./JobVizCard";
-import styles from "../../styles/jobvizBurst.module.scss";
+import styles from "../../styles/jobviz.module.scss";
 
 export interface JobVizGridItem {
   id: string;

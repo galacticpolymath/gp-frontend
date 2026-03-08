@@ -1,6 +1,6 @@
 import * as React from "react";
 import Image from "next/image";
-import styles from "../../../styles/jobvizBurst.module.scss";
+import styles from "../../../styles/jobviz.module.scss";
 import {
   growthRange,
   totalLineItems,

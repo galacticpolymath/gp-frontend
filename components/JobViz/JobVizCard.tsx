@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Star } from "lucide-react";
-import styles from "../../styles/jobvizBurst.module.scss";
+import styles from "../../styles/jobviz.module.scss";
 import { LucideIcon } from "./LucideIcon";
 import { ratingEmoji, useJobRatings } from "./jobRatingsStore";
 import type { JobRatingValue } from "./jobRatingsStore";

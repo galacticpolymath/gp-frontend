@@ -16,7 +16,7 @@ const extractBlock = (source: string, selector: string) => {
   return match[0];
 };
 
-const jobvizStyles = readScss("styles/jobvizBurst.module.scss");
+const jobvizStyles = readScss("styles/jobviz.module.scss");
 const selectedJobStyles = readScss("styles/pages/JobViz/modals/selectedJobStyles.scss");
 
 describe("JobViz critical style guardrails", () => {

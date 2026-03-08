@@ -9,9 +9,8 @@ $selected-job-modal-mobile-z: $assignment-base-layer-z + 21;
 :root {
   --jobviz-assignment-offset: 0px;
   --jobviz-nav-offset: 0px;
-  --jobviz-modal-viewport-offset: calc(
-    var(--jobviz-nav-offset, 0px) + var(--jobviz-assignment-offset, 0px)
-  );
+  --jobviz-modal-assignment-offset: calc(var(--jobviz-assignment-offset, 0px));
+  --jobviz-modal-viewport-offset: calc(var(--jobviz-nav-offset, 0px) + var(--jobviz-assignment-offset, 0px));
 }
 
 .selectedJobModalRoot {

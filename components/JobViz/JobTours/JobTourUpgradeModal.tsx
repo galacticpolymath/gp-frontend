@@ -1,7 +1,7 @@
 import React from "react";
 import { Modal, Button } from "react-bootstrap";
 import Link from "next/link";
-import styles from "../../../styles/jobvizBurst.module.scss";
+import styles from "../../../styles/jobviz.module.scss";
 
 interface JobTourUpgradeModalProps {
   show: boolean;

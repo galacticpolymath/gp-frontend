@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Modal from "react-bootstrap/Modal";
-import styles from "../../styles/jobvizBurst.module.scss";
+import styles from "../../styles/jobviz.module.scss";
 import { useModalContext } from "../../providers/ModalProvider";
 import { LucideIcon } from "./LucideIcon";
 import confetti from "canvas-confetti";

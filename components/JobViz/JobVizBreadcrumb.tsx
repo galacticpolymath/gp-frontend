@@ -1,5 +1,5 @@
 import * as React from "react";
-import styles from "../../styles/jobvizBurst.module.scss";
+import styles from "../../styles/jobviz.module.scss";
 import { LucideIcon } from "./LucideIcon";
 
 export const JOBVIZ_BREADCRUMB_ID = "jobviz-breadcrumb";

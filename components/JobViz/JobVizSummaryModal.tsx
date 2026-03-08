@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import Modal from "react-bootstrap/Modal";
 import { useRouter } from "next/router";
 import sanitizeHtml from "sanitize-html";
-import styles from "../../styles/jobvizBurst.module.scss";
+import styles from "../../styles/jobviz.module.scss";
 import { useModalContext } from "../../providers/ModalProvider";
 import { LucideIcon } from "./LucideIcon";
 import _QRCode from "react-qr-code";

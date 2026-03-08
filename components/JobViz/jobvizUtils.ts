@@ -52,6 +52,7 @@ export const jobVizNodeById = new Map<number, JobVizNode>(
 
 const nodeByCodeAndHierarchy = new Map<string, JobVizNode>();
 const nodeBySocCode = new Map<string, JobVizNode>();
+const hierarchySliceCache = new Map<string, JobVizNode[]>();
 const lineItemNodes = jobVizData.filter(
   (node) => node.occupation_type === "Line item"
 );
@@ -326,28 +327,46 @@ export const getHierarchySlice = (
   selectedLevel: string | null
 ) => {
   const safeLevel = clampLevel(targetLevel);
+  const cacheKey = `${safeLevel}:${selectedLevel ?? ""}`;
+  const cachedSlice = hierarchySliceCache.get(cacheKey);
 
-  if (safeLevel <= 1) {
-    return jobVizData.filter((node) => node.hierarchy === 1);
+  if (cachedSlice) {
+    return cachedSlice;
   }
 
-  if (!selectedLevel) return [];
+  let slice: JobVizNode[];
+  if (safeLevel <= 1) {
+    slice = topLevelNodes;
+    hierarchySliceCache.set(cacheKey, slice);
+    return slice;
+  }
+
+  if (!selectedLevel) {
+    hierarchySliceCache.set(cacheKey, []);
+    return [];
+  }
 
   if (safeLevel === 2) {
-    return jobVizData.filter(
+    slice = jobVizData.filter(
       (node) => node.hierarchy === 2 && node.level1 === selectedLevel
     );
+    hierarchySliceCache.set(cacheKey, slice);
+    return slice;
   }
 
   if (safeLevel === 3) {
-    return jobVizData.filter(
+    slice = jobVizData.filter(
       (node) => node.hierarchy === 3 && node.level2 === selectedLevel
     );
+    hierarchySliceCache.set(cacheKey, slice);
+    return slice;
   }
 
-  return jobVizData.filter(
+  slice = jobVizData.filter(
     (node) => node.hierarchy === 4 && node.level3 === selectedLevel
   );
+  hierarchySliceCache.set(cacheKey, slice);
+  return slice;
 };
 
 export const collectAssignmentAncestorIds = (
@@ -357,13 +376,12 @@ export const collectAssignmentAncestorIds = (
 
   if (!normalized.length) return new Set<number>();
 
-  const targetCodes = new Set(normalized.map((code) => code.trim()));
   const ids = new Set<number>();
 
-  jobVizData.forEach((node) => {
-    if (node.soc_code && targetCodes.has(node.soc_code)) {
-      buildIdPathForNode(node).forEach((id) => ids.add(id));
-    }
+  normalized.forEach((code) => {
+    const node = nodeBySocCode.get(code.trim());
+    if (!node) return;
+    buildIdPathForNode(node).forEach((id) => ids.add(id));
   });
 
   return ids;

@@ -1,0 +1,780 @@
+.shell {
+  position: relative;
+  width: 100%;
+  z-index: 1500;
+}
+
+.mobileWrapper {
+  display: block;
+}
+
+.desktopDock {
+  display: none;
+}
+
+.desktopFrame {
+  position: relative;
+}
+
+.dockToggle {
+  position: absolute;
+  top: 0.85rem;
+  right: 0.85rem;
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(13, 18, 45, 0.78);
+  color: rgba(247, 249, 255, 0.92);
+  display: grid;
+  place-items: center;
+  z-index: 3;
+  transition: transform 0.2s ease, border-color 0.2s ease,
+    background 0.2s ease;
+}
+
+.dockToggle:hover,
+.dockToggle:focus-visible {
+  transform: translateY(-1px);
+  border-color: rgba(255, 255, 255, 0.3);
+  background: rgba(20, 28, 69, 0.9);
+}
+
+.collapsedRailLabel {
+  display: none;
+}
+
+.collapsedNotice {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  color: rgba(241, 245, 255, 0.86);
+  font-size: 0.82rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.banner {
+  border-radius: 28px;
+  background: linear-gradient(
+    180deg,
+    rgba(71, 56, 134, 0.98),
+    rgba(86, 48, 117, 0.98)
+  );
+  border: 1px solid rgba(220, 214, 255, 0.2);
+  box-shadow: 0 24px 50px rgba(9, 8, 32, 0.28);
+  overflow: hidden;
+}
+
+.desktopBanner {
+  border-radius: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(71, 56, 134, 0.98),
+    rgba(86, 48, 117, 0.98)
+  );
+  box-shadow: none;
+  border: 0;
+}
+
+.inner {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  padding: 0.9rem;
+  transition: transform 0.25s ease;
+}
+
+.innerFlash {
+  animation: panelFlash 0.25s ease;
+}
+
+.mobileControls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.collapseToggle,
+.clearButtonInline,
+.clearButton,
+.summaryButton,
+.summaryLink,
+.assignmentLink,
+.carouselArrow,
+.carouselLink {
+  appearance: none;
+}
+
+.collapseToggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 34px;
+  padding: 0.35rem 0.8rem;
+  border-radius: 999px;
+  border: 1px solid rgba(223, 229, 255, 0.24);
+  background: rgba(16, 20, 52, 0.5);
+  color: rgba(247, 249, 255, 0.92);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.clearButtonInline,
+.clearButton {
+  border: 0;
+  background: none;
+  color: rgba(247, 249, 255, 0.82);
+  font-size: 0.92rem;
+  padding: 0;
+}
+
+.collapseIcon,
+.carouselArrowIcon {
+  width: 18px;
+  height: 18px;
+}
+
+.infoBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.previewBanner {
+  margin-bottom: -0.2rem;
+}
+
+.headerRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.unitLabel {
+  display: inline-flex;
+  align-items: center;
+  margin: 0;
+  padding-bottom: 0.5rem;
+  color: rgba(245, 247, 255, 0.92);
+  font-size: clamp(1.05rem, 1vw + 0.8rem, 1.25rem);
+  line-height: 1.35;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.24);
+}
+
+.headerActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.marker {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  padding: 1rem 1.1rem 1.1rem;
+  border-radius: 26px;
+  background: rgba(255, 255, 255, 0.93);
+  border: 1px solid rgba(58, 63, 153, 0.24);
+  box-shadow: 0 18px 34px rgba(17, 12, 41, 0.12);
+  color: #36425d;
+}
+
+.markerLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  color: #47506a;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.markerLogo {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+}
+
+.copy {
+  margin: 0;
+  color: #44506b;
+  font-size: clamp(1rem, 0.65vw + 0.85rem, 1.16rem);
+  line-height: 1.55;
+}
+
+.progressRow {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  padding: 0.25rem 0.1rem 0;
+}
+
+.progressLabel {
+  color: rgba(246, 248, 255, 0.94);
+  font-size: 0.96rem;
+  font-weight: 600;
+}
+
+.progressTrack {
+  height: 10px;
+  border-radius: 999px;
+  background: rgba(8, 9, 25, 0.36);
+  overflow: hidden;
+}
+
+.progressTrackPulse {
+  animation: progressTrackPulse 0.95s ease;
+}
+
+.progressFill {
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #87b4ff, #e6a0ff);
+  transition: width 0.8s ease;
+}
+
+.progressFillPulse {
+  animation: progressFillPulse 1s ease;
+}
+
+.summaryButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  min-height: 46px;
+  border: 0;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #93b3ff, #f1a4ff);
+  color: #202643;
+  font-size: 0.96rem;
+  font-weight: 800;
+  box-shadow: 0 14px 28px rgba(33, 29, 79, 0.22);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+}
+
+.summaryButton:hover:not(:disabled),
+.summaryButton:focus-visible:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 18px 34px rgba(33, 29, 79, 0.28);
+}
+
+.summaryButton:disabled,
+.summaryLink:disabled {
+  opacity: 0.6;
+}
+
+.summaryLink {
+  align-self: center;
+  border: 0;
+  background: none;
+  color: rgba(247, 249, 255, 0.96);
+  font-size: 1rem;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 0.2rem;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.desktopContent {
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: 0.2rem;
+}
+
+.listWrap {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.55rem;
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.listItem {
+  position: relative;
+}
+
+.hintArrow {
+  position: absolute;
+  top: -0.95rem;
+  left: 0.6rem;
+  padding: 0.28rem 0.62rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.96);
+  color: #2f3652;
+  font-size: 0.78rem;
+  box-shadow: 0 10px 20px rgba(12, 12, 41, 0.18);
+  pointer-events: none;
+  z-index: 4;
+  animation: hintBounce 1s ease-in-out infinite;
+}
+
+.hintArrowFloating {
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.assignmentLink,
+.carouselLink {
+  width: 100%;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  background: rgba(80, 48, 113, 0.44);
+  border-radius: 24px;
+  color: white;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
+  text-align: left;
+  padding: 0.8rem 0.9rem;
+  transition: transform 0.2s ease, border-color 0.2s ease,
+    box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.assignmentLink:hover,
+.assignmentLink:focus-visible,
+.carouselLink:hover,
+.carouselLink:focus-visible {
+  transform: translateY(-1px);
+  border-color: rgba(255, 255, 255, 0.46);
+  background: rgba(93, 58, 131, 0.54);
+  box-shadow: 0 18px 30px rgba(15, 11, 42, 0.2);
+}
+
+.linkClicked {
+  border-color: rgba(177, 197, 255, 0.46);
+}
+
+.linkActive {
+  border-color: rgba(192, 233, 255, 0.92);
+  box-shadow: 0 0 0 1px rgba(192, 233, 255, 0.22);
+}
+
+.linkEntice {
+  animation: assignmentPulse 2.2s ease-in-out infinite;
+}
+
+.listIconWrap {
+  position: relative;
+  width: 52px;
+  height: 52px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: inset 0 1px 10px rgba(255, 255, 255, 0.16);
+}
+
+.listIcon {
+  width: 24px;
+  height: 24px;
+  color: #efabff;
+}
+
+.listNestedIcon {
+  position: absolute;
+  right: -4px;
+  bottom: -4px;
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  background: #7031b7;
+  border: 1px solid rgba(255, 255, 255, 0.42);
+  color: white;
+}
+
+.listNestedIcon :global(svg) {
+  width: 12px;
+  height: 12px;
+}
+
+.listRating {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  background: rgba(255, 255, 255, 0.12);
+  margin-left: auto;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.listRatingGradient {
+  background: linear-gradient(135deg, #8bb4ff, #eeabff);
+}
+
+.listRatingHalo {
+  box-shadow: 0 0 0 8px rgba(180, 208, 255, 0.08);
+}
+
+.listRatingInner {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  color: white;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.listRatingNudge {
+  animation: ratingNudge 2.2s ease-in-out infinite;
+}
+
+.listRatingInnerHidden {
+  opacity: 0;
+}
+
+.listRatingPulse {
+  animation: ratingPulse 0.55s ease forwards;
+}
+
+.jobTitle {
+  flex: 1;
+  min-width: 0;
+  font-size: 1rem;
+  line-height: 1.4;
+}
+
+.carousel {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: 0.2rem 0;
+}
+
+.carouselSlide {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 0.4rem;
+  width: 100%;
+}
+
+.carouselItemNext {
+  animation: slideInFromRight 0.28s ease;
+}
+
+.carouselItemPrev {
+  animation: slideInFromLeft 0.28s ease;
+}
+
+.carouselArrow {
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.12);
+  color: rgba(247, 249, 255, 0.96);
+  display: grid;
+  place-items: center;
+}
+
+.carouselArrowHighlight {
+  background: linear-gradient(135deg, #8bb4ff, #eeabff);
+  color: #223055;
+}
+
+.carouselArrowNudge {
+  animation: arrowNudge 1.4s ease-in-out infinite;
+}
+
+.carouselLink {
+  justify-content: center;
+  min-height: 74px;
+}
+
+.carouselRow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  width: 100%;
+}
+
+.carouselText {
+  display: flex;
+  justify-content: center;
+  flex: 1;
+  min-width: 0;
+}
+
+.carouselTitle {
+  text-align: center;
+  font-size: 0.98rem;
+  line-height: 1.35;
+}
+
+.clearFooter {
+  padding: 0.85rem 1rem 1rem;
+  display: flex;
+  justify-content: flex-end;
+  background: linear-gradient(180deg, rgba(71, 56, 134, 0), rgba(71, 56, 134, 0.85));
+}
+
+.clearFooter button {
+  border: 0;
+  background: none;
+  color: rgba(247, 249, 255, 0.88);
+  font-size: 0.95rem;
+}
+
+.scrollTip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.85rem;
+  border-radius: 999px;
+  background: rgba(18, 24, 62, 0.92);
+  border: 1px solid rgba(189, 207, 255, 0.32);
+  color: rgba(247, 249, 255, 0.94);
+  pointer-events: none;
+}
+
+.scrollTipOverlay {
+  position: fixed;
+  transform: translateY(-100%);
+  z-index: 1515;
+}
+
+.desktopDock[data-collapsed="true"] .desktopFrame {
+  width: 58px;
+}
+
+.desktopDock[data-collapsed="true"] .banner,
+.desktopDock[data-collapsed="true"] .clearFooter {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.desktopDock[data-collapsed="true"] .collapsedRailLabel {
+  display: flex;
+  position: absolute;
+  inset: 0;
+  align-items: center;
+  justify-content: center;
+  color: rgba(247, 249, 255, 0.9);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-size: 0.76rem;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+}
+
+.desktopDock[data-collapsed="true"] .collapsedNotice {
+  display: inline-flex;
+  margin-top: 3.8rem;
+}
+
+@media (min-width: 1200px) {
+  .mobileWrapper {
+    display: none;
+  }
+
+  .desktopDock {
+    display: block;
+    width: clamp(320px, 28vw, 360px);
+    min-width: clamp(320px, 28vw, 360px);
+    height: calc(100dvh - var(--jobviz-nav-offset, 0px));
+  }
+
+  .desktopFrame {
+    position: fixed;
+    top: var(--jobviz-nav-offset, 0px);
+    right: 0;
+    width: clamp(320px, 28vw, 360px);
+    height: calc(100dvh - var(--jobviz-nav-offset, 0px));
+    padding: 0;
+    background: linear-gradient(
+      180deg,
+      rgba(71, 56, 134, 0.98),
+      rgba(86, 48, 117, 0.98)
+    );
+    box-shadow: -8px 0 24px rgba(10, 8, 33, 0.18);
+    transition: width 0.28s ease;
+    overflow: hidden;
+  }
+
+  .desktopBanner {
+    height: 100%;
+  }
+
+  .inner {
+    height: 100%;
+    padding: 1.2rem 1rem 0;
+  }
+
+  .desktopContent {
+    flex: 1;
+  }
+
+  .content {
+    min-height: 0;
+  }
+}
+
+@media (max-width: 1199px) {
+  .shell {
+    margin-top: 0.5rem;
+  }
+
+  .banner {
+    border-radius: 26px;
+  }
+
+  .unitLabel {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 767px) {
+  .headerActions {
+    width: 100%;
+  }
+
+  .assignmentLink {
+    padding: 0.75rem;
+  }
+
+  .listIconWrap {
+    width: 48px;
+    height: 48px;
+  }
+
+  .jobTitle {
+    font-size: 0.96rem;
+  }
+}
+
+@keyframes panelFlash {
+  from {
+    opacity: 0.85;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes progressTrackPulse {
+  0% {
+    box-shadow: none;
+  }
+  50% {
+    box-shadow: 0 0 0 6px rgba(255, 255, 255, 0.08);
+  }
+  100% {
+    box-shadow: none;
+  }
+}
+
+@keyframes progressFillPulse {
+  0% {
+    filter: brightness(1);
+  }
+  50% {
+    filter: brightness(1.18);
+  }
+  100% {
+    filter: brightness(1);
+  }
+}
+
+@keyframes assignmentPulse {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-2px);
+  }
+}
+
+@keyframes hintBounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
+}
+
+@keyframes ratingNudge {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.08);
+  }
+}
+
+@keyframes ratingPulse {
+  0% {
+    transform: scale(1.3);
+    opacity: 0.4;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes arrowNudge {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.12);
+  }
+}
+
+@keyframes slideInFromRight {
+  from {
+    opacity: 0;
+    transform: translateX(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInFromLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}

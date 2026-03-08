@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import styles from "../../../styles/jobvizBurst.module.scss";
+import styles from "./JobTourEditorFields.module.scss";
 import {
   CLASS_SUBJECT_OPTIONS,
   GRADE_LEVEL_OPTIONS,

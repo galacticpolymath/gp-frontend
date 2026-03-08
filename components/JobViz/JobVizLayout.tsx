@@ -1,6 +1,6 @@
 import * as React from "react";
 import Image from "next/image";
-import styles from "../../styles/jobvizBurst.module.scss";
+import styles from "../../styles/jobviz.module.scss";
 import { averageLineItemGrowth as _averageLineItemGrowth ,
   growthRange,
   totalLineItems,
@@ -40,7 +40,7 @@ export const JobVizLayout: React.FC<JobVizLayoutProps> = ({
   children,
   heroSlot,
   suppressHero = false,
-  heroEyebrow = "JobViz Burst Edition",
+  heroEyebrow = "JobViz Career Explorer",
   onStatAction,
   heroFooter,
   heroAside,
