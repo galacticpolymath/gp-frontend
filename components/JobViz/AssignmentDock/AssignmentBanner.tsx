@@ -227,13 +227,34 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
     [assignmentParams, onJobClick, router]
   );
 
-  const handleRemoveTourJob = React.useCallback(
+  const toggleTourSelection = React.useCallback(
     (socCode: string) => {
-      if (mode !== "tour-editor" || !jobTourEditor?.isEditing) return;
-      if (!socCode) return;
-      jobTourEditor.toggleJob(socCode);
+      if (mode !== "tour-editor" || !socCode) return;
+      if (jobTourEditor?.isEditing) {
+        jobTourEditor.toggleJob(socCode);
+        return;
+      }
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(
+          new CustomEvent("jobviz-tour-toggle-request", {
+            detail: { socCode },
+          })
+        );
+      }
     },
     [jobTourEditor, mode]
+  );
+
+  const handleRemoveTourJob = React.useCallback(
+    (socCode: string) => {
+      if (mode !== "tour-editor" || !socCode) return;
+      const isSelected = jobTourEditor?.isSelected
+        ? jobTourEditor.isSelected(socCode)
+        : true;
+      if (!isSelected) return;
+      toggleTourSelection(socCode);
+    },
+    [jobTourEditor, mode, toggleTourSelection]
   );
 
   const closeJobModal = React.useCallback(() => {
