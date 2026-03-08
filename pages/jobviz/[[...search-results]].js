@@ -3,6 +3,7 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
 import dynamic from "next/dynamic";
@@ -49,6 +50,12 @@ import { JobVizSourceAndUpsell } from "../../components/JobViz/Page/JobVizSource
 import { JobVizOverlays } from "../../components/JobViz/Page/JobVizOverlays";
 import { toast } from "react-hot-toast";
 import editorStyles from "../../components/JobViz/JobTours/JobTourEditorFields.module.scss";
+import { LucideIcon } from "../../components/JobViz/LucideIcon";
+import {
+  emitTourDockMutation,
+  isDesktopDockViewport,
+  scrollTourDockIntoView,
+} from "../../components/JobViz/assignmentDockTourMotion";
 
 const JobTourUpgradeModal = dynamic(
   () => import("../../components/JobViz/JobTours/JobTourUpgradeModal")
@@ -101,6 +108,7 @@ const JobVizSearchResults = ({
   const [showTourUpgradeModal, setShowTourUpgradeModal] = useState(false);
   const [savedJobIds, setSavedJobIds] = useState(new Set());
   const [selectedTourJobs, setSelectedTourJobs] = useState(new Set());
+  const selectedTourJobsRef = useRef(selectedTourJobs);
   const [lastToggledSoc, setLastToggledSoc] = useState(null);
   const isTeacherEditMode = Boolean(
     typeof router.query?.edit === "string" &&
@@ -159,17 +167,37 @@ const JobVizSearchResults = ({
     userAuthorizationHeader: authorizationHeader,
   });
 
-  const toggleTourJob = useCallback((socCode) => {
+  useEffect(() => {
+    selectedTourJobsRef.current = selectedTourJobs;
+  }, [selectedTourJobs]);
+
+  const toggleTourJob = useCallback(async (socCode) => {
+    const normalizedSocCode =
+      typeof socCode === "string" ? socCode.trim() : "";
+    if (!normalizedSocCode) return;
+    const isRemoving = selectedTourJobsRef.current.has(normalizedSocCode);
+    const mutationAction = isRemoving ? "remove" : "add";
+    if (isDesktopDockViewport()) {
+      await scrollTourDockIntoView(normalizedSocCode, {
+        fallbackToBottom: !isRemoving,
+      });
+      emitTourDockMutation(normalizedSocCode, mutationAction);
+      if (isRemoving) {
+        await new Promise((resolve) => {
+          window.setTimeout(resolve, 220);
+        });
+      }
+    }
     setSelectedTourJobs((prev) => {
       const next = new Set(prev);
-      if (next.has(socCode)) {
-        next.delete(socCode);
+      if (next.has(normalizedSocCode)) {
+        next.delete(normalizedSocCode);
       } else {
-        next.add(socCode);
+        next.add(normalizedSocCode);
       }
       return next;
     });
-    setLastToggledSoc(socCode);
+    setLastToggledSoc(normalizedSocCode);
   }, []);
 
   useEffect(() => {
@@ -453,6 +481,7 @@ const JobVizSearchResults = ({
     handleSaveTour,
     hasUnsavedChanges,
     saveErrors,
+    saveAttemptedAt,
     selectedTourJobsArray,
     setTourForm,
     tourForm,
@@ -542,6 +571,8 @@ const JobVizSearchResults = ({
       isSaving={isSavingTour}
       isSaved={!hasUnsavedChanges}
       validationErrors={saveErrors}
+      saveAttemptedAt={saveAttemptedAt}
+      tourId={activeTour?._id ?? tourIdParam ?? null}
       selectedJobsCount={selectedTourJobsArray.length}
       showSaveButton={false}
     />
@@ -580,6 +611,18 @@ const JobVizSearchResults = ({
       </p>
     </div>
   ) : null;
+  const heroTopAction = isTeacherEditMode ? (
+    <div className={styles.jobvizEditBackRow}>
+      <button
+        type="button"
+        className={styles.jobvizEditBackButton}
+        onClick={() => router.push("/search?typeFilter=Job%20Tour&mine=1")}
+      >
+        <LucideIcon name="ArrowLeft" />
+        <span>Back to My JobViz Tours</span>
+      </button>
+    </div>
+  ) : null;
 
   return (
     <JobTourEditorProvider
@@ -601,6 +644,7 @@ const JobVizSearchResults = ({
               heroSubtitle={heroSubtitle}
               heroSlot={heroSlot}
               heroEyebrow={heroEyebrow}
+              heroTopAction={heroTopAction}
               onStatAction={handleHeroStatAction}
               heroMode={isTeacherEditMode ? "edit" : "default"}
               heroFooter={
@@ -694,8 +738,8 @@ const JobVizSearchResults = ({
       </Layout>
       <JobVizOverlays
         showSavedJobsUpsell={showSavedJobsUpsell}
-        showJobvizWelcome={showJobvizWelcome}
-        showTourWelcome={showTourWelcome}
+        showJobvizWelcome={!isTeacherEditMode && showJobvizWelcome}
+        showTourWelcome={!isTeacherEditMode && showTourWelcome}
         onOpenLogin={() => {
           closeSavedJobsUpsell();
           setIsLoginModalDisplayed(true);

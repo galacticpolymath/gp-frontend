@@ -35,6 +35,43 @@
   width: 100%;
 }
 
+.jobvizEditBackRow {
+  display: flex;
+  align-items: center;
+}
+
+.jobvizHeroTopAction {
+  margin-bottom: 0.25rem;
+}
+
+.jobvizEditBackButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-height: 38px;
+  padding: 0.45rem 0.85rem;
+  border-radius: 999px;
+  border: 1px solid rgba(191, 208, 255, 0.35);
+  background: rgba(9, 15, 38, 0.82);
+  color: rgba(245, 248, 255, 0.94);
+  font-size: 0.86rem;
+  font-weight: 700;
+  transition: transform 0.2s ease, border-color 0.2s ease,
+    background 0.2s ease;
+}
+
+.jobvizEditBackButton:hover,
+.jobvizEditBackButton:focus-visible {
+  transform: translateY(-1px);
+  border-color: rgba(235, 242, 255, 0.58);
+  background: rgba(15, 24, 56, 0.92);
+}
+
+.jobvizEditBackButton :global(svg) {
+  width: 14px;
+  height: 14px;
+}
+
 @media (min-width: 900px) {
   .jobvizHeroContent {
     flex-direction: row;
@@ -178,26 +215,30 @@
 
 .heroEditLogoPane {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   position: relative;
   z-index: 2;
+  min-height: 100%;
 }
 
 .heroEditLogo {
-  width: min(100%, 380px);
-  height: 100%;
+  width: min(100%, 260px);
+  max-width: 260px;
+  max-height: 180px;
+  height: auto;
   display: flex;
   align-items: center;
   justify-content: center;
   filter: drop-shadow(0 10px 26px rgba(8, 10, 33, 0.45));
-  margin: 0 auto;
+  margin: 0.25rem auto 0;
 }
 
 .heroEditLogo :global(img) {
   width: 100% !important;
+  height: auto !important;
   max-width: 100%;
-  max-height: 100%;
+  max-height: 180px;
   opacity: 1;
   filter: none;
 }

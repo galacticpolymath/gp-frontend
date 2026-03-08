@@ -22,6 +22,7 @@ interface AssignmentDesktopListProps {
   onJobClick: (socCode: string) => void;
   onRemoveJob?: (socCode: string) => void;
   registerJobButtonRef: (soc: string) => (node: HTMLButtonElement | null) => void;
+  dockMutationBySoc?: Record<string, "add" | "remove">;
   showRemoveControl?: boolean;
   showRatingHint: boolean;
   shouldDelayAnimations: boolean;
@@ -41,6 +42,7 @@ export const AssignmentDesktopList: React.FC<AssignmentDesktopListProps> = ({
   onJobClick,
   onRemoveJob,
   registerJobButtonRef,
+  dockMutationBySoc,
   showRemoveControl = false,
   showRatingHint,
   shouldDelayAnimations,
@@ -69,9 +71,19 @@ export const AssignmentDesktopList: React.FC<AssignmentDesktopListProps> = ({
               isEnticementReady;
             const shouldGlowQuestion = !ratingValue && !isSuppressed;
             const displayEmoji = ratingValue ?? "?";
+            const mutationAction = dockMutationBySoc?.[soc];
 
             return (
-              <li key={soc} className={styles.listItem}>
+              <li
+                key={soc}
+                className={`${styles.listItem} ${
+                  mutationAction === "add"
+                    ? styles.listItemAdded
+                    : mutationAction === "remove"
+                      ? styles.listItemRemoving
+                      : ""
+                }`}
+              >
                 {showRatingHint && groupIndex === 0 && itemIndex === 0 ? (
                   <div className={styles.hintArrow}>
                     <span>Click to explore and rate</span>

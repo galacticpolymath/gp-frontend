@@ -324,6 +324,15 @@
   position: relative;
 }
 
+.listItemAdded {
+  animation: dockItemAdded 0.44s ease;
+}
+
+.listItemRemoving {
+  animation: dockItemRemoving 0.24s ease forwards;
+  pointer-events: none;
+}
+
 .hintArrow {
   position: absolute;
   top: -0.95rem;
@@ -825,5 +834,29 @@
   to {
     opacity: 1;
     transform: translateX(0);
+  }
+}
+
+@keyframes dockItemAdded {
+  0% {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+    filter: brightness(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: brightness(1);
+  }
+}
+
+@keyframes dockItemRemoving {
+  0% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.98);
   }
 }

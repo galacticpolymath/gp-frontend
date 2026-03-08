@@ -15,6 +15,7 @@ interface JobVizLayoutProps {
   heroSlot?: React.ReactNode;
   suppressHero?: boolean;
   heroEyebrow?: string;
+  heroTopAction?: React.ReactNode;
   onStatAction?: (id: string) => void;
   heroFooter?: React.ReactNode;
   heroAside?: React.ReactNode;
@@ -41,6 +42,7 @@ export const JobVizLayout: React.FC<JobVizLayoutProps> = ({
   heroSlot,
   suppressHero = false,
   heroEyebrow = "JobViz Career Explorer",
+  heroTopAction,
   onStatAction,
   heroFooter,
   heroAside,
@@ -123,6 +125,9 @@ export const JobVizLayout: React.FC<JobVizLayoutProps> = ({
                 {heroMode === "edit" ? (
                   <div className={styles.jobvizHeroEditTopRow}>
                     <div className={styles.jobvizHeroInner}>
+                      {heroTopAction ? (
+                        <div className={styles.jobvizHeroTopAction}>{heroTopAction}</div>
+                      ) : null}
                       <p className={styles.heroEyebrow}>{heroEyebrow}</p>
                       <h1 className={styles.heroTitle}>{heroTitle}</h1>
                       <p className={styles.heroSubtitle}>{effectiveSubtitle}</p>
@@ -135,7 +140,7 @@ export const JobVizLayout: React.FC<JobVizLayoutProps> = ({
                           width={400}
                           height={132}
                           priority
-                          style={{ width: "100%", height: "auto" }}
+                          style={{ width: "auto", height: "100%", maxWidth: "100%" }}
                         />
                       </div>
                     </div>

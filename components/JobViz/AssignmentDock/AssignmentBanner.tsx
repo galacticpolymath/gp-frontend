@@ -101,6 +101,9 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
   const [scrollTipNeeded, setScrollTipNeeded] = React.useState(false);
   const [showRatingHint, setShowRatingHint] = React.useState(true);
   const [slideDir, setSlideDir] = React.useState<"next" | "prev" | null>(null);
+  const [dockMutationBySoc, setDockMutationBySoc] = React.useState<
+    Record<string, "add" | "remove">
+  >({});
   const [suppressedSocCodes, setSuppressedSocCodes] = React.useState<Set<string>>(
     new Set()
   );
@@ -359,6 +362,39 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
     } catch {
       setHasStoredRatings(false);
     }
+  }, []);
+
+  React.useEffect(() => {
+    if (typeof window === "undefined") return;
+    const mutationTimers = new Map<string, number>();
+    const handleDockMutation = (
+      event: Event
+    ) => {
+      const detail = (event as CustomEvent<{ socCode?: string; action?: "add" | "remove" }>)
+        .detail;
+      const socCode = typeof detail?.socCode === "string" ? detail.socCode.trim() : "";
+      const action = detail?.action;
+      if (!socCode || (action !== "add" && action !== "remove")) return;
+      setDockMutationBySoc((prev) => ({ ...prev, [socCode]: action }));
+      const priorTimer = mutationTimers.get(socCode);
+      if (priorTimer) window.clearTimeout(priorTimer);
+      const timer = window.setTimeout(() => {
+        setDockMutationBySoc((prev) => {
+          if (!prev[socCode]) return prev;
+          const next = { ...prev };
+          delete next[socCode];
+          return next;
+        });
+        mutationTimers.delete(socCode);
+      }, 480);
+      mutationTimers.set(socCode, timer);
+    };
+    window.addEventListener("jobviz-tour-dock-mutation", handleDockMutation);
+    return () => {
+      window.removeEventListener("jobviz-tour-dock-mutation", handleDockMutation);
+      mutationTimers.forEach((timer) => window.clearTimeout(timer));
+      mutationTimers.clear();
+    };
   }, []);
 
   React.useEffect(() => {
@@ -678,6 +714,7 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
                   className={`${styles.content} ${
                     isDesktopVariant ? styles.desktopContent : ""
                   }`}
+                  data-jobviz-assignment-scroll={isDesktopVariant ? "true" : undefined}
                 >
                   {isDesktopVariant ? (
                     <AssignmentDesktopList
@@ -696,6 +733,7 @@ export const AssignmentBanner: React.FC<AssignmentBannerProps> = ({
                       onJobClick={handleJobClick}
                       onRemoveJob={handleRemoveTourJob}
                       registerJobButtonRef={registerJobButtonRef}
+                      dockMutationBySoc={dockMutationBySoc}
                       showRemoveControl={mode === "tour-editor"}
                       showRatingHint={showRatingHint}
                       shouldDelayAnimations={shouldDelayAnimations}

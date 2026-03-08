@@ -12,7 +12,6 @@ import useSiteSession from "../../customHooks/useSiteSession";
 import jobVizDataObj from "../../data/Jobviz/jobVizDataObj.json";
 import { createSelectedJobVizJobLink } from "../JobViz/JobTours/JobToursCard";
 import { JOBVIZ_BRACKET_SEARCH_ID } from "../JobViz/jobvizConstants";
-import { JOBVIZ_CATEGORIES_ANCHOR_ID } from "../JobViz/jobvizDomIds";
 import {
   buildJobvizUrl,
   getNodeBySocCode,
@@ -786,36 +785,8 @@ const SelectedJob: React.FC = () => {
       (visibleJob?.soc_code && savedJobIds.has(visibleJob.soc_code))
   );
 
-  const scrollToTourAnimationArea = React.useCallback(() => {
-    if (typeof window === "undefined") return Promise.resolve();
-    const target =
-      document.getElementById(JOBVIZ_CATEGORIES_ANCHOR_ID) ??
-      document.getElementById(JOBVIZ_BRACKET_SEARCH_ID);
-    if (!target) return Promise.resolve();
-    const rect = target.getBoundingClientRect();
-    const navOffsetRaw = getComputedStyle(document.documentElement)
-      .getPropertyValue("--portal-nav-offset")
-      .trim();
-    const navOffset = Number.parseFloat(navOffsetRaw) || 0;
-    const targetTop = rect.top + window.pageYOffset - navOffset - 24;
-    const isTargetVisible =
-      rect.top >= navOffset + 12 &&
-      rect.top <= window.innerHeight * 0.45;
-    if (isTargetVisible) {
-      return Promise.resolve();
-    }
-    window.scrollTo({
-      top: Math.max(0, targetTop),
-      behavior: "smooth",
-    });
-    return new Promise<void>((resolve) => {
-      window.setTimeout(resolve, 360);
-    });
-  }, []);
-
   const handleToggleTourJob = React.useCallback(async () => {
     if (!visibleJob?.soc_code) return;
-    await scrollToTourAnimationArea();
     if (jobTourEditor) {
       jobTourEditor.toggleJob(visibleJob.soc_code);
       return;
@@ -836,7 +807,7 @@ const SelectedJob: React.FC = () => {
         })
       );
     }
-  }, [jobTourEditor, scrollToTourAnimationArea, visibleJob?.soc_code]);
+  }, [jobTourEditor, visibleJob?.soc_code]);
 
   return (
     <>

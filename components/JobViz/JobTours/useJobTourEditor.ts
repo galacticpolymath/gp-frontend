@@ -87,6 +87,7 @@ export const useJobTourEditor = ({
   const [unitOptions, setUnitOptions] = useState<UnitOption[]>([]);
   const [isSavingTour, setIsSavingTour] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
+  const [saveAttemptedAt, setSaveAttemptedAt] = useState(0);
   const [tourForm, setTourForm] =
     useState<JobTourEditorFormState>(getDefaultFormState);
   const [lastSavedSnapshot, setLastSavedSnapshot] =
@@ -290,14 +291,15 @@ export const useJobTourEditor = ({
   const handleSaveTour = useCallback(async () => {
     if (!isTeacherEditMode) return;
     setSaveError(null);
+    setSaveAttemptedAt(Date.now());
 
     if (validationErrors.length) {
       setSaveError("Please complete the required fields.");
-      return;
+      return false;
     }
     if (!token) {
       setSaveError("Please sign in to save.");
-      return;
+      return false;
     }
 
     const snapshot = buildSnapshot();
@@ -321,6 +323,7 @@ export const useJobTourEditor = ({
         }
       }
       setLastSavedSnapshot(snapshot);
+      return true;
     } catch (error: any) {
       const message =
         error?.response?.data?.msg || error?.message || "Unable to save tour.";
@@ -331,6 +334,7 @@ export const useJobTourEditor = ({
       } else {
         setSaveError(message);
       }
+      return false;
     } finally {
       setIsSavingTour(false);
     }
@@ -350,6 +354,7 @@ export const useJobTourEditor = ({
     handleSaveTour,
     hasUnsavedChanges,
     isSavingTour,
+    saveAttemptedAt,
     resolvedClassSubject,
     saveErrors,
     selectedTourJobsArray,

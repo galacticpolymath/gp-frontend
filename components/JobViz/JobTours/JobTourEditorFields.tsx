@@ -6,6 +6,7 @@ import {
   CLASS_SUBJECT_OPTIONS,
   GRADE_LEVEL_OPTIONS,
 } from "./jobTourConstants";
+import { buildStudentTourUrl } from "./tourAccess";
 import type { JobTourVisibility } from "./jobTourTypes";
 
 export interface JobTourEditorFormState {
@@ -24,9 +25,11 @@ export interface JobTourEditorFieldsProps {
   value: JobTourEditorFormState;
   unitOptions: { id: string; title: string }[];
   onChange: (next: JobTourEditorFormState) => void;
-  onSave: () => void;
+  onSave: () => void | Promise<boolean | void>;
   isSaving?: boolean;
   validationErrors?: string[];
+  saveAttemptedAt?: number;
+  tourId?: string | null;
   selectedJobsCount: number;
   isSaved?: boolean;
   showSaveButton?: boolean;
@@ -39,6 +42,8 @@ const JobTourEditorFields: React.FC<JobTourEditorFieldsProps> = ({
   onSave,
   isSaving = false,
   validationErrors = [],
+  saveAttemptedAt = 0,
+  tourId = null,
   selectedJobsCount,
   isSaved = false,
   showSaveButton = true,
@@ -48,6 +53,8 @@ const JobTourEditorFields: React.FC<JobTourEditorFieldsProps> = ({
   const requiresClassDetails = value.whoCanSee === "everyone";
   const [isUnitsOpen, setIsUnitsOpen] = useState(false);
   const [showScrollTopHelper, setShowScrollTopHelper] = useState(false);
+  const [floatingSaveContext, setFloatingSaveContext] = useState<string | null>(null);
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [isClient, setIsClient] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const formRootRef = React.useRef<HTMLDivElement | null>(null);
@@ -106,6 +113,89 @@ const JobTourEditorFields: React.FC<JobTourEditorFieldsProps> = ({
     );
     window.scrollTo({ top, behavior: "smooth" });
   }, []);
+
+  const getFieldIdForError = React.useCallback((error: string) => {
+    const value = error.toLowerCase();
+    if (value.includes("title")) return "tour-title";
+    if (value.includes("job")) return "tour-title";
+    if (value.includes("subject")) return "tour-subject";
+    if (value.includes("grade")) return "tour-grade";
+    if (value.includes("assignment")) return "tour-assignment";
+    if (value.includes("context") || value.includes("explanation")) return "tour-context";
+    if (value.includes("who can see") || value.includes("visibility")) return "tour-visibility";
+    return null;
+  }, []);
+
+  const scrollToEditingArea = React.useCallback(
+    (targetFieldId?: string | null) => {
+      handleScrollToFormTop();
+      if (typeof window === "undefined" || !targetFieldId) return;
+      window.setTimeout(() => {
+        const target = document.getElementById(targetFieldId);
+        if (!target) return;
+        target.scrollIntoView({ behavior: "smooth", block: "center" });
+        if (target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement || target instanceof HTMLSelectElement) {
+          target.focus({ preventScroll: true });
+        }
+      }, 220);
+    },
+    [handleScrollToFormTop]
+  );
+
+  React.useEffect(() => {
+    if (!saveAttemptedAt) return;
+    if (!validationErrors.length) {
+      setFloatingSaveContext(null);
+      return;
+    }
+    const topErrors = validationErrors.slice(0, 2).join(" · ");
+    setFloatingSaveContext(topErrors);
+    const targetFieldId = getFieldIdForError(validationErrors[0]);
+    scrollToEditingArea(targetFieldId);
+  }, [getFieldIdForError, saveAttemptedAt, scrollToEditingArea, validationErrors]);
+
+  const handleSaveClick = React.useCallback(() => {
+    void Promise.resolve(onSave());
+  }, [onSave]);
+
+  const shareUrl = React.useMemo(() => {
+    if (!tourId) return null;
+    if (typeof window === "undefined") {
+      return buildStudentTourUrl(tourId, { preview: false });
+    }
+    return buildStudentTourUrl(tourId, {
+      preview: false,
+      host: window.location.host,
+      protocol: window.location.protocol,
+    });
+  }, [tourId]);
+
+  const handleCopyShareLink = React.useCallback(async () => {
+    if (!shareUrl || typeof navigator === "undefined") return;
+    await navigator.clipboard.writeText(shareUrl);
+  }, [shareUrl]);
+
+  const handleOpenStudentView = React.useCallback(() => {
+    if (!shareUrl || typeof window === "undefined") return;
+    window.open(shareUrl, "_blank", "noopener,noreferrer");
+  }, [shareUrl]);
+
+  const hasAttemptedSave = saveAttemptedAt > 0;
+  const hasBlockingErrors = hasAttemptedSave && hasErrors;
+  const saveButtonVariant = isSaving
+    ? "saving"
+    : hasBlockingErrors
+      ? "error"
+      : isSaved
+        ? "saved"
+        : "dirty";
+  const saveButtonLabel = isSaving
+    ? "Saving..."
+    : hasBlockingErrors
+      ? "Fix to Save"
+      : isSaved
+        ? "Saved"
+        : "Click to Save";
 
   return (
     <div className={styles.tourEditorFields} ref={formRootRef}>
@@ -375,16 +465,86 @@ const JobTourEditorFields: React.FC<JobTourEditorFieldsProps> = ({
           </button>
         )}
       </div>
-      {isClient && showScrollTopHelper && !isModalOpen
+      {isClient && !isModalOpen && !showSaveButton
         ? createPortal(
-            <button
-              type="button"
-              className={styles.tourEditorScrollTop}
-              onClick={handleScrollToFormTop}
+            <div className={styles.tourEditorFloatingActions}>
+              {showScrollTopHelper ? (
+                <button
+                  type="button"
+                  className={styles.tourEditorScrollTop}
+                  onClick={handleScrollToFormTop}
+                >
+                  <LucideIcon name="ArrowUp" aria-hidden="true" />
+                  <span>Scroll to top</span>
+                </button>
+              ) : null}
+              {isSaved && shareUrl ? (
+                <button
+                  type="button"
+                  className={styles.tourEditorFloatingShare}
+                  onClick={() => setIsShareModalOpen(true)}
+                >
+                  <LucideIcon name="Share2" aria-hidden="true" />
+                  <span>Share</span>
+                </button>
+              ) : null}
+              <button
+                type="button"
+                className={styles.tourEditorFloatingSave}
+                onClick={handleSaveClick}
+                disabled={isSaving}
+                data-variant={saveButtonVariant}
+              >
+                {saveButtonLabel}
+              </button>
+              {floatingSaveContext ? (
+                <p className={styles.tourEditorFloatingContext}>{floatingSaveContext}</p>
+              ) : null}
+            </div>,
+            document.body
+          )
+        : null}
+      {isClient && isShareModalOpen
+        ? createPortal(
+            <div
+              className={styles.tourEditorShareOverlay}
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="tour-editor-share-title"
             >
-              <LucideIcon name="ArrowUp" aria-hidden="true" />
-              <span>Scroll to top</span>
-            </button>,
+              <div className={styles.tourEditorShareCard}>
+                <button
+                  type="button"
+                  className={styles.tourEditorShareClose}
+                  onClick={() => setIsShareModalOpen(false)}
+                  aria-label="Close share dialog"
+                >
+                  <LucideIcon name="X" />
+                </button>
+                <h3 id="tour-editor-share-title">Share this career tour!</h3>
+                <p>
+                  Recipients will not need to log in to open the tour.
+                </p>
+                <div className={styles.tourEditorShareActions}>
+                  <button
+                    type="button"
+                    className={styles.tourEditorShareButton}
+                    onClick={() => {
+                      void handleCopyShareLink();
+                    }}
+                  >
+                    Copy Link to Clipboard
+                  </button>
+                  <button
+                    type="button"
+                    className={styles.tourEditorShareButton}
+                    onClick={handleOpenStudentView}
+                  >
+                    Open Student View in New Tab
+                  </button>
+                </div>
+              </div>
+            </div>,
             document.body
           )
         : null}
