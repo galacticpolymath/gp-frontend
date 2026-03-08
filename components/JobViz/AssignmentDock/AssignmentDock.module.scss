@@ -158,8 +158,9 @@
 }
 
 .unitLabel {
-  display: inline-flex;
-  align-items: center;
+  display: block;
+  flex: 1 1 100%;
+  width: 100%;
   margin: 0;
   padding-bottom: 0.5rem;
   color: rgba(245, 247, 255, 0.92);

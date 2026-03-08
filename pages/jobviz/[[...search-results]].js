@@ -3,10 +3,8 @@ import {
   useContext,
   useEffect,
   useMemo,
-  useRef,
   useState,
 } from "react";
-import axios from "axios";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import Layout from "../../components/Layout";
@@ -18,34 +16,12 @@ import HeroForFreeUsers from "../../components/JobViz/Heros/HeroForFreeUsers";
 import { JOBVIZ_BRACKET_SEARCH_ID } from "../../components/JobViz/jobvizConstants";
 import styles from "../../styles/jobviz.module.scss";
 import {
-  buildIdPathForNode,
-  buildJobvizUrl,
-  collectAssignmentAncestorIds,
-  filterJobsBySocCodes,
-  getChainFromIds,
   getDisplayTitle,
-  getHierarchySlice,
-  getIconNameForNode,
-  getNodeBySocCode,
-  getJobSpecificIconName,
-  getLineItemCountForNode,
-  normalizeSocCode,
-  getSelectedSocCodeForLevel,
-  getTargetLevelForNode,
   jobVizNodeById,
   parseJobvizPath,
 } from "../../components/JobViz/jobvizUtils";
 import { JobVizSearch } from "../../components/JobViz/JobVizSearch";
-import {
-  JOBVIZ_DEFAULT_SORT_OPTION,
-  JOBVIZ_SORT_OPTIONS,
-  getSortOptionById,
-  sortJobVizItems,
-} from "../../components/JobViz/jobvizSorting";
-import {
-  decodeJobvizSharePayload,
-  JOBVIZ_REPORT_PARAM_NAME,
-} from "../../components/JobViz/jobvizShareUtils";
+import { JOBVIZ_SORT_OPTIONS } from "../../components/JobViz/jobvizSorting";
 import {
   SOC_CODES_PARAM_NAME,
   UNIT_NAME_PARAM_NAME,
@@ -60,15 +36,12 @@ import {
 import useSiteSession from "../../customHooks/useSiteSession";
 import { useUserContext } from "../../providers/UserProvider";
 import { JobTourEditorProvider } from "../../components/JobViz/jobTourEditorContext";
-import { getJobTours } from "../../components/JobViz/JobTours/jobTourApi";
 import JobTourEditorFields from "../../components/JobViz/JobTours/JobTourEditorFields";
 import { DEFAULT_JOB_TOUR_ASSIGNMENT } from "../../components/JobViz/JobTours/jobTourConstants";
-import {
-  buildStudentTourUrl,
-  isTruthyQueryFlag,
-  JOBVIZ_PREVIEW_LIMIT,
-} from "../../components/JobViz/JobTours/tourAccess";
+import { buildStudentTourUrl, JOBVIZ_PREVIEW_LIMIT } from "../../components/JobViz/JobTours/tourAccess";
 import { useJobTourEditor } from "../../components/JobViz/JobTours/useJobTourEditor";
+import { useJobVizAssignmentState } from "../../components/JobViz/Page/useJobVizAssignmentState";
+import { useJobVizGridState } from "../../components/JobViz/Page/useJobVizGridState";
 import { JobVizNotices } from "../../components/JobViz/Page/JobVizNotices";
 import { JobVizGridHeader } from "../../components/JobViz/Page/JobVizGridHeader";
 import { JobVizFilterBar } from "../../components/JobViz/Page/JobVizFilterBar";
@@ -85,11 +58,8 @@ const JOBVIZ_DESCRIPTION =
   "Explore the full BLS hierarchy with the JobViz glass UI—glass cards, glowing breadcrumbs, and animated explore links keyed to real SOC data.";
 const JOBVIZ_DATA_SOURCE =
   "https://www.bls.gov/emp/tables/occupational-projections-and-characteristics.htm";
-const VIEWING_HEADER_TRANSITION_MS = 480;
-const GRID_NAVIGATION_HEADER_DELAY_MS = VIEWING_HEADER_TRANSITION_MS;
 const JOBVIZ_WELCOME_DISMISSED_KEY = "jobviz_intro_dismissed";
 const JOBVIZ_TOUR_WELCOME_DISMISSED_KEY = "jobviz_tour_intro_dismissed";
-const SAVED_JOBS_QUERY_PARAM = "saved";
 
 const JobVizSearchResults = ({
   metaDescription,
@@ -105,8 +75,7 @@ const JobVizSearchResults = ({
   const [, setSelectedJob] = modalContext._selectedJob;
   const [, setIsJobModalOn] = modalContext._isJobModalOn;
   const [, setIsLoginModalDisplayed] = modalContext._isLoginModalDisplayed;
-  const [jobvizReturnPath, setJobvizReturnPath] =
-    modalContext._jobvizReturnPath;
+  const [, setJobvizReturnPath] = modalContext._jobvizReturnPath;
   const [, setJobvizSummaryModal] = modalContext._jobvizSummaryModal;
   const { user, token, status, isGpPlusMember: gpPlusCookie } = useSiteSession();
   const authorizationHeader =
@@ -123,165 +92,72 @@ const JobVizSearchResults = ({
   const hasGpPlusMembership =
     status === "authenticated" &&
     (isGpPlusMember || isGpPlusCookieValue || isGpPlusMemberFromCookie);
-  const isPreviewQuery = isTruthyQueryFlag(router.query?.preview);
-  const isStudentLinkView = isTruthyQueryFlag(router.query?.student);
   const [showJobvizWelcome, setShowJobvizWelcome] = useState(false);
   const [showTourWelcome, setShowTourWelcome] = useState(false);
-
-  const parsed = useMemo(
-    () => parseJobvizPath(router.query?.["search-results"]),
-    [router.query]
-  );
-
-  const tourIdParam =
-    typeof router.query?.tourId === "string" ? router.query.tourId : null;
-  const [activeTour, setActiveTour] = useState(null);
   const [tourLoadState, setTourLoadState] = useState({
     isLoading: false,
     error: null,
   });
   const [showTourUpgradeModal, setShowTourUpgradeModal] = useState(false);
   const [savedJobIds, setSavedJobIds] = useState(new Set());
-  const [showSavedJobsOnly, setShowSavedJobsOnly] = useState(false);
-  const [showSavedJobsUpsell, setShowSavedJobsUpsell] = useState(false);
-  const socCodesParam = router.query?.[SOC_CODES_PARAM_NAME];
-  const hasSocCodesParam = Array.isArray(socCodesParam)
-    ? socCodesParam.some(Boolean)
-    : Boolean(socCodesParam);
-
-  useEffect(() => {
-    if (!tourIdParam) {
-      setActiveTour(null);
-      setTourLoadState({ isLoading: false, error: null });
-      return;
-    }
-    let isMounted = true;
-    setTourLoadState({ isLoading: true, error: null });
-    getJobTours({ filterObj: { _id: tourIdParam }, limit: 1 })
-      .then((tours) => {
-        if (!isMounted) return;
-        setActiveTour(tours?.[0] ?? null);
-        setTourLoadState({ isLoading: false, error: null });
-      })
-      .catch((error) => {
-        if (!isMounted) return;
-        setTourLoadState({
-          isLoading: false,
-          error:
-            error?.response?.data?.msg ||
-            error?.message ||
-            "Unable to load this tour.",
-        });
-      });
-    return () => {
-      isMounted = false;
-    };
-  }, [tourIdParam]);
-
-  const preservedUnitName =
-    unitName ?? (router.query?.[UNIT_NAME_PARAM_NAME]?.toString() || null);
-
-  const shouldRenderAssignment =
-    Boolean(preservedUnitName) ||
-    Boolean(jobTitleAndSocCodePairs?.length) ||
-    Boolean(activeTour?.selectedJobs?.length) ||
-    hasSocCodesParam;
-  const rawEditParam = router.query?.edit;
-  const wantsTeacherEditMode =
-    typeof rawEditParam === "string" &&
-    ["1", "true", "edit"].includes(rawEditParam.toLowerCase());
-  const canUseTeacherEditMode = wantsTeacherEditMode && !!hasGpPlusMembership;
-  const isStudentAssignmentView =
-    shouldRenderAssignment && !canUseTeacherEditMode;
-  const viewMode = canUseTeacherEditMode
-    ? "teacher-edit"
-    : isStudentAssignmentView
-      ? "student"
-      : "default";
-  const teacherEditDenied = wantsTeacherEditMode && !hasGpPlusMembership;
-  const isStudentMode = viewMode === "student";
-  const isTeacherEditMode = viewMode === "teacher-edit";
-  const shouldForcePreviewMode =
-    Boolean(tourIdParam) && !hasGpPlusMembership && !wantsTeacherEditMode;
-  const isTourPreviewMode =
-    (isPreviewQuery || shouldForcePreviewMode) && !isTeacherEditMode;
-  const showUnitPreviewAssignmentBanner = isTruthyQueryFlag(
-    router.query?.previewAssignmentBanner
-  );
-  const lastReportParamRef = useRef(null);
   const [selectedTourJobs, setSelectedTourJobs] = useState(new Set());
   const [lastToggledSoc, setLastToggledSoc] = useState(null);
-
-  useEffect(() => {
-    if (!router.isReady) return;
-    if (!shouldForcePreviewMode || isPreviewQuery) return;
-    const params = new URLSearchParams();
-    Object.entries(router.query ?? {}).forEach(([key, value]) => {
-      if (Array.isArray(value)) {
-        value.forEach((entry) => params.append(key, String(entry)));
-        return;
-      }
-      if (value !== undefined && value !== null) {
-        params.set(key, String(value));
-      }
-    });
-    params.set("preview", "1");
-    params.set("student", "1");
-    const nextUrl = `${router.pathname}?${params.toString()}`;
-    router.replace(nextUrl, undefined, { shallow: true, scroll: false });
-  }, [isPreviewQuery, router, shouldForcePreviewMode]);
-
-  const sourceAssignmentSocCodes = useMemo(() => {
-    if (activeTour?.selectedJobs?.length) {
-      return new Set(
-        activeTour.selectedJobs
-          .map((socCode) => normalizeSocCode(socCode))
-          .filter(Boolean)
-      );
-    }
-    const param = router.query?.[SOC_CODES_PARAM_NAME];
-    const value = Array.isArray(param) ? param.join(",") : param;
-
-    if (!value) return null;
-
-    return new Set(
-      value
-        .split(",")
-        .map((socCode) => normalizeSocCode(socCode))
-        .filter(Boolean)
-    );
-  }, [activeTour, router.query]);
-  const allAssignmentSocCodes = useMemo(() => {
-    if (isTeacherEditMode) {
-      return selectedTourJobs;
-    }
-    return sourceAssignmentSocCodes;
-  }, [isTeacherEditMode, selectedTourJobs, sourceAssignmentSocCodes]);
-  const assignmentSocCodes = useMemo(() => {
-    if (!allAssignmentSocCodes?.size) {
-      return allAssignmentSocCodes;
-    }
-
-    if (isTourPreviewMode) {
-      return new Set(
-        Array.from(allAssignmentSocCodes).slice(0, JOBVIZ_PREVIEW_LIMIT)
-      );
-    }
-
-    return allAssignmentSocCodes;
-  }, [allAssignmentSocCodes, isTourPreviewMode]);
-  const previewLockedCount = useMemo(() => {
-    if (!isTourPreviewMode || !allAssignmentSocCodes?.size) return 0;
-    return Math.max(allAssignmentSocCodes.size - JOBVIZ_PREVIEW_LIMIT, 0);
-  }, [allAssignmentSocCodes, isTourPreviewMode]);
-
-  const assignmentParams = useMemo(
-    () => ({
-      socCodes: assignmentSocCodes ?? undefined,
-      unitName: preservedUnitName,
-    }),
-    [assignmentSocCodes, preservedUnitName]
+  const isTeacherEditMode = Boolean(
+    typeof router.query?.edit === "string" &&
+      ["1", "true", "edit"].includes(router.query.edit.toLowerCase()) &&
+      hasGpPlusMembership
   );
+  const {
+    activeTour,
+    assignmentAncestors,
+    assignmentParams,
+    assignmentSocCodes,
+    hasAssignmentList,
+    hierarchySlice,
+    isStudentLinkView,
+    isStudentMode,
+    isTourPreviewMode,
+    parsed,
+    preservedJobvizQueryParams,
+    previewLockedCount,
+    resolvedJobTitleAndSocCodePairs,
+    showAssignmentOnly,
+    showSavedJobsOnly,
+    showSavedJobsUpsell,
+    showUnitPreviewAssignmentBanner,
+    sortOptionId,
+    sourceAssignmentSocCodes,
+    teacherEditDenied,
+    toggleShowAssignmentOnly: setShowAssignmentOnly,
+    tourIdParam,
+    viewMode,
+    effectiveUnitName: preservedUnitName,
+    handleAssignedToggleClick,
+    handleSavedToggleClick,
+    handleSortControlChange,
+    chainNodes,
+    closeSavedJobsUpsell,
+    shouldRenderAssignment,
+  } = useJobVizAssignmentState({
+    assignmentQueryParamName: {
+      socCodes: SOC_CODES_PARAM_NAME,
+      unitName: UNIT_NAME_PARAM_NAME,
+    },
+    getSummaryModalSetter: () => setJobvizSummaryModal,
+    hasGpPlusMembership,
+    initialJobPairs: jobTitleAndSocCodePairs,
+    isTeacherEditMode,
+    preservedUnitName: unitName,
+    router,
+    selectedTourJobs,
+    setSavedJobIds,
+    setSelectedTourJobs,
+    setTourLoadState,
+    status,
+    token,
+    unitName,
+    userAuthorizationHeader: authorizationHeader,
+  });
 
   const toggleTourJob = useCallback((socCode) => {
     setSelectedTourJobs((prev) => {
@@ -300,312 +176,6 @@ const JobVizSearchResults = ({
     (socCode) => selectedTourJobs.has(socCode),
     [selectedTourJobs]
   );
-
-  const chainNodes = useMemo(
-    () => getChainFromIds(parsed.idPath),
-    [parsed.idPath]
-  );
-
-  const selectedLevelFromChain = useMemo(() => {
-    const parent = chainNodes.find(
-      (node) => node.hierarchy === parsed.targetLevel - 1
-    );
-
-    if (!parent) return null;
-
-    return getSelectedSocCodeForLevel(parent, parsed.targetLevel);
-  }, [chainNodes, parsed.targetLevel]);
-
-  const selectedLevel =
-    parsed.selectedLevel ?? selectedLevelFromChain ?? null;
-
-  const hierarchySlice = useMemo(
-    () => getHierarchySlice(parsed.targetLevel, selectedLevel),
-    [parsed.targetLevel, selectedLevel]
-  );
-
-  const assignmentAncestors = useMemo(
-    () => collectAssignmentAncestorIds(assignmentSocCodes ?? undefined),
-    [assignmentSocCodes]
-  );
-  const resolvedSocCodesForBanner = isTeacherEditMode
-    ? selectedTourJobs
-    : assignmentSocCodes;
-  const resolvedJobTitleAndSocCodePairs = useMemo(() => {
-    const source = resolvedSocCodesForBanner
-      ? Array.from(resolvedSocCodesForBanner)
-      : [];
-    if (!source.length) {
-      return jobTitleAndSocCodePairs ?? null;
-    }
-    const pairs = source
-      .map((soc) => {
-        const job = getNodeBySocCode(soc);
-        return job ? [job.title, soc] : null;
-      })
-      .filter(Boolean);
-    return pairs.length ? pairs : jobTitleAndSocCodePairs ?? null;
-  }, [jobTitleAndSocCodePairs, resolvedSocCodesForBanner]);
-  const hasAssignmentList = Boolean(resolvedSocCodesForBanner?.size);
-  const [showAssignmentOnly, setShowAssignmentOnly] = useState(
-    () => (isStudentMode || isTourPreviewMode) && hasAssignmentList
-  );
-  useEffect(() => {
-    if (isTourPreviewMode && hasAssignmentList) {
-      setShowAssignmentOnly(true);
-      return;
-    }
-    if (!hasAssignmentList) {
-      setShowAssignmentOnly(false);
-    }
-  }, [hasAssignmentList, isTourPreviewMode]);
-  const sortQueryFromRouter =
-    typeof router.query?.sort === "string" ? router.query.sort : undefined;
-  const normalizedSortFromQuery = useMemo(
-    () => getSortOptionById(sortQueryFromRouter).id,
-    [sortQueryFromRouter]
-  );
-  const [sortOptionId, setSortOptionId] = useState(normalizedSortFromQuery);
-  useEffect(() => {
-    setSortOptionId(normalizedSortFromQuery);
-  }, [normalizedSortFromQuery]);
-  const persistSortInQuery = useCallback(
-    (nextId) => {
-      const [path, search = ""] = router.asPath.split("?");
-      const params = new URLSearchParams(search);
-      if (nextId && nextId !== JOBVIZ_DEFAULT_SORT_OPTION.id) {
-        params.set("sort", nextId);
-      } else {
-        params.delete("sort");
-      }
-      const queryString = params.toString();
-      const nextUrl = queryString ? `${path}?${queryString}` : path;
-      router.replace(nextUrl, undefined, { shallow: true, scroll: false });
-    },
-    [router]
-  );
-  const handleSortControlChange = useCallback(
-    (nextId) => {
-      setSortOptionId(nextId);
-      persistSortInQuery(nextId);
-    },
-    [persistSortInQuery]
-  );
-  const handleAssignedToggleClick = useCallback(() => {
-    const isTurningOff = showAssignmentOnly && hasAssignmentList;
-
-    if (!isTurningOff) {
-      setShowAssignmentOnly(true);
-      return;
-    }
-
-    setShowAssignmentOnly(false);
-
-    if (parsed.targetLevel === 1 && parsed.idPath.length === 0) {
-      return;
-    }
-
-    const [, search = ""] = router.asPath.split("?");
-    const nextUrl = search ? `/jobviz?${search}` : "/jobviz";
-    router.push(nextUrl, undefined, { shallow: true, scroll: false });
-  }, [hasAssignmentList, parsed.idPath.length, parsed.targetLevel, router, showAssignmentOnly]);
-  const persistSavedFilterInQuery = useCallback(
-    (nextEnabled) => {
-      const [path, search = ""] = router.asPath.split("?");
-      const params = new URLSearchParams(search);
-      if (nextEnabled) {
-        params.set(SAVED_JOBS_QUERY_PARAM, "1");
-      } else {
-        params.delete(SAVED_JOBS_QUERY_PARAM);
-      }
-      const queryString = params.toString();
-      const nextUrl = queryString ? `${path}?${queryString}` : path;
-      router.replace(nextUrl, undefined, { shallow: true, scroll: false });
-    },
-    [router]
-  );
-  const handleSavedToggleClick = useCallback(() => {
-    if (status !== "authenticated") {
-      setShowSavedJobsUpsell(true);
-      return;
-    }
-    setShowSavedJobsOnly((prev) => {
-      const next = !prev;
-      persistSavedFilterInQuery(next);
-      return next;
-    });
-  }, [persistSavedFilterInQuery, status]);
-  const sortQueryParam =
-    sortOptionId === JOBVIZ_DEFAULT_SORT_OPTION.id ? undefined : sortOptionId;
-  const preservedJobvizQueryParams = useMemo(
-    () => ({
-      ...(sortQueryParam ? { sort: sortQueryParam } : {}),
-      ...(typeof router.query?.edit === "string"
-        ? { edit: router.query.edit }
-        : {}),
-      ...(typeof router.query?.tourId === "string"
-        ? { tourId: router.query.tourId }
-        : {}),
-    }),
-    [router.query?.edit, router.query?.tourId, sortQueryParam]
-  );
-  // filter state managed via button; when assignment data is absent the toggle is ignored.
-  const focusAssignedActive = Boolean(showAssignmentOnly && hasAssignmentList);
-
-  useEffect(() => {
-    if (typeof document !== "undefined") {
-      document.body.dataset.jobvizFocus = focusAssignedActive ? "true" : "false";
-    }
-    if (typeof window !== "undefined") {
-      window.dispatchEvent(
-        new CustomEvent("jobviz-focus-toggle", {
-          detail: { value: focusAssignedActive },
-        })
-      );
-    }
-  }, [focusAssignedActive]);
-
-  useEffect(() => {
-    return () => {
-      if (typeof document !== "undefined") {
-        delete document.body.dataset.jobvizFocus;
-      }
-      if (typeof window !== "undefined") {
-        window.dispatchEvent(
-          new CustomEvent("jobviz-focus-toggle", { detail: { value: false } })
-        );
-      }
-    };
-  }, []);
-
-  useEffect(() => {
-    if (!router.isReady) return;
-    const rawSavedParam = router.query?.[SAVED_JOBS_QUERY_PARAM];
-    const normalizedSavedParam = Array.isArray(rawSavedParam)
-      ? rawSavedParam[0]
-      : rawSavedParam;
-    const shouldShowSaved = ["1", "true"].includes(
-      String(normalizedSavedParam ?? "").toLowerCase()
-    );
-    setShowSavedJobsOnly(shouldShowSaved);
-  }, [router.isReady, router.query]);
-
-  useEffect(() => {
-    if (status !== "authenticated" || !token) {
-      setSavedJobIds(new Set());
-      return;
-    }
-    let isCancelled = false;
-    axios
-      .get("/api/get-user-account-data?willNotRetrieveMailingListStatus=true", {
-        headers: {
-          Authorization: authorizationHeader,
-        },
-      })
-      .then(({ data }) => {
-        if (isCancelled) return;
-        const ids = Array.isArray(data?.savedJobIds)
-          ? data.savedJobIds
-              .filter((value) => typeof value === "string")
-              .map((value) => value.trim())
-              .filter(Boolean)
-          : [];
-        setSavedJobIds(new Set(ids));
-      })
-      .catch(() => {
-        if (!isCancelled) {
-          setSavedJobIds(new Set());
-        }
-      });
-    return () => {
-      isCancelled = true;
-    };
-  }, [authorizationHeader, status, token]);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return undefined;
-    const handleSavedJobsUpdate = (event) => {
-      const payload = event?.detail ?? {};
-      const action = payload?.action;
-      const jobId = typeof payload?.jobId === "string" ? payload.jobId.trim() : "";
-      if (!jobId) return;
-      setSavedJobIds((prev) => {
-        const next = new Set(prev);
-        if (action === "remove") {
-          next.delete(jobId);
-        } else {
-          next.add(jobId);
-        }
-        return next;
-      });
-    };
-    window.addEventListener("jobviz-saved-jobs-updated", handleSavedJobsUpdate);
-    return () => {
-      window.removeEventListener("jobviz-saved-jobs-updated", handleSavedJobsUpdate);
-    };
-  }, []);
-
-  useEffect(() => {
-    if (!router.isReady) return;
-    const param = router.query?.[JOBVIZ_REPORT_PARAM_NAME];
-    const encoded = Array.isArray(param) ? param[0] : param;
-    if (!encoded || encoded === lastReportParamRef.current) return;
-    const payload = decodeJobvizSharePayload(encoded);
-    if (!payload) return;
-    lastReportParamRef.current = encoded;
-    setJobvizSummaryModal({
-      isDisplayed: true,
-      unitName: payload.unitName ?? preservedUnitName ?? null,
-      jobs:
-        payload.jobs?.map((job) => ({
-          title: job.title,
-          soc: job.soc,
-        })) ?? [],
-      payload,
-      allowEditing: false,
-    });
-  }, [preservedUnitName, router.isReady, router.query, setJobvizSummaryModal]);
-
-  const buildReturnUrlForNode = useCallback(
-    (node) => {
-      const targetLevel = getTargetLevelForNode(node);
-      const selectedLevel = getSelectedSocCodeForLevel(node, targetLevel);
-      const fullIdPath = buildIdPathForNode(node);
-      const parentPath = fullIdPath.slice(0, -1);
-
-      if (!parentPath.length) {
-        return buildJobvizUrl(
-          { targetLevel: 1, selectedLevel: null, idPath: [] },
-          assignmentParams,
-          preservedJobvizQueryParams
-        );
-      }
-
-      return buildJobvizUrl(
-        { targetLevel, selectedLevel, idPath: parentPath },
-        assignmentParams,
-        preservedJobvizQueryParams
-      );
-    },
-    [assignmentParams, preservedJobvizQueryParams]
-  );
-
-  const filteredSlice = useMemo(() => {
-    return hierarchySlice;
-  }, [hierarchySlice]);
-  const activeNode = chainNodes[chainNodes.length - 1] ?? null;
-  const showDetail =
-    Boolean(activeNode && activeNode.occupation_type === "Line item");
-  const resolvedMetaDescription = activeNode
-    ? activeNode.def
-      ? `${getDisplayTitle(activeNode)}: ${activeNode.def}`
-      : getDisplayTitle(activeNode)
-    : metaDescription ?? JOBVIZ_DESCRIPTION;
-  const layoutTitleBase =
-    "JobViz Career Explorer | Connect Learning to 1,000+ Real-World Careers";
-  const resolvedPageTitle = activeNode
-    ? `${getDisplayTitle(activeNode)} | JobViz Career Explorer`
-    : layoutTitleBase;
 
   const scrollToBreadcrumb = useCallback(() => {
     if (typeof window === "undefined") return;
@@ -630,586 +200,55 @@ const JobVizSearchResults = ({
       window.scrollTo({ top, behavior: "smooth" });
     });
   }, []);
-
-  const gridItems = useMemo(() => {
-    return filteredSlice.map((node) => ({
-      id: String(node.id),
-      title: getDisplayTitle(node),
-      iconName: getIconNameForNode(node),
-      level: node.occupation_type === "Line item" ? 2 : 1,
-      jobsCount:
-        node.occupation_type === "Line item"
-          ? undefined
-          : getLineItemCountForNode(node),
-      growthPercent: node.employment_change_percent ?? null,
-      wage: node.median_annual_wage ?? null,
-      education:
-        node.occupation_type === "Line item"
-          ? node.typical_education_needed_for_entry ?? null
-          : null,
-      jobIconName:
-        node.occupation_type === "Line item"
-          ? getJobSpecificIconName(node)
-          : undefined,
-      socCode: node.soc_code ?? null,
-      isAssignmentJob:
-        node.occupation_type === "Line item"
-          ? assignmentSocCodes?.has(node.soc_code) ?? false
-          : false,
-      highlight:
-        assignmentAncestors.has(node.id) ||
-        (assignmentSocCodes?.has(node.soc_code) ?? false),
-      highlightClicked: activeNode?.id === node.id,
-      showBookmark:
-        (node.soc_code && savedJobIds.has(node.soc_code)) ||
-        savedJobIds.has(String(node.id)),
-    }));
-  }, [
-    filteredSlice,
+  const {
+    activeNode,
+    activeViewingHeader,
+    breadcrumbs,
+    ensureJobCategoriesLevel,
+    handleAssignmentJobClick,
+    handleGridExitComplete,
+    handleGridItemClick,
+    isShowingAssignmentScope,
+    isShowingSavedScope,
+    isViewingHeaderTransitioning,
+    navigationHint,
+    outgoingViewingHeader,
+    renderedGridItems,
+    sectionHeading,
+    showIntroHeading,
+  } = useJobVizGridState({
     assignmentAncestors,
+    assignmentParams,
     assignmentSocCodes,
-    activeNode?.id,
-    savedJobIds,
-  ]);
-
-  const assignmentJobItems = useMemo(() => {
-    if (!assignmentSocCodes?.size) return [];
-    return Array.from(assignmentSocCodes)
-      .map((code) => getNodeBySocCode(code))
-      .filter(Boolean)
-      .map((node) => ({
-        id: String(node.id),
-        title: getDisplayTitle(node),
-        iconName: getIconNameForNode(node),
-        level: 2,
-        jobsCount: undefined,
-        growthPercent: node.employment_change_percent ?? null,
-        wage: node.median_annual_wage ?? null,
-        education: node.typical_education_needed_for_entry ?? null,
-        jobIconName: getJobSpecificIconName(node),
-        socCode: node.soc_code ?? null,
-        isAssignmentJob: true,
-        highlight: true,
-        highlightClicked: false,
-        showBookmark:
-          (node.soc_code && savedJobIds.has(node.soc_code)) ||
-          savedJobIds.has(String(node.id)),
-      }));
-  }, [assignmentSocCodes, savedJobIds]);
-  const savedJobItems = useMemo(() => {
-    if (!savedJobIds.size) return [];
-    return Array.from(savedJobIds)
-      .map((savedId) => {
-        const normalized = savedId.trim();
-        return getNodeBySocCode(normalized) ?? jobVizNodeById.get(Number(normalized));
-      })
-      .filter(Boolean)
-      .map((node) => ({
-        id: String(node.id),
-        title: getDisplayTitle(node),
-        iconName: getIconNameForNode(node),
-        level: 2,
-        jobsCount: undefined,
-        growthPercent: node.employment_change_percent ?? null,
-        wage: node.median_annual_wage ?? null,
-        education: node.typical_education_needed_for_entry ?? null,
-        jobIconName: getJobSpecificIconName(node),
-        socCode: node.soc_code ?? null,
-        isAssignmentJob: assignmentSocCodes?.has(node.soc_code) ?? false,
-        highlight:
-          assignmentAncestors.has(node.id) ||
-          (assignmentSocCodes?.has(node.soc_code) ?? false),
-        highlightClicked: false,
-        showBookmark: true,
-      }));
-  }, [assignmentAncestors, assignmentSocCodes, savedJobIds]);
-  const previewLockedItems = useMemo(() => {
-    if (!isTourPreviewMode || !previewLockedCount) return [];
-    return Array.from({ length: previewLockedCount }).map((_, index) => ({
-      id: `preview-locked-${index + 1}`,
-      title: "Unlock with GP+",
-      iconName: "Lock",
-      level: 2,
-      jobsCount: undefined,
-      growthPercent: null,
-      wage: null,
-      education: null,
-      socCode: null,
-      isAssignmentJob: true,
-      highlight: false,
-      highlightClicked: false,
-      showBookmark: false,
-      isLocked: true,
-    }));
-  }, [isTourPreviewMode, previewLockedCount]);
-
-  const sortedGridItems = useMemo(
-    () => sortJobVizItems(gridItems, sortOptionId),
-    [gridItems, sortOptionId]
-  );
-
-  const sortedAssignmentItems = useMemo(
-    () => sortJobVizItems(assignmentJobItems, sortOptionId),
-    [assignmentJobItems, sortOptionId]
-  );
-  const sortedSavedItems = useMemo(
-    () => sortJobVizItems(savedJobItems, sortOptionId),
-    [savedJobItems, sortOptionId]
-  );
-
-  const filteredGridItems = useMemo(() => {
-    if (showSavedJobsOnly && status === "authenticated") {
-      return sortedSavedItems;
-    }
-    if (showAssignmentOnly && hasAssignmentList) {
-      return isTourPreviewMode
-        ? [...sortedAssignmentItems, ...previewLockedItems]
-        : sortedAssignmentItems;
-    }
-    return sortedGridItems;
-  }, [
-    isTourPreviewMode,
-    previewLockedItems,
-    sortedGridItems,
-    sortedAssignmentItems,
-    sortedSavedItems,
-    showAssignmentOnly,
-    showSavedJobsOnly,
-    status,
+    chainNodes,
+    filteredSlice: hierarchySlice,
     hasAssignmentList,
-  ]);
-  const [persistedGridItems, setPersistedGridItems] = useState(filteredGridItems);
-  useEffect(() => {
-    if (!showDetail) {
-      setPersistedGridItems(filteredGridItems);
-    }
-  }, [filteredGridItems, showDetail]);
-  const displayGridItems = showDetail ? persistedGridItems : filteredGridItems;
-  const [renderedGridItems, setRenderedGridItems] = useState(displayGridItems);
-  const gridItemsDelayRef = useRef(null);
-  const initialGridRenderRef = useRef(true);
-  useEffect(() => {
-    if (initialGridRenderRef.current) {
-      initialGridRenderRef.current = false;
-      setRenderedGridItems(displayGridItems);
-      return;
-    }
-    if (gridItemsDelayRef.current) {
-      clearTimeout(gridItemsDelayRef.current);
-      gridItemsDelayRef.current = null;
-    }
-    const applyItems = () => {
-      setRenderedGridItems(displayGridItems);
-      gridItemsDelayRef.current = null;
-    };
-    if (typeof window !== "undefined" && GRID_NAVIGATION_HEADER_DELAY_MS > 0) {
-      gridItemsDelayRef.current = window.setTimeout(
-        applyItems,
-        GRID_NAVIGATION_HEADER_DELAY_MS
-      );
-    } else {
-      applyItems();
-    }
-    return () => {
-      if (gridItemsDelayRef.current) {
-        clearTimeout(gridItemsDelayRef.current);
-        gridItemsDelayRef.current = null;
-      }
-    };
-  }, [displayGridItems]);
-
-  const visibleGroupCount = useMemo(
-    () => displayGridItems.filter((item) => item.level === 1).length,
-    [displayGridItems]
-  );
-  const visibleJobCount = useMemo(
-    () => displayGridItems.filter((item) => item.level === 2).length,
-    [displayGridItems]
-  );
-
-  const parentForHeading = useMemo(() => {
-    if (selectedLevel) {
-      return getNodeBySocCode(selectedLevel) ?? null;
-    }
-    return null;
-  }, [selectedLevel]);
-
-  const sectionHeading =
-    parentForHeading?.soc_title ||
-    parentForHeading?.title ||
-    "Browse jobs by category or search";
-
-  const showIntroHeading = chainNodes.length === 0;
-
-  const handleAssignmentJobClick = useCallback((socCode) => {
-    const node = getNodeBySocCode(socCode);
-    if (!node) return;
-
-    setSelectedJob({ ...node, wasSelectedFromJobToursCard: false });
-    setIsJobModalOn(true);
-    setPersistedGridItems(filteredGridItems);
-    setJobvizReturnPath(buildReturnUrlForNode(node));
-
-    const url = buildJobvizUrl(
-      { fromNode: node },
-      assignmentParams,
-      preservedJobvizQueryParams
-    );
-    router.push(url, undefined, { scroll: false, shallow: true });
-  }, [
-    assignmentParams,
-    buildReturnUrlForNode,
-    filteredGridItems,
-    router,
-    setIsJobModalOn,
-    setJobvizReturnPath,
-    setPersistedGridItems,
-    setSelectedJob,
+    parsed,
     preservedJobvizQueryParams,
-  ]);
-
-  const handleAssignmentGridClick = useCallback((item) => {
-    if (!item?.socCode) return;
-    handleAssignmentJobClick(item.socCode);
-  }, [handleAssignmentJobClick]);
-
-  const handleGridClick = useCallback((item) => {
-    const node = jobVizNodeById.get(Number(item.id));
-    if (!node) return;
-
-    const targetLevel = getTargetLevelForNode(node);
-    const selectedLevelForNode = getSelectedSocCodeForLevel(
-      node,
-      targetLevel
-    );
-    const idPath = buildIdPathForNode(node);
-    const nextUrl = buildJobvizUrl(
-      { targetLevel, selectedLevel: selectedLevelForNode, idPath },
-      assignmentParams,
-      preservedJobvizQueryParams
-    );
-
-    const isLineItem = node.occupation_type === "Line item";
-    if (isLineItem) {
-      setSelectedJob({ ...node, wasSelectedFromJobToursCard: false });
-      setIsJobModalOn(true);
-      setPersistedGridItems(filteredGridItems);
-      setJobvizReturnPath(buildReturnUrlForNode(node));
-    }
-    const pushPromise = router.push(nextUrl, undefined, {
-      scroll: false,
-      shallow: true,
-    });
-    if (!isLineItem) {
-      pushPromise.finally(scrollToViewingHeader);
-    }
-    return pushPromise;
-  }, [
-    assignmentParams,
-    buildReturnUrlForNode,
-    filteredGridItems,
+    previewLockedCount,
     router,
+    savedJobIds,
+    scheduleUpgradeModal: setShowTourUpgradeModal,
+    scrollToBreadcrumb,
     scrollToViewingHeader,
     setIsJobModalOn,
     setJobvizReturnPath,
-    setPersistedGridItems,
     setSelectedJob,
-    preservedJobvizQueryParams,
-  ]);
-  const [navigationHint, setNavigationHint] = useState(null);
-
-  useEffect(() => {
-    return () => {
-      if (viewingHeaderTimeoutRef.current) {
-        clearTimeout(viewingHeaderTimeoutRef.current);
-      }
-    };
-  }, []);
-  const pendingNavigationRef = useRef(null);
-  const isPromiseLike = (value) =>
-    Boolean(value) &&
-    typeof value === "object" &&
-    typeof value.then === "function" &&
-    typeof value.finally === "function";
-  const normalizeRect = useCallback((rect) => {
-    if (!rect) return null;
-    if ("left" in rect) {
-      return {
-        x: rect.left,
-        y: rect.top,
-        width: rect.width,
-        height: rect.height,
-      };
-    }
-    return rect;
-  }, []);
-  const navigationWaveRef = useRef(0);
-  const navigationHintDelayRef = useRef(null);
-  const triggerNavigationHint = useCallback(
-    (direction, rect, pivotId = null) => {
-      navigationWaveRef.current += 1;
-      setNavigationHint({
-        direction,
-        anchor: normalizeRect(rect),
-        wave: navigationWaveRef.current,
-        pivotId,
-      });
-    },
-    [normalizeRect]
-  );
-  useEffect(() => {
-    return () => {
-      if (navigationHintDelayRef.current) {
-        clearTimeout(navigationHintDelayRef.current);
-      }
-      if (gridItemsDelayRef.current) {
-        clearTimeout(gridItemsDelayRef.current);
-      }
-      pendingNavigationRef.current = null;
-    };
-  }, []);
-  const handleGridExitComplete = useCallback(() => {
-    if (pendingNavigationRef.current) {
-      pendingNavigationRef.current();
-      pendingNavigationRef.current = null;
-    }
-  }, []);
-  const scheduleNavigation = useCallback(
-    (direction, rect, action, pivotId = null) => {
-      if (navigationHintDelayRef.current) {
-        clearTimeout(navigationHintDelayRef.current);
-        navigationHintDelayRef.current = null;
-      }
-      const startNavigationHint = () => {
-        triggerNavigationHint(direction, rect, pivotId);
-        navigationHintDelayRef.current = null;
-      };
-      if (typeof window !== "undefined" && GRID_NAVIGATION_HEADER_DELAY_MS > 0) {
-        navigationHintDelayRef.current = window.setTimeout(
-          startNavigationHint,
-          GRID_NAVIGATION_HEADER_DELAY_MS
-        );
-      } else {
-        startNavigationHint();
-      }
-      if (!action) {
-        pendingNavigationRef.current = null;
-        return null;
-      }
-      let resolveNavigation;
-      const completion = new Promise((resolve) => {
-        resolveNavigation = resolve;
-      });
-      pendingNavigationRef.current = () => {
-        try {
-          const result = action();
-          if (isPromiseLike(result)) {
-            result.finally(() => resolveNavigation?.());
-            return;
-          }
-        } catch (error) {
-          resolveNavigation?.();
-          throw error;
-        }
-        resolveNavigation?.();
-      };
-      return completion;
-    },
-    [triggerNavigationHint]
-  );
-  const handleGridItemClick = useCallback(
-    (item, meta) => {
-      if (item?.isLocked) {
-        setShowTourUpgradeModal(true);
-        return;
-      }
-      if (showAssignmentOnly && hasAssignmentList) {
-        handleAssignmentGridClick(item);
-        return;
-      }
-      const isTerminalCard =
-        item.level === 2 && item.socCode && item.level !== 1;
-      if (isTerminalCard) {
-        handleGridClick(item);
-        return;
-      }
-      const pivotId = meta?.itemId ?? item.id;
-      const fallbackRect = () => {
-        if (typeof document === "undefined") return null;
-        const el = document.querySelector(
-          `[data-jobviz-card-id="${pivotId}"]`
-        );
-        if (!(el instanceof HTMLElement)) return null;
-        const rect = el.getBoundingClientRect();
-        return { x: rect.left, y: rect.top, width: rect.width, height: rect.height };
-      };
-      const cardRect = meta?.cardRect ?? fallbackRect();
-      if (cardRect) {
-        scheduleNavigation(
-          "down",
-          cardRect,
-          () => handleGridClick(item),
-          pivotId
-        );
-        return;
-      }
-      handleGridClick(item);
-    },
-    [
-      showAssignmentOnly,
-      hasAssignmentList,
-      setShowTourUpgradeModal,
-      handleAssignmentGridClick,
-      scheduleNavigation,
-      handleGridClick,
-    ]
-  );
-
-  const breadcrumbs = useMemo(() => {
-    const segments = [
-      {
-        label: "job-categories",
-        iconName: "Grid2x2",
-        onClick:
-          chainNodes.length || parsed.targetLevel > 1
-            ? (event) => {
-                const rect = event?.currentTarget?.getBoundingClientRect();
-                scheduleNavigation("up", rect, () =>
-                  router
-                    .push(
-                      buildJobvizUrl(
-                        { targetLevel: 1, selectedLevel: null, idPath: [] },
-                        assignmentParams,
-                        preservedJobvizQueryParams
-                      ),
-                      undefined,
-                      { scroll: false, shallow: true }
-                    )
-                    .finally(scrollToBreadcrumb)
-                );
-              }
-            : undefined,
-        isActive: !chainNodes.length,
-      },
-    ];
-
-    chainNodes.forEach((node, index) => {
-      const targetLevelForNode = getTargetLevelForNode(node);
-      const isLast = index === chainNodes.length - 1;
-      const label = getDisplayTitle(node)
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, "-");
-
-      // Avoid duplicate consecutive labels when idPath contains the same node twice.
-      const isDuplicate =
-        segments.length &&
-        segments[segments.length - 1].label === label &&
-        segments[segments.length - 1].iconName === getIconNameForNode(node);
-
-      if (isDuplicate) return;
-
-      segments.push({
-        label,
-        iconName: getIconNameForNode(node),
-        isActive: isLast,
-        onClick: isLast
-          ? undefined
-          : (event) => {
-              const rect = event?.currentTarget?.getBoundingClientRect();
-              scheduleNavigation("up", rect, () =>
-                router
-                  .push(
-                    buildJobvizUrl(
-                      {
-                        targetLevel: targetLevelForNode,
-                        selectedLevel: getSelectedSocCodeForLevel(
-                          node,
-                          targetLevelForNode
-                        ),
-                        idPath: buildIdPathForNode(node),
-                      },
-                      assignmentParams,
-                      preservedJobvizQueryParams
-                    ),
-                    undefined,
-                    { scroll: false, shallow: true }
-                  )
-                  .finally(scrollToBreadcrumb)
-              );
-            },
-      });
-    });
-
-    return segments;
-  }, [
-    assignmentParams,
-    chainNodes,
-    parsed.targetLevel,
-    router,
-    scheduleNavigation,
-    scrollToBreadcrumb,
-    preservedJobvizQueryParams,
-  ]);
-  const isShowingAssignmentScope = showAssignmentOnly && hasAssignmentList;
-  const isShowingSavedScope = showSavedJobsOnly && status === "authenticated";
-  const activeBreadcrumb = breadcrumbs[breadcrumbs.length - 1];
-  const baseViewTitle = activeNode
-    ? getDisplayTitle(activeNode)
-    : activeBreadcrumb?.label?.replace(/-/g, " ") ?? "Job categories";
-  const viewingTitle = isShowingSavedScope
-    ? "Saved jobs"
-    : isShowingAssignmentScope
-      ? "Tour jobs"
-      : baseViewTitle;
-  const viewingIconName = isShowingSavedScope
-    ? "Star"
-    : isShowingAssignmentScope
-      ? "Sparkles"
-      : activeNode
-        ? getIconNameForNode(activeNode)
-        : activeBreadcrumb?.iconName ?? "Grid2x2";
-  const viewingMetaLine =
-    visibleGroupCount > 0
-      ? `Showing ${visibleGroupCount} job group${visibleGroupCount === 1 ? "" : "s"}${
-          visibleJobCount > 0
-            ? ` & ${visibleJobCount} job${visibleJobCount === 1 ? "" : "s"}`
-            : ""
-        }`
-      : `Showing ${visibleJobCount} job${visibleJobCount === 1 ? "" : "s"}`;
-  const viewingHeaderData = useMemo(
-    () => ({
-      title: viewingTitle,
-      meta: viewingMetaLine,
-      iconName: viewingIconName,
-    }),
-    [viewingTitle, viewingMetaLine, viewingIconName]
-  );
-  const [activeViewingHeader, setActiveViewingHeader] = useState(
-    viewingHeaderData
-  );
-  const [outgoingViewingHeader, setOutgoingViewingHeader] = useState(null);
-  const [isViewingHeaderTransitioning, setIsViewingHeaderTransitioning] =
-    useState(false);
-  const viewingHeaderTimeoutRef = useRef(null);
-  useEffect(() => {
-    const prev = activeViewingHeader;
-    const changed =
-      prev.title !== viewingHeaderData.title ||
-      prev.meta !== viewingHeaderData.meta ||
-      prev.iconName !== viewingHeaderData.iconName;
-    if (!changed) return;
-    setOutgoingViewingHeader(prev);
-    setActiveViewingHeader(viewingHeaderData);
-    setIsViewingHeaderTransitioning(true);
-    if (viewingHeaderTimeoutRef.current) {
-      clearTimeout(viewingHeaderTimeoutRef.current);
-    }
-    viewingHeaderTimeoutRef.current = setTimeout(() => {
-      setOutgoingViewingHeader(null);
-      setIsViewingHeaderTransitioning(false);
-      viewingHeaderTimeoutRef.current = null;
-    }, VIEWING_HEADER_TRANSITION_MS);
-  }, [activeViewingHeader, viewingHeaderData]);
+    showAssignmentOnly,
+    showSavedJobsOnly,
+    sortOptionId,
+    status,
+  });
+  const resolvedMetaDescription = activeNode
+    ? activeNode.def
+      ? `${getDisplayTitle(activeNode)}: ${activeNode.def}`
+      : getDisplayTitle(activeNode)
+    : metaDescription ?? JOBVIZ_DESCRIPTION;
+  const layoutTitleBase =
+    "JobViz Career Explorer | Connect Learning to 1,000+ Real-World Careers";
+  const resolvedPageTitle = activeNode
+    ? `${getDisplayTitle(activeNode)} | JobViz Career Explorer`
+    : layoutTitleBase;
 
   const assignmentJobCount =
     resolvedJobTitleAndSocCodePairs?.length ?? assignmentSocCodes?.size ?? 0;
@@ -1226,26 +265,6 @@ const JobVizSearchResults = ({
     ? "JobViz+ Career Tour Assignment"
     : "JobViz Career Explorer+";
   const isGpPlusHero = !!hasGpPlusMembership;
-  const ensureJobCategoriesLevel = useCallback(() => {
-    if (parsed.targetLevel === 1 && chainNodes.length === 0) {
-      return;
-    }
-    const nextUrl = buildJobvizUrl(
-      { targetLevel: 1, selectedLevel: null, idPath: [] },
-      assignmentParams,
-      preservedJobvizQueryParams
-    );
-    return scheduleNavigation("up", null, () =>
-      router.push(nextUrl, undefined, { scroll: false, shallow: true })
-    );
-  }, [
-    assignmentParams,
-    chainNodes.length,
-    parsed.targetLevel,
-    router,
-    scheduleNavigation,
-    preservedJobvizQueryParams,
-  ]);
   const handleHeroStatAction = useHeroStatAction({
     onBrowseNavigate: ensureJobCategoriesLevel,
   });
@@ -1286,18 +305,6 @@ const JobVizSearchResults = ({
       setShowTourWelcome(true);
     }
   }, [activeTour?._id, tourIdParam]);
-
-
-  useEffect(() => {
-    if (activeNode && activeNode.occupation_type === "Line item") {
-      setSelectedJob({ ...activeNode, wasSelectedFromJobToursCard: false });
-      setIsJobModalOn(true);
-      return;
-    }
-
-    setIsJobModalOn(false);
-    setJobvizReturnPath(null);
-  }, [activeNode, setIsJobModalOn, setSelectedJob, setJobvizReturnPath]);
 
   const jobvizCanonicalUrl = "https://teach.galacticpolymath.com/jobviz";
   const datasetStructuredData = useMemo(
@@ -1643,10 +650,10 @@ const JobVizSearchResults = ({
         showJobvizWelcome={showJobvizWelcome}
         showTourWelcome={showTourWelcome}
         onOpenLogin={() => {
-          setShowSavedJobsUpsell(false);
+          closeSavedJobsUpsell();
           setIsLoginModalDisplayed(true);
         }}
-        onCloseSavedJobsUpsell={() => setShowSavedJobsUpsell(false)}
+        onCloseSavedJobsUpsell={closeSavedJobsUpsell}
         onDismissWelcomeForever={() =>
           handleDismissWelcome(
             JOBVIZ_WELCOME_DISMISSED_KEY,

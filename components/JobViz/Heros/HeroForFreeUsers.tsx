@@ -56,7 +56,7 @@ const HeroForFreeUsers: React.FC<IHeroForFreeUsersProps> = ({
   return (
     <section
       className={`${styles.jobvizHero} ${className}`.trim()}
-      data-tone="burst"
+      data-tone="accent"
     >
       <div className={styles.jobvizHeroContent}>
         <div className={styles.jobvizHeroInner}>

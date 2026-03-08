@@ -1,7 +1,7 @@
 import * as React from "react";
 import Image from "next/image";
 import styles from "../../styles/jobviz.module.scss";
-import { averageLineItemGrowth as _averageLineItemGrowth ,
+import {
   growthRange,
   totalLineItems,
   totalTopLevelCategories,
@@ -115,7 +115,7 @@ export const JobVizLayout: React.FC<JobVizLayoutProps> = ({
             className={`${styles.jobvizHero} ${
               heroMode === "edit" ? styles.jobvizHeroEditMode : ""
             }`}
-            data-tone="burst"
+            data-tone="accent"
             data-mode={heroMode}
           >
             <div className={styles.jobvizHeroContent}>

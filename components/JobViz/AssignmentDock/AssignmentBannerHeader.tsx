@@ -26,7 +26,7 @@ export const AssignmentBannerHeader: React.FC<AssignmentBannerHeaderProps> = ({
       {resolvedUnitLabel || headerActions ? (
         <div className={styles.headerRow}>
           {resolvedUnitLabel ? (
-            <span className={styles.unitLabel}>{resolvedUnitLabel}</span>
+            <div className={styles.unitLabel}>{resolvedUnitLabel}</div>
           ) : null}
           {headerActions ? (
             <div className={styles.headerActions}>{headerActions}</div>

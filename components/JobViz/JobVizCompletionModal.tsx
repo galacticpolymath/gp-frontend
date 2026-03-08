@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Modal from "react-bootstrap/Modal";
-import styles from "../../styles/jobviz.module.scss";
+import styles from "./JobVizCompletionModal.module.scss";
 import { useModalContext } from "../../providers/ModalProvider";
 import { LucideIcon } from "./LucideIcon";
 import confetti from "canvas-confetti";
@@ -152,7 +152,7 @@ const JobVizCompletionModal: React.FC = () => {
       };
     };
 
-    const burst = (
+    const launchConfettiVolley = (
       originOffset: number,
       options: Partial<Parameters<typeof instance>[0]> = {}
     ) => {
@@ -166,15 +166,24 @@ const JobVizCompletionModal: React.FC = () => {
       });
     };
 
-    burst(-0.3, { particleCount: 180, spread: 100 });
-    burst(0.3, { particleCount: 180, spread: 100 });
-    scheduleTimeout(() => burst(0, { particleCount: 260, spread: 150, scalar: 1.1 }), 140);
+    launchConfettiVolley(-0.3, { particleCount: 180, spread: 100 });
+    launchConfettiVolley(0.3, { particleCount: 180, spread: 100 });
+    scheduleTimeout(
+      () => launchConfettiVolley(0, { particleCount: 260, spread: 150, scalar: 1.1 }),
+      140
+    );
     scheduleTimeout(() => {
-      burst(-0.2, { particleCount: 120, spread: 130, scalar: 0.9 });
-      burst(0.2, { particleCount: 120, spread: 130, scalar: 0.9 });
+      launchConfettiVolley(-0.2, { particleCount: 120, spread: 130, scalar: 0.9 });
+      launchConfettiVolley(0.2, { particleCount: 120, spread: 130, scalar: 0.9 });
     }, 260);
     scheduleTimeout(
-      () => burst(0, { particleCount: 90, spread: 160, scalar: 0.85, startVelocity: 38 }),
+      () =>
+        launchConfettiVolley(0, {
+          particleCount: 90,
+          spread: 160,
+          scalar: 0.85,
+          startVelocity: 38,
+        }),
       520
     );
     scheduleTimeout(() => {
@@ -214,12 +223,12 @@ const JobVizCompletionModal: React.FC = () => {
       <Modal.Body className={styles.completionModalBody}>
         <div className={styles.completionHeader}>
           <div>
-            <p className={styles.summaryModalKicker}>Galactic Polymath | JobViz+</p>
+            <p className={styles.modalKicker}>Galactic Polymath | JobViz+</p>
             <h3 className={styles.completionTitle}>Assignment Progress</h3>
           </div>
           <button
             type="button"
-            className={styles.summaryModalCloseIcon}
+            className={styles.modalCloseIcon}
             onClick={closeModal}
             aria-label="Dismiss celebration"
           >
