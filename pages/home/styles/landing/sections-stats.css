@@ -260,7 +260,7 @@
   backdrop-filter: blur(4px);
 }
 
-.mapFrame :global(.svgMap-map-wrapper) {
+.mapFrame .svgMap-map-wrapper {
   position: relative;
   background: transparent;
   padding-top: 60%;
@@ -268,18 +268,18 @@
   pointer-events: none;
 }
 
-.mapFrame :global(.svgMap-container),
-.mapFrame :global(.svgMap-map-container),
-.mapFrame :global(.svgMap-map-wrapper) {
+.mapFrame .svgMap-container,
+.mapFrame .svgMap-map-container,
+.mapFrame .svgMap-map-wrapper {
   border-radius: 14px;
 }
 
-.mapFrame :global(.svgMap-wrapper),
-.mapFrame :global(.svgMap-container) {
+.mapFrame .svgMap-wrapper,
+.mapFrame .svgMap-container {
   position: relative;
 }
 
-.mapFrame :global(.svgMap-map-image) {
+.mapFrame .svgMap-map-image {
   display: block;
   position: absolute;
   inset: 0;
@@ -287,21 +287,21 @@
   height: 100%;
 }
 
-.mapFrame :global(.svgMap-country) {
+.mapFrame .svgMap-country {
   fill: var(--svg-map-country-fill, transparent);
   stroke: var(--map-outline);
   stroke-width: 1.2;
 }
 
-.mapFrame :global(.svgMap-country.svgMap-active) {
+.mapFrame .svgMap-country.svgMap-active {
   fill: #b6e0ff;
   stroke: #b6e0ff;
 }
 
-.mapFrame :global(.svgMap-tooltip),
-.mapFrame :global(.svgMap-map-controls-wrapper),
-.mapFrame :global(.svgMap-map-continent-controls-wrapper),
-.mapFrame :global(.svgMap-block-zoom-notice) {
+.mapFrame .svgMap-tooltip,
+.mapFrame .svgMap-map-controls-wrapper,
+.mapFrame .svgMap-map-continent-controls-wrapper,
+.mapFrame .svgMap-block-zoom-notice {
   display: none !important;
 }
 

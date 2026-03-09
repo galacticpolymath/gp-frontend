@@ -42,6 +42,10 @@ This file defines default operating rules for coding agents in this repository.
 - Use feature partials for large style systems; keep index files as import surfaces.
 - Never split styles into arbitrary sequential chunks (for example, `foo-1.css`, `foo-2.css`, `foo-3.css`).
 - Name split style files by functional responsibility (for example, `hero-layout`, `filters-panel`, `results-grid`, `modals`).
+- Avoid CSS Modules-only syntax (`:global(...)`, `:local(...)`) in imported non-module partials (`*.css`/`*.scss`) because Turbopack can parse those as plain CSS and fail builds.
+- If global third-party selectors are needed, either:
+  - keep the rule in the root `*.module.css` file using module-safe syntax, or
+  - use scoped descendant selectors from a local wrapper class (for example, `.mapFrame .svgMap-map-wrapper`) in partials.
 - Keep utility classes explicit and reusable; avoid repeating identical declarations across modules.
 - Standardize breakpoints and reuse existing breakpoint patterns before adding new ones.
 - Prefer token/variable-driven styling over hardcoded values when reused.

@@ -407,11 +407,11 @@
     padding: 10px;
   }
 
-  .mapFrame :global(.svgMap-map-wrapper) {
+  .mapFrame .svgMap-map-wrapper {
     padding-top: 70%;
   }
 
-  .mapFrame :global(.svgMap-map-image) {
+  .mapFrame .svgMap-map-image {
     top: -8%;
     left: -8%;
     width: 116%;
