@@ -1329,6 +1329,7 @@ export default function HomePage({
   const previousResultsSignatureRef = useRef<string | null>(null);
   const hasSeenInitialResultsRef = useRef(false);
   const prefetchedRoutesRef = useRef<Set<string>>(new Set());
+  const isHandlingPopNavigationRef = useRef(false);
   const [navigatingResourceId, setNavigatingResourceId] = useState<string | null>(
     null
   );
@@ -3006,6 +3007,16 @@ export default function HomePage({
   }, []);
 
   useEffect(() => {
+    if (typeof window === "undefined") return undefined;
+    const handlePopState = () => {
+      isHandlingPopNavigationRef.current = true;
+      setQueryHydrated(false);
+    };
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, []);
+
+  useEffect(() => {
     if (!router.isReady) return;
     const hasQueryInPath = router.asPath.includes("?");
     const hasQueryValues = Object.keys(router.query).length > 0;
@@ -3070,11 +3081,13 @@ export default function HomePage({
     );
     setTourScope(nextTourScope);
     setQueryHydrated(true);
+    isHandlingPopNavigationRef.current = false;
   }, [router.isReady, router.query, router.asPath, initialTab]);
 
   useEffect(() => {
     if (!router.isReady) return;
     if (!queryHydrated) return;
+    if (isHandlingPopNavigationRef.current) return;
     const hasQueryInPath = router.asPath.includes("?");
     const hasQueryValues = Object.keys(router.query).length > 0;
     if (hasQueryInPath && !hasQueryValues) return;
