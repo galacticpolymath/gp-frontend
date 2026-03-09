@@ -21,6 +21,9 @@ type TUnitPageDataResult = {
   unit: TUnitForUI;
   availLocs: string[];
 };
+type TGetUnitPageDataOptions = {
+  withExternalEnrichment?: boolean;
+};
 
 const getGoogleDriveFileIdFromUrl = (url: string) => {
   if (typeof url !== 'string') {
@@ -413,8 +416,10 @@ const normalizeSectionsForUI = (
 
 export const getUnitPageData = async (
   id: string,
-  loc: string
+  loc: string,
+  options: TGetUnitPageDataOptions = {}
 ): Promise<TUnitPageDataResult | null> => {
+  const { withExternalEnrichment = false } = options;
   const parsedId = Number.parseInt(id, 10);
   const targetUnits = (await Units.find<INewUnitSchema>(
     { numID: parsedId },
@@ -446,40 +451,42 @@ export const getUnitPageData = async (
     return null;
   }
 
-  let unitGDriveChildItemsAll: Awaited<ReturnType<typeof getUnitGDriveChildItems>> = [];
-  if (targetUnit.GdrivePublicID) {
-    try {
-      unitGDriveChildItemsAll = await getUnitGDriveChildItems(targetUnit.GdrivePublicID);
-    } catch (error) {
-      console.error(
-        'Failed to load unit Google Drive child items; continuing without them.',
-        error
-      );
-      unitGDriveChildItemsAll = [];
-    }
-  }
-
   let unitForUI: TUnitForUI = {
     ...(targetUnit as TUnitForUI),
     headLinks: buildHeadLinks(targetUnits),
   };
 
-  try {
-    await enrichFeaturedMultimedia(unitForUI);
-  } catch (error) {
-    console.error(
-      'Failed to enrich unit featured multimedia; continuing with base multimedia.',
-      error
-    );
-  }
+  if (withExternalEnrichment) {
+    let unitGDriveChildItemsAll: Awaited<ReturnType<typeof getUnitGDriveChildItems>> = [];
+    if (targetUnit.GdrivePublicID) {
+      try {
+        unitGDriveChildItemsAll = await getUnitGDriveChildItems(targetUnit.GdrivePublicID);
+      } catch (error) {
+        console.error(
+          'Failed to load unit Google Drive child items; continuing without them.',
+          error
+        );
+        unitGDriveChildItemsAll = [];
+      }
+    }
 
-  try {
-    await enrichTeachingMaterials(targetUnit, unitForUI, unitGDriveChildItemsAll);
-  } catch (error) {
-    console.error(
-      'Failed to enrich unit teaching materials; continuing with base teaching materials.',
-      error
-    );
+    try {
+      await enrichFeaturedMultimedia(unitForUI);
+    } catch (error) {
+      console.error(
+        'Failed to enrich unit featured multimedia; continuing with base multimedia.',
+        error
+      );
+    }
+
+    try {
+      await enrichTeachingMaterials(targetUnit, unitForUI, unitGDriveChildItemsAll);
+    } catch (error) {
+      console.error(
+        'Failed to enrich unit teaching materials; continuing with base teaching materials.',
+        error
+      );
+    }
   }
 
   unitForUI = {

@@ -1,6 +1,7 @@
 import Layout from '../../../../components/Layout';
 import sanitizeHtml from 'sanitize-html';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { useRouter } from 'next/router';
 import { ToastContainer } from 'react-toastify';
 import { connectToMongodb } from '../../../../backend/utils/connection';
 import SendFeedback from '../../../../components/LessonSection/SendFeedback';
@@ -414,6 +415,7 @@ const createUnitStructuredData = (
 
 interface IProps {
   unit?: TUnitForUI;
+  didLoadFail?: boolean;
 }
 
 const SECTIONS_TO_FILTER_OUT: Set<keyof ISections> = new Set([] as (keyof ISections)[]);
@@ -471,6 +473,7 @@ const SECTION_UPDATERS: Partial<Record<keyof TSectionsForUI, TUpdateSection>> = 
 };
 
 const LessonDetails: React.FC<IProps> = ({ unit }) => {
+  const router = useRouter();
   useMemo(() => {
     if (unit?.Sections) {
       const unitSections = Object.entries(unit.Sections).reduce(
@@ -616,8 +619,48 @@ const LessonDetails: React.FC<IProps> = ({ unit }) => {
     setIsStandalonePreview(isProcedureOnly || isBackgroundOnly);
   }, []);
 
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    if (unit) return;
+    const retryKey = `unit-load-retry:${router.asPath}`;
+    if (window.sessionStorage.getItem(retryKey)) return;
+    window.sessionStorage.setItem(retryKey, '1');
+    const timer = window.setTimeout(() => {
+      router.replace(router.asPath);
+    }, 350);
+    return () => window.clearTimeout(timer);
+  }, [router, unit]);
+
   if (!unit) {
-    return null;
+    return (
+      <main style={{ minHeight: '50vh', background: '#f7f8fc' }}>
+        <div style={{ padding: '48px 20px', maxWidth: 720, margin: '0 auto' }}>
+          <h1 style={{ margin: '0 0 10px' }}>Loading Unit...</h1>
+          <p style={{ margin: 0 }}>
+            We are retrying this unit route now. If it does not appear in a few
+            seconds, refresh once.
+          </p>
+          <button
+            type="button"
+            style={{
+              marginTop: 14,
+              borderRadius: 999,
+              border: '1px solid rgba(44, 131, 195, 0.35)',
+              background: '#fff',
+              color: '#2c83c3',
+              padding: '8px 14px',
+              fontWeight: 600,
+              cursor: 'pointer',
+            }}
+            onClick={() => {
+              router.replace(router.asPath);
+            }}
+          >
+            Retry unit load
+          </button>
+        </div>
+      </main>
+    );
   }
 
   const unitBanner = unit.UnitBanner ?? '';
@@ -706,36 +749,44 @@ export const getStaticPaths = async () => {
 export const getStaticProps = async (arg: {
   params: { id: string; loc: string };
 }) => {
+  const {
+    params: { id, loc },
+  } = arg;
   try {
-    const {
-      params: { id, loc },
-    } = arg;
     const { wasSuccessful } = await connectToMongodb(15_000, 7, true);
 
     if (!wasSuccessful) {
       throw new Error('Failed to connect to the database.');
     }
 
-    const unitPageData = await getUnitPageData(id, loc);
+    const unitPageData = await getUnitPageData(id, loc, {
+      withExternalEnrichment: false,
+    });
     if (unitPageData) {
       return {
         props: {
           unit: JSON.parse(JSON.stringify(unitPageData.unit)),
           availLocs: unitPageData.availLocs,
+          didLoadFail: false,
         },
         revalidate: 30,
       };
     }
 
-    console.error('Target unit not found.');
-
-    throw new Error('Target unit not found.');
+    return {
+      notFound: true,
+      revalidate: 30,
+    };
   } catch (error) {
     console.error('Failed to get unit. Error message: ', error);
 
     return {
-      notFound: true,
-      revalidate: 30,
+      props: {
+        unit: null,
+        availLocs: [],
+        didLoadFail: true,
+      },
+      revalidate: 5,
     };
   }
 };
