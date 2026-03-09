@@ -59,7 +59,30 @@ const LessonsCarousel = ({ mediaItems }) => {
             }
 
             const iframeSrc = element.getAttribute('src') ?? '';
-            if (iframeSrc.includes('youtube.com/embed')) {
+            let iframeHost = '';
+            try {
+                // Handle absolute URLs; fall back to relative URLs using window.location.origin if available
+                if (iframeSrc.startsWith('http://') || iframeSrc.startsWith('https://')) {
+                    iframeHost = new URL(iframeSrc).hostname;
+                } else if (typeof window !== 'undefined') {
+                    iframeHost = new URL(iframeSrc, window.location.origin).hostname;
+                }
+            } catch {
+                iframeHost = '';
+            }
+
+            const youtubeHosts = new Set([
+                'youtube.com',
+                'www.youtube.com',
+                'm.youtube.com',
+                'youtube-nocookie.com',
+                'www.youtube-nocookie.com'
+            ]);
+            const vimeoHosts = new Set([
+                'player.vimeo.com'
+            ]);
+
+            if (youtubeHosts.has(iframeHost)) {
                 element.contentWindow?.postMessage(
                     JSON.stringify({
                         event: 'command',
@@ -71,7 +94,7 @@ const LessonsCarousel = ({ mediaItems }) => {
                 return;
             }
 
-            if (iframeSrc.includes('player.vimeo.com')) {
+            if (vimeoHosts.has(iframeHost)) {
                 element.contentWindow?.postMessage({ method: 'pause' }, '*');
             }
         });
