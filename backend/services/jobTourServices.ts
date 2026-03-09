@@ -103,7 +103,7 @@ const retrieveJobTours = async (
 
         if ("_id" in filterObj) {
             const jobTours = await JobTour.find(
-                { _id: filterObj._id },
+                { _id: { $eq: filterObj._id } },
                 projectionObj
             )
                 .sort(sort ?? {})
