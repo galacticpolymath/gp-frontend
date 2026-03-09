@@ -18,6 +18,12 @@
   pointer-events: none;
 }
 
+@media (max-width: 600px) {
+  .page {
+    padding-top: 0;
+  }
+}
+
 .hero {
   position: relative;
   padding: 72px 24px 96px;
@@ -337,4 +343,3 @@
   position: relative;
   z-index: 2;
 }
-

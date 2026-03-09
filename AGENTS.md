@@ -95,3 +95,12 @@ For non-trivial edits:
 - Use small, reviewable commits/patches grouped by feature area.
 - Avoid broad visual rewrites unless requested.
 - When uncertain, choose the simplest architecture that avoids duplicate logic.
+
+## Dependency Management Policy
+
+- Treat `npm install --legacy-peer-deps` and `--force` as temporary fallback tools, not default solutions.
+- Before using either fallback, first try a stable fix: align conflicting package versions, remove obsolete dependencies, or replace incompatible packages.
+- If a fallback is unavoidable to unblock work, document:
+  - why the proper dependency fix was not completed yet,
+  - what risk remains,
+  - and the intended follow-up to remove the fallback requirement.
