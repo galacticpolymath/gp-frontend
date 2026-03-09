@@ -30,6 +30,12 @@ const ProfileAvatarRing: React.FC<ProfileAvatarRingProps> = ({
       return null;
     }
 
+    // Reject obviously unsafe characters that should not appear in a normal URL.
+    // This helps prevent cases where stored text is later interpreted in an unsafe way.
+    if (/[<>"'`]/.test(trimmed)) {
+      return null;
+    }
+
     try {
       // Support absolute and relative URLs while restricting schemes.
       const base =
@@ -43,7 +49,13 @@ const ProfileAvatarRing: React.FC<ProfileAvatarRingProps> = ({
         return null;
       }
 
-      return trimmed;
+      // For absolute URLs, require a non-empty hostname.
+      if (url.origin !== "null" && !url.hostname) {
+        return null;
+      }
+
+      // Return the canonical, safely parsed URL instead of the raw input.
+      return url.toString();
     } catch {
       return null;
     }
