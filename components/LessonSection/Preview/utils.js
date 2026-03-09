@@ -8,9 +8,13 @@ const normalizeYouTubeEmbedUrl = (url) => {
     const host = parsedUrl.hostname.toLowerCase();
     let videoId = null;
 
-    if (host.includes('youtu.be')) {
+    const isYoutuBeHost = host === 'youtu.be';
+    const isYouTubeComHost =
+      host === 'youtube.com' || host.endsWith('.youtube.com');
+
+    if (isYoutuBeHost) {
       videoId = parsedUrl.pathname.replace(/^\/+/, '').split('/')[0];
-    } else if (host.includes('youtube.com')) {
+    } else if (isYouTubeComHost) {
       if (parsedUrl.pathname.includes('/embed/')) {
         videoId = parsedUrl.pathname.split('/embed/')[1]?.split('/')[0] ?? null;
       } else if (parsedUrl.pathname.includes('/shorts/')) {
