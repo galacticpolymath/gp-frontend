@@ -20,6 +20,35 @@ const ProfileAvatarRing: React.FC<ProfileAvatarRingProps> = ({
   onError,
   ariaHidden = true,
 }) => {
+  const safeAvatarUrl = React.useMemo(() => {
+    if (!avatarUrl || typeof avatarUrl !== "string") {
+      return null;
+    }
+
+    const trimmed = avatarUrl.trim();
+    if (!trimmed) {
+      return null;
+    }
+
+    try {
+      // Support absolute and relative URLs while restricting schemes.
+      const base =
+        typeof window !== "undefined" && window.location?.origin
+          ? window.location.origin
+          : "https://example.com";
+      const url = new URL(trimmed, base);
+
+      const allowedProtocols = new Set(["http:", "https:"]);
+      if (!allowedProtocols.has(url.protocol)) {
+        return null;
+      }
+
+      return trimmed;
+    } catch {
+      return null;
+    }
+  }, [avatarUrl]);
+
   return (
     <span
       className={`${styles.profileAvatarRing} ${
@@ -28,9 +57,9 @@ const ProfileAvatarRing: React.FC<ProfileAvatarRingProps> = ({
       style={{ ["--avatar-size" as "--avatar-size"]: `${size}px` } as React.CSSProperties}
       aria-hidden={ariaHidden}
     >
-      {avatarUrl ? (
+      {safeAvatarUrl ? (
         <img
-          src={avatarUrl}
+          src={safeAvatarUrl}
           alt=""
           className={styles.profileAvatarImage}
           onError={onError}
