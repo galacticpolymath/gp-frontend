@@ -38,6 +38,7 @@
   top: 0;
   left: 0;
   right: 0;
+  z-index: 1700;
   background: #0c101c;
   border-bottom: 1px solid rgba(232, 224, 255, 0.28);
   box-shadow: 0 14px 28px rgba(14, 12, 38, 0.46);
@@ -363,7 +364,7 @@
   pointer-events: auto;
   width: min(280px, calc(100vw - 24px));
   max-width: min(280px, calc(100vw - 24px));
-  z-index: 140;
+  z-index: 1710;
 }
 
 .accountMenuDivider {
