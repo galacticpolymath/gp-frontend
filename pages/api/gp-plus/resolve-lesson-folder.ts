@@ -3,6 +3,10 @@ import { createDrive } from '../../../backend/services/gdriveServices/index';
 
 const FOLDER_MIME = 'application/vnd.google-apps.folder';
 
+// Escape special characters in a string so it can be safely used inside a RegExp.
+const escapeRegExp = (value: string): string =>
+  value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
 type TQuery = {
   unitRootFolderId?: string;
   gradeBandFolderId?: string;
@@ -42,8 +46,9 @@ const findLessonFolderUnderParent = (
   lessonId: string
 ): TGDriveFolder | null => {
   const lessonNum = lessonId.trim();
-  const directRegex = new RegExp(`^L\\s*${lessonNum}_`, 'i');
-  const altRegex = new RegExp(`^Lesson\\s*${lessonNum}\\b`, 'i');
+  const safeLessonNum = escapeRegExp(lessonNum);
+  const directRegex = new RegExp(`^L\\s*${safeLessonNum}_`, 'i');
+  const altRegex = new RegExp(`^Lesson\\s*${safeLessonNum}\\b`, 'i');
   return (
     folders.find((folder) => directRegex.test(folder.name)) ??
     folders.find((folder) => altRegex.test(folder.name)) ??
