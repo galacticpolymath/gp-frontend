@@ -1,0 +1,357 @@
+.allMain {
+  padding: 24px 0 96px;
+}
+
+.allShell {
+  max-width: none;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 260px) minmax(0, 1fr);
+  gap: 28px;
+  padding: 0 16px;
+  width: 100%;
+  transition: grid-template-columns 0.25s ease;
+}
+
+.allShellCollapsed {
+  grid-template-columns: minmax(0, 72px) minmax(0, 1fr);
+}
+
+.allFiltersPanel {
+  background: #ffffff;
+  border-radius: 20px;
+  border: 1px solid rgba(44, 131, 195, 0.1);
+  padding: 18px;
+  box-shadow: 0 14px 30px rgba(12, 20, 48, 0.08);
+  position: sticky;
+  top: 96px;
+  max-height: calc(100vh - 140px);
+  display: flex;
+  flex-direction: column;
+  transition: width 0.25s ease, padding 0.25s ease, border-color 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.allFiltersPanelCollapsed {
+  width: 72px;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(44, 131, 195, 0.16);
+  box-shadow: 0 10px 22px rgba(12, 20, 48, 0.08);
+  cursor: pointer;
+}
+
+.filterHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 12px;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: transparent;
+  padding-top: 6px;
+  padding-bottom: 0;
+  border-bottom: 1px solid rgba(54, 54, 54, 0.2);
+}
+
+.filterHeader h3 {
+  margin-bottom: 0;
+}
+
+.filterHeaderActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.filterKicker {
+  margin: 0 0 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-size: 15px;
+  color: #363636;
+}
+
+.filterReset {
+  border: 2px solid rgba(44, 131, 195, 0.18);
+  background: transparent;
+  color: #2c83c3;
+  border-radius: 999px;
+  padding: 5px 11px;
+  font-size: 16px;
+  cursor: pointer;
+  font-weight: 600;
+  box-sizing: border-box;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.filterCollapseButton {
+  border: 2px solid transparent;
+  background: transparent;
+  color: #2c83c3;
+  border-radius: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  gap: 6px;
+  padding: 0;
+  box-sizing: border-box;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.allFiltersPanel .ghostButton {
+  box-sizing: border-box;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+  border-width: 2px;
+  padding: 10px 19px;
+}
+
+.filterPill:hover,
+.filterReset:hover,
+.filterCollapseButton:hover,
+.allFiltersPanel .ghostButton:hover,
+.filterPill:focus-visible,
+.filterReset:focus-visible,
+.filterCollapseButton:focus-visible,
+.allFiltersPanel .ghostButton:focus-visible {
+  transform: none;
+  box-shadow: none;
+  border-color: rgba(44, 131, 195, 0.6);
+  background-color: #ffffff;
+}
+
+.filterPill:hover,
+.filterPill:focus-visible {
+  color: #2c83c3;
+}
+
+.filterPillActive,
+.filterPillActive:hover,
+.filterPillActive:focus-visible {
+  background-color: #1f6da7;
+  border-color: #1f6da7;
+  color: #ffffff;
+}
+
+.filterPillActive:hover,
+.filterPillActive:focus-visible {
+  box-shadow: none;
+  transform: none;
+}
+
+.allFiltersPanelCollapsed .filterCollapseButton {
+  flex-direction: column;
+}
+
+.filterCollapseButton svg {
+  width: 18px;
+  height: 18px;
+}
+
+.filterCollapsedLabel {
+  font-size: 13px;
+  font-weight: 700;
+  color: #2c83c3;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+}
+
+.filterContent {
+  display: block;
+  overflow-y: auto;
+  padding-right: 6px;
+}
+
+.allFiltersPanelCollapsed .filterContent,
+.allFiltersPanelCollapsed .filterReset,
+.allFiltersPanelCollapsed .filterKicker,
+.allFiltersPanelCollapsed h2,
+.allFiltersPanelCollapsed h3 {
+  display: none;
+}
+
+.allFiltersPanelCollapsed .filterHeader {
+  margin-bottom: 0;
+  justify-content: flex-end;
+  border-bottom: 0;
+}
+
+.allFiltersPanelCollapsed .filterHeaderActions {
+  width: 100%;
+  justify-content: center;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.filterCollapseIconDesktop,
+.filterCollapseIconMobile {
+  width: 18px;
+  height: 18px;
+}
+
+.filterCollapseIconDesktop {
+  display: none;
+}
+
+.filterCollapseIconMobile {
+  display: inline-flex;
+}
+
+.filterGroup {
+  margin-bottom: 14px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(44, 131, 195, 0.12);
+  background: rgba(44, 131, 195, 0.04);
+}
+
+.filterSummary {
+  cursor: pointer;
+  font-weight: 600;
+  color: #2c83c3;
+  list-style: none;
+  margin-bottom: 10px;
+  font-size: 16px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.filterTagsGroup .filterPill,
+.filterTagsGroup .filterPillActive {
+  padding: 4px 0;
+  border-radius: 0;
+  border: 0;
+  background: transparent;
+  transition: color 0.2s ease, text-decoration-color 0.2s ease;
+}
+
+.filterTagsGroup .filterPill {
+  color: #1f1f26;
+  text-decoration: none;
+}
+
+.filterTagsGroup .filterPillActive {
+  color: #2c83c3;
+  text-decoration: none;
+  box-shadow: inset 0 -2px 0 #2c83c3;
+}
+
+.filterTagsGroup .filterPill:hover,
+.filterTagsGroup .filterPill:focus-visible {
+  background-color: transparent;
+  border-color: transparent;
+  color: #1f1f26;
+  text-decoration: none;
+}
+
+.filterTagsGroup .filterPillActive:hover,
+.filterTagsGroup .filterPillActive:focus-visible {
+  background-color: transparent;
+  border-color: transparent;
+  color: #2c83c3;
+  text-decoration-color: #2c83c3;
+}
+
+.filterSummary::-webkit-details-marker {
+  display: none;
+}
+
+.filterSummary::after {
+  content: "▴";
+  float: right;
+  font-weight: 700;
+  color: #363636;
+}
+
+details:not([open]) .filterSummary::after {
+  content: "▾";
+}
+
+.filterLabel {
+  margin: 0 0 8px;
+  font-weight: 600;
+  color: #2c83c3;
+}
+
+.filterOptions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tagCloudItem,
+.tagCloudItemActive {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  color: #1f1f26;
+  font-weight: 600;
+  line-height: 1.2;
+  text-decoration: none;
+}
+
+.tagCloudItem:hover {
+  text-decoration: none;
+}
+
+.tagCloudItemActive {
+  color: #2c83c3;
+  text-decoration: none;
+  box-shadow: inset 0 -2px 0 #2c83c3;
+}
+
+.tagCloudToggle {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  color: #2c83c3;
+  font-weight: 700;
+  font-size: 16px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.tagCloudToggle:hover {
+  text-decoration: none;
+}
+
+.filterFooter {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 18px;
+  position: relative;
+}
+
+.shareCopied {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 100%;
+  margin-bottom: 8px;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(54, 54, 54, 0.2);
+  border-radius: 999px;
+  padding: 6px 10px;
+  box-shadow: 0 10px 22px rgba(12, 20, 48, 0.08);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 16px;
+  color: #363636;
+  font-weight: 600;
+  animation: fadeUp 200ms ease-out both;
+}
+
+.shareCopied svg {
+  width: 14px;
+  height: 14px;
+  stroke: currentColor;
+}
+

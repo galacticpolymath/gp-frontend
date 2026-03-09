@@ -1,0 +1,236 @@
+.wizardTeaser {
+  background: linear-gradient(140deg, #2c83c3 0%, #00aceb 100%);
+  color: #ffffff;
+  border-radius: 18px;
+  padding: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 12px 26px rgba(12, 18, 40, 0.18);
+  position: relative;
+  overflow: hidden;
+}
+
+.wizardTeaser::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 18% 12%, rgba(255, 61, 172, 0.3), transparent 45%),
+    radial-gradient(circle at 90% 90%, rgba(108, 45, 130, 0.35), transparent 55%);
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.wizardTeaserTitle {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.wizardTeaserIcon {
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.2);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+
+.wizardTeaser .wizardKicker {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.wizardTeaser h2 {
+  margin: 0 0 10px;
+  color: #ffffff;
+}
+
+.wizardTeaser p {
+  margin: 0 0 16px;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.wizardCard {
+  background: rgba(255, 255, 255, 0.82);
+  border: 1px solid rgba(44, 131, 195, 0.22);
+  box-shadow: 0 10px 22px rgba(12, 20, 48, 0.1);
+  position: relative;
+  overflow: hidden;
+  border-radius: 18px;
+  padding: 26px;
+  backdrop-filter: blur(8px) saturate(112%);
+  -webkit-backdrop-filter: blur(8px) saturate(112%);
+}
+
+.wizardCard::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 18px;
+  border: 1px solid rgba(108, 45, 130, 0.15);
+  pointer-events: none;
+  mix-blend-mode: normal;
+}
+
+.wizardCardTitle {
+  margin: 0 0 14px;
+  font-size: 44px;
+  line-height: 1.12;
+  color: #2f365f;
+}
+
+.searchLabel {
+  margin: 0 0 12px;
+  font-weight: 600;
+  color: #2c83c3;
+}
+
+.searchBar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(44, 131, 195, 0.2);
+  box-shadow: inset 0 0 0 1px rgba(44, 131, 195, 0.08);
+}
+
+.searchBar input {
+  border: none;
+  outline: none;
+  flex: 1;
+  font-size: 16px;
+  background: transparent;
+}
+
+.searchSubmitButton {
+  border: 0;
+  border-radius: 999px;
+  padding: 8px 14px;
+  background: #2c83c3;
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.searchSubmitButton:hover {
+  background: #236ca1;
+}
+
+.searchIcon {
+  color: #2c83c3;
+  width: 18px;
+  height: 18px;
+}
+
+.filterNote {
+  margin-top: 12px;
+  font-size: 16px;
+  color: #6a6f87;
+}
+
+.wizardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.wizardKicker {
+  margin: 0 0 4px;
+  font-size: 16px;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: #6c2d82;
+}
+
+.wizardBadge {
+  background: rgba(44, 131, 195, 0.15);
+  color: #23318a;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.wizardStep {
+  margin-top: 22px;
+}
+
+.wizardStep p {
+  margin: 0 0 12px;
+  font-weight: 600;
+  color: #2c83c3;
+}
+
+.pillRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.pill,
+.pillActive {
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-size: 16px;
+  border: 1px solid rgba(44, 131, 195, 0.25);
+  cursor: pointer;
+  font-family: inherit;
+  line-height: 1.2;
+}
+
+.pill {
+  background: #ffffff;
+  color: #4c4f66;
+}
+
+.pillActive {
+  background: #2c83c3;
+  color: #ffffff;
+}
+
+.pill:hover,
+.pill:focus-visible {
+  border-color: rgba(44, 131, 195, 0.45);
+  background: rgba(44, 131, 195, 0.08);
+}
+
+.wizardFooter {
+  display: flex;
+  gap: 12px;
+  margin-top: 36px;
+  flex-wrap: wrap;
+}
+
+.wizardSubmitButton {
+  border: 0;
+  border-radius: 999px;
+  padding: 12px 20px;
+  font-size: 16px;
+  font-weight: 700;
+  color: #ffffff;
+  background: linear-gradient(135deg, #2c83c3 0%, #cb1f83 100%);
+  box-shadow: 0 10px 18px rgba(44, 131, 195, 0.22);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.wizardSubmitButton:hover,
+.wizardSubmitButton:focus-visible {
+  filter: brightness(1.04);
+  box-shadow: 0 12px 20px rgba(44, 131, 195, 0.28);
+}
+
+.wizardSubmitButton svg {
+  width: 16px;
+  height: 16px;
+}
+

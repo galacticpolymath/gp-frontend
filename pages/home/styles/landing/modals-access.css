@@ -1,0 +1,343 @@
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modalBackdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 17, 40, 0.6);
+  border: 0;
+  z-index: 1000;
+}
+
+.modal {
+  position: relative;
+  z-index: 1001;
+  background: #f8f9ff;
+  color: #2b3355;
+  border-radius: 22px;
+  padding: 30px;
+  width: min(1080px, 96vw);
+  max-height: 85vh;
+  overflow-y: auto;
+  box-shadow: 0 24px 48px rgba(10, 12, 32, 0.24);
+  border: 1px solid rgba(44, 131, 195, 0.2);
+}
+
+.mediaModal {
+  width: 100vw;
+  height: 100vh;
+  max-height: none;
+  border-radius: 0;
+  padding: 24px 32px 32px;
+  background: #0f132b;
+  color: #f0f4ff;
+}
+
+.mediaModal .modalTitle,
+.mediaModal .modalKicker {
+  color: #f0f4ff;
+}
+
+.mediaModal .modalClose {
+  border-color: rgba(240, 244, 255, 0.35);
+  color: #f0f4ff;
+}
+
+.modalHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.modalKicker {
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 18px;
+  color: #6c2d82;
+  font-weight: 700;
+}
+
+.modalTitle {
+  margin: 0;
+  font-size: 22px;
+  color: #2c83c3;
+}
+
+.modalClose {
+  border: 1px solid rgba(35, 49, 138, 0.2);
+  background: rgba(255, 255, 255, 0.7);
+  color: #2c83c3;
+  padding: 11px 18px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 17px;
+}
+
+@media (max-width: 900px) {
+  .modal {
+    padding: 20px;
+    width: min(96vw, 760px);
+  }
+
+  .wizardCard {
+    padding: 18px;
+  }
+
+  .wizardCardTitle {
+    font-size: 36px;
+    margin-bottom: 10px;
+  }
+
+  .wizardStep {
+    margin-top: 16px;
+  }
+
+  .pillRow {
+    gap: 8px;
+  }
+
+  .pill,
+  .pillActive {
+    padding: 7px 12px;
+    font-size: 15px;
+  }
+}
+
+.jobTourAccessModal {
+  width: min(560px, 92vw);
+  border-radius: 22px;
+  padding: 0;
+  overflow: hidden;
+}
+
+.jobTourAccessHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 18px 20px 12px;
+  border-bottom: 1px solid rgba(44, 131, 195, 0.15);
+  background: linear-gradient(
+    140deg,
+    rgba(44, 131, 195, 0.08),
+    rgba(108, 45, 130, 0.08)
+  );
+}
+
+.jobTourAccessKicker {
+  margin: 0 0 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 15px;
+  color: #6c2d82;
+}
+
+.jobTourAccessTitle {
+  margin: 0;
+  font-size: 1.2rem;
+  line-height: 1.35;
+  color: #22327d;
+}
+
+.jobTourAccessClose {
+  border: 1px solid rgba(35, 49, 138, 0.2);
+  background: #ffffff;
+  color: #2c83c3;
+  padding: 7px 11px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.jobTourAccessBody {
+  padding: 16px 20px 20px;
+}
+
+.jobTourAccessDescription {
+  margin: 0;
+  color: #4b567d;
+  line-height: 1.55;
+}
+
+.jobTourAccessActions {
+  margin-top: 14px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.jobTourAccessPrimaryBtn,
+.jobTourAccessSecondaryBtn,
+.jobTourAccessGhostBtn,
+.jobTourAccessDangerBtn {
+  border-radius: 999px;
+  padding: 10px 14px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-decoration: none;
+  border: 1px solid transparent;
+}
+
+.jobTourAccessPrimaryBtn {
+  background: linear-gradient(135deg, #2c83c3, #6c2d82);
+  color: #ffffff;
+}
+
+.jobTourAccessPrimaryBtn:hover,
+.jobTourAccessPrimaryBtn:focus-visible {
+  color: #ffffff;
+  filter: brightness(1.06);
+}
+
+.jobTourAccessSecondaryBtn {
+  background: #ffffff;
+  border-color: rgba(44, 131, 195, 0.35);
+  color: #2c83c3;
+}
+
+.jobTourAccessSecondaryBtn:hover,
+.jobTourAccessSecondaryBtn:focus-visible {
+  color: #1d6b9f;
+  background: rgba(44, 131, 195, 0.07);
+}
+
+.jobTourAccessGhostBtn {
+  background: #ffffff;
+  border-color: rgba(35, 49, 138, 0.18);
+  color: #4b567d;
+}
+
+.jobTourAccessGhostBtn:hover,
+.jobTourAccessGhostBtn:focus-visible {
+  background: #f3f6fb;
+}
+
+.jobTourAccessDangerBtn {
+  background: #ffffff;
+  border-color: rgba(179, 42, 59, 0.35);
+  color: #b32a3b;
+}
+
+.jobTourAccessDangerBtn:hover,
+.jobTourAccessDangerBtn:focus-visible {
+  color: #931d2b;
+  background: rgba(179, 42, 59, 0.08);
+}
+
+.jobTourAccessConfirmDialog {
+  margin-top: 12px;
+  border: 1px solid rgba(179, 42, 59, 0.2);
+  border-radius: 14px;
+  padding: 12px;
+  background: rgba(179, 42, 59, 0.05);
+}
+
+.jobTourAccessConfirmText {
+  margin: 0;
+  color: #6d2b35;
+  line-height: 1.5;
+}
+
+.jobTourAccessConfirmActions {
+  margin-top: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.mediaModalBody {
+  display: grid;
+  gap: 16px;
+}
+
+.mediaModalActions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.mediaCopyButton {
+  border: 1px solid rgba(240, 244, 255, 0.35);
+  background: rgba(255, 255, 255, 0.08);
+  color: #f0f4ff;
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.mediaCopyButton:hover,
+.mediaCopyButton:focus-visible {
+  background: rgba(255, 255, 255, 0.16);
+  border-color: rgba(240, 244, 255, 0.6);
+}
+
+.mediaCopyButton svg {
+  width: 16px;
+  height: 16px;
+}
+
+.mediaPlayer {
+  border-radius: 16px;
+  overflow: hidden;
+  background: #0b0f24;
+  width: 100%;
+  height: min(68vh, 720px);
+}
+
+.mediaPlayer iframe,
+.mediaPlayer img {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+}
+
+.mediaLessonRelevance {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.6;
+  color: rgba(240, 244, 255, 0.85);
+}
+
+.mediaConnected {
+  margin: 0;
+  font-size: 16px;
+  color: rgba(240, 244, 255, 0.75);
+}
+
+.mediaConnected a {
+  color: #ffffff;
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+.mediaConnected a:hover {
+  color: #ffffff;
+  text-decoration-color: rgba(255, 255, 255, 0.9);
+}
+
+.wizardTeaser .secondaryButton {
+  background: #ffffff;
+  color: #2c83c3;
+  border: none;
+  position: relative;
+  z-index: 1;
+}
+

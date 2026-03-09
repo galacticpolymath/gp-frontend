@@ -1,0 +1,345 @@
+.page {
+  font-family: "Noto Sans", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  color: #363636;
+  background:
+    radial-gradient(circle at 15% 0%, rgba(44, 131, 195, 0.12), transparent 45%),
+    radial-gradient(circle at 85% 8%, rgba(255, 61, 172, 0.1), transparent 40%),
+    #f7fbff;
+  min-height: 100vh;
+  width: 100%;
+  padding-top: var(--portal-nav-offset, 0px);
+  opacity: 1;
+  transition: opacity 220ms ease;
+}
+
+.pageSearchTransitioning {
+  opacity: 0;
+  pointer-events: none;
+}
+
+@media (max-width: 600px) {
+  .page {
+    padding-top: 0;
+  }
+}
+
+.hero {
+  position: relative;
+  padding: 72px 24px 96px;
+  background: linear-gradient(140deg, #1f2a6e 0%, #5d2793 55%, #ff3dac 120%);
+  color: #f0f4ff;
+  overflow: hidden;
+}
+
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle, rgba(255, 255, 255, 0.2) 1px, transparent 1px),
+    radial-gradient(circle at 76% 20%, rgba(0, 172, 235, 0.35), transparent 45%);
+  background-size: 28px 28px, auto;
+  background-position: 14px 16px, center;
+  opacity: 0.55;
+  z-index: 0;
+}
+
+.heroGlow {
+  position: absolute;
+  inset: -20% -15% auto auto;
+  width: 520px;
+  height: 520px;
+  background: radial-gradient(circle, rgba(255, 61, 172, 0.4), transparent 70%);
+  filter: blur(2px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.profileAvatarImage,
+
+
+
+
+
+
+
+
+
+.heroBody {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(0, 0.7fr);
+  gap: 32px;
+  position: relative;
+  z-index: 1;
+  align-items: stretch;
+}
+
+.heroCopy {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  justify-content: space-between;
+}
+
+.kicker {
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-size: 16px;
+  margin: 0;
+  color: rgba(240, 244, 255, 0.7);
+}
+
+.heroTitle {
+  font-size: 42px;
+  line-height: 1.1;
+  margin: 0;
+}
+
+.heroLead {
+  font-size: 18px;
+  line-height: 1.6;
+  margin: 0;
+  color: rgba(240, 244, 255, 0.86);
+}
+
+.heroActions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.primaryButton,
+.secondaryButton,
+.ghostButton {
+  border: 0;
+  border-radius: 999px;
+  padding: 12px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, background-color 0.45s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+
+.primaryButton {
+  background: #2c83c3;
+  color: #ffffff;
+  box-shadow: 0 12px 24px rgba(44, 131, 195, 0.25);
+}
+
+.primaryButton:visited {
+  color: #ffffff !important;
+}
+
+.primaryButton:hover,
+.primaryButton:focus-visible {
+  background: #6c2d82;
+  color: #ffffff !important;
+  box-shadow: 0 12px 24px rgba(44, 131, 195, 0.3);
+  transform: translateY(-1px);
+}
+
+.secondaryButton:hover,
+.secondaryButton:focus-visible {
+  background: #6c2d82;
+  color: #ffffff !important;
+  border-color: transparent;
+  box-shadow: 0 12px 24px rgba(44, 131, 195, 0.2);
+  transform: translateY(-1px);
+}
+
+.primaryButton:active {
+  color: #ffffff !important;
+}
+
+.secondaryButton {
+  background: #ffffff;
+  color: #2c83c3;
+  border: 1px solid rgba(44, 131, 195, 0.35);
+}
+
+.wizardLaunchButton,
+.lessonLaunchButton {
+  border: 1px solid rgba(240, 244, 255, 0.72);
+  border-radius: 999px;
+  padding: 11px 18px;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  align-self: flex-start;
+  transition:
+    box-shadow 180ms ease,
+    background-color 220ms ease,
+    color 220ms ease,
+    border-color 220ms ease;
+  background: #2c83c3;
+  color: #f0f4ff;
+  border-color: #2c83c3;
+  box-shadow: 0 6px 14px rgba(44, 131, 195, 0.2);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.wizardLaunchButton:visited,
+.lessonLaunchButton:visited {
+  color: #f0f4ff;
+}
+
+.wizardLaunchButton:hover,
+.wizardLaunchButton:focus-visible,
+.lessonLaunchButton:hover,
+.lessonLaunchButton:focus-visible {
+  background: #236ca1;
+  border-color: #236ca1;
+  color: #ffffff;
+  box-shadow: 0 8px 16px rgba(35, 108, 161, 0.24);
+}
+
+.wizardLaunchButton svg,
+.lessonLaunchButton svg {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 auto;
+}
+
+.ghostButton {
+  background: transparent;
+  color: #2c83c3;
+  border: 1px solid rgba(44, 131, 195, 0.35);
+}
+
+.heroHighlights {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.highlightCard {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  padding: 16px;
+  border: 1px solid rgba(240, 244, 255, 0.2);
+  box-shadow: 0 12px 22px rgba(24, 30, 72, 0.2);
+}
+
+.highlightIcon {
+  width: 32px;
+  height: 32px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(0, 172, 235, 0.35));
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
+  color: #f0f4ff;
+  font-size: 18px;
+}
+
+.highlightCard h3 {
+  margin: 0 0 8px;
+  font-size: 16px;
+  color: #f0f4ff;
+}
+
+.highlightCard p {
+  margin: 0;
+  font-size: 16px;
+  color: rgba(240, 244, 255, 0.78);
+}
+
+.heroPanel {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  justify-content: space-between;
+}
+
+.heroCarousel {
+  position: relative;
+  border-radius: 18px;
+  overflow: hidden;
+  aspect-ratio: 450 / 585;
+  min-height: 320px;
+  width: 100%;
+  border: 1px solid rgba(240, 244, 255, 0.25);
+  box-shadow: 0 18px 32px rgba(15, 20, 48, 0.35);
+}
+
+.heroCarouselImage {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+
+.heroCarouselActive {
+  opacity: 1;
+}
+
+.heroCarouselCaption {
+  position: absolute;
+  left: 16px;
+  bottom: 14px;
+  background: rgba(15, 20, 48, 0.55);
+  color: #f0f4ff;
+  padding: 8px 12px;
+  border-radius: 999px;
+  font-size: 16px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.searchCard,
+.wizardCard {
+  background: transparent;
+  color: #2b2f4c;
+  border-radius: 0;
+  padding: 0;
+  box-shadow: none;
+  border: none;
+}
+
+.searchCard {
+  position: relative;
+  z-index: 2;
+}
