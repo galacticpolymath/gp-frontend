@@ -128,6 +128,7 @@
     "@types/react": "^19.2.2",
     "@types/react-dom": "^19.2.2",
     "@types/sanitize-html": "^2.16.1",
+    "baseline-browser-mapping": "^2.10.0",
     "cypress": "^15.11.0",
     "eslint": "^9.39.1",
     "eslint-config-next": "^16.1.6",
