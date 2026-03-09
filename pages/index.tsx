@@ -30,6 +30,7 @@ import {
   Sparkles,
   SquareArrowOutUpRight,
   SquareCheckBig,
+  Trash2,
   Youtube,
   WandSparkles,
   Copy,
@@ -217,10 +218,12 @@ const buildJobTourPathFromResource = (
     student = false,
     preview = false,
     edit = false,
+    fromPremadePreview = false,
   }: {
     student?: boolean;
     preview?: boolean;
     edit?: boolean;
+    fromPremadePreview?: boolean;
   } = {}
 ) => {
   const params = new URLSearchParams();
@@ -240,6 +243,9 @@ const buildJobTourPathFromResource = (
   }
   if (edit) {
     params.set("edit", "1");
+  }
+  if (fromPremadePreview) {
+    params.set("fromPremadePreview", "1");
   }
   const query = params.toString();
   return query ? `/jobviz?${query}` : "/jobviz";
@@ -1151,7 +1157,7 @@ export default function HomePage({
   initialTab,
 }: HomePageProps) {
   const router = useRouter();
-  const { user, status, isGpPlusMember } = useSiteSession();
+  const { user, status, isGpPlusMember, token } = useSiteSession();
   const userId = user?.userId ?? null;
   const [activeModal, setActiveModal] = useState<"wizard" | "media" | null>(
     null
@@ -1173,6 +1179,8 @@ export default function HomePage({
   const [showStatsDebug, setShowStatsDebug] = useState(false);
   const [jobTourAccessResource, setJobTourAccessResource] =
     useState<PreviewResource | null>(null);
+  const [isDeletingJobTour, setIsDeletingJobTour] = useState(false);
+  const [showDeleteTourConfirm, setShowDeleteTourConfirm] = useState(false);
   const isSearchRoute = router.pathname === "/search";
   const [carouselIndex, setCarouselIndex] = useState(0);
   const statsSectionRef = useRef<HTMLElement | null>(null);
@@ -1535,6 +1543,8 @@ export default function HomePage({
     setActiveMedia(null);
   };
   const handleCloseJobTourAccessModal = () => {
+    setIsDeletingJobTour(false);
+    setShowDeleteTourConfirm(false);
     setJobTourAccessResource(null);
   };
   const handleOpenJobTourAccessModal = (resource: PreviewResource) => {
@@ -1572,6 +1582,7 @@ export default function HomePage({
     if (!jobTourAccessResource) return;
     const teacherPath = buildJobTourPathFromResource(jobTourAccessResource, {
       edit: true,
+      fromPremadePreview: jobTourAccessResource.tourSource === "unit",
     });
     router.push(teacherPath);
     handleCloseJobTourAccessModal();
@@ -1621,11 +1632,48 @@ export default function HomePage({
     try {
       await navigator.clipboard.writeText(shareUrl);
       toast.success("Student link copied.");
-      handleCloseJobTourAccessModal();
     } catch {
       toast.error("Unable to copy link. Please copy it from your browser URL.");
     }
   }, [jobTourAccessResource]);
+  const canDeleteJobTourFromAccessModal = Boolean(
+    hasGpPlusAccess &&
+      jobTourAccessResource?.tourSource === "user" &&
+      jobTourAccessResource?.tourId &&
+      userId &&
+      String(jobTourAccessResource.ownerId ?? "") === String(userId)
+  );
+  const handleDeleteTourFromAccessModal = useCallback(async () => {
+    if (!jobTourAccessResource?.tourId || !canDeleteJobTourFromAccessModal) return;
+    try {
+      setIsDeletingJobTour(true);
+      const authorizationHeader =
+        typeof token === "string" && token.startsWith("Bearer ")
+          ? token
+          : `Bearer ${token ?? ""}`;
+      const response = await fetch(
+        `/api/job-tours/delete?id=${encodeURIComponent(jobTourAccessResource.tourId)}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: authorizationHeader,
+          },
+        }
+      );
+      const payload = await response.json().catch(() => null);
+      if (!response.ok) {
+        throw new Error(payload?.msg || "Unable to delete tour.");
+      }
+      setJobTourRecords((prev) =>
+        prev.filter((tour) => tour._id !== jobTourAccessResource.tourId)
+      );
+      toast.success("Tour deleted.");
+      handleCloseJobTourAccessModal();
+    } catch (error: any) {
+      toast.error(error?.message || "Unable to delete tour.");
+      setIsDeletingJobTour(false);
+    }
+  }, [canDeleteJobTourFromAccessModal, jobTourAccessResource, token]);
   const handleOpenMedia = (media: MediaItem) => {
     setActiveMedia(media);
     setActiveModal("media");
@@ -5173,7 +5221,7 @@ export default function HomePage({
               <p className={styles.jobTourAccessDescription}>
                 {!isAuthenticated
                   ? "Sign in or create a free account to access this JobViz tour."
-                  : "Have students explore jobs connected to this unit&apos;s content!"}
+                  : "Have students explore jobs connected to this unit's content!"}
               </p>
               <div className={styles.jobTourAccessActions}>
                 {!isAuthenticated ? (
@@ -5198,6 +5246,17 @@ export default function HomePage({
                       <NotebookPen size={16} aria-hidden="true" />
                       Preview as Teacher (Edit Mode)
                     </button>
+                    {canDeleteJobTourFromAccessModal && (
+                      <button
+                        className={styles.jobTourAccessDangerBtn}
+                        type="button"
+                        onClick={() => setShowDeleteTourConfirm(true)}
+                        disabled={isDeletingJobTour}
+                      >
+                        <Trash2 size={16} aria-hidden="true" />
+                        {isDeletingJobTour ? "Deleting..." : "Delete Tour"}
+                      </button>
+                    )}
                     <button
                       className={styles.jobTourAccessSecondaryBtn}
                       type="button"
@@ -5241,6 +5300,40 @@ export default function HomePage({
                   </>
                 )}
               </div>
+              {showDeleteTourConfirm && canDeleteJobTourFromAccessModal && (
+                <div
+                  className={styles.jobTourAccessConfirmDialog}
+                  role="alertdialog"
+                  aria-modal="true"
+                  aria-labelledby="job-tour-delete-confirm-title"
+                >
+                  <p
+                    id="job-tour-delete-confirm-title"
+                    className={styles.jobTourAccessConfirmText}
+                  >
+                    Delete this JobViz tour from your account? This action cannot be
+                    undone.
+                  </p>
+                  <div className={styles.jobTourAccessConfirmActions}>
+                    <button
+                      className={styles.jobTourAccessGhostBtn}
+                      type="button"
+                      onClick={() => setShowDeleteTourConfirm(false)}
+                      disabled={isDeletingJobTour}
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      className={styles.jobTourAccessDangerBtn}
+                      type="button"
+                      onClick={handleDeleteTourFromAccessModal}
+                      disabled={isDeletingJobTour}
+                    >
+                      {isDeletingJobTour ? "Deleting..." : "Confirm Delete"}
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
           <button

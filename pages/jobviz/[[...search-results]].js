@@ -115,6 +115,13 @@ const JobVizSearchResults = ({
       ["1", "true", "edit"].includes(router.query.edit.toLowerCase()) &&
       hasGpPlusMembership
   );
+  const isPremadeTeacherPreview = Boolean(
+    isTeacherEditMode &&
+      typeof router.query?.fromPremadePreview === "string" &&
+      ["1", "true", "yes"].includes(
+        router.query.fromPremadePreview.toLowerCase()
+      )
+  );
   const {
     activeTour,
     assignmentAncestors,
@@ -575,6 +582,9 @@ const JobVizSearchResults = ({
       tourId={activeTour?._id ?? tourIdParam ?? null}
       selectedJobsCount={selectedTourJobsArray.length}
       showSaveButton={false}
+      unsavedSaveLabel={
+        isPremadeTeacherPreview ? "Save to Your JobViz Tours" : undefined
+      }
     />
   ) : null;
   const mobileEditNote = isTeacherEditMode ? (

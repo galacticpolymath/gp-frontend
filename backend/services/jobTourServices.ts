@@ -37,13 +37,20 @@ const insertJobTour = async (jobTour: TJobTourToInsert) => {
     }
 };
 
-const deleteJobTourById = async (_ids: string[]) => {
+const deleteJobTourById = async (_id: string) => {
     try {
-        console.log('Attempting to delete job tour with _id:', _ids);
+        console.log('Attempting to delete job tour with _id:', _id);
 
-        const deletionResult = await JobTour.deleteOne({ _id: { $in: _ids } });
+        const deletionResult = await JobTour.deleteOne({ _id });
 
         console.log('deletionResult: ', deletionResult);
+
+        if (deletionResult.deletedCount !== 1) {
+            return {
+                status: 404,
+                msg: 'No matching job tour was found in the database.',
+            };
+        }
 
         return {
             status: 200,

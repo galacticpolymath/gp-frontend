@@ -2015,7 +2015,8 @@
 
 .jobTourAccessPrimaryBtn,
 .jobTourAccessSecondaryBtn,
-.jobTourAccessGhostBtn {
+.jobTourAccessGhostBtn,
+.jobTourAccessDangerBtn {
   border-radius: 999px;
   padding: 10px 14px;
   font-weight: 600;
@@ -2059,6 +2060,39 @@
 .jobTourAccessGhostBtn:hover,
 .jobTourAccessGhostBtn:focus-visible {
   background: #f3f6fb;
+}
+
+.jobTourAccessDangerBtn {
+  background: #ffffff;
+  border-color: rgba(179, 42, 59, 0.35);
+  color: #b32a3b;
+}
+
+.jobTourAccessDangerBtn:hover,
+.jobTourAccessDangerBtn:focus-visible {
+  color: #931d2b;
+  background: rgba(179, 42, 59, 0.08);
+}
+
+.jobTourAccessConfirmDialog {
+  margin-top: 12px;
+  border: 1px solid rgba(179, 42, 59, 0.2);
+  border-radius: 14px;
+  padding: 12px;
+  background: rgba(179, 42, 59, 0.05);
+}
+
+.jobTourAccessConfirmText {
+  margin: 0;
+  color: #6d2b35;
+  line-height: 1.5;
+}
+
+.jobTourAccessConfirmActions {
+  margin-top: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
 .mediaModalBody {

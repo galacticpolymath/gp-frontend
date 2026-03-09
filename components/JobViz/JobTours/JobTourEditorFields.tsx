@@ -34,6 +34,7 @@ export interface JobTourEditorFieldsProps {
   selectedJobsCount: number;
   isSaved?: boolean;
   showSaveButton?: boolean;
+  unsavedSaveLabel?: string;
 }
 
 const JobTourEditorFields: React.FC<JobTourEditorFieldsProps> = ({
@@ -48,6 +49,7 @@ const JobTourEditorFields: React.FC<JobTourEditorFieldsProps> = ({
   selectedJobsCount,
   isSaved = false,
   showSaveButton = true,
+  unsavedSaveLabel = "Click to Save",
 }) => {
   const hasErrors = validationErrors.length > 0;
   const showCustomSubject = value.classSubject === "Other";
@@ -212,7 +214,7 @@ const JobTourEditorFields: React.FC<JobTourEditorFieldsProps> = ({
       ? "Fix to Save"
       : isSaved
         ? "Saved"
-        : "Click to Save";
+        : unsavedSaveLabel;
 
   return (
     <div className={styles.tourEditorFields} ref={formRootRef}>
@@ -478,7 +480,7 @@ const JobTourEditorFields: React.FC<JobTourEditorFieldsProps> = ({
             disabled={isSaving || isSaved}
             data-variant={isSaved ? "saved" : "default"}
           >
-            {isSaving ? "Saving..." : isSaved ? "Saved" : "Save tour"}
+            {isSaving ? "Saving..." : isSaved ? "Saved" : unsavedSaveLabel}
           </button>
         )}
       </div>
