@@ -1389,6 +1389,9 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
   const [lessonPreviewsCardHeight, setLessonPreviewsCardHeight] = useState<
     number | null
   >(null);
+  const [lessonMaterialsStickyTop, setLessonMaterialsStickyTop] = useState<
+    number | null
+  >(null);
   const citationStatusTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(
     null
   );
@@ -2060,6 +2063,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
 
     if (activeTab !== TAB_MATERIALS || isStandalonePreview) {
       setLessonPreviewsCardHeight(null);
+      setLessonMaterialsStickyTop(null);
       return;
     }
 
@@ -2072,6 +2076,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
 
       if (window.innerWidth < 768) {
         setLessonPreviewsCardHeight(null);
+        setLessonMaterialsStickyTop(null);
         return;
       }
 
@@ -2084,6 +2089,12 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
       const stickyTopOffset =
         (Number.isFinite(portalNavOffset) ? portalNavOffset : 0) +
         unitStickyHeaderHeight;
+      setLessonMaterialsStickyTop((currentTop) => {
+        if (currentTop != null && Math.abs(currentTop - stickyTopOffset) < 1) {
+          return currentTop;
+        }
+        return stickyTopOffset;
+      });
       const viewportBottomPadding = 14;
       const nextHeight = Math.max(
         380,
@@ -3259,7 +3270,17 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
           maxHeight: `${lessonPreviewsCardHeight}px`,
         }
       : undefined;
-  const previewPaneStickyStyle = fixedLessonPaneStyle;
+  const previewPaneStickyStyle = fixedLessonPaneStyle
+    ? {
+        ...fixedLessonPaneStyle,
+        position: 'sticky' as const,
+        top:
+          lessonMaterialsStickyTop != null
+            ? `${lessonMaterialsStickyTop}px`
+            : 'var(--lesson-preview-sticky-top, 0px)',
+        alignSelf: 'start' as const,
+      }
+    : undefined;
 
   const handleGradeBandFilter = (gradeBand: TGradeBand) => {
     setSelectedGradeBands((current) => {
@@ -3475,7 +3496,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
         )}
 
         {activeTab === TAB_MATERIALS && (
-          <section className={`${materialStyles.unitSection} ${styles.unitTabFadeIn}`}>
+          <section className={materialStyles.unitSection}>
             <div className={materialStyles.materialsLayout}>
               {activeLesson ? (
                 isStandalonePreview ? (
@@ -3520,7 +3541,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                       ? getLessonSearchAnchorId(activeLessonId)
                       : undefined
                   }
-                  className={`${materialStyles.lessonLayout} ${styles.unitTabFadeIn}`}
+                  className={materialStyles.lessonLayout}
                 >
                   <LessonSummaryCard
                     activeLesson={activeLesson}

@@ -37,7 +37,7 @@ import {
 } from "lucide-react";
 import type { IconBaseProps } from "react-icons";
 import { toast } from "react-hot-toast";
-import styles from "./home.module.css";
+import styles from "./home.module.scss";
 import { getUnitLessons, retrieveUnits } from "../backend/services/unitServices";
 import { createDbProjections, getLiveUnits } from "../shared/fns";
 import { INewUnitSchema } from "../backend/models/Unit/types/unit";

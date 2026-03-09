@@ -732,6 +732,9 @@
   min-height: 0;
   overflow: hidden;
   position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 12px;
   border: 2px solid rgba(44, 131, 195, 0.5);
   border-radius: 18px;
   background:
