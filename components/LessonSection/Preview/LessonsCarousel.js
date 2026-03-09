@@ -152,7 +152,7 @@ const LessonsCarousel = ({ mediaItems }) => {
         >
             <section className='row mt-0'>
                 <section
-                    style={{ height: 'fit-content', overflow: 'hidden' }}
+                    style={{ height: 'fit-content', overflowX: 'hidden', overflowY: 'visible' }}
                     className="col-12 mt-0"
                 >
                     <div

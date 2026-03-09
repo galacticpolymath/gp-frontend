@@ -13,6 +13,10 @@ This file defines default operating rules for coding agents in this repository.
 - Avoid one-off implementations when a shared utility/component already exists.
 - Optimize for maintainability first, then visual polish.
 - Preserve existing product behavior unless a change is explicitly requested.
+- **Scope lock is mandatory**:
+  - If the request is visual/CSS-only, do not edit routing, middleware/proxy, auth/session, data loading, or URL state logic.
+  - Do not touch `pages/api/**`, `proxy.js`, `next.config.js`, or route parsing in page components unless the user explicitly asks for that area.
+  - If a potential fix requires crossing scope boundaries, stop and confirm before editing.
 
 ## Repeated Issues To Prevent
 
@@ -23,6 +27,16 @@ This file defines default operating rules for coding agents in this repository.
   - When moving hook logic (`useMemo`, `useCallback`, etc.), verify imports in touched files before finishing.
 - **State extraction regressions**:
   - If state is moved into hooks, export close/toggle handlers with the state to avoid orphaned setters in page components.
+- **Teaching Materials preview pane regressions**:
+  - In Unit teaching materials, the preview pane must use smooth native sticky behavior on desktop (no scroll-driven JS top-updates).
+  - Required behavior:
+    1. Preview pane fills available viewport space under sticky header (`viewport height - sticky header offset`, clamped to resources-card height).
+    2. Preview pane remains pinned directly below `.unitStickyInner` while scrolling.
+    3. Preview pane unpins only when its bottom reaches the bottom of `.lessonResourcesCard`.
+    4. Long preview content (procedure/background/going-further) must scroll inside the preview pane, not the full page.
+    5. Featured Media should fit the preview pane without introducing an extra inner scroll container.
+  - Do not implement scroll-position polling or scroll listeners that update preview `top` on each frame; this introduces jitter.
+  - Any observers/listeners used for sizing must be scoped to materials tab only and fully cleaned up on tab/page changes.
 
 ## File Size And Organization Rules
 
@@ -66,6 +80,12 @@ For non-trivial edits:
 3. Confirm no missing imports or orphaned references.
 4. Confirm no stale naming from deprecated prototypes (for example, old `Burst` naming in JobViz paths).
 5. Validate responsive behavior at existing project breakpoints.
+6. **Confirm diff scope matches request scope** (for CSS tasks: styles/components only; no routing/auth/data files).
+7. **Smoke-check essential routes when touching shared UI/layout files**:
+   - `/`
+   - one `/units/[loc]/[id]` page
+   - `/api/auth/session`
+8. If unrelated critical functionality regresses, rollback the unrelated edits immediately before continuing.
 
 ## JobViz-Specific Guardrails
 
