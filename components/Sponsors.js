@@ -34,7 +34,7 @@ const SponsorsMarquee = ({ velocityNum = 45, decimal = 0, parentContainerCss = '
   return (
     <Marquee velocity={velocityNum} onInit={() => { }}>
       {_sponsors.map((sponsorObj, index) => {
-        let _style = (index === 3) ?
+        const _style = (index === 3) ?
           { width: computeDimension(sponsorObj.width, decimal), height: computeDimension(sponsorObj.height, decimal) }
           :
           { width: computeDimension(sponsorObj.width, decimal), height: computeDimension(sponsorObj.height, decimal) };

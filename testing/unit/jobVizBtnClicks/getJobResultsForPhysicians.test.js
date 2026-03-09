@@ -1,9 +1,9 @@
-/* eslint-disable indent */
  
-/* eslint-disable semi */
-/* eslint-disable no-multiple-empty-lines */
-/* eslint-disable no-undef */
-/* eslint-disable quotes */
+ 
+ 
+ 
+ 
+ 
 
 const filterResults = require('../../../helperFns/filterResults');
 

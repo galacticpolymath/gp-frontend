@@ -1,6 +1,6 @@
-/* eslint-disable quotes */
  
-/* eslint-disable indent */
+ 
+ 
 
 import { useEffect, useRef } from "react";
 
@@ -11,7 +11,7 @@ export const useScrollCardIntoView = willScrollCardIntoView => {
         if (willScrollCardIntoView) {
             cardRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
-    }, []);
+    }, [willScrollCardIntoView]);
 
     return cardRef;
 };

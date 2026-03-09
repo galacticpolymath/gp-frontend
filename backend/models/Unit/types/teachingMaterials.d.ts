@@ -1,6 +1,6 @@
-import { ILessonForUI } from '../../../../types/global';
+import { ILessonForUI as _ILessonForUI } from '../../../../types/global';
 import { IUnitSectionObj } from '../Section';
-import { IOverview, IUnitOverview, TUnitOverviewPropsForUI } from './overview';
+import { IOverview as _IOverview , IUnitOverview as _IUnitOverview , TUnitOverviewPropsForUI } from './overview';
 
 export interface ILink {
   linkText: string | null;
@@ -17,7 +17,7 @@ export interface IItemV2Props {
   mimeType: string;
   gdriveRoot: string;
   isExportable: boolean;
-  externalUrl: string;
+  externalURL: string;
   itemType: string;
 }
 
@@ -41,7 +41,7 @@ export interface IItemForUI extends IItem {
 }
 
 // contains the props of the old database schema
-export interface ILesson<TItem extends IItem = IItem> {
+export interface ILesson<_TItem extends IItem = IItem> {
   _id: string | null;
   lsn: string | null;
   title: string | null;
@@ -113,12 +113,12 @@ export interface IChunk {
 }
 
 export interface ILsnPrep {
-  title: string | null;
-  dur: number | null;
-  quickDescription: string | null;
-  details: string | null;
-  variantNotes: string | null;
-  teachingTips: string | null;
+  prepTitle: string | null;
+  prepDur: number | null;
+  prepQuickDescription: string | null;
+  prepDetails: string | null;
+  prepVariantNotes: string | null;
+  prepTeachingTips: string | null;
 }
 
 export interface ILsnExt {
@@ -165,15 +165,6 @@ export interface ITeachingMaterialsDataForUI<TLesson = ILesson>
   remote: IClassroom<TLesson> | null;
   gatheredVocab: IGatheredVocab | null;
   lesson: ILessonDetail[];
-}
-
-interface ILsnPrep {
-  prepTitle: string;
-  prepDur: number | null;
-  prepQuickDescription: string;
-  prepDetails: string | null;
-  prepVariantNotes: null;
-  prepTeachingTips: null;
 }
 
 interface IChunkStep {
@@ -252,7 +243,7 @@ interface ITeachingMaterialsPreviewInfo {
   gatheredVocab: IVocab[];
 }
 
-interface IResourceObj<TLesson extends INewUnitLesson = INewUnitLesson> {
+interface IResourceObj<_TLesson extends INewUnitLesson = INewUnitLesson> {
   resources: IResource<INewUnitLesson>[]
 }
 

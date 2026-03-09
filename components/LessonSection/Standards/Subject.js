@@ -1,5 +1,5 @@
-/* eslint-disable quotes */
-/* eslint-disable no-console */
+ 
+ 
 import PropTypes from "prop-types";
 import Accordion from "../../Accordion";
 import StandardsGroup from "./StandardsGroup";
@@ -50,7 +50,7 @@ const Subject = ({
             {subject} - {sets[0].name}
           </span>
           <div className="position-relative">
-            {index == 0 && !areThereTargetStandards && (
+            {index === 0 && !areThereTargetStandards && (
               <ClickMeArrow
                 handleElementVisibility={handleSubjectElementVisibility}
                 willShowArrow={arrowContainer.isInView}
@@ -98,7 +98,7 @@ const Subject = ({
                     GradesOrYears={GradesOrYears}
                     _arrowContainer={_arrowContainerForStandsElementVisibility}
                     handleElementVisibility={handleStandardsElementVisibility}
-                    willShowArrow={subjectDimIndex == 0 && index == 0}
+                    willShowArrow={subjectDimIndex === 0 && index === 0}
                     key={groupIndex}
                     {...group}
                   />

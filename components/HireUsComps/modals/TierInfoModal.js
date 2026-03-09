@@ -1,17 +1,17 @@
-/* eslint-disable react/jsx-closing-bracket-location */
-/* eslint-disable react/jsx-indent-props */
-/* eslint-disable react/jsx-wrap-multilines */
-/* eslint-disable semi */
- 
-/* eslint-disable comma-dangle */
-/* eslint-disable quotes */
-/* eslint-disable no-multiple-empty-lines */
  
  
-/* eslint-disable react/jsx-max-props-per-line */
  
-/* eslint-disable indent */
-/* eslint-disable react/jsx-indent */
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Image from "next/image";

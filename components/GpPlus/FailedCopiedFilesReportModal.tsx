@@ -152,8 +152,8 @@ const FailedCopiedFilesReportModal: React.FC<
             What happens next?
           </h6>
           <p className="mb-0">
-            Click "Send Report" to notify our support team about these failed
-            files. We'll investigate the issue and help you get these files
+            Click &quot;Send Report&quot; to notify our support team about these
+            failed files. We&apos;ll investigate the issue and help you get these files
             copied successfully.
           </p>
         </div>

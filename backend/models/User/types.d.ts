@@ -6,8 +6,7 @@ import {
   getGpPlusMembership,
 } from '../../services/outsetaServices';
 import {
-  TAccountStageLabel,
-  TGpPlusMembershipRetrieved,
+  TAccountStageLabel, TGpPlusMembershipRetrieved as _TGpPlusMembershipRetrieved ,
 } from '../../services/userServices';
 import { TAboutUserFormDeprecated } from './deprecated';
 
@@ -45,14 +44,18 @@ export interface TAboutUserFormBaseProps extends IAboutUserFormNewFieldsV1 {
   country?: string;
   occupation?: string;
   zipCode?: string | null | number;
+  /** @deprecated This field is deprecated and will be removed in a future release. Use `accountType` instead.*/
   isTeacher?: boolean;
+  accountType?: "teacher" | "student" | "scientist";
+  classCode?: string | null;
+  dateOfBirth?: Date | string | null;
 }
 
 export interface TAboutUserForm<
   TMutableObj extends object = Record<string, unknown>
 > extends TAboutUserFormDeprecated<TMutableObj>,
-    TAboutUserFormBaseProps,
-    TOutseta {}
+  TAboutUserFormBaseProps,
+  TOutseta { }
 
 export interface IUserSchemaBaseProps {
   _id: string;
@@ -73,7 +76,7 @@ export interface IUserSchemaBaseProps {
 }
 
 // user schema v1 has the deprecated fields and the v2 fields
-export interface IUserSchema extends TAboutUserForm, IUserSchemaBaseProps {}
+export interface IUserSchema extends TAboutUserForm, IUserSchemaBaseProps { }
 
 export type TOutseta = {
   outsetaAccountEmail?: string;
@@ -100,6 +103,8 @@ export type TUserSchemaV2 = IUserSchemaBaseProps &
     unitGDriveLessons: IUnitGDriveLesson[];
     gdriveAuthEmails: string[];
     willShowGpPlusCopyLessonHelperModal: boolean;
+    displayName?: string,
+    savedJobIds?: string[],
     willNotShowEmailNewsLetterSignUpModal: boolean;
   };
 

@@ -1,4 +1,4 @@
-/* eslint-disable indent */
+ 
 import { withSwagger } from 'next-swagger-doc';
 
 const swaggerHandler = withSwagger({

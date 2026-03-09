@@ -1,12 +1,13 @@
-/* eslint-disable quotes */
-/* eslint-disable no-console */
+/* eslint-disable no-alert */
+ 
+ 
  
 import axios from "axios";
 import { useState } from "react";
 import { TGpData } from "../types/global";
 
 export type TGpUnitDataType = "videos" | "lessons" | "units";
-type TGpDataRetrievalPaths = "cached-gp-data" | "cached-gp-units-data";
+type _TGpDataRetrievalPaths = "cached-gp-data" | "cached-gp-units-data";
 
 const getGpUnitData = async (typeStr: TGpUnitDataType, pageNum: number) => {
   try {
@@ -59,7 +60,7 @@ export const useGetGpDataStates = <TData extends TGpData>(
       );
 
       if (gpVideosResponse.errType === "timeout") {
-        alert(
+        globalThis.alert?.(
           `Failed to get ${gpDataType}. Please refesh the page and try again.`
         );
         throw new Error('"axios" request error timeout has occurred.');

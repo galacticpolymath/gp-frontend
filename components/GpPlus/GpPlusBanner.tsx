@@ -1,4 +1,4 @@
-/* eslint-disable quotes */
+ 
 
 import React from "react";
 import Image from "next/image";
@@ -87,14 +87,8 @@ const GpPlusBanner: React.FC<IProps> = ({
                     style={{ textTransform: "none" }}
                     className="w-100 p-0 text-center text-sm-start text-normal text-wrap"
                   >
-                    Upgrade to GP+ Plus
+                    Upgrade to GP+
                   </h6>
-                </section>
-                <section
-                  style={{ textTransform: "none" }}
-                  className="w-100 text-center text-sm-start text-normal"
-                >
-                  Get 50% off
                 </section>
               </section>
             </div>

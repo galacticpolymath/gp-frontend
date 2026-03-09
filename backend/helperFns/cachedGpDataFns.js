@@ -1,6 +1,6 @@
-/* eslint-disable quotes */
-/* eslint-disable indent */
-/* eslint-disable semi */
+ 
+ 
+ 
 import moment from "moment";
 import { getGpLessons, getGpVids } from "../../globalFns"
 

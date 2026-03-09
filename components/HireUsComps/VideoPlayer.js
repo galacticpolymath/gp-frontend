@@ -1,10 +1,10 @@
-/* eslint-disable quotes */
  
-/* eslint-disable react/jsx-closing-bracket-location */
-/* eslint-disable react/jsx-indent-props */
-/* eslint-disable semi */
  
-/* eslint-disable react/jsx-indent */
+ 
+ 
+ 
+ 
+ 
 
 import ReactPlayer from "react-player";
 

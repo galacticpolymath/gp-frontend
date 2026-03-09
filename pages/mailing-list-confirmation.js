@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import CustomLink from '../components/CustomLink';
 import Layout from '../components/Layout';
 import axios from 'axios';
@@ -89,7 +89,7 @@ const MailingListConfirmation = () => {
     );
   const wasStatusRetrievalCompleted = useRef(false);
 
-  const getUserMailingListStatus = async (path = '/api/get-brevo-status') => {
+  const getUserMailingListStatus = useCallback(async (path = '/api/get-brevo-status') => {
     let isOnMailingList = false;
 
     if (
@@ -217,7 +217,7 @@ const MailingListConfirmation = () => {
       wasStatusRetrievalCompleted.current = true;
       setAppCookie(confirmationMaliingListId, isOnMailingList);
     }
-  };
+  }, [confirmationMaliingListId, cookies, setAppCookie, status, token]);
 
   useEffect(() => {
     (async () => {
@@ -234,7 +234,7 @@ const MailingListConfirmation = () => {
         await getUserMailingListStatus('/api/get-signed-in-user-brevo-status');
       }
     })();
-  }, [status]);
+  }, [getUserMailingListStatus, status]);
 
   if (isRetrievingUserMailingListStatus) {
     return (

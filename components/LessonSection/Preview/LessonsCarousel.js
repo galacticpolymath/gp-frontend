@@ -1,23 +1,23 @@
-/* eslint-disable react/jsx-tag-spacing */
- 
-/* eslint-disable no-multiple-empty-lines */
- 
-/* eslint-disable react/jsx-wrap-multilines */
  
  
-/* eslint-disable quotes */
  
  
-/* eslint-disable react/jsx-closing-bracket-location */
-/* eslint-disable react/jsx-indent-props */
-/* eslint-disable semi */
- 
-/* eslint-disable react/no-unknown-property */
  
  
-/* eslint-disable indent */
-/* eslint-disable react/jsx-indent */
-import { useState } from 'react';
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import LessonSlide from './LessonSlide';
 import { getVideoThumb } from './utils';
 import Image from 'next/image';
@@ -26,10 +26,82 @@ import Dot from '../NavDots/Dot';
 
 const LessonsCarousel = ({ mediaItems }) => {
     const [currentIndex, setCurrentIndex] = useState(0);
-    const mediaItemsSorted = mediaItems ? mediaItems.sort((lessonDocumentA, lessonDocumentB) => lessonDocumentA.order - lessonDocumentB.order).map((item, index) => ({ ...item, isVisible: index === 0 })) : []
+    const carouselRef = useRef(null);
+    const mediaItemsSorted = useMemo(
+        () =>
+            mediaItems
+                ? [...mediaItems]
+                    .sort(
+                        (lessonDocumentA, lessonDocumentB) =>
+                            lessonDocumentA.order - lessonDocumentB.order
+                    )
+                    .map((item, index) => ({ ...item, isVisible: index === 0 }))
+                : [],
+        [mediaItems]
+    );
     const [controlDots, setControlDots] = useState(mediaItemsSorted);
 
+    useEffect(() => {
+        setCurrentIndex(0);
+        setControlDots(mediaItemsSorted);
+    }, [mediaItemsSorted]);
+
+    const stopMediaPlayback = useCallback(() => {
+        if (!carouselRef.current) {
+            return;
+        }
+
+        const mediaElements = carouselRef.current.querySelectorAll('iframe, video');
+        mediaElements.forEach((element) => {
+            if (element.tagName.toLowerCase() === 'video') {
+                element.pause?.();
+                return;
+            }
+
+            const iframeSrc = element.getAttribute('src') ?? '';
+            let iframeHost = '';
+            try {
+                // Handle absolute URLs; fall back to relative URLs using window.location.origin if available
+                if (iframeSrc.startsWith('http://') || iframeSrc.startsWith('https://')) {
+                    iframeHost = new URL(iframeSrc).hostname;
+                } else if (typeof window !== 'undefined') {
+                    iframeHost = new URL(iframeSrc, window.location.origin).hostname;
+                }
+            } catch {
+                iframeHost = '';
+            }
+
+            const youtubeHosts = new Set([
+                'youtube.com',
+                'www.youtube.com',
+                'm.youtube.com',
+                'youtube-nocookie.com',
+                'www.youtube-nocookie.com'
+            ]);
+            const vimeoHosts = new Set([
+                'player.vimeo.com'
+            ]);
+
+            if (youtubeHosts.has(iframeHost)) {
+                element.contentWindow?.postMessage(
+                    JSON.stringify({
+                        event: 'command',
+                        func: 'pauseVideo',
+                        args: [],
+                    }),
+                    '*'
+                );
+                return;
+            }
+
+            if (vimeoHosts.has(iframeHost)) {
+                element.contentWindow?.postMessage({ method: 'pause' }, '*');
+            }
+        });
+    }, []);
+
     const handleNextBtnClick = () => {
+        stopMediaPlayback();
         const newItemIndexOnUI = currentIndex + 1
         setCurrentIndex(newItemIndexOnUI);
         setControlDots(controlDots => {
@@ -44,6 +116,7 @@ const LessonsCarousel = ({ mediaItems }) => {
     }
 
     const handlePrevBtnClick = () => {
+        stopMediaPlayback();
         const newItemIndexOnUI = currentIndex - 1
         setCurrentIndex(newItemIndexOnUI);
         setControlDots(controlDots => {
@@ -58,6 +131,7 @@ const LessonsCarousel = ({ mediaItems }) => {
     }
 
     const handleDotOrThumbNailClick = selectedItemIndex => {
+        stopMediaPlayback();
         setCurrentIndex(selectedItemIndex);
         setControlDots(controlDots => {
             return controlDots.map((item, index) => {
@@ -72,17 +146,20 @@ const LessonsCarousel = ({ mediaItems }) => {
 
     return (
         // put the parent div into its own component
-        <div className='shadow rounded p-0 display-flex flex-column justify-content-center autoCarouselContainer'>
+        <div
+            ref={carouselRef}
+            className='shadow rounded p-0 display-flex flex-column justify-content-start align-items-stretch autoCarouselContainer'
+        >
             <section className='row mt-0'>
                 <section
-                    style={{ height: 'fit-content' }}
+                    style={{ height: 'fit-content', overflow: 'hidden' }}
                     className="col-12 mt-0"
                 >
                     <div
                         className="autoCarouselSlider mt-0"
                         style={{ transform: `translate3d(${-currentIndex * 100}%, 0, 0)` }}
                     >
-                        {mediaItems?.length && mediaItems.sort((lessonDocumentA, lessonDocumentB) => lessonDocumentA.order - lessonDocumentB.order).map((lessonDocument, index) => {
+                        {mediaItemsSorted.length > 0 && mediaItemsSorted.map((lessonDocument, index) => {
                             return (
                                 <LessonSlide
                                     key={index}
@@ -110,7 +187,7 @@ const LessonsCarousel = ({ mediaItems }) => {
                     <i className="fs-1 text-black bi-arrow-right-circle-fill lh-1 d-block" />
                 </button>
             </section>
-            <section className="mt-1 mb-2">
+            <section className="mt-1 mb-2 position-relative" style={{ zIndex: 2 }}>
                 <ul className='ps-0 mb-0 d-flex flex-wrap justify-content-center align-items-center' style={{ transform: 'translate3d(0px, 0px, 0px)', 'transitionDuration': '3500ms', transition: 'all .15s ease-in', listStyle: 'none' }}>
                     {controlDots?.length && controlDots.map((item, index) => {
                         const { type, title, mainLink, isVisible, webAppPreviewImg } = item;
@@ -156,5 +233,3 @@ const LessonsCarousel = ({ mediaItems }) => {
 }
 
 export default LessonsCarousel;
-
-

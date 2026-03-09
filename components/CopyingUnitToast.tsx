@@ -132,7 +132,7 @@ const CopyingUnitToast: React.FC<CopyingUnitToastProps> = ({
   isCancelBtnDisabled,
 }) => {
   let percent: number | null = null;
-  const [wasCancelBtnClicked, setWasCancelBtnClicked] = useState(false);
+  const [wasCancelBtnClicked, _setWasCancelBtnClicked] = useState(false);
 
   if (typeof total === 'number' && typeof progress === 'number') {
     percent =

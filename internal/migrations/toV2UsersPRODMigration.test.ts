@@ -190,8 +190,8 @@ function ask(query: string): Promise<string> {
   );
 }
 
-const RED = '\\x1b[31m';
-const DEFAULT = '\\x1b[0m';
+const _RED = '\\x1b[31m';
+const _DEFAULT = '\\x1b[0m';
 
 const shouldRunProdMigrationTest =
   typeof process !== 'undefined' &&

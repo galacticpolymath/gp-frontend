@@ -20,6 +20,7 @@ interface IModal {
 export interface INotifyModalVal extends IModal {
   isDisplayed: boolean;
   bodyTxt: string | ReactNode;
+  bodyElements?: ReactNode;
   headerTxt: string;
   closeBtnTxt?: string;
 }
@@ -39,7 +40,7 @@ export const defautlNotifyModalVal: INotifyModalVal = {
 
 export interface ILessonItem extends IItemForClient {
   docUrl: string;
-  externalUrl: string;
+  externalURL: string;
 }
 export interface ILessonItemsModal {
   lessonItems: ILessonItem[];

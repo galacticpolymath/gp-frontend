@@ -1,5 +1,5 @@
-import axios, { AxiosHeaders } from 'axios';
-import { sleep, waitWithExponentialBackOff } from '../../globalFns';
+import axios, { AxiosHeaders as _AxiosHeaders } from 'axios';
+import { sleep as _sleep , waitWithExponentialBackOff } from '../../globalFns';
 import { calculatePercentSaved } from '../../shared/fns';
 
 const OUTSETA_API_ORIGIN = 'https://galactic-polymath.outseta.com';
@@ -21,6 +21,9 @@ export type TAccountStageLabel =
   | 'Subscribing'
   | 'Cancelling'
   | 'Past due'
+  | 'Active'
+  | 'Trialing'
+  | 'Trial'
   | 'Expired'
   | 'NonMember';
 
@@ -151,17 +154,25 @@ export type TGpPlusMembership = Partial<{
   person: TPerson;
 }> & { AccountStageLabel: TAccountStageLabel | 'NonMember' };
 
+export const NON_MEMBER_STATUSES = new Set<TAccountStageLabel>([
+  'Expired',
+  'NonMember',
+]);
+
+export const isActiveGpPlusMembership = (
+  membership: { AccountStageLabel?: TAccountStageLabel | 'NonMember' } | null
+) => {
+  const label = membership?.AccountStageLabel;
+  if (!label) return false;
+  return !NON_MEMBER_STATUSES.has(label as TAccountStageLabel);
+};
+
 export const getGpPlusMembership = async (
   email: string,
   tries = 3,
   fields = 'CurrentSubscription.*, CurrentSubscription.Plan.*, AccountStageLabel, Name, PersonAccount.Person.*, Uid'
 ): Promise<TGpPlusMembership> => {
   try {
-    console.log(
-      `Attempting to retrieve Outseta GP+ membership status for: ${email}`
-    );
-    console.log('the email yo: ', email);
-
     const url = new URL(
       `${OUTSETA_API_ORIGIN}/${OUTSETA_API_VERSION_PATH}/crm/accounts/`
     );
@@ -175,11 +186,8 @@ export const getGpPlusMembership = async (
         'Content-Type': 'application/json',
       },
     });
-    console.log('data, bacon: ', data);
 
     const currentSubscription = data.items?.[0];
-
-    console.log('Status code: ', status);
 
     if (status !== 200 || !currentSubscription) {
       console.error('Failed to retrieve Outseta GP+ membership status.');
@@ -316,7 +324,7 @@ export const deleteAccount = async (
     console.log('deleteAccount response: ', response);
     const { status } = response;
 
-    if (status != 200) {
+    if (status !== 200) {
       throw new Error('Failed to delete the target account.');
     }
 

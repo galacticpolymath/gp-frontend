@@ -1,10 +1,10 @@
-/* eslint-disable react/jsx-tag-spacing */
  
-/* eslint-disable quotes */
-/* eslint-disable semi */
  
-/* eslint-disable indent */
-/* eslint-disable react/jsx-indent */
+ 
+ 
+ 
+ 
+ 
 
 import LetsTalkBtnContainer from "../buttons/LetsTalkBtnContainer"
 

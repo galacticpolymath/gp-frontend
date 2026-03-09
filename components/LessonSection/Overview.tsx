@@ -61,10 +61,10 @@ export const getStandards = (TargetStandardsCodes: TUnitForUI['TargetStandardsCo
 }
 
 const Overview: React.FC<IOverviewProps> = ({
-  LearningSummary,
+  LearningSummary: _LearningSummary,
   jobVizCareerConnections,
   Description,
-  EstLessonTime,
+  EstLessonTime: _EstLessonTime,
   ForGrades,
   TargetSubject,
   SteamEpaulette,
@@ -72,7 +72,7 @@ const Overview: React.FC<IOverviewProps> = ({
   Text,
   Tags: _Tags,
   UnitTags,
-  GradesOrYears,
+  GradesOrYears: _GradesOrYears,
   _sectionDots,
   SectionTitle,
   TheGist,
@@ -84,7 +84,7 @@ const Overview: React.FC<IOverviewProps> = ({
   console.log('UnitTags: ', UnitTags);
   console.log('_Tags: ', _Tags);
 
-  let Tags = UnitTags ?? (_Tags ? _Tags.map((tag) => tag.Value) : []);
+  const Tags = UnitTags ?? (_Tags ? _Tags.map((tag) => tag.Value) : []);
   const areTargetStandardsValid = TargetStandardsCodes?.every(
     (standard) =>
       typeof standard?.code === 'string' &&
@@ -126,7 +126,7 @@ const Overview: React.FC<IOverviewProps> = ({
           typeof val.Description === 'string' && typeof val.Link === 'string'
       )
     );
-  }, []);
+  }, [Accessibility]);
 
   return (
     <div

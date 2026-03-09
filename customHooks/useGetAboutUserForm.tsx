@@ -15,7 +15,7 @@ import {
 } from "../shared/fns";
 import { useCustomCookies } from "./useCustomCookies";
 import { useModalContext } from "../providers/ModalProvider";
-import { useRouter } from "next/router";
+import { useRouter as _useRouter } from "next/router";
 
 export const getAboutUserFormForClient = (
   userAccount: TUserSchemaForClient<TUserSchemaV2 & IUserSchema>
@@ -116,9 +116,8 @@ export const getAboutUserFormForClient = (
     };
   }
 
-  console.log("institution, sup there: ", institution);
 
-  if (institution || institution == null) {
+  if (institution || institution === null) {
     userAccountForClient = {
       ...userAccountForClient,
       institution,
@@ -173,7 +172,7 @@ export const getAboutUserFormForClient = (
       ...userAccountForClient,
       subjects: subjectsTeaching as Map<string, string>,
     };
-  } else if (subjects && Object.entries(subjects).length == 0) {
+  } else if (subjects && Object.entries(subjects).length === 0) {
     userAccountForClient.subjects = userAccountDefault.subjects;
   }
 
@@ -234,7 +233,7 @@ export const getAboutUserFormForClient = (
   return { userAccountForClient, gpPlusSubscription };
 };
 
-const getUserAccountData = async (token: string) => {
+const _getUserAccountData = async (token: string) => {
   try {
     const paramsAndHeaders = {
       headers: {
@@ -262,8 +261,9 @@ export const useGetAboutUserForm = (
   willSetEmailNewsletterSignUpModal?: boolean
 ) => {
   const { status, data } = useSession();
-  const { _aboutUserForm } = useUserContext();
+  const { _aboutUserForm, _isGpPlusMember } = useUserContext();
   const [aboutUserForm, setAboutUserForm] = _aboutUserForm;
+  const [, setIsGpPlusMember] = _isGpPlusMember;
   const { setAppCookie } = useCustomCookies();
   const {
     _emailNewsletterSignUpModal: [, setEmailNewsletterSignUpModal],
@@ -391,7 +391,8 @@ export const useGetAboutUserForm = (
 
           if (typeof isGpPlusMember === "boolean") {
             setSessionStorageItem("isGpPlusUser", isGpPlusMember);
-            setAppCookie("isGpPlusMember", isGpPlusMember);
+            setAppCookie("isGpPlusMember", isGpPlusMember, { path: "/" });
+            setIsGpPlusMember(isGpPlusMember);
             userAccountForClient = {
               ...userAccountForClient,
               isGpPlusMember,
@@ -440,9 +441,8 @@ export const useGetAboutUserForm = (
             };
           }
 
-          console.log("institution, sup there: ", institution);
 
-          if (institution || institution == null) {
+          if (institution || institution === null) {
             userAccountForClient = {
               ...userAccountForClient,
               institution,
@@ -497,7 +497,7 @@ export const useGetAboutUserForm = (
               ...userAccountForClient,
               subjects: subjectsTeaching as Map<string, string>,
             };
-          } else if (subjects && Object.entries(subjects).length == 0) {
+          } else if (subjects && Object.entries(subjects).length === 0) {
             userAccountForClient.subjects = userAccountDefault.subjects;
           }
 
@@ -572,7 +572,17 @@ export const useGetAboutUserForm = (
     } else if (status === "unauthenticated") {
       setIsRetrievingUserData(false);
     }
-  }, [status]);
+  }, [
+    aboutUserForm,
+    setAboutUserForm,
+    setAppCookie,
+    setEmailNewsletterSignUpModal,
+    setIsGpPlusMember,
+    status,
+    token,
+    willGetData,
+    willSetEmailNewsletterSignUpModal,
+  ]);
 
   return {
     _aboutUserForm,

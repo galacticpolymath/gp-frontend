@@ -1,25 +1,25 @@
-/* eslint-disable react/jsx-curly-brace-presence */
-/* eslint-disable react/jsx-tag-spacing */
-/* eslint-disable curly */
  
-/* eslint-disable brace-style */
-/* eslint-disable no-multiple-empty-lines */
-/* eslint-disable prefer-template */
-/* eslint-disable react/jsx-wrap-multilines */
+ 
+ 
+ 
+ 
+ 
+ 
+ 
 /* eslint-disable react/no-unescaped-entities */
-/* eslint-disable react/jsx-closing-tag-location */
-/* eslint-disable quotes */
  
  
  
-/* eslint-disable react/jsx-indent-props */
-/* eslint-disable semi */
  
  
-/* eslint-disable react/jsx-max-props-per-line */
  
-/* eslint-disable indent */
-/* eslint-disable react/jsx-indent */
+ 
+ 
+ 
+ 
+ 
+ 
+ 
 
 
 import { useEffect, useRef, useState } from 'react';
@@ -47,8 +47,8 @@ const CarouselContainer = ({
     const headerContainerClassNames = `d-flex justify-content-center align-items-center ${headerContainerClassNamesDynamic ?? ""}`
     let cardStyles = `autoCarouselContainerCard ${pics ? 'mt-3 picsCardContainer' : ''}`;
     cardStyles = isCardOnly ? (cardStyles + 'cardOnlyStyles mt-3 fw245') : cardStyles
-    let customBulletPtsSecCss = _customBulletPtsSecCss ? `mt-md-0 mb-2 position-absolute ${_customBulletPtsSecCss}` : 'mt-md-0 mb-2 position-absolute'
-    let autoCarouselContainerStyles = `autoCarouselContainer ${_autoCarouselContainerStyles}`
+    const customBulletPtsSecCss = _customBulletPtsSecCss ? `mt-md-0 mb-2 position-absolute ${_customBulletPtsSecCss}` : 'mt-md-0 mb-2 position-absolute'
+    const autoCarouselContainerStyles = `autoCarouselContainer ${_autoCarouselContainerStyles}`
     const userInputs = _userInputs?.isTeachersAndStudentsTestimonies ? _userInputs.arr : _userInputs;
 
     if (customCardStyles) {
@@ -107,7 +107,7 @@ const CarouselContainer = ({
                 resetTimeout();
             };
         }
-    }, [index, isCarouselPaused]);
+    }, [index, isCardOnly, isCarouselPaused, pics, userInputs]);
 
     return (
         isCardOnly ?

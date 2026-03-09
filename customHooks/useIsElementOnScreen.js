@@ -1,6 +1,6 @@
-/* eslint-disable quotes */
-/* eslint-disable semi */
-/* eslint-disable indent */
+ 
+ 
+ 
 
 import { useState, useMemo, useEffect } from "react";
 
@@ -9,12 +9,12 @@ export const useIsElementOnScreen = ref => {
 
     const observer = useMemo(() => new IntersectionObserver(
         ([entry]) => setIsElementOnScreen(entry.isElementOnScreen)
-    ), [ref])
+    ), [])
 
     useEffect(() => {
         observer.observe(ref.current)
         return () => observer.disconnect()
-    }, [])
+    }, [observer, ref])
 
     return isElementOnScreen;
 }

@@ -1,0 +1,63 @@
+.banner {
+  position: fixed;
+  left: 16px;
+  right: 16px;
+  bottom: 18px;
+  z-index: 10000030;
+  background: rgba(12, 16, 28, 0.94);
+  border: 1px solid rgba(240, 244, 255, 0.24);
+  color: #f0f4ff;
+  border-radius: 14px;
+  box-shadow: 0 16px 34px rgba(3, 8, 24, 0.45);
+  backdrop-filter: blur(8px);
+  padding: 12px 14px;
+}
+
+.content {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.message {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+.icon {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 auto;
+  margin-top: 2px;
+}
+
+.closeButton {
+  margin-left: auto;
+  border: 0;
+  background: rgba(255, 255, 255, 0.1);
+  color: #f0f4ff;
+  border-radius: 999px;
+  width: 26px;
+  height: 26px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex: 0 0 auto;
+}
+
+.inlineIcon {
+  width: 16px;
+  height: 16px;
+  vertical-align: text-bottom;
+  margin: 0 3px;
+}
+
+@media (min-width: 900px) {
+  .banner {
+    left: 24px;
+    right: auto;
+    max-width: 760px;
+  }
+}

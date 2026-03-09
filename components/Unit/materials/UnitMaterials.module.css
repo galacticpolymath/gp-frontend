@@ -1,0 +1,1550 @@
+.unitSection {
+  width: 100%;
+}
+
+.unitTabFadeIn {
+  animation: unitTabFadeIn 300ms ease-out both;
+}
+
+@keyframes unitTabFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.unitMutedText {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.5;
+  color: #6a7087;
+}
+
+.richTextBlock :global(p) {
+  font-size: 16px;
+  line-height: 1.5;
+  color: #4c5269;
+}
+
+.richTextBlock :global(h3),
+.richTextBlock :global(h4) {
+  margin: 0 0 8px;
+  font-size: 16px;
+  line-height: 1.2;
+  color: #1f355a;
+}
+
+.richTextBlock :global(ol),
+.richTextBlock :global(ul),
+.richTextBlock :global(li) {
+  font-size: 16px;
+  line-height: 1.5;
+  color: #4c5269;
+}
+
+.materialsLayout,
+.lessonLayout,
+.lessonPreviewList,
+.quickStartActions,
+.gpFunctionActions,
+.lessonDownloadList,
+.lessonPreviewMeta,
+.goingFurtherList,
+.procedureStandaloneLayout,
+.procedureStandaloneHeader,
+.lessonStepMain,
+.lessonPrepAside,
+.lessonChunk,
+.lessonProcedureHeader,
+.lessonProcedureContent,
+.stepInfoBlock {
+  display: grid;
+}
+
+.materialsLayout,
+.lessonLayout {
+  gap: 14px;
+}
+
+.lessonMaterialsGrid {
+  display: grid;
+  gap: 10px;
+  align-items: start;
+  grid-template-columns: fit-content(360px) minmax(0, 1fr);
+  min-height: 0;
+}
+
+.gpPlusBannerWrapInGrid {
+  grid-column: 1 / -1;
+}
+
+.gpPlusBanner {
+  position: relative;
+  width: 100%;
+  padding: 20px 56px 20px 28px;
+  border: 2px solid #2c37c2;
+  border-radius: 20px;
+  background: rgba(239, 232, 251, 0.99);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.gpPlusBannerClose {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 32px;
+  height: 32px;
+  border: 1px solid rgba(28, 40, 189, 0.2);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.9);
+  color: #1c28bd;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.gpPlusLogo {
+  width: 88px;
+  height: 88px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.gpPlusCopy {
+  flex: 1 1 auto;
+  display: grid;
+  gap: 6px;
+}
+
+.gpPlusHeadline {
+  font-size: 20px;
+  font-weight: 700;
+  color: #141a2e;
+}
+
+.gpPlusSubhead {
+  font-size: 16px;
+  color: #2f3347;
+}
+
+.gpPlusCta {
+  min-height: 64px;
+  padding: 12px 28px;
+  border: 2px solid rgba(28, 40, 189, 0.18);
+  border-radius: 999px;
+  background: #fff;
+  color: #1c28bd;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  box-shadow: 0 10px 18px rgba(28, 40, 189, 0.12);
+}
+
+.gpPlusCta:hover,
+.gpPlusCta:focus-visible {
+  border-color: rgba(24, 38, 188, 0.4);
+  box-shadow: 0 14px 28px rgba(24, 38, 188, 0.2);
+}
+
+.gpPlusCtaIcon {
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lessonResourcesCard {
+  width: 100%;
+  max-width: 380px;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding: 0;
+  border: 1px solid rgba(44, 131, 195, 0.12);
+  border-radius: 18px;
+  background-color: rgba(232, 236, 242, 0.9);
+  background-image:
+    radial-gradient(rgba(90, 104, 126, 0.12) 0.5px, rgba(232, 236, 242, 0.9) 0.5px),
+    linear-gradient(148deg, rgba(247, 249, 252, 0.86), rgba(218, 224, 233, 0.8));
+  background-size: 10px 10px;
+  box-shadow: 0 12px 24px rgba(26, 37, 55, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.58);
+}
+
+.lessonResourcesCard::after {
+  content: "";
+  height: 200px;
+  flex: 0 0 200px;
+  order: 999;
+}
+
+.resourceSection {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  padding: 10px;
+  border-left: 1px solid rgba(63, 90, 153, 0.18);
+  border-right: 1px solid rgba(63, 90, 153, 0.18);
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.resourceSection + .resourceSection {
+  margin-top: 8px;
+  border-top: 1px solid rgba(80, 98, 146, 0.16);
+}
+
+.resourceSection:first-child {
+  border-top: 1px solid rgba(63, 90, 153, 0.18);
+  border-top-left-radius: 14px;
+  border-top-right-radius: 14px;
+}
+
+.resourceSection:last-child {
+  border-bottom: 1px solid rgba(63, 90, 153, 0.18);
+  border-bottom-left-radius: 14px;
+  border-bottom-right-radius: 14px;
+}
+
+.resourceSection > * {
+  position: relative;
+  z-index: 1;
+}
+
+.quickStartSection,
+.previewDownloadSection {
+  box-shadow: 0 8px 14px rgba(32, 43, 60, 0.08), inset 0 0 0 1px rgba(69, 84, 110, 0.14);
+  background: linear-gradient(145deg, rgba(244, 247, 251, 0.86), rgba(227, 233, 241, 0.82));
+}
+
+.gpPlusFunctionsSection {
+  overflow: hidden;
+  box-shadow: 0 10px 18px rgba(36, 35, 74, 0.14), inset 0 0 0 1px rgba(110, 118, 212, 0.14);
+  background: linear-gradient(135deg, rgba(75, 126, 198, 0.2), rgba(93, 101, 184, 0.2), rgba(112, 98, 170, 0.18));
+}
+
+.lessonCardHeading {
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 17px;
+  font-weight: 800;
+  color: #1f355a;
+}
+
+.lessonCardHeading :global(svg) {
+  stroke-width: 2.4;
+}
+
+.lessonProcedureToggle,
+.gpFunctionActionBtn {
+  width: 100%;
+  min-height: 40px;
+  padding: 8px 9px;
+  border: 1px solid rgba(44, 131, 195, 0.12);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.52);
+  color: #1f355a;
+  font: inherit;
+  font-size: 16px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.lessonProcedureToggle:hover,
+.gpFunctionActionBtn:hover {
+  border-color: rgba(44, 131, 195, 0.34);
+  background: rgba(251, 254, 255, 0.9);
+}
+
+.lessonProcedureToggleActive,
+.gpFunctionActionBtn.lessonProcedureToggleActive {
+  border: 2px solid rgba(22, 105, 172, 0.86);
+  background: linear-gradient(165deg, rgba(217, 236, 255, 0.94), rgba(202, 227, 252, 0.9));
+}
+
+.lessonProcedureToggleText {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.gpFunctionActionBtn {
+  text-decoration: none;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.92)) padding-box,
+    linear-gradient(120deg, rgba(77, 93, 119, 0.3), rgba(44, 131, 195, 0.3)) border-box;
+}
+
+.copyAllHelperText {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.35;
+  color: #5b6480;
+}
+
+.hiddenCopyLessonBtn {
+  display: none !important;
+}
+
+.gpPlusFileVersionsLink {
+  width: fit-content;
+  max-width: 100%;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 9px;
+  border: 1px solid rgba(64, 89, 184, 0.28);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.78);
+  color: #1c2aa8;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.jobVizActionIcon {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  stroke-width: 2.4;
+}
+
+.previewDownloadSection {
+  background: linear-gradient(145deg, rgba(243, 247, 251, 0.84), rgba(225, 233, 241, 0.8));
+}
+
+.materialRow {
+  display: grid;
+  gap: 6px;
+  padding: 7px 8px;
+  border: 1px solid rgba(44, 131, 195, 0.12);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.52);
+  cursor: pointer;
+}
+
+.materialRow:hover {
+  border-color: rgba(44, 131, 195, 0.34);
+  background: rgba(250, 253, 255, 0.82);
+}
+
+.materialRowActive {
+  border: 2px solid rgba(22, 105, 172, 0.84);
+  background: linear-gradient(165deg, rgba(218, 238, 255, 0.8), rgba(202, 228, 252, 0.9));
+}
+
+.materialRowTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.materialSelectButton {
+  width: 100%;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  font: inherit;
+  text-align: left;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.materialRowIcon {
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(44, 131, 195, 0.16);
+  color: #1f355a;
+}
+
+.materialRowMain {
+  min-width: 0;
+  display: grid;
+  gap: 1px;
+}
+
+.materialRowMain strong {
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.35;
+  color: #1f355a;
+}
+
+.materialRowMain span {
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: #5d647c;
+}
+
+.materialRowPdfWrap {
+  display: grid;
+  gap: 4px;
+  justify-items: start;
+  pointer-events: none;
+}
+
+.materialRowPdfWrap > * {
+  pointer-events: auto;
+}
+
+.materialDownloadRow {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.materialDownloadLabel {
+  margin-left: 1.1rem;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: #4f5f7f;
+}
+
+.materialDownloadLabelLeading {
+  margin-left: 0;
+  margin-right: 0.55rem;
+}
+
+.materialDownloadActions {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.materialPdfLink,
+.materialPdfLinkDisabled {
+  min-height: 34px;
+  padding: 2px 10px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  max-width: 100%;
+}
+
+.materialPdfLink {
+  border: 1px solid rgba(44, 131, 195, 0.26);
+  background: rgba(255, 255, 255, 0.85);
+  color: #1f355a;
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.materialPdfLinkDisabled {
+  border: 1px dashed rgba(120, 130, 150, 0.44);
+  background: rgba(255, 255, 255, 0.62);
+  color: #81899e;
+  font-size: 15px;
+}
+
+.materialOfficeLink {
+  border: 2px solid transparent;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.97), rgba(255, 255, 255, 0.97)) padding-box,
+    linear-gradient(120deg, rgba(35, 57, 196, 0.84), rgba(101, 68, 214, 0.68)) border-box;
+  color: #1b2d69;
+  font-weight: 700;
+}
+
+.materialOfficeLinkContent {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.materialOfficeLinkLocked {
+  cursor: pointer;
+}
+
+.materialOfficeLinkPlusIcon {
+  flex-shrink: 0;
+}
+
+.officeUpsellTag {
+  font-size: 12px;
+  font-weight: 600;
+  color: #4e5aa6;
+}
+
+.lessonSummaryCard {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(44, 131, 195, 0.2);
+  border-radius: 18px;
+  padding: 14px;
+  background:
+    radial-gradient(circle at 18% 24%, rgba(44, 131, 195, 0.1), transparent 52%),
+    radial-gradient(circle at 88% 18%, rgba(44, 131, 195, 0.07), transparent 45%),
+    linear-gradient(160deg, rgba(255, 255, 255, 0.94), rgba(242, 249, 255, 0.92));
+  box-shadow: 0 14px 30px rgba(24, 52, 86, 0.1), inset 0 0 0 1px rgba(255, 255, 255, 0.42);
+  display: grid;
+  gap: 10px;
+}
+
+.lessonSummaryMain {
+  display: grid;
+  gap: 8px;
+}
+
+.lessonSummaryMeta {
+  margin-top: 12px;
+  display: grid;
+  gap: 10px;
+  align-content: start;
+}
+
+.lessonEyebrowRow {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.lessonEyebrow {
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 14px;
+  color: #4c5269;
+}
+
+.lessonDurationPill {
+  border: 1px solid rgba(44, 131, 195, 0.32);
+  border-radius: 999px;
+  padding: 2px 8px;
+  background: rgba(255, 255, 255, 0.8);
+  color: #4c5269;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.lessonDurationPill i {
+  margin-right: 4px;
+}
+
+.lessonTitleMarkdown :global(h1),
+.lessonTitleMarkdown :global(h2),
+.lessonTitleMarkdown :global(h3),
+.lessonTitleMarkdown :global(h4),
+.lessonTitleMarkdown :global(h5),
+.lessonTitleMarkdown :global(h6),
+.lessonTitleMarkdown :global(p) {
+  margin: 0 0 8px;
+  font-size: 26px;
+  line-height: 1.2;
+}
+
+.lessonPreface {
+  font-size: 15px;
+  line-height: 1.45;
+  color: #4c5269;
+}
+
+.lessonPreface :global(p) {
+  margin: 0 0 8px;
+}
+
+.lessonObjectives {
+  margin-top: 12px;
+  color: #4c5269;
+}
+
+.lessonObjectivesLead {
+  margin: 0 0 4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 15px;
+  line-height: 1.45;
+}
+
+.lessonObjectives ul {
+  margin: 0;
+  padding-left: 16px;
+}
+
+.lessonObjectives li,
+.lessonObjectives li :global(p) {
+  font-size: 15px;
+  line-height: 1.5;
+  color: inherit;
+}
+
+.lessonTileTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.lessonTileTagWrap {
+  display: inline-flex;
+}
+
+.lessonTileTag {
+  font-size: 13px;
+  padding: 4px 8px;
+  border: 1px solid rgba(44, 131, 195, 0.4);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.8);
+  color: #2c83c3;
+  cursor: pointer;
+}
+
+.lessonTileMediaLarge {
+  width: 100%;
+  max-width: 220px;
+  aspect-ratio: 1 / 1;
+  border: 1px solid rgba(44, 131, 195, 0.18);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.lessonTileMediaLarge img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.lessonStatusPill {
+  margin-top: 8px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  display: inline-flex;
+  width: fit-content;
+}
+
+.lessonStatusPillBeta {
+  color: #6d1b3f;
+  background: rgba(255, 61, 172, 0.15);
+}
+
+.lessonStatusPillUpcoming {
+  color: #0f4b78;
+  background: rgba(44, 131, 195, 0.16);
+}
+
+.lessonSummaryShareAction {
+  margin-top: auto;
+  justify-self: end;
+  border: 0;
+  background: transparent;
+  color: #1f355a;
+  font-size: 15px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+.gradeBandSelectorCard {
+  border: 1px solid rgba(44, 131, 195, 0.18);
+  border-radius: 14px;
+  padding: 10px 12px;
+  background-color: rgba(232, 236, 242, 0.9);
+  background-image:
+    radial-gradient(rgba(90, 104, 126, 0.12) 0.5px, rgba(232, 236, 242, 0.9) 0.5px),
+    linear-gradient(148deg, rgba(247, 249, 252, 0.86), rgba(218, 224, 233, 0.8));
+  background-size: 10px 10px;
+  box-shadow: 0 12px 24px rgba(26, 37, 55, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.58);
+}
+
+.gradeBandPreface :global(p) {
+  margin: 0 0 8px;
+  font-size: 15px;
+  line-height: 1.45;
+  color: #445376;
+}
+
+.gradeBandChooser {
+  display: grid;
+  gap: 8px;
+}
+
+.gradeBandHeading {
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 15px;
+  color: #1f355a;
+}
+
+.gradeBandOptions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 14px;
+}
+
+.gradeBandOption {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  color: #1f355a;
+  cursor: pointer;
+}
+
+.gradeBandOption input {
+  margin: 0;
+}
+
+.lessonPreviewsCard {
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  position: relative;
+  border: 2px solid rgba(44, 131, 195, 0.5);
+  border-radius: 18px;
+  background:
+    radial-gradient(circle at 12% 16%, rgba(44, 131, 195, 0.1), transparent 54%),
+    linear-gradient(160deg, rgba(243, 246, 251, 0.93), rgba(231, 236, 244, 0.9));
+  box-shadow: 0 14px 34px rgba(23, 39, 62, 0.16);
+}
+
+.lessonPreviewPaneContent {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.lessonPreviewItem {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  display: grid;
+  gap: 8px;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  height: 100%;
+  min-height: 0;
+}
+
+.lessonPreviewHeader,
+.lessonProcedureHeaderTop,
+.lessonPreviewHeaderActions,
+.jobVizPreviewTitleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.previewCarousel {
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.previewCarousel :global(.carousel-root),
+.previewCarousel :global(.carousel),
+.previewCarousel :global(.carousel .slider-wrapper),
+.previewCarousel :global(.carousel .slider),
+.previewCarousel :global(.carousel .slide) {
+  width: 100%;
+  min-width: 0;
+}
+
+.previewCarousel :global(.carousel .slide img) {
+  width: 100%;
+  max-height: 30vh;
+  object-fit: contain;
+}
+
+.featuredMediaViewport {
+  width: 100%;
+  min-height: 320px;
+  max-height: calc(100dvh - var(--portal-nav-offset, 0px) - 180px);
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.lessonPreviewSurface {
+  position: relative;
+  min-height: 280px;
+  height: 100%;
+  border: 1px solid rgba(44, 131, 195, 0.2);
+  border-radius: 10px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.88);
+}
+
+.lessonPreviewMedia {
+  width: 100%;
+  height: 100%;
+}
+
+.lessonPreviewSurface img,
+.lessonPreviewSurface iframe {
+  width: 100%;
+  height: 100%;
+  min-height: 280px;
+  border: 0;
+  object-fit: contain;
+}
+
+.lessonPreviewIFrameGoogle {
+  transform: scale(0.92);
+  transform-origin: center top;
+  width: 108.7%;
+  height: 108.7%;
+}
+
+.lessonPreviewSurfaceLocked {
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.lessonPreviewMediaBlurred {
+  filter: blur(9px) saturate(0.8);
+  transform: scale(1.01);
+}
+
+.lessonPreviewGate {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 8px;
+  padding: 14px;
+  text-align: center;
+  background: rgba(245, 250, 255, 0.34);
+  backdrop-filter: blur(8px);
+}
+
+.lessonPreviewGate p {
+  margin: 0;
+  max-width: 44ch;
+  padding: 6px 9px;
+  border: 1px solid rgba(44, 131, 195, 0.14);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.66);
+  color: #375171;
+  font-size: 16px;
+  line-height: 1.4;
+}
+
+.lessonPreviewGateWarning {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.lessonPreviewGateActions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+
+.lessonPreviewGateButton {
+  min-height: 36px;
+  padding: 0 14px;
+  border: 1px solid rgba(44, 131, 195, 0.34);
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(237, 246, 255, 0.9));
+  color: #16335b;
+  font-size: 15px;
+  font-weight: 700;
+  text-decoration: none !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lessonPreviewType {
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #4c5269;
+}
+
+.materialOpenLink,
+.materialOpenLinkDisabled {
+  font-size: 15px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.materialOpenLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: #4b3aa8;
+}
+
+.materialOpenLinkDisabled {
+  color: #7a8094;
+}
+
+.materialCopyAllBtn {
+  min-height: 33px;
+  padding: 2px 10px;
+  border: 2px solid #2339c4;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.92);
+  color: #1b2236;
+  font-size: 13px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  cursor: pointer;
+}
+
+.goingFurtherPreviewItem {
+  grid-template-rows: auto auto auto;
+  align-content: start;
+}
+
+.goingFurtherSubheading {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.4;
+  color: #4c5269;
+}
+
+.goingFurtherItem {
+  display: grid;
+  gap: 4px;
+  padding: 8px 10px;
+  border: 1px solid rgba(44, 131, 195, 0.22);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.82);
+}
+
+.goingFurtherItem p {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.4;
+  color: #4c5269;
+}
+
+.goingFurtherLink {
+  width: fit-content;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 16px;
+  font-weight: 700;
+  color: #1f355a;
+  text-decoration: underline;
+}
+
+.jobVizPreviewCard {
+  border: 1px solid rgba(79, 102, 150, 0.22);
+  border-radius: 12px;
+  padding: 10px 12px 12px;
+  background-color: #fcfbff;
+}
+
+.jobVizPreviewPane {
+  margin-top: 2px;
+}
+
+.jobVizPreviewContext {
+  margin: 0 0 0 36px;
+  padding-left: 14px;
+  border-left: 2px solid rgba(44, 131, 195, 0.28);
+  font-size: 16px;
+  line-height: 1.5;
+  color: #22304f;
+}
+
+.jobVizTourStopsBubble {
+  margin-top: 10px;
+  padding: 10px;
+  border: 1px solid rgba(79, 102, 150, 0.24);
+  border-radius: 11px;
+  background: linear-gradient(135deg, rgba(82, 113, 219, 0.08), rgba(205, 71, 155, 0.08));
+}
+
+.jobVizPreviewHeading {
+  margin: 0 0 6px;
+  padding-bottom: 6px;
+  font-size: 17px;
+  font-weight: 700;
+  color: #1d2b4a;
+}
+
+.jobVizPreviewList {
+  margin: 0;
+  padding: 0 0 0 14px;
+  list-style: none;
+  display: grid;
+  gap: 5px;
+  font-size: 16px;
+  line-height: 1.42;
+}
+
+.jobVizPreviewListItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+}
+
+.jobVizJobIconStack {
+  width: 30px;
+  height: 24px;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.jobVizJobIconBubblePrimary,
+.jobVizJobIconBubbleSecondary {
+  position: absolute;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.jobVizJobIconBubblePrimary {
+  inset: 0 auto auto 0;
+  width: 24px;
+  height: 24px;
+  border: 1px solid rgba(44, 131, 195, 0.46);
+  background: linear-gradient(160deg, rgba(44, 131, 195, 0.18), rgba(44, 131, 195, 0.06));
+  color: #1f6da7;
+}
+
+.jobVizJobIconBubbleSecondary {
+  left: 14px;
+  bottom: -5px;
+  width: 16px;
+  height: 16px;
+  border: 1px solid #d05a9e;
+  background: linear-gradient(160deg, #ffd2ea, #f6a3d0);
+  color: #9a1b65;
+}
+
+.jobVizPreviewLocked {
+  color: #5b6480;
+  font-weight: 600;
+}
+
+.jobVizPreviewActions {
+  margin-top: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.jobVizPreviewActionBtn {
+  width: fit-content;
+  max-width: 100%;
+  min-height: 42px;
+  padding: 8px 12px;
+  border-radius: 12px;
+  font-size: 14px;
+}
+
+.jobVizPreviewGpBtn {
+  border-color: rgba(66, 90, 176, 0.44);
+}
+
+.lessonProcedureInPreview {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.procedureLinkOutBtn {
+  border: 0;
+  background: transparent;
+  color: #145b95;
+  font-size: 14px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.lessonProcedureHeader span {
+  font-size: 16px;
+  line-height: 1.4;
+  color: #4c5269;
+}
+
+.lessonProcedureContent {
+  margin-top: 8px;
+  gap: 7px;
+  flex: 1 1 0;
+  min-height: 0;
+  height: 100%;
+  overflow: auto;
+  padding-right: 2px;
+}
+
+.procedureEndMarker {
+  margin: 12px 0 2px;
+  text-align: center;
+  font-size: 15px;
+  font-weight: 700;
+  color: #3f4f6a;
+}
+
+.lessonPrepSection {
+  display: grid;
+  gap: 8px;
+  padding: 0 2px 2px;
+  margin-bottom: 4px;
+}
+
+.lessonPrepHeader,
+.lessonChunkHeader {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.lessonPrepHeader,
+.lessonChunkTitle,
+.lessonChunkDuration,
+.lessonPrepDuration,
+.lessonPrepHeader h4 {
+  color: var(--color-brand-hydro-blue, #2c83c3);
+}
+
+.lessonPrepHeader h4,
+.lessonChunkTitle,
+.lessonChunkDuration {
+  margin: 0;
+  font-size: 21px;
+  font-weight: 400;
+  line-height: 1.2;
+}
+
+.lessonChunk {
+  gap: 5px;
+  padding: 8px;
+  border: 1px solid rgba(44, 131, 195, 0.16);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.lessonChunkTimeline {
+  display: grid;
+}
+
+.lessonChunkHeaderOverGraph {
+  margin-bottom: -8px;
+  z-index: 1;
+  position: relative;
+}
+
+.lessonChunkGraph {
+  width: 100%;
+  overflow: hidden;
+  padding: 2px 6px;
+}
+
+.lessonChunkGraph :global(svg) {
+  width: 100%;
+  height: auto;
+}
+
+.lessonStep {
+  margin-top: 2px;
+  display: grid;
+  gap: 6px;
+  padding: 7px 8px;
+  border: 1px solid rgba(44, 131, 195, 0.14);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.lessonStepTitleRow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.lessonStepTitleRow strong {
+  font-size: 16px;
+  color: #102446;
+}
+
+.lessonStepDuration {
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: rgba(31, 53, 90, 0.08);
+  color: #27456f;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.lessonStepQuickDescription :global(p) {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.4;
+  color: #40506f;
+}
+
+.lessonStepDetails :global(p),
+.lessonStepDetails :global(li) {
+  font-size: 16px;
+  line-height: 1.45;
+}
+
+.lessonStepDetails :global(p) {
+  margin: 0 0 6px;
+}
+
+.lessonStepDetails :global(ul),
+.lessonStepDetails :global(ol) {
+  margin: 0 0 6px;
+  padding-left: 16px;
+}
+
+.lessonStepAside {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 6px;
+}
+
+.stepInfoBlock {
+  min-width: 0;
+  height: 100%;
+  padding: 5px 7px;
+  border: 1px solid rgba(44, 131, 195, 0.14);
+  border-radius: 8px;
+  background: rgba(240, 244, 255, 0.66);
+}
+
+.stepInfoBlockVariantNotes {
+  border-color: rgba(108, 45, 130, 0.24);
+  background: rgba(108, 45, 130, 0.12);
+}
+
+.stepInfoBlockTeachingTips {
+  border-color: rgba(44, 131, 195, 0.14);
+  background: rgba(240, 244, 255, 0.66);
+}
+
+.stepInfoHeading {
+  margin: 0 0 4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #1f355a;
+}
+
+.stepInfoBlock :global(p),
+.stepInfoBlock :global(li) {
+  margin: 0 0 4px;
+  font-size: 15px;
+  line-height: 1.45;
+  color: #4c5269;
+}
+
+.procedureStandaloneLayout {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  gap: 10px;
+  align-items: center;
+}
+
+.procedureStandaloneHeader {
+  width: 100%;
+  max-width: 800px;
+  gap: 6px;
+}
+
+.procedureStandaloneTopRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.procedureStandaloneLabel {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: #1f355a;
+}
+
+.procedurePrintButton {
+  border: 1px solid rgba(44, 131, 195, 0.3);
+  border-radius: 999px;
+  background: #fff;
+  color: #1f355a;
+  padding: 7px 12px;
+  font-size: 14px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+.procedureStandaloneHeaderRow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: stretch;
+}
+
+.procedureReturnLink {
+  width: 100%;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  border: 1px solid rgba(44, 131, 195, 0.26);
+  border-radius: 10px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.95);
+  text-decoration: none !important;
+}
+
+.procedureReturnBanner {
+  position: relative;
+  width: 136px;
+  min-height: 74px;
+  border-right: 1px solid rgba(44, 131, 195, 0.22);
+}
+
+.procedureReturnText {
+  min-height: 74px;
+  padding: 10px 12px;
+  display: grid;
+  gap: 3px;
+  align-content: center;
+}
+
+.procedureReturnText span:first-child {
+  font-size: 15px;
+  font-weight: 700;
+  color: #1f355a;
+}
+
+.procedureReturnText span:last-child {
+  font-size: 18px;
+  font-weight: 700;
+  color: #143f68;
+}
+
+.procedureReturnTile {
+  position: relative;
+  width: 74px;
+  min-height: 74px;
+  border-left: 1px solid rgba(44, 131, 195, 0.22);
+}
+
+.procedureReturnQr {
+  min-width: 74px;
+  min-height: 74px;
+  aspect-ratio: 1 / 1;
+  padding: 7px;
+  border: 1px solid rgba(44, 131, 195, 0.22);
+  border-radius: 10px;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.lessonProcedureStandalonePanel {
+  width: 100%;
+  max-width: 800px;
+}
+
+@media (min-width: 768px) {
+  .lessonSummaryCard {
+    grid-template-columns: minmax(0, 1fr) minmax(220px, 280px);
+    align-items: start;
+    gap: 16px;
+  }
+
+  .lessonSummaryMeta {
+    margin-top: 0;
+  }
+
+  .lessonPreviewsCard {
+    position: sticky;
+    top: var(--lesson-preview-sticky-top, 0px);
+    align-self: start;
+  }
+
+  .lessonPreviewSurface,
+  .lessonPreviewSurface iframe,
+  .lessonPreviewSurface img {
+    min-height: 0;
+  }
+}
+
+@media (min-width: 1024px) {
+  .lessonLayout {
+    align-items: start;
+  }
+
+  .lessonMaterialsGrid {
+    grid-template-columns: fit-content(380px) minmax(0, 1fr);
+  }
+
+  .lessonTitleMarkdown :global(h1),
+  .lessonTitleMarkdown :global(h2),
+  .lessonTitleMarkdown :global(h3),
+  .lessonTitleMarkdown :global(h4),
+  .lessonTitleMarkdown :global(h5),
+  .lessonTitleMarkdown :global(h6),
+  .lessonTitleMarkdown :global(p) {
+    font-size: clamp(30px, 2.35vw, 36px);
+    line-height: 1.18;
+  }
+
+  .lessonPreface {
+    font-size: clamp(17px, 1.15vw, 20px);
+    line-height: 1.4;
+  }
+
+  .lessonStepWithAside {
+    grid-template-columns: minmax(0, 1.45fr) minmax(220px, 0.55fr);
+    align-items: start;
+  }
+
+  .lessonStepFullWidth {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .lessonStepMain {
+    padding-right: 8px;
+  }
+
+  .lessonStepAside {
+    max-width: 260px;
+    justify-self: end;
+  }
+}
+
+@media (max-width: 1023px) {
+  .gpPlusBanner {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 22px;
+  }
+
+  .gpPlusCta {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 767px) {
+  .lessonMaterialsGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .lessonResourcesCard {
+    max-width: 410px;
+    margin: 0 auto;
+    min-height: 420px;
+  }
+
+  .lessonPreviewsCard {
+    min-height: 420px;
+  }
+
+  .materialRow {
+    min-height: 92px;
+    padding: 10px 9px;
+  }
+
+  .lessonPreviewSurface,
+  .lessonPreviewSurface iframe,
+  .lessonPreviewSurface img {
+    min-height: 280px;
+  }
+
+  .lessonChunkHeaderOverGraph {
+    margin-bottom: -6px;
+  }
+
+  .lessonStep {
+    grid-template-columns: 1fr;
+    gap: 7px;
+  }
+
+  .lessonStepDuration {
+    font-size: 14px;
+    padding: 1px 6px;
+  }
+
+  .procedureStandaloneHeaderRow {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .procedureReturnQr {
+    width: 96px;
+    height: 96px;
+    justify-self: start;
+  }
+}
+
+@media print {
+  .procedurePrintButton {
+    display: none !important;
+  }
+
+  .procedureStandaloneHeaderRow {
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+}

@@ -1,0 +1,454 @@
+.assignmentStrip {
+  margin-bottom: clamp(1.5rem, 4vw, 3rem);
+  padding-bottom: clamp(0.5rem, 2vw, 1.5rem);
+}
+
+.assignmentStripInner {
+  border-radius: 36px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: radial-gradient(circle at 15% 20%, rgba(255, 255, 255, 0.05), transparent 45%),
+    rgba(4, 10, 26, 0.95);
+  box-shadow:
+    0 35px 60px rgba(2, 0, 10, 0.6),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  padding: clamp(1rem, 3vw, 2rem);
+  position: relative;
+}
+
+.assignmentStripInner::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(125deg, rgba(255, 61, 172, 0.15), transparent 60%);
+  pointer-events: none;
+}
+
+.assignmentUnitLabel {
+  margin: 0 0 0.75rem;
+  font-size: 1.01rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(222, 238, 255, 0.75);
+}
+
+.jobvizHeroMobileAssignment {
+  display: none;
+}
+
+.assignmentBannerDefault {
+  margin: 0;
+}
+
+.assignmentMobileWrapper {
+  margin-bottom: 0;
+}
+
+.assignmentMobileWrapper[data-collapsed="true"] {
+  margin-bottom: 0;
+}
+
+.jobvizHeroMobileNote {
+  margin: 0 0 0.6rem;
+  color: rgba(230, 240, 255, 0.58);
+  font-size: 0.92rem;
+}
+
+@media (max-width: 1199px) {
+  .jobvizHeroMobileAssignment {
+    display: block;
+  }
+}
+
+@media (min-width: 1200px) {
+  .jobvizHeroMobileAssignment,
+  .jobvizHeroMobileNote {
+    display: none;
+  }
+}
+
+.assignmentMarkerLabel {
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 0.78rem;
+  color: rgba(11, 24, 45, 0.85);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.assignmentMarkerLogo {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  display: inline-block;
+}
+
+.assignmentMarkerIcon {
+  width: 16px;
+  height: 16px;
+  color: var(--preview-cyan);
+}
+
+.assignmentContent {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  z-index: 3;
+  padding-top: 0.4rem;
+  transition:
+    transform 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.35s ease;
+  position: relative;
+}
+
+.assignmentScrollTip {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.85rem;
+  border-radius: 999px;
+  font-size: 0.93rem;
+  color: rgba(233, 240, 255, 0.95);
+  background: rgba(18, 23, 60, 0.85);
+  border: 1px solid rgba(140, 165, 255, 0.45);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.35);
+  animation: assignmentScrollTipPulse 1.6s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.assignmentScrollTipOverlay {
+  position: fixed;
+  transform: translateY(-100%);
+  z-index: 1600;
+  pointer-events: none;
+}
+
+.assignmentScrollTip svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+@keyframes assignmentScrollTipPulse {
+  0% {
+    opacity: 0.8;
+    transform: translateY(0);
+    box-shadow: 0 10px 18px rgba(0, 0, 0, 0.35);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(2px);
+    box-shadow: 0 16px 26px rgba(0, 0, 0, 0.4);
+  }
+}
+
+.assignmentProgressRow {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  margin: 0.15rem 0 0;
+  position: relative;
+  z-index: $assignment-progress-z;
+  overflow: visible;
+  background: linear-gradient(180deg, rgba(5, 9, 29, 0.82), rgba(5, 9, 29, 0.35));
+  padding: 0.25rem 0 0.4rem;
+  border-radius: 0;
+  backdrop-filter: none;
+}
+
+.assignmentDesktopDock .assignmentContent .assignmentInfoBlock,
+.assignmentDesktopDock .assignmentContent .assignmentProgressRow,
+.assignmentDesktopDock .assignmentContent .assignmentSummaryButton {
+  flex: 0 0 auto;
+}
+
+.assignmentProgressLabel {
+  font-size: 0.93rem;
+  color: rgba(230, 240, 255, 0.75);
+  padding-top: 0.4rem;
+}
+
+.assignmentProgressTrack {
+  width: 100%;
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+  position: relative;
+  transition: background 0.35s ease;
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.25);
+}
+
+.assignmentProgressFill {
+  height: 100%;
+  background: linear-gradient(90deg, rgba(103, 151, 255, 0.9), rgba(214, 132, 255, 0.9));
+  border-radius: inherit;
+  transition: width 0.8s ease;
+  position: relative;
+  overflow: visible;
+}
+
+.assignmentProgressTrackPulse {
+  animation: assignmentProgressTrackPulse 0.95s ease-in-out;
+}
+
+.assignmentProgressFillPulse {
+  animation: assignmentProgressFillPulse 1s ease-in-out;
+}
+
+.assignmentSummaryButton {
+  margin-top: 0.6rem;
+  align-self: stretch;
+  border: none;
+  border-radius: 999px;
+  padding: 0.85rem 1.5rem;
+  background: linear-gradient(120deg, #7b5bff, #ff7bb8, #ffd369);
+  color: #fefefe;
+  font-weight: 700;
+  font-size: 1.01rem;
+  letter-spacing: 0.02em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+  box-shadow: 0 12px 28px rgba(9, 12, 34, 0.35);
+}
+
+.assignmentSummaryButton svg {
+  width: 1.15rem;
+  height: 1.15rem;
+  color: inherit;
+}
+
+.assignmentSummaryButton:hover:not(:disabled),
+.assignmentSummaryButton:focus-visible:not(:disabled) {
+  transform: translateY(-1px) scale(1.01);
+  box-shadow: 0 16px 32px rgba(9, 12, 34, 0.45);
+}
+
+.assignmentSummaryButton:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.assignmentSummaryLink {
+  background: none;
+  border: none;
+  padding: 0;
+  margin-top: 0.8rem;
+  color: #fefefe;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  align-self: flex-start;
+}
+
+.assignmentSummaryLink:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.assignmentSummaryLinkMobile {
+  align-self: center;
+  display: inline-flex;
+  justify-content: center;
+  padding: 0.25rem 0.4rem;
+  font-size: 1.04rem;
+  font-weight: 600;
+  text-transform: none;
+  letter-spacing: 0.02em;
+  position: relative;
+  text-decoration: none;
+}
+
+.assignmentSummaryLinkMobile::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -0.2rem;
+  width: 100%;
+  height: 2px;
+  transform: none;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #7b5bff, #ff7bb8, #ffd369);
+  opacity: 0.8;
+}
+
+.assignmentMobileWrapper .assignmentSummaryButton {
+  display: none;
+}
+
+.assignmentMobileWrapper .assignmentSummaryLink {
+  margin-top: 0.3rem;
+}
+
+.assignmentMobileWrapper[data-collapsed="true"] .assignmentSummaryLink {
+  margin-top: 0;
+}
+
+.assignmentSummaryLinkInline {
+  background: none;
+  border: none;
+  padding: 0;
+  color: #fefefe;
+  text-decoration: none;
+  font-size: 0.93rem;
+  cursor: pointer;
+}
+
+.assignmentSummaryLinkInline:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.assignmentMobileControls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.4rem;
+}
+
+.assignmentClearButtonInline {
+  margin-top: 0;
+  padding: 0.25rem 0.9rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  color: rgba(238, 242, 255, 0.95);
+}
+
+.assignmentClearButton {
+  margin-top: 0.35rem;
+  align-self: flex-start;
+  border: none;
+  background: none;
+  color: rgba(255, 255, 255, 0.75);
+  text-decoration: none;
+  font-size: 0.93rem;
+  padding: 0;
+}
+
+.assignmentClearFooter {
+  padding: 0.7rem 0 0.15rem;
+  text-align: right;
+  background: linear-gradient(
+    180deg,
+    rgba(32, 15, 65, 0),
+    rgba(32, 15, 65, 0.72) 28%,
+    rgba(32, 15, 65, 0.92) 100%
+  );
+}
+
+.assignmentClearFooter button {
+  border: none;
+  background: none;
+  color: rgba(255, 255, 255, 0.82);
+  text-decoration: none;
+  font-size: 0.93rem;
+  padding: 0;
+  cursor: pointer;
+}
+
+.assignmentCopy {
+  margin: 0;
+  font-size: 1.01rem;
+  color: rgba(20, 32, 55, 0.85);
+}
+
+.assignmentListWrap {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.5rem;
+  position: relative;
+  z-index: 5;
+}
+
+@media (max-width: 767px) {
+  .assignmentListWrap {
+    display: none;
+  }
+}
+
+.assignmentList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.assignmentListItem {
+  list-style: none;
+  position: relative;
+  z-index: 5;
+}
+
+.assignmentLink {
+  width: 100%;
+  text-align: left;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 18px;
+  padding: 0.6rem 1rem;
+  color: #f6fbff;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition:
+    border-color 0.25s ease,
+    box-shadow 0.25s ease,
+    background 0.25s ease;
+  position: relative;
+  overflow: visible;
+}
+
+.assignmentLink:hover,
+.assignmentLink:focus-visible {
+  border-color: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+}
+
+.assignmentLinkClicked {
+  border-color: inherit;
+}
+
+.assignmentLinkActive {
+  border-color: rgba(255, 255, 255, 0.7);
+  box-shadow:
+    0 18px 35px rgba(14, 10, 40, 0.6),
+    0 0 18px rgba(255, 255, 255, 0.4);
+}
+
+.assignmentLinkEntice {
+  border-color: rgba(156, 203, 255, 0.9);
+  box-shadow:
+    0 20px 38px rgba(64, 103, 255, 0.35),
+    0 0 34px rgba(202, 142, 255, 0.45);
+}
+
+.assignmentDock {
+  border-radius: 28px;
+  border: 1px solid var(--preview-border);
+  background: rgba(8, 28, 52, 0.9);
+  padding: clamp(1.2rem, 3vw, 2rem);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  box-shadow: var(--preview-shadow);
+}
+
+.assignmentDock[data-collapsed="true"] .assignmentPrompt {
+  display: none;
+}
+
+.assignmentHeader {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: center;
+}

@@ -1,6 +1,6 @@
-/* eslint-disable semi */
  
-/* eslint-disable quotes */
+ 
+ 
 const Pill = ({
   txt = "Beta",
   color = "#6B00BA",

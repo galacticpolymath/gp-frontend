@@ -1,0 +1,29 @@
+.nextTabCtaWrap {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.nextLessonCta,
+.nextTabCta {
+  border: 1px solid rgba(68, 90, 201, 0.42);
+  border-radius: 999px;
+  background: linear-gradient(145deg, rgba(104, 87, 214, 0.16), rgba(80, 158, 224, 0.2));
+  color: #20376d;
+  font-size: 15px;
+  font-weight: 700;
+  padding: 9px 14px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.nextLessonCta:hover,
+.nextLessonCta:focus-visible,
+.nextTabCta:hover,
+.nextTabCta:focus-visible {
+  border-color: rgba(68, 90, 201, 0.6);
+  background: linear-gradient(145deg, rgba(104, 87, 214, 0.24), rgba(80, 158, 224, 0.28));
+}

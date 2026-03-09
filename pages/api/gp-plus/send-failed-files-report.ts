@@ -157,7 +157,6 @@ export default async function handler(
 
     console.log('Preparing to send a confirmation email to the user who reported the failed files...');
 
-    console.log('firstName, sup there: ', firstName);
 
     const emailSendResultForUser = await sendEmailViaBrevo({
       htmlContent: createEmailTemplate({

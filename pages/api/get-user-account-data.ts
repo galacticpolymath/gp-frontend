@@ -1,5 +1,5 @@
-/* eslint-disable quotes */
-/* eslint-disable no-console */
+ 
+ 
 
 import { getMailingListContact } from "../../backend/services/emailServices";
 import {
@@ -17,14 +17,19 @@ import {
 } from "../../backend/models/User/types";
 import {
   getGpPlusMembership,
+  isActiveGpPlusMembership,
   TAccountStageLabel,
 } from "../../backend/services/outsetaServices";
-import { findMailingListConfirmationByEmail, findMailingListConfirmationsByEmails } from "../../backend/services/mailingListConfirmationServices";
+import { findMailingListConfirmationByEmail } from "../../backend/services/mailingListConfirmationServices";
 import { TMailingListConfirmation } from "../../backend/models/MailingListConfirmation/types";
 
 export const HAS_MEMBERSHIP_STATUSES: Set<TAccountStageLabel> = new Set([
   "Cancelling",
   "Subscribing",
+  "Past due",
+  "Active",
+  "Trialing",
+  "Trial",
 ] as TAccountStageLabel[]);
 const PROJECTIONS: Partial<
   Record<keyof (TUserSchemaV2 & IUserSchema), 0 | 1 | undefined>
@@ -41,6 +46,7 @@ const PROJECTIONS: Partial<
   isTeacher: 1,
   firstName: 1,
   lastName: 1,
+  picture: 1,
   willNotShowEmailNewsLetterSignUpModal: 1,
   mailingListConfirmationEmailId: 1,
   name: 1,
@@ -58,6 +64,7 @@ const PROJECTIONS: Partial<
   gradesTaught: 1,
   gradesType: 1,
   _id: 1,
+  savedJobIds: 1,
 } as const;
 
 export default async function handler(
@@ -65,8 +72,6 @@ export default async function handler(
   response: NextApiResponse
 ) {
   try {
-    console.log("API called: get-user-account-data");
-
     const authorization = request?.headers?.["authorization"] ?? "";
     const authSplit = authorization.split(" ");
 
@@ -78,9 +83,8 @@ export default async function handler(
     }
 
     const jwtVerified = await verifyJwt(authSplit[1]);
-    console.log("bacon sauce, jwtVerified: ", jwtVerified);
     const { payload } = jwtVerified;
-    const { email, userId } = payload;
+    const { email, _userId } = payload;
     const { wasSuccessful } = await connectToMongodb(15_000, 0, true);
 
     if (!wasSuccessful) {
@@ -92,34 +96,31 @@ export default async function handler(
       PROJECTIONS
     );
     const getMailingListContactPromise = getMailingListContact(email);
-    let [userAccount, mailingListContact] = await Promise.all([
+    const [userAccountResult, mailingListContact] = await Promise.all([
       getUserAccountPromise,
       getMailingListContactPromise,
     ]);
-
-    console.log("userAccount: ", userAccount)
+    let userAccount = userAccountResult;
 
     if (!userAccount) {
       throw new CustomError("User not found.", 404);
     }
 
-    if (userAccount.outsetaAccountEmail) {
-      const gpPlusMembership = await getGpPlusMembership(
-        userAccount.outsetaAccountEmail
-      );
-      console.log("gpPlusMembership: ", gpPlusMembership);
+    const gpPlusLookupEmail =
+      userAccount.outsetaAccountEmail || userAccount.email || email;
+    if (gpPlusLookupEmail) {
+      const gpPlusMembership = await getGpPlusMembership(gpPlusLookupEmail);
       userAccount = {
         ...userAccount,
-        isGpPlusMember: HAS_MEMBERSHIP_STATUSES.has(
-          gpPlusMembership.AccountStageLabel as TAccountStageLabel
-        ),
+        isGpPlusMember:
+          HAS_MEMBERSHIP_STATUSES.has(
+            gpPlusMembership.AccountStageLabel as TAccountStageLabel
+          ) || isActiveGpPlusMembership(gpPlusMembership),
         gpPlusSubscription: gpPlusMembership,
       };
     }
 
     const mailingListConfirmation = (await findMailingListConfirmationByEmail(email) as (TMailingListConfirmation | null));
-
-    console.log("mailingListConfirmation: ", mailingListConfirmation);
 
     if (mailingListConfirmation?._id) {
       userAccount = {

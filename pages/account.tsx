@@ -16,7 +16,9 @@ import Image from "next/image";
 import {
   getBillingTerm,
   getLocalStorageItem,
+  getSessionStorageItem,
   removeLocalStorageItem,
+  removeSessionStorageItem,
   setLocalStorageItem,
 } from "../shared/fns";
 import { Magic } from "magic-sdk";
@@ -30,6 +32,7 @@ import useOutsetaInputValidation from "../customHooks/useOutsetaInputValidation"
 import { useHandleGpPlusCheckoutSessionModal } from "../customHooks/useHandleGpPlusCheckoutSessionModal";
 import EmailNewsletterSignUp from "../components/User/Modals/EmailNewsletterSignUp";
 import { ToastContainer } from "react-toastify";
+import { FiArrowLeft } from "react-icons/fi";
 
 export const getUserAccountData = async (
   token: string,
@@ -137,6 +140,7 @@ const AccountPg: React.FC = () => {
   const [wasGpPlusBtnClicked, setWasGpPlusBtnClicked] = useState(false);
   const [isGpPlusSignUpModalDisplayed, setIsGpPlusSignUpModalDisplayed] =
     _isGpPlusSignUpModalDisplayed;
+  const [backHref, setBackHref] = useState<string | null>(null);
   const [gpPlusBillingPeriod, setGpPlusBillingPeriod] = useState<
     "month" | "year"
   >("year");
@@ -180,11 +184,13 @@ const AccountPg: React.FC = () => {
     }
 
     return undefined;
-  }, []);
+  }, [gpPlusSub?.BillingRenewalTerm, selectedBillingPeriod]);
 
   console.log("gpPlusSub: ", gpPlusSub);
 
   useGpPlusModalInteraction(gpPlusBillingTerm, !!gpPlusSub);
+
+  const getMyJobsUrl = () => "/jobviz?saved=1";
 
   const handleGpPlusAccountBtnClick = async () => {
     let wasGpPlusAccountRetrievalSuccessful = false;
@@ -205,11 +211,12 @@ const AccountPg: React.FC = () => {
       ) {
         setNotifyModal({
           isDisplayed: true,
-          headerTxt: "GP Plus data retrieval error",
+          headerTxt: "GP+ account access failed",
           bodyTxt: (
             <>
-              Unable to retrieve your GP Plus email. If this error persists,
-              please contact{" "}
+              We couldn&apos;t find your GP+ subscription email for this account.
+              Please sign out, sign back in, and try again. If this keeps
+              happening, contact{" "}
               <CustomLink
                 hrefStr={CONTACT_SUPPORT_EMAIL}
                 className="ms-1 mt-2 text-break"
@@ -233,11 +240,13 @@ const AccountPg: React.FC = () => {
       if (!("Outseta" in window)) {
         setNotifyModal({
           isDisplayed: true,
-          headerTxt: "GP Plus data retrieval error",
+          headerTxt: "GP+ billing portal didn’t load",
           bodyTxt: (
             <>
-              An error in loading your GP Plus data. Please refresh the page. If
-              this error persists, please contact{" "}
+              The GP+ billing portal didn&apos;t load on this page. Please
+              refresh and try again. If you use an ad blocker or strict privacy
+              settings, allow the portal to load and retry. If the issue
+              persists, contact{" "}
               <CustomLink
                 hrefStr={CONTACT_SUPPORT_EMAIL}
                 className="ms-1 mt-2 text-break"
@@ -262,9 +271,41 @@ const AccountPg: React.FC = () => {
       let idToken = outseta.getAccessToken() as string | null;
 
       if (!idToken) {
-        const magic = new Magic(
-          process.env.NEXT_PUBLIC_MAGIC_LINK_PK as string
-        );
+        const magicPublicKey = process.env.NEXT_PUBLIC_MAGIC_LINK_PK;
+        if (!magicPublicKey) {
+          setNotifyModal({
+            isDisplayed: true,
+            headerTxt: "GP+ magic link is not configured",
+            bodyTxt: "",
+            bodyElements: (
+              <div className="d-flex flex-column align-items-center gap-2">
+                <p className="mb-0 text-center">
+                  We can&apos;t send a login code because the Magic public key is
+                  missing for this environment.
+                </p>
+                <div className="w-100 text-start">
+                  <div className="fw-semibold">Fix</div>
+                  <code className="d-inline-block mt-1 px-2 py-1 bg-light border rounded">
+                    NEXT_PUBLIC_MAGIC_LINK_PK=&lt;your-public-key&gt;
+                  </code>
+                </div>
+                <p className="mb-0 text-center">
+                  After saving, reload the page and try again.
+                </p>
+              </div>
+            ),
+            handleOnHide: () => {
+              setNotifyModal((state) => ({
+                ...state,
+                isDisplayed: false,
+              }));
+            },
+          });
+          setWasGpPlusBtnClicked(false);
+          return;
+        }
+
+        const magic = new Magic(magicPublicKey);
         idToken = await magic.auth.loginWithEmailOTP({
           email: gpPlusSub.person.Email,
         });
@@ -281,7 +322,30 @@ const AccountPg: React.FC = () => {
         gpPlusAnchorElementRef.current?.click();
       }, 500);
     } catch (error) {
-      console.error("Failed to display gp plus account modal: ", error);
+      console.error("Failed to open GP+ account portal: ", error);
+      setNotifyModal({
+        isDisplayed: true,
+        headerTxt: "GP+ account access failed",
+        bodyTxt: (
+          <>
+            We couldn&apos;t open your GP+ account portal. Please refresh and try
+            again. If this keeps happening, contact{" "}
+            <CustomLink
+              hrefStr={CONTACT_SUPPORT_EMAIL}
+              className="ms-1 mt-2 text-break"
+            >
+              feedback@galacticpolymath.com
+            </CustomLink>
+            .
+          </>
+        ),
+        handleOnHide: () => {
+          setNotifyModal((state) => ({
+            ...state,
+            isDisplayed: false,
+          }));
+        },
+      });
     } finally {
       if (!wasGpPlusAccountRetrievalSuccessful) {
         setWasGpPlusBtnClicked(false);
@@ -298,7 +362,6 @@ const AccountPg: React.FC = () => {
       (gpPlusSub?.AccountStageLabel === "Subscribing" ||
         gpPlusSub?.AccountStageLabel === "Cancelling")
     ) {
-      console.log("hi there will click the gp plus button...");
       setWasGpPlusBtnClicked(true);
 
       setTimeout(() => {
@@ -378,7 +441,7 @@ const AccountPg: React.FC = () => {
       (window as any).Outseta.setMagicLinkIdToken(idToken);
       resetUrl(router);
     }
-  }, [status, gpPlusSub]);
+  }, [router, setIsThankYouModalDisplayed, setNotifyModal, status, gpPlusSub]);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -488,16 +551,60 @@ const AccountPg: React.FC = () => {
         return false;
       });
     }
-  }, [status]);
+  }, [
+    email,
+    gpPlusSub?.AccountStageLabel,
+    setIsAboutMeFormModalDisplayed,
+    setIsAccountSettingsModalOn,
+    status,
+    token,
+  ]);
 
   useOutsetaInputValidation();
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const params = new URLSearchParams(window.location.search);
+    const fromParam = params.get("from");
+    const storedRedirect = getSessionStorageItem("userEntryRedirectUrl");
+    const stored = typeof storedRedirect === "string"
+      ? storedRedirect
+      : storedRedirect ?? null;
+    const referrer =
+      typeof document !== "undefined" ? document.referrer : "";
+    const origin = window.location.origin;
+    const isValidReturnUrl = (value?: string | null) =>
+      !!value &&
+      value.startsWith(origin) &&
+      !value.includes("/account") &&
+      value !== window.location.href;
+
+    let fromUrl: string | null = null;
+    if (fromParam) {
+      try {
+        fromUrl = decodeURIComponent(fromParam);
+      } catch {
+        fromUrl = null;
+      }
+    }
+
+    const candidate = isValidReturnUrl(fromUrl)
+      ? fromUrl
+      : isValidReturnUrl(stored)
+      ? stored
+      : isValidReturnUrl(referrer)
+      ? referrer
+      : null;
+
+    setBackHref(candidate);
+  }, []);
 
   if (status === "loading" || isRetrievingUserData) {
     return (
       <Layout
         className=""
         title="Galactic Polymath Teacher Portal | Login"
-        imgSrc="../assets/img/logo.png"
+        imgSrc="/imgs/gp-logos/GP_Stacked_logo+wordmark_gradient_whiteBG.jpg"
         url="https://teach.galacticpolymath.com/account"
         description="Log in to access the Galactic Polymath Teacher Portal, where you can view and download lesson plans, track student progress, and more. Get started today!"
         imgAlt="Galactic Polymath Logo"
@@ -521,7 +628,7 @@ const AccountPg: React.FC = () => {
       <Layout
         className=""
         title="Galactic Polymath Teacher Portal | Login"
-        imgSrc="../assets/img/logo.png"
+        imgSrc="/imgs/gp-logos/GP_Stacked_logo+wordmark_gradient_whiteBG.jpg"
         url="https://teach.galacticpolymath.com/account"
         description="Log in to access the Galactic Polymath Teacher Portal, where you can view and download lesson plans, track student progress, and more. Get started today!"
         imgAlt="Galactic Polymath Logo"
@@ -533,6 +640,19 @@ const AccountPg: React.FC = () => {
           style={{ minHeight: "100vh" }}
           className="container pt-4 pt-sm-5 pb-2 pt-md-4"
         >
+          {backHref && (
+            <button
+              type="button"
+              className="account-back-btn"
+              onClick={() => {
+                removeSessionStorageItem("userEntryRedirectUrl");
+                window.location.href = backHref;
+              }}
+            >
+              <FiArrowLeft aria-hidden="true" />
+              Back
+            </button>
+          )}
           <LoginUI
             className="pt-3 pt-sm-5 pt-md-3"
             headingTitleClassName="text-center text-black my-2"
@@ -553,7 +673,7 @@ const AccountPg: React.FC = () => {
     <Layout
       className=""
       title="Galactic Polymath Teacher Portal | Login"
-      imgSrc="../assets/img/logo.png"
+      imgSrc="/imgs/gp-logos/GP_Stacked_logo+wordmark_gradient_whiteBG.jpg"
       url="https://teach.galacticpolymath.com/account"
       description="Log in to access the Galactic Polymath Teacher Portal, where you can view and download lesson plans, track student progress, and more. Get started today!"
       imgAlt="Galactic Polymath Logo"
@@ -565,6 +685,19 @@ const AccountPg: React.FC = () => {
         style={{ minHeight: "90vh", paddingTop: "10px" }}
         className="container pt-5 pt-sm-4"
       >
+        {backHref && (
+          <button
+            type="button"
+            className="account-back-btn"
+            onClick={() => {
+              removeSessionStorageItem("userEntryRedirectUrl");
+              window.location.href = backHref;
+            }}
+          >
+            <FiArrowLeft aria-hidden="true" />
+            Back
+          </button>
+        )}
         <ToastContainer stacked position="top-center" />
         <section className="row border-bottom pb-4">
           <section className="col-12 d-flex justify-content-center align-items-center pt-4">
@@ -630,7 +763,7 @@ const AccountPg: React.FC = () => {
               classNameStr="rounded border shadow mt-2"
             >
               <span style={{ fontWeight: 410 }} className="text-black">
-                View 'About Me' form
+                View &quot;About Me&quot; form
               </span>
             </Button>
             <Button
@@ -650,7 +783,7 @@ const AccountPg: React.FC = () => {
               onClick={() => router.push("/")}
               variant="primary"
               size="sm"
-              className="p-1"
+              className="p-1 account-action-btn account-action-btn--lessons"
               style={{ width: "210px" }}
             >
               <span
@@ -658,6 +791,60 @@ const AccountPg: React.FC = () => {
                 className=""
               >
                 Explore Lessons
+              </span>
+            </BootstrapButton>
+            <BootstrapButton
+              onClick={() => router.push(getMyJobsUrl())}
+              variant="outline-primary"
+              size="sm"
+              className="p-1 mt-2 account-action-btn account-action-btn--my-jobs"
+              style={{ width: "210px" }}
+            >
+              <span
+                style={{ fontSize: "18px", textTransform: "none" }}
+                className="d-inline-flex align-items-center gap-2"
+              >
+                <i className="bi bi-star-fill" aria-hidden="true" />
+                My Jobs
+              </span>
+            </BootstrapButton>
+            <BootstrapButton
+              onClick={() =>
+                window.open("https://drive.google.com/drive/my-drive", "_blank", "noopener,noreferrer")
+              }
+              variant="outline-primary"
+              size="sm"
+              className="p-1 mt-2 account-action-btn account-action-btn--gdrive"
+              style={{ width: "210px" }}
+            >
+              <span
+                style={{ fontSize: "18px", textTransform: "none" }}
+                className="d-inline-flex align-items-center gap-2"
+              >
+                <Image
+                  src="/imgs/google_drive.png"
+                  alt="Google Drive"
+                  width={20}
+                  height={20}
+                  style={{ width: "20px", height: "20px", objectFit: "contain" }}
+                />
+                My GP+ Units
+              </span>
+            </BootstrapButton>
+            <BootstrapButton
+              onClick={() =>
+                router.push("/search?typeFilter=Job%20Tour&mine=1")
+              }
+              variant="outline-primary"
+              size="sm"
+              className="p-1 mt-2 account-action-btn account-action-btn--jobviz"
+              style={{ width: "210px" }}
+            >
+              <span
+                style={{ fontSize: "18px", textTransform: "none" }}
+                className=""
+              >
+                My JobViz Tours
               </span>
             </BootstrapButton>
           </section>

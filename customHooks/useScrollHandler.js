@@ -44,8 +44,6 @@ const useScrollHandler = setSectionDots => {
         }
       }
 
-      console.log('liNavDotId: ', liNavDotId);
-
       const percent = getPercentageSeen(elem);
       const _percentageInViewPort = ((percent === 100) || (percent === 0)) ? 0 : percent;
       return { percentageInViewPort: _percentageInViewPort, elemId: elem.id, sectionDotId: `sectionDot-${liNavDotId}` };
@@ -75,26 +73,19 @@ const useScrollHandler = setSectionDots => {
     });
   }, 100);
 
-  const handleScroll = () => {
-    scrollAction();
-  };
-
   useEffect(() => {
     if (isScrollListenerOn) {
-      window.addEventListener('scroll', handleScroll);
-      console.log('scroll listener was added.');
+      window.addEventListener('scroll', scrollAction);
     }
 
     if (!isScrollListenerOn) {
-      window.removeEventListener('scroll', handleScroll);
-      console.log('scroll listener was removed.');
+      window.removeEventListener('scroll', scrollAction);
     }
 
     return () => {
-      window.removeEventListener('scroll', handleScroll);
-      console.log('event listener was removed.');
+      window.removeEventListener('scroll', scrollAction);
     };
-  }, [isScrollListenerOn]);
+  }, [isScrollListenerOn, scrollAction]);
 
   return [isScrollListenerOn, setIsScrollListenerOn];
 };

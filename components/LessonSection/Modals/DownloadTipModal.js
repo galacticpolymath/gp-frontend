@@ -1,15 +1,15 @@
-/* eslint-disable react/jsx-first-prop-new-line */
  
-/* eslint-disable react/jsx-indent-props */
  
-/* eslint-disable semi */
  
-/* eslint-disable quotes */
  
-/* eslint-disable react/jsx-max-props-per-line */
  
-/* eslint-disable indent */
-/* eslint-disable react/jsx-indent */
+ 
+ 
+ 
+ 
+ 
+ 
+ 
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Image from "next/image";

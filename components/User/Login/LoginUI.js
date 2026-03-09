@@ -1,10 +1,10 @@
-/* eslint-disable quotes */
-/* eslint-disable react/jsx-curly-brace-presence */
  
-/* eslint-disable indent */
-/* eslint-disable react/jsx-indent */
+ 
+ 
+ 
+ 
 
-import { useContext, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { ModalContext } from "../../../providers/ModalProvider";
 import Button from "../../General/Button";
 import GoogleSignIn from "../GoogleSignIn";
@@ -15,7 +15,7 @@ import Link from "next/link";
 import { TROUBLE_LOGGING_IN_LINK } from "../../../globalVars";
 import { useRouter } from "next/router";
 import { useUserEntry } from "../../../customHooks/useUserEntry";
-import { getSessionStorageItem } from "../../../shared/fns";
+import { getSessionStorageItem, setSessionStorageItem } from "../../../shared/fns";
 import Image from "next/image";
 
 const LoginUI = ({
@@ -60,17 +60,52 @@ const LoginUI = ({
   };
 
   const handleCreateOneBtnClick = () => {
-    router.push("/sign-up");
+    router.push("/choose-plan");
   };
 
   const redirectUrl = useMemo(() => {
+    if (typeof window === "undefined") {
+      return "";
+    }
+
+    const fromParamRaw = router?.query?.from;
+    const fromParam = Array.isArray(fromParamRaw) ? fromParamRaw[0] : fromParamRaw;
+    let decodedFromParam = "";
+    if (typeof fromParam === "string" && fromParam) {
+      try {
+        decodedFromParam = decodeURIComponent(fromParam);
+      } catch {
+        decodedFromParam = "";
+      }
+    }
+    const origin = window.location.origin;
+    const isValidFromParam =
+      !!decodedFromParam &&
+      decodedFromParam.startsWith(origin) &&
+      !decodedFromParam.includes("/account");
+    if (isValidFromParam) {
+      return decodedFromParam;
+    }
+
     const redirectUrl = getSessionStorageItem("userEntryRedirectUrl");
 
     if (redirectUrl) {
       return redirectUrl;
     }
 
-    return typeof window === "undefined" ? "" : window.location.href;
+    return window.location.href;
+  }, [router?.query?.from]);
+
+  useEffect(() => {
+    if (!redirectUrl) return;
+    setSessionStorageItem("userEntryRedirectUrl", redirectUrl);
+  }, [redirectUrl]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (!getSessionStorageItem("userEntryRedirectUrl")) {
+      setSessionStorageItem("userEntryRedirectUrl", window.location.href);
+    }
   }, []);
 
   return (

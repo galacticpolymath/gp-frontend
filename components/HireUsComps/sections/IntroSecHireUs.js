@@ -1,4 +1,4 @@
-/* eslint-disable react/jsx-max-props-per-line */
+ 
 import LetsTalkBtnContainer from '../buttons/LetsTalkBtnContainer';
 import styles from '../../../pages/index.module.css';
 import Image from 'next/image';

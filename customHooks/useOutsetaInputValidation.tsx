@@ -1,4 +1,4 @@
-import { useState, useEffect, } from 'react';
+import { useCallback, useState, useEffect, } from 'react';
 import {
   defautlNotifyModalVal,
   useModalContext,
@@ -17,7 +17,7 @@ const useOutsetaInputValidation = () => {
   const { token, status, user } = useSiteSession();
   const [didUserSignUp, setDidUserSignUp] = useState(false);
 
-  const mututationCallback = (mutationsList: MutationRecord[]) => {
+  const mututationCallback = useCallback((mutationsList: MutationRecord[]) => {
     let isGpPlusSignUpModalDisplayed = false;
 
     for (const mutation of mutationsList) {
@@ -83,7 +83,7 @@ const useOutsetaInputValidation = () => {
         return;
       }
 
-      let userGpAccountEmail = user?.email;
+      const userGpAccountEmail = user?.email;
 
       _continueToCheckoutBtn.addEventListener('click', async (event) => {
         console.log('The continue button was clicked...');
@@ -98,7 +98,6 @@ const useOutsetaInputValidation = () => {
           ? (emailInput as HTMLInputElement).value
           : '';
 
-        console.log('outsetaEmail, sup there: ', outsetaEmail);
 
         if (!outsetaEmail) {
           setNotifyModal({
@@ -140,7 +139,7 @@ const useOutsetaInputValidation = () => {
             headerTxt: 'An error has occurred',
             bodyTxt: (
               <>
-                An error has occurred while trying to update the user's email.
+                An error has occurred while trying to update the user&apos;s email.
                 If this error persists, please contact{' '}
                 <CustomLink
                   hrefStr={CONTACT_SUPPORT_EMAIL}
@@ -162,7 +161,7 @@ const useOutsetaInputValidation = () => {
         }
       });
     }
-  };
+  }, [setIsSignupModalDisplayed, setNotifyModal, token, user?.email]);
 
   useEffect(() => {
     let observer: MutationObserver | undefined;
@@ -181,7 +180,7 @@ const useOutsetaInputValidation = () => {
         observer.disconnect();
       }
     };
-  }, [status]);
+  }, [mututationCallback, status]);
 
   return {
     _isSignupModalDisplayed: [

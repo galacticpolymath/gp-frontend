@@ -2,9 +2,9 @@ import Image from 'next/image';
 
 const HireUsCardFirstSecMobile = ({ textsAndImg, isWhatWillYouGetSec, customCssClass, index }) => {
   const { boldedTxt, unBoldedText, imgPath } = textsAndImg;
-  let imgSecClassName = 'pt-0 pt-sm-2 pt-md-0 d-flex justify-content-center align-items-center d-sm-block justify-sm-content-start align-sm-items-stretch';
+  const imgSecClassName = 'pt-0 pt-sm-2 pt-md-0 d-flex justify-content-center align-items-center d-sm-block justify-sm-content-start align-sm-items-stretch';
   let parentClassName = 'd-flex flex-sm-row flex-column HireUsCardFirstSecMobile';
-  let marginStartForTxtSec = (index !== 0) ? 'transformRightTxtSec' : '';
+  const marginStartForTxtSec = (index !== 0) ? 'transformRightTxtSec' : '';
 
   if (customCssClass) {
     parentClassName += ` ${customCssClass}`;

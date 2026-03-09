@@ -1,5 +1,5 @@
-/* eslint-disable quotes */
-/* eslint-disable indent */
+ 
+ 
 import { CustomError } from "../../backend/utils/errors";
 import {
   deleteUserByEmail,
@@ -17,7 +17,7 @@ import { sendEmail } from "../../backend/services/emailServices";
 import { z } from 'zod';
 import { getJwtPayloadPromise } from "../../nondependencyFns";
 
-const QueryParamsSchema = z.object({
+const _QueryParamsSchema = z.object({
   dbType: z.string().min(1),
   userIds: z.union([
     z.string().min(1),
@@ -102,7 +102,6 @@ export default async function handler(
       let didDeleteAccount = false;
       let didDeletePerson = false;
 
-      console.log("gpPlusMembership, sup there: ", gpPlusMembership);
 
       if (gpPlusMembership.Uid) {
         didDeleteAccount = (await deleteAccount(gpPlusMembership.Uid)).wasSuccessful;        

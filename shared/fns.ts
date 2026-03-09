@@ -85,10 +85,10 @@ export const getLiveUnits = (units: INewUnitSchema[]) => {
 
     if (
       STATUSES_OF_SHOWABLE_LESSONS.includes(unit.PublicationStatus) &&
-      uniqueUnits.some((uniqueUnit) => unit.numID == uniqueUnit.numID)
+      uniqueUnits.some((uniqueUnit) => unit.numID === uniqueUnit.numID)
     ) {
       const targetUnitIndex = uniqueUnits.findIndex(
-        (uniqueUnit) => unit.numID == uniqueUnit.numID
+        (uniqueUnit) => unit.numID === uniqueUnit.numID
       );
       let targetUnit = uniqueUnits[targetUnitIndex];
 
@@ -244,12 +244,23 @@ export const getSessionStorageItem = <
   }
 };
 
-export const createGDriveAuthUrl = () => {
+export const createGDriveAuthUrl = (origin?: string) => {
   const authUrl = new URL('https://accounts.google.com/o/oauth2/auth');
   // protects against CSRF attacks
   const state = Math.random().toString(36).substring(7);
+  const clientId =
+    process.env.NEXT_PUBLIC_GOOGLE_DRIVE_PROJECT_CLIENT_ID_TEST ||
+    GOOGLE_DRIVE_PROJECT_CLIENT_ID;
+  const resolvedOrigin =
+    origin ??
+    (typeof window !== 'undefined' ? window.location.origin : undefined);
+
+  if (!resolvedOrigin) {
+    return '';
+  }
+
   const _redirectUri = new URL(
-    `${window.location.origin}/google-drive-auth-result`
+    `${resolvedOrigin}/google-drive-auth-result`
   );
 
   console.log('_redirectUri: ', _redirectUri.href);
@@ -258,7 +269,7 @@ export const createGDriveAuthUrl = () => {
     'https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/userinfo.email';
   const params = [
     ['state', state],
-    ['client_id', GOOGLE_DRIVE_PROJECT_CLIENT_ID],
+    ['client_id', clientId],
     ['redirect_uri', _redirectUri.href],
     ['scope', scopes],
     ['response_type', 'code'],
@@ -334,7 +345,7 @@ export const getIsWithinParentElement = (
   }
 
   if (
-    element?.parentElement != null &&
+    element?.parentElement !== null &&
     typeof element?.parentElement === 'object' &&
     typeof element.parentElement[attributeType] === 'string' &&
     isWithinParentElement

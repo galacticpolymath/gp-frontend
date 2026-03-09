@@ -1,10 +1,9 @@
 import { Html, Head, Main, NextScript } from 'next/document';
 
 export default function Document() {
-  const env = process.env.NEXT_PUBLIC_VERCEL_ENV;
-  const outsetaDomain =
-    process.env.NEXT_PUBLIC_OUTSETA_DOMAIN ||
-    (env === "production" ? "galactic-polymath.outseta.com" : null);
+  const outsetaDomain = process.env.NEXT_PUBLIC_OUTSETA_DOMAIN || "";
+  const shouldLoadOutseta =
+    process.env.NODE_ENV === "production" && Boolean(outsetaDomain);
   return (
     <Html lang="en">
       <Head>
@@ -14,7 +13,7 @@ export default function Document() {
           href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700&family=Noto+Sans+Mono:wght@300;400;500&display=swap"
           rel="stylesheet"
         />
-        {outsetaDomain && (
+        {shouldLoadOutseta && (
           <>
             <script
               type="text/javascript"
@@ -22,7 +21,7 @@ export default function Document() {
                 __html: `
                   var o_options = {
                     domain: '${outsetaDomain}',
-                    load: 'auth,customForm,emailList,leadCapture,nocode,profile,support',
+                    load: 'auth,customForm,emailList,leadCapture,profile,support',
                     monitorDom: true,
                   };
                 `,

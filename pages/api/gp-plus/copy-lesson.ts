@@ -36,6 +36,24 @@ export const VALID_WRITABLE_ROLES = new Set([
   "writer",
 ]);
 
+const getDriveListScopeParams = () => {
+  const sharedDriveId = process.env.GOOGLE_DRIVE_ID?.trim();
+
+  if (!sharedDriveId) {
+    throw new CustomError(
+      "GOOGLE_DRIVE_ID is required for template Shared Drive listing.",
+      500
+    );
+  }
+
+  return {
+    corpora: "drive" as const,
+    driveId: sharedDriveId,
+    includeItemsFromAllDrives: true,
+    supportsAllDrives: true,
+  };
+};
+
 export type TCopyFilesMsg = Partial<{
   msg: string;
   targetFolderId: string;
@@ -140,15 +158,15 @@ export default async function handler(
   const reqQueryParams = request.query as unknown as TCopyLessonReqQueryParams;
   let parentFolder: { id: string; permissionId: string } | null = null;
   let wasUserRolesAndFileMetaDataReseted = false;
-  let _fileIds =
+  const _fileIds =
     typeof reqQueryParams.fileIds === "string"
       ? [reqQueryParams.fileIds]
       : reqQueryParams.fileIds;
-  let _fileNames =
+  const _fileNames =
     typeof reqQueryParams.fileNames === "string"
       ? [reqQueryParams.fileNames]
       : reqQueryParams.fileNames;
-  const clientOrigin = new URL(request.headers.referer ?? "").origin;
+  const _clientOrigin = new URL(request.headers.referer ?? "").origin;
 
   response.on("close", async () => {
     console.log("The user closed the stream.");
@@ -173,7 +191,7 @@ export default async function handler(
       for (const fileId of _fileIds) {
         const drive = await createDrive();
         // @ts-ignore
-        const fileUpdated = await drive.files.update({
+        const _fileUpdated = await drive.files.update({
           fileId: fileId,
           supportsAllDrives: true,
           requestBody: {
@@ -341,7 +359,6 @@ export default async function handler(
 
     console.log("Will check if the target unit and lesson exist...");
 
-    console.log("gpPlusFolderId, hi there: ", gpPlusFolderId);
 
     console.log(
       `unitGDriveLessonsObjs?.length: ${unitGDriveLessonsObjs?.length}`
@@ -631,7 +648,7 @@ export default async function handler(
           clientOrigin
         );
 
-        if (!unitFolderChildItems || !unitFolderChildItems.files?.length) {
+        if (!unitFolderChildItems || !unitFolderChildItems.files) {
           throw new CustomError("Lessons folder data is missing.", 500);
         }
 
@@ -655,11 +672,6 @@ export default async function handler(
         );
 
         console.log("unitFolderChildItems: ", unitFolderChildItems);
-        console.log(
-          "targetLessonsFolderInUserDrive, yo there: ",
-          targetLessonsFolderInUserDrive
-        );
-
         if (
           targetLessonsFolderInUserDrive &&
           targetLessonsFolderInUserDrive.id &&
@@ -1024,7 +1036,7 @@ export default async function handler(
       msg: `'${reqQueryParams.unitName}' folder was created.`,
     });
 
-    let unitGDriveLesson: IUnitGDriveLesson = {
+    const unitGDriveLesson: IUnitGDriveLesson = {
       unitDriveId: targetUnitFolderCreation.folderId,
       unitId: reqQueryParams.unitId,
       gmail: userGmail,
@@ -1074,10 +1086,7 @@ export default async function handler(
 
     const drive = await createDrive();
     const gdriveResponse = await drive.files.list({
-      corpora: "drive",
-      includeItemsFromAllDrives: true,
-      supportsAllDrives: true,
-      driveId: process.env.GOOGLE_DRIVE_ID,
+      ...getDriveListScopeParams(),
       q: `'${reqQueryParams.unitSharedGDriveId}' in parents`,
       fields: "*",
     });
@@ -1140,10 +1149,6 @@ export default async function handler(
       gDriveRefreshToken,
       clientOrigin
     );
-    console.log(
-      "targetFolderStructureArrInUserDrive, yo there: ",
-      targetFolderStructureArrInUserDrive
-    );
     const targetLessonFolderInUserDrive =
       targetFolderStructureArrInUserDrive.find((folder) => {
         return (
@@ -1152,11 +1157,6 @@ export default async function handler(
           folder.originalFileId === reqQueryParams.lessonSharedGDriveFolderId
         );
       });
-
-    console.log(
-      "targetLessonFolderInUserDrive, hey there: ",
-      targetLessonFolderInUserDrive
-    );
 
     if (!targetLessonFolderInUserDrive?.id || !targetLessonFolderInUserDrive) {
       throw new CustomError(
@@ -1241,10 +1241,6 @@ export default async function handler(
       );
     }
 
-    console.log(
-      "targetFolderStructureArrInUserDrive, yo there: ",
-      targetFolderStructureArrInUserDrive
-    );
     // get the parent folder id of the files to copy
     const parentFolderIdInSharedGDrive = (
       await drive.files.get({
@@ -1262,9 +1258,7 @@ export default async function handler(
 
     console.log("Will share the parent folder with the target user.");
 
-    const result = await shareFileWithUser(parentFolderIdInSharedGDrive, email);
-
-    console.log("share result, sup: ", result);
+    const _result = await shareFileWithUser(parentFolderIdInSharedGDrive, email);
 
     // throw new Error("python, yo");
 
@@ -1366,7 +1360,10 @@ export default async function handler(
       fileCopies
     });
   } catch (error: any) {
-    const { message, code } = error ?? {};
+    const { message, code, status } = error ?? {};
+    const responseErrorMsg = error?.response?.data?.error?.message;
+    const statusCode = error?.response?.status || status;
+    const failureMsg = responseErrorMsg || message || "Copy operation failed.";
 
     console.error(`Error message: ${message}`);
     console.error(`Error code: ${code}`);
@@ -1377,11 +1374,12 @@ export default async function handler(
     sendMessage(response, {
       isJobDone: true,
       wasSuccessful: false,
+      msg: statusCode ? `${failureMsg} (status ${statusCode})` : failureMsg,
     });
   } finally {
     if (parentFolder) {
       const drive = await createDrive();
-      const filePermissionsUpdated = await drive.permissions.update({
+      const _filePermissionsUpdated = await drive.permissions.update({
         permissionId: parentFolder.permissionId,
         fileId: parentFolder.id,
         supportsAllDrives: true,
@@ -1397,7 +1395,7 @@ export default async function handler(
 
       for (const fileId of _fileIds) {
         // @ts-ignore
-        const fileUpdated = await drive.files.update({
+        const _fileUpdated = await drive.files.update({
           fileId: fileId,
           supportsAllDrives: true,
           requestBody: {

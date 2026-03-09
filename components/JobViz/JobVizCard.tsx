@@ -1,8 +1,10 @@
 import * as React from "react";
-import styles from "../../styles/jobvizBurst.module.scss";
+import { Star } from "lucide-react";
+import styles from "../../styles/jobviz.module.scss";
 import { LucideIcon } from "./LucideIcon";
 import { ratingEmoji, useJobRatings } from "./jobRatingsStore";
 import type { JobRatingValue } from "./jobRatingsStore";
+import { useJobTourEditorOptional } from "./jobTourEditorContext";
 
 type CardAnimationStyle = React.CSSProperties & {
   "--card-stagger-delay"?: string;
@@ -28,6 +30,7 @@ export interface JobVizCardProps {
   jobIconName?: string;
   socCode?: string | null;
   isAssignmentJob?: boolean;
+  isLocked?: boolean;
   shouldAnimate?: boolean;
   animationDelayMs?: number;
   isExiting?: boolean;
@@ -77,10 +80,11 @@ export const JobVizCard: React.FC<JobVizCardProps> = ({
   jobsCount,
   growthPercent,
   wage,
-  education,
+  education: _education,
   jobIconName,
   socCode,
   isAssignmentJob,
+  isLocked = false,
   shouldAnimate = false,
   animationDelayMs = 0,
   isExiting = false,
@@ -93,6 +97,7 @@ export const JobVizCard: React.FC<JobVizCardProps> = ({
 }) => {
   const [isHovered, setHover] = React.useState(false);
   const [isClient, setIsClient] = React.useState(false);
+  const jobTourEditor = useJobTourEditorOptional();
   React.useEffect(() => setIsClient(true), []);
   const cardRef = React.useRef<HTMLElement | null>(null);
   const containerClass = level === 1 ? styles.categoryCard : styles.jobCard;
@@ -139,7 +144,13 @@ export const JobVizCard: React.FC<JobVizCardProps> = ({
         "--card-pivot-dy": `${pivotShift?.dy ?? 0}px`,
       }
     : undefined;
-  const isInteractive = Boolean(onClick || onCardAction);
+  const isInteractive = !isLocked && Boolean(onClick || onCardAction);
+  const canBookmark =
+    Boolean(jobTourEditor?.isEditing) && level === 2 && Boolean(socCode);
+  const isBookmarked =
+    canBookmark && socCode ? jobTourEditor?.isSelected(socCode) : false;
+  const showsAssignmentDot = level === 2 && (Boolean(isAssignmentJob) || canBookmark);
+  const isAssignmentSelected = canBookmark ? Boolean(isBookmarked) : Boolean(isAssignmentJob);
   const emitCardAction = React.useCallback(() => {
     const rect = cardRef.current?.getBoundingClientRect() ?? null;
     if (onCardAction) {
@@ -173,7 +184,9 @@ export const JobVizCard: React.FC<JobVizCardProps> = ({
   return (
     <article
       ref={cardRef}
-      className={`${containerClass} ${highlightClass} ${visitedClass} ${animationClass} ${exitClass}`}
+      className={`${containerClass} ${highlightClass} ${visitedClass} ${animationClass} ${exitClass} ${
+        isLocked ? styles.jobvizCardLocked : ""
+      }`}
       style={animationStyle}
       data-jobviz-card-id={cardId}
       onClick={isInteractive ? handleCardClick : undefined}
@@ -184,7 +197,13 @@ export const JobVizCard: React.FC<JobVizCardProps> = ({
       onFocus={() => setHover(true)}
       onBlur={() => setHover(false)}
       onKeyDown={handleKeyActivate}
-      aria-label={level === 1 ? "Click to view jobs" : "Click for job details"}
+      aria-label={
+        isLocked
+          ? "Locked in preview mode"
+          : level === 1
+            ? "Click to view jobs"
+            : "Click for job details"
+      }
       aria-describedby={isHovered ? tooltipId : undefined}
     >
       {level === 1 ? (
@@ -226,16 +245,75 @@ export const JobVizCard: React.FC<JobVizCardProps> = ({
             </div>
           <div className={styles.cardHeading}>
             <h3 className={styles.cardTitle}>{compactTitle(title)}</h3>
-            {isAssignmentJob && (
-              <span
-                className={styles.assignmentBadgeDot}
-                title="Part of this assignment"
-                aria-hidden="true"
-              />
-            )}
+            <div className={styles.cardHeaderBadges}>
+              {showsAssignmentDot &&
+                (canBookmark && socCode ? (
+                  <button
+                    type="button"
+                    className={`${styles.assignmentBadgeButton} ${
+                      isAssignmentSelected ? styles.assignmentBadgeButtonActive : ""
+                    }`}
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      jobTourEditor?.toggleJob(socCode);
+                    }}
+                    title={
+                      isAssignmentSelected
+                        ? "Remove from tour jobs"
+                        : "Add to tour jobs"
+                    }
+                    aria-label={
+                      isAssignmentSelected
+                        ? "Remove from tour jobs"
+                        : "Add to tour jobs"
+                    }
+                    aria-pressed={isAssignmentSelected}
+                    >
+                      <span
+                        className={`${styles.assignmentBadgeDot} ${styles.cardHeaderBadgeDot} ${
+                          isAssignmentSelected ? styles.assignmentBadgeDotActive : ""
+                        }`}
+                        aria-hidden="true"
+                      />
+                    <span className={styles.cardHeaderBadgeLabel}>
+                      {isAssignmentSelected ? "In Tour" : "Add to Tour"}
+                    </span>
+                  </button>
+                ) : (
+                  <span
+                    className={styles.assignmentBadgePill}
+                    title="Tour job"
+                    aria-label="Tour job"
+                  >
+                    <span
+                      className={`${styles.assignmentBadgeDot} ${styles.cardHeaderBadgeDot} ${
+                        isAssignmentSelected ? styles.assignmentBadgeDotActive : ""
+                      }`}
+                      aria-hidden="true"
+                    />
+                    <span className={styles.cardHeaderBadgeLabel}>In Tour</span>
+                  </span>
+                ))}
+              {showBookmark && (
+                <span
+                  className={styles.savedJobBadge}
+                  title="Saved job"
+                  aria-label="Saved job"
+                >
+                  <Star size={12} fill="currentColor" stroke="none" aria-hidden="true" />
+                  <span className={styles.cardHeaderBadgeLabel}>Saved</span>
+                </span>
+              )}
+              {isLocked && (
+                <span className={styles.lockedCardBadge}>
+                  <LucideIcon name="Lock" />
+                  Locked
+                </span>
+              )}
+            </div>
           </div>
         </div>
-        {level === 2 && isAssignmentJob && (
+        {level === 2 && isAssignmentJob && !jobTourEditor?.isEditing && (
           <div
             className={`${styles.cardRatingRow} ${
               currentRating ? styles.cardRatingRowRated : styles.cardRatingRowIdle

@@ -1,7 +1,7 @@
-/* eslint-disable react/jsx-indent-props */
  
-/* eslint-disable indent */
-/* eslint-disable react/jsx-indent */
+ 
+ 
+ 
 import { IoMdEyeOff, IoMdEye } from 'react-icons/io';
 import { useContext, useState } from 'react';
 import { InputSection } from '../formElements';
@@ -94,7 +94,7 @@ const PasswordResetForm = () => {
         } catch (error) {
             const { errType } = error?.response?.data ?? {};
             let errMsg = error.message ?? 'Failed to update password. Press "Restart Recover" to try again.';
-            let bodyTxt = '';
+            const bodyTxt = '';
             let bodyElements = (
                 <span>
                     Password reset time window may have expired. Please try again.

@@ -39,7 +39,7 @@ interface IProps {
   errObj?: object;
 }
 
-type TFn = () => void;
+type _TFn = () => void;
 
 interface IGpPlusBtn extends PropsWithChildren{
   styles?: React.CSSProperties,
@@ -101,6 +101,9 @@ const HAS_MEMBERSHIP_STATUSES: Set<TAccountStageLabel> = new Set([
   'Cancelling',
   'Subscribing',
   'Past due',
+  'Active',
+  'Trialing',
+  'Trial',
 ] as TAccountStageLabel[]);
 
 const LiContentWithImg: React.FC<{ children: ReactNode }> = ({ children }) => {
@@ -140,6 +143,7 @@ const GpPlus: React.FC<IProps> = ({ liveUnitsTotal, plusPlanPercentSaved }) => {
   const [, setNotifyModal] = _notifyModal;
   const siteSession = useSiteSession();
   const { token, status, user, logUserOut } = siteSession;
+  const userEmail = typeof user?.email === 'string' ? user.email : '';
   const [wasGpLiteBtnClicked, setWasGpLiteBtnClicked] = useState(false);
   const [isSignupModalDisplayed, setIsSignupModalDisplayed] = useState(false);
   const [wasGpPlusSubRetrieved, setWasGpPlusSubRetrieved] = useState(false);
@@ -148,7 +152,7 @@ const GpPlus: React.FC<IProps> = ({ liveUnitsTotal, plusPlanPercentSaved }) => {
     handleGpPlusAccountBtnClick,
     anchorElement,
     gpPlusSubscription,
-    isFetching,
+    isFetching: _isFetching,
   } = useHandleOpeningGpPlusAccount(true, setWasGpPlusSubRetrieved);
   const [wasGpPlusBtnClicked, setWasGpPlusBtnClicked] = _wasGpPlusBtnClicked;
   const router = useRouter();
@@ -167,7 +171,6 @@ const GpPlus: React.FC<IProps> = ({ liveUnitsTotal, plusPlanPercentSaved }) => {
   const yearlyPrice = 60;
   const monthlyEquivalent = yearlyPrice / 12; // $5/month when paid yearly
   const gpPlusBtnTxt: 'Manage account' | 'Sign up' = useMemo(() => {
-    console.log('gpPlusSubscription, sup there: ', gpPlusSubscription);
     const hasMemeberhsip =
       gpPlusSubscription?.membership?.AccountStageLabel &&
       HAS_MEMBERSHIP_STATUSES.has(
@@ -179,9 +182,8 @@ const GpPlus: React.FC<IProps> = ({ liveUnitsTotal, plusPlanPercentSaved }) => {
     }
 
     return 'Sign up';
-  }, [gpPlusSubscription, isFetching]);
+  }, [gpPlusSubscription]);
   const gpLiteBtnTxt = useMemo(() => {
-    console.log('gpPlusSubscription, sup there: ', gpPlusSubscription);
 
     if (status === 'authenticated') {
       return 'ACCOUNT CREATED';
@@ -248,7 +250,6 @@ const GpPlus: React.FC<IProps> = ({ liveUnitsTotal, plusPlanPercentSaved }) => {
         : null;
 
     console.log('siteSession: ', siteSession);
-    console.log('emailInput, yo there: ', emailInput);
 
     if (status === 'authenticated' && emailInput) {
       emailInput.value = user?.email || '';
@@ -288,7 +289,7 @@ const GpPlus: React.FC<IProps> = ({ liveUnitsTotal, plusPlanPercentSaved }) => {
         return false;
       });
     }
-  }, [status, isSignupModalDisplayed]);
+  }, [siteSession, status, user?.email]);
 
   const outsetaEmbeddedRef = useRef<HTMLDivElement | null>(null);
   const outsetaEmbeddedCallback = () => {
@@ -361,7 +362,6 @@ const GpPlus: React.FC<IProps> = ({ liveUnitsTotal, plusPlanPercentSaved }) => {
           ? (emailInput as HTMLInputElement).value
           : '';
 
-        console.log('outsetaEmail, sup there: ', outsetaEmail);
 
         if (!outsetaEmail) {
           setNotifyModal({
@@ -389,7 +389,7 @@ const GpPlus: React.FC<IProps> = ({ liveUnitsTotal, plusPlanPercentSaved }) => {
           return;
         }
 
-        if (!user?.email || !token) {
+        if (!userEmail || !token) {
           setNotifyModal({
             headerTxt: 'An error has occurred',
             bodyTxt: (
@@ -415,7 +415,7 @@ const GpPlus: React.FC<IProps> = ({ liveUnitsTotal, plusPlanPercentSaved }) => {
         );
 
         const updateUserResponse = await updateUser(
-          { email: user.email },
+          { email: userEmail },
           { outsetaAccountEmail: outsetaEmail },
           {},
           token
@@ -426,7 +426,7 @@ const GpPlus: React.FC<IProps> = ({ liveUnitsTotal, plusPlanPercentSaved }) => {
             headerTxt: 'An error has occurred',
             bodyTxt: (
               <>
-                An error has occurred while trying to update the user's email.
+                An error has occurred while trying to update the user&apos;s email.
                 If this error persists, please contact{' '}
                 <CustomLink
                   hrefStr={CONTACT_SUPPORT_EMAIL}
@@ -448,7 +448,15 @@ const GpPlus: React.FC<IProps> = ({ liveUnitsTotal, plusPlanPercentSaved }) => {
         }
       });
     }
-  }, [isSignupModalDisplayed]);
+  }, [
+    billingPeriod,
+    isSignupModalDisplayed,
+    logUserOut,
+    setIsSignupModalDisplayed,
+    setNotifyModal,
+    token,
+    userEmail,
+  ]);
 
   const isGpLiteBtnDisabled = !wasGpPlusSubRetrieved || wasGpLiteBtnClicked;
 

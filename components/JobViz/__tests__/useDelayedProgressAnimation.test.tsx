@@ -12,7 +12,9 @@ describe("useDelayedProgressAnimation", () => {
 
   let container: HTMLDivElement;
   let root: Root;
-  let latestState: { displayedRated: number; isAnimating: boolean } | null;
+  const latestStateRef = {
+    current: null as { displayedRated: number; isAnimating: boolean } | null,
+  };
 
   interface HarnessProps {
     rated: number;
@@ -21,13 +23,16 @@ describe("useDelayedProgressAnimation", () => {
   }
 
   const Harness: React.FC<HarnessProps> = ({ rated, total, onComplete }) => {
-    latestState = useDelayedProgressAnimation({
+    const state = useDelayedProgressAnimation({
       rated,
       total,
       delayMs: 100,
       animationDurationMs: 200,
       onAnimationComplete: onComplete,
     });
+    React.useEffect(() => {
+      latestStateRef.current = state;
+    }, [state]);
     return null;
   };
 
@@ -41,7 +46,7 @@ describe("useDelayedProgressAnimation", () => {
     container = document.createElement("div");
     document.body.appendChild(container);
     root = createRoot(container);
-    latestState = null;
+    latestStateRef.current = null;
   });
 
   afterEach(() => {
@@ -61,13 +66,13 @@ describe("useDelayedProgressAnimation", () => {
   it("delays showing the new progress value before animating", () => {
     const handleComplete = jest.fn();
     renderHarness({ rated: 0, total: 3, onComplete: handleComplete });
-    expect(latestState).toEqual({
+    expect(latestStateRef.current).toEqual({
       displayedRated: 0,
       isAnimating: false,
     });
 
     renderHarness({ rated: 1, total: 3, onComplete: handleComplete });
-    expect(latestState).toEqual({
+    expect(latestStateRef.current).toEqual({
       displayedRated: 0,
       isAnimating: false,
     });
@@ -75,7 +80,7 @@ describe("useDelayedProgressAnimation", () => {
     act(() => {
       jest.advanceTimersByTime(100);
     });
-    expect(latestState).toEqual({
+    expect(latestStateRef.current).toEqual({
       displayedRated: 1,
       isAnimating: true,
     });
@@ -83,7 +88,7 @@ describe("useDelayedProgressAnimation", () => {
     act(() => {
       jest.advanceTimersByTime(200);
     });
-    expect(latestState).toEqual({
+    expect(latestStateRef.current).toEqual({
       displayedRated: 1,
       isAnimating: false,
     });
@@ -103,7 +108,7 @@ describe("useDelayedProgressAnimation", () => {
     act(() => {
       jest.advanceTimersByTime(80);
     });
-    expect(latestState).toEqual({
+    expect(latestStateRef.current).toEqual({
       displayedRated: 0,
       isAnimating: false,
     });
@@ -111,7 +116,7 @@ describe("useDelayedProgressAnimation", () => {
     act(() => {
       jest.advanceTimersByTime(20);
     });
-    expect(latestState).toEqual({
+    expect(latestStateRef.current).toEqual({
       displayedRated: 2,
       isAnimating: true,
     });
@@ -119,7 +124,7 @@ describe("useDelayedProgressAnimation", () => {
     act(() => {
       jest.advanceTimersByTime(200);
     });
-    expect(latestState).toEqual({
+    expect(latestStateRef.current).toEqual({
       displayedRated: 2,
       isAnimating: false,
     });

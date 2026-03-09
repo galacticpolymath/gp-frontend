@@ -1,13 +1,13 @@
-/* eslint-disable react/jsx-wrap-multilines */
-/* eslint-disable react/jsx-indent-props */
  
-/* eslint-disable react/jsx-tag-spacing */
  
-/* eslint-disable quotes */
-/* eslint-disable semi */
  
-/* eslint-disable indent */
-/* eslint-disable react/jsx-indent */
+ 
+ 
+ 
+ 
+ 
+ 
+ 
 
 import PicAndDescriptionSec from './PicAndDescriptionSec'
 import Image from "next/image";

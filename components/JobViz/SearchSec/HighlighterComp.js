@@ -1,10 +1,10 @@
-/* eslint-disable quotes */
  
-/* eslint-disable semi */
  
-/* eslint-disable react/jsx-indent-props */
-/* eslint-disable indent */
-/* eslint-disable react/jsx-indent */
+ 
+ 
+ 
+ 
+ 
 import CloseSearchResultsJobViz from "../Buttons/CloseSearchResultsJobViz";
 
 const HighlighterComp = ({ handleCheckBoxChange, isHighlighterOn, closeSearchResultsModal }) => {

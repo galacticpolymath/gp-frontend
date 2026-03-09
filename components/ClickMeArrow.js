@@ -1,7 +1,7 @@
-/* eslint-disable react/jsx-indent-props */
-/* eslint-disable indent */
-/* eslint-disable quotes */
-/* eslint-disable react/jsx-indent */
+ 
+ 
+ 
+ 
 import { useEffect, useRef } from "react";
 import Arrow from "./Arrow";
 import { useInViewport } from "react-in-viewport";
@@ -20,7 +20,7 @@ const ClickMeArrow = ({
         if (typeof handleElementVisibility === 'function') {
             handleElementVisibility(inViewport);
         }
-    }, [inViewport]);
+    }, [handleElementVisibility, inViewport]);
 
     return (
         <div

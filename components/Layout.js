@@ -1,9 +1,10 @@
-/* eslint-disable quotes */
+ 
 
 import Head from "next/head";
 import Footer from "./Footer";
-import Navbar from "./Navbar";
+import PortalNav from "./PortalNav";
 import { useEffect, useMemo } from "react";
+import { useRouter } from "next/router";
 import { removeLocalStorageItem } from "../shared/fns";
 import {
   ensureAbsoluteUrl,
@@ -26,11 +27,13 @@ export default function Layout({
   defaultLink = "",
   langLinks,
   showNav = true,
+  navAutoHide = true,
   showFooter = true,
   structuredData = null,
   locale = "en-US",
   indexable = true,
 }) {
+  const router = useRouter();
   const isOnProd = process.env.NEXT_PUBLIC_VERCEL_ENV === "production";
   const resolvedDescription = summarizeDescription(description);
   const resolvedUrl = ensureAbsoluteUrl(url || canonicalLink || "");
@@ -45,6 +48,10 @@ export default function Layout({
   }, [structuredData]);
   const ogLocale = toOgLocale(locale);
   const shouldBlockIndexing = !isOnProd || !indexable;
+  const isUnitsRoute =
+    router?.pathname === "/units/[loc]/[id]" ||
+    (typeof router?.asPath === "string" && router.asPath.startsWith("/units/"));
+  const shouldApplyNavOffset = showNav && !isUnitsRoute;
 
   useEffect(() => {
     window.Outseta?.on("signup", () => {
@@ -89,7 +96,6 @@ export default function Layout({
           />
         )}
         <meta
-          property="og:viewport"
           name="viewport"
           content="width=device-width, initial-scale=1"
         />
@@ -130,18 +136,14 @@ export default function Layout({
         )}
         {structuredDataPayload.map((schema, index) => (
           <script
-            // eslint-disable-next-line react/no-danger
+             
             dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
             key={`ld-json-${index}`}
             type="application/ld+json"
           />
         ))}
       </Head>
-      {showNav && (
-        <div style={{ height: "50px" }}>
-          <Navbar />
-        </div>
-      )}
+      {showNav && <PortalNav autoHide={navAutoHide} />}
       {imgSrc && (
         <img
           src={imgSrc}
@@ -149,7 +151,15 @@ export default function Layout({
           style={{ display: "none" }}
         />
       )}
-      {children}
+      <div
+        style={
+          shouldApplyNavOffset
+            ? { paddingTop: "var(--portal-nav-offset, 0px)" }
+            : undefined
+        }
+      >
+        {children}
+      </div>
       {showFooter && <Footer />}
     </div>
   );

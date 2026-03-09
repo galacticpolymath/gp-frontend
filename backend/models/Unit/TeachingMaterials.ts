@@ -32,7 +32,7 @@ const LinkSchema = new Schema<ILink>(
   },
   { _id: false }
 );
-const ItemSchema = new Schema<IItem>(
+const _ItemSchema = new Schema<IItem>(
   {
     itemTitle: String,
     itemDescription: String,
@@ -50,19 +50,19 @@ const ItemSchemaV2 = new Schema<IItemV2>(
     mimeType: String,
     gdriveRoot: String,
     isExportable: Boolean,
-    externalUrl: String,
+    externalURL: String,
     links: [LinkSchema],
   },
   { _id: false }
 );
 const LsngPrepSchema = new Schema<ILsnPrep>(
   {
-    title: String,
-    dur: Number,
-    quickDescription: String,
-    details: String,
-    variantNotes: String,
-    teachingTips: String,
+    prepTitle: String,
+    prepDur: Number,
+    prepQuickDescription: String,
+    prepDetails: String,
+    prepVariantNotes: String,
+    prepTeachingTips: String,
   },
   { _id: false }
 );

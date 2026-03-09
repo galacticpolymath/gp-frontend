@@ -29,6 +29,24 @@ export const runtime = "nodejs";
 export const maxDuration = 300;
 const USER_GP_PLUS_PARENT_FOLDER_NAME = "My GP+ Units";
 
+const getDriveListScopeParams = () => {
+  const sharedDriveId = process.env.GOOGLE_DRIVE_ID?.trim();
+
+  if (!sharedDriveId) {
+    throw new CustomError(
+      "GOOGLE_DRIVE_ID is required for template Shared Drive listing.",
+      500
+    );
+  }
+
+  return {
+    corpora: "drive" as const,
+    driveId: sharedDriveId,
+    includeItemsFromAllDrives: true,
+    supportsAllDrives: true,
+  };
+};
+
 export const getGDriveItem = async (
   fileId: string,
   accessToken: string,
@@ -532,8 +550,6 @@ export default async function handler(
       throw new Error(errMsg);
     }
 
-    console.log("yo there refresh token: ", gdriveRefreshToken);
-    console.log("yo there refresh token, typeof: ", typeof gdriveRefreshToken);
 
     if (
       !gdriveRefreshToken ||
@@ -545,7 +561,7 @@ export default async function handler(
       throw new Error(errMsg);
     }
 
-    const email = jwtPayload.payload.email;
+    const _email = jwtPayload.payload.email;
     gdriveAccessToken = _gdriveAccessToken;
 
     if (
@@ -600,10 +616,7 @@ export default async function handler(
     console.log("Will retrieve files...");
 
     const gdriveResponse = await drive.files.list({
-      corpora: "drive",
-      includeItemsFromAllDrives: true,
-      supportsAllDrives: true,
-      driveId: process.env.GOOGLE_DRIVE_ID,
+      ...getDriveListScopeParams(),
       q: `'${request.query.unitDriveId}' in parents`,
     });
     console.log("gdriveResponse.data?.files: ", gdriveResponse.data?.files);
@@ -618,7 +631,7 @@ export default async function handler(
       throw new Error(errMsg);
     }
 
-    let unitFolders: TUnitFolder[] = rootDriveFolders.map((folder) => ({
+    const unitFolders: TUnitFolder[] = rootDriveFolders.map((folder) => ({
       name: folder.name,
       id: folder.id,
       mimeType: folder.mimeType,
@@ -636,10 +649,7 @@ export default async function handler(
         unitFolder.pathToFile !== ""
       ) {
         const { data } = await drive.files.list({
-          corpora: "drive",
-          includeItemsFromAllDrives: true,
-          supportsAllDrives: true,
-          driveId: process.env.GOOGLE_DRIVE_ID,
+          ...getDriveListScopeParams(),
           q: `'${unitFolder.id}' in parents`,
         });
 
@@ -729,10 +739,7 @@ export default async function handler(
 
       if (unitFolder.mimeType.includes("folder")) {
         const folderDataResponse = await drive.files.list({
-          corpora: "drive",
-          includeItemsFromAllDrives: true,
-          supportsAllDrives: true,
-          driveId: process.env.GOOGLE_DRIVE_ID,
+          ...getDriveListScopeParams(),
           q: `'${unitFolder.id}' in parents`,
         });
 
@@ -759,7 +766,7 @@ export default async function handler(
           for (const folderNameAndOccurrences of Object.entries(
             foldersOccurrenceObj
           )) {
-            let [folderName, occurrences] = folderNameAndOccurrences;
+            const [folderName, occurrences] = folderNameAndOccurrences;
 
             if (occurrences.length === 1) {
               continue;
@@ -908,11 +915,6 @@ export default async function handler(
         gdriveAccessToken as string
       );
 
-      console.log(
-        "gdriveItemRetrievedRes, sup there: ",
-        gdriveItemRetrievedRes
-      );
-
       if (
         "errType" in gdriveItemRetrievedRes &&
         gdriveItemRetrievedRes.errType === "notFound"
@@ -1005,9 +1007,9 @@ export default async function handler(
 
     console.log("The target folder was created.");
 
-    let foldersFailedToCreate = [];
+    const foldersFailedToCreate = [];
     /** @type {{ id: string, name: string, pathToFile: string, parentFolderId: string, gpFolderId: string }[]} */
-    let createdFolders = [];
+    const createdFolders = [];
     /** @type {{ fileId: string, pathToFile: string, parentFolderId: string, name: string }[]} */
     // get only the chlid folders of the target unit folder
     const folderPaths = unitFolders

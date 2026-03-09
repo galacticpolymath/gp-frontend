@@ -57,6 +57,7 @@ Implement layouts via CSS grid + flex utilities; prefer container queries for co
 - **Unit detail:** Sidebar (md+) houses lesson navigation and supporting assets toggles. On xs-sm, convert sidebar into a top sticky segmented control. Keep download CTAs persistent but dimmed for non-GP+ users with inline explanations.
 - **JobViz explorer:** Left/center column shows hierarchy, right column (lg+) can host assignment or detail pane. On mobile, use modal overlays for job details; ensure modals are full-height with swipe-to-close gestures.
 - **Modals and drawers:** Always trap focus, supply top-right close button + bottom CTA, and use consistent padding (24px desktop, 16px mobile). Panel backgrounds adopt theme colors with 92-96% opacity so motion remains subtle.
+- **Section spacing:** Use `6.6vmax` for top and bottom padding on full-width marketing-style sections to mirror the Squarespace rhythm.
 
 ## Color & Theming
 | Token | Hex | Role | Light Mode | Dark Mode |
@@ -76,12 +77,27 @@ Guidelines:
 - GP+ zones require at least one persistent signal (Plus Blue highlight, badge, or background gradient) but should not obscure content.
 - Minimum contrast ratio 4.5:1 for text; lighten/darken tokens using auto-calculated steps (`brand-hydro-blue-100`, `-200`, etc.) derived from the base palette.
 
+### Standards Subject Colors
+Use these as subtle accents in standards-alignment UI (chips, borders, icons), not full-surface fills.
+
+| Subject | Hex | RGB | Token |
+|---------|-----|-----|-------|
+| Math | `#DB4125` | `219, 65, 37` | `subject-math` |
+| ELA | `#ECA14D` | `236, 161, 77` | `subject-ela` |
+| Extra | `#F4F0D9` | `244, 240, 217` | `subject-extra` |
+| Science | `#B798E8` | `183, 152, 232` | `subject-science` |
+| Social Studies | `#633A9A` | `99, 58, 154` | `subject-social-studies` |
+| Sustainability | `#349964` | `52, 153, 100` | `subject-sustainability` |
+| SEL | `#0070DA` | `0, 70, 218` | `subject-sel` |
+
 ## Typography & Iconography
 - **Primary font:** Noto Sans Light/Regular/SemiBold with system fallbacks (`"Noto Sans", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif`).
 - Heading scale: H1 40/44, H2 32/36, H3 24/28, Body 18/28 for portal readability; tighten to 16/24 for dense tables.
+- Minimum readable sizes: body-like instructional text should be at least 15px on mobile and 16px on desktop; reserve 13px for short labels/chips only.
 - Use stacked icon pairs for JobViz job cards: outer glyph = category, inner = specific job. Maintain 24px outer, 16px inner, 2px stroke.
 - Emoji ratings should render with consistent line height and include aria-labels describing the rating meaning.
 - Navigation and filter icons follow mono-line style at 1.5px stroke; avoid mixing filled and outline icons within a single component.
+- Button-style controls (including links styled as buttons) must never use default browser blue link color or underline in any state (`link`, `visited`, `hover`, `focus`, `active`). Underlines are reserved for bare text links on light backgrounds only.
 
 ## Micro-interactions & Motion
 - Default animation timing: 150-200ms ease-out for hover/tap, 250ms ease-in-out for modal transitions. No animation should exceed 300ms.
@@ -95,6 +111,23 @@ Guidelines:
 - Provide descriptive aria labels for CTA buttons (e.g., "Assign Data Streams unit to class").
 - Lazy-load heavy data visualizations, but prefetch next-level hierarchy nodes to keep JobViz snappy. Keep core CSS under 150kb compressed; prefer CSS variables for theming.
 - For cache-only interactions (emoji ratings), show persistence expectations ("Saved on this device") and provide a reset control.
+
+### Readable Type Minimums (Enforced)
+- Body copy, instructional copy, and paragraph text: minimum 16px desktop, 15px mobile.
+- Helper/meta/supporting text: minimum 14px desktop, 13px mobile.
+- Button labels and links styled as buttons: minimum 14px in all breakpoints, weight 600+.
+- Warning/advisory messages: minimum 14px text, with adjacent icons at least 16px.
+- Line-height for paragraph/help text: minimum 1.4.
+- 12-13px text is only allowed for compact chips/badges/tokens and other non-instructional UI labels.
+- No component may reduce instructional text below these floors via media queries or `clamp()`.
+- PR review must include a smallest-rendered-text pass for all new/edited screens.
+
+## GP+ Tooling Pattern
+- GP+ controls must use a consistent premium treatment: thick Plus Blue border (`3px`), white surface, and `border-radius: 999px` for standalone buttons.
+- Clustered GP+ sections (for example, "GP Plus Functions") should include the `plus.png` mark in the section heading. Isolated GP+ actions should include the same mark in the button content.
+- Keep GP+ action language clear and task-first: `Browse`, `Copy All`, `Open`, `Authenticate`, then any secondary help text.
+- When a copied lesson folder exists, show a compact follow-up link with external-link icon and plain language (`My file versions`) instead of repeating heavy CTA styling.
+- Use `border-radius: 12px` for cards, panels, and grouped containers in GP+ areas.
 
 ## Shareability, Meta Tags, and SEO
 - **Titles & descriptions:** Keep `<title>` ≤60 chars and `<meta name="description">` between 140-160 chars with action-oriented copy for teachers. Highlight freemium benefits ("Free open-access lessons" vs. "GP+ editable pack").
@@ -121,6 +154,15 @@ Guidelines:
       "sparkleWhite": "#F0F4FF",
       "plusBlue": "#1826BC",
       "freeBlue": "#00ACEB"
+    },
+    "subject": {
+      "math": "#DB4125",
+      "ela": "#ECA14D",
+      "extra": "#F4F0D9",
+      "science": "#B798E8",
+      "socialStudies": "#633A9A",
+      "sustainability": "#349964",
+      "sel": "#0070DA"
     }
   },
   "typography": {
@@ -140,8 +182,8 @@ Guidelines:
     "xl": "40px"
   },
   "radii": {
-    "soft": "12px",
-    "pill": "999px"
+    "soft": "border-radius: 12px",
+    "pill": "border-radius: 999px"
   }
 }
 ```
@@ -158,6 +200,13 @@ Guidelines:
   --color-brand-sparkle-white: #f0f4ff;
   --color-brand-plus-blue: #1826bc;
   --color-brand-free-blue: #00aceb;
+  --color-subject-math: #db4125;
+  --color-subject-ela: #eca14d;
+  --color-subject-extra: #f4f0d9;
+  --color-subject-science: #b798e8;
+  --color-subject-social-studies: #633a9a;
+  --color-subject-sustainability: #349964;
+  --color-subject-sel: #0070da;
   --font-family-base: "Noto Sans","Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
   --radius-soft: 12px;
 }

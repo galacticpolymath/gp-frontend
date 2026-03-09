@@ -1,10 +1,13 @@
-/* eslint-disable quotes */
+ 
 
 import { NextApiRequest, NextApiResponse } from 'next';
+import JobTour from '../../../backend/models/JobTour';
 import { connectToMongodb } from '../../../backend/utils/connection';
 import { CustomError } from '../../../backend/utils/errors';
 import { updateJobTour } from '../../../backend/services/jobTourServices';
+import { getUserByEmail } from '../../../backend/services/userServices';
 import { IJobTour } from '../../../backend/models/JobTour';
+import { verifyJwt } from '../../../nondependencyFns';
 
 export type TJobUpdates = Partial<Omit<IJobTour, "_id" | "userId" | "isGP" | "lastEdited" | "createdDate">>;
 
@@ -31,13 +34,16 @@ export default async function handler(
             throw new CustomError('No `jobTourId` provided. Cannot update job tour.', 400);
         }
 
+        if (!updates || typeof updates !== "object") {
+            throw new CustomError('No updates provided; the `updates` object must have at least one property.', 400);
+        }
 
         if (!Object.keys(updates).length) {
             throw new CustomError('No updates provided; the `updates` object must have at least one property.', 400);
         }
 
-        if ("_id" in updates || "userId" in updates || "isGp" in updates || "lastEdited" in updates || "createdDate" in updates) {
-            throw new CustomError('Modifying the fields `_id`, `userId`, `isGp`, `lastEdited`, or `createdDate` is not allowed.', 400);
+        if ("_id" in updates || "userId" in updates || "isGp" in updates || "lastEdited" in updates || "createdDate" in updates || "ownerName" in updates) {
+            throw new CustomError('Modifying the fields `_id`, `userId`, `isGp`, `ownerName`, `lastEdited`, or `createdDate` is not allowed.', 400);
         }
 
         const { wasSuccessful: wasConnectionSuccessful } = await connectToMongodb(
@@ -49,6 +55,39 @@ export default async function handler(
 
         if (!wasConnectionSuccessful) {
             throw new CustomError('Failed to connect to the database.', 500);
+        }
+
+        const authorization = request?.headers?.authorization ?? '';
+        const authToken = authorization.split(' ').at(-1);
+
+        if (!authToken) {
+            throw new CustomError('Unable to extract user from JWT', 401);
+        }
+
+        const jwtVerified = await verifyJwt(authToken);
+        const userEmail = jwtVerified.payload?.email;
+
+        if (!userEmail) {
+            throw new CustomError('No email found in JWT payload.', 401);
+        }
+
+        const targetUser = await getUserByEmail(userEmail);
+
+        if (!targetUser?._id) {
+            throw new CustomError('No user found for the provided email address.', 404);
+        }
+
+        const targetTourResult = await JobTour.findById(jobTourId).lean();
+        const targetTour = Array.isArray(targetTourResult)
+            ? targetTourResult[0]
+            : targetTourResult;
+
+        if (!targetTour?._id) {
+            throw new CustomError('No matching job tour was found in the database.', 404);
+        }
+
+        if (String(targetTour.userId) !== String(targetUser._id)) {
+            throw new CustomError('You do not have permission to update this tour.', 403);
         }
 
         const { wasSuccessful, errMsg } = await updateJobTour(

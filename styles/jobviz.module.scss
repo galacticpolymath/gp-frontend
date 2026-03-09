@@ -1,0 +1,41 @@
+@import "./jobviz/preview-base";
+@import "./jobviz/hero";
+@import "./jobviz/grid-cards";
+@import "./jobviz/assignment-dock";
+@import "./jobviz/assignment-carousel";
+@import "./jobviz/selected-job-modal-core";
+@import "./jobviz/selected-job-modal-extended";
+@import "./jobviz/section-search";
+@import "./jobviz/page-shell-viewing";
+@import "./jobviz/animations-and-misc";
+
+/* Keep guardrail selectors in this file for direct style assertions. */
+.assignmentBannerDefault {
+  margin: 0;
+}
+
+.assignmentMobileWrapper {
+  margin-bottom: 0;
+}
+
+.assignmentMobileWrapper[data-collapsed="true"] {
+  margin-bottom: 0;
+}
+
+.assignmentScrollTipOverlay {
+  z-index: 1600;
+}
+
+.summaryModalRoot {
+  z-index: 12000080;
+}
+
+.summaryModalDialog {
+  margin-top: calc(
+    var(--jobviz-nav-offset, 0px) + var(--jobviz-assignment-offset, 0px) + 0.75rem
+  );
+  max-width: min(
+    860px,
+    calc(100vw - var(--jobviz-desktop-dock-width, 0px) - 2rem)
+  );
+}

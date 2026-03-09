@@ -13,8 +13,8 @@ export const JOBVIZ_TOURS_COLLECTION = "jobvizTours";
  * and return the stored tour so the UI can refresh immediately.
  */
 export const createJobVizTour = async (
-  payload: JobVizTourDraft,
-  ownerUserId: string
+  _payload: JobVizTourDraft,
+  _ownerUserId: string
 ): Promise<JobVizTour> => {
   await connectToMongodb();
   throw new Error("JobViz tour persistence is not implemented yet.");
@@ -25,9 +25,9 @@ export const createJobVizTour = async (
  * can only edit their own drafts.
  */
 export const updateJobVizTour = async (
-  tourId: string,
-  updates: Partial<JobVizTourDraft>,
-  ownerUserId: string
+  _tourId: string,
+  _updates: Partial<JobVizTourDraft>,
+  _ownerUserId: string
 ): Promise<JobVizTour> => {
   await connectToMongodb();
   throw new Error("JobViz tour persistence is not implemented yet.");
@@ -37,7 +37,7 @@ export const updateJobVizTour = async (
  * Lists every tour for a specific teacher so we can render the "My tours" view.
  */
 export const getJobVizToursByOwner = async (
-  ownerUserId: string
+  _ownerUserId: string
 ): Promise<JobVizTourSummary[]> => {
   await connectToMongodb();
   throw new Error("JobViz tour persistence is not implemented yet.");
@@ -47,7 +47,7 @@ export const getJobVizToursByOwner = async (
  * Exposes a published tour via its share slug so student assignment links can load it.
  */
 export const getJobVizTourBySlug = async (
-  slug: string
+  _slug: string
 ): Promise<JobVizTour | null> => {
   await connectToMongodb();
   throw new Error("JobViz tour persistence is not implemented yet.");

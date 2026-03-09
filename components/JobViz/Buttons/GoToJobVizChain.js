@@ -1,13 +1,13 @@
-/* eslint-disable react/jsx-curly-brace-presence */
-/* eslint-disable quotes */
- 
-/* eslint-disable semi */
-/* eslint-disable no-multiple-empty-lines */
  
  
-/* eslint-disable react/jsx-indent-props */
-/* eslint-disable indent */
-/* eslint-disable react/jsx-indent */
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
 
 import { Button } from 'react-bootstrap';
 import Fade from '../../Fade';

@@ -1,6 +1,6 @@
-/* eslint-disable react/jsx-indent-props */
-/* eslint-disable react/jsx-indent */
-/* eslint-disable indent */
+ 
+ 
+ 
 
 import { useContext } from 'react';
 import { Modal } from 'react-bootstrap';
@@ -28,6 +28,8 @@ const AccountModal = () => {
         clearCookies();
         signOut();
     };
+
+    const buildMyJobsUrl = () => "/jobviz?saved=1";
 
     return (
         <Modal
@@ -65,6 +67,15 @@ const AccountModal = () => {
 
                 >
                     View Account
+                </Button>
+                <Button
+                    handleOnClick={() => {
+                        handleOnHide();
+                        router.push(buildMyJobsUrl());
+                    }}
+                    classNameStr="no-btn-styles text-white txt-underline-on-hover py-2"
+                >
+                    My Jobs
                 </Button>
                 <Button
                     handleOnClick={handleSignOutBtnClick}

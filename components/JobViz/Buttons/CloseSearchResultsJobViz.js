@@ -1,10 +1,10 @@
-/* eslint-disable quotes */
  
-/* eslint-disable semi */
  
-/* eslint-disable react/jsx-indent-props */
-/* eslint-disable indent */
-/* eslint-disable react/jsx-indent */
+ 
+ 
+ 
+ 
+ 
 
 import { AiOutlineClose } from "react-icons/ai"
 

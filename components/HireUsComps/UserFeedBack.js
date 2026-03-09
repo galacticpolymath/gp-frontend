@@ -1,9 +1,9 @@
-/* eslint-disable quotes */
-/* eslint-disable semi */
  
-/* eslint-disable object-curly-spacing */
-/* eslint-disable indent */
-/* eslint-disable react/jsx-indent */
+ 
+ 
+ 
+ 
+ 
 import { useEffect, useRef } from "react"
 
 const UserFeedBack = ({ feedBack, index }) => {

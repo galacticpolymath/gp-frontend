@@ -1,0 +1,79 @@
+.unitPage {
+  --free-tier-blue: #2c83c3;
+  --free-tier-blue-soft: rgba(44, 131, 195, 0.14);
+  --free-tier-blue-surface: #eef7ff;
+  --materials-active-blue: #1669ac;
+  --sticky-offwhite: rgba(220, 233, 255, 0.9);
+  --unit-sticky-header-height: 0px;
+  --lesson-preview-sticky-top: calc(var(--portal-nav-offset, 0px) + var(--unit-sticky-header-height, 0px));
+  min-height: 100vh;
+  color: #1c2233;
+  font-family: var(--font-family-base, 'Noto Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
+  background: radial-gradient(circle at top, rgba(44, 131, 195, 0.18), transparent 45%),
+    linear-gradient(135deg, rgba(240, 244, 255, 0.96), rgba(255, 255, 255, 0.95));
+}
+
+.unitPageProcedureOnly {
+  background: #fff;
+}
+
+.unitTabFadeIn {
+  animation: unitTabFadeIn 300ms ease-out both;
+}
+
+@keyframes unitTabFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.searchInPageMatchFlash {
+  background: rgba(255, 226, 124, 0.78);
+  border-radius: 4px;
+  box-shadow: 0 0 0 2px rgba(255, 226, 124, 0.45);
+  transition: background-color 0.42s ease, box-shadow 0.42s ease;
+}
+
+.searchInPageMatchFade {
+  background-color: transparent;
+  box-shadow: none;
+}
+
+.unitMain {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 6px 16px 24px;
+  display: grid;
+  gap: 14px;
+}
+
+.unitMainOverview {
+  padding-top: 2px;
+  gap: 10px;
+}
+
+.unitStickyHeaderSpacer {
+  min-height: 140px;
+}
+
+@media (max-width: 767px) {
+  .unitMain {
+    padding-bottom: 132px;
+  }
+
+  .unitPageProcedureOnly .unitMain {
+    max-width: 800px;
+    padding: 24px 16px 36px;
+  }
+}
+
+@media (min-width: 1440px) {
+  .unitMain {
+    padding: 18px 0 118px;
+  }
+}

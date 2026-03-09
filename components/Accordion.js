@@ -1,4 +1,4 @@
-/* eslint-disable quotes */
+ 
  
 import PropTypes from 'prop-types';
 import { useEffect } from 'react';
@@ -53,7 +53,7 @@ const Accordion = ({
         setContentId(contentId.current);
       }
     }
-  }, []);
+  }, [setContentId, willUseGetId]);
 
   return (
     <div className={className}>

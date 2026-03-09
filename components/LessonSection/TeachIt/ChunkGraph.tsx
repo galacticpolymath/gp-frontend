@@ -1,6 +1,6 @@
-/* eslint-disable no-console */
-/* eslint-disable quotes */
-import React, { useRef, useEffect, useState } from "react";
+ 
+ 
+import React, { useRef, useEffect, useState, useCallback } from "react";
 import * as d3 from "d3";
 
 interface IProps {
@@ -17,17 +17,7 @@ export default function ChunkGraph({
   const container = useRef(null);
   const [didRendered, setDidRendered] = useState(false);
 
-  useEffect(() => {
-    if (!didRendered) {
-      setDidRendered(true);
-    }
-
-    if (didRendered) {
-      update();
-    }
-  }, [didRendered]);
-
-  function update() {
+  const update = useCallback(() => {
     if (durList === null || chunkNum === null) {
       console.error("`durList` or `chunkNum` cannot be null");
       return;
@@ -41,7 +31,7 @@ export default function ChunkGraph({
     const width = svgWidth - 5;
     const height = 70 + plotDisplace;
 
-    let svg = d3
+    const svg = d3
       .select(container.current)
       .append("svg")
       .attr("viewBox", `0 0 ${svgWidth} ${height}`)
@@ -59,13 +49,13 @@ export default function ChunkGraph({
     const range = [...Array(minutes + 1).keys()];
 
     // x coords for every bar and tick
-    let xcoords = [];
+    const xcoords = [];
     for (let i = 0; i < minutes + 1; i++) {
       xcoords[i] = range[i] * barSpacing + gap * i + endGap;
     }
 
     // x coords for numbers
-    let numCoords = [];
+    const numCoords = [];
     for (let i = 0; i < minutes + 1; i++) {
       if (i % 5 === 0 && i < 10) {
         numCoords.push({ value: i, coord: xcoords[i] });
@@ -167,7 +157,17 @@ export default function ChunkGraph({
       .attr("text-anchor", "middle")
       .attr("font-family", '"Montserrat", "Helvetica", "Arial", sans-serif')
       .attr("class", "chunkGraphTimeLabel");
-  }
+  }, [chunkNum, durList]);
+
+  useEffect(() => {
+    if (!didRendered) {
+      setDidRendered(true);
+    }
+
+    if (didRendered) {
+      update();
+    }
+  }, [didRendered, update]);
 
   return <div ref={container} className={className} />;
 }

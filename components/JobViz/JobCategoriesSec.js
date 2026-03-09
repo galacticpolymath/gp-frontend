@@ -1,13 +1,13 @@
-/* eslint-disable react/jsx-indent-props */
+ 
 
-/* eslint-disable react/jsx-max-props-per-line */
+ 
 
-/* eslint-disable quotes */
-/* eslint-disable react/jsx-wrap-multilines */
-/* eslint-disable react/jsx-indent */
-/* eslint-disable indent */
-/* eslint-disable no-multiple-empty-lines */
-/* eslint-disable semi */
+ 
+ 
+ 
+ 
+ 
+ 
 import { Button } from "react-bootstrap";
 import { MdAccountTree } from "react-icons/md";
 import { useRouter } from "next/router";
@@ -39,8 +39,10 @@ const JobCategoriesSec = ({ dynamicJobResults, currentHierarchyNum, resetSearch 
     const searchParamsStr = useSearchParams().toString();
     const { _selectedJob } = useContext(ModalContext);
     const [, setSelectedJob] = _selectedJob;
-    let jobResults = dynamicJobResults ?? startingJobResults;
-    jobResults = useMemo(() => sortJobResults(jobResults), [dynamicJobResults])
+    const jobResults = useMemo(
+        () => sortJobResults(dynamicJobResults ?? startingJobResults),
+        [dynamicJobResults]
+    );
 
     const handleMoreJobsBtnClick = (level, currentJobsCategoryId) => {
         const nextLevelHierarchyNum = (currentHierarchyNum + 1)
@@ -51,7 +53,7 @@ const JobCategoriesSec = ({ dynamicJobResults, currentHierarchyNum, resetSearch 
 
         resetSearch()
 
-        if (pathname == '/jobviz') {
+        if (pathname === '/jobviz') {
             const baseUrl = `${window.location.origin}/jobviz/${nextLevelHierarchyNum}/${level}/${currentJobsCategoryId}`
             const urlUpdated = searchParamsStr.length ? `${baseUrl}?${searchParamsStr}` : baseUrl;
             router.push(urlUpdated, null, { scroll: false, shallow: true })
@@ -62,7 +64,7 @@ const JobCategoriesSec = ({ dynamicJobResults, currentHierarchyNum, resetSearch 
 
         // TODO: handle the following case: the search-results parameter is not present in the url
 
-        let jobCategoryIds = [...query[`search-results`]]
+        const jobCategoryIds = [...query[`search-results`]]
         jobCategoryIds.splice(0, 2)
         jobCategoryIds.push(currentJobsCategoryId)
         const baseUrl = `${window.location.origin}/jobviz/${nextLevelHierarchyNum}/${level}/${jobCategoryIds.join('/')}`

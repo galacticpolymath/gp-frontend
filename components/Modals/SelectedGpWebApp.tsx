@@ -1,14 +1,14 @@
-/* eslint-disable quotes */
  
-/* eslint-disable indent */
+ 
+ 
  
 import Modal from "react-bootstrap/Modal";
 import { GiCancel } from "react-icons/gi";
 import Button from "../General/Button";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import CustomLink from "../CustomLink";
-import ForLessonTxt from "../LessonsPg/ForLessonTxt";
-import ForLessonTxtWrapper from "../LessonsPg/ForLessonTxtWrapper";
+import ForLessonTxt from "./shared/ForLessonTxt";
+import ForLessonTxtWrapper from "./shared/ForLessonTxtWrapper";
 import { UNITS_URL_PATH } from "../../shared/constants";
 import { TUseStateReturnVal } from "../../types/global";
 import { TWebAppForUI } from "../../backend/models/WebApp";
@@ -25,9 +25,9 @@ const SelectedGpWebApp = ({ _selectedGpWebApp, _isModalShown }: IProps) => {
   const [isOverImg, setIsOverImg] = useState(false);
   const [selectedGpWebApp, setSelectedGpWebApp] = _selectedGpWebApp;
 
-  const handleOnHide = () => {
+  const handleOnHide = useCallback(() => {
     setIsModalShown(false);
-  };
+  }, [setIsModalShown]);
 
   const handleOnMouseOver = () => {
     setIsOverImg(true);
@@ -43,7 +43,7 @@ const SelectedGpWebApp = ({ _selectedGpWebApp, _isModalShown }: IProps) => {
         setSelectedGpWebApp(null);
       }, 250);
     }
-  }, [isModalShown]);
+  }, [isModalShown, setSelectedGpWebApp]);
 
   useEffect(() => {
     const handleEscKeyPress = (event: KeyboardEvent) => {
@@ -51,11 +51,12 @@ const SelectedGpWebApp = ({ _selectedGpWebApp, _isModalShown }: IProps) => {
         handleOnHide();
       }
     };
+    window.addEventListener("keyup", handleEscKeyPress);
 
     return () => {
       window.removeEventListener("keyup", handleEscKeyPress);
     };
-  }, []);
+  }, [handleOnHide]);
 
   return (
     <Modal

@@ -1,8 +1,8 @@
-/* eslint-disable quotes */
  
-/* eslint-disable semi */
-/* eslint-disable no-console */
-/* eslint-disable indent */
+ 
+ 
+ 
+ 
 import { NextApiRequest, NextApiResponse } from "next";
 import { cacheGpUnitData } from "../../backend/services/cachedGpDataServices";
 import cache from "../../backend/utils/cache";

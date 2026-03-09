@@ -1,10 +1,10 @@
-/* eslint-disable react/jsx-curly-brace-presence */
-/* eslint-disable no-console */
-/* eslint-disable react/jsx-indent */
-/* eslint-disable quotes */
-/* eslint-disable react/jsx-indent-props */
-/* eslint-disable indent */
-import { useContext, useEffect } from "react";
+ 
+ 
+ 
+ 
+ 
+ 
+import { useCallback, useContext, useEffect } from "react";
 import CustomButton from '../../components/General/Button';
 import { Button, Modal } from "react-bootstrap";
 import {
@@ -59,7 +59,7 @@ const Notify = () => {
     const [notifyModal, setNotifyModal] = _notifyModal;
     const { bodyTxt, headerTxt, handleOnHide, bodyElements, closeBtnTxt } = notifyModal;
 
-    const openUserEntryModal = (setModal = setIsLoginModalDisplayed) => {
+    const openUserEntryModal = useCallback((setModal = setIsLoginModalDisplayed) => {
         const url = router.asPath;
         router.replace(url.split("?")[0]);
         setNotifyModal((state) => ({ ...state, isDisplayed: false }));
@@ -67,7 +67,7 @@ const Notify = () => {
             setNotifyModal(defautlNotifyModalVal);
             setModal(true);
         }, 350);
-    };
+    }, [router, setIsLoginModalDisplayed, setNotifyModal]);
     const closeModal = () => {
         if (typeof handleOnHide === "function") {
             handleOnHide();
@@ -81,7 +81,7 @@ const Notify = () => {
     };
 
     useEffect(() => {
-        let paramsStr = window.location.search.replace(/\?/, "");
+        const paramsStr = window.location.search.replace(/\?/, "");
         const params = paramsStr.split("=");
 
         if (
@@ -209,7 +209,14 @@ const Notify = () => {
                 router.replace(url.split("?")[0]);
             }, 300);
         }
-    }, [router.asPath]);
+    }, [
+        openUserEntryModal,
+        router,
+        router.asPath,
+        setIsCreateAccountModalDisplayed,
+        setIsLoginModalDisplayed,
+        setNotifyModal,
+    ]);
 
     return (
         <Modal
@@ -217,6 +224,7 @@ const Notify = () => {
             show={notifyModal.isDisplayed}
             onHide={closeModal}
             aria-labelledby="example-modal-sizes-title-sm"
+            centered
         >
             <Modal.Header>
                 <Modal.Title

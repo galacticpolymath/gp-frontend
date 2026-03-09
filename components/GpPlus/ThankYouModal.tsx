@@ -1,11 +1,11 @@
-/* eslint-disable quotes */
+ 
 
 import React from "react";
 import { Button, Modal } from "react-bootstrap";
 import Image from "next/image";
 import Wave from "react-wavify";
-import { FaCheckCircle, FaRocket, FaUsers } from "react-icons/fa";
-import Link from "next/link";
+import { FaCheckCircle, FaRocket, FaUsers as _FaUsers } from "react-icons/fa";
+import _Link from "next/link";
 import { useModalContext } from "../../providers/ModalProvider";
 
 interface ThankYouModalProps {

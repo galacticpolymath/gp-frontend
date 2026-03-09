@@ -1,7 +1,7 @@
-/* eslint-disable quotes */
-/* eslint-disable indent */
  
-/* eslint-disable react/jsx-indent */
+ 
+ 
+ 
 
 import PropTypes from "prop-types";
 import Accordion from "../../Accordion";
@@ -128,7 +128,7 @@ const StandardsGroup = (props) => {
                 >
                   {formatGrades(_grades, GradesOrYears)}
                   <div className="d-flex justify-content-center flex-column h-100 position-relative">
-                    {index == 0 && willShowArrow ? (
+                    {index === 0 && willShowArrow ? (
                       <ClickMeArrow
                         handleElementVisibility={handleElementVisibility}
                         willShowArrow={arrowContainer.isInView}

@@ -1,8 +1,8 @@
-/* eslint-disable quotes */
-/* eslint-disable no-console */
+ 
+ 
 import { useRouter } from "next/router";
 import LiNavDot from "./NavDots/LiNavDot";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import ClickMeArrow from "../ClickMeArrow";
 import throttle from "lodash.throttle";
 import { ISectionDots, TSetter, TUseStateReturnVal } from "../../types/global";
@@ -78,10 +78,10 @@ const LessonsSecsNavDots = ({
     if (!overviewSection?.isInView && arrowContainer.isInView) {
       setArrowContainer({ isInView: false, canTakeOffDom: false });
     }
-  }, [sectionDots]);
+  }, [arrowContainer.isInView, sectionDots]);
 
   useEffect(() => {
-    let url = router.asPath;
+    const url = router.asPath;
 
     if (targetSec && url.indexOf("#")) {
       targetSec.element.scrollIntoView({
@@ -97,13 +97,15 @@ const LessonsSecsNavDots = ({
       });
       setTargetSec(null);
     }
-  }, [targetSec]);
+  }, [router.asPath, targetSec]);
 
-  let timerForHandleDotClick: NodeJS.Timeout;
+  const timerForHandleDotClick = useRef<NodeJS.Timeout | null>(null);
   const [sectionId, setSectionId] = useState("");
 
   const handleDotClick = (sectionId: string) => {
-    clearTimeout(timerForHandleDotClick);
+    if (timerForHandleDotClick.current) {
+      clearTimeout(timerForHandleDotClick.current);
+    }
     const viewPortWidth = Math.max(
       document.documentElement.clientWidth || 0,
       window.innerWidth || 0
@@ -123,7 +125,7 @@ const LessonsSecsNavDots = ({
           }),
         };
       });
-      timerForHandleDotClick = setTimeout(() => {
+      timerForHandleDotClick.current = setTimeout(() => {
         setSectionDots((sectionDots) => {
           return {
             clickedSectionId: sectionId,
@@ -162,11 +164,13 @@ const LessonsSecsNavDots = ({
     });
   };
 
-  let timerForGoToSectionFn: NodeJS.Timeout;
+  const timerForGoToSectionFn = useRef<NodeJS.Timeout | null>(null);
 
   const goToSection = (sectionId: string) => {
-    clearTimeout(timerForGoToSectionFn);
-    timerForGoToSectionFn = setTimeout(() => {
+    if (timerForGoToSectionFn.current) {
+      clearTimeout(timerForGoToSectionFn.current);
+    }
+    timerForGoToSectionFn.current = setTimeout(() => {
       setSectionDots((sectionDots) => {
         return {
           clickedSectionId: sectionId,
@@ -209,7 +213,9 @@ const LessonsSecsNavDots = ({
 
   useEffect(() => {
     if (willScrollElemIntoView && sectionDots.clickedSectionId) {
-      clearTimeout(timerForGoToSectionFn);
+      if (timerForGoToSectionFn.current) {
+        clearTimeout(timerForGoToSectionFn.current);
+      }
       scrollSectionIntoView(sectionDots.clickedSectionId);
       setWillScrollElemIntoView(false);
 
@@ -238,12 +244,19 @@ const LessonsSecsNavDots = ({
           };
         });
 
-        timerForHandleDotClick = setTimeout(() => {
+        timerForHandleDotClick.current = setTimeout(() => {
           setIsScrollListenerOn(true);
         }, 1_000);
       }
     }
-  }, [willScrollElemIntoView]);
+  }, [
+    sectionDots.clickedSectionId,
+    sectionId,
+    setIsScrollListenerOn,
+    setSectionDots,
+    timerForGoToSectionFn,
+    willScrollElemIntoView,
+  ]);
 
   const liNavDotFns = { goToSection, handleDotClick, setSectionDots };
   let elementVisibililtyTimer: NodeJS.Timeout;

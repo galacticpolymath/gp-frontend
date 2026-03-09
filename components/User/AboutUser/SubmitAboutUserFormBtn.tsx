@@ -1,7 +1,8 @@
-/* eslint-disable no-console */
-/* eslint-disable quotes */
+/* eslint-disable no-alert */
  
-/* eslint-disable indent */
+ 
+ 
+ 
 
 import React from "react";
 import { useUserContext } from "../../../providers/UserProvider";
@@ -73,7 +74,7 @@ const SubmitAboutUserFormBtn: React.FC<IProps> = ({
       let aboutUserFormClone = structuredClone(aboutUserForm) as TAboutUserForm<
         Map<string, string> | object
       > & { isTeacherConfirmed?: boolean };
-      let {
+      const {
         country,
         zipCode,
         siteVisitReasonsCustom,
@@ -124,7 +125,6 @@ const SubmitAboutUserFormBtn: React.FC<IProps> = ({
         errors.set("schoolType", "This field is required.");
       }
 
-      console.log("subjectsTaughtCustom, sup there: ", subjectsTaughtCustom);
 
       if (isTeacher && !gradesType) {
         errors.set(
@@ -182,7 +182,7 @@ const SubmitAboutUserFormBtn: React.FC<IProps> = ({
         errors.set("country", "*Invalid country name.");
       } else if (
         country?.toLowerCase() === "united states" &&
-        (!zipCodeStr || zipCodeStr?.length == 0)
+        (!zipCodeStr || zipCodeStr?.length === 0)
       ) {
         errors.set("zipCode", "This field is required.");
       } else if (
@@ -356,7 +356,7 @@ const SubmitAboutUserFormBtn: React.FC<IProps> = ({
         error
       );
 
-      alert(
+      globalThis.alert?.(
         message
           ? `${response ? "From server:" : ""} ${message}. ${
               response?.data ?? ""

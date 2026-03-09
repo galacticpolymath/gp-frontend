@@ -1,5 +1,6 @@
 import * as React from "react";
-import styles from "../../../styles/jobvizBurst.module.scss";
+import Image from "next/image";
+import styles from "../../../styles/jobviz.module.scss";
 import {
   growthRange,
   totalLineItems,
@@ -55,10 +56,20 @@ const HeroForFreeUsers: React.FC<IHeroForFreeUsersProps> = ({
   return (
     <section
       className={`${styles.jobvizHero} ${className}`.trim()}
-      data-tone="burst"
+      data-tone="accent"
     >
       <div className={styles.jobvizHeroContent}>
         <div className={styles.jobvizHeroInner}>
+          <div className={styles.jobvizHeroLogo}>
+            <Image
+              src="/imgs/jobViz/jobviz_rocket_logo_white.svg"
+              alt="JobViz logo"
+              width={240}
+              height={80}
+              priority
+              style={{ width: "100%", height: "auto" }}
+            />
+          </div>
           <p className={styles.heroEyebrow}>JobViz Free Preview</p>
           <h1 className={styles.heroTitle}>JobViz Career Explorer (FREE)</h1>
           <p className={styles.heroSubtitle}>

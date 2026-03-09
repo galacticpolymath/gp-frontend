@@ -1,0 +1,100 @@
+.unitSection {
+  width: 100%;
+}
+
+.unitTabFadeIn {
+  animation: unitTabFadeIn 300ms ease-out both;
+}
+
+@keyframes unitTabFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.unitOverviewCardWide {
+  min-width: 0;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.27);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  padding: 12px;
+}
+
+.unitMutedText {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.5;
+  color: #6a7087;
+}
+
+.richTextBlock :global(p),
+.richTextBlock :global(li) {
+  margin: 0 0 6px;
+  font-size: 15px;
+  line-height: 1.45;
+  color: #4c5269;
+}
+
+.creditsLayout {
+  display: grid;
+  gap: 14px;
+}
+
+.creditsPanel {
+  display: grid;
+  gap: 8px;
+  padding: 10px;
+  border: 1px solid rgba(44, 131, 195, 0.14);
+  border-radius: 12px;
+  background: rgba(240, 244, 255, 0.66);
+}
+
+.creditsPanel h3 {
+  margin: 0;
+  font-size: 17px;
+  color: #1f355a;
+}
+
+.acknowledgmentsList,
+.versionNotes {
+  display: grid;
+  gap: 12px;
+}
+
+.acknowledgmentsList ul,
+.versionNotes ul {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.acknowledgmentEntry,
+.versionEntry {
+  display: grid;
+  gap: 6px;
+  padding: 9px;
+  border: 1px solid rgba(44, 131, 195, 0.12);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.78);
+}
+
+.acknowledgmentEntry h4,
+.versionEntry h4 {
+  margin: 0;
+  font-size: 15px;
+  color: #1f355a;
+}
+
+.versionMeta {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: #1f355a;
+}

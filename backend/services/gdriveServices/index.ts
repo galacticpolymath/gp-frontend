@@ -42,6 +42,24 @@ type TAppProperties = Record<
 
 export const ORIGINAL_ITEM_ID_FIELD_NAME = 'originalItemId';
 
+const getDriveListScopeParams = () => {
+  const sharedDriveId = process.env.GOOGLE_DRIVE_ID?.trim();
+
+  if (!sharedDriveId) {
+    throw new CustomError(
+      'GOOGLE_DRIVE_ID is required for template Shared Drive listing.',
+      500
+    );
+  }
+
+  return {
+    corpora: 'drive' as const,
+    driveId: sharedDriveId,
+    includeItemsFromAllDrives: true,
+    supportsAllDrives: true,
+  };
+};
+
 export class GDriveItem {
   name: string;
   appProperties?: TAppProperties;
@@ -202,15 +220,29 @@ export const getIsValidFileId = (id: unknown) =>
 
 export const createDrive = async (
   scopes: TGoogleAuthScopes[] = ['https://www.googleapis.com/auth/drive'],
-  clientOptions?: GoogleAuthOptions['clientOptions']
+  _clientOptions?: GoogleAuthOptions['clientOptions']
 ) => {
   const drive = google.drive('v3');
   const creds = new GoogleServiceAccountAuthCreds();
+  const normalizedPrivateKey = creds?.private_key?.replace(/\\n/g, '\n').replace(/"/g, '');
+  const hasRequiredCreds =
+    typeof creds.client_email === 'string' &&
+    !!creds.client_email &&
+    typeof normalizedPrivateKey === 'string' &&
+    !!normalizedPrivateKey;
+
+  if (!hasRequiredCreds) {
+    throw new CustomError(
+      'Google Drive service account credentials are missing. Set GDRIVE_WORKER_KEY and related service account env vars before creating a Drive client.',
+      500
+    );
+  }
+
   const auth = new google.auth.GoogleAuth({
     credentials: {
       client_email: creds.client_email,
       client_id: creds.client_id,
-      private_key: creds?.private_key?.replace(/\\n/g, '\n').replace(/"/g, ''),
+      private_key: normalizedPrivateKey,
     },
     scopes: scopes,
   });
@@ -578,7 +610,7 @@ export const getFolderChildItems = async (
   rootDriveFolders: drive_v3.Schema$File[]
 ) => {
   const drive = await createDrive();
-  let unitFolders: TUnitFolder[] = rootDriveFolders.map((folder) => ({
+  const unitFolders: TUnitFolder[] = rootDriveFolders.map((folder) => ({
     name: folder.name,
     id: folder.id,
     mimeType: folder.mimeType,
@@ -596,10 +628,7 @@ export const getFolderChildItems = async (
       unitFolder.pathToFile !== ''
     ) {
       const { data } = await drive.files.list({
-        corpora: 'drive',
-        includeItemsFromAllDrives: true,
-        supportsAllDrives: true,
-        driveId: process.env.GOOGLE_DRIVE_ID,
+        ...getDriveListScopeParams(),
         q: `'${unitFolder.id}' in parents`,
       });
 
@@ -689,10 +718,7 @@ export const getFolderChildItems = async (
 
     if (unitFolder?.mimeType?.includes('folder')) {
       const folderDataResponse = await drive.files.list({
-        corpora: 'drive',
-        includeItemsFromAllDrives: true,
-        supportsAllDrives: true,
-        driveId: process.env.GOOGLE_DRIVE_ID,
+        ...getDriveListScopeParams(),
         q: `'${unitFolder.id}' in parents`,
       });
 
@@ -729,7 +755,7 @@ export const getFolderChildItems = async (
         for (const folderNameAndOccurrences of Object.entries(
           foldersOccurrenceObj
         )) {
-          let [folderName, occurrences] = folderNameAndOccurrences;
+          const [folderName, occurrences] = folderNameAndOccurrences;
 
           if (
             occurrences.length === 1 ||
@@ -815,10 +841,7 @@ export const getTargetFolderChildItems = async (
 ) => {
   try {
     const gdriveResponse = await drive.files.list({
-      corpora: 'drive',
-      includeItemsFromAllDrives: true,
-      supportsAllDrives: true,
-      driveId: process.env.GOOGLE_DRIVE_ID,
+      ...getDriveListScopeParams(),
       q: `'${unitId}' in parents`,
       fields: '*',
     });
@@ -1024,16 +1047,24 @@ export const getGDriveItemViaServiceAccount = async (
 };
 
 export const getUnitGDriveChildItems = async (unitId: string) => {
+  const creds = new GoogleServiceAccountAuthCreds();
+  const hasDriveId = typeof process.env.GOOGLE_DRIVE_ID === 'string' && !!process.env.GOOGLE_DRIVE_ID;
+  const hasPrivateKey = typeof creds.private_key === 'string' && !!creds.private_key;
+
+  if (!hasDriveId || !hasPrivateKey) {
+    console.warn(
+      'Skipping getUnitGDriveChildItems because Google Drive credentials are not configured in this environment.'
+    );
+    return [];
+  }
+
   try {
     const drive = await createDrive();
 
     console.log(`Getting the GDrive child items for the unit: ${unitId}`);
 
     const gdriveResponse = await drive.files.list({
-      corpora: 'drive',
-      includeItemsFromAllDrives: true,
-      supportsAllDrives: true,
-      driveId: process.env.GOOGLE_DRIVE_ID,
+      ...getDriveListScopeParams(),
       q: `'${unitId}' in parents`,
       fields: '*',
     });
@@ -1311,10 +1342,7 @@ export const createUnitFolder = async (
 
   const drive = await createDrive();
   const gdriveResponse = await drive.files.list({
-    corpora: 'drive',
-    includeItemsFromAllDrives: true,
-    supportsAllDrives: true,
-    driveId: process.env.GOOGLE_DRIVE_ID,
+    ...getDriveListScopeParams(),
     q: `'${unit.sharedGDriveId}' in parents`,
     fields: '*',
   });
@@ -1474,11 +1502,8 @@ export const shareFilesWithUser = async (
         },
         fileId: fileId,
         fields: '*',
-        corpora: 'drive',
-        includeItemsFromAllDrives: true,
         supportsAllDrives: true,
         sendNotificationEmail: false,
-        driveId: process.env.GOOGLE_DRIVE_ID,
       });
     });
     const shareFileResults = await Promise.all(shareFilePromises);
@@ -1520,11 +1545,8 @@ export const shareFileWithUser = async (
       },
       fileId: fileId,
       fields: '*',
-      corpora: 'drive',
-      includeItemsFromAllDrives: true,
       supportsAllDrives: true,
       sendNotificationEmail: false,
-      driveId: process.env.GOOGLE_DRIVE_ID,
     });
 
     return permissionUpdateResult as unknown as {
@@ -1778,7 +1800,7 @@ export const copyFiles = async (
   sharedGDriveLessonsFolderId: string
 ) => {
   let wasJobSuccessful = true;
-  let fileCopies: TFilesToRename = [];
+  const fileCopies: TFilesToRename = [];
 
   // check if the permission were propagated to all of the files to copy
   for (const fileToCopy of filesToCopy) {

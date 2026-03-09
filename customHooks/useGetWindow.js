@@ -12,7 +12,7 @@ const useGetWindow = () => {
       ...window.location,
     };
     setAppWindow(appWindow);
-  }, []);
+  }, [router]);
 
   return appWindow;
 };

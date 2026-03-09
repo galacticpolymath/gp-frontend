@@ -1,6 +1,6 @@
-/* eslint-disable indent */
-/* eslint-disable quotes */
-/* eslint-disable react/jsx-indent */
+ 
+ 
+ 
 const ORTxtDivider = ({
     color = 'white',
     orWidth = '4%',

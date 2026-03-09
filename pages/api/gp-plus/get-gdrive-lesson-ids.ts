@@ -9,7 +9,7 @@ import {
   getGDriveItem,
   getUserChildItemsOfFolder,
 } from '../../../backend/services/gdriveServices';
-import { drive_v3 } from 'googleapis';
+import { drive_v3 as _drive_v3 } from 'googleapis';
 import { ILessonGDriveId } from '../../../backend/models/User/types';
 import { TUserGDriveData } from '../../../components/LessonSection/TeachIt/TeachItUI';
 
@@ -35,7 +35,7 @@ const getAllLatestUserItemIdsOfLessonFolders = async (
 ) => {
   try {
     const userLessonItemsLatestVersion: TUserLessonItemsLatestVersion = new Map();
-    let retrieveLessonItemsResults = await Promise.all(lessonFolderIds.flatMap(async lessonFolderId => {
+    const retrieveLessonItemsResults = await Promise.all(lessonFolderIds.flatMap(async lessonFolderId => {
       const childItemsRetrievedResult = await getAllChildItemsOfFolder(lessonFolderId, gdriveAccessToken, gdriveRefreshToken, clientOrigin, 3)
 
       if ("didErr" in childItemsRetrievedResult) {
@@ -113,7 +113,6 @@ const getUserLessonDriveFolders = async (lessonDriveIds: ILessonGDriveId[], grad
         clientOrigin
       );
 
-      console.log('gdriveItem, sup there: ', gdriveItem);
 
       if (
         !('id' in gdriveItem && gdriveItem.id && !gdriveItem.labels.trashed)

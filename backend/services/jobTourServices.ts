@@ -1,5 +1,5 @@
-/* eslint-disable no-console */
-import { DeleteResult, ProjectionType } from 'mongoose';
+ 
+import { DeleteResult as _DeleteResult , ProjectionType } from 'mongoose';
 import { IJobTour } from '../models/JobTour';
 import JobTour from '../models/JobTour';
 import { TJobUpdates } from '../../pages/api/job-tours/update';
@@ -37,13 +37,20 @@ const insertJobTour = async (jobTour: TJobTourToInsert) => {
     }
 };
 
-const deleteJobTourById = async (_ids: string[]) => {
+const deleteJobTourById = async (_id: string) => {
     try {
-        console.log('Attempting to delete job tour with _id:', _ids);
+        console.log('Attempting to delete job tour with _id:', _id);
 
-        const deletionResult = await JobTour.deleteOne({ _id: { $in: _ids } });
+        const deletionResult = await JobTour.deleteOne({ _id });
 
         console.log('deletionResult: ', deletionResult);
+
+        if (deletionResult.deletedCount !== 1) {
+            return {
+                status: 404,
+                msg: 'No matching job tour was found in the database.',
+            };
+        }
 
         return {
             status: 200,
@@ -72,10 +79,11 @@ const retrieveJobTours = async (
             );
         }
 
-        const isFilterObjValid = "userId" in filterObj || "heading" in filterObj
+        const isFilterObjValid =
+            "userId" in filterObj || "heading" in filterObj || "_id" in filterObj
 
         if (!isFilterObjValid) {
-            throw new Error('Retrieval is only allowed when filtering by userId or heading.');
+            throw new Error('Retrieval is only allowed when filtering by userId, heading, or _id.');
         }
 
         if ("heading" in filterObj) {
@@ -86,6 +94,18 @@ const retrieveJobTours = async (
             }
 
             const jobTours = await JobTour.find(filterObjCustom, projectionObj)
+                .sort(sort ?? {})
+                .limit(limit)
+                .lean();
+
+            return { wasSuccessful: true, data: jobTours as IJobTour[] };
+        }
+
+        if ("_id" in filterObj) {
+            const jobTours = await JobTour.find(
+                { _id: { $eq: filterObj._id } },
+                projectionObj
+            )
                 .sort(sort ?? {})
                 .limit(limit)
                 .lean();
@@ -132,7 +152,7 @@ const updateJobTour = async (
             throw new Error('No `jobTourId` provided. Cannot update job tour.');
         }
 
-        const { modifiedCount, matchedCount } = await JobTour.updateMany(
+        const { modifiedCount, matchedCount } = await JobTour.updateOne(
             filterObj,
             {
                 $set: { ...updatedProps, lastEdited: new Date() },

@@ -1,6 +1,6 @@
-/* eslint-disable quotes */
 
-/* eslint-disable no-console */
+
+
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import getCanUserWriteToDb from "../services/dbAuthService";
@@ -29,7 +29,7 @@ import NodeCache from "node-cache";
 import { addUserToEmailList } from "../services/emailServices";
 import User from "../models/User/index";
 import { getGpPlusMembership } from "../services/outsetaServices";
-import { HAS_MEMBERSHIP_STATUSES } from "../../pages/api/get-user-account-data";
+import { isActiveGpPlusMembership } from "../services/outsetaServices";
 
 const VALID_FORMS = ["createAccount", "login"];
 export const cache = new NodeCache({ stdTTL: 60 * 60 * 3 });
@@ -206,6 +206,9 @@ export const authOptions = {
             formType,
             isOnMailingList,
             clientUrl,
+            accountType,
+            classCode,
+            dateOfBirth,
           } = credentials;
           /** @type { import('../models/User').TUserSchema } */
           const dbUser = await getUserByEmail(email);
@@ -283,6 +286,35 @@ export const authOptions = {
 
           console.log("Creating the new user...");
 
+          const isStudentAccount = accountType === "student";
+          let normalizedDateOfBirth = null;
+          if (isStudentAccount) {
+            normalizedDateOfBirth = dateOfBirth ? new Date(dateOfBirth) : null;
+            if (
+              !normalizedDateOfBirth ||
+              Number.isNaN(normalizedDateOfBirth.getTime())
+            ) {
+              throw new AuthError(
+                "invalidStudentBirthDate",
+                422,
+                callbackUrl ?? ""
+              );
+            }
+            const now = new Date();
+            const minBirthDate = new Date(
+              now.getFullYear() - 13,
+              now.getMonth(),
+              now.getDate()
+            );
+            if (normalizedDateOfBirth > minBirthDate) {
+              throw new AuthError(
+                "underageAccountNotAllowed",
+                403,
+                callbackUrl ?? ""
+              );
+            }
+          }
+
           const hashedPassword = hashPassword(
             password,
             createSalt(),
@@ -296,9 +328,20 @@ export const authOptions = {
             firstName,
             lastName,
             provider: "credentials",
-            roles: ["user"],
+            roles: isStudentAccount ? ["user", "student"] : ["user"],
             totalSignIns: 1,
+            accountType: accountType,
             lastSignIn: new Date(),
+            ...(isStudentAccount
+              ? {
+                classCode:
+                  typeof classCode === "string" && classCode.trim()
+                    ? classCode.trim()
+                    : undefined,
+                dateOfBirth: normalizedDateOfBirth,
+              }
+              : {
+              }),
           };
           const newUserDoc = createDocument(userDocumentToCreate, User);
 
@@ -372,14 +415,15 @@ export const authOptions = {
         if (!targetUser) {
           throw new Error("The target user doesn't exist.");
         }
+        const resolvedPicture = picture ?? targetUser?.picture ?? "";
 
         const canUserWriteToDb = await getCanUserWriteToDb(email);
-        const gpPlusMembership = await getGpPlusMembership(
-          targetUser.outsetaAccountEmail
-        );
-        const hasGpPlusMembership = HAS_MEMBERSHIP_STATUSES.has(
-          gpPlusMembership.AccountStageLabel
-        );
+        const gpPlusLookupEmail =
+          targetUser.outsetaAccountEmail || targetUser.email || email;
+        const gpPlusMembership = gpPlusLookupEmail
+          ? await getGpPlusMembership(gpPlusLookupEmail)
+          : { AccountStageLabel: "NonMember" };
+        const hasGpPlusMembership = isActiveGpPlusMembership(gpPlusMembership);
 
         console.log("hasGpPlusMembership: ", hasGpPlusMembership);
 
@@ -391,7 +435,7 @@ export const authOptions = {
             hasGpPlusMembership,
             roles: allowedRoles,
             name,
-            picture,
+            picture: resolvedPicture,
             userId: targetUser._id,
           },
           secret,
@@ -403,7 +447,7 @@ export const authOptions = {
             hasGpPlusMembership,
             roles: allowedRoles,
             name,
-            picture,
+            picture: resolvedPicture,
             userId: targetUser._id,
           },
           secret,
@@ -494,6 +538,22 @@ export const authOptions = {
             code ?? 500,
             urlErrorParamKey ?? "",
             urlErrorParamVal ?? ""
+          );
+        }
+
+        if (errType === "invalidStudentBirthDate") {
+          throw new SignInError(
+            "invalid-student-birthdate",
+            "Please provide a valid date of birth.",
+            code ?? 422
+          );
+        }
+
+        if (errType === "underageAccountNotAllowed") {
+          throw new SignInError(
+            "student-under-13-not-allowed",
+            "Students under 13 cannot create self-serve accounts.",
+            code ?? 403
           );
         }
 
@@ -603,9 +663,8 @@ export const authOptions = {
         }
 
         return param?.user?.redirectUrl
-          ? `${param.user.redirectUrl}/?signin-err-type=${
-              type ?? "sign-in-error"
-            }`
+          ? `${param.user.redirectUrl}/?signin-err-type=${type ?? "sign-in-error"
+          }`
           : `/?signin-err-type=${type ?? "sign-in-error"}`;
       } finally {
         if (!wasUserCreated && isDbConnected) {
@@ -647,7 +706,11 @@ export const authOptions = {
       /**
        * @type {{ email: string, roles: string[], name: { first: string, last: string }, picture: string }}
        */
-      let { email, roles, name, picture } = token.payload;
+      const { email, roles } = token?.payload ?? {};
+      let { name, picture } = token?.payload ?? {};
+      if (!email) {
+        return Promise.resolve(session);
+      }
       const targetUser = cache.get(email) ?? {};
       let isTeacher = false;
       let occupation = null;
@@ -655,6 +718,7 @@ export const authOptions = {
 
       if (targetUser && targetUser.occupation && targetUser.name) {
         occupation = targetUser.occupation;
+        picture = picture ?? targetUser.picture ?? "";
         name = {
           first: targetUser.firstName ?? targetUser?.name?.first,
           last: targetUser.lastName ?? targetUser?.name?.last,
@@ -670,6 +734,7 @@ export const authOptions = {
         }
 
         occupation = dbUser.occupation ?? null;
+        picture = picture ?? dbUser.picture ?? "";
         name =
           {
             first: dbUser.firstName ?? dbUser?.name?.first,

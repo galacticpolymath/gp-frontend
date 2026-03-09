@@ -133,11 +133,6 @@ const useHandleOpeningGpPlusAccount = (
       const outseta = (window as any).Outseta;
       let idToken = outseta.getAccessToken() as string | null;
 
-      console.log(
-        'userAccount?.gpPlusSubscription, sup there: ',
-        userAccount?.gpPlusSubscription
-      );
-
       if (
         !idToken &&
         userAccount &&
@@ -170,7 +165,7 @@ const useHandleOpeningGpPlusAccount = (
         setWasGpPlusBtnClicked(false);
       }
     }
-  }, [isFetching]);
+  }, [gpPlusSubscription, setNotifyModal]);
 
   useEffect(() => {
     const url = new URL(window.location.href);
@@ -188,7 +183,6 @@ const useHandleOpeningGpPlusAccount = (
       (gpPlusSubscription?.membership?.AccountStageLabel === 'Subscribing' ||
         gpPlusSubscription?.membership?.AccountStageLabel === 'Cancelling')
     ) {
-      console.log('hi there will click the gp plus button...');
       setWasGpPlusBtnClicked(true);
 
       setTimeout(() => {
@@ -196,7 +190,7 @@ const useHandleOpeningGpPlusAccount = (
         setWasGpPlusBtnClicked(false);
       }, 500);
     }
-  }, [status]);
+  }, [gpPlusSubscription?.membership?.AccountStageLabel, status]);
 
   return {
     handleGpPlusAccountBtnClick,

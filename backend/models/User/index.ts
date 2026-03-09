@@ -1,4 +1,4 @@
-/* eslint-disable quotes */
+
 import Mongoose from "mongoose";
 import { ILessonGDriveId, IUnitGDriveLesson, IUserSchema, TUserSchemaV2 } from "./types";
 
@@ -63,8 +63,8 @@ export const UserSchemaDeprecatedV1 = new Schema<IUserSchema>(
       selection: String,
     },
     institution: String,
-    gradesType: String, 
-    gradesTaught: [String], 
+    gradesType: String,
+    gradesTaught: [String],
     schoolTypeOther: String,
     schoolTypeDefaultSelection: String,
     referredByDefault: String,
@@ -113,7 +113,9 @@ export const UserSchema = new Schema<TUserSchemaV2>(
     email: { type: String, required: true, unique: true },
     outsetaAccountEmail: { type: String, unique: true },
     mailingListConfirmationEmailId: { type: String, required: false },
+    savedJobIds: [String],
     willNotShowEmailNewsLetterSignUpModal: Boolean,
+    displayName: String,
     password: {
       hash: { type: String, required: false },
       salt: { type: String, required: false },
@@ -123,6 +125,9 @@ export const UserSchema = new Schema<TUserSchemaV2>(
     gpPlusDriveFolderId: String,
     unitGDriveLessons: [UnitGDriveLessons],
     isTeacher: { type: Boolean, required: true, default: () => false },
+    accountType: { type: String, enum: ["teacher", "student", "scientist"], required: false },
+    classCode: { type: String, required: false },
+    dateOfBirth: { type: Date, required: false },
     providerAccountId: String,
     emailVerified: { type: Date, required: false },
     firstName: {
@@ -145,8 +150,8 @@ export const UserSchema = new Schema<TUserSchemaV2>(
     zipCode: String,
     institution: String,
     willShowGpPlusCopyLessonHelperModal: { type: Boolean, default: true },
-    gradesType: String, 
-    gradesTaught: [String], 
+    gradesType: String,
+    gradesTaught: [String],
     schoolTypeOther: String,
     schoolTypeDefaultSelection: String,
     referredByDefault: String,

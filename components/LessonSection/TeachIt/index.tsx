@@ -1,6 +1,6 @@
-/* eslint-disable no-console */
-/* eslint-disable quotes */
-/* eslint-disable indent */
+ 
+ 
+ 
 
 import React, {
   useState,
@@ -25,7 +25,7 @@ import {
   ITeachingMaterialsDataForUI,
 } from "../../../backend/models/Unit/types/teachingMaterials";
 import { ILessonForUI } from "../../../types/global";
-import TeachItUI, { THandleOnChange } from "./TeachItUI";
+import TeachItUI, { THandleOnChange as _THandleOnChange } from "./TeachItUI";
 
 export const GRADE_VARIATION_ID = "gradeVariation";
 
@@ -102,10 +102,10 @@ export const DisplayLessonTile: React.FC<IDisplayLessonTileProps> = ({
 };
 
 const TeachIt: React.FC<TeachItProps> = (props) => {
-  let {
+  const {
     _sectionDots,
     SectionTitle,
-    ForGrades,
+    ForGrades: initialForGrades,
     GradesOrYears,
     classroom,
     unitDur,
@@ -116,7 +116,8 @@ const TeachIt: React.FC<TeachItProps> = (props) => {
     unitId,
     itemsOfLessons
   } = props;
-  let Data = props?.Data ?? props;
+  let ForGrades = initialForGrades;
+  const Data = props?.Data ?? props;
   const [, setSectionDots] = _sectionDots;
   const ref = useRef(null);
 
@@ -131,7 +132,7 @@ const TeachIt: React.FC<TeachItProps> = (props) => {
       : [];
 
     return environments;
-  }, []);
+  }, [Data]);
   let gradeVariations:
     | IResource<ILessonForUI>[]
     | undefined
@@ -169,7 +170,7 @@ const TeachIt: React.FC<TeachItProps> = (props) => {
   }
   const [selectedGradeResources, setSelectedGradeResources] =
     useState<ILink | null>(allResources?.[0]?.links ?? ({} as ILink));
-  const handleOnChangeForNewUnitResources = (
+  const _handleOnChangeForNewUnitResources = (
     selectedGrade: IResource<INewUnitLesson>
   ) => {
     setSelectedGradeResources(selectedGrade.links as ILink);
@@ -183,7 +184,7 @@ const TeachIt: React.FC<TeachItProps> = (props) => {
       : ({} as IResource<ILessonForUI>)
   );
 
-  let resources = allResources?.length
+  const resources = allResources?.length
     ? allResources.find(
       ({ gradePrefix }) => gradePrefix === selectedGrade.gradePrefix
     )
@@ -206,7 +207,7 @@ const TeachIt: React.FC<TeachItProps> = (props) => {
     dataLesson = Data.lesson;
   }
 
-  let parts = selectedGrade.lessons ?? [];
+  const parts = selectedGrade.lessons ?? [];
 
   useEffect(() => {
     const lessonPartPath = window.location.href.split("#").at(-1);
@@ -244,7 +245,7 @@ const TeachIt: React.FC<TeachItProps> = (props) => {
         }),
       }));
     }
-  }, []);
+  }, [parts.length, setSectionDots]);
 
   // the user clicks on lesson to copy
   // todo: fx BUG: the wrong lesson folder is being presented onto the ui

@@ -1,11 +1,11 @@
-/* eslint-disable react/jsx-indent */
-/* eslint-disable react/jsx-indent-props */
-/* eslint-disable indent */
  
-/* eslint-disable react/jsx-wrap-multilines */
  
-/* eslint-disable semi */
-/* eslint-disable quotes */
+ 
+ 
+ 
+ 
+ 
+ 
 
 import { useMemo, useState } from "react";
 

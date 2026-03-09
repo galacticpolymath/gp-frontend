@@ -1,5 +1,5 @@
-/* eslint-disable no-console */
-/* eslint-disable indent */
+ 
+ 
 import { PROJECTED_LESSONS_FIELDS } from '../../globalVars';
 import Lessons from '../models/lesson';
 import { connectToMongodb } from '../utils/connection';
@@ -12,7 +12,7 @@ export const getUnits = async (projectedFields = PROJECTED_LESSONS_FIELDS) => {
             true,
         );
 
-        let units = await Lessons.find({}, projectedFields).sort({ ReleaseDate: -1 }).lean();
+        const units = await Lessons.find({}, projectedFields).sort({ ReleaseDate: -1 }).lean();
 
         return units;
     } catch (error) {

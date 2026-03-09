@@ -15,6 +15,7 @@ import {
 import { StandardsSchema } from './Standards';
 import { ITargetStandardsCode } from './types/standards';
 import { JobViz } from './JobViz';
+import { AuthorsSection } from './Authors';
 
 type TUnitSections = {
   overview: typeof UnitOverview;
@@ -24,11 +25,15 @@ type TUnitSections = {
   acknowledgments: typeof Acknowledgments;
   background: typeof GeneralSection;
   feedback: typeof GeneralSection;
+  /**
+   * @deprecated This field is deprecated and will be removed in future versions. Use `authors` instead
+   */
   credits: typeof GeneralSection;
   extensions: typeof GeneralSection;
   bonus: typeof GeneralSection;
   versions: typeof VersionNotes;
   jobvizConnections: typeof JobViz
+  authors: typeof AuthorsSection
 };
 
 let Units = models.units as Model<INewUnitSchema, {}, {}, {}, any, any>;
@@ -99,6 +104,7 @@ if (!Units) {
     bonus: GeneralSection,
     versions: VersionNotes,
     jobvizConnections: JobViz,
+    authors: AuthorsSection
   };
   const Unit = new Schema<INewUnitSchema>({
     _id: { type: String, required: true },

@@ -1,0 +1,470 @@
+﻿Goal: 
+Create a new GP+ function: the ability to create Jobiz Career Tours.
+
+
+Details:
+UX:
+1. Teachers will see a new section on the homepage, a new tab “JobViz”, and content type: “Job Tours”
+2. We already have prebuilt tours associated with all our units, that have a generic assignment. We want teachers to be able to build their own tours and share them (optionally) with other teachers in our community. So we’re not only building a new function, but need to create a new upsell section on the homepage and a way for teachers to explore jobviz tours (via a new tab and content type nested under search).
+3. We also need to design buttons that allow teachers to create, copy/fork, and save their tours, either from scratch or using one of our pre-made tours or another teacher’s tour in the public gallery as a template.
+4. Editing should be through a new “editing mode” that only GP+ members can enter, that takes advantage of the top- and side-dock panels to “collect/bookmark” jobs for the tour.
+5. In editing mode, we should have the little dots in the upper right of cards (and card detail modals) be clickable. A tooltip should explain the dot button “Click to add job to tour”. When clicked it should turn bright, as it looks on the current tours and animate into the Jobs Tour Assignment panel. These get mapped to “selectedJobs”
+6. The panel should have a few fields above the collected jobs for teachers to customize their tours. These items should be stored with user data on MongoDB via the API when saved:
+   1. Field for: “heading”, which should be labeled “Title”, placeholder text=”What is this job tour?”
+   2. Dropdown for “whoCanSee”: options "just-teachers" | "me" | "everyone".
+   3. Field for: “explanation”, which should be labeled “Classroom Context”, placeholder text=”(Optional) When in the school year or how might this be useful to implement?”
+   4. classSubject: Dropdown, with optional Other category that opens up a new field to enter custom subject. Default options (should be alphabetized: Science, Math, ELA, Social Studies
+   5. gradeLevel: Dropdown, options: Upper elementary, middle school, high school, college
+   6. Field for “tags”. Placeholder: “Add tags, separated by commas”
+   7. Field for “Assignment”: Placeholder: “Describe for students what you want them to do”
+   8. Dropdown of checkboxes for “gpUnitsAssociated”. Should be autopopulated with Titles of GP units.
+   9. Save button at the bottom will connect to API.
+7. Once saved, job tours should show up in a new “My JobViz Tours” section in the /account page.
+8. All unit tours and publicly shared tours of other users should be searchable.
+9. “isGP” should be a boolean controlled by whether it’s a premade Unit tour or a tour built by user matt@galacticpolymath.com, with ability to add other users in the future.
+
+
+
+================================================================================
+JOB-TOURS API ROUTES DOCUMENTATION
+================================================================================
+
+
+This document describes the request and response structures for all job-tours API routes.
+
+
+================================================================================
+1. GET /api/job-tours/get
+================================================================================
+
+
+HTTP Method: GET
+
+
+REQUEST STRUCTURE:
+------------------
+Query Parameters (all optional):
+  - filterObj: string (JSON stringified object)
+    Description: MongoDB filter object to filter job tours
+    Example: '{"userId": "user-123"}' or '{"heading": "Medical jobs"}'
+    Note: Must be a non-array object when parsed
+    IMPORTANT: Retrieval is only allowed when filtering by userId or heading
+  
+  - projectionsObj: string (JSON stringified object)
+    Description: MongoDB projection object to specify which fields to return
+    Example: '{"heading": 1, "classSubject": 1, "tags": 1}'
+    Note: Must be a non-array object when parsed
+  
+  - dbType: string ('dev' | 'production')
+    Description: Database type to connect to
+    Optional: Yes
+  
+  - limit: string (number as string)
+    Description: Maximum number of results to return
+    Example: "10"
+    Note: Parsed as integer, 0 means no limit
+  
+  - sort: string (JSON stringified object)
+    Description: MongoDB sort object
+    Example: '{"createdDate": -1}' (descending by createdDate)
+    Note: Values can be 1, -1, 'asc', 'desc', 'ascending', 'descending'
+
+
+Example Request:
+  GET /api/job-tours/get?filterObj={"userId":"user-123"}&limit=10&sort={"createdDate":-1}
+  
+Note: When filtering by heading, the search is case-insensitive and uses regex matching.
+
+
+SUCCESSFUL RESPONSE (200):
+--------------------------
+{
+  "jobTours": [
+    {
+      "_id": "string",
+      "userId": "string",
+      "createdDate": "2024-01-01T00:00:00.000Z",
+      "lastEdited": "2024-01-01T00:00:00.000Z",
+      "version": "1.4.20250528",
+      "publishedDate": "2024-01-01T00:00:00.000Z" | null,
+      "isGP": boolean,
+      "whoCanSee": "just-teachers" | "me" | "everyone",
+      "classSubject": "string",
+      "gradeLevel": "string",
+      "tags": ["string"],
+      "gpUnitsAssociated": ["string"],
+      "explanation": "string",
+      "heading": "string",
+      "assignment": "string",
+      "selectedJobs": ["string"]
+    }
+  ]
+}
+
+
+ERROR RESPONSES:
+---------------
+Status 400 - Bad Request:
+{
+  "msg": "Error message: `projectionsObj` must be an non-array object."
+}
+OR
+{
+  "msg": "Error message: `dbFilter` must be an non-array object."
+}
+
+
+Status 404 - Not Found:
+{
+  "msg": "Error message: This route only accepts GET requests."
+}
+
+
+Status 500 - Internal Server Error:
+{
+  "msg": "Error message: Failed to connect to the database."
+}
+OR
+{
+  "msg": "Error message: Retrieval is only allowed when filtering by userId or heading."
+}
+OR
+{
+  "msg": "Error message: [error message from retrieveJobTours]"
+}
+OR
+{
+  "msg": "Error message: An error has occurred on the server."
+}
+
+
+================================================================================
+2. POST /api/job-tours/create
+================================================================================
+
+
+HTTP Method: POST
+
+
+REQUEST STRUCTURE:
+------------------
+Headers:
+  - Authorization: string (required)
+    Format: "Bearer <JWT_TOKEN>"
+    Description: JWT token containing user email in payload
+
+
+Request Body:
+{
+  "jobTour": {
+    "version": "string" (required, format: MAJOR.MINOR.YYYYMMDD, e.g., "1.4.20250528"),
+    "publishedDate": "Date" (optional),
+    "whoCanSee": "just-teachers" | "me" | "everyone" (required, default: "everyone"),
+    "classSubject": "string" (required),
+    "gradeLevel": "string" (required),
+    "tags": ["string"] (required, default: []),
+    "gpUnitsAssociated": ["string"] (required, default: []),
+    "explanation": "string" (required),
+    "heading": "string" (required),
+    "assignment": "string" (required),
+    "selectedJobs": ["string"] (required, default: [])
+  },
+  "dbType": "dev" | "production" (optional)
+}
+
+
+Note: The following fields are automatically generated on the server:
+      - _id: Generated automatically (string type)
+      - userId: Extracted from JWT token
+      - createdDate: Set to current date/time
+      - lastEdited: Set to current date/time
+      - isGP: Set to true if user email is in VALID_GP_USERS, otherwise false
+
+
+Example Request Body:
+{
+  "jobTour": {
+    "version": "1.0.20240101",
+    "whoCanSee": "everyone",
+    "classSubject": "Science",
+    "gradeLevel": "9-12",
+    "tags": ["medicine", "healthcare"],
+    "gpUnitsAssociated": ["unit-1", "unit-2"],
+    "explanation": "These jobs are related to medical careers",
+    "heading": "Medical jobs you've never heard of",
+    "assignment": "Look at these jobs and rate them based on data and knowing yourself.",
+    "selectedJobs": ["soc1", "soc2", "soc3"]
+  },
+  "dbType": "production"
+}
+
+
+SUCCESSFUL RESPONSE (200):
+--------------------------
+{
+  "msg": "Job tour was saved!",
+  "jobTourId": "string" // The _id of the saved job tour document
+}
+
+
+ERROR RESPONSES:
+---------------
+Status 400 - Bad Request:
+{
+  "msg": "The `request.body.jobTour` is empty or the wrong data type."
+}
+
+
+Status 401 - Unauthorized:
+{
+  "msg": "Unable to extract user from JWT"
+}
+OR
+{
+  "msg": "No email found in JWT payload."
+}
+
+
+Status 404 - Not Found:
+{
+  "msg": "No user found for the provided email address."
+}
+
+
+Status 500 - Internal Server Error:
+{
+  "msg": "Valid GP job tour users are not set on the server. The environment variable `GP_JOB_TOURS_USERS` is missing or empty. Cannot create job tour."
+}
+OR
+{
+  "msg": "Valid GP job tour users are not set on the server. The array has a length of zero. Cannot create job tour."
+}
+OR
+{
+  "msg": "Failed to connect to the database."
+}
+OR
+{
+  "msg": "Failed to insert job tour into the db."
+}
+
+
+================================================================================
+3. PATCH /api/job-tours/update
+================================================================================
+
+
+HTTP Method: PATCH
+
+
+REQUEST STRUCTURE:
+------------------
+Request Body:
+{
+  "jobTourId": "string" (required),
+  "updates": {
+    // All fields are optional - provide only the fields you want to update
+    "version": "string" (optional, format: MAJOR.MINOR.YYYYMMDD, e.g., "1.4.20250528"),
+    "publishedDate": "Date" (optional),
+    "whoCanSee": "just-teachers" | "me" | "everyone" (optional),
+    "classSubject": "string" (optional),
+    "gradeLevel": "string" (optional),
+    "tags": ["string"] (optional),
+    "gpUnitsAssociated": ["string"] (optional),
+    "explanation": "string" (optional),
+    "heading": "string" (optional),
+    "assignment": "string" (optional),
+    "selectedJobs": ["string"] (optional)
+  },
+  "dbType": "dev" | "production" (optional)
+}
+
+
+Note: 
+  - The "updates" object must have at least one property
+  - The "lastEdited" field is automatically updated to the current date/time (cannot be explicitly set)
+  - All fields in "updates" are optional - only include the fields you want to change
+
+
+Example Request Body:
+{
+  "jobTourId": "job-tour-123",
+  "updates": {
+    "heading": "Updated heading",
+    "tags": ["updated", "tags"],
+    "whoCanSee": "just-teachers"
+  },
+  "dbType": "production"
+}
+
+
+Allowed Fields to Update:
+  - version
+  - publishedDate
+  - whoCanSee
+  - classSubject
+  - gradeLevel
+  - tags
+  - gpUnitsAssociated
+  - explanation
+  - heading
+  - assignment
+  - selectedJobs
+
+
+Forbidden Fields:
+  - _id (cannot be modified)
+  - userId (cannot be modified)
+  - isGP (cannot be modified)
+  - createdDate (cannot be modified)
+  - lastEdited (automatically updated to current date/time, cannot be explicitly set)
+
+
+SUCCESSFUL RESPONSE (200):
+--------------------------
+{
+  "msg": "Successfully updated the target job tour"
+}
+
+
+ERROR RESPONSES:
+---------------
+Status 400 - Bad Request:
+{
+  "msg": "Error message: No updates provided; the `updates` object must have at least one property."
+}
+OR
+{
+  "msg": "Error message: Modifying the fields `_id`, `userId`, `isGp`, `lastEdited`, or `createdDate` is not allowed."
+}
+
+
+Status 404 - Not Found:
+{
+  "msg": "Error message: This route only accepts PUT requests."
+}
+
+
+Status 500 - Internal Server Error:
+{
+  "msg": "Error message: Failed to connect to the database."
+}
+OR
+{
+  "msg": "Error message: No matching job tours were found in the database."
+}
+OR
+{
+  "msg": "Error message: Failed to update the target job tour. Error message: [error details]"
+}
+OR
+{
+  "msg": "Error message: An error has occurred on the server."
+}
+
+
+================================================================================
+4. DELETE /api/job-tours/delete
+================================================================================
+
+
+HTTP Method: DELETE
+
+
+REQUEST STRUCTURE:
+------------------
+Query Parameters:
+  - ids: string | string[] (required)
+    Description: The _id(s) of the job tour(s) to delete
+    Can be a single string or an array of strings
+    If a single string is provided, it will be converted to an array
+
+
+Example Request 1 (single ID):
+  DELETE /api/job-tours/delete?ids=job-tour-123
+
+
+Example Request 2 (multiple IDs):
+  DELETE /api/job-tours/delete?ids=job-tour-123&ids=job-tour-456
+
+
+SUCCESSFUL RESPONSE (200):
+--------------------------
+{
+  "msg": "Job tour was successfully deleted from the database!"
+}
+
+
+ERROR RESPONSES:
+---------------
+Status 400 - Bad Request:
+{
+  "msg": "No `_id` provided in the query. Cannot delete job tour."
+}
+
+
+Status 500 - Internal Server Error:
+{
+  "msg": "Failed to connect to the database."
+}
+OR
+{
+  "msg": "Failed to delete job tour from the database. Error message: \"[error details]\""
+}
+OR
+{
+  "msg": "Failed to delete job tour from the database. Error message: [error object]"
+}
+
+
+================================================================================
+IJobTour INTERFACE REFERENCE
+================================================================================
+
+
+Complete structure of a JobTour document:
+
+
+{
+  "_id": string (required),
+  "userId": string (required), // User ID - automatically set from JWT in create route
+  "createdDate": Date (required),
+  "lastEdited": Date (required),
+  "version": string (required), // Format: MAJOR.MINOR.YYYYMMDD (e.g., "1.4.20250528")
+  "publishedDate": Date (optional), // When made public
+  "isGP": boolean (required, default: false), // Set automatically based on user email
+  "whoCanSee": "just-teachers" | "me" | "everyone" (required, default: "everyone"),
+  "classSubject": string (required),
+  "gradeLevel": string (required),
+  "tags": string[] (required, default: []),
+  "gpUnitsAssociated": string[] (required, default: []), // Array of Unit IDs
+  "explanation": string (required), // Explanation of why/how careers were picked
+  "heading": string (required), // e.g., "Medical jobs you've never heard of"
+  "assignment": string (required), // e.g., "Look at these jobs and rate them..."
+  "selectedJobs": string[] (required, default: []) // Array of SOC codes
+}
+
+
+================================================================================
+NOTES
+================================================================================
+
+
+1. All routes use MongoDB for data storage
+2. Database connection timeout is 15,000ms (15 seconds)
+3. The create route requires JWT authentication via Authorization header
+4. The create route automatically generates _id, createdDate, lastEdited, and sets userId from JWT token
+5. The create route automatically sets isGP to true if user email is in VALID_GP_USERS
+6. The update route automatically updates the lastEdited field to current date/time (cannot be explicitly set)
+7. The update route does not allow modification of _id, userId, isGP, createdDate, or lastEdited fields
+8. The update route requires at least one field in the updates object
+9. The get route only allows filtering by userId or heading (heading uses case-insensitive regex)
+10. The delete route accepts a single ID or multiple IDs via the ids query parameter
+11. All error responses follow a consistent format with a "msg" field
+12. JSON stringified parameters in query strings must be properly URL-encoded
+13. Date fields should be in ISO 8601 format (e.g., "2024-01-01T00:00:00.000Z")
+
+
+================================================================================
+END OF DOCUMENTATION
+================================================================================

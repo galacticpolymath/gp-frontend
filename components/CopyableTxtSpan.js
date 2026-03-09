@@ -25,7 +25,7 @@ const CopyableTxtSpan = ({
   const [isModalOn, setIsModalOn] = useState(false);
   const [modalTxt, setModalTxt] = useState(copyTxtIndicator);
   const [coordinates, setCoordinates] = useState({ x: 0, y: 0 });
-  let copyTxtModalStylesObj = {
+  const copyTxtModalStylesObj = {
     ...copyTxtModalDefaultStyleObj,
     top: `${coordinates.y + additiveYCoord}px`,
     left: `${coordinates.x + additiveXCoord}px`,

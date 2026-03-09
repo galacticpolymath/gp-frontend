@@ -48,7 +48,7 @@ const WelcomeModal: React.FC<WelcomeModalProps> = ({
             style={{ textWrap: 'pretty', maxWidth: '29em' }}
             className="mt-2 text-muted mb-0 text-center lh-lg"
           >
-            We're a small team just trying to make science matter to students
+            We&apos;re a small team just trying to make science matter to students
             and the broader public.
           </p>
           <p className="text-muted lh-lg mt-2">
@@ -65,7 +65,7 @@ const WelcomeModal: React.FC<WelcomeModalProps> = ({
             fontWeight: '500',
           }}
         >
-          Let's Go
+          Let&apos;s Go
         </Button>
       </Modal.Body>
     </Modal>

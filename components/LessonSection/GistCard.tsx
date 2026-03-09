@@ -45,7 +45,7 @@ const GistCard: React.FC<IGistCard> = ({
     descriptor: Omit<ITargetStandardsCode, "set">
   ) => {
     event.preventDefault();
-    const code = (event.target as HTMLAnchorElement).href.split("#")[1];
+    const _code = (event.target as HTMLAnchorElement).href.split("#")[1];
     const el = document.getElementById(descriptor.code);
 
     if (el) {

@@ -1,6 +1,6 @@
-/* eslint-disable react/jsx-indent-props */
-/* eslint-disable indent */
-/* eslint-disable react/jsx-indent */
+ 
+ 
+ 
 import Layout from '../components/Layout';
 import PasswordResetForm from '../components/User/Password/PasswordResetForm';
 

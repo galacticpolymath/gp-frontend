@@ -1,4 +1,4 @@
-/* eslint-disable react/jsx-max-props-per-line */
+ 
  
 import Image from 'next/image';
 import { BsTwitch } from 'react-icons/bs';

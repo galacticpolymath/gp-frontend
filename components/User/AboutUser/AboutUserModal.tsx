@@ -1,10 +1,10 @@
-/* eslint-disable react/jsx-curly-brace-presence */
-/* eslint-disable quotes */
  
-/* eslint-disable no-console */
  
-/* eslint-disable react/jsx-indent */
-/* eslint-disable indent */
+ 
+ 
+ 
+ 
+ 
 import React from "react";
 import {
   Accordion,
@@ -43,7 +43,7 @@ import { TReferredByOpt } from "../../../types/global";
 import InstitutionAndSchoolType from "./sections/InstitutionAndSchoolType";
 import ReasonsForSiteVisitSec from "./sections/ReasonsForSiteVisitSec";
 import { getAboutUserFormForClient } from "../../../customHooks/useGetAboutUserForm";
-import { TUserSchemaForClient } from "../../../backend/models/User/types";
+import { TUserSchemaForClient as _TUserSchemaForClient } from "../../../backend/models/User/types";
 import { getLocalStorageItem } from "../../../shared/fns";
 const INPUT_MAX_WIDTH = "400px";
 
@@ -273,7 +273,7 @@ const AboutUserModal = () => {
       const height = modalBodyRef.current.clientHeight * 0.27;
       setTextareaMaxHeight(height);
     }
-  }, [isAboutMeFormModalDisplayed]);
+  }, [isAboutMeFormModalDisplayed, textareaMaxHeight]);
 
   return (
     <Modal

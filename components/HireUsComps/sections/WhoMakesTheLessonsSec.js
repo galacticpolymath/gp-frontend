@@ -1,20 +1,20 @@
-/* eslint-disable no-multiple-empty-lines */
  
  
  
  
-/* eslint-disable quotes */
- 
- 
- 
-/* eslint-disable react/jsx-indent-props */
-/* eslint-disable semi */
  
  
  
  
-/* eslint-disable indent */
-/* eslint-disable react/jsx-indent */
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
 
 import PicAndDescriptionSec from "./PicAndDescriptionSec";
 import mattsAwards from '../../../data/HireUsPg/mattsAwards.json'

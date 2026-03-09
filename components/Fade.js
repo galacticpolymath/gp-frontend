@@ -1,5 +1,5 @@
-/* eslint-disable curly */
-/* eslint-disable quotes */
+ 
+ 
 import React, { useEffect, useState } from "react";
 
 // if the search input field is in view, then don't show the button 
@@ -23,7 +23,7 @@ const Fade = ({ showElement, children, containerId }) => {
     if(!renderToggled && document?.getElementById(containerId)){
       document.getElementById(containerId).style.opacity = "1";
     }
-  },[renderToggled]);
+  }, [containerId, renderToggled]);
 
   return (
     renderToggled && (

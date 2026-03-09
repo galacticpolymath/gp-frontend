@@ -142,3 +142,25 @@
     }
   }
 }
+
+.slideMetaRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.slideByline {
+  margin-left: auto;
+  font-size: 0.82rem;
+  color: gray;
+  text-align: right;
+  line-height: 1.2;
+}
+
+.slideByline a {
+  color: gray;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}

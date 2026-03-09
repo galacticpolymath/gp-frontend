@@ -1,6 +1,6 @@
 import * as React from "react";
 import { JobVizCard } from "./JobVizCard";
-import styles from "../../styles/jobvizBurst.module.scss";
+import styles from "../../styles/jobviz.module.scss";
 
 export interface JobVizGridItem {
   id: string;
@@ -17,6 +17,7 @@ export interface JobVizGridItem {
   jobIconName?: string;
   socCode?: string | null;
   isAssignmentJob?: boolean;
+  isLocked?: boolean;
 }
 
 export interface CardAnchor {
@@ -37,6 +38,7 @@ export interface JobVizNavigationHint {
 
 export interface JobVizGridProps {
   items: JobVizGridItem[];
+  hasDesktopSidebar?: boolean;
   onItemClick?: (
     item: JobVizGridItem,
     meta?: { cardRect?: CardAnchor | null; itemId?: string }
@@ -54,6 +56,7 @@ const GRID_ENTRANCE_HOLD_MS = 320;
 
 export const JobVizGrid: React.FC<JobVizGridProps> = ({
   items,
+  hasDesktopSidebar = false,
   onItemClick,
   navigationHint,
   onExitComplete,
@@ -140,7 +143,6 @@ export const JobVizGrid: React.FC<JobVizGridProps> = ({
   }, []);
 
   React.useEffect(() => {
-    signatureRef.current = itemsSignature;
     if (isExiting) {
       if (
         exitSignatureRef.current &&
@@ -151,8 +153,12 @@ export const JobVizGrid: React.FC<JobVizGridProps> = ({
       }
       return;
     }
+    const previousSignature = signatureRef.current;
+    signatureRef.current = itemsSignature;
     setDisplayItems(items);
-    setAnimationWave((prev) => prev + 1);
+    if (previousSignature !== itemsSignature) {
+      setAnimationWave((prev) => prev + 1);
+    }
   }, [items, itemsSignature, isExiting, maybeEnterNextWave]);
 
   React.useEffect(() => {
@@ -207,6 +213,7 @@ export const JobVizGrid: React.FC<JobVizGridProps> = ({
       dy: 0,
     });
   }, [
+    navigationHint,
     navigationHint?.anchor,
     navigationHint?.direction,
     navigationHint?.pivotId,
@@ -214,12 +221,15 @@ export const JobVizGrid: React.FC<JobVizGridProps> = ({
 
   const exitDirection = isExiting ? activeDirection : null;
   const entranceDirection = shouldAnimate ? activeDirection : "down";
+  const gridColumnClass = hasDesktopSidebar
+    ? `col-12 col-md-6 ${styles.sidebarGridCol}`
+    : "col-12 col-md-6 col-xl-4";
 
   return (
     <div className={styles.jobvizGridStage} ref={stageRef}>
       <div className="row g-4">
         {displayItems.map((item, index) => (
-          <div className="col-12 col-md-6 col-xl-4" key={item.id}>
+          <div className={gridColumnClass} key={item.id}>
           <JobVizCard
             title={item.title}
             iconName={item.iconName}
@@ -232,6 +242,7 @@ export const JobVizGrid: React.FC<JobVizGridProps> = ({
               jobIconName={item.jobIconName}
               socCode={item.socCode}
               isAssignmentJob={item.isAssignmentJob}
+              isLocked={item.isLocked}
               highlight={item.highlight}
               highlightClicked={item.highlightClicked}
               showBookmark={item.showBookmark}

@@ -1,5 +1,5 @@
-/* eslint-disable quotes */
-/* eslint-disable indent */
+ 
+ 
 import throttle from "lodash.throttle";
 import { useState } from "react";
 

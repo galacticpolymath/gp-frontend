@@ -1,18 +1,16 @@
-/* eslint-disable no-console */
+/* eslint-disable no-alert */
  
-/* eslint-disable quotes */
+ 
+ 
 import axios from "axios";
 import { signIn } from "next-auth/react";
 import { ChangeEvent, useState } from "react";
 import { constructUrlWithSearchQuery, validateEmail } from "../globalFns";
 import { useCustomCookies } from "./useCustomCookies";
-import {
-  getLocalStorageItem,
-  getSessionStorageItem,
-  removeLocalStorageItem,
-  removeSessionStorageItem,
+import { getLocalStorageItem as _getLocalStorageItem ,
+  getSessionStorageItem, removeLocalStorageItem as _removeLocalStorageItem , removeSessionStorageItem as _removeSessionStorageItem ,
 } from "../shared/fns";
-import { ICallbackUrl } from "../pages/sign-up";
+import { ICallbackUrl as _ICallbackUrl } from "../pages/sign-up";
 
 type TLoginForm = {
   email: string;
@@ -38,7 +36,7 @@ interface ICanLoginResBody {
   canLogin: boolean;
   errType: TUserLoginErrType;
 }
-type TForm = { login: TLoginForm; createAccount: TCreateAccount } & {
+type _TForm = { login: TLoginForm; createAccount: TCreateAccount } & {
   callbackUrl: string;
 };
 
@@ -212,7 +210,7 @@ export const useUserEntry = () => {
         "An error has occurred. Failed to send form to the server. Reason: ",
         error
       );
-      alert(
+      globalThis.alert?.(
         "An error has occurred during the login process. Please refresh the page. If this error persists, please contact support."
       );
     }
@@ -274,12 +272,18 @@ export const useUserEntry = () => {
       "gdriveAccessTokenExp",
       "gdriveRefreshToken",
     ]);
+    const resolvedCallbackUrl =
+      callbackUrl ||
+      (typeof window === "undefined"
+        ? ""
+        : (getSessionStorageItem("userEntryRedirectUrl") ||
+            window.location.href));
     sendFormToServer("login", "credentials", {
       login: {
         email,
         password,
       },
-      callbackUrl,
+      callbackUrl: resolvedCallbackUrl,
     });
   };
 

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   defautlNotifyModalVal,
   useModalContext,
@@ -13,9 +13,9 @@ import {
   getLocalStorageItem,
   setLocalStorageItem,
 } from '../shared/fns';
-import { AiOutlineConsoleSql } from 'react-icons/ai';
+import { AiOutlineConsoleSql as _AiOutlineConsoleSql } from 'react-icons/ai';
 
-const getBillingType = () => {
+const _getBillingType = () => {
   const selectedGpPlusBillingType = getLocalStorageItem(
     'selectedGpPlusBillingType'
   );
@@ -38,9 +38,10 @@ export const useHandleGpPlusCheckoutSessionModal = () => {
   }, []);
 
   const { user, token, logUserOut, status } = useSiteSession();
+  const userEmail = typeof user?.email === 'string' ? user.email : '';
   const mutationOberserverRef = useRef<MutationObserver | null>(null);
 
-  const handleOnClickPlanChangeLogic = (event: MouseEvent) => {
+  const handleOnClickPlanChangeLogic = useCallback((event: MouseEvent) => {
     console.log('plan change occurred');
     const _target = event.target as HTMLElement;
 
@@ -99,7 +100,7 @@ export const useHandleGpPlusCheckoutSessionModal = () => {
         savingsElement.classList.add('text-decoration-line-through');
       }
     }
-  };
+  }, [selectedBillingPeriod]);
 
   const [billingTypeOptsContainer, setBillingTypeOptsContainer] =
     useState<HTMLDivElement | null>(null);
@@ -110,7 +111,7 @@ export const useHandleGpPlusCheckoutSessionModal = () => {
     }
   }, [billingTypeOptsContainer]);
 
-  const handleUserInteractionWithGpPlusModal = async () => {
+  const handleUserInteractionWithGpPlusModal = useCallback(async () => {
     const { percentageSaved } = (await getUserPlanDetails(token, false)) ?? {};
 
     console.log('percentageSaved: ', percentageSaved);
@@ -149,7 +150,7 @@ export const useHandleGpPlusCheckoutSessionModal = () => {
       subtree: true,
     });
     mutationOberserverRef.current = mutationOberserver;
-  };
+  }, [token]);
 
   useEffect(() => {
     if (status === 'authenticated') {
@@ -162,7 +163,7 @@ export const useHandleGpPlusCheckoutSessionModal = () => {
         document.removeEventListener('click', handleOnClickPlanChangeLogic);
       };
     }
-  }, [status]);
+  }, [status, handleOnClickPlanChangeLogic, handleUserInteractionWithGpPlusModal]);
 
   useEffect(() => {
     if (isSignupModalDisplayed && status === 'authenticated') {
@@ -182,7 +183,7 @@ export const useHandleGpPlusCheckoutSessionModal = () => {
       console.log('emailInput value: ', emailInput);
 
       if (emailInput) {
-        emailInput.value = user.email ?? '';
+        emailInput.value = userEmail;
         emailInput.dispatchEvent(new Event('input', { bubbles: true }));
       }
 
@@ -210,7 +211,6 @@ export const useHandleGpPlusCheckoutSessionModal = () => {
           ? (emailInput as HTMLInputElement).value
           : '';
 
-        console.log('outsetaEmail, sup there: ', outsetaEmail);
 
         if (!outsetaEmail) {
           setNotifyModal({
@@ -238,7 +238,7 @@ export const useHandleGpPlusCheckoutSessionModal = () => {
           return;
         }
 
-        if (!user?.email || !token) {
+        if (!userEmail || !token) {
           setNotifyModal({
             headerTxt: 'An error has occurred',
             bodyTxt: (
@@ -264,7 +264,7 @@ export const useHandleGpPlusCheckoutSessionModal = () => {
         );
 
         const updateUserResponse = await updateUser(
-          { email: user.email },
+          { email: userEmail },
           { outsetaAccountEmail: outsetaEmail },
           {},
           token
@@ -275,7 +275,7 @@ export const useHandleGpPlusCheckoutSessionModal = () => {
             headerTxt: 'An error has occurred',
             bodyTxt: (
               <>
-                An error has occurred while trying to update the user's email.
+                An error has occurred while trying to update the user&apos;s email.
                 If this error persists, please contact{' '}
                 <CustomLink
                   hrefStr={CONTACT_SUPPORT_EMAIL}
@@ -297,5 +297,14 @@ export const useHandleGpPlusCheckoutSessionModal = () => {
         }
       });
     }
-  }, [isSignupModalDisplayed, status, getEmailInputRetryCount]);
+  }, [
+    getEmailInputRetryCount,
+    isSignupModalDisplayed,
+    logUserOut,
+    setIsSignupModalDisplayed,
+    setNotifyModal,
+    status,
+    token,
+    userEmail,
+  ]);
 };

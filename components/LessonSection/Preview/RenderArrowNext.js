@@ -1,7 +1,7 @@
-/* eslint-disable react/jsx-indent */
-/* eslint-disable react/jsx-indent-props */
-/* eslint-disable indent */
-/* eslint-disable quotes */
+ 
+ 
+ 
+ 
 
 import { useEffect, useState } from "react";
 import { useContext } from "react";

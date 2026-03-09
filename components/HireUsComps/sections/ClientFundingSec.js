@@ -1,12 +1,12 @@
-/* eslint-disable react/jsx-wrap-multilines */
-/* eslint-disable react/jsx-indent-props */
  
-/* eslint-disable semi */
  
-/* eslint-disable react/jsx-max-props-per-line */
  
-/* eslint-disable indent */
-/* eslint-disable react/jsx-indent */
+ 
+ 
+ 
+ 
+ 
+ 
 
 import CardContainer from '../CardContainer'
 import clientFundingSourcesPics from '../../../data/HireUsPg/clientFundingSourcesPics.json'

@@ -2,20 +2,19 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { IJobVizConnection } from "../../../backend/models/Unit/JobViz";
 import { IConnectionJobViz } from "../../../backend/models/Unit/JobViz";
 import { GpPlusBtn } from "../../../pages/gp-plus";
-import { useRouter, usePathname } from "next/navigation";
+import { useRouter as _useRouter , usePathname } from "next/navigation";
 import JobToursModal from "../Modals/JobToursModal";
 import { DISABLE_FOOTER_PARAM_NAME } from "../../../components/Footer";
-import { DISABLE_NAVBAR_PARAM_NAME } from "../../../components/Navbar";
+import { DISABLE_NAVBAR_PARAM_NAME } from "../../../components/PortalNav";
 import Image from "next/image";
 import CopyableTxt from "../../CopyableTxt";
 import { getSessionStorageItem } from "../../../shared/fns";
 import { useUserContext } from "../../../providers/UserProvider";
 import { MdOutlineRocketLaunch } from "react-icons/md";
 import {
-  showJobNotFoundToast,
-  useCreateHandleJobTitleTxtClick,
+  showJobNotFoundToast, useCreateHandleJobTitleTxtClick as _useCreateHandleJobTitleTxtClick ,
 } from "../../JobViz/JobTours/JobToursCard";
-import { toast } from "react-toastify";
+import { toast as _toast } from "react-toastify";
 import jobVizDataObj from "../../../data/Jobviz/jobVizDataObj.json";
 import {
   ISelectedJob,
@@ -75,21 +74,21 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
   useEffect(() => {
     console.log("jobVizConnections: ", jobVizConnections);
   })
-  const pathname = usePathname();
+  const _pathname = usePathname();
   const {
     _selectedJob: [, setSelectedJob],
   } = useModalContext();
   const {
-    _isGpPlusMember: [isGpPlusMember],
+    _isGpPlusMember: [_isGpPlusMember],
   } = useUserContext();
   const didInitialRenderOccur = useRef(false);
   const isUserAGpPlusMember = useMemo(() => {
     return !!getSessionStorageItem("isGpPlusUser");
-  }, [isGpPlusMember]);
+  }, []);
   const [isJobsToursUpSellModalOn, setIsJobsToursUpSellModalOn] =
     useState(false);
   const jobVizConnectionsArr = useMemo(() => {
-    const _jobVizConnections = jobVizConnections?.filter((jobVizConnection) => {
+    const filteredJobVizConnections = jobVizConnections?.filter((jobVizConnection) => {
       return (
         // check for nulls
         jobVizConnection &&
@@ -97,9 +96,8 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
         jobVizConnection?.soc_code
       );
     }) as IJobVizConnection[] | IConnectionJobViz[];
-    jobVizConnections = _jobVizConnections;
 
-    if (!jobVizConnections?.length) {
+    if (!filteredJobVizConnections?.length) {
       console.error(
         "Developer Error: jobVizConnections is empty or undefined in JobVizConnections component."
       );
@@ -109,9 +107,9 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
 
     let jobVizConnectionsDeprecated: IJobVizConnection[] | null = null;
 
-    for (const { soc_code, job_title } of jobVizConnections) {
+    for (const { soc_code, job_title } of filteredJobVizConnections) {
       if (Array.isArray(soc_code) || Array.isArray(job_title)) {
-        jobVizConnectionsDeprecated = jobVizConnections as IJobVizConnection[];
+        jobVizConnectionsDeprecated = filteredJobVizConnections as IJobVizConnection[];
         break;
       }
     }
@@ -134,8 +132,8 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
         .filter(Boolean) as IConnectionJobViz[];
     }
 
-    return jobVizConnections as IConnectionJobViz[];
-  }, []);
+    return filteredJobVizConnections as IConnectionJobViz[];
+  }, [jobVizConnections]);
   const jobTitleAndSocCodePairs: [string, string][] = jobVizConnectionsArr.map(
     (job) => [job.job_title, job.soc_code]
   );
@@ -158,7 +156,7 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
     }
 
     return url.href;
-  }, []);
+  }, [jobVizConnectionsArr, unitName]);
 
   useEffect(() => {
     didInitialRenderOccur.current = true;
@@ -198,7 +196,7 @@ const JobVizConnections: React.FC<IJobVizConnectionsProps> = ({
         >
           JobViz connects classroom learning to the real world—helping students
           see how knowledge links to jobs, industries, and the wider economy.
-          With data on 1,000+ occupations, it's a springboard for systems
+          With data on 1,000+ occupations, it&apos;s a springboard for systems
           thinking and exploring the full landscape of opportunity.
         </div>
       </div>

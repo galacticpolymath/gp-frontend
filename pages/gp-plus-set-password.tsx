@@ -1,4 +1,4 @@
-/* eslint-disable quotes */
+ 
 
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
@@ -28,15 +28,14 @@ export const getSubmitBtn = () => {
 const GpSignUpResult: React.FC = () => {
   const { _isCreatingGpPlusAccount } = useModalContext();
   const router = useRouter();
-  const { confirmationToken } = router.query;
+  const { _confirmationToken } = router.query;
   const [isCreatingGpPlusAccount, setIsCreatingGpPlusAccount] = useState(true);
   const [, setIsCreatingGpPlusAccountModalDisplayed] = _isCreatingGpPlusAccount;
   const [canSubmitPasswordForm, setCanSubmitPasswordForm] = useState(false);
   const [passwordInput, setPasswordInput] = useState<Node | null>(null);
 
   useEffect(() => {
-    const observer = new MutationObserver((element) => {
-      console.log("element, yo there: ", element[0]);
+    const observer = new MutationObserver((_element) => {
 
       const outsetaModal = document.querySelector(".o--App--authWidget");
 
@@ -87,7 +86,7 @@ const GpSignUpResult: React.FC = () => {
         observer.disconnect();
       }
     };
-  }, []);
+  }, [setIsCreatingGpPlusAccountModalDisplayed]);
 
   useEffect(() => {
     console.log("passwordInput element: ", passwordInput);

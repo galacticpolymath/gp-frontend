@@ -1,9 +1,9 @@
-/* eslint-disable quotes */
+ 
 
-/* eslint-disable semi */
-/* eslint-disable indent */
-/* eslint-disable react/jsx-indent-props */
-/* eslint-disable react/jsx-indent */
+ 
+ 
+ 
+ 
 
 import { useRouter } from "next/router"
 import { Button } from "react-bootstrap"

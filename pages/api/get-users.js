@@ -1,7 +1,7 @@
-/* eslint-disable no-console */
-/* eslint-disable indent */
  
-/* eslint-disable quotes */
+ 
+ 
+ 
 import { getAllBrevoMailingListContacts } from "../../backend/services/emailServices";
 import { findMailingListConfirmationsByEmails } from "../../backend/services/mailingListConfirmationServices";
 import {
@@ -62,7 +62,7 @@ export default async function handler(request, response) {
         }
 
         const allBrevoContacts = await getAllBrevoMailingListContacts();
-        let { errMsg, users } = await getUsers();
+        const { errMsg, users } = await getUsers();
         const brevoContactEmails = new Set(
             allBrevoContacts.map((contact) => contact.email)
         );

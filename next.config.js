@@ -1,11 +1,11 @@
-/* eslint-disable semi */
+ 
  
 /** @type {import('next').NextConfig} */
 
 const cspHeader = `
-    script-src 'self' 'unsafe-eval' 'unsafe-inline' https://www.googletagmanager.com/ https://cdn.outseta.com/ https://js.stripe.com https://auth.magic.link/sdk https://apis.google.com https://accounts.google.com; object-src 'none';
-    style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
-    object-src 'none';
+    script-src 'self' 'unsafe-eval' 'unsafe-inline' https://www.googletagmanager.com/ https://cdn.outseta.com/ https://js.stripe.com https://auth.magic.link/sdk https://apis.google.com https://accounts.google.com https://www.youtube.com https://s.ytimg.com; object-src 'none';
+    style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com;
+    font-src 'self' https://fonts.gstatic.com https://fonts.sandbox.google.com https://docs.google.com/resources/fonts https://unpkg.com data:;
     base-uri 'self';
     img-src * data: blob:;
     connect-src 'self'
@@ -30,6 +30,14 @@ module.exports = {
     MONGODB_DB_NAME: process.env.MONGODB_DB_NAME,
   },
   reactStrictMode: true,
+  devIndicators: false,
+  turbopack: {
+    root: __dirname,
+  },
+  sassOptions: {
+    quietDeps: true,
+    silenceDeprecations: ['import', 'global-builtin', 'color-functions', 'if-function'],
+  },
   images: {
     remotePatterns: [
       { protocol: 'https', hostname: 'catalog.galacticpolymath.com' },
@@ -69,6 +77,18 @@ module.exports = {
   async redirects() {
     return [
       {
+        source: '/',
+        has: [{ type: 'host', value: 'student.galacticpolymath.com' }],
+        destination: '/student',
+        permanent: false,
+      },
+      {
+        source: '/account',
+        has: [{ type: 'host', value: 'student.galacticpolymath.com' }],
+        destination: '/student/login',
+        permanent: false,
+      },
+      {
         source: '/about',
         destination: 'https://www.galacticpolymath.com/about',
         permanent: true,
@@ -77,6 +97,11 @@ module.exports = {
         source: '/hire-us',
         destination: 'https://www.galacticpolymath.com/for-scientists',
         permanent: true,
+      },
+      {
+        source: '/units',
+        destination: '/search?typeFilter=Unit',
+        permanent: false,
       },
     ];
   },

@@ -5,14 +5,14 @@
 
 .toolTipModal {
   width: 120px;
-  background-color: #f0f4ff;
+  background-color: #ffffff;
   font-weight: bold;
   height: 100px;
-  color: #3c4858;
+  color: #22365c;
   text-align: center;
   border-radius: 6px;
-  border-style: solid;
-  border-width: 2px;
+  border: 1px solid rgba(35, 54, 92, 0.26);
+  box-shadow: 0 12px 22px rgba(8, 16, 40, 0.2);
   top: 80%;
   left: 50%;
   margin-left: -60px;
@@ -26,10 +26,18 @@
   padding: 10px 5px;
 }
 
+.toolTipModalWrapper h5 {
+  color: #22365c;
+  font-size: 13px;
+  line-height: 1.25;
+  margin: 0;
+}
+
 .closeToolTipModalBtn{
   right: -6px;
   top: -5px;
   font-size: 15px;
+  color: #22365c;
 }
 
 .noBtnStyles{
@@ -52,11 +60,10 @@
   margin-left: -5px;
   border-width: 5px;
   border-style: solid;
-  border-color: transparent transparent black transparent;
+  border-color: transparent transparent #ffffff transparent;
 }
 
 .closeModalBtn{
   width: fit-content;
   height: fit-content;
 }
-

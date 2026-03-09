@@ -1,8 +1,8 @@
-/* eslint-disable no-console */
+ 
 
-/* eslint-disable comma-dangle */
-/* eslint-disable quotes */
-/* eslint-disable semi */
+ 
+ 
+ 
 import { waitWithExponentialBackOff } from "../../globalFns";
 import axios from "axios";
 import { GoogleAuthReqBody } from "../../pages/api/gp-plus/auth";
@@ -200,7 +200,7 @@ export const shareFilesWithRetries = async (
       console.log("Shared file: ", targetFile.name);
 
       if (
-        result.status == "rejected" &&
+        result.status === "rejected" &&
         result?.reason?.response?.data?.error?.code === 400
       ) {
         console.log("Name of restricted file: ", targetFile.name);

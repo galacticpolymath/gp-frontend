@@ -1,7 +1,7 @@
-/* eslint-disable react/jsx-indent */
-/* eslint-disable quotes */
-/* eslint-disable react/jsx-indent-props */
-/* eslint-disable indent */
+ 
+ 
+ 
+ 
 
 import { useState } from "react";
 import { IoMdEye, IoMdEyeOff } from "react-icons/io";

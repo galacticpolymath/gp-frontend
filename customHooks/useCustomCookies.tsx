@@ -1,4 +1,4 @@
-import { useCookies } from 'react-cookie';
+import { useCookies as _useCookies } from 'react-cookie';
 import cookies from 'js-cookie';
 
 interface IAppCookies {
@@ -15,7 +15,6 @@ export const useCustomCookies = () => {
   const clearCookies = () => {
     const siteCookieKeys = Object.keys(cookies.get());
 
-    console.log('siteCookieKeys, sup there: ', siteCookieKeys);
 
     for (const cookieKey of siteCookieKeys) {
       cookies.remove(cookieKey, { path: '/' });
@@ -27,7 +26,7 @@ export const useCustomCookies = () => {
   const getCookies = <TKey extends keyof IAppCookies>(
     keys: TKey[]
   ): Partial<Pick<IAppCookies, TKey>> => {
-    let siteCookies = (cookies.get() ?? {}) as Partial<Record<keyof Pick<IAppCookies, TKey>, string>> ;
+    const siteCookies = (cookies.get() ?? {}) as Partial<Record<keyof Pick<IAppCookies, TKey>, string>> ;
     let appCookies: Partial<Pick<IAppCookies, TKey>> = {};
 
     for (const key of keys) {

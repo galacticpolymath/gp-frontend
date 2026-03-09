@@ -1,5 +1,5 @@
-/* eslint-disable quotes */
-/* eslint-disable indent */
+ 
+ 
 
 import { NextApiRequest, NextApiResponse } from 'next';
 import { CustomError } from "../../backend/utils/errors";

@@ -1,10 +1,10 @@
-/* eslint-disable no-multiple-empty-lines */
  
  
  
-/* eslint-disable semi */
  
-/* eslint-disable indent */
+ 
+ 
+ 
 
 // when the user clicks on a previously selected job category in the chain 
 const getNewUrl = (jobCategory, queryParams) => {

@@ -1,4 +1,4 @@
-/* eslint-disable quotes */
+ 
 
 import { Modal, Spinner } from "react-bootstrap";
 import { useModalContext } from "../../providers/ModalProvider";
@@ -14,7 +14,7 @@ const CreatingMembership = ({ canSubmitPasswordForm }: IProps) => {
   const [isCreatingGpAccount] = _isCreatingGpPlusAccount;
   const [wasOutsetaPasswordSet, setWasOutsetaPasswordSet] = useState(false);
 
-  const handleOnHide = () => {
+  const _handleOnHide = () => {
     const backDropOutseta = document.querySelector(".o--Widget--popupBg");
 
     if (backDropOutseta) {
@@ -35,7 +35,7 @@ const CreatingMembership = ({ canSubmitPasswordForm }: IProps) => {
 
       setWasOutsetaPasswordSet(true);
     }
-  }, [canSubmitPasswordForm]);
+  }, [canSubmitPasswordForm, wasOutsetaPasswordSet]);
 
   return (
     <Modal

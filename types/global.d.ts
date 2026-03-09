@@ -1,5 +1,5 @@
 import React, { ReactNode, CSSProperties } from 'react';
-import { IItem, IItemV2, ILesson } from '../backend/models/Unit/types/teachingMaterials';
+import { IItem as _IItem , IItemV2, ILesson } from '../backend/models/Unit/types/teachingMaterials';
 import { REFERRED_BY_OPTS } from '../shared/constants';
 import {
   IFeaturedMultimedia,
@@ -8,7 +8,7 @@ import {
 import { Session } from 'next-auth';
 import { IUserSchema, TAboutUserForm, TUserSchemaForClient, TUserSchemaV2 } from '../backend/models/User/types';
 import { TWebAppForUI } from '../backend/models/WebApp';
-import { TUserAccount } from '../providers/UserProvider';
+import { TUserAccount as _TUserAccount } from '../providers/UserProvider';
 import { IUserGDriveItemCopy } from '../components/LessonSection/TeachIt/TeachItUI';
 
 interface IRequestArgs {

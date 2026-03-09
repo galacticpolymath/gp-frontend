@@ -1,24 +1,30 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import Modal from "react-bootstrap/Modal";
 import { useRouter } from "next/router";
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast";
 import { useSearchParams } from "next/navigation";
+import axios from "axios";
+import { Star } from "lucide-react";
 import { LucideIcon } from "../JobViz/LucideIcon";
 import { useModalContext } from "../../providers/ModalProvider";
+import type { ISelectedJob } from "../../providers/ModalProvider";
+import useSiteSession from "../../customHooks/useSiteSession";
 import jobVizDataObj from "../../data/Jobviz/jobVizDataObj.json";
 import { createSelectedJobVizJobLink } from "../JobViz/JobTours/JobToursCard";
 import { JOBVIZ_BRACKET_SEARCH_ID } from "../JobViz/jobvizConstants";
 import {
   buildJobvizUrl,
+  getNodeBySocCode,
   getIconNameForNode,
   getJobSpecificIconName,
+  normalizeSocCode,
 } from "../JobViz/jobvizUtils";
 import {
   SOC_CODES_PARAM_NAME,
   UNIT_NAME_PARAM_NAME,
 } from "../LessonSection/JobVizConnections";
-import styles from "../../styles/jobvizBurst.module.scss";
+import styles from "../../styles/jobviz.module.scss";
 import jobvizLogo from "../../assets/img/GP+JobViz_Horiz_white_400px.png";
 import {
   formatCurrency,
@@ -30,6 +36,7 @@ import {
 } from "../JobViz/infoModalContent";
 import type { JobRatingValue } from "../JobViz/jobRatingsStore";
 import { ratingOptions, useJobRatings } from "../JobViz/jobRatingsStore";
+import { useJobTourEditorOptional } from "../JobViz/jobTourEditorContext";
 
 const { Body } = Modal;
 const DATA_END_YR = jobVizDataObj.data_end_yr?.[0] ?? 2034;
@@ -51,51 +58,82 @@ const SelectedJob: React.FC = () => {
     _isJobModalOn,
     _jobToursModalCssProps,
     _jobvizReturnPath,
+    _isLoginModalDisplayed,
   } =
     useModalContext();
   const router = useRouter();
   const searchParams = useSearchParams();
   const [selectedJob, setSelectedJob] = _selectedJob;
-  const [, setIsJobModal] = _isJobModalOn;
+  const [isJobModalOn, setIsJobModal] = _isJobModalOn;
   const [, setJobToursModalCssProps] = _jobToursModalCssProps;
   const [jobvizReturnPath, setJobvizReturnPath] = _jobvizReturnPath;
+  const [, setIsLoginModalDisplayed] = _isLoginModalDisplayed;
   const [jobLink, setJobLink] = useState("");
   const [infoModal, setInfoModal] = useState<InfoModalType | null>(null);
   const [modalHistory, setModalHistory] = useState<InfoModalType | null>(null);
   const [isInfoClosing, setIsInfoClosing] = useState(false);
   const closeModalTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const copyToastId = useRef<string | number | null>(null);
+  const copyToastId = useRef<string | null>(null);
   const copyResetTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [didCopyLink, setDidCopyLink] = useState(false);
   const [shouldGlowRatingLabel, setShouldGlowRatingLabel] = useState(false);
   const [showMobileCue, setShowMobileCue] = useState(false);
   const [isMobileViewport, setIsMobileViewport] = useState(false);
   const { ratings, setRating } = useJobRatings();
-  const [ratingBurst, setRatingBurst] = useState<JobRatingValue | null>(null);
+  const [ratingPulse, setRatingPulse] = useState<JobRatingValue | null>(null);
+  const [showRatingStatus, setShowRatingStatus] = useState(false);
+  const [animateRatingStatus, setAnimateRatingStatus] = useState(false);
   const [showRatingInfo, setShowRatingInfo] = useState(false);
   const [isFocusAssignmentView, setIsFocusAssignmentView] = useState(false);
+  const [fallbackTourSelectedJobs, setFallbackTourSelectedJobs] = useState<Set<string>>(
+    new Set()
+  );
   const CARD_TRANSITION_MS = 420;
   const transitionTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const modalScrollRef = useRef<HTMLDivElement | null>(null);
   const mobileCueDelayRef = useRef<number | null>(null);
+  const ratingStatusTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [visibleJob, setVisibleJob] = useState(selectedJob);
   const [cardPhase, setCardPhase] = useState<"enter" | "exit">(
     selectedJob ? "enter" : "exit"
   );
   const assignmentQueryParam = router.query?.[SOC_CODES_PARAM_NAME];
-  const [jobvizOverlayOffset, setJobvizOverlayOffset] = useState(0);
+  const [savedJobIds, setSavedJobIds] = useState<Set<string>>(new Set());
+  const [isSavingJob, setIsSavingJob] = useState(false);
+  const { status, token } = useSiteSession();
+  const jobTourEditor = useJobTourEditorOptional();
+  const isAuthenticated = status === "authenticated";
+  const authorizationHeader =
+    typeof token === "string" && token.startsWith("Bearer ")
+      ? token
+      : `Bearer ${token ?? ""}`;
 
   const assignmentSocCodes = useMemo(() => {
     const value = Array.isArray(assignmentQueryParam)
       ? assignmentQueryParam.join(",")
       : assignmentQueryParam;
     if (!value) return null;
-    return new Set(value.split(",").filter(Boolean));
+    return new Set(
+      value
+        .split(",")
+        .map((socCode) => normalizeSocCode(socCode))
+        .filter(Boolean)
+    );
+  }, [assignmentQueryParam]);
+  const assignmentSocCodeList = useMemo(() => {
+    const value = Array.isArray(assignmentQueryParam)
+      ? assignmentQueryParam.join(",")
+      : assignmentQueryParam;
+    if (!value) return [];
+    return value
+      .split(",")
+      .map((socCode) => normalizeSocCode(socCode))
+      .filter(Boolean);
   }, [assignmentQueryParam]);
   const hasAssignmentParams = Boolean(assignmentSocCodes?.size);
-
-  const modalZIndex = isMobileViewport ? 1400 : 10000000;
-  const [modalContainer, setModalContainer] = useState<HTMLElement | null>(null);
+  const isTeacherEditQuery =
+    typeof router.query?.edit === "string" &&
+    ["1", "true", "edit"].includes(router.query.edit.toLowerCase());
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -113,49 +151,6 @@ const SelectedJob: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
-    if (!isMobileViewport) {
-      setModalContainer(null);
-      return;
-    }
-    setModalContainer(document.getElementById("jobviz-mobile-modal-anchor"));
-  }, [isMobileViewport]);
-
-  const updateJobvizOverlayOffset = useCallback(() => {
-    if (typeof window === "undefined" || typeof document === "undefined") {
-      return;
-    }
-    const styles = window.getComputedStyle(document.documentElement);
-    const parseOffset = (value: string) => {
-      const parsed = Number.parseFloat(value);
-      return Number.isFinite(parsed) ? parsed : 0;
-    };
-    const navOffset = parseOffset(styles.getPropertyValue("--jobviz-nav-offset"));
-    const assignmentOffset = parseOffset(
-      styles.getPropertyValue("--jobviz-assignment-offset")
-    );
-    setJobvizOverlayOffset(navOffset + assignmentOffset);
-  }, []);
-
-  useEffect(() => {
-    updateJobvizOverlayOffset();
-    const handleOffsetChange = () => {
-      updateJobvizOverlayOffset();
-    };
-    window.addEventListener("jobviz-assignment-offset-change", handleOffsetChange);
-    window.addEventListener("jobviz-nav-offset-change", handleOffsetChange);
-    window.addEventListener("resize", handleOffsetChange);
-    return () => {
-      window.removeEventListener(
-        "jobviz-assignment-offset-change",
-        handleOffsetChange
-      );
-      window.removeEventListener("jobviz-nav-offset-change", handleOffsetChange);
-      window.removeEventListener("resize", handleOffsetChange);
-    };
-  }, [updateJobvizOverlayOffset]);
-
-  useEffect(() => {
     if (typeof window === "undefined") return undefined;
     const readFlag = () =>
       typeof document !== "undefined" &&
@@ -168,6 +163,29 @@ const SelectedJob: React.FC = () => {
     window.addEventListener("jobviz-focus-toggle", handleToggle);
     return () => {
       window.removeEventListener("jobviz-focus-toggle", handleToggle);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return undefined;
+    const handleSelectionChange = (
+      event: Event
+    ) => {
+      const detail = (event as CustomEvent<{ selectedJobs?: unknown }>).detail;
+      const selectedJobs = Array.isArray(detail?.selectedJobs)
+        ? detail.selectedJobs
+        : [];
+      const nextSet = new Set(
+        selectedJobs
+          .map((value) => (typeof value === "string" ? value.trim() : ""))
+          .filter(Boolean)
+      );
+      setFallbackTourSelectedJobs(nextSet);
+    };
+    window.addEventListener("jobviz-tour-selection-change", handleSelectionChange);
+    window.dispatchEvent(new CustomEvent("jobviz-tour-selection-request"));
+    return () => {
+      window.removeEventListener("jobviz-tour-selection-change", handleSelectionChange);
     };
   }, []);
 
@@ -229,6 +247,9 @@ const SelectedJob: React.FC = () => {
       if (transitionTimeoutRef.current) {
         clearTimeout(transitionTimeoutRef.current);
       }
+      if (ratingStatusTimeoutRef.current) {
+        clearTimeout(ratingStatusTimeoutRef.current);
+      }
     };
   }, []);
 
@@ -246,15 +267,135 @@ const SelectedJob: React.FC = () => {
     setShowRatingInfo(false);
   }, [visibleJob]);
 
+  useEffect(() => {
+    if (!isAuthenticated || !token) {
+      setSavedJobIds(new Set());
+      return;
+    }
+
+    let isCancelled = false;
+    axios
+      .get<{ savedJobIds?: string[] }>("/api/get-user-account-data", {
+        headers: {
+          Authorization: authorizationHeader,
+        },
+      })
+      .then(({ data }) => {
+        if (isCancelled) return;
+        const ids = Array.isArray(data?.savedJobIds)
+          ? data.savedJobIds.filter(
+              (value): value is string => typeof value === "string" && !!value.trim()
+            )
+          : [];
+        setSavedJobIds(new Set(ids));
+      })
+      .catch(() => {
+        if (!isCancelled) {
+          setSavedJobIds(new Set());
+        }
+      });
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [authorizationHeader, isAuthenticated, token]);
+
   const activeInfoModal = modalHistory ? infoModalContent[modalHistory] : null;
   const shouldRenderInfoModal =
     (infoModal !== null || isInfoClosing) && !!activeInfoModal;
   const currentRating = visibleJob?.soc_code
     ? ratings[visibleJob.soc_code]
     : undefined;
+  const effectiveAssignmentSocCodes = useMemo(() => {
+    const next = new Set<string>();
+    assignmentSocCodeList.forEach((socCode) => next.add(socCode));
+    if (isTeacherEditQuery) {
+      if (jobTourEditor?.selectedJobs?.size) {
+        jobTourEditor.selectedJobs.forEach((socCode) => {
+          if (socCode?.trim()) next.add(socCode.trim());
+        });
+      } else {
+        fallbackTourSelectedJobs.forEach((socCode) => {
+          if (socCode?.trim()) next.add(socCode.trim());
+        });
+      }
+    }
+    return next;
+  }, [
+    assignmentSocCodeList,
+    fallbackTourSelectedJobs,
+    isTeacherEditQuery,
+    jobTourEditor?.selectedJobs,
+  ]);
+
+  const effectiveAssignmentSocCodeList = useMemo(() => {
+    const fromQuery = assignmentSocCodeList.filter((socCode) =>
+      effectiveAssignmentSocCodes.has(socCode)
+    );
+    const extras = Array.from(effectiveAssignmentSocCodes).filter(
+      (socCode) => !fromQuery.includes(socCode)
+    );
+    return [...fromQuery, ...extras];
+  }, [assignmentSocCodeList, effectiveAssignmentSocCodes]);
+
   const isAssignmentJob =
     !!visibleJob?.soc_code &&
-    Boolean(assignmentSocCodes?.has(visibleJob.soc_code));
+    effectiveAssignmentSocCodes.has(visibleJob.soc_code);
+  const ratedAssignmentCount = useMemo(() => {
+    if (!effectiveAssignmentSocCodes.size) return 0;
+    let count = 0;
+    effectiveAssignmentSocCodes.forEach((socCode) => {
+      if (ratings[socCode]) {
+        count += 1;
+      }
+    });
+    return count;
+  }, [effectiveAssignmentSocCodes, ratings]);
+  const isAssignmentFullyRated =
+    Boolean(effectiveAssignmentSocCodes.size) &&
+    ratedAssignmentCount === effectiveAssignmentSocCodes.size;
+  const nextUnratedSoc = useMemo(() => {
+    if (!effectiveAssignmentSocCodeList.length) return null;
+    const currentIndex = visibleJob?.soc_code
+      ? effectiveAssignmentSocCodeList.indexOf(visibleJob.soc_code)
+      : -1;
+    const orderedSocCodes =
+      currentIndex >= 0
+        ? [
+            ...effectiveAssignmentSocCodeList.slice(currentIndex + 1),
+            ...effectiveAssignmentSocCodeList.slice(0, currentIndex + 1),
+          ]
+        : effectiveAssignmentSocCodeList;
+    const nextSoc = orderedSocCodes.find((socCode) => !ratings[socCode]);
+    return nextSoc && nextSoc !== visibleJob?.soc_code ? nextSoc : null;
+  }, [effectiveAssignmentSocCodeList, ratings, visibleJob?.soc_code]);
+
+  useEffect(() => {
+    if (ratingStatusTimeoutRef.current) {
+      clearTimeout(ratingStatusTimeoutRef.current);
+      ratingStatusTimeoutRef.current = null;
+    }
+
+    if (!currentRating) {
+      setShowRatingStatus(false);
+      setAnimateRatingStatus(false);
+      return;
+    }
+
+    if (ratingPulse) {
+      setShowRatingStatus(false);
+      setAnimateRatingStatus(false);
+      ratingStatusTimeoutRef.current = setTimeout(() => {
+        setShowRatingStatus(true);
+        setAnimateRatingStatus(true);
+        ratingStatusTimeoutRef.current = null;
+      }, 900);
+      return;
+    }
+
+    setShowRatingStatus(true);
+    setAnimateRatingStatus(false);
+  }, [currentRating, ratingPulse, visibleJob?.soc_code]);
 
   useEffect(() => {
     const shouldGlow = Boolean(isAssignmentJob && !currentRating);
@@ -307,11 +448,11 @@ const SelectedJob: React.FC = () => {
     const socCode = visibleJob.soc_code;
     dispatchRatingEvent(socCode, "start");
     setRating(socCode, value);
-    setRatingBurst(value);
+    setRatingPulse(value);
     setShouldGlowRatingLabel(false);
     setShowMobileCue(false);
     setTimeout(() => {
-      setRatingBurst(null);
+      setRatingPulse(null);
       dispatchRatingEvent(socCode, "finish");
     }, 900);
   };
@@ -358,7 +499,7 @@ const SelectedJob: React.FC = () => {
   }, [setIsJobModal]);
 
   const handleOnHide = () => {
-    const paramsStr = searchParams.toString();
+    const paramsStr = searchParams?.toString() ?? "";
     if (jobvizReturnPath) {
       router.push(jobvizReturnPath, undefined, {
         scroll: false,
@@ -367,11 +508,15 @@ const SelectedJob: React.FC = () => {
       setJobvizReturnPath(null);
     } else {
       const segmentsSource = router.query?.["search-results"];
-      const segments = Array.isArray(segmentsSource)
+      const rawSegments = Array.isArray(segmentsSource)
         ? [...segmentsSource]
         : typeof segmentsSource === "string"
           ? segmentsSource.split("/").filter(Boolean)
           : [];
+      const safeSegmentRegex = /^[a-zA-Z0-9._~-]+$/;
+      const segments = rawSegments.filter(
+        (segment) => typeof segment === "string" && safeSegmentRegex.test(segment),
+      );
       if (segments.length >= 2) {
         const lastSegment = segments[segments.length - 1];
         const shouldTrimLast =
@@ -388,6 +533,7 @@ const SelectedJob: React.FC = () => {
       }
     }
 
+    setIsJobModal(false);
     setSelectedJob(null);
     setInfoModal(null);
     setModalHistory(null);
@@ -423,6 +569,86 @@ const SelectedJob: React.FC = () => {
       }, 1400);
     } catch (error) {
       console.error("Failed to copy job link.", error);
+    }
+  };
+
+  const handleSaveJob = async () => {
+    const candidateIds = [
+      typeof visibleJob?.soc_code === "string" ? visibleJob.soc_code.trim() : "",
+      visibleJob?.id != null ? String(visibleJob.id).trim() : "",
+    ].filter(Boolean);
+    const canonicalJobId = candidateIds[0] ?? "";
+    if (!canonicalJobId) {
+      return;
+    }
+
+    if (!isAuthenticated || !token) {
+      setIsJobModal(false);
+      setSelectedJob(null);
+      setIsLoginModalDisplayed(true);
+      return;
+    }
+
+    try {
+      setIsSavingJob(true);
+      const isAlreadySaved = candidateIds.some((id) => savedJobIds.has(id));
+      const savedIdToDelete =
+        candidateIds.find((id) => savedJobIds.has(id)) ?? canonicalJobId;
+
+      if (isAlreadySaved) {
+        await axios.delete("/api/saved-jobs/delete", {
+          params: { jobIdsToDelete: savedIdToDelete },
+          headers: {
+            Authorization: authorizationHeader,
+          },
+        });
+        setSavedJobIds((previous) => {
+          const next = new Set(previous);
+          candidateIds.forEach((id) => next.delete(id));
+          next.delete(savedIdToDelete);
+          return next;
+        });
+        if (typeof window !== "undefined") {
+          window.dispatchEvent(
+            new CustomEvent("jobviz-saved-jobs-updated", {
+              detail: { action: "remove", jobId: savedIdToDelete },
+            })
+          );
+        }
+        toast.success("Job removed from saved");
+      } else {
+        await axios.put(
+          "/api/saved-jobs/add",
+          { jobId: canonicalJobId },
+          {
+            headers: {
+              Authorization: authorizationHeader,
+            },
+          }
+        );
+        setSavedJobIds((previous) => {
+          const next = new Set(previous);
+          next.add(canonicalJobId);
+          return next;
+        });
+        if (typeof window !== "undefined") {
+          window.dispatchEvent(
+            new CustomEvent("jobviz-saved-jobs-updated", {
+              detail: { action: "add", jobId: canonicalJobId },
+            })
+          );
+        }
+        toast.success("Job saved");
+      }
+    } catch (error) {
+      console.error("Failed to update saved job", error);
+      const errorMessage =
+        axios.isAxiosError(error)
+          ? error.response?.data?.msg || error.message
+          : "Unable to update saved job";
+      toast.error(errorMessage || "Unable to update saved job");
+    } finally {
+      setIsSavingJob(false);
     }
   };
 
@@ -469,11 +695,39 @@ const SelectedJob: React.FC = () => {
     }
   };
 
+  const handleNextUnratedJob = () => {
+    if (!nextUnratedSoc) return;
+    const nextNode = getNodeBySocCode(nextUnratedSoc);
+    if (!nextNode) return;
+    const socCodesStr = searchParams.get(SOC_CODES_PARAM_NAME);
+    const unitNameParam = searchParams.get(UNIT_NAME_PARAM_NAME);
+    const nextUrl = buildJobvizUrl(
+      { fromNode: nextNode },
+      {
+        socCodes: socCodesStr
+          ? new Set(socCodesStr.split(",").filter(Boolean))
+          : undefined,
+        unitName: unitNameParam ?? undefined,
+      },
+      {
+        ...(typeof router.query?.edit === "string"
+          ? { edit: router.query.edit }
+          : {}),
+        ...(typeof router.query?.tourId === "string"
+          ? { tourId: router.query.tourId }
+          : {}),
+      }
+    );
+    setIsJobModal(true);
+    setSelectedJob(nextNode as ISelectedJob);
+    router.push(nextUrl, undefined, { scroll: false, shallow: true });
+  };
+
   const jobTitle =
     visibleJob?.soc_title ?? visibleJob?.title ?? "Job overview";
   const definition =
     visibleJob?.def &&
-    visibleJob.def.toLowerCase() !==
+      visibleJob.def.toLowerCase() !==
       "no definition found for this summary category."
       ? visibleJob.def
       : null;
@@ -484,53 +738,89 @@ const SelectedJob: React.FC = () => {
 
   const stats = visibleJob
     ? [
-        {
-          id: "median",
-          label: "Median wage",
-          value: formatCurrency(visibleJob.median_annual_wage),
-          infoType: "wage" as InfoModalType,
-          descriptor: null,
-        },
-        {
-          id: "growth",
-          label: "10-year change",
-          value: formatPercent(visibleJob.employment_change_percent),
-          infoType: "growth" as InfoModalType,
-          descriptor: resolveTierLabel(
-            "growth",
-            visibleJob.employment_change_percent ?? null
-          ),
-        },
-        {
-          id: "jobs",
-          label: `Jobs by ${DATA_END_YR}`,
-          value: formatNumber(visibleJob.employment_end_yr),
-          infoType: "jobs" as InfoModalType,
-          descriptor: resolveTierLabel(
-            "jobs",
-            visibleJob.employment_end_yr ?? null
-          ),
-        },
-      ]
+      {
+        id: "median",
+        label: "Median wage",
+        value: formatCurrency(visibleJob.median_annual_wage),
+        infoType: "wage" as InfoModalType,
+        descriptor: null,
+      },
+      {
+        id: "growth",
+        label: "10-year change",
+        value: formatPercent(visibleJob.employment_change_percent),
+        infoType: "growth" as InfoModalType,
+        descriptor: resolveTierLabel(
+          "growth",
+          visibleJob.employment_change_percent ?? null
+        ),
+      },
+      {
+        id: "jobs",
+        label: `Jobs by ${DATA_END_YR}`,
+        value: formatNumber(visibleJob.employment_end_yr),
+        infoType: "jobs" as InfoModalType,
+        descriptor: resolveTierLabel(
+          "jobs",
+          visibleJob.employment_end_yr ?? null
+        ),
+      },
+    ]
     : [];
-  const disableExploreRelated = isFocusAssignmentView;
+  const disableExploreRelated =
+    isFocusAssignmentView &&
+    !hasAssignmentParams &&
+    !jobTourEditor?.isEditing;
+  const canAddToTour =
+    Boolean(visibleJob?.soc_code) && (Boolean(jobTourEditor) || isTeacherEditQuery);
+  const isBookmarked =
+    canAddToTour && visibleJob?.soc_code
+      ? jobTourEditor
+        ? jobTourEditor.isSelected(visibleJob.soc_code)
+        : fallbackTourSelectedJobs.has(visibleJob.soc_code)
+      : false;
+  const isTourEditMode = Boolean(jobTourEditor?.isEditing || isTeacherEditQuery);
+  const activeJobId = visibleJob?.id != null ? String(visibleJob.id) : null;
+  const isSavedJob = Boolean(
+    (activeJobId && savedJobIds.has(activeJobId)) ||
+      (visibleJob?.soc_code && savedJobIds.has(visibleJob.soc_code))
+  );
+
+  const handleToggleTourJob = React.useCallback(async () => {
+    if (!visibleJob?.soc_code) return;
+    if (jobTourEditor) {
+      jobTourEditor.toggleJob(visibleJob.soc_code);
+      return;
+    }
+    setFallbackTourSelectedJobs((prev) => {
+      const next = new Set(prev);
+      if (next.has(visibleJob.soc_code)) {
+        next.delete(visibleJob.soc_code);
+      } else {
+        next.add(visibleJob.soc_code);
+      }
+      return next;
+    });
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(
+        new CustomEvent("jobviz-tour-toggle-request", {
+          detail: { socCode: visibleJob.soc_code },
+        })
+      );
+    }
+  }, [jobTourEditor, visibleJob?.soc_code]);
 
   return (
     <>
       <Modal
-        show={!!visibleJob}
+        show={!!visibleJob && isJobModalOn}
         onHide={handleOnHide}
+        className="selectedJobModalRoot"
         contentClassName="selectedJobModal"
-        dialogClassName={`dialogJobVizModal py-2 d-sm-flex justify-content-center align-items-center ${
-          hasAssignmentParams ? "" : "dialogJobVizModalCentered"
-        }`}
+        dialogClassName={`dialogJobVizModal d-sm-flex justify-content-center align-items-center ${hasAssignmentParams ? "" : "dialogJobVizModalCentered"
+          }`}
         backdropClassName="selectedJobBackdrop"
         fullscreen="md-down"
-        container={isMobileViewport ? modalContainer ?? undefined : undefined}
-        style={{
-          zIndex: modalZIndex,
-          top: jobvizOverlayOffset ? jobvizOverlayOffset : undefined,
-        }}
       >
         <Body className="selectedJobBody" ref={modalScrollRef}>
           {visibleJob && (
@@ -544,14 +834,80 @@ const SelectedJob: React.FC = () => {
                 <p className={styles.modalEyebrow}>
                   Job detail <span className={styles.modalSocCodeInline}>(SOC {visibleJob.soc_code})</span>
                 </p>
-                <button
-                  type="button"
-                  className={styles.modalCloseButton}
-                  onClick={handleOnHide}
-                  aria-label="Close job details"
-                >
-                  <LucideIcon name="X" />
-                </button>
+                <div className={styles.modalHeaderActions}>
+                  <div className={styles.modalPrimaryActions}>
+                    <button
+                      type="button"
+                      className={`${styles.savedJobBadge} ${styles.modalPillButton} ${
+                        isSavedJob ? styles.jobvizBookmarkButtonActive : ""
+                      }`}
+                      aria-label={
+                        isSavedJob
+                          ? "Unsave job"
+                          : isAuthenticated
+                          ? "Save job"
+                          : "Log in to save job"
+                      }
+                      title={
+                        isSavedJob
+                          ? "Unsave Job"
+                          : isAuthenticated
+                          ? "Save Job"
+                          : "Log in to save job"
+                      }
+                      onClick={handleSaveJob}
+                      disabled={isSavingJob}
+                    >
+                      <Star
+                        size={12}
+                        aria-hidden="true"
+                        fill={isSavedJob ? "currentColor" : "none"}
+                        stroke="currentColor"
+                      />
+                      <span className={styles.cardHeaderBadgeLabel}>
+                        {isSavingJob
+                          ? "Updating..."
+                          : isSavedJob
+                          ? "Saved"
+                          : isAuthenticated
+                          ? "Save\u00A0job"
+                          : "Sign in to save"}
+                      </span>
+                    </button>
+                    {canAddToTour && visibleJob?.soc_code && (
+                      <button
+                        type="button"
+                        className={`${styles.assignmentBadgeButton} ${styles.modalPillButton} ${
+                          isBookmarked ? styles.assignmentBadgeButtonActive : ""
+                        }`}
+                        aria-label={
+                          isBookmarked ? "Remove job from tour" : "Add job to tour"
+                        }
+                        title={isBookmarked ? "Remove from tour jobs" : "Add to tour jobs"}
+                        aria-pressed={isBookmarked}
+                        onClick={handleToggleTourJob}
+                      >
+                        <span
+                          className={`${styles.assignmentBadgeDot} ${styles.cardHeaderBadgeDot} ${
+                            isBookmarked ? styles.assignmentBadgeDotActive : ""
+                          }`}
+                          aria-hidden="true"
+                        />
+                        <span className={styles.cardHeaderBadgeLabel}>
+                          {isBookmarked ? "In Tour" : "Add to Tour"}
+                        </span>
+                      </button>
+                    )}
+                  </div>
+                  <button
+                    type="button"
+                    className={styles.modalCloseButton}
+                    onClick={handleOnHide}
+                    aria-label="Close job details"
+                  >
+                    <LucideIcon name="X" />
+                  </button>
+                </div>
               </div>
               <div className={styles.modalIdentityRow}>
                 <div className={`${styles.iconBadge} ${styles.modalIcon}`}>
@@ -564,12 +920,18 @@ const SelectedJob: React.FC = () => {
                 </div>
                 <div className={styles.modalTitleGroup}>
                   <h3 className={styles.modalTitle}>{jobTitle}</h3>
-                  {isAssignmentJob && (
+                  {isAssignmentJob && !isTourEditMode && (
                     <span
-                      className={styles.assignmentBadgeDot}
-                      title="Part of this assignment"
-                      aria-label="Part of this assignment"
-                    />
+                      className={styles.assignmentBadgePill}
+                      title="Tour job"
+                      aria-label="Tour job"
+                    >
+                      <span
+                        className={`${styles.assignmentBadgeDot} ${styles.assignmentBadgeDotInline}`}
+                        aria-hidden="true"
+                      />
+                      <span className={styles.assignmentBadgePillText}>Tour Job</span>
+                    </span>
                   )}
                 </div>
               </div>
@@ -579,57 +941,76 @@ const SelectedJob: React.FC = () => {
               </p>
               {isAssignmentJob ? (
                 <section className={styles.modalRatingBlock}>
-                  <div className={styles.modalRatingHeader}>
-                    <div className={styles.modalRatingLabelGroup}>
-                      <span
-                        className={styles.modalRatingLabel}
-                        data-glow={shouldGlowRatingLabel ? "true" : "false"}
-                      >
-                        Rate this job
-                      </span>
-                      <button
-                        type="button"
-                        className={styles.inlineInfoButton}
-                        aria-pressed={showRatingInfo ? "true" : "false"}
-                        aria-expanded={showRatingInfo ? "true" : "false"}
-                        aria-label="How JobViz+ ratings work"
-                        onClick={() => setShowRatingInfo((prev) => !prev)}
-                      >
-                        <LucideIcon name="Info" />
-                      </button>
-                    </div>
-                    {currentRating && (
-                      <span className={styles.modalRatingStatus}>
-                        <LucideIcon name="Check" />
-                        Rated
-                      </span>
-                    )}
-                  </div>
-                  <div className={styles.modalRatingButtons}>
-                    {ratingOptions.map((option) => (
-                      <button
-                        type="button"
-                        key={option.value}
-                        className={`${styles.modalRatingButton} ${
-                          currentRating === option.value
-                            ? styles.modalRatingButtonActive
-                            : ""
-                        }`}
-                        onClick={() => handleRatingSelect(option.value)}
-                        aria-pressed={currentRating === option.value}
-                      >
-                        {ratingBurst === option.value && (
-                          <span
-                            className={`${styles.modalRatingConfetti} ${styles[`modalRatingConfetti-${ratingBurst}`]}`}
-                            aria-hidden="true"
+                  <div className={styles.modalRatingGrid}>
+                    <div className={styles.modalRatingColumn}>
+                      <div className={styles.modalRatingLabelGroup}>
+                        <span
+                          className={styles.modalRatingLabel}
+                          data-glow={shouldGlowRatingLabel ? "true" : "false"}
+                        >
+                          Rate this job
+                        </span>
+                        <button
+                          type="button"
+                          className={styles.inlineInfoButton}
+                          aria-pressed={showRatingInfo ? "true" : "false"}
+                          aria-expanded={showRatingInfo ? "true" : "false"}
+                          aria-label="How JobViz+ ratings work"
+                          onClick={() => setShowRatingInfo((prev) => !prev)}
+                        >
+                          <LucideIcon name="Info" />
+                        </button>
+                      </div>
+                      <div className={styles.modalRatingButtons}>
+                        {ratingOptions.map((option) => (
+                          <button
+                            type="button"
+                            key={option.value}
+                            className={`${styles.modalRatingButton} ${currentRating === option.value
+                              ? styles.modalRatingButtonActive
+                              : ""
+                              }`}
+                            onClick={() => handleRatingSelect(option.value)}
+                            aria-pressed={currentRating === option.value}
                           >
-                            {option.emoji}
+                            {ratingPulse === option.value && (
+                              <span
+                                className={`${styles.modalRatingConfetti} ${styles[`modalRatingConfetti-${ratingPulse}`]}`}
+                                aria-hidden="true"
+                              >
+                                {option.emoji}
+                              </span>
+                            )}
+                            <span className={styles.modalRatingEmoji}>{option.emoji}</span>
+                            <span>{option.label}</span>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                    <div className={styles.modalRatingColumn}>
+                      {showRatingStatus && (
+                        <span
+                          className={styles.modalRatingStatus}
+                          data-animate={animateRatingStatus ? "true" : "false"}
+                        >
+                          {isAssignmentFullyRated ? <LucideIcon name="Check" /> : null}
+                          {`Rated ${ratedAssignmentCount}/${effectiveAssignmentSocCodes.size}`}
+                        </span>
+                      )}
+                      {showRatingStatus && nextUnratedSoc && (
+                        <button
+                          type="button"
+                          className={styles.modalRatingStatusButton}
+                          onClick={handleNextUnratedJob}
+                          aria-label="Open next unrated job"
+                        >
+                          <span className={styles.modalRatingStatusNext}>
+                            Next Job
+                            <LucideIcon name="ArrowRight" />
                           </span>
-                        )}
-                        <span className={styles.modalRatingEmoji}>{option.emoji}</span>
-                        <span>{option.label}</span>
-                      </button>
-                    ))}
+                        </button>
+                      )}
+                    </div>
                   </div>
                   {showRatingInfo && (
                     <div className={styles.modalRatingInfo}>
@@ -663,21 +1044,17 @@ const SelectedJob: React.FC = () => {
                         <LucideIcon name="Info" />
                       </button>
                     </div>
-                    <span className={styles.modalRatingStatus}>
-                      Assignment only
-                    </span>
                   </div>
-                  <p className={styles.modalRatingNotice}>
-                    Ratings unlock when this job is part of a JobViz+ Assignment (available with a{" "}
-                    <a
-                      href="https://www.galacticpolymath.com/plus"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      GP+ subscription
-                    </a>
-                    ).
-                  </p>
+                  {isTourEditMode ? (
+                    <p className={styles.modalRatingNotice}>
+                      Add this job to the tour to enable rating controls.
+                    </p>
+                  ) : (
+                    <p className={styles.modalRatingNotice}>
+                      Add this job to an assignment to enable student ratings in
+                      JobViz.
+                    </p>
+                  )}
                 </section>
               )}
               <dl className={styles.modalStats}>
@@ -720,7 +1097,7 @@ const SelectedJob: React.FC = () => {
                   On-the-job training:{" "}
                   {describe(
                     visibleJob[
-                      "typical_on-the-job_training_needed_to_attain_competency_in_the_occupation"
+                    "typical_on-the-job_training_needed_to_attain_competency_in_the_occupation"
                     ]
                   )}
                 </li>
@@ -748,9 +1125,8 @@ const SelectedJob: React.FC = () => {
                 )}
                 <button
                   type="button"
-                  className={`${styles.primaryButton} ${
-                    didCopyLink ? styles.copySuccess : ""
-                  }`}
+                  className={`${styles.primaryButton} ${didCopyLink ? styles.copySuccess : ""
+                    }`}
                   onClick={handleCopyLink}
                   aria-live="polite"
                 >
@@ -761,7 +1137,7 @@ const SelectedJob: React.FC = () => {
               <div className={styles.modalBrand}>
                 <Image
                   src={jobvizLogo}
-                  alt="JobViz Burst logo"
+                  alt="JobViz logo"
                   width={240}
                   height={21}
                   priority

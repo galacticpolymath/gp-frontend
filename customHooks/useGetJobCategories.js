@@ -1,8 +1,8 @@
-/* eslint-disable semi */
  
-/* eslint-disable indent */
  
-/* eslint-disable no-multiple-empty-lines */
+ 
+ 
+ 
 import { useEffect, useState } from 'react';
 import filterResults from '../helperFns/filterResults';
 
@@ -20,7 +20,7 @@ export const useGetJobCategories = (hierarchyNum, level) => {
             setHierarchyNumAndLevel({ hierarchyNum: hierarchyNum, level: level });
         }
         
-    }, [hierarchyNum, level])
+    }, [hierarchyNum, hierarchyNumAndLevel, level])
 
 
 

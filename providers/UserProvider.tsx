@@ -1,9 +1,11 @@
-import React, { createContext, PropsWithChildren, useContext, useState } from 'react';
+import React, { createContext, PropsWithChildren, useContext, useEffect, useState } from 'react';
+import cookies from 'js-cookie';
 import { TUseStateReturnVal } from '../types/global';
 import {
   TAboutUserForm,
   TUserSchemaForClient,
 } from '../backend/models/User/types';
+import useSiteSession from '../customHooks/useSiteSession';
 
 /**
  * @typedef {Object} TGradesOrYears
@@ -83,8 +85,15 @@ export interface TAccountForm {
 }
 
 export const UserContext = createContext<TUserProviderValue | null>(null);
+const GP_PLUS_STATUS_STORAGE_KEY = 'isGpPlusUser';
+const GP_PLUS_EMAIL_STORAGE_KEY = 'isGpPlusUserEmail';
 
 export const UserProvider: React.FC<PropsWithChildren> = ({ children }) => {
+  const { status, user, isGpPlusMember: sessionGpPlusMember } = useSiteSession();
+  const userEmail =
+    typeof user?.email === 'string'
+      ? user.email.toLowerCase()
+      : '';
   const [aboutUserForm, setAboutUserForm] = useState(userAccountDefault);
   const [isCopyUnitBtnDisabled, setIsCopyUnitBtnDisabled] = useState(true);
   const [accountForm, setAccountForm] = useState({
@@ -103,6 +112,33 @@ export const UserProvider: React.FC<PropsWithChildren> = ({ children }) => {
   ] = useState(false);
   const [isUserTeacher, setIsUserTeacher] = useState(false);
   const [isGpPlusMember, setIsGpPlusMember] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const cachedEmail = (
+      window.sessionStorage.getItem(GP_PLUS_EMAIL_STORAGE_KEY) || ''
+    ).toLowerCase();
+    if (userEmail && cachedEmail && userEmail !== cachedEmail) {
+      window.sessionStorage.removeItem(GP_PLUS_STATUS_STORAGE_KEY);
+      window.sessionStorage.removeItem(GP_PLUS_EMAIL_STORAGE_KEY);
+      cookies.remove('isGpPlusMember', { path: '/' });
+    }
+
+    const cookieValue = cookies.get('isGpPlusMember');
+    const sessionValue = window.sessionStorage.getItem(GP_PLUS_STATUS_STORAGE_KEY);
+    const resolved =
+      cookieValue === 'true' || sessionValue === 'true' ? true : false;
+    if (resolved !== isGpPlusMember) {
+      setIsGpPlusMember(resolved);
+    }
+  }, [isGpPlusMember, userEmail]);
+
+  useEffect(() => {
+    if (status !== 'authenticated') return;
+    if (typeof sessionGpPlusMember !== 'boolean') return;
+    if (sessionGpPlusMember === isGpPlusMember) return;
+    setIsGpPlusMember(sessionGpPlusMember);
+  }, [isGpPlusMember, sessionGpPlusMember, status]);
   const value: TUserProviderValue = {
     _aboutUserForm: [aboutUserForm, setAboutUserForm],
     _willShowGpPlusCopyLessonHelperModal: [

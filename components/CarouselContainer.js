@@ -1,4 +1,4 @@
-import { useMemo, useEffect, useRef, useState } from 'react';
+import { useMemo, useEffect, useRef, useState, useCallback } from 'react';
 import { AiOutlineArrowLeft, AiOutlineArrowRight } from 'react-icons/ai';
 import Button from './General/Button';
 
@@ -46,7 +46,7 @@ const CarouselContainer = ({
     if (!CustomDots) {
       return new Array(children.length).fill();
     }
-  }, []);
+  }, [CustomDots, children.length]);
 
   const resetTimeout = () => {
     if (timeoutCarouselScrollRef.current) {
@@ -63,7 +63,10 @@ const CarouselContainer = ({
     }, 5000);
   };
 
-  const getUpdatedCurrentIndexStateNum = currentIndex => (currentIndex === (children.length - 1)) ? 0 : currentIndex + 1;
+  const getUpdatedCurrentIndexStateNum = useCallback(
+    (currentIndex) => (currentIndex === (children.length - 1) ? 0 : currentIndex + 1),
+    [children.length]
+  );
 
   const handleRightArrowBtnClick = () => {
     pauseAutoScroll();
@@ -88,7 +91,13 @@ const CarouselContainer = ({
         intervalTimeMs
       );
     }
-  }, [currentIndex, wasTimerPaused]);
+  }, [
+    currentIndex,
+    getUpdatedCurrentIndexStateNum,
+    intervalTimeMs,
+    wasTimerPaused,
+    willRotate,
+  ]);
 
   return (
     <div className={parentStylesClassName}>

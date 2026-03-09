@@ -1,3 +1,4 @@
+/* eslint-disable no-alert */
 import React, {
   Dispatch,
   ReactNode,
@@ -17,8 +18,7 @@ import {
 } from "../../../types/global";
 import RichText from "../../RichText";
 import { DisplayLessonTile, GRADE_VARIATION_ID } from ".";
-import {
-  IItem,
+import { IItem as _IItem ,
   IItemForUI,
   IItemV2,
   ILesson,
@@ -35,7 +35,7 @@ import throttle from "lodash.throttle";
 import SendFeedback, { SIGN_UP_FOR_EMAIL_LINK } from "../SendFeedback";
 import { UNVIEWABLE_LESSON_STR } from "../../../globalVars";
 import Link from "next/link";
-import Sparkles from "../../SparklesAnimation";
+import _Sparkles from "../../SparklesAnimation";
 import { useUserContext } from "../../../providers/UserProvider";
 import { useRouter } from "next/router";
 import { setLocalStorageItem } from "../../../shared/fns";
@@ -158,7 +158,7 @@ const getUserLessonsGDriveFolderIds = async (
   } catch (error) {
     console.error("Error in getUserLessonsGDriveFolderIds: ", error);
 
-    alert(
+    globalThis.alert?.(
       "Failed to get your lesson folder links. Please refresh the page and try again."
     );
 
@@ -230,7 +230,7 @@ const TeachItUI = <
 
       return gpGDriveItemId.length ? gpGDriveItemId?.filter(Boolean) : [];
     });
-  }, []);
+  }, [_parts]);
 
   const ensureValidToken = async () =>
     await _ensureValidToken(gdriveAccessTokenExp!, setAppCookie);
@@ -250,11 +250,6 @@ const TeachItUI = <
 
       console.log('Fetching lesson parts...');
 
-
-      console.log(
-        "gpGoogleDriveItemIdsOfLessonsRef.current, sup there: ",
-        gpGoogleDriveItemIdsOfLessons
-      );
 
       if (
         status === "authenticated" &&
@@ -290,7 +285,7 @@ const TeachItUI = <
               const _parts: (ILessonForUI | INewUnitLesson<IItemV2 & IUserGDriveItemCopy> | INewUnitLesson<IItemForUI>)[] = parts.map((part) => {
                 const targetLessonGDriveUserFolderId =
                   userGDriveLessonFolderIds.userLessonFolderGDriveIds.find((gDriveLessonFolderId) => {
-                    return gDriveLessonFolderId.lessonNum == part.lsn;
+                    return gDriveLessonFolderId.lessonNum === part.lsn;
                   });
 
                 if (targetLessonGDriveUserFolderId && userGDriveLessonFolderIds.userGDriveItemIdsOfLessonFolder && part.itemList?.length) {
@@ -300,7 +295,6 @@ const TeachItUI = <
                       return "gpGDriveItemId" in item && item.gpGDriveItemId === userGDriveItemIdOfLessonFolder.originalLessonItemIdInGpGoogleDrive;
                     });
 
-                    console.log("targetItem, yo there: ", targetItem);
 
                     return (targetItem ? {
                       ...item,
@@ -329,7 +323,6 @@ const TeachItUI = <
                 };
               });
 
-              console.log("_parts, yo there meng: ", _parts);
 
 
               return _parts
@@ -582,7 +575,7 @@ const TeachItUI = <
 
                 console.log("part, program: ", part);
 
-                let { lsn, title, preface, itemList, tile, chunks } = part;
+                const { lsn, title, preface, itemList, tile, chunks } = part;
                 let targetLessonInDataLesson = null;
 
                 if (
@@ -590,7 +583,7 @@ const TeachItUI = <
                   dataLesson.every((val) => val !== null)
                 ) {
                   targetLessonInDataLesson = dataLesson.find(
-                    ({ lsnNum }) => lsnNum != null && lsnNum.toString() == lsn
+                    ({ lsnNum }) => lsnNum !== null && lsnNum.toString() === lsn
                   );
                   learningObjs = targetLessonInDataLesson?.learningObj ?? null;
                 }
@@ -605,10 +598,10 @@ const TeachItUI = <
                       ({ lsnNum: lsnNumDataLesson }) => {
                         return (
                           lsnNumDataLesson &&
-                          lsn != null &&
+                          lsn !== null &&
                           typeof lsn === "string" &&
                           !isNaN(Number(lsn)) &&
-                          parseInt(lsn) == lsnNumDataLesson
+                          parseInt(lsn) === lsnNumDataLesson
                         );
                       }
                     ) ?? {};

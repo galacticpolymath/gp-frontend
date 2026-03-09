@@ -1,9 +1,9 @@
-/* eslint-disable react/jsx-indent */
-/* eslint-disable react/jsx-indent-props */
-/* eslint-disable indent */
  
-/* eslint-disable semi */
-/* eslint-disable quotes */
+ 
+ 
+ 
+ 
+ 
  
 import Image from 'next/image';
 

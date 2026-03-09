@@ -1,5 +1,5 @@
-/* eslint-disable indent */
-/* eslint-disable quotes */
+ 
+ 
 
 import { FaUserAlt } from "react-icons/fa";
 import React, { useEffect, useMemo, useRef, useState } from "react";
@@ -15,10 +15,8 @@ import {
   TGpPlusSubscriptionForClient,
 } from "../../../backend/models/User/types";
 import { Spinner } from "react-bootstrap";
-import {
-  getIsWithinParentElement,
-  getLocalStorageItem,
-  setLocalStorageItem,
+import { getIsWithinParentElement as _getIsWithinParentElement ,
+  getLocalStorageItem, setLocalStorageItem as _setLocalStorageItem ,
   setSessionStorageItem,
 } from "../../../shared/fns";
 import {
@@ -28,7 +26,7 @@ import {
 import useSiteSession from "../../../customHooks/useSiteSession";
 import { TAccountStageLabel } from "../../../backend/services/outsetaServices";
 import axios from "axios";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams as _useSearchParams } from "next/navigation";
 import { useCreateUnitSectionUrl } from "../../../customHooks/useCreateUnitSectionUrl";
 import { NAV_DOT_HIGHLIGHTED_CLASS } from "../../LessonSection/NavDots/LiNavDot";
 
@@ -45,6 +43,9 @@ const HAS_MEMBERSHIP_STATUSES: Set<TAccountStageLabel> = new Set([
   "Cancelling",
   "Subscribing",
   "Past due",
+  "Active",
+  "Trialing",
+  "Trial",
 ] as TAccountStageLabel[]);
 
 export const revokeGoogleAuthToken = async (token: string) => {
@@ -125,7 +126,7 @@ const LoginContainerForNavbar: React.FC<IProps> = ({ _modalAnimation }) => {
     } else if (status === "unauthenticated") {
       setWasUIDataLoaded(true);
     }
-  }, [status]);
+  }, [status, token, wasUIDataLoaded]);
 
   const isGpPlusMember =
     gpPlusSubscription?.AccountStageLabel &&
@@ -204,6 +205,8 @@ const LoginContainerForNavbar: React.FC<IProps> = ({ _modalAnimation }) => {
       return modalAnimation;
     });
   };
+
+  const buildMyJobsUrl = () => "/jobviz?saved=1";
 
   const handleAccountBtnClick = () => {
     if (
@@ -351,6 +354,15 @@ const LoginContainerForNavbar: React.FC<IProps> = ({ _modalAnimation }) => {
               classNameStr="no-btn-styles text-black txt-underline-on-hover py-2"
             >
               View Account
+            </Button>
+            <Button
+              handleOnClick={() => {
+                setModalAnimation("fade-out-quick");
+                router.push(buildMyJobsUrl());
+              }}
+              classNameStr="no-btn-styles text-black txt-underline-on-hover py-2"
+            >
+              My Jobs
             </Button>
             <Button
               handleOnClick={async () => await handleSignOutBtnClick()}

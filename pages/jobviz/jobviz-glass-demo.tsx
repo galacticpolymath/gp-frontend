@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-page-custom-font */
 import Head from "next/head";
 import { useState } from "react";
-import styles from "../../styles/jobvizBurst.module.scss";
+import styles from "../../styles/jobviz.module.scss";
 import { JobVizGrid, JobVizGridItem } from "../../components/JobViz/JobVizGrid";
 import {
   JobVizBreadcrumb,
@@ -107,6 +107,11 @@ export default function JobVizGlassDemo() {
     <>
       <Head>
         <title>JobViz Glass Demo</title>
+        <meta
+          name="description"
+          content="Internal JobViz UI demo for visual testing."
+        />
+        <meta name="robots" content="noindex, nofollow" />
         <link
           rel="stylesheet"
           href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600&family=Noto+Sans+Mono:wght@300;400&display=swap"
