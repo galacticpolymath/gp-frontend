@@ -686,9 +686,9 @@ export const getStaticPaths = async () => {
 
     return {
       paths: units.map(({ numID, locale }) => ({
-        params: { id: `${numID}`, loc: `${locale ?? ''}` },
+        params: { id: `${numID}`, loc: `${locale ?? DEFAULT_LOCALE}` },
       })),
-      fallback: false,
+      fallback: 'blocking',
     };
   } catch (error) {
     console.error(
@@ -698,7 +698,7 @@ export const getStaticPaths = async () => {
 
     return {
       paths: [],
-      fallback: false,
+      fallback: 'blocking',
     };
   }
 };

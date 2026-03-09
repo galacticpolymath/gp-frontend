@@ -495,6 +495,7 @@ interface MediaItem {
   unitTitle?: string | null;
   subtitle?: string | null;
   unitId?: string | null;
+  unitLocale?: string | null;
 }
 
 const fallbackUnits: PreviewUnit[] = [
@@ -813,14 +814,19 @@ const _summarizeList = (items: string[], maxItems: number) => {
   return `${items.slice(0, maxItems).join(", ")} (+${items.length - maxItems})`;
 };
 
-const buildUnitPath = (unitId: string) => `/units/en-US/${unitId}`;
+const buildUnitPath = (unitId: string, locale = "en-US") =>
+  `/units/${locale || "en-US"}/${unitId}`;
 
-const buildLessonPath = (unitId: string, lessonId: number | string) => {
+const buildLessonPath = (
+  unitId: string,
+  lessonId: number | string,
+  locale = "en-US"
+) => {
   const params = new URLSearchParams({
     tab: "materials",
     lesson: String(lessonId),
   });
-  return `${buildUnitPath(unitId)}?${params.toString()}`;
+  return `${buildUnitPath(unitId, locale)}?${params.toString()}`;
 };
 
 const normalizeLegacyLessonPath = (href?: string | null) => {
@@ -923,6 +929,7 @@ const buildMediaItems = (
         unitTitle,
         subtitle: unit.Subtitle ?? null,
         unitId,
+        unitLocale: unit.locale ?? "en-US",
       };
     });
 };
@@ -1224,10 +1231,14 @@ export default function HomePage({
 
     const href =
       sciJourneysUnit?.id && sciJourneysLesson?.lessonPartNum != null
-        ? buildLessonPath(sciJourneysUnit.id, sciJourneysLesson.lessonPartNum)
+        ? buildLessonPath(
+            sciJourneysUnit.id,
+            sciJourneysLesson.lessonPartNum,
+            sciJourneysUnit.locale
+          )
         : normalizeLegacyLessonPath(sciJourneysLesson?.lessonPartPath) ??
           (sciJourneysUnit?.id
-            ? buildLessonPath(sciJourneysUnit.id, 1)
+            ? buildLessonPath(sciJourneysUnit.id, 1, sciJourneysUnit.locale)
             : "/search?q=SciJourneys&typeFilter=Lesson");
 
     const tile =
@@ -1924,9 +1935,9 @@ export default function HomePage({
             : [];
       const lessonHref =
         unit?.id && lesson.lessonPartNum != null
-          ? buildLessonPath(unit.id, lesson.lessonPartNum)
+          ? buildLessonPath(unit.id, lesson.lessonPartNum, unit.locale)
           : normalizeLegacyLessonPath(lesson.lessonPartPath) ??
-            (unit?.id ? buildUnitPath(unit.id) : null);
+            (unit?.id ? buildUnitPath(unit.id, unit.locale) : null);
       const lessonResourceId = `lesson-${unit?.id ?? "unknown"}-${
         lesson.lessonPartNum ?? "x"
       }-${index}`;
@@ -2437,7 +2448,7 @@ export default function HomePage({
     if (!sortedResources.length) return;
     sortedResources.slice(0, 12).forEach((resource) => {
       if (resource.type === "Unit" && resource.unitId) {
-        prefetchInternalRoute(buildUnitPath(resource.unitId));
+        prefetchInternalRoute(buildUnitPath(resource.unitId, resource.locale));
         return;
       }
       if (resource.type === "Job Tour") {
@@ -3064,6 +3075,9 @@ export default function HomePage({
   useEffect(() => {
     if (!router.isReady) return;
     if (!queryHydrated) return;
+    const hasQueryInPath = router.asPath.includes("?");
+    const hasQueryValues = Object.keys(router.query).length > 0;
+    if (hasQueryInPath && !hasQueryValues) return;
     if (!isAllView) {
       const cleared = buildQueryObject({
         typeFilter: [],
@@ -3860,7 +3874,7 @@ export default function HomePage({
                             const ResourceIcon = resource.icon;
                             const unitHref =
                               resource.type === "Unit" && resource.unitId
-                                ? buildUnitPath(resource.unitId)
+                                ? buildUnitPath(resource.unitId, resource.locale)
                                 : null;
                             const lessonHref =
                               resource.type === "Lesson" ? resource.lessonHref ?? null : null;
@@ -4826,7 +4840,7 @@ export default function HomePage({
                             <div className={styles.cardActions}>
                               <Link
                                 className={styles.primaryButton}
-                                href={buildUnitPath(unit.id)}
+                                href={buildUnitPath(unit.id, unit.locale)}
                               >
                                 Take Me to the Unit
                               </Link>
@@ -5177,7 +5191,12 @@ export default function HomePage({
                 {activeMedia.unitId && activeMedia.unitTitle && (
                   <p className={styles.mediaConnected}>
                     Connected to:{" "}
-                    <Link href={buildUnitPath(activeMedia.unitId)}>
+                    <Link
+                      href={buildUnitPath(
+                        activeMedia.unitId,
+                        activeMedia.unitLocale ?? "en-US"
+                      )}
+                    >
                       {activeMedia.unitTitle}
                       {activeMedia.subtitle ? `: ${activeMedia.subtitle}` : ""}
                     </Link>

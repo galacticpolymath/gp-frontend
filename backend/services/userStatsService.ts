@@ -22,7 +22,7 @@ export interface FrontEndUserStats {
       zipCode?: string | null;
       classSize?: number | null;
       classroomSize?: number | null;
-      isNotTeaching?: boolean;
+      isNotTeaching?: boolean | null;
     }>;
   };
 }
@@ -124,40 +124,78 @@ const normalizeZip = (value?: string | number | null) => {
   return null;
 };
 
+const resolveStatsDbCandidates = () => {
+  const rawStatsDbType = (process.env.GP_STATS_DB_TYPE ?? "").trim().toLowerCase();
+  const vercelEnv = (
+    process.env.VERCEL_ENV ??
+    process.env.NEXT_PUBLIC_VERCEL_ENV ??
+    ""
+  )
+    .trim()
+    .toLowerCase();
+
+  const normalizeDbType = (value: string): "dev" | "production" | null => {
+    if (!value) return null;
+    if (value === "prod" || value === "production") return "production";
+    if (value === "dev" || value === "development" || value === "preview")
+      return "dev";
+    return null;
+  };
+
+  const explicit = normalizeDbType(rawStatsDbType);
+  const envBased = normalizeDbType(vercelEnv) ??
+    (process.env.NODE_ENV === "production" ? "production" : "dev");
+
+  const primary = explicit ?? envBased;
+  const secondary = primary === "production" ? "dev" : "production";
+
+  return [primary, secondary] as Array<"dev" | "production">;
+};
+
 export const getFrontEndUserStats =
   async (): Promise<FrontEndUserStats> => {
     try {
-      const rawStatsDbType = process.env.GP_STATS_DB_TYPE;
-      const statsDbType =
-        rawStatsDbType === "production" || rawStatsDbType === "dev"
-          ? rawStatsDbType
-          : "production";
-      const { wasSuccessful } = await connectToMongodb(
-        10_000,
-        0,
-        true,
-        statsDbType
-      );
-      if (!wasSuccessful) {
-        return DEFAULT_STATS;
-      }
+      type StatsUser = {
+        country?: string | null;
+        zipCode?: string | number | null;
+        classSize?: number | string | null;
+        classroomSize?: { num?: number | null } | null;
+        isNotTeaching?: boolean;
+      };
+      const dbCandidates = resolveStatsDbCandidates();
+      let activeUsers: StatsUser[] | null = null;
+      let statsDbTypeUsed: "dev" | "production" = dbCandidates[0];
 
-      const { users } = await getUsers(
-        {},
-        {
-          country: 1,
-          zipCode: 1,
-          roles: 1,
-          isNotTeaching: 1,
-          classSize: 1,
+      for (const dbTypeCandidate of dbCandidates) {
+        const { wasSuccessful } = await connectToMongodb(
+          10_000,
+          0,
+          true,
+          dbTypeCandidate
+        );
+        if (!wasSuccessful) {
+          continue;
         }
-      );
-
-      if (!Array.isArray(users)) {
-        return DEFAULT_STATS;
+        const { users } = await getUsers(
+          {},
+          {
+            country: 1,
+            zipCode: 1,
+            roles: 1,
+            isNotTeaching: 1,
+            classSize: 1,
+          }
+        );
+        if (Array.isArray(users)) {
+          activeUsers = users as StatsUser[];
+          statsDbTypeUsed = dbTypeCandidate;
+          break;
+        }
       }
 
-      const activeUsers = users;
+      if (!Array.isArray(activeUsers)) {
+        return DEFAULT_STATS;
+      }
 
       const highlightedCountries = new Set<string>();
       const usStates = new Set<string>();
@@ -221,6 +259,8 @@ export const getFrontEndUserStats =
         }
 
         if (sampleUsers.length < 8) {
+          const isNotTeaching =
+            typeof user.isNotTeaching === "boolean" ? user.isNotTeaching : null;
           sampleUsers.push({
             country: rawCountry,
             zipCode: zip,
@@ -228,7 +268,7 @@ export const getFrontEndUserStats =
             classroomSize: Number.isFinite(classroomSizeNum ?? NaN)
               ? classroomSizeNum ?? null
               : null,
-            isNotTeaching: user.isNotTeaching,
+            isNotTeaching,
           });
         }
       });
@@ -255,7 +295,7 @@ export const getFrontEndUserStats =
       };
       if (process.env.NODE_ENV !== "production") {
         response.debug = {
-          dbType: statsDbType,
+          dbType: statsDbTypeUsed,
           totalUsers: activeUsers.length,
           usersWithClassSize,
           usersWithClassroomSize,

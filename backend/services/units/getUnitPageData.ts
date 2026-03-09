@@ -429,25 +429,58 @@ export const getUnitPageData = async (
     .map(({ locale }) => locale)
     .filter(Boolean) as string[];
 
-  const targetUnit = targetUnits.find(
-    ({ numID, locale }) => numID === parsedId && locale === loc
-  );
+  const normalizedRequestedLocale = (loc ?? "").trim().toLowerCase();
+  const targetUnit =
+    targetUnits.find(
+      ({ numID, locale }) =>
+        numID === parsedId &&
+        (locale ?? "").trim().toLowerCase() === normalizedRequestedLocale
+    ) ??
+    targetUnits.find(
+      ({ locale }) =>
+        (locale ?? "").trim().toLowerCase() === DEFAULT_LOCALE.toLowerCase()
+    ) ??
+    targetUnits[0];
 
   if (!targetUnit) {
     return null;
   }
 
-  const unitGDriveChildItemsAll = targetUnit.GdrivePublicID
-    ? await getUnitGDriveChildItems(targetUnit.GdrivePublicID)
-    : [];
+  let unitGDriveChildItemsAll: Awaited<ReturnType<typeof getUnitGDriveChildItems>> = [];
+  if (targetUnit.GdrivePublicID) {
+    try {
+      unitGDriveChildItemsAll = await getUnitGDriveChildItems(targetUnit.GdrivePublicID);
+    } catch (error) {
+      console.error(
+        'Failed to load unit Google Drive child items; continuing without them.',
+        error
+      );
+      unitGDriveChildItemsAll = [];
+    }
+  }
 
   let unitForUI: TUnitForUI = {
     ...(targetUnit as TUnitForUI),
     headLinks: buildHeadLinks(targetUnits),
   };
 
-  await enrichFeaturedMultimedia(unitForUI);
-  await enrichTeachingMaterials(targetUnit, unitForUI, unitGDriveChildItemsAll);
+  try {
+    await enrichFeaturedMultimedia(unitForUI);
+  } catch (error) {
+    console.error(
+      'Failed to enrich unit featured multimedia; continuing with base multimedia.',
+      error
+    );
+  }
+
+  try {
+    await enrichTeachingMaterials(targetUnit, unitForUI, unitGDriveChildItemsAll);
+  } catch (error) {
+    console.error(
+      'Failed to enrich unit teaching materials; continuing with base teaching materials.',
+      error
+    );
+  }
 
   unitForUI = {
     ...unitForUI,

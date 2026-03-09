@@ -39,7 +39,7 @@ const buildRootQueryForTab = (tab: NavTab) => {
 };
 
 const PortalNav: React.FC<PortalNavProps> = ({
-  activeTab = "All",
+  activeTab = null,
   onTabClick,
   onBrandClick,
   autoHide: _autoHide = true,
