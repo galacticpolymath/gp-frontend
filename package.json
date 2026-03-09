@@ -125,6 +125,8 @@
     "@types/jest": "^30.0.0",
     "@types/js-cookie": "^3.0.6",
     "@types/lodash.throttle": "^4.1.9",
+    "@types/react": "^19.2.2",
+    "@types/react-dom": "^19.2.2",
     "@types/sanitize-html": "^2.16.1",
     "cypress": "^15.11.0",
     "eslint": "10.0.2",
