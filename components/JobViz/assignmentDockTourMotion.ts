@@ -10,7 +10,15 @@ const escapeSocCode = (socCode: string) => {
   if (typeof CSS !== "undefined" && typeof CSS.escape === "function") {
     return CSS.escape(socCode);
   }
-  return socCode.replace(/"/g, '\\"');
+  // Fallback for environments without CSS.escape.
+  // Escape backslashes first, then escape characters that are special in CSS selectors.
+  // This is intentionally minimal and focused on safe usage in attribute selectors like
+  // [data-assignment-soc="..."].
+  return socCode
+    .replace(/\\/g, "\\\\")
+    .replace(/"/g, '\\"')
+    .replace(/'/g, "\\'")
+    .replace(/[\[\]\.#:]/g, (c) => "\\" + c);
 };
 
 const getDockScrollNode = () =>
