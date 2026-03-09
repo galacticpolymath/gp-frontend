@@ -30,6 +30,7 @@ This file defines default operating rules for coding agents in this repository.
 - If a file approaches ~700 lines and still grows, split by intuitive feature boundaries.
 - Prefer structure by functional UI area, for example:
   - `modals`
+  - `filter styling` (or other UI styling)
   - `dock`
   - `search/grid`
   - `hero/layout`
@@ -39,6 +40,8 @@ This file defines default operating rules for coding agents in this repository.
 ## CSS/SCSS Rules
 
 - Use feature partials for large style systems; keep index files as import surfaces.
+- Never split styles into arbitrary sequential chunks (for example, `foo-1.css`, `foo-2.css`, `foo-3.css`).
+- Name split style files by functional responsibility (for example, `hero-layout`, `filters-panel`, `results-grid`, `modals`).
 - Keep utility classes explicit and reusable; avoid repeating identical declarations across modules.
 - Standardize breakpoints and reuse existing breakpoint patterns before adding new ones.
 - Prefer token/variable-driven styling over hardcoded values when reused.

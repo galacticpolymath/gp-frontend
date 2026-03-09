@@ -1,0 +1,525 @@
+@media (max-width: 1440px) {
+  .jobTourCard {
+    grid-template-columns: minmax(0, 200px) minmax(0, 1fr) minmax(0, 150px);
+  }
+
+  .jobTourCard .resourceContent {
+    padding: 14px 16px 16px;
+    gap: 10px;
+  }
+
+  .jobTourCard .resourceContent h3 {
+    font-size: 20px;
+  }
+
+  .jobTourCard .resourceDescription {
+    font-size: 16px;
+  }
+
+  .jobTourJobs span {
+    font-size: 16px;
+    padding: 3px 7px;
+  }
+
+  .jobTourCard .resourceSide {
+    padding: 14px 14px 16px;
+  }
+
+  .jobTourCard .resourceSideMeta {
+    font-size: 15px;
+    letter-spacing: 0.06em;
+  }
+}
+
+@media (max-width: 1024px) {
+  .heroBody {
+    grid-template-columns: 1fr;
+  }
+
+  .allHeroInner {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .allHeroVisual {
+    justify-items: start;
+  }
+
+  .allHeroStats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .allShell {
+    grid-template-columns: 1fr;
+  }
+
+  .allShellCollapsed {
+    grid-template-columns: 1fr;
+  }
+
+  .allFiltersPanel {
+    position: static;
+  }
+
+  .resultsHeaderTop {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .resourceGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .resourceCard {
+    grid-template-columns: 1fr;
+    max-width: 400px;
+    margin: 0 auto;
+  }
+
+  .resourceRow {
+    max-width: 500px;
+    margin: 0 auto;
+  }
+
+  .resourceCard .resourceContent {
+    gap: 6px;
+  }
+
+  .resourceCard .resourceContent h3 {
+    margin-bottom: 4px;
+    font-size: 18px;
+  }
+
+  .resourceCard .resourceDescription {
+    font-size: 16px;
+  }
+
+  .resourceCard .resourceTypePill {
+    font-size: 16px;
+    padding: 6px 12px;
+  }
+
+  .resourceCard .resourceTypePill svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .resourceCard .resourceSide {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .resourceCard .resourceBadges {
+    margin-left: 4px;
+  }
+
+  .resourceCard .resourceSideMeta {
+    width: 100%;
+    padding-left: 0;
+    margin-top: 6px;
+  }
+
+  .resourceMedia {
+    max-height: none;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+  }
+
+  .resourceMedia img {
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .resourceMedia,
+  .resourceContent,
+  .resourceSide {
+    border-left: 0;
+    border-right: 0;
+    border-top: 1px solid rgba(54, 54, 54, 0.2);
+  }
+
+  .searchMatchArea {
+    padding: 10px 14px 12px;
+  }
+
+  .searchSubmitButton {
+    padding: 7px 12px;
+    font-size: 15px;
+  }
+
+  .sectionDivider {
+    height: 10px;
+  }
+
+  .heroPanel {
+    gap: 16px;
+  }
+
+  .heroCarousel {
+    width: min(100%, 560px);
+    margin: 0 auto;
+    aspect-ratio: 5 / 6;
+    min-height: 280px;
+  }
+
+  .statsGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (min-width: 1025px) {
+  .filterCollapseIconDesktop {
+    display: inline-flex;
+  }
+
+  .filterCollapseIconMobile {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .resourceAnimate {
+    animation: none;
+  }
+}
+
+@media (min-width: 1400px) {
+  .resourceGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: stretch;
+  }
+
+  .resourceGridList {
+    grid-template-columns: 1fr;
+    align-items: start;
+  }
+
+  .resourceGrid:not(.resourceGridList) .resourceCard {
+    height: 100%;
+  }
+}
+
+@media (min-width: 1400px) and (max-width: 1799px) {
+  .resourceCard {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 160px);
+    grid-template-rows: auto auto auto;
+  }
+
+  .resourceMedia {
+    grid-column: 1 / 2;
+    grid-row: 1 / 2;
+    aspect-ratio: 16 / 7;
+    min-height: 0;
+    border-bottom: 1px solid rgba(54, 54, 54, 0.2);
+  }
+
+  .resourceContent {
+    grid-column: 1 / -1;
+    grid-row: 2 / 3;
+    padding: 14px 16px 14px;
+    gap: 8px;
+    border-top: 1px solid rgba(54, 54, 54, 0.2);
+  }
+
+  .resourceContent h3 {
+    font-size: 20px;
+    margin: 0;
+  }
+
+  .resourceDescription {
+    font-size: 16px;
+    line-height: 1.45;
+  }
+
+  .resourceSide {
+    grid-column: 2 / 3;
+    grid-row: 1 / 2;
+    padding: 14px 14px 14px;
+  }
+
+  .resourceSideMeta {
+    padding-left: 0;
+    gap: 8px;
+    font-size: 15px;
+  }
+
+  .searchMatchArea {
+    grid-row: 3 / 4;
+  }
+
+  .searchMatchLine {
+    font-size: 15px;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero {
+    padding: 24px 16px 64px;
+  }
+
+  .allHero {
+    padding: 56px 20px 40px;
+  }
+
+  .allHeroIconPanel {
+    width: 140px;
+    height: 140px;
+    border-radius: 18px;
+  }
+
+  .allHeroLogoCenter {
+    width: 58px;
+    height: 58px;
+  }
+
+  .allHeroLogoCenter img {
+    width: 46px;
+    height: 46px;
+  }
+
+  .allHeroLogoTile svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  .allHeroIconSingle svg {
+    width: 62px;
+    height: 62px;
+  }
+
+  .allHeroIconSingle img {
+    width: 84px;
+    height: 84px;
+  }
+
+  .allHeroStats {
+    grid-template-columns: 1fr;
+  }
+
+  .allShell {
+    padding: 0 12px;
+  }
+
+  .resourceRowHeader {
+    grid-template-columns: 56px minmax(0, 1fr) 56px 44px 80px;
+  }
+
+  .resourceRowHeaderCol svg {
+    display: none;
+  }
+
+  .resourceRow {
+    grid-template-columns: 56px minmax(0, 1fr) 56px 44px 80px;
+    max-width: 100%;
+    width: 100%;
+  }
+
+  .resourceRowMedia {
+    max-height: 48px;
+  }
+
+  .resourceRowMedia img {
+    height: 48px;
+  }
+
+  .resourceRowMedia .resourceMediaType {
+    display: none;
+  }
+
+  .resourceRowContent {
+    padding: 6px 8px;
+    gap: 2px;
+  }
+
+  .resourceRowTitleLine,
+  .resourceRowSubtitle,
+  .resourceRowTitleText {
+    display: inline;
+    font-size: 14px;
+  }
+
+  .resourceRowTitleLine {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .resourceRow[data-type="Unit"] .resourceRowTitleLine {
+    font-weight: 500;
+  }
+
+  .resourceRow[data-type="Video"] .resourceRowSubtitle,
+  .resourceRow[data-type="App"] .resourceRowSubtitle {
+    display: none;
+  }
+
+  .resourceRowCol {
+    padding: 6px 4px;
+    gap: 2px;
+  }
+
+  .resourceRowColLabel {
+    display: none;
+  }
+
+  .resourceRowColValue {
+    font-size: 14px;
+    font-weight: 400;
+  }
+
+  .resourceRowTypeCol {
+    gap: 2px;
+  }
+
+  .resourceRowTypeText {
+    font-weight: 700;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #363636;
+  }
+
+  .resourceRowTypeCol .resourceRowLessonCount {
+    font-size: 13px;
+    margin: 2px 0 0;
+  }
+
+  .searchClearButton {
+    width: 26px;
+    height: 26px;
+  }
+
+  .heroTitle {
+    font-size: 32px;
+  }
+
+  .main {
+    padding: 0 0 64px;
+  }
+
+  .mapFrame {
+    min-height: 240px;
+    padding: 10px;
+  }
+
+  .mapFrame :global(.svgMap-map-wrapper) {
+    padding-top: 70%;
+  }
+
+  .mapFrame :global(.svgMap-map-image) {
+    top: -8%;
+    left: -8%;
+    width: 116%;
+    height: 116%;
+  }
+
+  .sectionOrientation,
+  .sectionAlt {
+    padding: 22px;
+  }
+
+  .sectionAlt {
+    padding: 24px;
+  }
+
+  .mediaModalThumb {
+    height: 180px;
+  }
+
+  .unitHeaderRow {
+    grid-template-columns: 1fr;
+  }
+
+  .unitBannerWrap {
+    height: 140px;
+  }
+
+  .sponsorPanel {
+    text-align: left;
+    align-self: stretch;
+  }
+
+  .spotlightTitleRow {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .spotlightVisual {
+    margin-top: 6px;
+  }
+
+  .unitConnections {
+    grid-template-columns: 1fr;
+  }
+
+  .heroPanel {
+    justify-content: flex-start;
+  }
+
+  .heroCarousel {
+    width: 100%;
+    min-height: 260px;
+  }
+
+  .sectionStats {
+    padding: 24px;
+  }
+
+  .sectionFresh {
+    padding: 48px 16px;
+  }
+
+  .pressChecks {
+    flex-wrap: wrap;
+    gap: 10px 14px;
+  }
+
+  .pressCheck {
+    font-size: 15px;
+  }
+}
+
+@media (max-width: 600px) {
+
+  .resultsControls {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .heroHighlights {
+    grid-template-columns: 1fr;
+  }
+
+  .unitBannerWrap {
+    height: 120px;
+  }
+
+  .mediaGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .sectionDivider {
+    height: 10px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .primaryButton,
+  .secondaryButton,
+  .ghostButton,
+  .mediaCard {
+    transition: none;
+  }
+}
+
