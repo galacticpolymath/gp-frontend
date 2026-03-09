@@ -107,6 +107,8 @@
     "sharp": "^0.34.5",
     "start-server-and-test": "^2.1.5",
     "styled-components": "^6.3.11",
+    "svg-pan-zoom": "^3.6.2",
+    "svgmap": "^2.18.4",
     "swr": "^2.4.1",
     "tls": "^0.0.1",
     "url": "^0.11.4",
