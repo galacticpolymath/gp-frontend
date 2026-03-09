@@ -24,6 +24,14 @@ type TUnitPageDataResult = {
 type TGetUnitPageDataOptions = {
   withExternalEnrichment?: boolean;
 };
+type TUnitLocaleVariant = Pick<INewUnitSchema, 'numID' | 'locale'>;
+type TUnitPageCacheValue = {
+  expiresAt: number;
+  data: TUnitPageDataResult | null;
+};
+
+const UNIT_PAGE_CACHE_TTL_MS = process.env.NODE_ENV === 'production' ? 30_000 : 5_000;
+const unitPageDataCache = new Map<string, TUnitPageCacheValue>();
 
 const getGoogleDriveFileIdFromUrl = (url: string) => {
   if (typeof url !== 'string') {
@@ -41,7 +49,7 @@ const getGoogleDriveFileIdFromUrl = (url: string) => {
   return id || null;
 };
 
-const buildHeadLinks = (targetUnits: INewUnitSchema[]) => {
+const buildHeadLinks = (targetUnits: TUnitLocaleVariant[]) => {
   return targetUnits
     .filter(({ locale, numID }) => locale && numID)
     .map(({ locale, numID }) => [
@@ -420,40 +428,72 @@ export const getUnitPageData = async (
   options: TGetUnitPageDataOptions = {}
 ): Promise<TUnitPageDataResult | null> => {
   const { withExternalEnrichment = false } = options;
-  const parsedId = Number.parseInt(id, 10);
-  const targetUnits = (await Units.find<INewUnitSchema>(
-    { numID: parsedId },
-    { __v: 0 }
-  ).lean()) as INewUnitSchema[];
+  const cacheKey = `${id}:${loc}:${withExternalEnrichment ? 'enriched' : 'base'}`;
+  const now = Date.now();
+  const cached = unitPageDataCache.get(cacheKey);
+  if (cached && cached.expiresAt > now) {
+    return cached.data;
+  }
 
-  if (!targetUnits?.length) {
+  const shouldLogTiming =
+    process.env.NODE_ENV !== 'production' ||
+    process.env.GP_DEBUG_UNIT_TIMING === 'true';
+  const startedAt = now;
+
+  const parsedId = Number.parseInt(id, 10);
+  const unitLocaleVariants = (await Units.find<TUnitLocaleVariant>(
+    { numID: parsedId },
+    { numID: 1, locale: 1, _id: 0 }
+  ).lean()) as TUnitLocaleVariant[];
+
+  if (!unitLocaleVariants?.length) {
+    unitPageDataCache.set(cacheKey, {
+      expiresAt: now + UNIT_PAGE_CACHE_TTL_MS,
+      data: null,
+    });
     return null;
   }
 
-  const availLocs = targetUnits
+  const availLocs = unitLocaleVariants
     .map(({ locale }) => locale)
     .filter(Boolean) as string[];
 
-  const normalizedRequestedLocale = (loc ?? "").trim().toLowerCase();
+  const escapedLocale = (loc ?? "").replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const targetUnitByRequestedLocale = escapedLocale
+    ? await Units.findOne<INewUnitSchema>(
+        {
+          numID: parsedId,
+          locale: { $regex: `^${escapedLocale}$`, $options: 'i' },
+        },
+        { __v: 0 }
+      ).lean()
+    : null;
+
+  const targetUnitByDefaultLocale = !targetUnitByRequestedLocale
+    ? await Units.findOne<INewUnitSchema>(
+        { numID: parsedId, locale: DEFAULT_LOCALE },
+        { __v: 0 }
+      ).lean()
+    : null;
+
+  const targetUnitFallback = !targetUnitByRequestedLocale && !targetUnitByDefaultLocale
+    ? await Units.findOne<INewUnitSchema>({ numID: parsedId }, { __v: 0 }).lean()
+    : null;
+
   const targetUnit =
-    targetUnits.find(
-      ({ numID, locale }) =>
-        numID === parsedId &&
-        (locale ?? "").trim().toLowerCase() === normalizedRequestedLocale
-    ) ??
-    targetUnits.find(
-      ({ locale }) =>
-        (locale ?? "").trim().toLowerCase() === DEFAULT_LOCALE.toLowerCase()
-    ) ??
-    targetUnits[0];
+    targetUnitByRequestedLocale ?? targetUnitByDefaultLocale ?? targetUnitFallback;
 
   if (!targetUnit) {
+    unitPageDataCache.set(cacheKey, {
+      expiresAt: now + UNIT_PAGE_CACHE_TTL_MS,
+      data: null,
+    });
     return null;
   }
 
   let unitForUI: TUnitForUI = {
     ...(targetUnit as TUnitForUI),
-    headLinks: buildHeadLinks(targetUnits),
+    headLinks: buildHeadLinks(unitLocaleVariants),
   };
 
   if (withExternalEnrichment) {
@@ -494,8 +534,27 @@ export const getUnitPageData = async (
     Sections: normalizeSectionsForUI(unitForUI, availLocs),
   };
 
-  return {
+  const result = {
     unit: unitForUI,
     availLocs,
   };
+  unitPageDataCache.set(cacheKey, {
+    expiresAt: Date.now() + UNIT_PAGE_CACHE_TTL_MS,
+    data: result,
+  });
+
+  if (shouldLogTiming) {
+    console.log(
+      '[unit-page] getUnitPageData timing',
+      JSON.stringify({
+        id: parsedId,
+        loc,
+        withExternalEnrichment,
+        availLocs: availLocs.length,
+        elapsedMs: Date.now() - startedAt,
+      })
+    );
+  }
+
+  return result;
 };
