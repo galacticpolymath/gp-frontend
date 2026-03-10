@@ -1,5 +1,5 @@
 .unitHero {
-  padding: 20px 16px 8px;
+  padding: 0 16px 8px;
 }
 
 .unitHeroIntro {
@@ -123,20 +123,12 @@
 
 .unitTabHero {
   width: min(1280px, calc(100% - 32px));
-  margin: 14px auto 0;
-  padding: 14px 16px 12px;
-  border: 1px solid rgba(107, 122, 177, 0.28);
-  border-radius: 14px;
-  background:
-    radial-gradient(circle at 12% 18%, rgba(44, 131, 195, 0.2), transparent 38%),
-    linear-gradient(135deg, rgba(238, 247, 255, 0.99), rgba(246, 251, 255, 0.99));
-  box-shadow: 0 10px 24px rgba(40, 52, 89, 0.14);
+  margin: 0 auto;
+  padding: 10px 0 8px;
 }
 
 .unitTabHeroCredits {
-  background:
-    radial-gradient(circle at 14% 20%, rgba(44, 131, 195, 0.22), transparent 40%),
-    linear-gradient(140deg, rgba(240, 248, 255, 0.99), rgba(248, 252, 255, 0.99));
+  background: none;
 }
 
 .unitTabHeroContent {
@@ -244,15 +236,13 @@
   }
 
   .unitTabHero {
-    margin-top: 10px;
-    border-radius: 12px;
-    padding: 12px 12px 10px;
+    padding: 8px 0 6px;
   }
 }
 
 @media (min-width: 768px) {
   .unitHero {
-    padding: 10px 24px 4px;
+    padding: 0 24px 4px;
   }
 
   .unitHeroIntro {

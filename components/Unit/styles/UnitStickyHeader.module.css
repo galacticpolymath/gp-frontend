@@ -381,7 +381,8 @@
   width: 100%;
   grid-column: 1 / -1;
   align-self: end;
-  margin-top: 3px;
+  padding: 0;
+  margin-top: 6px;
   margin-bottom: -1px;
   border-bottom: 1px solid #f0f4ff2e;
 }
@@ -392,6 +393,7 @@
   border-radius: 0;
   padding: 0 0 1px;
   min-height: 0;
+  line-height: 1;
   background: transparent;
   color: var(--sticky-offwhite);
   font-size: 15px;
@@ -399,6 +401,8 @@
   white-space: nowrap;
   text-decoration: none;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
 }
 
 .unitTabButtonActive {
@@ -416,7 +420,7 @@
 
 .unitTabButtonActiveMaterials {
   box-shadow: none;
-  margin-bottom: 0;
+  margin-bottom: -1px;
 }
 
 .unitTabButtonActiveMaterials::after {
@@ -458,11 +462,13 @@
 .lessonSubtabBar {
   display: flex;
   align-items: center;
+  grid-column: 1 / -1;
+  justify-self: stretch;
   gap: 10px;
   overflow-x: auto;
   background: #6c2d82;
   border: 0;
-  border-top: 1px solid #85569b;
+  border-top: 0;
   border-radius: 0;
   width: 100vw;
   margin-left: calc(50% - 50vw);
@@ -473,6 +479,7 @@
 }
 
 .lessonSubtabLabel {
+  flex: 0 0 auto;
   color: rgba(240, 244, 255, 0.84);
   font-size: 14px;
   font-weight: 600;
@@ -483,9 +490,13 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  flex: 1 1 auto;
+  min-width: 0;
+  white-space: nowrap;
 }
 
 .lessonSubtabButton {
+  flex: 0 0 auto;
   border-radius: 999px;
   border: 1px solid rgba(240, 244, 255, 0.16);
   background: rgba(255, 255, 255, 0.04);
@@ -602,30 +613,30 @@
 
   .unitStickyInner {
     display: grid;
-    grid-template-columns: minmax(0, 1fr);
+    grid-template-columns: auto minmax(0, 1fr);
     grid-template-areas:
-      'search'
-      'title'
-      'tabs'
-      'results';
-    align-items: start;
+      'title search'
+      'tabs tabs'
+      'results results';
+    align-items: center;
     padding: 6px 12px 0;
-    gap: 5px;
+    row-gap: 0;
+    column-gap: 2px;
   }
 
   .unitStickyTopRow {
     padding-right: 0;
     grid-area: title;
+    align-items: center;
+    gap: 8px;
   }
 
   .unitStickyTitle {
-    gap: 2px;
+    display: none;
   }
 
   .unitStickyText {
-    font-size: 14px;
-    font-weight: 400;
-    line-height: 1.25;
+    display: none;
   }
 
   .unitSearch {
@@ -654,11 +665,29 @@
     gap: 14px;
     flex-wrap: nowrap;
     overflow-x: auto;
-    padding-bottom: 2px;
+    padding: 0;
+    margin-bottom: -1px;
+    border-bottom: 0;
   }
 
   .lessonSubtabBar {
-    padding: 9px 24px 3px;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-column: 1 / -1;
+    justify-self: stretch;
+    width: calc(100% + 24px);
+    margin-left: -12px;
+    margin-right: -12px;
+    overflow: hidden;
+    background: #6c2d82;
+  }
+
+  .lessonSubtabList {
+    width: 100%;
+    flex: 0 1 auto;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
   }
 
   .unitTabButton {
@@ -667,5 +696,28 @@
 
   .unitLocaleSwitcher {
     justify-content: flex-end;
+  }
+}
+
+@media (max-width: 419px) {
+  .unitSearch {
+    width: 100%;
+    max-width: none;
+    justify-self: stretch;
+    min-width: 0;
+  }
+
+  .unitSearchRow {
+    position: relative;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .unitSearchInputWrapExpanded {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    transform: none;
+    z-index: 4;
   }
 }

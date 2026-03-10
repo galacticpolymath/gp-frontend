@@ -3676,8 +3676,14 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
     <div
       ref={unitPageRef}
       className={`${styles.unitPage} ${
-        isStandalonePreview ? styles.unitPageProcedureOnly : ''
-      }`}
+        activeTab === TAB_OVERVIEW
+          ? styles.unitPageOverview
+          : activeTab === TAB_MATERIALS
+          ? styles.unitPageMaterials
+          : activeTab === TAB_STANDARDS
+          ? styles.unitPageStandards
+          : styles.unitPageCredits
+      } ${isStandalonePreview ? styles.unitPageProcedureOnly : ''}`}
     >
       {!isStandalonePreview && (
         <UnitStickyHeader
@@ -3725,7 +3731,6 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
           aria-hidden="true"
         />
       )}
-
       {activeTab === TAB_OVERVIEW && (
         <div className={styles.unitTabFadeIn}>
           <UnitOverviewHero
@@ -3778,7 +3783,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
         )}
 
         {activeTab === TAB_MATERIALS && (
-          <section className={materialStyles.unitSection}>
+          <section className={`${materialStyles.unitSection} ${materialStyles.unitTabFadeIn}`}>
             <div className={materialStyles.materialsLayout}>
               {activeLessonForRender ? (
                 isStandalonePreview ? (
