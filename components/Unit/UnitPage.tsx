@@ -1336,7 +1336,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
         },
         {
           key: TAB_CREDITS as TTabKey,
-          label: 'Authors',
+          label: 'Credits',
           isVisible:
             !!unit.Sections?.authors?.Data?.length ||
             !!unit.Sections?.acknowledgments ||
@@ -3687,8 +3687,8 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
         <div className={styles.unitTabFadeIn}>
           <UnitTabHero
             id="unit-search-credits-content"
-            eyebrow="Authors"
-            title="Authors, Acknowledgments, and Versions"
+            eyebrow="Credits"
+            title="Credits, Acknowledgments, and Versions"
             lead="This unit was made possible by hundreds of hours of work by tons of people. Thank you!"
             isCredits
             handleShare={handleShare}
