@@ -50,14 +50,6 @@
   color: #2C83C3
 }
 
-.carouselSelectedLessons {
-  @media(max-width: 575px) {
-    padding-right: 0px !important;
-    padding-left: 0px !important;
-    min-width: 250px;
-  }
-}
-
 .collapsibleLessonSection {
   >div:first-child {
     width: 100vw;

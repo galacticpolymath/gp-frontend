@@ -376,52 +376,6 @@ $toolTipColor: #f0f4ff;
   }
 }
 
-.thumbnailLi {
-  @media (min-width: 576px) {
-    width: 80px;
-    height: 65px;
-  }
-}
-
-.itemVisible {
-  @media (min-width: 576px) {
-    background-color: #f5c1e3;
-  }
-}
-
-.itemNotVisible {
-  @media (min-width: 576px) {
-    background-color: white;
-  }
-}
-
-.carouselSelectedLessons {
-  @media (min-width: 576px) {
-    max-width: 70rem !important;
-  }
-
-  @media (max-width: 575px) {
-    width: 80vw;
-    max-width: 90vw !important;
-  }
-}
-
-.lessonSlideBody {
-
-  h5,
-  p {
-    width: 90%;
-
-    @media (max-width: 575px) {
-      width: 100%;
-    }
-  }
-
-  span {
-    @media (max-width: 575px) {}
-  }
-}
-
 // w-45 w-md-50 w-lg-25
 
 .tagPillContainer {
@@ -457,10 +411,6 @@ $toolTipColor: #f0f4ff;
   @media (max-width: 991px) {
     // height: 170px;
   }
-}
-
-.openAppTxt {
-  font-size: 0.9em;
 }
 
 .ellipsize-txt {

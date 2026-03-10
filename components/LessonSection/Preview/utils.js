@@ -1,5 +1,4 @@
 import Image from 'next/image';
-import RenderArrowNext from './RenderArrowNext';
 import Link from 'next/link';
 
 const normalizeYouTubeEmbedUrl = (url) => {
@@ -119,45 +118,4 @@ export const getVideoThumb = link => {
   }
 
   return '';
-};
-
-const renderThumbs = items => {
-  return items.map(({ props: { mainLink, type, title } }, i) => {
-    if (type === 'video') {
-      return (
-        <img
-          key={i}
-          src={getVideoThumb(mainLink)}
-          alt={title}
-        />
-      );
-    } else if (type === 'pdf') {
-      return (
-        <i
-          key={i}
-          className="bi-filetype-pdf fs-2"
-        />
-      );
-    }
-  });
-};
-
-const renderArrowPrev = (clickHandler, hasPrev) => (
-  <button
-    onClick={clickHandler}
-    disabled={!hasPrev}
-    className='btn bg-transparent m-0 p-1'
-  >
-    <i className="fs-1 text-black bi-arrow-left-circle-fill lh-1 d-block"></i>
-  </button>
-);
-
-const renderArrowNext = (showNextItem, hasNext) => {
-  return <RenderArrowNext showNextItem={showNextItem} hasNext={hasNext} />;
-};
-
-export const customControls = {
-  renderThumbs,
-  renderArrowPrev,
-  renderArrowNext,
 };

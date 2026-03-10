@@ -5,7 +5,6 @@ import TeachIt from './TeachIt';
 import Acknowledgments from './Acknowledgments';
 import Versions from './Versions';
 import CollapsibleRichTextSection from './CollapsibleRichTextSection';
-import Preview from './Preview';
 import StandardsCollapsible from './Standards/StandardsCollapsible.js';
 
 export const SECTIONS = {
@@ -24,8 +23,6 @@ export const SECTIONS = {
   ACKNOWLEDGMENTS: 'lesson-plan.acknowledgments',
   VERSIONS: 'lesson-plan.versions',
   COLLAPSIBLE_TEXT: 'lesson-plan.collapsible-text-section',
-  PREVIEW: 'lesson-plan.unit-preview',
-  LESSON_PREVIEW_FORMER: 'lesson-plan.lesson-preview',
 };
 
 export const NUMBERED_SECTIONS = [
@@ -39,7 +36,6 @@ export const NUMBERED_SECTIONS = [
   SECTIONS.ACKNOWLEDGMENTS,
   SECTIONS.VERSIONS,
   SECTIONS.COLLAPSIBLE_TEXT,
-  SECTIONS.PREVIEW,
 ];
 
 export const sectionTypeMap = {
@@ -55,8 +51,6 @@ export const sectionTypeMap = {
   [SECTIONS.ACKNOWLEDGMENTS]: Acknowledgments,
   [SECTIONS.VERSIONS]: Versions,
   [SECTIONS.COLLAPSIBLE_TEXT]: CollapsibleRichTextSection,
-  [SECTIONS.PREVIEW]: Preview,
-  [SECTIONS.LESSON_PREVIEW_FORMER]: Preview,
 };
 
 const LessonSection = ({ index, section, _sectionDots }) => {

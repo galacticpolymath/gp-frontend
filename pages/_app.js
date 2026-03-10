@@ -1,5 +1,4 @@
 import { ModalProvider } from "../providers/ModalProvider";
-import { LessonsCarouselProvider } from "../providers/LessonsCarouselProvider";
 import ModalsContainer from "../ModalsContainer";
 import { GoogleAnalytics } from "nextjs-google-analytics";
 import { SessionProvider } from "next-auth/react";
@@ -105,38 +104,36 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
         <GoogleAnalytics gaMeasurementId="G-8B58Y7HD3T" trackPageViews />
       )}
       <SessionProvider session={session}>
-        <LessonsCarouselProvider>
-          <UserProvider>
-            <LessonProvider>
-              <ModalProvider>
-                <QueryClientProvider client={queryClient}>
-                  <CookiesProvider>
-                    <GoogleDrivePickerProvider
-                      clientId={GOOGLE_DRIVE_CLIENT_ID}
-                      apiKey={GOOGLE_DRIVE_AUTH_API_KEY}
-                    >
-                      <Toaster />
-                      {isRouteLoading && (
-                        <div className="gp-route-loader" role="status" aria-live="polite">
-                          <span className="gp-route-loader__spinner" aria-hidden="true" />
-                          <span className="gp-route-loader__label">Loading destination...</span>
-                        </div>
-                      )}
-                      <SiteLaunchNoticeBanner />
-                      <Component {...pageProps} />
-                      <HelpLauncher />
-                      <ModalsContainer />
-                      <CookieConsentBanner
-                        consentStatus={cookieConsentStatus}
-                        onDecision={handleCookieDecision}
-                      />
-                    </GoogleDrivePickerProvider>
-                  </CookiesProvider>
-                </QueryClientProvider>
-              </ModalProvider>
-            </LessonProvider>
-          </UserProvider>
-        </LessonsCarouselProvider>
+        <UserProvider>
+          <LessonProvider>
+            <ModalProvider>
+              <QueryClientProvider client={queryClient}>
+                <CookiesProvider>
+                  <GoogleDrivePickerProvider
+                    clientId={GOOGLE_DRIVE_CLIENT_ID}
+                    apiKey={GOOGLE_DRIVE_AUTH_API_KEY}
+                  >
+                    <Toaster />
+                    {isRouteLoading && (
+                      <div className="gp-route-loader" role="status" aria-live="polite">
+                        <span className="gp-route-loader__spinner" aria-hidden="true" />
+                        <span className="gp-route-loader__label">Loading destination...</span>
+                      </div>
+                    )}
+                    <SiteLaunchNoticeBanner />
+                    <Component {...pageProps} />
+                    <HelpLauncher />
+                    <ModalsContainer />
+                    <CookieConsentBanner
+                      consentStatus={cookieConsentStatus}
+                      onDecision={handleCookieDecision}
+                    />
+                  </GoogleDrivePickerProvider>
+                </CookiesProvider>
+              </QueryClientProvider>
+            </ModalProvider>
+          </LessonProvider>
+        </UserProvider>
       </SessionProvider>
     </>
   );
