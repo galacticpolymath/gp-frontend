@@ -385,13 +385,20 @@
   margin-top: 6px;
   margin-bottom: -1px;
   border-bottom: 1px solid #f0f4ff2e;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.unitTabList::-webkit-scrollbar {
+  display: none;
+  height: 0;
 }
 
 .unitTabButton {
   border: 0;
   border-bottom: 2px solid transparent;
   border-radius: 0;
-  padding: 0 0 1px;
+  padding: 0 0 3px;
   min-height: 0;
   line-height: 1;
   background: transparent;
@@ -413,7 +420,7 @@
   border: 1px solid rgba(240, 244, 255, 0.18);
   border-bottom: 0;
   border-radius: 12px 12px 0 0;
-  padding: 7px 14px 5px;
+  padding: 7px 14px 9px;
   margin-bottom: -1px;
   box-shadow: 0 4px 12px rgba(11, 21, 40, 0.18);
 }
@@ -421,6 +428,7 @@
 .unitTabButtonActiveMaterials {
   box-shadow: none;
   margin-bottom: -1px;
+  padding-bottom: 5px;
 }
 
 .unitTabButtonActiveMaterials::after {
@@ -665,6 +673,7 @@
     gap: 14px;
     flex-wrap: nowrap;
     overflow-x: auto;
+    overflow-y: hidden;
     padding: 0;
     margin-bottom: -1px;
     border-bottom: 0;

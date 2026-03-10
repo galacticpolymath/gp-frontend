@@ -96,6 +96,10 @@
 }
 
 @media (max-width: 767px) {
+  .unitStickyHeaderSpacer {
+    margin-bottom: 0;
+  }
+
   .unitMain {
     padding-bottom: 132px;
   }
