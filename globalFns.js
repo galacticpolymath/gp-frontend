@@ -204,6 +204,55 @@ export const getIsTypeValid = (val, targetType) => {
   return typeof val === targetType;
 };
 
+const isSafeExternalUrl = (url = '') => {
+  try {
+    const parsed = new URL(url);
+
+    if (!/^https?:$/i.test(parsed.protocol)) {
+      return false;
+    }
+
+    const hostname = parsed.hostname.toLowerCase();
+
+    if (hostname === 'localhost' || hostname.endsWith('.localhost')) {
+      return false;
+    }
+
+    const ipv4Match = hostname.match(/^(\d{1,3}\.){3}\d{1,3}$/);
+    if (ipv4Match) {
+      const octets = hostname.split('.').map(Number);
+
+      if (octets[0] === 10) {
+        return false;
+      }
+
+      if (octets[0] === 172 && octets[1] >= 16 && octets[1] <= 31) {
+        return false;
+      }
+
+      if (octets[0] === 192 && octets[1] === 168) {
+        return false;
+      }
+
+      if (octets[0] === 127) {
+        return false;
+      }
+
+      if (octets[0] === 169 && octets[1] === 254) {
+        return false;
+      }
+    }
+
+    if (hostname === '169.254.169.254') {
+      return false;
+    }
+
+    return true;
+  } catch {
+    return false;
+  }
+};
+
 const getNormalizedMetaImageUrl = (imageUrl = '', sourceUrl = '') => {
   if (!imageUrl || !sourceUrl) {
     return null;
@@ -225,7 +274,12 @@ const getNormalizedMetaImageUrl = (imageUrl = '', sourceUrl = '') => {
 };
 
 const fetchMetaImagePreview = async (url = '') => {
-  if (!url || typeof url !== 'string' || !/^https?:\/\//i.test(url)) {
+  if (
+    !url ||
+    typeof url !== 'string' ||
+    !/^https?:\/\//i.test(url) ||
+    !isSafeExternalUrl(url)
+  ) {
     return null;
   }
 
@@ -319,6 +373,8 @@ export const getLinkPreviewObj = async (url = '') => {
     return { errMsg };
   }
 };
+
+export { isSafeExternalUrl };
 
 export const getIsValObj = (val) =>
   typeof val === 'object' && !Array.isArray(val) && val !== null;

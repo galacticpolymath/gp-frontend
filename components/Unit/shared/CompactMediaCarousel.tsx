@@ -44,7 +44,7 @@ const getYoutubeThumbUrl = (link?: string | null) => {
 
     if (host === 'youtu.be') {
       videoId = parsedUrl.pathname.replace(/^\/+/, '').split('/')[0] ?? '';
-    } else if (host.includes('youtube.com')) {
+    } else if (host === 'youtube.com' || host.endsWith('.youtube.com')) {
       if (parsedUrl.pathname.includes('/embed/')) {
         videoId = parsedUrl.pathname.split('/embed/')[1]?.split('/')[0] ?? '';
       } else if (parsedUrl.pathname.includes('/shorts/')) {
