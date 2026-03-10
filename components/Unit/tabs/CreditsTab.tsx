@@ -81,7 +81,7 @@ const CreditsTab: React.FC<TCreditsTabProps> = ({
                   })}
                 </div>
               ) : (
-                <div className={styles.richTextBlock}>
+                <div className={`${styles.richTextBlock} ${styles.authorRichTextEntry}`}>
                   <RichText content={creditsContent} />
                 </div>
               )}

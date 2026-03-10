@@ -60,7 +60,7 @@
 
 .authorsList {
   display: grid;
-  gap: 12px;
+  gap: 14px;
 }
 
 .authorCard {
@@ -72,6 +72,15 @@
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(246, 249, 255, 0.92));
   box-shadow: 0 12px 24px rgba(39, 68, 117, 0.08);
+}
+
+.authorRichTextEntry {
+  display: grid;
+  gap: 6px;
+  padding: 9px;
+  border: 1px solid rgba(44, 131, 195, 0.12);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.78);
 }
 
 .authorHeader {

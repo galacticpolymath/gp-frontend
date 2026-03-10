@@ -481,7 +481,7 @@
   width: 100vw;
   margin-left: calc(50% - 50vw);
   margin-right: calc(50% - 50vw);
-  padding: 3px 28px 3px;
+  padding: 3px max(28px, calc((100vw - 1280px) / 2 + 14px)) 3px;
   margin-top: 0;
   box-shadow: none;
 }
@@ -689,6 +689,8 @@
     margin-right: -12px;
     overflow: hidden;
     background: #6c2d82;
+    padding-left: 12px;
+    padding-right: 12px;
   }
 
   .lessonSubtabList {
