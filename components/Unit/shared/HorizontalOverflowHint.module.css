@@ -1,0 +1,42 @@
+.overflowHint {
+  position: relative;
+  min-width: 0;
+}
+
+.arrowButton {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 30px;
+  height: 30px;
+  border: 1px solid rgba(240, 244, 255, 0.35);
+  border-radius: 999px;
+  background: rgba(16, 25, 45, 0.9);
+  color: #f0f4ff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 3;
+  box-shadow: 0 8px 18px rgba(7, 12, 24, 0.42);
+}
+
+.arrowButtonLeft {
+  left: 4px;
+}
+
+.arrowButtonRight {
+  right: 4px;
+}
+
+.arrowButton:hover,
+.arrowButton:focus-visible {
+  border-color: rgba(240, 244, 255, 0.68);
+  background: rgba(21, 34, 64, 0.96);
+}
+
+@media (min-width: 768px) {
+  .arrowButton {
+    display: none;
+  }
+}

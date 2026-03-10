@@ -372,19 +372,22 @@
   color: rgba(220, 233, 255, 0.9);
 }
 
-.unitTabList {
+.unitTabListShell {
   grid-area: tabs;
+  grid-column: 1 / -1;
+  align-self: end;
+  margin-top: 6px;
+  margin-bottom: -1px;
+  border-bottom: 1px solid #f0f4ff2e;
+}
+
+.unitTabList {
   display: flex;
   flex-wrap: wrap;
   align-items: flex-end;
   gap: 12px;
   width: 100%;
-  grid-column: 1 / -1;
-  align-self: end;
   padding: 0;
-  margin-top: 6px;
-  margin-bottom: -1px;
-  border-bottom: 1px solid #f0f4ff2e;
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
@@ -473,7 +476,7 @@
   grid-column: 1 / -1;
   justify-self: stretch;
   gap: 10px;
-  overflow-x: auto;
+  overflow: visible;
   background: #6c2d82;
   border: 0;
   border-top: 0;
@@ -501,6 +504,18 @@
   flex: 1 1 auto;
   min-width: 0;
   white-space: nowrap;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.lessonSubtabList::-webkit-scrollbar {
+  display: none;
+  height: 0;
+}
+
+.lessonSubtabListShell {
+  flex: 1 1 auto;
+  min-width: 0;
 }
 
 .lessonSubtabButton {
@@ -651,12 +666,13 @@
     position: static;
     top: auto;
     right: auto;
-    max-width: calc(100% - 24px);
-    width: auto;
+    max-width: none;
+    width: 100%;
     margin-top: 0;
     grid-area: search;
-    justify-self: end;
+    justify-self: stretch;
     align-self: start;
+    min-width: 0;
   }
 
   .unitSearchRow {
@@ -666,7 +682,24 @@
     flex-wrap: nowrap;
     align-items: center;
     justify-content: flex-end;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .unitSearchInputWrapExpanded {
+    position: fixed;
+    top: calc(var(--portal-nav-offset, 0px) + 8px);
+    left: 12px;
+    right: 12px;
     width: auto;
+    max-width: none;
+    min-width: 0;
+    margin-left: 0;
+    z-index: 70;
+  }
+
+  .unitTabListShell {
+    border-bottom: 0;
   }
 
   .unitTabList {
@@ -675,8 +708,7 @@
     overflow-x: auto;
     overflow-y: hidden;
     padding: 0;
-    margin-bottom: -1px;
-    border-bottom: 0;
+    -webkit-overflow-scrolling: touch;
   }
 
   .lessonSubtabBar {
@@ -707,28 +739,5 @@
 
   .unitLocaleSwitcher {
     justify-content: flex-end;
-  }
-}
-
-@media (max-width: 419px) {
-  .unitSearch {
-    width: 100%;
-    max-width: none;
-    justify-self: stretch;
-    min-width: 0;
-  }
-
-  .unitSearchRow {
-    position: relative;
-    width: 100%;
-    min-width: 0;
-  }
-
-  .unitSearchInputWrapExpanded {
-    width: 100%;
-    max-width: 100%;
-    min-width: 0;
-    transform: none;
-    z-index: 4;
   }
 }

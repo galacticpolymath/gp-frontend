@@ -14,6 +14,7 @@ import {
 } from '../../../backend/models/Unit/types/teachingMaterials';
 import LocDropdown from '../../LocDropdown';
 import ProfileAvatarRing from '../../ProfileAvatarRing';
+import HorizontalOverflowHint from '../shared/HorizontalOverflowHint';
 import styles from '../styles/UnitStickyHeader.module.css';
 
 type TTabOption = {
@@ -228,7 +229,12 @@ const UnitStickyHeader: React.FC<TUnitStickyHeaderProps> = ({
           </button>
         </div>
       </div>
-      <div className={styles.unitTabList}>
+      <HorizontalOverflowHint
+        className={styles.unitTabListShell}
+        scrollerClassName={styles.unitTabList}
+        prevLabel="Show previous unit tabs"
+        nextLabel="Show more unit tabs"
+      >
         {availableTabs.map((tab) => (
           <button
             key={tab.key}
@@ -246,11 +252,16 @@ const UnitStickyHeader: React.FC<TUnitStickyHeaderProps> = ({
             {tab.label}
           </button>
         ))}
-      </div>
+      </HorizontalOverflowHint>
       {activeTab === materialsTabKey && lessons.length > 0 && (
         <div className={styles.lessonSubtabBar}>
           <span className={styles.lessonSubtabLabel}>Lessons:</span>
-          <div className={styles.lessonSubtabList}>
+          <HorizontalOverflowHint
+            className={styles.lessonSubtabListShell}
+            scrollerClassName={styles.lessonSubtabList}
+            prevLabel="Show previous lesson tabs"
+            nextLabel="Show more lesson tabs"
+          >
             {lessons.map((lesson, index) => {
               const lessonId = getLessonIdentifier(lesson, index);
               const isActive = lessonId === activeLessonId;
@@ -287,7 +298,7 @@ const UnitStickyHeader: React.FC<TUnitStickyHeaderProps> = ({
                 </button>
               );
             })}
-          </div>
+          </HorizontalOverflowHint>
         </div>
       )}
       {isSearchExpanded && searchTerm.length > 1 && (
