@@ -12,6 +12,7 @@ import {
   Link2,
 } from 'lucide-react';
 import { TUnitForUI } from '../../backend/models/Unit/types/unit';
+import type { IAuthor } from '../../backend/models/Unit/Authors';
 import { IConnectionJobViz } from '../../backend/models/Unit/JobViz';
 import {
   IItem,
@@ -484,6 +485,104 @@ const dedupeContributors = (names: string[]) => {
     unique.push(name);
   }
   return unique;
+};
+
+const normalizeAuthorEntry = (value: unknown): IAuthor | null => {
+  if (!value || typeof value !== 'object') return null;
+
+  const entry = value as Record<string, unknown>;
+  const first =
+    typeof entry.First === 'string'
+      ? entry.First.trim()
+      : typeof entry.first === 'string'
+      ? entry.first.trim()
+      : '';
+  const middle =
+    typeof entry.Middle === 'string'
+      ? entry.Middle.trim()
+      : typeof entry.middle === 'string'
+      ? entry.middle.trim()
+      : null;
+  const last =
+    typeof entry.Last === 'string'
+      ? entry.Last.trim()
+      : typeof entry.last === 'string'
+      ? entry.last.trim()
+      : '';
+
+  if (!first || !last) {
+    return null;
+  }
+
+  return {
+    First: first,
+    Middle: middle || null,
+    Last: last,
+    Contribution:
+      typeof entry.Contribution === 'string'
+        ? entry.Contribution.trim() || null
+        : typeof entry.contribution === 'string'
+        ? entry.contribution.trim() || null
+        : null,
+    Title:
+      typeof entry.Title === 'string'
+        ? entry.Title.trim() || null
+        : typeof entry.title === 'string'
+        ? entry.title.trim() || null
+        : null,
+    Affiliation:
+      typeof entry.Affiliation === 'string'
+        ? entry.Affiliation.trim() || null
+        : typeof entry.affiliation === 'string'
+        ? entry.affiliation.trim() || null
+        : null,
+    Location:
+      typeof entry.Location === 'string'
+        ? entry.Location.trim() || null
+        : typeof entry.location === 'string'
+        ? entry.location.trim() || null
+        : null,
+    Link:
+      typeof entry.Link === 'string'
+        ? entry.Link.trim() || null
+        : typeof entry.link === 'string'
+        ? entry.link.trim() || null
+        : null,
+    GPID:
+      typeof entry.GPID === 'string'
+        ? entry.GPID.trim() || null
+        : typeof entry.gpid === 'string'
+        ? entry.gpid.trim() || null
+        : null,
+    Email:
+      typeof entry.Email === 'string'
+        ? entry.Email.trim() || null
+        : typeof entry.email === 'string'
+        ? entry.email.trim() || null
+        : null,
+  };
+};
+
+const getStructuredAuthors = (unit: TUnitForUI): IAuthor[] => {
+  const candidates = (unit.Sections?.authors?.Data ?? []).filter(Boolean);
+
+  const authors: IAuthor[] = [];
+  const seen = new Set<string>();
+
+  for (const candidate of candidates) {
+    const normalized = normalizeAuthorEntry(candidate);
+    if (!normalized) continue;
+
+    const key = [normalized.First, normalized.Middle ?? '', normalized.Last]
+      .map((part) => part.trim().toLowerCase())
+      .join('|');
+
+    if (seen.has(key)) continue;
+    seen.add(key);
+    authors.push(normalized);
+  }
+
+  return authors;
 };
 
 const getUnitContributorNames = (
@@ -2473,8 +2572,8 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
   const unitBanner = unit.UnitBanner ?? '';
   const creditsContent = unit.Sections?.credits?.Content?.trim() ?? '';
   const authorsEntries = useMemo(
-    () => unit.Sections?.authors?.Data ?? [],
-    [unit.Sections?.authors?.Data]
+    () => getStructuredAuthors(unit),
+    [unit]
   );
   const acknowledgmentsEntries = useMemo(
     () => unit.Sections?.acknowledgments?.Data ?? [],
