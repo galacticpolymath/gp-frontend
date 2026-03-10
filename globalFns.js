@@ -1,6 +1,6 @@
 import moment from 'moment';
-import { getVideoThumb } from './components/LessonSection/Preview/utils';
-import { SHOWABLE_LESSONS_STATUSES, STATUSES_OF_SHOWABLE_LESSONS } from './globalVars';
+import { getVideoThumb } from './components/LessonSection/Preview/utils.js';
+import { SHOWABLE_LESSONS_STATUSES, STATUSES_OF_SHOWABLE_LESSONS } from './globalVars.js';
 import { getLinkPreview } from 'link-preview-js';
 import { UNITS_URL_PATH } from './shared/constants';
 

@@ -21,6 +21,12 @@ const checkableExtensions = new Set([
 const allowlist = new Set([
   "components/JobViz/iconMappings.ts",
   "components/JobViz/jobviz_job_icon_mapping.csv",
+  // Large stateful page shell; split requires extracting intertwined client state and route behavior.
+  "components/Unit/UnitPage.tsx",
+  // Shared materials module with sticky-preview behavior; defer until a scoped module.scss refactor is scheduled.
+  "components/Unit/materials/UnitMaterials.module.css",
+  // Home page landing/search surface; split requires moving tightly coupled page state, modal flows, and static props wiring.
+  "pages/index.tsx",
 ]);
 
 function normalizeRelative(filePath) {

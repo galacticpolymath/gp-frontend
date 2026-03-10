@@ -1,0 +1,241 @@
+.picker-container {
+  .picker {
+    visibility: hidden;
+    z-index: -100;
+  }
+}
+
+.responseiveH1 {
+  font-size: 27px;
+
+  @media (min-width: 577px) {
+    font-size: calc(1.375rem + 1.5vw);
+  }
+}
+
+.sign-up-input-label {
+  font-size: 16px;
+
+  @media (min-width: 576px) {
+    font-size: 18px;
+  }
+}
+
+.text-lg {
+  font-size: 18px;
+}
+
+.no-list-style {
+  list-style-type: none;
+}
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  font-size: 18px;
+  scroll-behavior: smooth;
+}
+
+:root {
+  --portal-nav-offset: 0px;
+}
+
+html,
+body,
+#__next {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+body,
+body.modal-open {
+  padding-right: 0 !important;
+  margin-right: 0 !important;
+}
+
+.list-item:not(:last-child)::after {
+  content: ", ";
+}
+
+.text-transform-default {
+  text-transform: none;
+}
+
+.fst-italic {
+  font-style: italic !important;
+  white-space: normal !important;
+}
+
+.fade-out {
+  animation: fadeOut 2s forwards;
+  opacity: 0;
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
+.fade-in {
+  animation: fadeIn 2s forwards;
+  opacity: 1;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.fade-backdrop-in {
+  animation: fadeBackdropIn 250ms forwards;
+  opacity: 0.25;
+}
+
+@keyframes fadeBackdropIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 0.25;
+  }
+}
+
+.cover-parent-container {
+  margin-left: calc(-1 * ((100vw - 100%) / 2));
+  margin-right: calc(-1 * ((100vw - 100%) / 2));
+}
+
+.o--Profile--name,
+.o--Profile--password {
+  display: none;
+}
+
+.fade-modal-in-short {
+  animation: fadeModalInShort 250ms forwards;
+  opacity: 1;
+}
+
+@keyframes fadeModalInShort {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.fade-modal-out-short {
+  animation: fadeModalOutShort 250ms forwards;
+  opacity: 1;
+  visibility: hidden;
+}
+
+.no-children-border-radius * {
+  border-radius: 0%;
+}
+
+@keyframes fadeModalOutShort {
+  0% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+.fade-in-quick {
+  animation: fadeInQuick 0.5s forwards;
+  opacity: 1;
+}
+
+@keyframes fadeInQuick {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.gp-plus-tours-modal {
+  height: 100vh;
+  width: 100vw;
+  border-radius: 0px;
+  top: 5px;
+  background-color: #f4f9fa;
+  background-repeat: repeat;
+  background-size: 70px 70px;
+  background-image: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='75' height='75'%3E%3Cg stroke='%23cccccc' stroke-width='1.2'%3E%3Cline x1='35' y1='32' x2='35' y2='38'/%3E%3Cline x1='32' y1='35' x2='38' y2='35'/%3E%3C/g%3E%3C/svg%3E");
+
+  @media (min-width: 576px) {
+    height: 99vh;
+    border-radius: 4em;
+  }
+}
+
+.modal-dialog-override {
+  max-width: none;
+  margin-right: 0px;
+  margin-left: 0px;
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+.account-sm-modal {
+  width: 21vw;
+  right: 30%;
+  max-width: 300px;
+  min-width: 270px;
+  opacity: 1;
+  position: absolute;
+
+  @media (max-width: 541px) {
+    display: none;
+  }
+
+  @media (min-width: 768px) and (max-width: 992px) {
+    left: 30%;
+  }
+}
+
+.fade-out-quick {
+  animation: fadeOutQuick 0.25s forwards;
+  opacity: 1;
+}
+
+@keyframes fadeOutQuick {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
+* {
+  text-underline-offset: 4px !important;
+}
+
+@media print {
+  #help-launcher-root {
+    display: none !important;
+  }
+}
