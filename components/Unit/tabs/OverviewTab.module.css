@@ -206,34 +206,7 @@
 .previewCarousel {
   width: 100%;
   min-width: 0;
-  overflow: hidden;
-  display: flex;
-  align-items: flex-start;
-}
-
-.previewCarousel :global(.carousel-root),
-.previewCarousel :global(.carousel),
-.previewCarousel :global(.carousel .slider-wrapper),
-.previewCarousel :global(.carousel .slider),
-.previewCarousel :global(.carousel .slide) {
-  width: 100%;
-  min-width: 0;
-}
-
-.previewCarousel :global(.carousel .slide img) {
-  width: 100%;
-  max-height: 26vh;
-  object-fit: contain;
-}
-
-.previewCarousel :global(.autoCarouselContainer) {
-  width: 100%;
   min-height: 0;
-  padding: 6px 6px 2px;
-  border-radius: 14px;
-  border: 1px solid rgba(108, 45, 130, 0.16);
-  background: linear-gradient(160deg, rgba(255, 255, 255, 0.76), rgba(246, 250, 255, 0.78));
-  box-shadow: 0 10px 20px rgba(22, 34, 56, 0.09);
 }
 
 @media (min-width: 768px) {

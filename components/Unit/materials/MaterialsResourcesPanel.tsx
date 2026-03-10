@@ -7,6 +7,7 @@ import MaterialsGpPlusFunctionsSection from './MaterialsGpPlusFunctionsSection';
 import MaterialsPreviewDownloadSection from './MaterialsPreviewDownloadSection';
 
 type TMaterialsResourcesPanelProps = {
+  lessonResourcesCardRef: React.RefObject<HTMLDivElement | null>;
   isGpPlusUser: boolean;
   isGpPlusBannerDismissed: boolean;
   setIsGpPlusBannerDismissed: React.Dispatch<React.SetStateAction<boolean>>;
@@ -17,6 +18,7 @@ type TMaterialsResourcesPanelProps = {
 };
 
 const MaterialsResourcesPanel: React.FC<TMaterialsResourcesPanelProps> = ({
+  lessonResourcesCardRef,
   isGpPlusUser,
   isGpPlusBannerDismissed,
   setIsGpPlusBannerDismissed,
@@ -65,7 +67,7 @@ const MaterialsResourcesPanel: React.FC<TMaterialsResourcesPanelProps> = ({
           </div>
         </div>
       )}
-      <div className={styles.lessonResourcesCard}>
+      <div ref={lessonResourcesCardRef} className={styles.lessonResourcesCard}>
         <MaterialsQuickStartSection {...quickStartProps} />
         <MaterialsGpPlusFunctionsSection {...gpPlusFunctionsProps} />
         <MaterialsPreviewDownloadSection {...previewDownloadProps} />

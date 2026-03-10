@@ -584,6 +584,27 @@ const getLessonDisplayTitle = <TItem extends IItem = IItemForUI>(
   return `Lesson ${identifier}: ${title}`;
 };
 
+const hasStandaloneProcedureContent = <TItem extends IItem = IItemForUI>(
+  lesson: INewUnitLesson<TItem> | undefined
+) => {
+  if (!lesson) {
+    return false;
+  }
+
+  const prep = lesson.lsnPrep;
+  const hasPrepContent = Boolean(
+    prep &&
+      (prep.prepTitle ||
+        prep.prepDur != null ||
+        prep.prepQuickDescription ||
+        prep.prepDetails ||
+        prep.prepTeachingTips ||
+        prep.prepVariantNotes)
+  );
+
+  return hasPrepContent || Boolean(lesson.chunks?.length);
+};
+
 type TActiveLessonPreviewMode =
   | 'materials'
   | 'procedure'
@@ -1382,10 +1403,13 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
   const unitTagMeasureRefs = useRef<Array<HTMLSpanElement | null>>([]);
   const versionNotesAnchorRef = useRef<HTMLDivElement>(null);
   const hasAutoPrintedStandaloneRef = useRef(false);
-  const lessonMaterialsGridRef = useRef<HTMLDivElement>(null);
   const lessonPreviewsCardRef = useRef<HTMLDivElement>(null);
+  const lessonResourcesCardRef = useRef<HTMLDivElement>(null);
   const unitStickyHeaderRef = useRef<HTMLDivElement>(null);
   const [unitStickyHeaderHeightPx, setUnitStickyHeaderHeightPx] = useState(140);
+  const [lessonMaterialsStickyTop, setLessonMaterialsStickyTop] = useState<
+    number | null
+  >(null);
   const [lessonPreviewsCardHeight, setLessonPreviewsCardHeight] = useState<
     number | null
   >(null);
@@ -1575,6 +1599,13 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
         return;
       }
       const params = new URLSearchParams(window.location.search);
+      const standaloneParam = params.get(URL_PARAM_STANDALONE);
+      const isStandaloneFromQuery =
+        standaloneParam === URL_STANDALONE_PROCEDURE ||
+        standaloneParam === URL_STANDALONE_BACKGROUND;
+      if (isStandaloneFromQuery) {
+        return;
+      }
       const tabParamValue = params.get(URL_PARAM_TAB) ?? '';
       const lessonValue = params.get(URL_PARAM_LESSON) ?? '';
       const previewParamValue = params.get(URL_PARAM_PREVIEW) ?? '';
@@ -1638,6 +1669,65 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
         searchParams.get(URL_PARAM_LESSON) ?? '',
         10
       );
+      const resourceFromQuery = Number.parseInt(
+        searchParams.get(URL_PARAM_RESOURCE) ?? '',
+        10
+      );
+      let resolvedResourceIndex: number | null = null;
+      if (
+        !Number.isNaN(resourceFromQuery) &&
+        resourceFromQuery >= 0 &&
+        resourceFromQuery < classroomResources.length
+      ) {
+        resolvedResourceIndex = resourceFromQuery;
+      } else if (!Number.isNaN(lessonFromQuery)) {
+        const findResourceForLesson = (requireProcedureContent: boolean) => {
+          return classroomResources.findIndex((resource) => {
+            const lessonsForResource = resource?.lessons ?? [];
+            const lessonIndex = lessonsForResource.findIndex(
+              (lesson, index) =>
+                getLessonIdentifier(lesson, index) === lessonFromQuery
+            );
+            if (lessonIndex < 0) {
+              return false;
+            }
+            if (!requireProcedureContent) {
+              return true;
+            }
+
+            const matchedLesson = lessonsForResource[lessonIndex];
+            const prep = matchedLesson?.lsnPrep;
+            const hasPrepContent = Boolean(
+              prep &&
+                (prep.prepTitle ||
+                  prep.prepDur != null ||
+                  prep.prepQuickDescription ||
+                  prep.prepDetails ||
+                  prep.prepTeachingTips ||
+                  prep.prepVariantNotes)
+            );
+            return hasPrepContent || Boolean(matchedLesson?.chunks?.length);
+          });
+        };
+
+        if (shouldShowProcedureOnly) {
+          const withProcedureContent = findResourceForLesson(true);
+          if (withProcedureContent >= 0) {
+            resolvedResourceIndex = withProcedureContent;
+          }
+        }
+
+        if (resolvedResourceIndex == null) {
+          const withLesson = findResourceForLesson(false);
+          if (withLesson >= 0) {
+            resolvedResourceIndex = withLesson;
+          }
+        }
+      }
+
+      if (resolvedResourceIndex != null) {
+        setSelectedResourceIndex(resolvedResourceIndex);
+      }
       if (!Number.isNaN(lessonFromQuery)) {
         setActiveLessonId(lessonFromQuery);
       }
@@ -1648,7 +1738,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
       return;
     }
     setStandalonePreviewMode('none');
-  }, []);
+  }, [classroomResources]);
 
   useEffect(() => {
     if (typeof window === 'undefined' || !isStandalonePreview) {
@@ -1765,6 +1855,16 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
 
   useEffect(() => {
     if (typeof window === 'undefined' || isStandalonePreview) {
+      return;
+    }
+
+    const standaloneParam = new URLSearchParams(window.location.search).get(
+      URL_PARAM_STANDALONE
+    );
+    if (
+      standaloneParam === URL_STANDALONE_PROCEDURE ||
+      standaloneParam === URL_STANDALONE_BACKGROUND
+    ) {
       return;
     }
 
@@ -2057,20 +2157,65 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
     if (typeof window === 'undefined') {
       return;
     }
+    if (activeTab !== TAB_MATERIALS || isStandalonePreview) {
+      return;
+    }
+
+    const rootElement = document.documentElement;
+    const bodyElement = document.body;
+    const appRoot = document.getElementById('__next');
+    if (!appRoot || !bodyElement) {
+      return;
+    }
+
+    const previousRootOverflow = rootElement.style.overflow;
+    const previousRootOverflowX = rootElement.style.overflowX;
+    const previousRootOverflowY = rootElement.style.overflowY;
+    const previousBodyOverflow = bodyElement.style.overflow;
+    const previousBodyOverflowX = bodyElement.style.overflowX;
+    const previousBodyOverflowY = bodyElement.style.overflowY;
+    const previousOverflow = appRoot.style.overflow;
+    const previousOverflowX = appRoot.style.overflowX;
+    const previousOverflowY = appRoot.style.overflowY;
+    rootElement.style.overflow = 'visible';
+    rootElement.style.overflowX = 'visible';
+    rootElement.style.overflowY = 'auto';
+    bodyElement.style.overflow = 'visible';
+    bodyElement.style.overflowX = 'visible';
+    bodyElement.style.overflowY = 'visible';
+    appRoot.style.overflow = 'visible';
+    appRoot.style.overflowX = 'visible';
+    appRoot.style.overflowY = 'visible';
+
+    return () => {
+      rootElement.style.overflow = previousRootOverflow;
+      rootElement.style.overflowX = previousRootOverflowX;
+      rootElement.style.overflowY = previousRootOverflowY;
+      bodyElement.style.overflow = previousBodyOverflow;
+      bodyElement.style.overflowX = previousBodyOverflowX;
+      bodyElement.style.overflowY = previousBodyOverflowY;
+      appRoot.style.overflow = previousOverflow;
+      appRoot.style.overflowX = previousOverflowX;
+      appRoot.style.overflowY = previousOverflowY;
+    };
+  }, [activeTab, isStandalonePreview]);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') {
+      return;
+    }
 
     if (activeTab !== TAB_MATERIALS || isStandalonePreview) {
+      setLessonMaterialsStickyTop(null);
       setLessonPreviewsCardHeight(null);
       return;
     }
 
     let rafId = 0;
 
-    const measurePreviewCardHeight = () => {
-      if (!lessonMaterialsGridRef.current) {
-        return;
-      }
-
+    const measurePreviewPaneConstraints = () => {
       if (window.innerWidth < 768) {
+        setLessonMaterialsStickyTop(null);
         setLessonPreviewsCardHeight(null);
         return;
       }
@@ -2084,23 +2229,38 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
       const stickyTopOffset =
         (Number.isFinite(portalNavOffset) ? portalNavOffset : 0) +
         unitStickyHeaderHeight;
+
+      const resourcesHeight =
+        lessonResourcesCardRef.current?.getBoundingClientRect().height ?? 0;
       const viewportBottomPadding = 14;
-      const nextHeight = Math.max(
-        380,
-        Math.floor(window.innerHeight - stickyTopOffset - viewportBottomPadding)
+      const viewportLimitedHeight =
+        window.innerHeight - stickyTopOffset - viewportBottomPadding;
+      const containerLimitedHeight = resourcesHeight - stickyTopOffset - 1;
+      const constrainedHeight = Math.floor(
+        Math.min(viewportLimitedHeight, containerLimitedHeight)
       );
 
-      setLessonPreviewsCardHeight((currentHeight) => {
-        if (currentHeight != null && Math.abs(currentHeight - nextHeight) < 2) {
-          return currentHeight;
+      setLessonMaterialsStickyTop((current) => {
+        if (current != null && Math.abs(current - stickyTopOffset) < 1) {
+          return current;
         }
-        return nextHeight;
+        return stickyTopOffset;
+      });
+
+      setLessonPreviewsCardHeight((current) => {
+        if (!Number.isFinite(constrainedHeight) || constrainedHeight <= 0) {
+          return null;
+        }
+        if (current != null && Math.abs(current - constrainedHeight) < 2) {
+          return current;
+        }
+        return constrainedHeight;
       });
     };
 
     const scheduleMeasure = () => {
       window.cancelAnimationFrame(rafId);
-      rafId = window.requestAnimationFrame(measurePreviewCardHeight);
+      rafId = window.requestAnimationFrame(measurePreviewPaneConstraints);
     };
 
     scheduleMeasure();
@@ -2111,9 +2271,8 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
       typeof ResizeObserver !== 'undefined'
         ? new ResizeObserver(scheduleMeasure)
         : null;
-
-    if (resizeObserver && lessonMaterialsGridRef.current) {
-      resizeObserver.observe(lessonMaterialsGridRef.current);
+    if (resizeObserver && lessonResourcesCardRef.current) {
+      resizeObserver.observe(lessonResourcesCardRef.current);
     }
     if (resizeObserver && unitStickyHeaderRef.current) {
       resizeObserver.observe(unitStickyHeaderRef.current);
@@ -2125,19 +2284,52 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
       window.removeEventListener('gp:set-nav-hidden', scheduleMeasure as EventListener);
       resizeObserver?.disconnect();
     };
-  }, [
-    activeLessonId,
-    activeMaterialIndex,
-    activeLessonPreviewMode,
-    activeTab,
-    isStandalonePreview,
-  ]);
+  }, [activeTab, activeLessonId, activeLessonPreviewMode, isStandalonePreview]);
 
   const activeLessonIndex = lessons.findIndex(
     (lesson, index) => getLessonIdentifier(lesson, index) === activeLessonId
   );
   const activeLesson =
     activeLessonIndex >= 0 ? lessons[activeLessonIndex] : undefined;
+  const standaloneResolvedLesson = useMemo(() => {
+    if (!isStandalonePreview || activeLessonId == null) {
+      return null;
+    }
+
+    const matchingLessons = classroomResources.flatMap((resource) => {
+      const resourceLessons = resource?.lessons ?? [];
+      return resourceLessons
+        .map((lesson, index) => ({
+          lesson,
+          lessonId: getLessonIdentifier(lesson, index),
+        }))
+        .filter((entry) => entry.lessonId === activeLessonId)
+        .map((entry) => entry.lesson);
+    });
+
+    if (!matchingLessons.length) {
+      return null;
+    }
+
+    if (standalonePreviewMode === 'procedure') {
+      return (
+        matchingLessons.find((lesson) =>
+          hasStandaloneProcedureContent(lesson)
+        ) ?? matchingLessons[0]
+      );
+    }
+
+    return matchingLessons[0];
+  }, [
+    activeLessonId,
+    classroomResources,
+    isStandalonePreview,
+    standalonePreviewMode,
+  ]);
+  const effectiveStandaloneLesson = standaloneResolvedLesson ?? activeLesson;
+  const activeLessonForRender = isStandalonePreview
+    ? effectiveStandaloneLesson
+    : activeLesson;
   const activeLessonItems = activeLesson?.itemList ?? [];
   const hasDetailedFlow = !!activeLesson?.chunks?.length;
   const activeLessonFeaturedMedia = useMemo(() => {
@@ -2169,6 +2361,12 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
   const chunkDurations = (activeLesson?.chunks ?? [])
     .map((chunk) => chunk?.chunkDur ?? 0)
     .filter((duration): duration is number => typeof duration === 'number' && duration > 0);
+  const standaloneChunkDurations = (effectiveStandaloneLesson?.chunks ?? [])
+    .map((chunk) => chunk?.chunkDur ?? 0)
+    .filter(
+      (duration): duration is number =>
+        typeof duration === 'number' && duration > 0
+    );
   const activeTabIndex = availableTabs.findIndex((tab) => tab.key === activeTab);
   const nextTab =
     activeTabIndex >= 0 && activeTabIndex < availableTabs.length - 1
@@ -2437,6 +2635,27 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
 
   useEffect(() => {
     if (!classroomResources.length || typeof window === 'undefined') {
+      return;
+    }
+
+    const searchParams = new URLSearchParams(window.location.search);
+    const standaloneParam = searchParams.get(URL_PARAM_STANDALONE);
+    const resourceFromQuery = Number.parseInt(
+      searchParams.get(URL_PARAM_RESOURCE) ?? '',
+      10
+    );
+    if (
+      !Number.isNaN(resourceFromQuery) &&
+      resourceFromQuery >= 0 &&
+      resourceFromQuery < classroomResources.length
+    ) {
+      setSelectedResourceIndex(resourceFromQuery);
+      return;
+    }
+    if (
+      standaloneParam === URL_STANDALONE_PROCEDURE ||
+      standaloneParam === URL_STANDALONE_BACKGROUND
+    ) {
       return;
     }
 
@@ -3179,6 +3398,9 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
         : URL_STANDALONE_BACKGROUND
     );
     searchParams.set(URL_PARAM_LESSON, String(activeLessonId));
+    if (selectedResourceIndex >= 0) {
+      searchParams.set(URL_PARAM_RESOURCE, String(selectedResourceIndex));
+    }
     if (autoPrint) {
       searchParams.set(URL_PARAM_AUTOPRINT, '1');
     }
@@ -3252,14 +3474,20 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
   const latestCopiedLessonFolderUrl = latestCopiedLessonFolderId
     ? `${GOOGLE_DRIVE_FOLDER_URL_BASE}/${latestCopiedLessonFolderId}`
     : null;
-  const fixedLessonPaneStyle =
-    lessonPreviewsCardHeight != null
-      ? {
-          height: `${lessonPreviewsCardHeight}px`,
-          maxHeight: `${lessonPreviewsCardHeight}px`,
-        }
+  const previewPaneStickyStyle =
+    lessonMaterialsStickyTop != null || lessonPreviewsCardHeight != null
+      ? ({
+          ...(lessonMaterialsStickyTop != null
+            ? { top: `${lessonMaterialsStickyTop}px` }
+            : null),
+          ...(lessonPreviewsCardHeight != null
+            ? {
+                height: `${lessonPreviewsCardHeight}px`,
+                maxHeight: `${lessonPreviewsCardHeight}px`,
+              }
+            : null),
+        } as React.CSSProperties)
       : undefined;
-  const previewPaneStickyStyle = fixedLessonPaneStyle;
 
   const handleGradeBandFilter = (gradeBand: TGradeBand) => {
     setSelectedGradeBands((current) => {
@@ -3321,7 +3549,11 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
   };
 
   const currentLessonLabel =
-    activeLesson && isAssessmentLesson(activeLesson, activeLessonIndex)
+    effectiveStandaloneLesson &&
+    isAssessmentLesson(
+      effectiveStandaloneLesson,
+      Math.max(activeLessonIndex, 0)
+    )
       ? 'Assessment'
       : `Lesson ${activeLessonId ?? ''}`;
   const procedureReturnHref = useMemo(() => {
@@ -3475,9 +3707,9 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
         )}
 
         {activeTab === TAB_MATERIALS && (
-          <section className={`${materialStyles.unitSection} ${styles.unitTabFadeIn}`}>
+          <section className={materialStyles.unitSection}>
             <div className={materialStyles.materialsLayout}>
-              {activeLesson ? (
+              {activeLessonForRender ? (
                 isStandalonePreview ? (
                   <MaterialsStandalonePreview
                     isBackgroundStandaloneView={isBackgroundStandaloneView}
@@ -3487,7 +3719,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                     unitBanner={unitBanner}
                     unitTitle={unitTitle}
                     currentLessonLabel={currentLessonLabel}
-                    activeLesson={activeLesson}
+                    activeLesson={activeLessonForRender}
                     lessonTileFallbackSrc={LESSON_TILE_FALLBACK_SRC}
                     procedureReturnQrUrl={procedureReturnQrUrl}
                     backgroundPanel={(
@@ -3502,8 +3734,8 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                     )}
                     procedurePanel={(
                       <ProcedurePreview
-                        activeLesson={activeLesson ?? null}
-                        chunkDurations={chunkDurations}
+                        activeLesson={activeLessonForRender ?? null}
+                        chunkDurations={standaloneChunkDurations}
                         onPrint={handlePrintProcedureFromPreview}
                         onOpenInNewTab={handleOpenProcedureInNewTab}
                         showLinkOutAction={false}
@@ -3520,10 +3752,10 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                       ? getLessonSearchAnchorId(activeLessonId)
                       : undefined
                   }
-                  className={`${materialStyles.lessonLayout} ${styles.unitTabFadeIn}`}
+                  className={materialStyles.lessonLayout}
                 >
                   <LessonSummaryCard
-                    activeLesson={activeLesson}
+                    activeLesson={activeLesson as INewUnitLesson<IItemForUI>}
                     activeLessonIndex={activeLessonIndex}
                     lessonTileFallbackSrc={LESSON_TILE_FALLBACK_SRC}
                     getLessonIdentifier={getLessonIdentifier}
@@ -3541,11 +3773,9 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                     hasMultipleGradeBandOptions={hasMultipleGradeBandOptions}
                     setSelectedResourceIndex={setSelectedResourceIndex}
                   />
-                  <div
-                    ref={lessonMaterialsGridRef}
-                    className={materialStyles.lessonMaterialsGrid}
-                  >
+                  <div className={materialStyles.lessonMaterialsGrid}>
                     <MaterialsResourcesPanel
+                      lessonResourcesCardRef={lessonResourcesCardRef}
                       isGpPlusUser={isGpPlusUser}
                       isGpPlusBannerDismissed={isGpPlusBannerDismissed}
                       setIsGpPlusBannerDismissed={setIsGpPlusBannerDismissed}
@@ -3728,6 +3958,25 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
           handleLessonChange={handleLessonChange}
           handleTabChange={(tabKey) => handleTabChange(tabKey as TTabKey)}
         />
+        {!isStandalonePreview && (
+          <UnitLicenseBanner
+            isStandalonePreview={isStandalonePreview}
+            attributionDisplayParts={attributionDisplayParts}
+            copiedEntry={copiedEntry}
+            copyErrorEntry={copyErrorEntry}
+            handleCopyCitation={handleCopyCitation}
+            attributionText={attributionText}
+            vancouverCitation={vancouverCitation}
+          />
+        )}
+        {officeUpsellFormat && (
+          <UnitOfficeUpsellModal
+            format={officeUpsellFormat}
+            onClose={handleCloseOfficeUpsell}
+          />
+        )}
+      </main>
+      {isStandalonePreview && (
         <UnitLicenseBanner
           isStandalonePreview={isStandalonePreview}
           attributionDisplayParts={attributionDisplayParts}
@@ -3737,13 +3986,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
           attributionText={attributionText}
           vancouverCitation={vancouverCitation}
         />
-        {officeUpsellFormat && (
-          <UnitOfficeUpsellModal
-            format={officeUpsellFormat}
-            onClose={handleCloseOfficeUpsell}
-          />
-        )}
-      </main>
+      )}
     </div>
   );
 };

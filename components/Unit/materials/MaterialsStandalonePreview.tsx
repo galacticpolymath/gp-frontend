@@ -82,7 +82,7 @@ const MaterialsStandalonePreview: React.FC<TMaterialsStandalonePreviewProps> = (
                 alt=""
                 fill
                 sizes="74px"
-                style={{ objectFit: 'cover' }}
+                style={{ objectFit: 'contain' }}
               />
             </span>
           </a>

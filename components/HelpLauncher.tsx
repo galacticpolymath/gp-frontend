@@ -78,6 +78,7 @@ export default function HelpLauncher() {
 
   return (
     <div
+      id="help-launcher-root"
       style={{
         position: "fixed",
         right: "10px",

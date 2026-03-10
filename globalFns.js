@@ -204,6 +204,133 @@ export const getIsTypeValid = (val, targetType) => {
   return typeof val === targetType;
 };
 
+const isSafeExternalUrl = (url = '') => {
+  try {
+    const parsed = new URL(url);
+
+    if (!/^https?:$/i.test(parsed.protocol)) {
+      return false;
+    }
+
+    const hostname = parsed.hostname.toLowerCase();
+
+    if (hostname === 'localhost' || hostname.endsWith('.localhost')) {
+      return false;
+    }
+
+    const ipv4Match = hostname.match(/^(\d{1,3}\.){3}\d{1,3}$/);
+    if (ipv4Match) {
+      const octets = hostname.split('.').map(Number);
+
+      if (octets[0] === 10) {
+        return false;
+      }
+
+      if (octets[0] === 172 && octets[1] >= 16 && octets[1] <= 31) {
+        return false;
+      }
+
+      if (octets[0] === 192 && octets[1] === 168) {
+        return false;
+      }
+
+      if (octets[0] === 127) {
+        return false;
+      }
+
+      if (octets[0] === 169 && octets[1] === 254) {
+        return false;
+      }
+    }
+
+    if (hostname === '169.254.169.254') {
+      return false;
+    }
+
+    return true;
+  } catch {
+    return false;
+  }
+};
+
+const getNormalizedMetaImageUrl = (imageUrl = '', sourceUrl = '') => {
+  if (!imageUrl || !sourceUrl) {
+    return null;
+  }
+
+  try {
+    if (imageUrl.startsWith('//')) {
+      return `https:${imageUrl}`;
+    }
+
+    if (/^https?:\/\//i.test(imageUrl)) {
+      return imageUrl;
+    }
+
+    return new URL(imageUrl, sourceUrl).toString();
+  } catch {
+    return null;
+  }
+};
+
+const fetchMetaImagePreview = async (url = '') => {
+  if (
+    !url ||
+    typeof url !== 'string' ||
+    !/^https?:\/\//i.test(url) ||
+    !isSafeExternalUrl(url)
+  ) {
+    return null;
+  }
+
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 4000);
+
+  try {
+    const response = await fetch(url, {
+      signal: controller.signal,
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (GP Teacher Portal)',
+      },
+    });
+
+    if (!response.ok) {
+      return null;
+    }
+
+    const html = await response.text();
+    const imageMatch =
+      html.match(
+        /<meta[^>]+property=["']og:image["'][^>]+content=["']([^"']+)["']/i
+      ) ??
+      html.match(
+        /<meta[^>]+name=["']twitter:image["'][^>]+content=["']([^"']+)["']/i
+      );
+    const titleMatch =
+      html.match(
+        /<meta[^>]+property=["']og:title["'][^>]+content=["']([^"']+)["']/i
+      ) ?? html.match(/<title[^>]*>([^<]+)<\/title>/i);
+
+    const normalizedImageUrl = getNormalizedMetaImageUrl(
+      imageMatch?.[1] ?? '',
+      url
+    );
+
+    if (!normalizedImageUrl) {
+      return null;
+    }
+
+    return {
+      images: [normalizedImageUrl],
+      title: titleMatch?.[1]?.trim() ?? '',
+    };
+  } catch {
+    return null;
+  } finally {
+    clearTimeout(timeout);
+  }
+};
+
 export const getLinkPreviewObj = async (url = '') => {
   try {
     if (!url || typeof url !== 'string') {
@@ -214,14 +341,40 @@ export const getLinkPreviewObj = async (url = '') => {
 
     const linkPreviewObj = await getLinkPreview(url);
 
-    return linkPreviewObj;
+    const hasImages =
+      Array.isArray(linkPreviewObj?.images) && linkPreviewObj.images.length > 0;
+
+    if (hasImages) {
+      return linkPreviewObj;
+    }
+
+    const metaPreview = await fetchMetaImagePreview(url);
+
+    if (!metaPreview) {
+      return linkPreviewObj;
+    }
+
+    return {
+      ...linkPreviewObj,
+      images: metaPreview.images,
+      title: linkPreviewObj?.title || metaPreview.title,
+    };
+
   } catch (error) {
+    const metaPreview = await fetchMetaImagePreview(url);
+
+    if (metaPreview) {
+      return metaPreview;
+    }
+
     const errMsg = `An error has occurred in getting the link preview for given url. Error message: ${error}.`;
     console.error(errMsg);
 
     return { errMsg };
   }
 };
+
+export { isSafeExternalUrl };
 
 export const getIsValObj = (val) =>
   typeof val === 'object' && !Array.isArray(val) && val !== null;

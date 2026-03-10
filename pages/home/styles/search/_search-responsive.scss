@@ -57,6 +57,12 @@
     grid-template-columns: 1fr;
   }
 
+  .allFiltersRail {
+    position: static;
+    height: auto;
+    max-height: none;
+  }
+
   .allFiltersPanel {
     position: static;
   }
@@ -407,11 +413,11 @@
     padding: 10px;
   }
 
-  .mapFrame .svgMap-map-wrapper {
+  .mapFrame :global(.svgMap-map-wrapper) {
     padding-top: 70%;
   }
 
-  .mapFrame .svgMap-map-image {
+  .mapFrame :global(.svgMap-map-image) {
     top: -8%;
     left: -8%;
     width: 116%;
@@ -522,4 +528,3 @@
     transition: none;
   }
 }
-

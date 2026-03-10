@@ -146,10 +146,141 @@ const resolveStatsDbCandidates = () => {
   const envBased = normalizeDbType(vercelEnv) ??
     (process.env.NODE_ENV === "production" ? "production" : "dev");
 
-  const primary = explicit ?? envBased;
-  const secondary = primary === "production" ? "dev" : "production";
+  if (explicit) {
+    return {
+      candidates: [explicit] as Array<"dev" | "production">,
+      hasExplicitDbType: true,
+    };
+  }
 
-  return [primary, secondary] as Array<"dev" | "production">;
+  return {
+    candidates: [envBased, envBased === "production" ? "dev" : "production"] as Array<
+      "dev" | "production"
+    >,
+    hasExplicitDbType: false,
+  };
+};
+
+const buildStatsResponse = (
+  activeUsers: Array<{
+    country?: string | null;
+    zipCode?: string | number | null;
+    classSize?: number | string | null;
+    classroomSize?: { num?: number | null } | null;
+    isNotTeaching?: boolean;
+  }>,
+  statsDbTypeUsed: "dev" | "production"
+): FrontEndUserStats => {
+  const highlightedCountries = new Set<string>();
+  const usStates = new Set<string>();
+  let totalStudents = 0;
+  const unmappedCountries = new Set<string>();
+  let usersWithClassSize = 0;
+  let usersWithClassroomSize = 0;
+  let usersWithZip = 0;
+  let usersWithCountry = 0;
+  const sampleUsers: DebugSampleUser[] = [];
+
+  activeUsers.forEach((user) => {
+    const classSize =
+      typeof user.classSize === "number"
+        ? user.classSize
+        : typeof (user as { classSize?: string }).classSize === "string"
+          ? Number((user as { classSize?: string }).classSize)
+          : 0;
+    const classroomSizeNum = (user as { classroomSize?: { num?: number } })
+      .classroomSize?.num;
+    const hasClassSize = Number.isFinite(classSize) && classSize > 0;
+    const hasClassroomSize =
+      Number.isFinite(classroomSizeNum ?? NaN) &&
+      (classroomSizeNum ?? 0) > 0;
+
+    if (hasClassSize) {
+      usersWithClassSize += 1;
+    }
+    if (hasClassroomSize) {
+      usersWithClassroomSize += 1;
+    }
+
+    if (hasClassSize) {
+      totalStudents += classSize;
+    } else if (hasClassroomSize) {
+      totalStudents += classroomSizeNum ?? 0;
+    }
+
+    const rawCountry = user.country ?? null;
+    const zip = normalizeZip(user.zipCode);
+    if (zip) {
+      usersWithZip += 1;
+    }
+    if (rawCountry) {
+      usersWithCountry += 1;
+    }
+    const inferredCountry = rawCountry || (zip ? "United States" : null);
+    const countryCode = resolveCountryCode(inferredCountry);
+
+    if (countryCode) {
+      highlightedCountries.add(countryCode);
+    } else if (rawCountry) {
+      unmappedCountries.add(String(rawCountry));
+    }
+
+    if (countryCode === "US" && zip) {
+      const state = (usZipToState as Record<string, string>)[zip];
+      if (state) {
+        usStates.add(state);
+      }
+    }
+
+    if (sampleUsers.length < 8) {
+      const isNotTeaching =
+        typeof user.isNotTeaching === "boolean" ? user.isNotTeaching : null;
+      sampleUsers.push({
+        country: rawCountry,
+        zipCode: zip,
+        classSize: Number.isFinite(classSize) ? classSize : null,
+        classroomSize: Number.isFinite(classroomSizeNum ?? NaN)
+          ? classroomSizeNum ?? null
+          : null,
+        isNotTeaching,
+      });
+    }
+  });
+
+  const otherCountries = Array.from(highlightedCountries).filter(
+    (code) => code !== "US"
+  );
+
+  if (process.env.NODE_ENV !== "production") {
+    console.log("[gp-stats] users total", activeUsers.length);
+    console.log("[gp-stats] users with classSize", usersWithClassSize);
+    console.log("[gp-stats] total students", totalStudents);
+    console.log("[gp-stats] users with zip", usersWithZip);
+    console.log("[gp-stats] highlighted countries", Array.from(highlightedCountries));
+    console.log("[gp-stats] unmapped countries", Array.from(unmappedCountries));
+  }
+
+  const response: FrontEndUserStats = {
+    totalUsers: activeUsers.length,
+    totalStudents,
+    usStates: usStates.size,
+    otherCountries: otherCountries.length,
+    highlightedCountries: Array.from(highlightedCountries),
+  };
+  if (process.env.NODE_ENV !== "production") {
+    response.debug = {
+      dbType: statsDbTypeUsed,
+      totalUsers: activeUsers.length,
+      usersWithClassSize,
+      usersWithClassroomSize,
+      usersWithZip,
+      usersWithCountry,
+      unmappedCountries: Array.from(unmappedCountries),
+      sampleUsers,
+    };
+  }
+
+  return response;
 };
 
 export const getFrontEndUserStats =
@@ -162,11 +293,18 @@ export const getFrontEndUserStats =
         classroomSize?: { num?: number | null } | null;
         isNotTeaching?: boolean;
       };
-      const dbCandidates = resolveStatsDbCandidates();
-      let activeUsers: StatsUser[] | null = null;
-      let statsDbTypeUsed: "dev" | "production" = dbCandidates[0];
+      const { candidates: dbCandidates, hasExplicitDbType } = resolveStatsDbCandidates();
+      const responses: FrontEndUserStats[] = [];
 
       for (const dbTypeCandidate of dbCandidates) {
+        const statsProjection = {
+          country: 1,
+          zipCode: 1,
+          roles: 1,
+          isNotTeaching: 1,
+          classSize: 1,
+          "classroomSize.num": 1,
+        } as any;
         const { wasSuccessful } = await connectToMongodb(
           10_000,
           0,
@@ -178,135 +316,28 @@ export const getFrontEndUserStats =
         }
         const { users } = await getUsers(
           {},
-          {
-            country: 1,
-            zipCode: 1,
-            roles: 1,
-            isNotTeaching: 1,
-            classSize: 1,
-          }
+          statsProjection
         );
         if (Array.isArray(users)) {
-          activeUsers = users as StatsUser[];
-          statsDbTypeUsed = dbTypeCandidate;
-          break;
+          responses.push(buildStatsResponse(users as StatsUser[], dbTypeCandidate));
         }
       }
 
-      if (!Array.isArray(activeUsers)) {
+      if (!responses.length) {
         return DEFAULT_STATS;
       }
 
-      const highlightedCountries = new Set<string>();
-      const usStates = new Set<string>();
-      let totalStudents = 0;
-      const unmappedCountries = new Set<string>();
-      let usersWithClassSize = 0;
-      let usersWithClassroomSize = 0;
-      let usersWithZip = 0;
-      let usersWithCountry = 0;
-      const sampleUsers: DebugSampleUser[] = [];
-
-      activeUsers.forEach((user) => {
-        const classSize =
-          typeof user.classSize === "number"
-            ? user.classSize
-            : typeof (user as { classSize?: string }).classSize === "string"
-              ? Number((user as { classSize?: string }).classSize)
-              : 0;
-        const classroomSizeNum = (user as { classroomSize?: { num?: number } })
-          .classroomSize?.num;
-        const hasClassSize = Number.isFinite(classSize) && classSize > 0;
-        const hasClassroomSize =
-          Number.isFinite(classroomSizeNum ?? NaN) &&
-          (classroomSizeNum ?? 0) > 0;
-
-        if (hasClassSize) {
-          usersWithClassSize += 1;
-        }
-        if (hasClassroomSize) {
-          usersWithClassroomSize += 1;
-        }
-
-        if (hasClassSize) {
-          totalStudents += classSize;
-        } else if (hasClassroomSize) {
-          totalStudents += classroomSizeNum ?? 0;
-        }
-
-        const rawCountry = user.country ?? null;
-        const zip = normalizeZip(user.zipCode);
-        if (zip) {
-          usersWithZip += 1;
-        }
-        if (rawCountry) {
-          usersWithCountry += 1;
-        }
-        const inferredCountry = rawCountry || (zip ? "United States" : null);
-        const countryCode = resolveCountryCode(inferredCountry);
-
-        if (countryCode) {
-          highlightedCountries.add(countryCode);
-        } else if (rawCountry) {
-          unmappedCountries.add(String(rawCountry));
-        }
-
-        if (countryCode === "US" && zip) {
-          const state = (usZipToState as Record<string, string>)[zip];
-          if (state) {
-            usStates.add(state);
-          }
-        }
-
-        if (sampleUsers.length < 8) {
-          const isNotTeaching =
-            typeof user.isNotTeaching === "boolean" ? user.isNotTeaching : null;
-          sampleUsers.push({
-            country: rawCountry,
-            zipCode: zip,
-            classSize: Number.isFinite(classSize) ? classSize : null,
-            classroomSize: Number.isFinite(classroomSizeNum ?? NaN)
-              ? classroomSizeNum ?? null
-              : null,
-            isNotTeaching,
-          });
-        }
-      });
-
-      const otherCountries = Array.from(highlightedCountries).filter(
-        (code) => code !== "US"
-      );
-
-      if (process.env.NODE_ENV !== "production") {
-        console.log("[gp-stats] users total", activeUsers.length);
-        console.log("[gp-stats] users with classSize", usersWithClassSize);
-        console.log("[gp-stats] total students", totalStudents);
-        console.log("[gp-stats] users with zip", usersWithZip);
-        console.log("[gp-stats] highlighted countries", Array.from(highlightedCountries));
-        console.log("[gp-stats] unmapped countries", Array.from(unmappedCountries));
+      if (hasExplicitDbType) {
+        return responses[0];
       }
 
-      const response: FrontEndUserStats = {
-        totalUsers: activeUsers.length,
-        totalStudents,
-        usStates: usStates.size,
-        otherCountries: otherCountries.length,
-        highlightedCountries: Array.from(highlightedCountries),
-      };
-      if (process.env.NODE_ENV !== "production") {
-        response.debug = {
-          dbType: statsDbTypeUsed,
-          totalUsers: activeUsers.length,
-          usersWithClassSize,
-          usersWithClassroomSize,
-          usersWithZip,
-          usersWithCountry,
-          unmappedCountries: Array.from(unmappedCountries),
-          sampleUsers,
-        };
-      }
+      // Prefer the larger dataset when env routing is ambiguous/misconfigured.
+      const selectedResponse = responses.sort((a, b) => {
+        if (b.totalUsers !== a.totalUsers) return b.totalUsers - a.totalUsers;
+        return b.totalStudents - a.totalStudents;
+      })[0];
 
-      return response;
+      return selectedResponse;
     } catch (error) {
       console.error("Failed to build front-end user stats.", error);
       return DEFAULT_STATS;

@@ -37,7 +37,7 @@ import {
 } from "lucide-react";
 import type { IconBaseProps } from "react-icons";
 import { toast } from "react-hot-toast";
-import styles from "./home.module.css";
+import styles from "./home.module.scss";
 import { getUnitLessons, retrieveUnits } from "../backend/services/unitServices";
 import { createDbProjections, getLiveUnits } from "../shared/fns";
 import { INewUnitSchema } from "../backend/models/Unit/types/unit";
@@ -1192,6 +1192,8 @@ export default function HomePage({
   const [carouselIndex, setCarouselIndex] = useState(0);
   const statsSectionRef = useRef<HTMLElement | null>(null);
   const statsAnimationStarted = useRef(false);
+  const allFiltersRailRef = useRef<HTMLDivElement | null>(null);
+  const allFiltersPanelRef = useRef<HTMLElement | null>(null);
   const [animatedStats, setAnimatedStats] = useState({
     totalUsers: 0,
     totalStudents: 0,
@@ -1831,7 +1833,7 @@ export default function HomePage({
           gradeBandGroup: getGradeBandGroup(unit.grades),
           gradeBand: unit.grades,
           timeLabel: `${selectedJobs.length} jobs`,
-          tags: (unit.unitTags ?? []).slice(0, 4).concat("JobViz Tour"),
+          tags: (unit.unitTags ?? []).slice(0, 4),
           locale: unit.locale ?? "en-US",
           releaseDate: unit.releaseDate ?? null,
           isNew: false,
@@ -1960,7 +1962,7 @@ export default function HomePage({
         gradeBandGroup,
         gradeBand: gradeLabel,
         timeLabel: lesson.dur ? `${lesson.dur} min` : "Lesson",
-        tags: tags && tags.length ? tags.slice(0, 6) : ["Lesson"],
+        tags: tags && tags.length ? tags.slice(0, 6) : [],
         locale: unit?.locale ?? "en-US",
         lessonHref,
         releaseDate: unit?.releaseDate ?? null,
@@ -3287,6 +3289,110 @@ export default function HomePage({
     document.body.style.removeProperty("padding-right");
   }, []);
 
+  useEffect(() => {
+    if (!isAllView) return;
+    if (typeof window === "undefined") return;
+
+    const rail = allFiltersRailRef.current;
+    const panel = allFiltersPanelRef.current;
+    if (!rail || !panel) return;
+
+    const desktopQuery = window.matchMedia("(min-width: 1025px)");
+    let frameId = 0;
+    let resizeObserver: ResizeObserver | null = null;
+
+    const clearDockStyles = () => {
+      rail.style.removeProperty("min-height");
+      panel.style.removeProperty("position");
+      panel.style.removeProperty("top");
+      panel.style.removeProperty("left");
+      panel.style.removeProperty("width");
+      panel.style.removeProperty("height");
+      panel.style.removeProperty("max-height");
+      panel.style.removeProperty("z-index");
+    };
+
+    const getNavOffset = () => {
+      const rawValue = getComputedStyle(document.documentElement)
+        .getPropertyValue("--portal-nav-offset")
+        .trim();
+      const parsed = Number.parseFloat(rawValue);
+      return Number.isFinite(parsed) ? parsed : 0;
+    };
+
+    const updateDock = () => {
+      frameId = 0;
+
+      if (!desktopQuery.matches) {
+        clearDockStyles();
+        return;
+      }
+
+      const navOffset = getNavOffset();
+      const panelHeight = Math.max(window.innerHeight - navOffset, 0);
+      const railRect = rail.getBoundingClientRect();
+      const railTop = window.scrollY + railRect.top;
+      const railHeight = rail.offsetHeight;
+
+      rail.style.minHeight = `${panelHeight}px`;
+      panel.style.height = `${panelHeight}px`;
+      panel.style.maxHeight = `${panelHeight}px`;
+
+      const shouldFix = railRect.top <= navOffset;
+      const maxFixedScrollY = railTop + railHeight - panelHeight - navOffset;
+
+      if (!shouldFix) {
+        panel.style.position = "static";
+        panel.style.removeProperty("top");
+        panel.style.removeProperty("left");
+        panel.style.removeProperty("width");
+        panel.style.removeProperty("z-index");
+        return;
+      }
+
+      if (window.scrollY >= maxFixedScrollY) {
+        panel.style.position = "absolute";
+        panel.style.top = `${Math.max(railHeight - panelHeight, 0)}px`;
+        panel.style.left = "0";
+        panel.style.width = "100%";
+        panel.style.zIndex = "1";
+        return;
+      }
+
+      panel.style.position = "fixed";
+      panel.style.top = `${navOffset}px`;
+      panel.style.left = `${railRect.left}px`;
+      panel.style.width = `${rail.offsetWidth}px`;
+      panel.style.zIndex = "20";
+    };
+
+    const scheduleDockUpdate = () => {
+      if (frameId) return;
+      frameId = window.requestAnimationFrame(updateDock);
+    };
+
+    scheduleDockUpdate();
+    window.addEventListener("scroll", scheduleDockUpdate, { passive: true });
+    window.addEventListener("resize", scheduleDockUpdate);
+    desktopQuery.addEventListener("change", scheduleDockUpdate);
+
+    if ("ResizeObserver" in window) {
+      resizeObserver = new ResizeObserver(scheduleDockUpdate);
+      resizeObserver.observe(rail);
+    }
+
+    return () => {
+      if (frameId) {
+        window.cancelAnimationFrame(frameId);
+      }
+      window.removeEventListener("scroll", scheduleDockUpdate);
+      window.removeEventListener("resize", scheduleDockUpdate);
+      desktopQuery.removeEventListener("change", scheduleDockUpdate);
+      resizeObserver?.disconnect();
+      clearDockStyles();
+    };
+  }, [isAllView, filtersCollapsed, showAllTags]);
+
   return (
     <>
       <Head>
@@ -3395,78 +3501,80 @@ export default function HomePage({
                 className={`${styles.allShell} ${filtersCollapsed ? styles.allShellCollapsed : ""
                   }`}
               >
-                <aside
-                  className={`${styles.allFiltersPanel} ${filtersCollapsed ? styles.allFiltersPanelCollapsed : ""
-                    }`}
-                  role={filtersCollapsed ? "button" : undefined}
-                  tabIndex={filtersCollapsed ? 0 : undefined}
-                  onClick={() => {
-                    if (filtersCollapsed) {
-                      setFiltersCollapsed(false);
-                    }
-                  }}
-                  onKeyDown={(event) => {
-                    if (!filtersCollapsed) return;
-                    if (event.key === "Enter" || event.key === " ") {
-                      event.preventDefault();
-                      setFiltersCollapsed(false);
-                    }
-                  }}
-                >
-                  <div className={styles.filterHeader}>
-                    <div>
-                      <h3>Filters</h3>
-                    </div>
-                    <div className={styles.filterHeaderActions}>
-                      <button
-                        className={styles.filterReset}
-                        type="button"
-                        onClick={() => {
-                          setSelectedContentTypes([...CONTENT_TYPES]);
-                          setSelectedTargetSubjects([]);
-                          setSelectedAlignedSubjects([]);
-                          setSelectedGradeBands([]);
-                          setSelectedTags([]);
-                          setSelectedLocales([]);
-                          setSelectedCreators([]);
-                          setTourScope("");
-                        }}
-                      >
-                        Reset
-                      </button>
-                      <button
-                        className={styles.filterCollapseButton}
-                        type="button"
-                        aria-label={
-                          filtersCollapsed ? "Show filters" : "Hide filters"
-                        }
-                        aria-expanded={!filtersCollapsed}
-                        onClick={() => setFiltersCollapsed((prev) => !prev)}
-                      >
-                        {filtersCollapsed && (
-                          <span className={styles.filterCollapsedLabel}>
-                            Filters
-                          </span>
-                        )}
-                        <ListFilter
-                          className={styles.filterCollapseIconMobile}
-                          aria-hidden="true"
-                        />
-                        {filtersCollapsed ? (
-                          <CircleArrowRight
-                            className={styles.filterCollapseIconDesktop}
+                <div className={styles.allFiltersRail} ref={allFiltersRailRef}>
+                  <aside
+                    ref={allFiltersPanelRef}
+                    className={`${styles.allFiltersPanel} ${filtersCollapsed ? styles.allFiltersPanelCollapsed : ""
+                      }`}
+                    role={filtersCollapsed ? "button" : undefined}
+                    tabIndex={filtersCollapsed ? 0 : undefined}
+                    onClick={() => {
+                      if (filtersCollapsed) {
+                        setFiltersCollapsed(false);
+                      }
+                    }}
+                    onKeyDown={(event) => {
+                      if (!filtersCollapsed) return;
+                      if (event.key === "Enter" || event.key === " ") {
+                        event.preventDefault();
+                        setFiltersCollapsed(false);
+                      }
+                    }}
+                  >
+                    <div className={styles.filterHeader}>
+                      <div>
+                        <h3>Filters</h3>
+                      </div>
+                      <div className={styles.filterHeaderActions}>
+                        <button
+                          className={styles.filterReset}
+                          type="button"
+                          onClick={() => {
+                            setSelectedContentTypes([...CONTENT_TYPES]);
+                            setSelectedTargetSubjects([]);
+                            setSelectedAlignedSubjects([]);
+                            setSelectedGradeBands([]);
+                            setSelectedTags([]);
+                            setSelectedLocales([]);
+                            setSelectedCreators([]);
+                            setTourScope("");
+                          }}
+                        >
+                          Reset
+                        </button>
+                        <button
+                          className={styles.filterCollapseButton}
+                          type="button"
+                          aria-label={
+                            filtersCollapsed ? "Show filters" : "Hide filters"
+                          }
+                          aria-expanded={!filtersCollapsed}
+                          onClick={() => setFiltersCollapsed((prev) => !prev)}
+                        >
+                          {filtersCollapsed && (
+                            <span className={styles.filterCollapsedLabel}>
+                              Filters
+                            </span>
+                          )}
+                          <ListFilter
+                            className={styles.filterCollapseIconMobile}
                             aria-hidden="true"
                           />
-                        ) : (
-                          <CircleArrowLeft
-                            className={styles.filterCollapseIconDesktop}
-                            aria-hidden="true"
-                          />
-                        )}
-                      </button>
+                          {filtersCollapsed ? (
+                            <CircleArrowRight
+                              className={styles.filterCollapseIconDesktop}
+                              aria-hidden="true"
+                            />
+                          ) : (
+                            <CircleArrowLeft
+                              className={styles.filterCollapseIconDesktop}
+                              aria-hidden="true"
+                            />
+                          )}
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                  <div className={styles.filterContent}>
+                    <div className={styles.filterContent}>
                     <details
                       className={`${styles.filterGroup} ${styles.filterTagsGroup}`}
                       open
@@ -3695,8 +3803,9 @@ export default function HomePage({
                         </span>
                       )}
                     </div>
-                  </div>
-                </aside>
+                    </div>
+                  </aside>
+                </div>
                 <div className={styles.allResults}>
                   {deferResults ? (
                     <div className={styles.resultsNotice} role="status" aria-live="polite">

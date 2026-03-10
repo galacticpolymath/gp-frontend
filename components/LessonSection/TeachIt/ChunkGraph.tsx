@@ -1,6 +1,6 @@
  
  
-import React, { useRef, useEffect, useState, useCallback } from "react";
+import React, { useRef, useEffect, useCallback } from "react";
 import * as d3 from "d3";
 
 interface IProps {
@@ -15,13 +15,14 @@ export default function ChunkGraph({
   className = "",
 }: IProps) {
   const container = useRef(null);
-  const [didRendered, setDidRendered] = useState(false);
 
   const update = useCallback(() => {
     if (durList === null || chunkNum === null) {
       console.error("`durList` or `chunkNum` cannot be null");
       return;
     }
+
+    d3.select(container.current).selectAll("*").remove();
     /**
      * 1 bar space for each minute, width is 900
      * (barSpacing + 3px gap) * minutes = 900
@@ -160,14 +161,8 @@ export default function ChunkGraph({
   }, [chunkNum, durList]);
 
   useEffect(() => {
-    if (!didRendered) {
-      setDidRendered(true);
-    }
-
-    if (didRendered) {
-      update();
-    }
-  }, [didRendered, update]);
+    update();
+  }, [update]);
 
   return <div ref={container} className={className} />;
 }

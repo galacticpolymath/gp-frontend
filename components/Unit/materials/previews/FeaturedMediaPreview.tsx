@@ -1,6 +1,6 @@
 import React from 'react';
 import { MonitorPlay } from 'lucide-react';
-import LessonsCarousel from '../../../LessonSection/Preview/LessonsCarousel';
+import CompactMediaCarousel from '../../shared/CompactMediaCarousel';
 import styles from '../UnitMaterials.module.css';
 
 type TFeaturedMediaPreviewProps = {
@@ -22,7 +22,7 @@ const FeaturedMediaPreview: React.FC<TFeaturedMediaPreviewProps> = ({
       </header>
       {hasFeaturedMedia ? (
         <div className={`${styles.previewCarousel} ${styles.featuredMediaViewport}`}>
-          <LessonsCarousel mediaItems={[...activeLessonFeaturedMedia]} />
+          <CompactMediaCarousel mediaItems={activeLessonFeaturedMedia} />
         </div>
       ) : (
         <p className={styles.unitMutedText}>No featured media is linked to this lesson yet.</p>

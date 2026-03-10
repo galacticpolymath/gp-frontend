@@ -158,7 +158,7 @@ export default async function proxy(request) {
 
       getUnitsUrl.searchParams.set(
         'filterObj',
-        JSON.stringify({ numID: [unitNum] })
+        JSON.stringify({ numID: unitNum })
       );
 
       url.searchParams.set(
@@ -234,7 +234,7 @@ export default async function proxy(request) {
 
       getUnitsUrl.searchParams.set(
         'filterObj',
-        JSON.stringify({ numID: [unitNum] })
+        JSON.stringify({ numID: unitNum })
       );
 
       const getLessonsRes = await fetch(url);
