@@ -303,6 +303,10 @@ export const getFrontEndUserStats =
         hasExplicitDbType,
       } = resolveStatsDbCandidates();
       const primary = preferredDbType ?? resolvedPrimary;
+      const effectiveFallback =
+        preferredDbType && resolvedPrimary !== preferredDbType
+          ? resolvedPrimary
+          : fallback;
       const statsProjection = {
         country: 1,
         zipCode: 1,
@@ -313,9 +317,9 @@ export const getFrontEndUserStats =
       } as any;
       const dbCandidates = [
         primary,
-        ...(preferredDbType || hasExplicitDbType || !fallback || fallback === primary
+        ...(hasExplicitDbType || !effectiveFallback || effectiveFallback === primary
           ? []
-          : [fallback]),
+          : [effectiveFallback]),
       ];
 
       for (const dbTypeCandidate of dbCandidates) {

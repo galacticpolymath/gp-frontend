@@ -88,6 +88,44 @@ describe("getFrontEndUserStats", () => {
     expect(stats.debug?.dbType).toBe("production");
   });
 
+  it("falls back to the env-selected database when a preferred production read is unavailable", async () => {
+    process.env.VERCEL_ENV = "preview";
+
+    mockedConnectToMongodb
+      .mockResolvedValueOnce({ wasSuccessful: false })
+      .mockResolvedValueOnce({ wasSuccessful: true });
+    mockedGetUsers.mockResolvedValueOnce({
+      users: [
+        {
+          country: "United States",
+          zipCode: "60601",
+          classSize: 40,
+        },
+      ],
+    } as Awaited<ReturnType<typeof getUsers>>);
+
+    const stats = await getFrontEndUserStats("production");
+
+    expect(mockedConnectToMongodb).toHaveBeenCalledTimes(2);
+    expect(mockedConnectToMongodb).toHaveBeenNthCalledWith(
+      1,
+      10_000,
+      0,
+      true,
+      "production"
+    );
+    expect(mockedConnectToMongodb).toHaveBeenNthCalledWith(
+      2,
+      10_000,
+      0,
+      true,
+      "dev"
+    );
+    expect(stats.totalUsers).toBe(1);
+    expect(stats.totalStudents).toBe(40);
+    expect(stats.debug?.dbType).toBe("dev");
+  });
+
   it("falls back to the secondary database only when the primary database cannot be read", async () => {
     process.env.VERCEL_ENV = "production";
 
