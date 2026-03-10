@@ -25,7 +25,9 @@ const FeaturedMediaPreview: React.FC<TFeaturedMediaPreviewProps> = ({
           <CompactMediaCarousel mediaItems={activeLessonFeaturedMedia} />
         </div>
       ) : (
-        <p className={styles.unitMutedText}>No featured media is linked to this lesson yet.</p>
+        <p className={styles.unitMutedText}>
+          No related featured media is linked to this lesson yet.
+        </p>
       )}
     </article>
   );

@@ -505,6 +505,8 @@ const getUnitContributorNames = (
     unitAny?.authors,
     unitAny?.citation?.authors,
     unitAny?.attribution?.authors,
+    unitAny?.Sections?.authors?.Data,
+    unitAny?.Sections?.authors?.authors,
     unitAny?.Sections?.credits?.Contributors,
     unitAny?.Sections?.credits?.contributors,
     unitAny?.Sections?.credits?.Authors,
@@ -1334,8 +1336,9 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
         },
         {
           key: TAB_CREDITS as TTabKey,
-          label: 'Credits',
+          label: 'Authors',
           isVisible:
+            !!unit.Sections?.authors?.Data?.length ||
             !!unit.Sections?.acknowledgments ||
             !!unit.Sections?.credits ||
             !!versionReleases.length,
@@ -2331,7 +2334,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
     ? effectiveStandaloneLesson
     : activeLesson;
   const activeLessonItems = activeLesson?.itemList ?? [];
-  const hasDetailedFlow = !!activeLesson?.chunks?.length;
+  const hasDetailedFlow = hasStandaloneProcedureContent(activeLesson);
   const activeLessonFeaturedMedia = useMemo(() => {
     if (!activeLessonId || !unit.FeaturedMultimedia?.length) {
       return [];
@@ -2417,12 +2420,16 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
   }, [jobVizSocCodes, unitTitle]);
   const unitBanner = unit.UnitBanner ?? '';
   const creditsContent = unit.Sections?.credits?.Content?.trim() ?? '';
+  const authorsEntries = useMemo(
+    () => unit.Sections?.authors?.Data ?? [],
+    [unit.Sections?.authors?.Data]
+  );
   const acknowledgmentsEntries = useMemo(
     () => unit.Sections?.acknowledgments?.Data ?? [],
     [unit.Sections?.acknowledgments?.Data]
   );
   const hasCreditsTabContent = Boolean(
-    creditsContent || acknowledgmentsEntries.length || versionReleases.length
+    authorsEntries.length || creditsContent || acknowledgmentsEntries.length || versionReleases.length
   );
   const availLocs = unit.Sections?.overview?.availLocs ?? [];
   const locale = unit.locale ?? 'en-US';
@@ -3680,8 +3687,8 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
         <div className={styles.unitTabFadeIn}>
           <UnitTabHero
             id="unit-search-credits-content"
-            eyebrow="Credits"
-            title="Credits, Acknowledgments, and Versions"
+            eyebrow="Authors"
+            title="Authors, Acknowledgments, and Versions"
             lead="This unit was made possible by hundreds of hours of work by tons of people. Thank you!"
             isCredits
             handleShare={handleShare}
@@ -3942,6 +3949,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
         {activeTab === TAB_CREDITS && (
           <CreditsTab
             hasCreditsTabContent={hasCreditsTabContent}
+            authorsEntries={authorsEntries}
             creditsContent={creditsContent}
             acknowledgmentsEntries={acknowledgmentsEntries}
             versionNotesAnchorRef={versionNotesAnchorRef}

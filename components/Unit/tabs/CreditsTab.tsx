@@ -1,33 +1,91 @@
 import React from 'react';
+import { IAuthor } from '../../../backend/models/Unit/Authors';
 import RichText from '../../RichText';
 import styles from './CreditsTab.module.css';
 
 type TCreditsTabProps = {
   hasCreditsTabContent: boolean;
+  authorsEntries: IAuthor[];
   creditsContent: string;
   acknowledgmentsEntries: any[];
   versionNotesAnchorRef: React.RefObject<HTMLDivElement | null>;
   versionReleases: any[];
 };
 
+const formatAuthorName = (author: IAuthor) =>
+  [author.First, author.Middle, author.Last]
+    .filter((part): part is string => typeof part === 'string' && !!part.trim())
+    .join(' ')
+    .trim();
+
 const CreditsTab: React.FC<TCreditsTabProps> = ({
   hasCreditsTabContent,
+  authorsEntries,
   creditsContent,
   acknowledgmentsEntries,
   versionNotesAnchorRef,
   versionReleases,
 }) => {
+  const hasStructuredAuthors = authorsEntries.length > 0;
+
   return (
     <section className={`${styles.unitSection} ${styles.unitTabFadeIn}`}>
       <div className={styles.unitOverviewCardWide}>
         {hasCreditsTabContent ? (
           <div className={styles.creditsLayout}>
-            {!!creditsContent && (
+            {(hasStructuredAuthors || !!creditsContent) && (
               <section className={styles.creditsPanel}>
-                <h3>Credits</h3>
-                <div className={styles.richTextBlock}>
-                  <RichText content={creditsContent} />
-                </div>
+                <h3>Authors</h3>
+                {hasStructuredAuthors ? (
+                  <div className={styles.authorsList}>
+                    {authorsEntries.map((author, index) => {
+                      const name = formatAuthorName(author);
+                      const contribution = author.Contribution?.trim() ?? '';
+                      const title = author.Title?.trim() ?? '';
+                      const affiliation = author.Affiliation?.trim() ?? '';
+                      const location = author.Location?.trim() ?? '';
+                      const email = author.Email?.trim() ?? '';
+                      const link = author.Link?.trim() ?? '';
+                      const metaLine = [title, affiliation].filter(Boolean).join(' · ');
+
+                      if (!name && !contribution && !metaLine && !location && !email && !link) {
+                        return null;
+                      }
+
+                      return (
+                        <article
+                          key={`${name || author.GPID || 'author'}-${index}`}
+                          className={styles.authorCard}
+                        >
+                          <div className={styles.authorHeader}>
+                            <div>
+                              <h4>{name || 'Unnamed contributor'}</h4>
+                              {contribution ? (
+                                <p className={styles.authorContribution}>{contribution}</p>
+                              ) : null}
+                            </div>
+                            {link ? (
+                              <a href={link} target="_blank" rel="noreferrer" className={styles.authorLink}>
+                                View profile
+                              </a>
+                            ) : null}
+                          </div>
+                          {metaLine ? <p className={styles.authorMeta}>{metaLine}</p> : null}
+                          {location ? <p className={styles.authorMeta}>{location}</p> : null}
+                          {email ? (
+                            <a href={`mailto:${email}`} className={styles.authorEmail}>
+                              {email}
+                            </a>
+                          ) : null}
+                        </article>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <div className={styles.richTextBlock}>
+                    <RichText content={creditsContent} />
+                  </div>
+                )}
               </section>
             )}
             {!!acknowledgmentsEntries.length && (
@@ -50,20 +108,23 @@ const CreditsTab: React.FC<TCreditsTabProps> = ({
                           {entry.records
                             .map((record: any, idx: number) => {
                               const name = record?.name?.trim?.() ?? '';
+                              const url = record?.url?.trim?.() ?? '';
                               const title = record?.title?.trim?.() ?? '';
                               const affiliation =
                                 record?.affiliation?.trim?.() ?? '';
                               const location = record?.location?.trim?.() ?? '';
 
-                              if (!name && !title && !affiliation && !location) {
+                              if (!name && !url && !title && !affiliation && !location) {
                                 return null;
                               }
 
-                              const recordMarkdown = `${name}${
-                                title ? `${name ? ' · ' : ''}${title}` : ''
+                              const linkedName =
+                                name && url ? `[${name}](${url})` : name;
+                              const recordMarkdown = `${linkedName}${
+                                title ? `${linkedName ? ' · ' : ''}${title}` : ''
                               }${
                                 affiliation
-                                  ? `${name || title ? ', ' : ''}${affiliation}`
+                                  ? `${linkedName || title ? ', ' : ''}${affiliation}`
                                   : ''
                               }${location ? ` (${location})` : ''}`;
 
@@ -140,7 +201,7 @@ const CreditsTab: React.FC<TCreditsTabProps> = ({
           </div>
         ) : (
           <p className={styles.unitMutedText}>
-            Credits, acknowledgments, and version notes will appear here.
+            Authors, acknowledgments, and version notes will appear here.
           </p>
         )}
       </div>

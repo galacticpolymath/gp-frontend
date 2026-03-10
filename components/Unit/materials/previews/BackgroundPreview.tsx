@@ -20,6 +20,8 @@ const BackgroundPreview: React.FC<TBackgroundPreviewProps> = ({
   showPanelHeading = true,
   panelClassName,
 }) => {
+  const hasBackgroundContent = Boolean(backgroundContent);
+
   return (
     <div
       className={
@@ -45,6 +47,7 @@ const BackgroundPreview: React.FC<TBackgroundPreviewProps> = ({
                   type="button"
                   className={styles.procedureLinkOutBtn}
                   onClick={onPrint}
+                  disabled={!hasBackgroundContent}
                 >
                   <span>Print</span>
                   <Printer size={13} aria-hidden="true" />
@@ -53,6 +56,7 @@ const BackgroundPreview: React.FC<TBackgroundPreviewProps> = ({
                   type="button"
                   className={styles.procedureLinkOutBtn}
                   onClick={onOpenInNewTab}
+                  disabled={!hasBackgroundContent}
                 >
                   <span>Open in New Tab</span>
                   <SquareArrowOutUpRight size={13} aria-hidden="true" />
@@ -69,12 +73,14 @@ const BackgroundPreview: React.FC<TBackgroundPreviewProps> = ({
         id="unit-search-background-content"
         className={styles.lessonProcedureContent}
       >
-        {backgroundContent ? (
+        {hasBackgroundContent ? (
           <div className={styles.richTextBlock}>
             <RichText content={backgroundContent} />
           </div>
         ) : (
-          <p className={styles.unitMutedText}>Background content will appear here.</p>
+          <p className={styles.unitMutedText}>
+            No related background information is available for this lesson yet.
+          </p>
         )}
       </div>
     </div>

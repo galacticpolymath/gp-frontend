@@ -274,6 +274,17 @@
   background: rgba(251, 254, 255, 0.9);
 }
 
+.lessonProcedureToggleUnavailable {
+  border-color: rgba(93, 106, 126, 0.18);
+  background: rgba(230, 234, 240, 0.68);
+  color: #6e798d;
+}
+
+.lessonProcedureToggleUnavailable:hover {
+  border-color: rgba(108, 120, 140, 0.24);
+  background: rgba(236, 239, 244, 0.84);
+}
+
 .lessonProcedureToggleActive,
 .gpFunctionActionBtn.lessonProcedureToggleActive {
   border: 2px solid rgba(22, 105, 172, 0.86);

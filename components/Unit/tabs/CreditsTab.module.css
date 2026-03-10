@@ -69,6 +69,65 @@
   gap: 12px;
 }
 
+.authorsList {
+  display: grid;
+  gap: 12px;
+}
+
+.authorCard {
+  display: grid;
+  gap: 8px;
+  padding: 12px;
+  border: 1px solid rgba(44, 131, 195, 0.14);
+  border-radius: 12px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(246, 249, 255, 0.92));
+  box-shadow: 0 12px 24px rgba(39, 68, 117, 0.08);
+}
+
+.authorHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.authorCard h4 {
+  margin: 0;
+  font-size: 16px;
+  color: #1f355a;
+}
+
+.authorContribution {
+  margin: 4px 0 0;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: #315b92;
+}
+
+.authorMeta {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.45;
+  color: #4c5269;
+}
+
+.authorLink,
+.authorEmail {
+  color: #245eb2;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.authorLink:hover,
+.authorLink:focus-visible,
+.authorEmail:hover,
+.authorEmail:focus-visible {
+  text-decoration: underline;
+}
+
 .acknowledgmentsList ul,
 .versionNotes ul {
   margin: 0;
@@ -97,4 +156,10 @@
   font-size: 14px;
   font-weight: 700;
   color: #1f355a;
+}
+
+@media (max-width: 640px) {
+  .authorHeader {
+    flex-direction: column;
+  }
 }

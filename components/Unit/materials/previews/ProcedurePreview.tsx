@@ -68,6 +68,7 @@ const ProcedurePreview: React.FC<TProcedurePreviewProps> = ({
         prepTeachingTips ||
         prepVariantNotes)
   );
+  const hasProcedureContent = hasPrepContent || Boolean(activeLesson?.chunks?.length);
 
   return (
     <div
@@ -94,6 +95,7 @@ const ProcedurePreview: React.FC<TProcedurePreviewProps> = ({
                   type="button"
                   className={styles.procedureLinkOutBtn}
                   onClick={onPrint}
+                  disabled={!hasProcedureContent}
                 >
                   <span>Print</span>
                   <Printer size={13} aria-hidden="true" />
@@ -102,6 +104,7 @@ const ProcedurePreview: React.FC<TProcedurePreviewProps> = ({
                   type="button"
                   className={styles.procedureLinkOutBtn}
                   onClick={onOpenInNewTab}
+                  disabled={!hasProcedureContent}
                 >
                   <span>Open in New Tab</span>
                   <SquareArrowOutUpRight size={13} aria-hidden="true" />
@@ -291,12 +294,12 @@ const ProcedurePreview: React.FC<TProcedurePreviewProps> = ({
             })}
           </article>
         ))}
-        {!activeLesson?.chunks?.length && (
+        {!hasProcedureContent && (
           <p className={styles.unitMutedText}>
-            Detailed steps will appear here once added.
+            No related procedure information is available for this lesson yet.
           </p>
         )}
-        <p className={styles.procedureEndMarker}>End</p>
+        {hasProcedureContent && <p className={styles.procedureEndMarker}>End</p>}
       </div>
     </div>
   );

@@ -51,7 +51,9 @@ const GoingFurtherPreview: React.FC<TGoingFurtherPreviewProps> = ({
           })}
         </div>
       ) : (
-        <p className={styles.unitMutedText}>Going Further links will appear here once added.</p>
+        <p className={styles.unitMutedText}>
+          No related extension resources are available for this lesson yet.
+        </p>
       )}
     </article>
   );
