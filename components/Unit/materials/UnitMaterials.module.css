@@ -1453,9 +1453,18 @@
 
 .procedureReturnTile {
   position: relative;
-  width: 74px;
-  min-height: 74px;
+  width: auto;
+  min-width: 0;
+  height: 100%;
+  min-height: 100%;
+  aspect-ratio: 1 / 1;
   border-left: 1px solid rgba(44, 131, 195, 0.22);
+  background: rgba(255, 255, 255, 0.95);
+  display: flex;
+  align-items: stretch;
+  justify-content: stretch;
+  align-self: stretch;
+  overflow: hidden;
 }
 
 .procedureReturnQr {
