@@ -9,7 +9,7 @@
   backdrop-filter: blur(12px);
   background: linear-gradient(120deg, rgba(13, 18, 34, 0.94), rgba(21, 34, 64, 0.94));
   border-top: 1px solid rgba(173, 216, 255, 0.12);
-  border-bottom: 1px solid rgba(173, 216, 255, 0.25);
+  border-bottom: 0;
   transition: top 0.5s cubic-bezier(0.19, 1, 0.22, 1);
   will-change: top;
 }
@@ -17,7 +17,7 @@
 .unitStickyInner {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 8px 14px 8px;
+  padding: 8px 14px 0;
   display: grid;
   position: relative;
   gap: 8px;
@@ -334,16 +334,18 @@
   grid-area: tabs;
   display: flex;
   flex-wrap: wrap;
+  align-items: flex-end;
   gap: 12px;
   width: 100%;
   grid-column: 1 / -1;
+  margin-bottom: -1px;
 }
 
 .unitTabButton {
   border: 0;
   border-bottom: 2px solid transparent;
   border-radius: 0;
-  padding: 2px 0;
+  padding: 0 0 1px;
   min-height: 0;
   background: transparent;
   color: var(--sticky-offwhite);
@@ -355,13 +357,28 @@
 }
 
 .unitTabButtonActive {
-  background: transparent;
-  color: #f7fbff;
-  border-color: rgba(240, 244, 255, 0.95);
+  position: relative;
+  z-index: 1;
+  background: #eef3fb;
+  color: #21314f;
+  border: 1px solid rgba(214, 224, 242, 0.96);
+  border-bottom: 0;
+  border-radius: 12px 12px 0 0;
+  padding: 7px 14px 5px;
+  margin-bottom: -1px;
+  box-shadow: 0 8px 18px rgba(11, 21, 40, 0.12);
 }
 
-.unitTabButton:hover,
-.unitTabButton:focus-visible {
+.unitTabButtonActive:hover,
+.unitTabButtonActive:focus-visible {
+  color: #182742;
+  border-color: rgba(214, 224, 242, 1);
+  border-bottom: 0;
+  background: #f4f7fc;
+}
+
+.unitTabButton:not(.unitTabButtonActive):hover,
+.unitTabButton:not(.unitTabButtonActive):focus-visible {
   color: #f7fbff;
   border-bottom-color: rgba(240, 244, 255, 0.75);
   background: transparent;
@@ -383,11 +400,17 @@
   align-items: center;
   gap: 10px;
   overflow-x: auto;
-  padding-bottom: 2px;
+  background: #eef3fb;
+  border: 1px solid rgba(214, 224, 242, 0.96);
+  border-top: 0;
+  border-radius: 0 12px 12px 12px;
+  padding: 0 12px 10px;
+  margin-top: -1px;
+  box-shadow: 0 8px 18px rgba(11, 21, 40, 0.08);
 }
 
 .lessonSubtabLabel {
-  color: rgba(220, 233, 255, 0.85);
+  color: #4d5f81;
   font-size: 14px;
   font-weight: 600;
   white-space: nowrap;
@@ -401,9 +424,9 @@
 
 .lessonSubtabButton {
   border-radius: 999px;
-  border: 1px solid rgba(173, 216, 255, 0.28);
-  background: rgba(255, 255, 255, 0.1);
-  color: #dce9ff;
+  border: 1px solid rgba(171, 186, 214, 0.92);
+  background: rgba(255, 255, 255, 0.72);
+  color: #324767;
   padding: 7px 11px;
   font-size: 14px;
   line-height: 1;
@@ -414,9 +437,9 @@
 }
 
 .lessonSubtabButtonActive {
-  background: rgba(255, 255, 255, 0.3);
-  color: #f7fbff;
-  border-color: rgba(201, 220, 244, 0.95);
+  background: #dce7f7;
+  color: #1e3150;
+  border-color: rgba(150, 170, 204, 1);
 }
 
 .lessonSubtabThumb {
@@ -427,8 +450,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: rgba(255, 255, 255, 0.24);
-  color: #e6f0ff;
+  background: rgba(181, 197, 223, 0.55);
+  color: #304567;
 }
 
 .lessonSubtabThumb img {
@@ -523,7 +546,7 @@
       'tabs'
       'results';
     align-items: start;
-    padding: 6px 12px 5px;
+    padding: 6px 12px 0;
     gap: 5px;
   }
 
