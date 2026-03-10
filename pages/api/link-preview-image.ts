@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { getLinkPreviewObj } from '../../globalFns';
+import { isSafeExternalUrl } from '../../globalFns';
 
 type TLinkPreviewImageResponse =
   | { image: string | null; title?: string | null }
@@ -15,7 +16,7 @@ export default async function handler(
 
   const url = typeof request.query.url === 'string' ? request.query.url : '';
 
-  if (!url || !/^https?:\/\//i.test(url)) {
+  if (!url || !/^https?:\/\//i.test(url) || !isSafeExternalUrl(url)) {
     return response.status(400).json({ msg: 'A valid absolute url query param is required.' });
   }
 
