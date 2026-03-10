@@ -5,6 +5,15 @@
   background: transparent;
 }
 
+.licenseBannerStandalone {
+  width: 100%;
+  max-width: 800px;
+  margin: 18px auto 0;
+  padding-top: 14px;
+  border-top: 1px solid rgba(44, 131, 195, 0.16);
+  align-self: start;
+}
+
 .licenseBannerInner {
   padding: 9px 10px;
   display: grid;
@@ -24,6 +33,31 @@
   align-items: center;
   flex-wrap: wrap;
   gap: 10px;
+}
+
+.licenseBannerStandalone .licenseBannerInner {
+  padding: 0;
+}
+
+.licenseBannerStandalone .licenseTopRow {
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 12px;
+  flex-wrap: nowrap;
+}
+
+.licenseBannerStandalone .licenseMeta {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+
+.licenseBannerStandalone .citationText {
+  max-width: 72ch;
+}
+
+.licenseBannerStandalone img {
+  flex: 0 0 auto;
 }
 
 .licenseBannerText,
@@ -162,6 +196,11 @@
 @media (min-width: 768px) {
   .licenseBannerInner {
     grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: 14px;
+  }
+
+  .licenseBannerStandalone .licenseBannerInner {
+    grid-template-columns: auto minmax(0, 1fr);
     gap: 14px;
   }
 }

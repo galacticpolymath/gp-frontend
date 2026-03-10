@@ -37,6 +37,20 @@ This file defines default operating rules for coding agents in this repository.
     5. Featured Media should fit the preview pane without introducing an extra inner scroll container.
   - Do not implement scroll-position polling or scroll listeners that update preview `top` on each frame; this introduces jitter.
   - Any observers/listeners used for sizing must be scoped to materials tab only and fully cleaned up on tab/page changes.
+  - Sticky precondition: no ancestor of `.lessonPreviewsCard` may have non-visible overflow (`overflow: hidden/auto/scroll`) on desktop. Check the full shell chain, not just local wrappers:
+    `html`
+    `body`
+    `#__next`
+    layout wrappers around the page body
+    materials grid ancestors
+  - If app-shell overflow must be overridden for sticky to work, scope that override to the materials tab only and restore all prior inline styles on cleanup.
+  - Treat sticky as a behavior problem, not a declaration problem. `position: sticky` plus `top` in CSS is not proof.
+  - Never claim the preview pane is fixed until a real unit URL has been verified by actual scrolling and the pane visibly stays pinned under the sticky header until the bottom of `.lessonResourcesCard`.
+- **Standalone preview route regressions**:
+  - Full-page preview routes (`?sp=pro` / `?sp=bg`) are not the bounded materials preview pane.
+  - Do not reuse preview-pane height/overflow constraints for standalone panels. Standalone content must size naturally with the page and print cleanly.
+  - When editing standalone preview styles or data wiring, verify the route directly with a real lesson URL and confirm the body content remains visible after hydration, not just on first paint.
+  - Treat standalone preview data resolution separately from grade-band/localStorage restoration. The requested lesson preview must not disappear because another classroom resource becomes selected after mount.
 
 ## File Size And Organization Rules
 

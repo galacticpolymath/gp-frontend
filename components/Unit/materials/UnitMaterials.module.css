@@ -731,9 +731,7 @@
   min-width: 0;
   min-height: 0;
   overflow: hidden;
-  align-self: start;
-  position: sticky;
-  top: var(--lesson-preview-sticky-top, 0px);
+  position: relative;
   display: flex;
   flex-direction: column;
   padding: 12px;
@@ -779,7 +777,8 @@
 .previewCarousel {
   width: 100%;
   min-width: 0;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: visible;
 }
 
 .previewCarousel :global(.carousel-root),
@@ -800,9 +799,68 @@
 .featuredMediaViewport {
   width: 100%;
   min-height: 0;
-  max-height: calc(100dvh - var(--portal-nav-offset, 0px) - 180px);
-  overflow-y: auto;
+  height: 100%;
+  max-height: 100%;
+  overflow: hidden;
+}
+
+.featuredMediaViewport :global(.autoCarouselContainer) {
+  height: 100%;
+  min-height: 0;
+  overflow: visible;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto auto;
+}
+
+.featuredMediaViewport :global(.autoCarouselContainer > section:first-child) {
+  min-height: 0;
+  overflow: visible;
+}
+
+.featuredMediaViewport :global(.autoCarouselContainer > section:first-child > section) {
+  height: 100%;
+  min-height: 0;
   overflow-x: hidden;
+  overflow-y: visible;
+}
+
+.featuredMediaViewport :global(.autoCarouselSlider) {
+  height: 100%;
+  display: flex;
+  align-items: stretch;
+}
+
+.featuredMediaViewport :global(.autoCarouselItem) {
+  height: 100%;
+  min-height: 0;
+  align-items: stretch;
+  vertical-align: top;
+  white-space: normal;
+}
+
+.featuredMediaViewport :global(.autoCarouselItem > div) {
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.featuredMediaViewport :global(.mediaItemContainer) {
+  flex: 0 1 clamp(180px, 32vh, 320px);
+  min-height: 160px;
+  max-height: 320px;
+}
+
+.featuredMediaViewport :global(.lessonSlideBody) {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  max-height: 100%;
+  min-height: 0;
+  overflow: auto;
+  white-space: normal;
 }
 
 .lessonPreviewSurface {
@@ -1417,9 +1475,24 @@
 .lessonProcedureStandalonePanel {
   width: 100%;
   max-width: 800px;
+  height: auto;
+  min-height: 0;
+  overflow: visible;
+}
+
+.lessonProcedureStandalonePanel .lessonProcedureContent {
+  height: auto;
+  min-height: 0;
+  overflow: visible;
 }
 
 @media (min-width: 768px) {
+  .lessonPreviewsCard {
+    position: sticky;
+    top: var(--lesson-preview-sticky-top, 0px);
+    align-self: start;
+  }
+
   .lessonSummaryCard {
     grid-template-columns: minmax(0, 1fr) minmax(220px, 280px);
     align-items: start;
@@ -1509,6 +1582,8 @@
     position: relative;
     top: auto;
     min-height: 420px;
+    height: auto;
+    max-height: none;
   }
 
   .materialRow {

@@ -34,7 +34,12 @@ const UnitLicenseBanner: React.FC<TUnitLicenseBannerProps> = ({
   vancouverCitation,
 }) => {
   return (
-    <aside className={styles.licenseBanner} aria-label="Creative Commons license notice">
+    <aside
+      className={`${styles.licenseBanner} ${
+        isStandalonePreview ? styles.licenseBannerStandalone : ''
+      }`}
+      aria-label="Creative Commons license notice"
+    >
       <div className={styles.licenseBannerInner}>
         <div className={styles.licenseTopRow}>
           <Image
