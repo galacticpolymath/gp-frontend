@@ -20,6 +20,8 @@ type TCompactMediaCarouselProps = {
   className?: string;
 };
 
+type TResolvedPreviewMap = Record<string, { image: string; title?: string | null }>;
+
 type TMediaTypeConfig = {
   label: string;
   Icon: React.ComponentType<{ size?: number; className?: string; 'aria-hidden'?: boolean }>;
@@ -159,9 +161,30 @@ const CompactMediaCarousel: React.FC<TCompactMediaCarouselProps> = ({
   className = '',
 }) => {
   const carouselRef = useRef<HTMLDivElement | null>(null);
+  const [resolvedPreviewMap, setResolvedPreviewMap] = useState<TResolvedPreviewMap>({});
   const sortedMediaItems = useMemo(
     () => [...(mediaItems ?? [])].sort((a, b) => getNumericOrder(a.order) - getNumericOrder(b.order)),
     [mediaItems]
+  );
+  const hydratedMediaItems = useMemo(
+    () =>
+      sortedMediaItems.map((item) => {
+        const linkKey = item.mainLink ?? '';
+        const resolvedPreview = linkKey ? resolvedPreviewMap[linkKey] : undefined;
+
+        if (!resolvedPreview) {
+          return item;
+        }
+
+        return {
+          ...item,
+          webAppPreviewImg: item.webAppPreviewImg ?? resolvedPreview.image,
+          webAppImgAlt:
+            item.webAppImgAlt ??
+            (resolvedPreview.title ? `${resolvedPreview.title}'s preview image` : item.title ?? null),
+        };
+      }),
+    [resolvedPreviewMap, sortedMediaItems]
   );
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -170,15 +193,89 @@ const CompactMediaCarousel: React.FC<TCompactMediaCarouselProps> = ({
   }, [sortedMediaItems]);
 
   useEffect(() => {
-    if (!sortedMediaItems.length) {
+    if (!hydratedMediaItems.length) {
       setCurrentIndex(0);
       return;
     }
 
-    setCurrentIndex((prev) => Math.min(prev, sortedMediaItems.length - 1));
-  }, [sortedMediaItems.length]);
+    setCurrentIndex((prev) => Math.min(prev, hydratedMediaItems.length - 1));
+  }, [hydratedMediaItems.length]);
 
-  const activeItem = sortedMediaItems[currentIndex];
+  useEffect(() => {
+    const missingPreviewItems = hydratedMediaItems.filter(
+      (item) =>
+        item.type === 'web-app' &&
+        !item.webAppPreviewImg &&
+        typeof item.mainLink === 'string' &&
+        item.mainLink.length > 0 &&
+        !resolvedPreviewMap[item.mainLink]
+    );
+
+    if (!missingPreviewItems.length) {
+      return;
+    }
+
+    let isCancelled = false;
+
+    Promise.all(
+      missingPreviewItems.map(async (item) => {
+        const url = new URL('/api/link-preview-image', window.location.origin);
+        url.searchParams.set('url', item.mainLink as string);
+
+        try {
+          const response = await fetch(url.toString());
+
+          if (!response.ok) {
+            return null;
+          }
+
+          const payload = (await response.json()) as { image?: string | null; title?: string | null };
+
+          if (!payload.image) {
+            return null;
+          }
+
+          return {
+            link: item.mainLink as string,
+            image: payload.image,
+            title: payload.title ?? null,
+          };
+        } catch {
+          return null;
+        }
+      })
+    ).then((results) => {
+      if (isCancelled) {
+        return;
+      }
+
+      const resolvedEntries = results.filter(Boolean) as Array<{
+        link: string;
+        image: string;
+        title: string | null;
+      }>;
+
+      if (!resolvedEntries.length) {
+        return;
+      }
+
+      setResolvedPreviewMap((current) => {
+        const next = { ...current };
+
+        resolvedEntries.forEach(({ link, image, title }) => {
+          next[link] = { image, title };
+        });
+
+        return next;
+      });
+    });
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [hydratedMediaItems, resolvedPreviewMap]);
+
+  const activeItem = hydratedMediaItems[currentIndex];
 
   if (!activeItem) {
     return null;
@@ -253,7 +350,7 @@ const CompactMediaCarousel: React.FC<TCompactMediaCarouselProps> = ({
             <div className={styles.headerBlock}>
               <div className={styles.headerMeta}>
                 <span className={styles.indexPill}>
-                  {currentIndex + 1} / {sortedMediaItems.length}
+                  {currentIndex + 1} / {hydratedMediaItems.length}
                 </span>
                 {activeItem.by ? (
                   <span className={styles.byline}>
@@ -293,8 +390,8 @@ const CompactMediaCarousel: React.FC<TCompactMediaCarouselProps> = ({
                 <button
                   type="button"
                   className={styles.navButton}
-                  onClick={() => setActiveIndex(Math.min(sortedMediaItems.length - 1, currentIndex + 1))}
-                  disabled={currentIndex === sortedMediaItems.length - 1}
+                  onClick={() => setActiveIndex(Math.min(hydratedMediaItems.length - 1, currentIndex + 1))}
+                  disabled={currentIndex === hydratedMediaItems.length - 1}
                   aria-label="Show next media item"
                 >
                   <ChevronRight size={18} aria-hidden="true" />
@@ -317,9 +414,9 @@ const CompactMediaCarousel: React.FC<TCompactMediaCarouselProps> = ({
         </div>
       </div>
 
-      {sortedMediaItems.length > 1 ? (
+      {hydratedMediaItems.length > 1 ? (
         <div className={styles.thumbRail} role="tablist" aria-label="Choose media item">
-          {sortedMediaItems.map((item, index) => {
+          {hydratedMediaItems.map((item, index) => {
             const thumbnailSrc = getThumbnailSrc(item);
             const itemMediaType = getMediaTypeConfig(item);
 
