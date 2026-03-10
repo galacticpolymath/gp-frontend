@@ -2,7 +2,7 @@ import React from 'react';
 import Image from 'next/image';
 import { Clock3, GraduationCap, MonitorPlay, NotebookPen, Target } from 'lucide-react';
 import RichText from '../../RichText';
-import LessonsCarousel from '../../LessonSection/Preview/LessonsCarousel';
+import CompactMediaCarousel from '../shared/CompactMediaCarousel';
 import styles from './OverviewTab.module.css';
 
 type TOverviewTabProps = {
@@ -132,7 +132,7 @@ const OverviewTab: React.FC<TOverviewTabProps> = ({
         </h3>
         {unit.FeaturedMultimedia?.length ? (
           <div className={styles.previewCarousel}>
-            <LessonsCarousel mediaItems={unit.FeaturedMultimedia} />
+            <CompactMediaCarousel mediaItems={unit.FeaturedMultimedia} />
           </div>
         ) : (
           <p className={styles.unitMutedText}>

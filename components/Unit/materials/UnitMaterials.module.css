@@ -777,100 +777,13 @@
 .previewCarousel {
   width: 100%;
   min-width: 0;
-  overflow-x: hidden;
-  overflow-y: visible;
-}
-
-.previewCarousel :global(.carousel-root),
-.previewCarousel :global(.carousel),
-.previewCarousel :global(.carousel .slider-wrapper),
-.previewCarousel :global(.carousel .slider),
-.previewCarousel :global(.carousel .slide) {
-  width: 100%;
-  min-width: 0;
-}
-
-.previewCarousel :global(.carousel .slide img) {
-  width: 100%;
-  max-height: 30vh;
-  object-fit: contain;
+  min-height: 0;
 }
 
 .featuredMediaViewport {
   width: 100%;
   min-height: 0;
-  overflow: hidden;
-  display: flex;
-  align-items: flex-start;
-}
-
-.featuredMediaViewport :global(.autoCarouselContainer) {
-  width: 100%;
-  min-height: 0;
-  overflow: hidden;
-  padding: 6px 6px 4px;
-  border-radius: 14px;
-  border: 1px solid rgba(108, 45, 130, 0.16);
-  background: linear-gradient(160deg, rgba(255, 255, 255, 0.76), rgba(246, 250, 255, 0.78));
-  box-shadow: 0 10px 20px rgba(22, 34, 56, 0.09);
-}
-
-.featuredMediaViewport :global(.autoCarouselContainer > section:first-child) {
-  min-height: 0;
-  overflow: hidden;
-}
-
-.featuredMediaViewport :global(.autoCarouselContainer > section:first-child > section) {
-  min-height: 0;
-  overflow-x: hidden;
-  overflow-y: hidden;
-}
-
-.featuredMediaViewport :global(.autoCarouselItem) {
-  min-height: 0;
-  vertical-align: top;
-  white-space: normal;
-}
-
-.featuredMediaViewport :global(.autoCarouselItem > div) {
-  min-height: 0;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-
-.featuredMediaViewport :global(.mediaItemContainer) {
-  flex: 0 0 auto;
-  height: clamp(152px, 24vh, 240px);
-  min-height: 152px;
-  max-height: 240px;
-}
-
-.featuredMediaViewport :global(.lessonSlideBody) {
-  flex: 0 1 auto;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  min-height: 0;
-  overflow: hidden;
-  white-space: normal;
-}
-
-.featuredMediaViewport :global(.lessonSlideBody h6) {
-  font-size: 15px;
-  line-height: 1.18;
-}
-
-.featuredMediaViewport :global(.lessonRelevanceTxt) {
-  margin-bottom: 0 !important;
-  margin-right: 0 !important;
-  font-size: 14px;
-  line-height: 1.35;
-}
-
-.featuredMediaViewport :global(.thumbnailLi) {
-  width: 64px;
-  height: 52px;
+  height: 100%;
 }
 
 .lessonPreviewSurface {
