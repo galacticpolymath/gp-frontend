@@ -1349,6 +1349,8 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
 
   const defaultTab = (availableTabs[0]?.key ?? TAB_OVERVIEW) as TTabKey;
   const [activeTab, setActiveTab] = useState<TTabKey>(defaultTab);
+  const [isBackNavigating, setIsBackNavigating] = useState(false);
+  const unitPageRef = useRef<HTMLDivElement>(null);
 
   const [activeLessonId, setActiveLessonId] = useState<number | null>(() => {
     if (!lessons.length) {
@@ -1998,12 +2000,71 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
     setIsPortalNavCollapsed(nextCollapsed);
   };
 
+  const handleBackNavigation = useCallback(() => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    if (isBackNavigating) {
+      return;
+    }
+
+    setIsBackNavigating(true);
+
+    if (window.history.length > 1) {
+      window.history.back();
+      return;
+    }
+
+    window.location.assign('/units');
+  }, [isBackNavigating]);
+
   useEffect(() => {
     if (!isSearchExpanded) {
       return;
     }
     searchInputRef.current?.focus();
   }, [isSearchExpanded]);
+
+  useEffect(() => {
+    const root = unitPageRef.current;
+    if (!root) {
+      return;
+    }
+
+    const applyButtonTitles = () => {
+      const buttons = root.querySelectorAll<HTMLButtonElement>('button');
+      buttons.forEach((button) => {
+        if (button.title) {
+          return;
+        }
+
+        const ariaLabel = button.getAttribute('aria-label')?.trim();
+        const textLabel = button.textContent?.replace(/\s+/g, ' ').trim();
+        const tooltip = ariaLabel || textLabel;
+
+        if (tooltip) {
+          button.title = tooltip;
+        }
+      });
+    };
+
+    applyButtonTitles();
+
+    const observer = new MutationObserver(() => {
+      applyButtonTitles();
+    });
+
+    observer.observe(root, {
+      subtree: true,
+      childList: true,
+      characterData: true,
+      attributes: true,
+      attributeFilter: ['aria-label'],
+    });
+
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     setIsTagListExpanded(false);
@@ -3613,6 +3674,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
 
   return (
     <div
+      ref={unitPageRef}
       className={`${styles.unitPage} ${
         isStandalonePreview ? styles.unitPageProcedureOnly : ''
       }`}
@@ -3622,6 +3684,8 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
           headerRef={unitStickyHeaderRef}
           unitTitle={unitTitle}
           unitSubtitle={unitSubtitle}
+          handleBackNavigation={handleBackNavigation}
+          isBackNavigating={isBackNavigating}
           isSearchExpanded={isSearchExpanded}
           searchTerm={searchTerm}
           setSearchTerm={setSearchTerm}
@@ -3688,7 +3752,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
           <UnitTabHero
             id="unit-search-credits-content"
             eyebrow="Credits"
-            title="Credits, Acknowledgments, and Versions"
+            title="Authors, Acknowledgments, and Versions"
             lead="This unit was made possible by hundreds of hours of work by tons of people. Thank you!"
             isCredits
             handleShare={handleShare}

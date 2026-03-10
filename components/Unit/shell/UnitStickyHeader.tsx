@@ -1,6 +1,13 @@
 import React from 'react';
 import Image from 'next/image';
-import { ChevronUp, FileSearch2, Menu, NotebookPen } from 'lucide-react';
+import {
+  ArrowLeft,
+  ChevronUp,
+  FileSearch2,
+  LoaderCircle,
+  Menu,
+  NotebookPen,
+} from 'lucide-react';
 import {
   IItemForUI,
   INewUnitLesson,
@@ -30,6 +37,8 @@ type TUnitStickyHeaderProps = {
   headerRef: React.RefObject<HTMLDivElement | null>;
   unitTitle: string;
   unitSubtitle: string;
+  handleBackNavigation: () => void;
+  isBackNavigating: boolean;
   isSearchExpanded: boolean;
   searchTerm: string;
   setSearchTerm: React.Dispatch<React.SetStateAction<string>>;
@@ -71,6 +80,8 @@ const UnitStickyHeader: React.FC<TUnitStickyHeaderProps> = ({
   headerRef,
   unitTitle,
   unitSubtitle,
+  handleBackNavigation,
+  isBackNavigating,
   isSearchExpanded,
   searchTerm,
   setSearchTerm,
@@ -111,6 +122,21 @@ const UnitStickyHeader: React.FC<TUnitStickyHeaderProps> = ({
   >
     <div className={styles.unitStickyInner}>
       <div className={styles.unitStickyTopRow}>
+        <button
+          type="button"
+          className={styles.unitBackButton}
+          onClick={handleBackNavigation}
+          aria-label={isBackNavigating ? 'Going back' : 'Go back'}
+          aria-busy={isBackNavigating}
+          disabled={isBackNavigating}
+          title={isBackNavigating ? 'Going back' : 'Go back'}
+        >
+          {isBackNavigating ? (
+            <LoaderCircle size={18} aria-hidden="true" className={styles.unitBackButtonSpinner} />
+          ) : (
+            <ArrowLeft size={18} aria-hidden="true" />
+          )}
+        </button>
         <div className={styles.unitStickyTitle}>
           <span className={styles.unitStickyText}>
             {unitTitle}
@@ -134,6 +160,7 @@ const UnitStickyHeader: React.FC<TUnitStickyHeaderProps> = ({
               aria-controls="unit-search"
               aria-expanded={isSearchExpanded}
               onClick={handleSearchToggle}
+              title={isSearchExpanded ? 'Collapse unit search' : 'Expand unit search'}
             >
               <FileSearch2 size={16} aria-hidden="true" />
             </button>
@@ -168,6 +195,7 @@ const UnitStickyHeader: React.FC<TUnitStickyHeaderProps> = ({
             className={styles.unitNavVisibilityToggle}
             onClick={handlePortalNavToggle}
             aria-label={isPortalNavCollapsed ? 'Profile menu' : 'Collapse menu'}
+            title={isPortalNavCollapsed ? 'Profile menu' : 'Collapse menu'}
           >
             <ChevronUp
               size={18}
@@ -205,9 +233,12 @@ const UnitStickyHeader: React.FC<TUnitStickyHeaderProps> = ({
           <button
             key={tab.key}
             type="button"
+            title={tab.label}
             className={
               tab.key === activeTab
-                ? `${styles.unitTabButton} ${styles.unitTabButtonActive}`
+                ? `${styles.unitTabButton} ${styles.unitTabButtonActive} ${
+                    tab.key === materialsTabKey ? styles.unitTabButtonActiveMaterials : ''
+                  }`
                 : styles.unitTabButton
             }
             onClick={() => onTabChange(tab.key)}
@@ -228,6 +259,7 @@ const UnitStickyHeader: React.FC<TUnitStickyHeaderProps> = ({
                 <button
                   key={`sticky-lesson-tab-${lessonId}`}
                   type="button"
+                  title={isAssessment ? 'Assessment lesson' : `Lesson ${lessonId}`}
                   className={
                     isActive
                       ? `${styles.lessonSubtabButton} ${styles.lessonSubtabButtonActive}`
@@ -267,6 +299,7 @@ const UnitStickyHeader: React.FC<TUnitStickyHeaderProps> = ({
                 type="button"
                 className={styles.unitSearchResult}
                 onClick={() => handleSearchSelect(entry)}
+                title={entry.title}
               >
                 <span className={styles.searchResultTitle}>
                   {renderHighlightedText(entry.title, searchTerm, styles.searchResultHighlight)}
