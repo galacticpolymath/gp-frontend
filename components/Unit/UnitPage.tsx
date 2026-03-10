@@ -1738,7 +1738,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
       return;
     }
     setStandalonePreviewMode('none');
-  }, [classroomResources.length]);
+  }, [classroomResources]);
 
   useEffect(() => {
     if (typeof window === 'undefined' || !isStandalonePreview) {

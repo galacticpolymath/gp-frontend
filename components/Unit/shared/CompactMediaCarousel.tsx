@@ -287,7 +287,6 @@ const CompactMediaCarousel: React.FC<TCompactMediaCarouselProps> = ({
   };
 
   const mediaType = getMediaTypeConfig(activeItem);
-  const activeThumbnailSrc = getThumbnailSrc(activeItem);
   const description = activeItem.lessonRelevance?.trim() || activeItem.description?.trim() || '';
   const lessonLabel = activeItem.forLsn?.trim() || null;
   const canOpen = typeof activeItem.mainLink === 'string' && activeItem.mainLink.length > 0;
