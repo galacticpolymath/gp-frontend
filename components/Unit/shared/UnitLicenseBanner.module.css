@@ -8,10 +8,15 @@
 .licenseBannerStandalone {
   width: 100%;
   max-width: 800px;
-  margin: 18px auto 0;
+  margin: 0 auto 18px;
   padding-top: 14px;
+  padding-left: 16px;
+  padding-right: 16px;
   border-top: 1px solid rgba(44, 131, 195, 0.16);
   align-self: start;
+  position: static;
+  clear: both;
+  z-index: 0;
 }
 
 .licenseBannerInner {

@@ -1480,7 +1480,16 @@
   overflow: visible;
 }
 
+.lessonProcedureStandalonePanel.lessonProcedureInPreview {
+  display: block;
+  height: auto;
+  min-height: 0;
+  overflow: visible;
+}
+
 .lessonProcedureStandalonePanel .lessonProcedureContent {
+  display: grid;
+  flex: none;
   height: auto;
   min-height: 0;
   overflow: visible;

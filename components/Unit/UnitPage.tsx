@@ -3958,6 +3958,25 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
           handleLessonChange={handleLessonChange}
           handleTabChange={(tabKey) => handleTabChange(tabKey as TTabKey)}
         />
+        {!isStandalonePreview && (
+          <UnitLicenseBanner
+            isStandalonePreview={isStandalonePreview}
+            attributionDisplayParts={attributionDisplayParts}
+            copiedEntry={copiedEntry}
+            copyErrorEntry={copyErrorEntry}
+            handleCopyCitation={handleCopyCitation}
+            attributionText={attributionText}
+            vancouverCitation={vancouverCitation}
+          />
+        )}
+        {officeUpsellFormat && (
+          <UnitOfficeUpsellModal
+            format={officeUpsellFormat}
+            onClose={handleCloseOfficeUpsell}
+          />
+        )}
+      </main>
+      {isStandalonePreview && (
         <UnitLicenseBanner
           isStandalonePreview={isStandalonePreview}
           attributionDisplayParts={attributionDisplayParts}
@@ -3967,13 +3986,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
           attributionText={attributionText}
           vancouverCitation={vancouverCitation}
         />
-        {officeUpsellFormat && (
-          <UnitOfficeUpsellModal
-            format={officeUpsellFormat}
-            onClose={handleCloseOfficeUpsell}
-          />
-        )}
-      </main>
+      )}
     </div>
   );
 };

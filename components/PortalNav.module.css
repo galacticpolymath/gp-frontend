@@ -19,6 +19,12 @@
   will-change: transform, opacity;
 }
 
+@media print {
+  .nav {
+    display: none !important;
+  }
+}
+
 .navFixedDefault {
   position: fixed;
   top: 0;
