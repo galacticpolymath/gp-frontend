@@ -760,7 +760,7 @@ export const getStaticProps = async (arg: {
     }
 
     const unitPageData = await getUnitPageData(id, loc, {
-      withExternalEnrichment: false,
+      withExternalEnrichment: true,
     });
     if (unitPageData) {
       return {

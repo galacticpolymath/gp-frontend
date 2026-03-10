@@ -100,6 +100,7 @@ export const getMediaComponent = ({
           src={webAppPreviewImg}
           alt={webAppImgAlt}
           fill
+          style={{ objectFit: 'contain' }}
           className='lesson-media position-absolute top-0 start-0 h-100 w-100 media-img-testing'
         />
       </Link>
