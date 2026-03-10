@@ -799,47 +799,40 @@
 .featuredMediaViewport {
   width: 100%;
   min-height: 0;
-  height: 100%;
-  max-height: 100%;
   overflow: hidden;
+  display: flex;
+  align-items: flex-start;
 }
 
 .featuredMediaViewport :global(.autoCarouselContainer) {
-  height: 100%;
+  width: 100%;
   min-height: 0;
-  overflow: visible;
-  display: grid;
-  grid-template-rows: minmax(0, 1fr) auto auto;
+  overflow: hidden;
+  padding: 6px 6px 4px;
+  border-radius: 14px;
+  border: 1px solid rgba(108, 45, 130, 0.16);
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.76), rgba(246, 250, 255, 0.78));
+  box-shadow: 0 10px 20px rgba(22, 34, 56, 0.09);
 }
 
 .featuredMediaViewport :global(.autoCarouselContainer > section:first-child) {
   min-height: 0;
-  overflow: visible;
+  overflow: hidden;
 }
 
 .featuredMediaViewport :global(.autoCarouselContainer > section:first-child > section) {
-  height: 100%;
   min-height: 0;
   overflow-x: hidden;
-  overflow-y: visible;
-}
-
-.featuredMediaViewport :global(.autoCarouselSlider) {
-  height: 100%;
-  display: flex;
-  align-items: stretch;
+  overflow-y: hidden;
 }
 
 .featuredMediaViewport :global(.autoCarouselItem) {
-  height: 100%;
   min-height: 0;
-  align-items: stretch;
   vertical-align: top;
   white-space: normal;
 }
 
 .featuredMediaViewport :global(.autoCarouselItem > div) {
-  height: 100%;
   min-height: 0;
   display: flex;
   flex-direction: column;
@@ -847,20 +840,37 @@
 }
 
 .featuredMediaViewport :global(.mediaItemContainer) {
-  flex: 0 1 clamp(180px, 32vh, 320px);
-  min-height: 160px;
-  max-height: 320px;
+  flex: 0 0 auto;
+  height: clamp(152px, 24vh, 240px);
+  min-height: 152px;
+  max-height: 240px;
 }
 
 .featuredMediaViewport :global(.lessonSlideBody) {
-  flex: 1 1 auto;
+  flex: 0 1 auto;
   display: flex;
   flex-direction: column;
-  height: 100%;
-  max-height: 100%;
+  gap: 4px;
   min-height: 0;
-  overflow: auto;
+  overflow: hidden;
   white-space: normal;
+}
+
+.featuredMediaViewport :global(.lessonSlideBody h6) {
+  font-size: 15px;
+  line-height: 1.18;
+}
+
+.featuredMediaViewport :global(.lessonRelevanceTxt) {
+  margin-bottom: 0 !important;
+  margin-right: 0 !important;
+  font-size: 14px;
+  line-height: 1.35;
+}
+
+.featuredMediaViewport :global(.thumbnailLi) {
+  width: 64px;
+  height: 52px;
 }
 
 .lessonPreviewSurface {
@@ -1017,6 +1027,8 @@
   flex: 1 1 0;
   min-height: 0;
   overflow: auto;
+  align-content: start;
+  align-items: start;
   padding-right: 2px;
 }
 
