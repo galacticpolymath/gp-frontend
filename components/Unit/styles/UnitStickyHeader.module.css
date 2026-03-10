@@ -373,6 +373,11 @@
 }
 
 .unitTabListShell {
+  --unit-tab-edge-offset: max(28px, calc((100vw - 1280px) / 2 + 14px));
+  --overflow-arrow-size: 34px;
+  --overflow-arrow-bg: rgba(13, 18, 34, 0.94);
+  --overflow-arrow-left: calc(-1 * var(--unit-tab-edge-offset));
+  --overflow-arrow-right: calc(-1 * var(--unit-tab-edge-offset));
   grid-area: tabs;
   grid-column: 1 / -1;
   align-self: end;
@@ -471,6 +476,7 @@
 }
 
 .lessonSubtabBar {
+  --lesson-subtab-gutter: max(28px, calc((100vw - 1280px) / 2 + 14px));
   display: flex;
   align-items: center;
   grid-column: 1 / -1;
@@ -484,7 +490,7 @@
   width: 100vw;
   margin-left: calc(50% - 50vw);
   margin-right: calc(50% - 50vw);
-  padding: 3px max(28px, calc((100vw - 1280px) / 2 + 14px)) 3px;
+  padding: 3px var(--lesson-subtab-gutter) 3px;
   margin-top: 0;
   box-shadow: none;
 }
@@ -514,6 +520,10 @@
 }
 
 .lessonSubtabListShell {
+  --overflow-arrow-size: 34px;
+  --overflow-arrow-bg: #6c2d82;
+  --overflow-arrow-left: 0;
+  --overflow-arrow-right: calc(-1 * var(--lesson-subtab-gutter));
   flex: 1 1 auto;
   min-width: 0;
 }
@@ -699,6 +709,7 @@
   }
 
   .unitTabListShell {
+    --unit-tab-edge-offset: 12px;
     border-bottom: 0;
   }
 
@@ -712,6 +723,7 @@
   }
 
   .lessonSubtabBar {
+    --lesson-subtab-gutter: 12px;
     display: grid;
     grid-template-columns: auto minmax(0, 1fr);
     grid-column: 1 / -1;
@@ -721,8 +733,8 @@
     margin-right: -12px;
     overflow: hidden;
     background: #6c2d82;
-    padding-left: 12px;
-    padding-right: 12px;
+    padding-left: var(--lesson-subtab-gutter);
+    padding-right: var(--lesson-subtab-gutter);
   }
 
   .lessonSubtabList {
