@@ -985,7 +985,7 @@ export async function getStaticProps() {
       }
     };
 
-    const userStats = await getFrontEndUserStats();
+    const userStats = await getFrontEndUserStats("production");
     const { data: retrievedUnits } = await retrieveUnits(
       {},
       createDbProjections(PROJECTED_UNITS_FIELDS),
@@ -1132,7 +1132,7 @@ export async function getStaticProps() {
         userStats,
         blogPosts,
       },
-      revalidate: 86_400,
+      revalidate: 21_600,
     };
   } catch (error) {
     console.error("Teacher portal homepage failed to load units.", error);
@@ -1150,7 +1150,7 @@ export async function getStaticProps() {
         },
         blogPosts: [],
       },
-      revalidate: 86_400,
+      revalidate: 21_600,
     };
   }
 }

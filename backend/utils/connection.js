@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { waitWithExponentialBackOff } from '../../globalFns';
+import { waitWithExponentialBackOff } from '../../globalFns.js';
 
 let isConnectedToDb = false;
 let connectionQueue = Promise.resolve();

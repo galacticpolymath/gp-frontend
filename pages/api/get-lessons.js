@@ -1,6 +1,6 @@
-import { createFilterObj, retrieveLessons } from '../../backend/services/lessonsServices';
-import { connectToMongodb } from '../../backend/utils/connection';
-import { CustomError } from '../../backend/utils/errors';
+import { createFilterObj, retrieveLessons } from '../../backend/services/lessonsServices.js';
+import { connectToMongodb } from '../../backend/utils/connection.js';
+import { CustomError } from '../../backend/utils/errors.js';
 
 export default async function handler(request, response) {
   try {

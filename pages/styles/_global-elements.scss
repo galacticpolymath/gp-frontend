@@ -1,0 +1,222 @@
+.text-lg {
+  font-size: 18px;
+}
+
+input[type="checkbox"] {
+  cursor: pointer;
+}
+
+.gp-route-loader {
+  position: fixed;
+  top: 18px;
+  right: 18px;
+  z-index: 2147483000;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: rgba(18, 24, 54, 0.9);
+  color: #ffffff;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(4px);
+  font-size: 14px;
+  letter-spacing: 0.01em;
+}
+
+.gp-route-loader__spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-top-color: #ffffff;
+  border-radius: 999px;
+  animation: gpRouteLoaderSpin 720ms linear infinite;
+}
+
+.gp-route-loader__label {
+  line-height: 1;
+  white-space: nowrap;
+}
+
+@keyframes gpRouteLoaderSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.default-cursor {
+  cursor: auto !important;
+}
+
+a {
+  color: $hydrogen-blue;
+  text-decoration: none;
+  font-weight: bolder;
+
+  &:hover:not(.badge, .no-link-decoration) {
+    &:not(.nav-link, .btn) {
+      color: lighten($hydrogen-blue, 8%);
+    }
+
+    text-decoration: underline;
+  }
+}
+
+a > span {
+  vertical-align: middle;
+}
+
+.no-link-decoration {
+  color: initial;
+  font-weight: initial;
+
+  &:hover {
+    color: initial;
+    text-decoration: none;
+  }
+}
+
+.no-hover-color-change:hover {
+  color: inherit;
+}
+
+.no-hover-underline:hover {
+  text-decoration: none;
+}
+
+.textyCardHover:hover,
+.textyCardHover:focus-visible,
+.textyCardHover:active {
+  color: inherit !important;
+  text-decoration: none !important;
+}
+
+.textyCardHover:hover *,
+.textyCardHover:focus-visible *,
+.textyCardHover:active * {
+  color: inherit;
+  text-decoration: none !important;
+}
+
+.no-x-mobile-margin {
+  @media (max-width: 576px) {
+    margin-right: 0px;
+    margin-left: 0px;
+  }
+}
+
+strong {
+  font-weight: 700;
+}
+
+img {
+  max-width: 100%;
+  image-rendering: -webkit-optimize-contrast;
+}
+
+h1 {
+  font-weight: 700;
+}
+
+h3 {
+  color: $black;
+  font-weight: 500;
+}
+
+::-webkit-scrollbar {
+  width: 0.01rem;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  height: 100%;
+}
+
+.btn-disabled {
+  opacity: 0.5;
+}
+
+ol li {
+  word-break: break-word;
+}
+
+.no-btn-styles {
+  background: none;
+  color: inherit;
+  border: none;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+  outline: inherit;
+}
+
+.capitalize {
+  text-transform: capitalize;
+}
+
+.user-modal-color {
+  background-color: white;
+}
+
+.account-settings-input,
+.aboutme-txt-input {
+  border-top: none;
+  border-right: none;
+  border-left: none;
+  border-bottom: solid 1px grey;
+}
+
+.account-settings-input {
+  max-width: 450px;
+}
+
+.about-me-input-border {
+  border: solid 1px grey;
+}
+
+.link-disabled {
+  pointer-events: none;
+}
+
+.no-border-left {
+  border-left: none;
+}
+
+.no-border-top {
+  border-top: none;
+}
+
+.bg-light-blue {
+  background-color: rgb(232, 240, 254);
+}
+
+.login-modal-input-container {
+  background-color: rgb(232, 240, 254);
+}
+
+.login-modal-input {
+  width: 65%;
+
+  @media (min-width: 578px) {
+    width: 75%;
+  }
+}
+
+.error-border {
+  border: solid 1px red;
+}
+
+.gp-plus-member-modal {
+  width: 90vw;
+
+  @media (min-width: 576px) {
+    width: 35vw;
+  }
+}
+
+.input-read-only {
+  pointer-events: none;
+}

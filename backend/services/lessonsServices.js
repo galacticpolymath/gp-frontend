@@ -1,6 +1,6 @@
  
 import Lessons from '../models/lesson';
-import { connectToMongodb } from '../utils/connection';
+import { connectToMongodb } from '../utils/connection.js';
 
 const insertLesson = async lesson => {
   try {

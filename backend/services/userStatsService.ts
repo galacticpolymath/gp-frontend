@@ -148,15 +148,17 @@ const resolveStatsDbCandidates = () => {
 
   if (explicit) {
     return {
-      candidates: [explicit] as Array<"dev" | "production">,
+      primary: explicit as "dev" | "production",
+      fallback: null as "dev" | "production" | null,
       hasExplicitDbType: true,
     };
   }
 
   return {
-    candidates: [envBased, envBased === "production" ? "dev" : "production"] as Array<
-      "dev" | "production"
-    >,
+    primary: envBased as "dev" | "production",
+    fallback: (envBased === "production" ? "dev" : "production") as
+      | "dev"
+      | "production",
     hasExplicitDbType: false,
   };
 };
@@ -284,7 +286,9 @@ const buildStatsResponse = (
 };
 
 export const getFrontEndUserStats =
-  async (): Promise<FrontEndUserStats> => {
+  async (
+    preferredDbType?: "dev" | "production"
+  ): Promise<FrontEndUserStats> => {
     try {
       type StatsUser = {
         country?: string | null;
@@ -293,18 +297,32 @@ export const getFrontEndUserStats =
         classroomSize?: { num?: number | null } | null;
         isNotTeaching?: boolean;
       };
-      const { candidates: dbCandidates, hasExplicitDbType } = resolveStatsDbCandidates();
-      const responses: FrontEndUserStats[] = [];
+      const {
+        primary: resolvedPrimary,
+        fallback,
+        hasExplicitDbType,
+      } = resolveStatsDbCandidates();
+      const primary = preferredDbType ?? resolvedPrimary;
+      const effectiveFallback =
+        preferredDbType && resolvedPrimary !== preferredDbType
+          ? resolvedPrimary
+          : fallback;
+      const statsProjection = {
+        country: 1,
+        zipCode: 1,
+        roles: 1,
+        isNotTeaching: 1,
+        classSize: 1,
+        "classroomSize.num": 1,
+      } as any;
+      const dbCandidates = [
+        primary,
+        ...(hasExplicitDbType || !effectiveFallback || effectiveFallback === primary
+          ? []
+          : [effectiveFallback]),
+      ];
 
       for (const dbTypeCandidate of dbCandidates) {
-        const statsProjection = {
-          country: 1,
-          zipCode: 1,
-          roles: 1,
-          isNotTeaching: 1,
-          classSize: 1,
-          "classroomSize.num": 1,
-        } as any;
         const { wasSuccessful } = await connectToMongodb(
           10_000,
           0,
@@ -314,30 +332,14 @@ export const getFrontEndUserStats =
         if (!wasSuccessful) {
           continue;
         }
-        const { users } = await getUsers(
-          {},
-          statsProjection
-        );
+
+        const { users } = await getUsers({}, statsProjection);
         if (Array.isArray(users)) {
-          responses.push(buildStatsResponse(users as StatsUser[], dbTypeCandidate));
+          return buildStatsResponse(users as StatsUser[], dbTypeCandidate);
         }
       }
 
-      if (!responses.length) {
-        return DEFAULT_STATS;
-      }
-
-      if (hasExplicitDbType) {
-        return responses[0];
-      }
-
-      // Prefer the larger dataset when env routing is ambiguous/misconfigured.
-      const selectedResponse = responses.sort((a, b) => {
-        if (b.totalUsers !== a.totalUsers) return b.totalUsers - a.totalUsers;
-        return b.totalStudents - a.totalStudents;
-      })[0];
-
-      return selectedResponse;
+      return DEFAULT_STATS;
     } catch (error) {
       console.error("Failed to build front-end user stats.", error);
       return DEFAULT_STATS;
