@@ -9,7 +9,7 @@
   backdrop-filter: blur(12px);
   background: linear-gradient(120deg, rgba(13, 18, 34, 0.94), rgba(21, 34, 64, 0.94));
   border-top: 1px solid rgba(173, 216, 255, 0.12);
-  border-bottom: 1px solid #85569b;
+  border-bottom: 2px solid #85569b;
   transition: top 0.5s cubic-bezier(0.19, 1, 0.22, 1);
   will-change: top;
 }

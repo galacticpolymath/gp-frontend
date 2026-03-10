@@ -5,6 +5,7 @@
   --materials-active-blue: #1669ac;
   --sticky-offwhite: rgba(220, 233, 255, 0.9);
   --unit-sticky-header-height: 0px;
+  --unit-sticky-header-fallback: 118px;
   --lesson-preview-sticky-top: calc(var(--portal-nav-offset, 0px) + var(--unit-sticky-header-height, 0px));
   min-height: 100vh;
   color: #1c2233;
@@ -91,11 +92,18 @@
 }
 
 .unitStickyHeaderSpacer {
-  min-height: 140px;
+  height: calc(
+    var(--portal-nav-offset, 0px) +
+      max(var(--unit-sticky-header-height, 0px), var(--unit-sticky-header-fallback))
+  );
   margin-bottom: clamp(10px, 1.8vw, 18px);
 }
 
 @media (max-width: 767px) {
+  .unitPage {
+    --unit-sticky-header-fallback: 86px;
+  }
+
   .unitStickyHeaderSpacer {
     margin-bottom: 0;
   }
@@ -111,6 +119,10 @@
 }
 
 @media (min-width: 1440px) {
+  .unitPage {
+    --unit-sticky-header-fallback: 126px;
+  }
+
   .unitMain {
     padding: 0 0 118px;
   }

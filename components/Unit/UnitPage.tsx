@@ -1411,7 +1411,6 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
   const lessonPreviewsCardRef = useRef<HTMLDivElement>(null);
   const lessonResourcesCardRef = useRef<HTMLDivElement>(null);
   const unitStickyHeaderRef = useRef<HTMLDivElement>(null);
-  const [unitStickyHeaderHeightPx, setUnitStickyHeaderHeightPx] = useState(140);
   const [lessonMaterialsStickyTop, setLessonMaterialsStickyTop] = useState<
     number | null
   >(null);
@@ -2177,14 +2176,6 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
     let rafId = 0;
     const measureHeaderHeight = () => {
       const height = unitStickyHeaderRef.current?.getBoundingClientRect().height ?? 0;
-      if (height > 0) {
-        setUnitStickyHeaderHeightPx((current) => {
-          if (Math.abs(current - height) < 1) {
-            return current;
-          }
-          return Math.round(height);
-        });
-      }
       document.documentElement.style.setProperty(
         '--unit-sticky-header-height',
         `${Math.max(0, Math.round(height))}px`
@@ -3723,13 +3714,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
         />
       )}
       {!isStandalonePreview && (
-        <div
-          className={styles.unitStickyHeaderSpacer}
-          style={{
-            height: `calc(var(--portal-nav-offset, 0px) + ${unitStickyHeaderHeightPx}px)`,
-          }}
-          aria-hidden="true"
-        />
+        <div className={styles.unitStickyHeaderSpacer} aria-hidden="true" />
       )}
       {activeTab === TAB_OVERVIEW && (
         <div className={styles.unitTabFadeIn}>
