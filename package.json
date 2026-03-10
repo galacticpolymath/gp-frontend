@@ -129,7 +129,7 @@
     "@types/react-dom": "^19.2.2",
     "@types/sanitize-html": "^2.16.1",
     "cypress": "^15.11.0",
-    "eslint": "^9.39.1",
+    "eslint": "^10.0.3",
     "eslint-config-next": "^16.1.6",
     "eslint-plugin-react": "^7.37.5",
     "globals": "^17.4.0",
