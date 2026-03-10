@@ -17,19 +17,23 @@
   grid-template-columns: minmax(0, 72px) minmax(0, 1fr);
 }
 
+.allFiltersRail {
+  position: relative;
+  min-height: 0;
+}
+
 .allFiltersPanel {
   background: #ffffff;
   border-radius: 20px;
   border: 1px solid rgba(44, 131, 195, 0.1);
   padding: 18px;
   box-shadow: 0 14px 30px rgba(12, 20, 48, 0.08);
-  position: sticky;
-  top: 96px;
-  max-height: calc(100vh - 140px);
+  box-sizing: border-box;
+  width: 100%;
   display: flex;
   flex-direction: column;
-  transition: width 0.25s ease, padding 0.25s ease, border-color 0.25s ease,
-    box-shadow 0.25s ease;
+  overflow: hidden;
+  transition: padding 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
 }
 
 .allFiltersPanelCollapsed {
@@ -79,11 +83,15 @@
   background: transparent;
   color: #2c83c3;
   border-radius: 999px;
-  padding: 5px 11px;
-  font-size: 16px;
+  padding: 3px 9px;
+  font-size: 13px;
+  line-height: 1;
   cursor: pointer;
   font-weight: 600;
   box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   transition: border-color 0.2s ease, background-color 0.2s ease;
 }
 
@@ -161,6 +169,8 @@
 
 .filterContent {
   display: block;
+  flex: 1 1 auto;
+  min-height: 0;
   overflow-y: auto;
   padding-right: 6px;
 }
@@ -354,4 +364,3 @@ details:not([open]) .filterSummary::after {
   height: 14px;
   stroke: currentColor;
 }
-

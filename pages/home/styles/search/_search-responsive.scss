@@ -57,6 +57,12 @@
     grid-template-columns: 1fr;
   }
 
+  .allFiltersRail {
+    position: static;
+    height: auto;
+    max-height: none;
+  }
+
   .allFiltersPanel {
     position: static;
   }
