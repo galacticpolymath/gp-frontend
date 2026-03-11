@@ -1,9 +1,10 @@
 User-agent: *
 Disallow: /units/en-US/999
+Disallow: /units/*?*sp=*
 
 User-agent: Googlebot
 Disallow: *.dev/*
 
 User-agent: AdsBot-Google
 Disallow: /units/en-US/999
-
+Disallow: /units/*?*sp=*

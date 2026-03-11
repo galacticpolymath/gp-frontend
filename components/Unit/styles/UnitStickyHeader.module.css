@@ -424,7 +424,7 @@
   position: relative;
   z-index: 1;
   background: #6c2d82;
-  color: #f0f4ff;
+  color: #f7fbff;
   border: 1px solid rgba(240, 244, 255, 0.18);
   border-bottom: 0;
   border-radius: 12px 12px 0 0;
@@ -451,17 +451,19 @@
 
 .unitTabButtonActive:hover,
 .unitTabButtonActive:focus-visible {
-  color: #f0f4ff;
+  color: #f7fbff;
   border-color: rgba(240, 244, 255, 0.24);
   border-bottom: 0;
   background: #6c2d82;
+  text-decoration: none;
 }
 
 .unitTabButton:not(.unitTabButtonActive):hover,
 .unitTabButton:not(.unitTabButtonActive):focus-visible {
   color: #f7fbff;
-  border-bottom-color: rgba(240, 244, 255, 0.75);
+  border-bottom-color: transparent;
   background: transparent;
+  text-decoration: none;
 }
 
 .unitSearchResults {
@@ -541,6 +543,12 @@
   align-items: center;
   gap: 6px;
   cursor: pointer;
+  text-decoration: none;
+}
+
+.lessonSubtabButton:hover,
+.lessonSubtabButton:focus-visible {
+  text-decoration: none;
 }
 
 .lessonSubtabButtonActive {
@@ -745,7 +753,7 @@
     -webkit-overflow-scrolling: touch;
   }
 
-  .unitTabButton {
+  .unitTabButton:not(.unitTabButtonActive) {
     color: rgba(220, 233, 255, 0.9);
   }
 

@@ -29,6 +29,17 @@ const LessonSummaryCard: React.FC<TLessonSummaryCardProps> = ({
   return (
     <div className={styles.lessonSummaryCard}>
       <div className={styles.lessonSummaryMain}>
+        <div
+          className={`${styles.lessonTileMediaLarge} ${styles.lessonTileMediaInlineMobile}`}
+          aria-hidden="true"
+        >
+          <Image
+            src={activeLesson.tile || lessonTileFallbackSrc}
+            alt={`${activeLesson.title ?? 'Lesson'} tile`}
+            width={180}
+            height={180}
+          />
+        </div>
         {!isAssessmentLesson(activeLesson, activeLessonIndex) && (
           <div className={styles.lessonEyebrowRow}>
             <p className={styles.lessonEyebrow}>
@@ -90,7 +101,10 @@ const LessonSummaryCard: React.FC<TLessonSummaryCardProps> = ({
         )}
       </div>
       <div className={styles.lessonSummaryMeta}>
-        <div className={styles.lessonTileMediaLarge} aria-hidden="true">
+        <div
+          className={`${styles.lessonTileMediaLarge} ${styles.lessonTileMediaDesktop}`}
+          aria-hidden="true"
+        >
           <Image
             src={activeLesson.tile || lessonTileFallbackSrc}
             alt={`${activeLesson.title ?? 'Lesson'} tile`}
