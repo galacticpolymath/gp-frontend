@@ -31,6 +31,7 @@ type TNextNavigationCtaProps = {
   creditsTabKey: string;
   isStandalonePreview: boolean;
   nextLessonId: number | null;
+  nextLessonLabel: string | null;
   nextTab: { key: string; label: string } | null;
   handleLessonChange: (lessonId: number) => void;
   handleTabChange: (tabKey: string) => void;
@@ -42,6 +43,7 @@ const NextNavigationCta: React.FC<TNextNavigationCtaProps> = ({
   creditsTabKey,
   isStandalonePreview,
   nextLessonId,
+  nextLessonLabel,
   nextTab,
   handleLessonChange,
   handleTabChange,
@@ -61,7 +63,7 @@ const NextNavigationCta: React.FC<TNextNavigationCtaProps> = ({
           className={styles.nextLessonCta}
           onClick={() => handleLessonChange(nextLessonId)}
         >
-          <span>Lesson {nextLessonId}</span>
+          <span>{nextLessonLabel ?? `Lesson ${nextLessonId}`}</span>
           <ArrowRight size={15} aria-hidden="true" />
         </button>
       )}

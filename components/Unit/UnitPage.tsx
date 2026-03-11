@@ -1449,6 +1449,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
   const defaultTab = (availableTabs[0]?.key ?? TAB_OVERVIEW) as TTabKey;
   const [activeTab, setActiveTab] = useState<TTabKey>(defaultTab);
   const [isBackNavigating, setIsBackNavigating] = useState(false);
+  const backNavigationTimeoutRef = useRef<number | null>(null);
   const unitPageRef = useRef<HTMLDivElement>(null);
 
   const [activeLessonId, setActiveLessonId] = useState<number | null>(() => {
@@ -2109,13 +2110,50 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
 
     setIsBackNavigating(true);
 
+    if (backNavigationTimeoutRef.current) {
+      window.clearTimeout(backNavigationTimeoutRef.current);
+      backNavigationTimeoutRef.current = null;
+    }
+
     if (window.history.length > 1) {
+      const currentUrl = `${window.location.pathname}${window.location.search}${window.location.hash}`;
+      let hasPageHidden = false;
+      const handlePageHide = () => {
+        hasPageHidden = true;
+        if (backNavigationTimeoutRef.current) {
+          window.clearTimeout(backNavigationTimeoutRef.current);
+          backNavigationTimeoutRef.current = null;
+        }
+      };
+      window.addEventListener('pagehide', handlePageHide, { once: true });
       window.history.back();
+      backNavigationTimeoutRef.current = window.setTimeout(() => {
+        window.removeEventListener('pagehide', handlePageHide);
+        if (hasPageHidden) {
+          return;
+        }
+        const stillOnSameUrl =
+          `${window.location.pathname}${window.location.search}${window.location.hash}` === currentUrl;
+        if (!stillOnSameUrl) {
+          return;
+        }
+        setIsBackNavigating(false);
+        window.location.assign('/search?typeFilter=Unit');
+      }, 2200);
       return;
     }
 
-    window.location.assign('/units');
+    setIsBackNavigating(false);
+    window.location.assign('/search?typeFilter=Unit');
   }, [isBackNavigating]);
+
+  useEffect(() => {
+    return () => {
+      if (backNavigationTimeoutRef.current) {
+        window.clearTimeout(backNavigationTimeoutRef.current);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     if (!isSearchExpanded) {
@@ -2526,9 +2564,21 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
     activeTabIndex >= 0 && activeTabIndex < availableTabs.length - 1
       ? availableTabs[activeTabIndex + 1]
       : null;
-  const nextLessonId =
+  const nextLessonIndex =
     activeLessonIndex >= 0 && activeLessonIndex < lessons.length - 1
-      ? getLessonIdentifier(lessons[activeLessonIndex + 1], activeLessonIndex + 1)
+      ? activeLessonIndex + 1
+      : null;
+  const nextLesson =
+    nextLessonIndex != null ? lessons[nextLessonIndex] : undefined;
+  const nextLessonId =
+    nextLesson && nextLessonIndex != null
+      ? getLessonIdentifier(nextLesson, nextLessonIndex)
+      : null;
+  const nextLessonLabel =
+    nextLessonId != null && nextLessonIndex != null && nextLesson
+      ? isAssessmentLesson(nextLesson, nextLessonIndex)
+        ? 'Assessments'
+        : `Lesson ${nextLessonId}`
       : null;
 
   const unitTitle = unit.Title ?? 'Unit';
@@ -3773,7 +3823,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
           : activeTab === TAB_STANDARDS
           ? styles.unitPageStandards
           : styles.unitPageCredits
-      } ${isStandalonePreview ? styles.unitPageProcedureOnly : ''}`}
+      } ${isStandalonePreview ? styles.unitPageProcedureOnly : ''} ${styles.unitPageEnter}`}
     >
       {!isStandalonePreview && (
         <UnitStickyHeader
@@ -4115,6 +4165,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
           creditsTabKey={TAB_CREDITS}
           isStandalonePreview={isStandalonePreview}
           nextLessonId={nextLessonId}
+          nextLessonLabel={nextLessonLabel}
           nextTab={nextTab}
           handleLessonChange={handleLessonChange}
           handleTabChange={(tabKey) => handleTabChange(tabKey as TTabKey)}

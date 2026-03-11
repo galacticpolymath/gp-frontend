@@ -1353,7 +1353,37 @@ export default function HomePage({
       if (resourceId) {
         setNavigatingResourceId(resourceId);
       }
-      router.push(href).catch(() => {
+
+      const root = typeof window !== "undefined" ? document.documentElement : null;
+      const body = typeof window !== "undefined" ? document.body : null;
+      const prevRootScrollBehavior = root?.style.scrollBehavior ?? "";
+      const prevBodyScrollBehavior = body?.style.scrollBehavior ?? "";
+      if (root) {
+        root.style.scrollBehavior = "auto";
+      }
+      if (body) {
+        body.style.scrollBehavior = "auto";
+      }
+
+      const restoreScrollBehavior = () => {
+        if (root) {
+          root.style.scrollBehavior = prevRootScrollBehavior;
+        }
+        if (body) {
+          body.style.scrollBehavior = prevBodyScrollBehavior;
+        }
+      };
+
+      router.push(href, undefined, { scroll: true }).then(() => {
+        if (typeof window !== "undefined") {
+          window.requestAnimationFrame(() => {
+            restoreScrollBehavior();
+          });
+        } else {
+          restoreScrollBehavior();
+        }
+      }).catch(() => {
+        restoreScrollBehavior();
         setNavigatingResourceId(null);
       });
     },

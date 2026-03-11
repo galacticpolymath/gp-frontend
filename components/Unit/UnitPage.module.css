@@ -12,6 +12,19 @@
   font-family: var(--font-family-base, 'Noto Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
 }
 
+.unitPageEnter {
+  animation: unitPageEnterFadeIn 220ms ease-out both;
+}
+
+@keyframes unitPageEnterFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
 .unitPageOverview {
   background: radial-gradient(circle at top, rgba(44, 131, 195, 0.18), transparent 45%),
     linear-gradient(135deg, rgba(240, 244, 255, 0.96), rgba(255, 255, 255, 0.95));
@@ -115,6 +128,12 @@
   .unitPageProcedureOnly .unitMain {
     max-width: 800px;
     padding: 24px 16px 24px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .unitPageEnter {
+    animation: none;
   }
 }
 

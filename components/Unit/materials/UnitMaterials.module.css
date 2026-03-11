@@ -646,6 +646,14 @@
   object-fit: cover;
 }
 
+.lessonTileMediaInlineMobile {
+  display: none;
+}
+
+.lessonTileMediaDesktop {
+  display: block;
+}
+
 .lessonStatusPill {
   margin-top: 8px;
   padding: 4px 10px;
@@ -1540,6 +1548,17 @@
   .materialRow {
     min-height: 92px;
     padding: 10px 9px;
+  }
+
+  .lessonTileMediaInlineMobile {
+    display: block;
+    width: 88px;
+    max-width: 88px;
+    margin: 0 0 6px;
+  }
+
+  .lessonTileMediaDesktop {
+    display: none;
   }
 
   .lessonPreviewSurface,
