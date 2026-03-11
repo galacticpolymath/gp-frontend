@@ -12,6 +12,7 @@ import {
   Link2,
 } from 'lucide-react';
 import { TUnitForUI } from '../../backend/models/Unit/types/unit';
+import type { IAuthor } from '../../backend/models/Unit/Authors';
 import { IConnectionJobViz } from '../../backend/models/Unit/JobViz';
 import {
   IItem,
@@ -486,6 +487,104 @@ const dedupeContributors = (names: string[]) => {
   return unique;
 };
 
+const normalizeAuthorEntry = (value: unknown): IAuthor | null => {
+  if (!value || typeof value !== 'object') return null;
+
+  const entry = value as Record<string, unknown>;
+  const first =
+    typeof entry.First === 'string'
+      ? entry.First.trim()
+      : typeof entry.first === 'string'
+      ? entry.first.trim()
+      : '';
+  const middle =
+    typeof entry.Middle === 'string'
+      ? entry.Middle.trim()
+      : typeof entry.middle === 'string'
+      ? entry.middle.trim()
+      : null;
+  const last =
+    typeof entry.Last === 'string'
+      ? entry.Last.trim()
+      : typeof entry.last === 'string'
+      ? entry.last.trim()
+      : '';
+
+  if (!first || !last) {
+    return null;
+  }
+
+  return {
+    First: first,
+    Middle: middle || null,
+    Last: last,
+    Contribution:
+      typeof entry.Contribution === 'string'
+        ? entry.Contribution.trim() || null
+        : typeof entry.contribution === 'string'
+        ? entry.contribution.trim() || null
+        : null,
+    Title:
+      typeof entry.Title === 'string'
+        ? entry.Title.trim() || null
+        : typeof entry.title === 'string'
+        ? entry.title.trim() || null
+        : null,
+    Affiliation:
+      typeof entry.Affiliation === 'string'
+        ? entry.Affiliation.trim() || null
+        : typeof entry.affiliation === 'string'
+        ? entry.affiliation.trim() || null
+        : null,
+    Location:
+      typeof entry.Location === 'string'
+        ? entry.Location.trim() || null
+        : typeof entry.location === 'string'
+        ? entry.location.trim() || null
+        : null,
+    Link:
+      typeof entry.Link === 'string'
+        ? entry.Link.trim() || null
+        : typeof entry.link === 'string'
+        ? entry.link.trim() || null
+        : null,
+    GPID:
+      typeof entry.GPID === 'string'
+        ? entry.GPID.trim() || null
+        : typeof entry.gpid === 'string'
+        ? entry.gpid.trim() || null
+        : null,
+    Email:
+      typeof entry.Email === 'string'
+        ? entry.Email.trim() || null
+        : typeof entry.email === 'string'
+        ? entry.email.trim() || null
+        : null,
+  };
+};
+
+const getStructuredAuthors = (unit: TUnitForUI): IAuthor[] => {
+  const candidates = (unit.Sections?.authors?.Data ?? []).filter(Boolean);
+
+  const authors: IAuthor[] = [];
+  const seen = new Set<string>();
+
+  for (const candidate of candidates) {
+    const normalized = normalizeAuthorEntry(candidate);
+    if (!normalized) continue;
+
+    const key = [normalized.First, normalized.Middle ?? '', normalized.Last]
+      .map((part) => part.trim().toLowerCase())
+      .join('|');
+
+    if (seen.has(key)) continue;
+    seen.add(key);
+    authors.push(normalized);
+  }
+
+  return authors;
+};
+
 const getUnitContributorNames = (
   unit: TUnitForUI,
   acknowledgmentsEntries: any[],
@@ -505,6 +604,8 @@ const getUnitContributorNames = (
     unitAny?.authors,
     unitAny?.citation?.authors,
     unitAny?.attribution?.authors,
+    unitAny?.Sections?.authors?.Data,
+    unitAny?.Sections?.authors?.authors,
     unitAny?.Sections?.credits?.Contributors,
     unitAny?.Sections?.credits?.contributors,
     unitAny?.Sections?.credits?.Authors,
@@ -1336,6 +1437,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
           key: TAB_CREDITS as TTabKey,
           label: 'Credits',
           isVisible:
+            !!unit.Sections?.authors?.Data?.length ||
             !!unit.Sections?.acknowledgments ||
             !!unit.Sections?.credits ||
             !!versionReleases.length,
@@ -1346,6 +1448,8 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
 
   const defaultTab = (availableTabs[0]?.key ?? TAB_OVERVIEW) as TTabKey;
   const [activeTab, setActiveTab] = useState<TTabKey>(defaultTab);
+  const [isBackNavigating, setIsBackNavigating] = useState(false);
+  const unitPageRef = useRef<HTMLDivElement>(null);
 
   const [activeLessonId, setActiveLessonId] = useState<number | null>(() => {
     if (!lessons.length) {
@@ -1406,7 +1510,6 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
   const lessonPreviewsCardRef = useRef<HTMLDivElement>(null);
   const lessonResourcesCardRef = useRef<HTMLDivElement>(null);
   const unitStickyHeaderRef = useRef<HTMLDivElement>(null);
-  const [unitStickyHeaderHeightPx, setUnitStickyHeaderHeightPx] = useState(140);
   const [lessonMaterialsStickyTop, setLessonMaterialsStickyTop] = useState<
     number | null
   >(null);
@@ -1995,12 +2098,71 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
     setIsPortalNavCollapsed(nextCollapsed);
   };
 
+  const handleBackNavigation = useCallback(() => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    if (isBackNavigating) {
+      return;
+    }
+
+    setIsBackNavigating(true);
+
+    if (window.history.length > 1) {
+      window.history.back();
+      return;
+    }
+
+    window.location.assign('/units');
+  }, [isBackNavigating]);
+
   useEffect(() => {
     if (!isSearchExpanded) {
       return;
     }
     searchInputRef.current?.focus();
   }, [isSearchExpanded]);
+
+  useEffect(() => {
+    const root = unitPageRef.current;
+    if (!root) {
+      return;
+    }
+
+    const applyButtonTitles = () => {
+      const buttons = root.querySelectorAll<HTMLButtonElement>('button');
+      buttons.forEach((button) => {
+        if (button.title) {
+          return;
+        }
+
+        const ariaLabel = button.getAttribute('aria-label')?.trim();
+        const textLabel = button.textContent?.replace(/\s+/g, ' ').trim();
+        const tooltip = ariaLabel || textLabel;
+
+        if (tooltip) {
+          button.title = tooltip;
+        }
+      });
+    };
+
+    applyButtonTitles();
+
+    const observer = new MutationObserver(() => {
+      applyButtonTitles();
+    });
+
+    observer.observe(root, {
+      subtree: true,
+      childList: true,
+      characterData: true,
+      attributes: true,
+      attributeFilter: ['aria-label'],
+    });
+
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     setIsTagListExpanded(false);
@@ -2113,14 +2275,6 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
     let rafId = 0;
     const measureHeaderHeight = () => {
       const height = unitStickyHeaderRef.current?.getBoundingClientRect().height ?? 0;
-      if (height > 0) {
-        setUnitStickyHeaderHeightPx((current) => {
-          if (Math.abs(current - height) < 1) {
-            return current;
-          }
-          return Math.round(height);
-        });
-      }
       document.documentElement.style.setProperty(
         '--unit-sticky-header-height',
         `${Math.max(0, Math.round(height))}px`
@@ -2331,7 +2485,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
     ? effectiveStandaloneLesson
     : activeLesson;
   const activeLessonItems = activeLesson?.itemList ?? [];
-  const hasDetailedFlow = !!activeLesson?.chunks?.length;
+  const hasDetailedFlow = hasStandaloneProcedureContent(activeLesson);
   const activeLessonFeaturedMedia = useMemo(() => {
     if (!activeLessonId || !unit.FeaturedMultimedia?.length) {
       return [];
@@ -2417,12 +2571,16 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
   }, [jobVizSocCodes, unitTitle]);
   const unitBanner = unit.UnitBanner ?? '';
   const creditsContent = unit.Sections?.credits?.Content?.trim() ?? '';
+  const authorsEntries = useMemo(
+    () => getStructuredAuthors(unit),
+    [unit]
+  );
   const acknowledgmentsEntries = useMemo(
     () => unit.Sections?.acknowledgments?.Data ?? [],
     [unit.Sections?.acknowledgments?.Data]
   );
   const hasCreditsTabContent = Boolean(
-    creditsContent || acknowledgmentsEntries.length || versionReleases.length
+    authorsEntries.length || creditsContent || acknowledgmentsEntries.length || versionReleases.length
   );
   const availLocs = unit.Sections?.overview?.availLocs ?? [];
   const locale = unit.locale ?? 'en-US';
@@ -3606,15 +3764,24 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
 
   return (
     <div
+      ref={unitPageRef}
       className={`${styles.unitPage} ${
-        isStandalonePreview ? styles.unitPageProcedureOnly : ''
-      }`}
+        activeTab === TAB_OVERVIEW
+          ? styles.unitPageOverview
+          : activeTab === TAB_MATERIALS
+          ? styles.unitPageMaterials
+          : activeTab === TAB_STANDARDS
+          ? styles.unitPageStandards
+          : styles.unitPageCredits
+      } ${isStandalonePreview ? styles.unitPageProcedureOnly : ''}`}
     >
       {!isStandalonePreview && (
         <UnitStickyHeader
           headerRef={unitStickyHeaderRef}
           unitTitle={unitTitle}
           unitSubtitle={unitSubtitle}
+          handleBackNavigation={handleBackNavigation}
+          isBackNavigating={isBackNavigating}
           isSearchExpanded={isSearchExpanded}
           searchTerm={searchTerm}
           setSearchTerm={setSearchTerm}
@@ -3646,15 +3813,8 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
         />
       )}
       {!isStandalonePreview && (
-        <div
-          className={styles.unitStickyHeaderSpacer}
-          style={{
-            height: `calc(var(--portal-nav-offset, 0px) + ${unitStickyHeaderHeightPx}px)`,
-          }}
-          aria-hidden="true"
-        />
+        <div className={styles.unitStickyHeaderSpacer} aria-hidden="true" />
       )}
-
       {activeTab === TAB_OVERVIEW && (
         <div className={styles.unitTabFadeIn}>
           <UnitOverviewHero
@@ -3681,7 +3841,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
           <UnitTabHero
             id="unit-search-credits-content"
             eyebrow="Credits"
-            title="Credits, Acknowledgments, and Versions"
+            title="Authors, Acknowledgments, and Versions"
             lead="This unit was made possible by hundreds of hours of work by tons of people. Thank you!"
             isCredits
             handleShare={handleShare}
@@ -3707,7 +3867,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
         )}
 
         {activeTab === TAB_MATERIALS && (
-          <section className={materialStyles.unitSection}>
+          <section className={`${materialStyles.unitSection} ${materialStyles.unitTabFadeIn}`}>
             <div className={materialStyles.materialsLayout}>
               {activeLessonForRender ? (
                 isStandalonePreview ? (
@@ -3942,6 +4102,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
         {activeTab === TAB_CREDITS && (
           <CreditsTab
             hasCreditsTabContent={hasCreditsTabContent}
+            authorsEntries={authorsEntries}
             creditsContent={creditsContent}
             acknowledgmentsEntries={acknowledgmentsEntries}
             versionNotesAnchorRef={versionNotesAnchorRef}

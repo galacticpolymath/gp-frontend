@@ -105,6 +105,7 @@ export interface IUnitOld {
     bonusContent: TGeneralSection | null;
     standards: IStandard | null;
     credits: TGeneralSection | null;
+    authors: (IAuthorSectionObj & IAuthorData) | null;
     acknowledgements: IAcknowledgments | null;
     versionNotes: IVersionNotes | null;
   } | null;

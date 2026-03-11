@@ -1,0 +1,44 @@
+.overflowHint {
+  position: relative;
+  min-width: 0;
+}
+
+.arrowButton {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: var(--overflow-arrow-size, 34px);
+  height: var(--overflow-arrow-size, 34px);
+  opacity: var(--overflow-arrow-opacity, 0.9);
+  border: 0;
+  border-radius: 50%;
+  background: var(--overflow-arrow-bg, transparent);
+  color: var(--overflow-arrow-color, #f0f4ff);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 3;
+  box-shadow: none;
+}
+
+.arrowButtonLeft {
+  left: var(--overflow-arrow-left, 0);
+}
+
+.arrowButtonRight {
+  right: var(--overflow-arrow-right, 0);
+}
+
+.arrowButton:hover,
+.arrowButton:focus-visible {
+  color: var(--overflow-arrow-hover-color, #ffffff);
+  background: var(--overflow-arrow-hover-bg, var(--overflow-arrow-bg, transparent));
+  opacity: var(--overflow-arrow-opacity, 0.9);
+}
+
+@media (min-width: 768px) {
+  .arrowButton {
+    display: none;
+  }
+}

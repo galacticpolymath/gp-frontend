@@ -32,6 +32,9 @@ const getNumericOrder = (value?: string | null) => {
   return Number.isFinite(parsed) ? parsed : Number.MAX_SAFE_INTEGER;
 };
 
+const hasRenderableMediaLink = (item: TFeaturedMultimediaForUI) =>
+  typeof item.mainLink === 'string' && item.mainLink.trim().length > 0;
+
 const getYoutubeThumbUrl = (link?: string | null) => {
   if (!link || typeof link !== 'string') {
     return null;
@@ -163,7 +166,10 @@ const CompactMediaCarousel: React.FC<TCompactMediaCarouselProps> = ({
   const carouselRef = useRef<HTMLDivElement | null>(null);
   const [resolvedPreviewMap, setResolvedPreviewMap] = useState<TResolvedPreviewMap>({});
   const sortedMediaItems = useMemo(
-    () => [...(mediaItems ?? [])].sort((a, b) => getNumericOrder(a.order) - getNumericOrder(b.order)),
+    () =>
+      [...(mediaItems ?? [])]
+        .filter(hasRenderableMediaLink)
+        .sort((a, b) => getNumericOrder(a.order) - getNumericOrder(b.order)),
     [mediaItems]
   );
   const hydratedMediaItems = useMemo(

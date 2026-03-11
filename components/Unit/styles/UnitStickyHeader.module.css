@@ -9,7 +9,7 @@
   backdrop-filter: blur(12px);
   background: linear-gradient(120deg, rgba(13, 18, 34, 0.94), rgba(21, 34, 64, 0.94));
   border-top: 1px solid rgba(173, 216, 255, 0.12);
-  border-bottom: 1px solid rgba(173, 216, 255, 0.25);
+  border-bottom: 2px solid #85569b;
   transition: top 0.5s cubic-bezier(0.19, 1, 0.22, 1);
   will-change: top;
 }
@@ -17,10 +17,11 @@
 .unitStickyInner {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 8px 14px 8px;
+  padding: 8px 14px 0;
   display: grid;
   position: relative;
   gap: 8px;
+  row-gap: 0;
   grid-template-columns: minmax(0, 1fr);
   grid-template-areas:
     'title'
@@ -33,6 +34,47 @@
   display: grid;
   gap: 4px;
   min-width: 0;
+}
+
+.unitBackButton {
+  flex: 0 0 auto;
+  width: 32px;
+  height: 32px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: rgba(240, 244, 255, 0.84);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  cursor: pointer;
+  transition: border-color 160ms ease, background-color 160ms ease, color 160ms ease;
+}
+
+.unitBackButton:hover,
+.unitBackButton:focus-visible {
+  background: rgba(255, 255, 255, 0.14);
+  color: #f7fbff;
+  border-radius: 999px;
+}
+
+.unitBackButton:disabled {
+  cursor: default;
+}
+
+.unitBackButtonSpinner {
+  animation: unitBackButtonSpin 0.8s linear infinite;
+}
+
+@keyframes unitBackButtonSpin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .unitStickyTopRow {
@@ -330,21 +372,43 @@
   color: rgba(220, 233, 255, 0.9);
 }
 
-.unitTabList {
+.unitTabListShell {
+  --unit-tab-edge-offset: max(28px, calc((100vw - 1280px) / 2 + 14px));
+  --overflow-arrow-size: 34px;
+  --overflow-arrow-bg: rgba(13, 18, 34, 0.94);
+  --overflow-arrow-left: calc(-1 * var(--unit-tab-edge-offset));
+  --overflow-arrow-right: calc(-1 * var(--unit-tab-edge-offset));
   grid-area: tabs;
+  grid-column: 1 / -1;
+  align-self: end;
+  margin-top: 6px;
+  margin-bottom: -1px;
+  border-bottom: 1px solid #f0f4ff2e;
+}
+
+.unitTabList {
   display: flex;
   flex-wrap: wrap;
+  align-items: flex-end;
   gap: 12px;
   width: 100%;
-  grid-column: 1 / -1;
+  padding: 0;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.unitTabList::-webkit-scrollbar {
+  display: none;
+  height: 0;
 }
 
 .unitTabButton {
   border: 0;
   border-bottom: 2px solid transparent;
   border-radius: 0;
-  padding: 2px 0;
+  padding: 0 0 3px;
   min-height: 0;
+  line-height: 1;
   background: transparent;
   color: var(--sticky-offwhite);
   font-size: 15px;
@@ -352,16 +416,49 @@
   white-space: nowrap;
   text-decoration: none;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
 }
 
 .unitTabButtonActive {
-  background: transparent;
-  color: #f7fbff;
-  border-color: rgba(240, 244, 255, 0.95);
+  position: relative;
+  z-index: 1;
+  background: #6c2d82;
+  color: #f0f4ff;
+  border: 1px solid rgba(240, 244, 255, 0.18);
+  border-bottom: 0;
+  border-radius: 12px 12px 0 0;
+  padding: 7px 14px 9px;
+  margin-bottom: -1px;
+  box-shadow: 0 4px 12px rgba(11, 21, 40, 0.18);
 }
 
-.unitTabButton:hover,
-.unitTabButton:focus-visible {
+.unitTabButtonActiveMaterials {
+  box-shadow: none;
+  margin-bottom: -1px;
+  padding-bottom: 5px;
+}
+
+.unitTabButtonActiveMaterials::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 1px;
+  background: #6c2d82;
+}
+
+.unitTabButtonActive:hover,
+.unitTabButtonActive:focus-visible {
+  color: #f0f4ff;
+  border-color: rgba(240, 244, 255, 0.24);
+  border-bottom: 0;
+  background: #6c2d82;
+}
+
+.unitTabButton:not(.unitTabButtonActive):hover,
+.unitTabButton:not(.unitTabButtonActive):focus-visible {
   color: #f7fbff;
   border-bottom-color: rgba(240, 244, 255, 0.75);
   background: transparent;
@@ -379,15 +476,28 @@
 }
 
 .lessonSubtabBar {
+  --lesson-subtab-gutter: max(28px, calc((100vw - 1280px) / 2 + 14px));
   display: flex;
   align-items: center;
+  grid-column: 1 / -1;
+  justify-self: stretch;
   gap: 10px;
-  overflow-x: auto;
-  padding-bottom: 2px;
+  overflow: visible;
+  background: #6c2d82;
+  border: 0;
+  border-top: 0;
+  border-radius: 0;
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+  padding: 3px var(--lesson-subtab-gutter) 3px;
+  margin-top: 0;
+  box-shadow: none;
 }
 
 .lessonSubtabLabel {
-  color: rgba(220, 233, 255, 0.85);
+  flex: 0 0 auto;
+  color: rgba(240, 244, 255, 0.84);
   font-size: 14px;
   font-weight: 600;
   white-space: nowrap;
@@ -397,14 +507,34 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  flex: 1 1 auto;
+  min-width: 0;
+  white-space: nowrap;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.lessonSubtabList::-webkit-scrollbar {
+  display: none;
+  height: 0;
+}
+
+.lessonSubtabListShell {
+  --overflow-arrow-size: 34px;
+  --overflow-arrow-bg: #6c2d82;
+  --overflow-arrow-left: 0;
+  --overflow-arrow-right: calc(-1 * var(--lesson-subtab-gutter));
+  flex: 1 1 auto;
+  min-width: 0;
 }
 
 .lessonSubtabButton {
+  flex: 0 0 auto;
   border-radius: 999px;
-  border: 1px solid rgba(173, 216, 255, 0.28);
-  background: rgba(255, 255, 255, 0.1);
-  color: #dce9ff;
-  padding: 7px 11px;
+  border: 1px solid rgba(240, 244, 255, 0.16);
+  background: rgba(255, 255, 255, 0.04);
+  color: #f0f4ff;
+  padding: 6px 11px;
   font-size: 14px;
   line-height: 1;
   display: inline-flex;
@@ -414,9 +544,9 @@
 }
 
 .lessonSubtabButtonActive {
-  background: rgba(255, 255, 255, 0.3);
-  color: #f7fbff;
-  border-color: rgba(201, 220, 244, 0.95);
+  background: rgba(255, 255, 255, 0.18);
+  color: #ffffff;
+  border: 1.5px solid rgba(240, 244, 255, 0.42);
 }
 
 .lessonSubtabThumb {
@@ -427,8 +557,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: rgba(255, 255, 255, 0.24);
-  color: #e6f0ff;
+  background: rgba(255, 255, 255, 0.14);
+  color: #f0f4ff;
 }
 
 .lessonSubtabThumb img {
@@ -516,42 +646,43 @@
 
   .unitStickyInner {
     display: grid;
-    grid-template-columns: minmax(0, 1fr);
+    grid-template-columns: auto minmax(0, 1fr);
     grid-template-areas:
-      'search'
-      'title'
-      'tabs'
-      'results';
-    align-items: start;
-    padding: 6px 12px 5px;
-    gap: 5px;
+      'title search'
+      'tabs tabs'
+      'results results';
+    align-items: center;
+    padding: 6px 12px 0;
+    row-gap: 0;
+    column-gap: 2px;
   }
 
   .unitStickyTopRow {
     padding-right: 0;
     grid-area: title;
+    align-items: center;
+    gap: 8px;
   }
 
   .unitStickyTitle {
-    gap: 2px;
+    display: none;
   }
 
   .unitStickyText {
-    font-size: 14px;
-    font-weight: 400;
-    line-height: 1.25;
+    display: none;
   }
 
   .unitSearch {
     position: static;
     top: auto;
     right: auto;
-    max-width: calc(100% - 24px);
-    width: auto;
+    max-width: none;
+    width: 100%;
     margin-top: 0;
     grid-area: search;
-    justify-self: end;
+    justify-self: stretch;
     align-self: start;
+    min-width: 0;
   }
 
   .unitSearchRow {
@@ -561,14 +692,57 @@
     flex-wrap: nowrap;
     align-items: center;
     justify-content: flex-end;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .unitSearchInputWrapExpanded {
+    position: fixed;
+    top: calc(var(--portal-nav-offset, 0px) + 8px);
+    left: 12px;
+    right: 12px;
     width: auto;
+    max-width: none;
+    min-width: 0;
+    margin-left: 0;
+    z-index: 70;
+  }
+
+  .unitTabListShell {
+    --unit-tab-edge-offset: 12px;
+    border-bottom: 0;
   }
 
   .unitTabList {
     gap: 14px;
     flex-wrap: nowrap;
     overflow-x: auto;
-    padding-bottom: 2px;
+    overflow-y: hidden;
+    padding: 0;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .lessonSubtabBar {
+    --lesson-subtab-gutter: 12px;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-column: 1 / -1;
+    justify-self: stretch;
+    width: calc(100% + 24px);
+    margin-left: -12px;
+    margin-right: -12px;
+    overflow: hidden;
+    background: #6c2d82;
+    padding-left: var(--lesson-subtab-gutter);
+    padding-right: var(--lesson-subtab-gutter);
+  }
+
+  .lessonSubtabList {
+    width: 100%;
+    flex: 0 1 auto;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
   }
 
   .unitTabButton {

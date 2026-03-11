@@ -274,6 +274,17 @@
   background: rgba(251, 254, 255, 0.9);
 }
 
+.lessonProcedureToggleUnavailable {
+  border-color: rgba(93, 106, 126, 0.18);
+  background: rgba(230, 234, 240, 0.68);
+  color: #6e798d;
+}
+
+.lessonProcedureToggleUnavailable:hover {
+  border-color: rgba(108, 120, 140, 0.24);
+  background: rgba(236, 239, 244, 0.84);
+}
+
 .lessonProcedureToggleActive,
 .gpFunctionActionBtn.lessonProcedureToggleActive {
   border: 2px solid rgba(22, 105, 172, 0.86);
@@ -501,15 +512,12 @@
 
 .lessonSummaryCard {
   position: relative;
-  overflow: hidden;
-  border: 1px solid rgba(44, 131, 195, 0.2);
-  border-radius: 18px;
-  padding: 14px;
-  background:
-    radial-gradient(circle at 18% 24%, rgba(44, 131, 195, 0.1), transparent 52%),
-    radial-gradient(circle at 88% 18%, rgba(44, 131, 195, 0.07), transparent 45%),
-    linear-gradient(160deg, rgba(255, 255, 255, 0.94), rgba(242, 249, 255, 0.92));
-  box-shadow: 0 14px 30px rgba(24, 52, 86, 0.1), inset 0 0 0 1px rgba(255, 255, 255, 0.42);
+  overflow: visible;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  background: transparent;
+  box-shadow: none;
   display: grid;
   gap: 10px;
 }

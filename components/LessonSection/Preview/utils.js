@@ -58,13 +58,19 @@ export const getMediaComponent = ({
   iframeClassName = 'lesson-media',
   key
 }) => {
+  const resolvedMainLink = typeof mainLink === 'string' ? mainLink.trim() : '';
+
+  if (!resolvedMainLink) {
+    return null;
+  }
+
   const resolvedVideoUrl = typeof mainLink === 'string'
-    ? normalizeYouTubeEmbedUrl(mainLink)
-    : mainLink;
+    ? normalizeYouTubeEmbedUrl(resolvedMainLink)
+    : resolvedMainLink;
 
   if (type === "lesson-item-doc") {
     return (
-      <iframe key={key} src={mainLink} className="w-100 h-100" />
+      <iframe key={key} src={resolvedMainLink} className="w-100 h-100" />
     )
   } else if (type === 'video') {
     return (
@@ -81,7 +87,7 @@ export const getMediaComponent = ({
   } else if (type === 'pdf') {
     return (
       <iframe
-        src={mainLink}
+        src={resolvedMainLink}
         width="200"
         height="500"
         style={{ zIndex: 11100, position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
@@ -92,7 +98,7 @@ export const getMediaComponent = ({
   } else if ((type === 'web-app') && webAppPreviewImg) {
     return (
       <Link
-        href={mainLink}
+        href={resolvedMainLink}
         target='_blank'
       >
         <Image
