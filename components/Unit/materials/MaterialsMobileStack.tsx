@@ -197,12 +197,23 @@ const MaterialsMobileStack: React.FC<TMaterialsMobileStackProps> = ({
           ? assessmentProps?.getMaterialUrls?.(modalActiveItem)
           : previewDownloadProps?.getMaterialUrls?.(modalActiveItem)) ?? null
       : null;
+  const modalItemType = String(modalActiveItem?.itemType ?? '').toLowerCase();
+  const modalHasExplicitExternalUrl =
+    typeof modalActiveItem?.externalURL === 'string' &&
+    modalActiveItem.externalURL.trim().length > 0;
+  const modalHasExternalOpenUrl =
+    typeof modalMaterialUrls?.openUrl === 'string' &&
+    /^https?:\/\//i.test(modalMaterialUrls.openUrl);
   const modalOpenUrl =
     typeof modalMaterialUrls?.openUrl === 'string' && modalMaterialUrls.openUrl.trim()
       ? modalMaterialUrls.openUrl
       : null;
   const showModalOpenLink =
-    activeLessonPreviewMode === 'materials' && Boolean(modalOpenUrl);
+    activeLessonPreviewMode === 'materials' &&
+    modalItemType === 'presentation' &&
+    modalHasExplicitExternalUrl &&
+    modalHasExternalOpenUrl &&
+    Boolean(modalOpenUrl);
   const modalHeaderLabel =
     activeLessonPreviewMode === 'materials'
       ? 'Item preview'

@@ -4,6 +4,33 @@ import Link from 'next/link';
 import { CircleAlert, Eye, SquareArrowOutUpRight } from 'lucide-react';
 import styles from '../UnitMaterials.module.css';
 
+const getGoogleFileId = (value?: string | null): string | null => {
+  if (!value) {
+    return null;
+  }
+
+  const docMatch = value.match(
+    /https?:\/\/docs\.google\.com\/(?:document|presentation|spreadsheets|forms)\/d\/(?:e\/)?([^/?#]+)/i
+  );
+  if (docMatch?.[1]) {
+    return docMatch[1];
+  }
+
+  const driveFileMatch = value.match(
+    /https?:\/\/drive\.google\.com\/file\/d\/([^/?#]+)/i
+  );
+  if (driveFileMatch?.[1]) {
+    return driveFileMatch[1];
+  }
+
+  const ucMatch = value.match(/[?&]id=([^&#]+)/i);
+  if (ucMatch?.[1]) {
+    return ucMatch[1];
+  }
+
+  return null;
+};
+
 type TMaterialItemPreviewProps = {
   activeLessonItems: any[];
   activeMaterialIndex: number;
@@ -70,6 +97,17 @@ const MaterialItemPreview: React.FC<TMaterialItemPreviewProps> = ({
       const firstUrl = getFirstItemUrl(selectedPreviewItem);
       return firstUrl ? toGooglePdfExportUrl(firstUrl) ?? null : null;
     })();
+  const documentPreviewFileId =
+    getGoogleFileId(
+      selectedPreviewItem?.gdriveRoot ??
+        getFirstItemUrl(selectedPreviewItem) ??
+        embedUrl ??
+        previewUrl ??
+        openUrl
+    ) ?? null;
+  const driveFilePreviewUrl = documentPreviewFileId
+    ? `https://drive.google.com/file/d/${documentPreviewFileId}/preview`
+    : null;
 
   const previewImg = (selectedItem as { filePreviewImg?: string })?.filePreviewImg ?? null;
   const previewTitle = selectedItem?.itemTitle ?? `Resource ${safeIndex + 1}`;
@@ -82,15 +120,20 @@ const MaterialItemPreview: React.FC<TMaterialItemPreviewProps> = ({
   const itemCatLabel = selectedPreviewItem?.itemCat?.toLowerCase() ?? '';
   const shouldUseLargeEmbeddedSurface =
     itemCatLabel === 'presentation' || itemCatLabel === 'document';
-  const fileTypeLabel = selectedPreviewItem?.fileType?.toLowerCase() ?? '';
-  const isWebResource = itemCatLabel === 'web resource' || fileTypeLabel === 'web resource';
+  const hasExplicitExternalUrl =
+    typeof selectedPreviewItem?.externalURL === 'string' &&
+    selectedPreviewItem.externalURL.trim().length > 0;
   const hasExternalOpenUrl = Boolean(openUrl && /^https?:\/\//i.test(openUrl));
-  const allowOpenInNewTab = isPresentation || (isWebResource && hasExternalOpenUrl);
-  const frameSrc = isPresentation
-    ? preferPresentationPreview
-      ? previewUrl ?? embedUrl ?? openUrl
-      : embedUrl ?? previewUrl ?? openUrl
-    : embedUrl ?? previewUrl;
+  const allowOpenInNewTab =
+    isPresentation && hasExplicitExternalUrl && hasExternalOpenUrl;
+  const frameSrc =
+    itemCatLabel === 'document'
+      ? driveFilePreviewUrl ?? embedUrl ?? previewUrl
+      : isPresentation
+        ? preferPresentationPreview
+          ? previewUrl ?? embedUrl ?? openUrl
+          : embedUrl ?? previewUrl ?? openUrl
+        : embedUrl ?? previewUrl;
   const shouldUseReducedDocumentZoom =
     itemCatLabel === 'document' ||
     /docs\.google\.com\/document\/d\//i.test(String(frameSrc ?? ''));
