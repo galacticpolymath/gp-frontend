@@ -127,7 +127,7 @@
     "@types/sanitize-html": "^2.16.1",
     "baseline-browser-mapping": "^2.10.0",
     "cypress": "^15.11.0",
-    "eslint": "^9.39.4",
+    "eslint": "^10.0.3",
     "eslint-config-next": "^16.1.6",
     "globals": "^17.4.0",
     "jest": "^30.3.0",
