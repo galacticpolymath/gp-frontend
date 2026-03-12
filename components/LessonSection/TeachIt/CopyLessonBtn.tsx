@@ -350,6 +350,16 @@ const CopyLessonBtn: React.FC<
     const openGDrivePickerToCopyLessonRef = useRef<(() => Promise<void>) | null>(
       null
     );
+    const pickerScrollYRef = useRef<number | null>(null);
+    const helperModalScrollYRef = useRef<number | null>(null);
+    const hasSeenPickerDialogRef = useRef(false);
+    const pickerBodyLockStylesRef = useRef<{
+      position: string;
+      top: string;
+      width: string;
+      left: string;
+      right: string;
+    } | null>(null);
     const [_copyLessonJobLatestMsg, setCopyLessonJobLatestMsg] = useState<Partial<
       TCopyFilesMsg & { toastId: string }
     > | null>(null);
@@ -402,18 +412,43 @@ const CopyLessonBtn: React.FC<
 
       document.querySelectorAll('.modal-backdrop').forEach((el) => el.remove());
       document.body.classList.remove('modal-open');
-      document.body.style.removeProperty('overflow');
       document.body.style.removeProperty('padding-right');
-      document.documentElement.style.removeProperty('overflow');
     };
 
     const setPickerPageLock = (isLocked: boolean) => {
-      if (typeof document === 'undefined') {
+      if (typeof document === 'undefined' || typeof window === 'undefined') {
         return;
       }
 
-      document.documentElement.classList.toggle('gp-picker-open', isLocked);
-      document.body.classList.toggle('gp-picker-open', isLocked);
+      if (isLocked) {
+        const currentScrollY = window.scrollY;
+        pickerScrollYRef.current = currentScrollY;
+        if (!pickerBodyLockStylesRef.current) {
+          pickerBodyLockStylesRef.current = {
+            position: document.body.style.position,
+            top: document.body.style.top,
+            width: document.body.style.width,
+            left: document.body.style.left,
+            right: document.body.style.right,
+          };
+        }
+        document.body.style.position = 'fixed';
+        document.body.style.top = `-${currentScrollY}px`;
+        document.body.style.width = '100%';
+        document.body.style.left = '0';
+        document.body.style.right = '0';
+      } else if (pickerBodyLockStylesRef.current) {
+        const targetY = pickerScrollYRef.current ?? 0;
+        document.body.style.position = pickerBodyLockStylesRef.current.position;
+        document.body.style.top = pickerBodyLockStylesRef.current.top;
+        document.body.style.width = pickerBodyLockStylesRef.current.width;
+        document.body.style.left = pickerBodyLockStylesRef.current.left;
+        document.body.style.right = pickerBodyLockStylesRef.current.right;
+        pickerBodyLockStylesRef.current = null;
+        window.requestAnimationFrame(() => {
+          window.scrollTo({ top: targetY, behavior: 'auto' });
+        });
+      }
       setIsPickerOpen(isLocked);
     };
 
@@ -451,8 +486,15 @@ const CopyLessonBtn: React.FC<
     const openPickerSafely = (
       pickerConfig: Parameters<typeof openPicker>[0]
     ) => {
+      hasSeenPickerDialogRef.current = false;
+      if (typeof document !== 'undefined') {
+        (document.activeElement as HTMLElement | null)?.blur?.();
+      }
       clearBootstrapModalArtifacts();
       setPickerPageLock(true);
+      if (typeof window !== 'undefined' && pickerScrollYRef.current != null) {
+        window.scrollTo({ top: pickerScrollYRef.current, behavior: 'auto' });
+      }
       window.setTimeout(() => {
         try {
           const originalCallback = pickerConfig.callbackFunction;
@@ -464,6 +506,7 @@ const CopyLessonBtn: React.FC<
                   ? data.action.toLowerCase()
                   : '';
               if (action === 'cancel' || action === 'picked') {
+                hasSeenPickerDialogRef.current = false;
                 setPickerPageLock(false);
               }
               originalCallback?.(data);
@@ -471,6 +514,7 @@ const CopyLessonBtn: React.FC<
           });
         } catch (error) {
           console.error('Failed to open Google Drive Picker:', error);
+          hasSeenPickerDialogRef.current = false;
           setPickerPageLock(false);
           throw error;
         }
@@ -487,7 +531,13 @@ const CopyLessonBtn: React.FC<
           document.querySelector('.picker-dialog, .picker-dialog-content')
         );
 
-        if (!pickerDialogExists) {
+        if (pickerDialogExists) {
+          hasSeenPickerDialogRef.current = true;
+          return;
+        }
+
+        if (hasSeenPickerDialogRef.current) {
+          hasSeenPickerDialogRef.current = false;
           setPickerPageLock(false);
         }
       });
@@ -560,6 +610,9 @@ const CopyLessonBtn: React.FC<
       );
 
       if (willShowGpPlusCopyLessonHelperModal) {
+        if (typeof window !== 'undefined') {
+          helperModalScrollYRef.current = window.scrollY;
+        }
         setLessonToCopy({
           id: typeof lessonId === 'number' ? lessonId.toString() : lessonId,
           willOpenGDrivePicker: false,
@@ -1684,8 +1737,15 @@ const CopyLessonBtn: React.FC<
     useEffect(() => {
       console.log('lessonToCopy: ', lessonToCopy);
 
-      if (lessonToCopy?.willOpenGDrivePicker && lessonToCopy.id === lessonId) {
+      if (
+        lessonToCopy?.willOpenGDrivePicker &&
+        String(lessonToCopy.id) === String(lessonId)
+      ) {
+        if (typeof window !== 'undefined' && helperModalScrollYRef.current != null) {
+          window.scrollTo({ top: helperModalScrollYRef.current, behavior: 'auto' });
+        }
         openGDrivePickerToCopyLessonRef.current?.();
+        helperModalScrollYRef.current = null;
       }
     }, [lessonId, lessonToCopy]);
 

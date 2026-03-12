@@ -3251,19 +3251,30 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
           (lesson) => lesson.id === String(activeLessonId)
         )?.sharedGDriveId
       : undefined;
-  const resolvedSharedFolderIdForCopy =
+  const assessmentFolderIdForCopy =
     resolvedLessonFolderFromApi?.lessonFolder?.id ||
     resolvedActiveLessonSharedFolder?.id ||
     lessonFolderIdFromAllUnitLessons ||
-    selectedGradeBandFolderId ||
-    unit.GdrivePublicID ||
     '';
+  const resolvedSharedFolderIdForCopy =
+    activeLessonId === ASSESSMENT_LESSON_ID
+      ? assessmentFolderIdForCopy
+      : resolvedLessonFolderFromApi?.lessonFolder?.id ||
+        resolvedActiveLessonSharedFolder?.id ||
+        lessonFolderIdFromAllUnitLessons ||
+        selectedGradeBandFolderId ||
+        unit.GdrivePublicID ||
+        '';
   const resolvedSharedFolderNameForCopy =
-    resolvedLessonFolderFromApi?.lessonFolder?.name?.trim() ||
-    resolvedActiveLessonSharedFolder?.name?.trim() ||
-    activeLesson?.title?.trim() ||
-    `Lesson ${activeLessonId ?? ''}`.trim() ||
-    'Lesson';
+    activeLessonId === ASSESSMENT_LESSON_ID
+      ? resolvedLessonFolderFromApi?.lessonFolder?.name?.trim() ||
+        resolvedActiveLessonSharedFolder?.name?.trim() ||
+        'Assessments'
+      : resolvedLessonFolderFromApi?.lessonFolder?.name?.trim() ||
+        resolvedActiveLessonSharedFolder?.name?.trim() ||
+        activeLesson?.title?.trim() ||
+        `Lesson ${activeLessonId ?? ''}`.trim() ||
+        'Lesson';
   const effectiveLessonsFolderForCopy = useMemo(() => {
     const folderId =
       resolvedLessonFolderFromApi?.lessonsFolder?.sharedGDriveId?.trim() ||
@@ -3305,7 +3316,16 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
     lessonResources?.gradePrefix?.trim() ||
     'default';
   const allUnitLessonsForCopy =
-    resolvedAllUnitLessons?.length
+    activeLessonId === ASSESSMENT_LESSON_ID
+      ? resolvedSharedFolderIdForCopy
+        ? [
+            {
+              id: String(ASSESSMENT_LESSON_ID),
+              sharedGDriveId: resolvedSharedFolderIdForCopy,
+            },
+          ]
+        : undefined
+      : resolvedAllUnitLessons?.length
       ? resolvedAllUnitLessons
       : resolvedSharedFolderIdForCopy && activeLessonId != null
       ? [

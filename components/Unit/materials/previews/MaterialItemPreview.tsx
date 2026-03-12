@@ -135,6 +135,7 @@ const MaterialItemPreview: React.FC<TMaterialItemPreviewProps> = ({
           : false;
       })
   );
+  const showCopyAllButton = hasGoogleDriveSource && selectedIsDigitalAssessment;
 
   return (
     <article className={styles.lessonPreviewItem}>
@@ -228,14 +229,20 @@ const MaterialItemPreview: React.FC<TMaterialItemPreviewProps> = ({
       <div className={styles.lessonPreviewMeta}>
         <strong>{previewTitle}</strong>
         <p>{previewDescription}</p>
-        {(selectedPreviewItem.itemType || selectedPreviewItem.itemCat) && (
-          <span className={styles.lessonPreviewType}>
-            {(selectedPreviewItem.itemType ?? selectedPreviewItem.itemCat ?? '').toString()}
-          </span>
+        {showCopyAllButton && (
+          <button
+            type="button"
+            className={styles.materialCopyAllBtn}
+            onClick={handleCopyAllMaterialsClick}
+            disabled={isCopyAllDisabledForGpPlus}
+          >
+            <Image alt="GP+ icon" width={14} height={14} src="/plus/plus.png" />
+            <span>Copy All to my Google Drive</span>
+          </button>
         )}
         {(previewPdfDownloadUrl || hasOfficeDownload) && (
           <div className={styles.materialDownloadRow}>
-            {hasGoogleDriveSource && (
+            {hasGoogleDriveSource && !showCopyAllButton && (
               <button
                 type="button"
                 className={styles.materialCopyAllBtn}

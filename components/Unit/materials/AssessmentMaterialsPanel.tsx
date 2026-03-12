@@ -239,28 +239,36 @@ const AssessmentMaterialsPanel: React.FC<TAssessmentMaterialsPanelProps> = ({
             <span>Assessment Folder Actions</span>
           </h3>
           <div className={styles.gpFunctionActions}>
-            <button
-              type="button"
-              className={`${styles.lessonProcedureToggle} ${styles.gpFunctionActionBtn}`}
-              onClick={handleBrowseAllMaterialsClick}
-              disabled={isBrowseDisabledForGpPlus}
-            >
-              <span className={styles.lessonProcedureToggleText}>
-                <Eye size={16} aria-hidden="true" />
-                <span>Browse on Gdrive (View Only)</span>
-              </span>
-            </button>
-            <button
-              type="button"
-              className={`${styles.lessonProcedureToggle} ${styles.gpFunctionActionBtn}`}
-              onClick={handleCopyAllMaterialsClick}
-              disabled={isCopyAllDisabledForGpPlus}
-            >
-              <span className={styles.lessonProcedureToggleText}>
-                <FileStack size={16} aria-hidden="true" />
-                <span>Copy All to my Google Drive</span>
-              </span>
-            </button>
+            <div className={styles.gpFunctionActionItem}>
+              <button
+                type="button"
+                className={`${styles.lessonProcedureToggle} ${styles.gpFunctionActionBtn}`}
+                onClick={handleBrowseAllMaterialsClick}
+              >
+                <span className={styles.lessonProcedureToggleText}>
+                  <Eye size={16} aria-hidden="true" />
+                  <span>Browse on Gdrive (View Only)</span>
+                </span>
+              </button>
+              {isBrowseDisabledForGpPlus && (
+                <p className={styles.copyAllHelperText}>{browseUnavailableReason}</p>
+              )}
+            </div>
+            <div className={styles.gpFunctionActionItem}>
+              <button
+                type="button"
+                className={`${styles.lessonProcedureToggle} ${styles.gpFunctionActionBtn}`}
+                onClick={handleCopyAllMaterialsClick}
+              >
+                <span className={styles.lessonProcedureToggleText}>
+                  <FileStack size={16} aria-hidden="true" />
+                  <span>Copy All to my Google Drive</span>
+                </span>
+              </button>
+              {isCopyAllDisabledForGpPlus && (
+                <p className={styles.copyAllHelperText}>{copyAllUnavailableReason}</p>
+              )}
+            </div>
             {latestCopiedLessonFolderUrl ? (
               <a
                 className={styles.gpPlusFileVersionsLink}
@@ -272,12 +280,6 @@ const AssessmentMaterialsPanel: React.FC<TAssessmentMaterialsPanelProps> = ({
                 <span>My file versions</span>
               </a>
             ) : null}
-            {isBrowseDisabledForGpPlus && (
-              <p className={styles.copyAllHelperText}>{browseUnavailableReason}</p>
-            )}
-            {isCopyAllDisabledForGpPlus && (
-              <p className={styles.copyAllHelperText}>{copyAllUnavailableReason}</p>
-            )}
           </div>
         </section>
 
