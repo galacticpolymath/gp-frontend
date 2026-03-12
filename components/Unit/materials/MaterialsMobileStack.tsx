@@ -8,6 +8,7 @@ import {
   ChevronRight,
   BowArrow,
   ChevronDown,
+  Download,
   Eye,
   FileStack,
   MonitorPlay,
@@ -637,8 +638,9 @@ const MaterialsMobileStack: React.FC<TMaterialsMobileStackProps> = ({
                   <div className={styles.materialDownloadRow}>
                     <span
                       className={`${styles.materialDownloadLabel} ${styles.materialDownloadLabelLeading}`}
+                      aria-hidden="true"
                     >
-                      Download
+                      <Download size={16} />
                     </span>
                     <div className={styles.materialDownloadActions}>
                       {resolvedPdfDownloadUrl &&

@@ -107,8 +107,9 @@ const MaterialsPreviewDownloadSection: React.FC<TMaterialsPreviewDownloadSection
                       <div className={styles.materialDownloadPair}>
                         <span
                           className={`${styles.materialDownloadLabel} ${styles.materialDownloadLabelLeading}`}
+                          aria-hidden="true"
                         >
-                          Download
+                          <Download size={16} />
                         </span>
                         <div className={styles.materialDownloadActions}>
                           {pdfDownloadUrl &&
