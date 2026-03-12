@@ -1,7 +1,7 @@
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { CircleAlert, Eye, SquareArrowOutUpRight } from 'lucide-react';
+import { CircleAlert, Download, Eye, FileStack, SquareArrowOutUpRight } from 'lucide-react';
 import styles from '../UnitMaterials.module.css';
 
 const getGoogleFileId = (value?: string | null): string | null => {
@@ -192,6 +192,22 @@ const MaterialItemPreview: React.FC<TMaterialItemPreviewProps> = ({
       })
   );
   const showCopyAllButton = hasGoogleDriveSource && selectedIsDigitalAssessment;
+  const copyToDriveAction = (
+    <div className={styles.materialActionGroup}>
+      <span className={styles.materialDownloadLabel} aria-hidden="true">
+        <FileStack size={21} />
+      </span>
+      <button
+        type="button"
+        className={styles.materialCopyAllBtn}
+        onClick={handleCopyAllMaterialsClick}
+        disabled={isCopyAllDisabledForGpPlus}
+      >
+        <Image alt="GP+ icon" width={14} height={14} src="/plus/plus.png" />
+        <span>Copy to My Google Drive</span>
+      </button>
+    </div>
+  );
 
   return (
     <article className={styles.lessonPreviewItem}>
@@ -297,32 +313,14 @@ const MaterialItemPreview: React.FC<TMaterialItemPreviewProps> = ({
       <div className={styles.lessonPreviewMeta}>
         <strong>{previewTitle}</strong>
         <p>{previewDescription}</p>
-        {showCopyAllButton && (
-          <button
-            type="button"
-            className={styles.materialCopyAllBtn}
-            onClick={handleCopyAllMaterialsClick}
-            disabled={isCopyAllDisabledForGpPlus}
-          >
-            <Image alt="GP+ icon" width={14} height={14} src="/plus/plus.png" />
-            <span>Copy All to my Google Drive</span>
-          </button>
-        )}
+        {showCopyAllButton && copyToDriveAction}
         {(previewPdfDownloadUrl || hasOfficeDownload) && (
           <div className={styles.materialDownloadRow}>
-            {hasGoogleDriveSource && !showCopyAllButton && (
-              <button
-                type="button"
-                className={styles.materialCopyAllBtn}
-                onClick={handleCopyAllMaterialsClick}
-                disabled={isCopyAllDisabledForGpPlus}
-              >
-                <Image alt="GP+ icon" width={14} height={14} src="/plus/plus.png" />
-                <span>Copy All to my Google Drive</span>
-              </button>
-            )}
+            {hasGoogleDriveSource && !showCopyAllButton && copyToDriveAction}
             <div className={styles.materialDownloadPair}>
-              <span className={styles.materialDownloadLabel}>Download</span>
+              <span className={styles.materialDownloadLabel} aria-hidden="true">
+                <Download size={21} />
+              </span>
               <div className={styles.materialDownloadActions}>
                 {previewPdfDownloadUrl && isAuthenticated && !isPreviewLockedTeacher ? (
                   <a

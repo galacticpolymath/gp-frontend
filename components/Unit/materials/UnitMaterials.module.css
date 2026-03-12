@@ -460,6 +460,13 @@
   padding-bottom: 7px;
 }
 
+.materialActionGroup {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
 .materialDownloadLabel {
   margin-left: 0;
   font-size: 13px;
@@ -467,6 +474,11 @@
   letter-spacing: 0.03em;
   text-transform: uppercase;
   color: #4f5f7f;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  flex: 0 0 auto;
 }
 
 .materialDownloadLabelLeading {
@@ -505,7 +517,7 @@
   border: 1px solid rgba(44, 131, 195, 0.26);
   background: rgba(255, 255, 255, 0.85);
   color: #1f355a;
-  font-size: 15px;
+  font-size: 13px;
   font-weight: 600;
   text-decoration: none;
 }
@@ -514,7 +526,7 @@
   border: 1px dashed rgba(120, 130, 150, 0.44);
   background: rgba(255, 255, 255, 0.62);
   color: #81899e;
-  font-size: 15px;
+  font-size: 13px;
 }
 
 .materialOfficeLink {
