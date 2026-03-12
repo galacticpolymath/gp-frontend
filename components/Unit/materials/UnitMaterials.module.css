@@ -803,6 +803,11 @@
   isolation: isolate;
 }
 
+.lessonPreviewItemAssessment {
+  gap: 5px;
+  align-content: start;
+}
+
 .lessonPreviewHeader,
 .lessonProcedureHeaderTop,
 .lessonPreviewHeaderActions,
@@ -852,6 +857,17 @@
   padding-bottom: 75%;
 }
 
+.lessonPreviewSurfaceFormFrame.lessonPreviewSurfaceRatioFrame {
+  height: 100%;
+  min-height: 280px;
+  padding-bottom: 0;
+}
+
+.lessonPreviewSurfaceFormFrame.lessonPreviewSurfaceRatioFrame .lessonPreviewMedia {
+  position: absolute;
+  inset: 0;
+}
+
 .lessonPreviewSurfaceRatioFrame .lessonPreviewMedia {
   position: absolute;
   inset: 0;
@@ -888,6 +904,18 @@
 
 .lessonPreviewIFrameNonInteractive {
   pointer-events: none;
+}
+
+.lessonPreviewDocumentLinkoutBlocker {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 2;
+  width: clamp(60px, 10vw, 84px);
+  height: clamp(60px, 10vw, 84px);
+  background: transparent;
+  pointer-events: auto;
+  touch-action: none;
 }
 
 .lessonPreviewSurfaceLocked {
@@ -971,6 +999,19 @@
   text-align: center;
 }
 
+.lessonPreviewReadOnlyOverlayAssessment {
+  left: 12px;
+  right: 12px;
+  bottom: 12px;
+  padding: 10px 14px;
+  border-color: rgba(164, 202, 255, 0.38);
+  background:
+    linear-gradient(140deg, rgba(22, 48, 92, 0.94), rgba(49, 84, 138, 0.92));
+  box-shadow: 0 12px 28px rgba(15, 28, 54, 0.24);
+  color: #f6f9ff;
+  font-weight: 700;
+}
+
 .lessonPreviewType {
   display: block;
   margin-bottom: 4px;
@@ -989,6 +1030,18 @@
   margin: 0 0 4px;
   font-size: 16px;
   line-height: 1.4;
+}
+
+.lessonPreviewMetaAssessment {
+  gap: 4px;
+}
+
+.lessonPreviewMetaAssessment strong {
+  display: block;
+}
+
+.lessonPreviewMetaAssessment p {
+  margin-bottom: 2px;
 }
 
 .materialOpenLink,
@@ -1733,6 +1786,13 @@
   padding-bottom: 0;
 }
 
+.mobilePreviewModalBodyInnerMaterial .lessonPreviewSurfaceFormFrame {
+  flex: 1 1 auto;
+  height: var(--mobile-material-surface-height, 320px);
+  min-height: 220px;
+  max-height: var(--mobile-material-surface-height, none);
+}
+
 .mobilePreviewModalBodyInnerMaterial .lessonPreviewMedia {
   display: flex;
   flex: 1 1 auto;
@@ -1843,6 +1903,13 @@
   transform: none;
   width: 100%;
   height: 100%;
+}
+
+.mobilePreviewModalBody .lessonPreviewDocumentLinkoutBlocker {
+  top: 10px;
+  right: 10px;
+  width: clamp(68px, 18vw, 92px);
+  height: clamp(68px, 18vw, 92px);
 }
 
 .mobilePreviewModalBody .lessonPreviewSurfaceSlideDeck {

@@ -170,6 +170,11 @@ const MaterialItemPreview: React.FC<TMaterialItemPreviewProps> = ({
     !isGpPlusUser;
   const isPreviewLocked =
     isPreviewLockedLoggedOut || isPreviewLockedTeacher || isPreviewLockedGpPlus;
+  const shouldBlockDocumentLinkoutButton =
+    itemCatLabel === 'document' &&
+    isGoogleDrivePreviewFrame &&
+    !isPreviewLocked &&
+    !isFormPreviewOnly;
   const canOpenSelected =
     allowOpenInNewTab && !!openUrl && !isPreviewLocked && !isFormPreviewOnly;
   const hasOfficeDownload = !!officeDownloadUrl && !!officeFormat;
@@ -192,6 +197,7 @@ const MaterialItemPreview: React.FC<TMaterialItemPreviewProps> = ({
       })
   );
   const showCopyAllButton = hasGoogleDriveSource && selectedIsDigitalAssessment;
+  const isAssessmentPreview = enforceGpPlusDigitalGate || forceFormPreviewOnly;
   const copyToDriveAction = (
     <div className={styles.materialActionGroup}>
       <span className={styles.materialDownloadLabel} aria-hidden="true">
@@ -210,7 +216,11 @@ const MaterialItemPreview: React.FC<TMaterialItemPreviewProps> = ({
   );
 
   return (
-    <article className={styles.lessonPreviewItem}>
+    <article
+      className={`${styles.lessonPreviewItem} ${
+        isAssessmentPreview ? styles.lessonPreviewItemAssessment : ''
+      }`}
+    >
       {!hideHeader ? (
         <header className={styles.lessonPreviewHeader}>
           <h3 className={styles.lessonCardHeading}>
@@ -234,6 +244,8 @@ const MaterialItemPreview: React.FC<TMaterialItemPreviewProps> = ({
           isGoogleDrivePreviewFrame && (shouldUseLargeEmbeddedSurface || isPresentation)
             ? styles.lessonPreviewSurfaceSlideDeck
             : ''
+        } ${
+          isFormPreviewOnly ? styles.lessonPreviewSurfaceFormFrame : ''
         } ${
           isPreviewLocked ? styles.lessonPreviewSurfaceLocked : ''
         }`}
@@ -263,8 +275,15 @@ const MaterialItemPreview: React.FC<TMaterialItemPreviewProps> = ({
             <p className={styles.unitMutedText}>Preview unavailable for this file type.</p>
           )}
         </div>
+        {shouldBlockDocumentLinkoutButton && (
+          <div aria-hidden="true" className={styles.lessonPreviewDocumentLinkoutBlocker} />
+        )}
         {isFormPreviewOnly && !isPreviewLocked && (
-          <div className={styles.lessonPreviewReadOnlyOverlay}>
+          <div
+            className={`${styles.lessonPreviewReadOnlyOverlay} ${
+              styles.lessonPreviewReadOnlyOverlayAssessment
+            }`}
+          >
             Preview only. Copy to your Google Drive to assign this assessment.
           </div>
         )}
@@ -310,7 +329,11 @@ const MaterialItemPreview: React.FC<TMaterialItemPreviewProps> = ({
           </div>
         )}
       </div>
-      <div className={styles.lessonPreviewMeta}>
+      <div
+        className={`${styles.lessonPreviewMeta} ${
+          isAssessmentPreview ? styles.lessonPreviewMetaAssessment : ''
+        }`}
+      >
         <strong>{previewTitle}</strong>
         <p>{previewDescription}</p>
         {showCopyAllButton && copyToDriveAction}

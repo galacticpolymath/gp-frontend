@@ -733,7 +733,10 @@ const MaterialsMobileStack: React.FC<TMaterialsMobileStackProps> = ({
 
   const assessmentGpPlusSection = renderAccordion(
     'gpplus',
-    'Assessment Folder Actions',
+    <span className={styles.mobileAccordionTitleWithIcon}>
+      <Image alt="GP+ icon" width={18} height={18} src="/plus/plus.png" />
+      <span>GP Plus Functions</span>
+    </span>,
     <div className={styles.mobileActionList}>
       <button
         type="button"
