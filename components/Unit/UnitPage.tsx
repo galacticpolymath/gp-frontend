@@ -172,6 +172,21 @@ const getMaterialTypeIcon = (itemType?: unknown, itemCat?: unknown) => {
 const CONSENT_STORAGE_KEY = 'gp_cookie_consent_v1';
 const GOOGLE_DRIVE_FOLDER_URL_BASE = 'https://drive.google.com/drive/folders';
 
+const parseResourceIndexFromUrlParam = (value: string | null): number | null => {
+  if (!value) {
+    return null;
+  }
+
+  const parsed = Number.parseInt(value, 10);
+  if (Number.isNaN(parsed) || parsed < 1) {
+    return null;
+  }
+
+  return parsed - 1;
+};
+
+const toResourceUrlParam = (index: number): string => String(index + 1);
+
 type TGtagParams = Record<string, string | number | boolean | null | undefined>;
 
 const trackUnitEvent = (name: string, params: TGtagParams = {}) => {
@@ -1800,15 +1815,17 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
       const previewValue = previewParamValue
         ? parsePreviewFromUrlValue(previewParamValue)
         : undefined;
-      if (previewValue && previewValue !== 'materials' && previewValue !== 'featured-media') {
+      const resourceIndexFromQuery = parseResourceIndexFromUrlParam(resourceParamValue);
+      const hasResourceIndexFromQuery = resourceIndexFromQuery != null;
+
+      if (previewValue) {
         setActiveLessonPreviewMode(previewValue);
+      } else if (hasResourceIndexFromQuery) {
+        setActiveLessonPreviewMode('materials');
       }
 
-      if (resourceParamValue) {
-        const parsed = Number.parseInt(resourceParamValue, 10);
-        if (!Number.isNaN(parsed) && parsed >= 0) {
-          setActiveMaterialIndex(parsed);
-        }
+      if (hasResourceIndexFromQuery) {
+        setActiveMaterialIndex(resourceIndexFromQuery);
       }
     };
 
@@ -1835,14 +1852,12 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
         searchParams.get(URL_PARAM_LESSON) ?? '',
         10
       );
-      const resourceFromQuery = Number.parseInt(
-        searchParams.get(URL_PARAM_RESOURCE) ?? '',
-        10
+      const resourceFromQuery = parseResourceIndexFromUrlParam(
+        searchParams.get(URL_PARAM_RESOURCE)
       );
       let resolvedResourceIndex: number | null = null;
       if (
-        !Number.isNaN(resourceFromQuery) &&
-        resourceFromQuery >= 0 &&
+        resourceFromQuery != null &&
         resourceFromQuery < classroomResources.length
       ) {
         resolvedResourceIndex = resourceFromQuery;
@@ -1980,7 +1995,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
       typeof materialIndex === 'number' &&
       materialIndex >= 0
     ) {
-      currentParams.set(URL_PARAM_RESOURCE, String(materialIndex));
+      currentParams.set(URL_PARAM_RESOURCE, toResourceUrlParam(materialIndex));
     } else {
       currentParams.delete(URL_PARAM_RESOURCE);
     }
@@ -2916,22 +2931,21 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
 
     const searchParams = new URLSearchParams(window.location.search);
     const standaloneParam = searchParams.get(URL_PARAM_STANDALONE);
-    const resourceFromQuery = Number.parseInt(
-      searchParams.get(URL_PARAM_RESOURCE) ?? '',
-      10
-    );
-    if (
-      !Number.isNaN(resourceFromQuery) &&
-      resourceFromQuery >= 0 &&
-      resourceFromQuery < classroomResources.length
-    ) {
-      setSelectedResourceIndex(resourceFromQuery);
-      return;
-    }
-    if (
+    const isStandaloneRoute =
       standaloneParam === URL_STANDALONE_PROCEDURE ||
-      standaloneParam === URL_STANDALONE_BACKGROUND
-    ) {
+      standaloneParam === URL_STANDALONE_BACKGROUND;
+
+    // `rsrc` should only target classroom resource index on standalone routes.
+    if (isStandaloneRoute) {
+      const resourceFromQuery = parseResourceIndexFromUrlParam(
+        searchParams.get(URL_PARAM_RESOURCE)
+      );
+      if (
+        resourceFromQuery != null &&
+        resourceFromQuery < classroomResources.length
+      ) {
+        setSelectedResourceIndex(resourceFromQuery);
+      }
       return;
     }
 
@@ -3018,6 +3032,32 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
   }, [activeLessonId, lessons]);
 
   useEffect(() => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    const searchParams = new URLSearchParams(window.location.search);
+    const standaloneParam = searchParams.get(URL_PARAM_STANDALONE);
+    if (
+      standaloneParam === URL_STANDALONE_PROCEDURE ||
+      standaloneParam === URL_STANDALONE_BACKGROUND
+    ) {
+      return;
+    }
+
+    const previewFromQuery = parsePreviewFromUrlValue(
+      searchParams.get(URL_PARAM_PREVIEW) ?? ''
+    );
+    const resourceFromQuery = parseResourceIndexFromUrlParam(
+      searchParams.get(URL_PARAM_RESOURCE)
+    );
+    const hasExplicitPreviewIntent =
+      Boolean(previewFromQuery) || resourceFromQuery != null;
+
+    if (hasExplicitPreviewIntent) {
+      return;
+    }
+
     setActiveMaterialIndex(0);
     setActiveLessonPreviewMode(
       activeLessonId === ASSESSMENT_LESSON_ID ? 'materials' : 'featured-media'
@@ -3739,7 +3779,10 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
     );
     searchParams.set(URL_PARAM_LESSON, String(activeLessonId));
     if (selectedResourceIndex >= 0) {
-      searchParams.set(URL_PARAM_RESOURCE, String(selectedResourceIndex));
+      searchParams.set(
+        URL_PARAM_RESOURCE,
+        toResourceUrlParam(selectedResourceIndex)
+      );
     }
     if (autoPrint) {
       searchParams.set(URL_PARAM_AUTOPRINT, '1');

@@ -367,6 +367,31 @@
   gap: 8px;
 }
 
+.assessmentPrintedGroups {
+  display: grid;
+  gap: 10px;
+  padding-top: 4px;
+}
+
+.assessmentPrintedGroup {
+  display: grid;
+  gap: 6px;
+}
+
+.assessmentPrintedGroupHeading {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: #1f355a;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.assessmentPrintedGroupList {
+  display: grid;
+  gap: 8px;
+}
+
 .materialRow {
   display: grid;
   gap: 3px;

@@ -129,6 +129,15 @@ const getAssessmentBuckets = (items: any[]): { digital: TItemWithIndex[]; printe
   return { digital, printed };
 };
 
+const hasTeacherKeyword = (value?: string | null) =>
+  typeof value === 'string' && /\bteacher\b/i.test(value);
+
+const hasDemographicsKeyword = (value?: string | null) =>
+  typeof value === 'string' && /\bdemographics?\b/i.test(value);
+
+const formatAssessmentDisplayTitle = (value?: string | null, fallback = '') =>
+  (value ?? fallback).replace(/_/g, ' ').trim();
+
 const AssessmentMaterialsPanel: React.FC<TAssessmentMaterialsPanelProps> = ({
   lessonResourcesCardRef,
   isGpPlusUser,
@@ -192,6 +201,191 @@ const AssessmentMaterialsPanel: React.FC<TAssessmentMaterialsPanelProps> = ({
     digitalMaterialUrls.openUrl ??
     digitalMaterialUrls.previewUrl ??
     null;
+  const shouldGroupPrintedAssessments = useMemo(() => {
+    const teacherItems = printed.filter(({ item }) => hasTeacherKeyword(item?.itemTitle));
+    if (teacherItems.length <= 1) {
+      return false;
+    }
+
+    const teacherDemographicMatches = teacherItems.filter(({ item }) =>
+      hasDemographicsKeyword(item?.itemTitle)
+    );
+
+    return teacherDemographicMatches.length === 1;
+  }, [printed]);
+
+  const printedGroupedEntries = useMemo(() => {
+    if (!shouldGroupPrintedAssessments) {
+      return null;
+    }
+
+    return {
+      simple: printed.filter(({ item }) => !hasDemographicsKeyword(item?.itemTitle)),
+      withDemographics: printed.filter(({ item }) => hasDemographicsKeyword(item?.itemTitle)),
+    };
+  }, [printed, shouldGroupPrintedAssessments]);
+
+  const renderPrintedEntries = (entries: TItemWithIndex[]) =>
+    entries.map(({ item, index }) => {
+      const { pdfDownloadUrl, officeDownloadUrl, officeFormat } = getMaterialUrls(item);
+      const resolvedPdfDownloadUrl =
+        pdfDownloadUrl ??
+        (() => {
+          if (item?.gdriveRoot) {
+            return (
+              toGooglePdfExportUrl(getNormalizedGDriveRoot(item.gdriveRoot)) ?? null
+            );
+          }
+          const firstUrl = getFirstItemUrl(item);
+          return firstUrl ? toGooglePdfExportUrl(firstUrl) ?? null : null;
+        })();
+      const isActive =
+        activeLessonPreviewMode === 'materials' && index === activeMaterialIndex;
+      const resourceTitle = formatAssessmentDisplayTitle(
+        item.itemTitle,
+        `Resource ${index + 1}`
+      );
+      const itemTypeLabel = (item.itemType ?? item.itemCat ?? '').toString().trim();
+      const shouldShowItemTypeLabel =
+        !!itemTypeLabel && !/^assessments?$/i.test(itemTypeLabel);
+      const isTeacherOnlyItem =
+        typeof item.itemTitle === 'string' &&
+        item.itemTitle.toLowerCase().includes('teacher');
+      const isTeacherLocked = isAuthenticated && !isUserTeacher && isTeacherOnlyItem;
+      const canAccessPdf =
+        !!resolvedPdfDownloadUrl && !isTeacherLocked && isAuthenticated;
+      const hasOfficeDownload = !!officeDownloadUrl && !!officeFormat;
+      const canAccessOffice =
+        hasOfficeDownload && !isTeacherLocked && isAuthenticated && isGpPlusUser;
+      const canUpsellOffice =
+        hasOfficeDownload &&
+        !isTeacherLocked &&
+        isAuthenticated &&
+        isGpPlusMember === false;
+
+      return (
+        <article
+          key={`${item.itemTitle}-${index}`}
+          className={`${styles.materialRow} ${isActive ? styles.materialRowActive : ''}`}
+          onClick={(event) => {
+            const target = event.target as HTMLElement;
+            if (target.closest('a') || target.closest('button')) {
+              return;
+            }
+            selectMaterialItem(index, item.itemTitle);
+          }}
+        >
+          <div className={styles.materialRowTop}>
+            <button
+              type="button"
+              className={styles.materialSelectButton}
+              onClick={(event) => {
+                event.stopPropagation();
+                selectMaterialItem(index, item.itemTitle);
+              }}
+              aria-pressed={isActive}
+            >
+              <span className={styles.materialRowIcon} aria-hidden="true">
+                {getMaterialTypeIcon(item.itemType, item.itemCat)}
+              </span>
+              <span className={styles.materialRowMain}>
+                <strong>{resourceTitle}</strong>
+                {shouldShowItemTypeLabel && <span>{itemTypeLabel}</span>}
+              </span>
+            </button>
+          </div>
+          {(resolvedPdfDownloadUrl || hasOfficeDownload) && (
+            <div className={styles.materialRowPdfWrap}>
+              <div className={styles.materialDownloadRow}>
+                <div className={styles.materialDownloadPair}>
+                  <span
+                    className={`${styles.materialDownloadLabel} ${styles.materialDownloadLabelLeading}`}
+                    aria-hidden="true"
+                  >
+                    <Download size={16} />
+                  </span>
+                  <div className={styles.materialDownloadActions}>
+                    {resolvedPdfDownloadUrl &&
+                      (canAccessPdf ? (
+                        <a
+                          className={styles.materialPdfLink}
+                          href={resolvedPdfDownloadUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          PDF
+                        </a>
+                      ) : (
+                        <span className={styles.materialPdfLinkDisabled}>PDF</span>
+                      ))}
+                    {hasOfficeDownload &&
+                      (canAccessOffice ? (
+                        <a
+                          className={`${styles.materialPdfLink} ${styles.materialOfficeLink}`}
+                          href={officeDownloadUrl ?? undefined}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          <span className={styles.materialOfficeLinkContent}>
+                            <Image
+                              alt="GP+ icon"
+                              width={13}
+                              height={13}
+                              src="/plus/plus.png"
+                              className={styles.materialOfficeLinkPlusIcon}
+                            />
+                            <span>{officeFormat}</span>
+                          </span>
+                        </a>
+                      ) : canUpsellOffice ? (
+                        <button
+                          type="button"
+                          className={`${styles.materialPdfLink} ${styles.materialOfficeLink} ${styles.materialOfficeLinkLocked}`}
+                          onClick={() =>
+                            handleOpenOfficeUpsell(officeFormat ?? 'Office')
+                          }
+                        >
+                          <span className={styles.materialOfficeLinkContent}>
+                            <Image
+                              alt="GP+ icon"
+                              width={13}
+                              height={13}
+                              src="/plus/plus.png"
+                              className={styles.materialOfficeLinkPlusIcon}
+                            />
+                            <span>{officeFormat}</span>
+                          </span>
+                        </button>
+                      ) : (
+                        <span
+                          className={`${styles.materialPdfLinkDisabled} ${styles.materialOfficeLink} ${styles.materialOfficeLinkLocked}`}
+                        >
+                          <span className={styles.materialOfficeLinkContent}>
+                            <Image
+                              alt="GP+ icon"
+                              width={13}
+                              height={13}
+                              src="/plus/plus.png"
+                              className={styles.materialOfficeLinkPlusIcon}
+                            />
+                            <span>{officeFormat}</span>
+                          </span>
+                        </span>
+                      ))}
+                  </div>
+                </div>
+              </div>
+              {isGpPlusResolved &&
+                isGpPlusMember === false &&
+                hasOfficeDownload &&
+                isAuthenticated && (
+                  <span className={styles.officeUpsellTag}>GP+ editable files</span>
+                )}
+            </div>
+          )}
+        </article>
+      );
+    });
 
   return (
     <>
@@ -322,7 +516,12 @@ const AssessmentMaterialsPanel: React.FC<TAssessmentMaterialsPanelProps> = ({
                       )}
                     </span>
                     <span className={styles.materialRowMain}>
-                      <strong>{activeDigitalItem.item?.itemTitle ?? 'Digital assessment form'}</strong>
+                      <strong>
+                        {formatAssessmentDisplayTitle(
+                          activeDigitalItem.item?.itemTitle,
+                          'Digital assessment form'
+                        )}
+                      </strong>
                       <span>Digital form</span>
                     </span>
                   </button>
@@ -351,162 +550,30 @@ const AssessmentMaterialsPanel: React.FC<TAssessmentMaterialsPanelProps> = ({
           </h3>
           {!!printed.length ? (
             <div className={styles.lessonDownloadList}>
-              {printed.map(({ item, index }) => {
-                const { pdfDownloadUrl, officeDownloadUrl, officeFormat } = getMaterialUrls(item);
-                const resolvedPdfDownloadUrl =
-                  pdfDownloadUrl ??
-                  (() => {
-                    if (item?.gdriveRoot) {
-                      return (
-                        toGooglePdfExportUrl(getNormalizedGDriveRoot(item.gdriveRoot)) ?? null
-                      );
-                    }
-                    const firstUrl = getFirstItemUrl(item);
-                    return firstUrl ? toGooglePdfExportUrl(firstUrl) ?? null : null;
-                  })();
-                const isActive =
-                  activeLessonPreviewMode === 'materials' && index === activeMaterialIndex;
-                const resourceTitle = item.itemTitle ?? `Resource ${index + 1}`;
-                const isTeacherOnlyItem =
-                  typeof item.itemTitle === 'string' &&
-                  item.itemTitle.toLowerCase().includes('teacher');
-                const isTeacherLocked = isAuthenticated && !isUserTeacher && isTeacherOnlyItem;
-                const canAccessPdf =
-                  !!resolvedPdfDownloadUrl && !isTeacherLocked && isAuthenticated;
-                const hasOfficeDownload = !!officeDownloadUrl && !!officeFormat;
-                const canAccessOffice =
-                  hasOfficeDownload && !isTeacherLocked && isAuthenticated && isGpPlusUser;
-                const canUpsellOffice =
-                  hasOfficeDownload &&
-                  !isTeacherLocked &&
-                  isAuthenticated &&
-                  isGpPlusMember === false;
-
-                return (
-                  <article
-                    key={`${item.itemTitle}-${index}`}
-                    className={`${styles.materialRow} ${isActive ? styles.materialRowActive : ''}`}
-                    onClick={(event) => {
-                      const target = event.target as HTMLElement;
-                      if (target.closest('a') || target.closest('button')) {
-                        return;
-                      }
-                      selectMaterialItem(index, item.itemTitle);
-                    }}
-                  >
-                    <div className={styles.materialRowTop}>
-                      <button
-                        type="button"
-                        className={styles.materialSelectButton}
-                        onClick={(event) => {
-                          event.stopPropagation();
-                          selectMaterialItem(index, item.itemTitle);
-                        }}
-                        aria-pressed={isActive}
-                      >
-                        <span className={styles.materialRowIcon} aria-hidden="true">
-                          {getMaterialTypeIcon(item.itemType, item.itemCat)}
-                        </span>
-                        <span className={styles.materialRowMain}>
-                          <strong>{resourceTitle}</strong>
-                          {(item.itemType || item.itemCat) && (
-                            <span>{(item.itemType ?? item.itemCat ?? '').toString()}</span>
-                          )}
-                        </span>
-                      </button>
-                    </div>
-                    {(resolvedPdfDownloadUrl || hasOfficeDownload) && (
-                      <div className={styles.materialRowPdfWrap}>
-                        <div className={styles.materialDownloadRow}>
-                          <div className={styles.materialDownloadPair}>
-                            <span
-                              className={`${styles.materialDownloadLabel} ${styles.materialDownloadLabelLeading}`}
-                              aria-hidden="true"
-                            >
-                              <Download size={16} />
-                            </span>
-                            <div className={styles.materialDownloadActions}>
-                              {resolvedPdfDownloadUrl &&
-                                (canAccessPdf ? (
-                                  <a
-                                    className={styles.materialPdfLink}
-                                    href={resolvedPdfDownloadUrl}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                  >
-                                    PDF
-                                  </a>
-                                ) : (
-                                  <span className={styles.materialPdfLinkDisabled}>PDF</span>
-                                ))}
-                              {hasOfficeDownload &&
-                                (canAccessOffice ? (
-                                  <a
-                                    className={`${styles.materialPdfLink} ${styles.materialOfficeLink}`}
-                                    href={officeDownloadUrl ?? undefined}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                  >
-                                    <span className={styles.materialOfficeLinkContent}>
-                                      <Image
-                                        alt="GP+ icon"
-                                        width={13}
-                                        height={13}
-                                        src="/plus/plus.png"
-                                        className={styles.materialOfficeLinkPlusIcon}
-                                      />
-                                      <span>{officeFormat}</span>
-                                    </span>
-                                  </a>
-                                ) : canUpsellOffice ? (
-                                  <button
-                                    type="button"
-                                    className={`${styles.materialPdfLink} ${styles.materialOfficeLink} ${styles.materialOfficeLinkLocked}`}
-                                    onClick={() =>
-                                      handleOpenOfficeUpsell(officeFormat ?? 'Office')
-                                    }
-                                  >
-                                    <span className={styles.materialOfficeLinkContent}>
-                                      <Image
-                                        alt="GP+ icon"
-                                        width={13}
-                                        height={13}
-                                        src="/plus/plus.png"
-                                        className={styles.materialOfficeLinkPlusIcon}
-                                      />
-                                      <span>{officeFormat}</span>
-                                    </span>
-                                  </button>
-                                ) : (
-                                  <span
-                                    className={`${styles.materialPdfLinkDisabled} ${styles.materialOfficeLink} ${styles.materialOfficeLinkLocked}`}
-                                  >
-                                    <span className={styles.materialOfficeLinkContent}>
-                                      <Image
-                                        alt="GP+ icon"
-                                        width={13}
-                                        height={13}
-                                        src="/plus/plus.png"
-                                        className={styles.materialOfficeLinkPlusIcon}
-                                      />
-                                      <span>{officeFormat}</span>
-                                    </span>
-                                  </span>
-                                ))}
-                            </div>
-                          </div>
-                        </div>
-                        {isGpPlusResolved &&
-                          isGpPlusMember === false &&
-                          hasOfficeDownload &&
-                          isAuthenticated && (
-                            <span className={styles.officeUpsellTag}>GP+ editable files</span>
-                          )}
+              {printedGroupedEntries ? (
+                <div className={styles.assessmentPrintedGroups}>
+                  {printedGroupedEntries.simple.length > 0 && (
+                    <div className={styles.assessmentPrintedGroup}>
+                      <h4 className={styles.assessmentPrintedGroupHeading}>Simple Assessment</h4>
+                      <div className={styles.assessmentPrintedGroupList}>
+                        {renderPrintedEntries(printedGroupedEntries.simple)}
                       </div>
-                    )}
-                  </article>
-                );
-              })}
+                    </div>
+                  )}
+                  {printedGroupedEntries.withDemographics.length > 0 && (
+                    <div className={styles.assessmentPrintedGroup}>
+                      <h4 className={styles.assessmentPrintedGroupHeading}>
+                        Assessment with Demographics
+                      </h4>
+                      <div className={styles.assessmentPrintedGroupList}>
+                        {renderPrintedEntries(printedGroupedEntries.withDemographics)}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                renderPrintedEntries(printed)
+              )}
             </div>
           ) : (
             <p className={styles.unitMutedText}>Printed assessments will appear here once added.</p>
