@@ -1,5 +1,6 @@
 import React from 'react';
 import styles from './UnitMaterials.module.css';
+import desktopStyles from './MaterialsDesktopPreview.module.css';
 
 type TMaterialsPreviewPaneProps = {
   lessonPreviewsCardRef: React.RefObject<HTMLDivElement | null>;
@@ -17,12 +18,12 @@ const MaterialsPreviewPane: React.FC<TMaterialsPreviewPaneProps> = ({
   return (
     <div
       ref={lessonPreviewsCardRef}
-      className={styles.lessonPreviewsCard}
+      className={desktopStyles.desktopPreviewPane}
       style={previewPaneStickyStyle}
     >
       <div
         key={`lesson-preview-${activeLessonPreviewMode}`}
-        className={`${styles.unitTabFadeIn} ${styles.lessonPreviewPaneContent}`}
+        className={`${styles.unitTabFadeIn} ${desktopStyles.desktopPreviewPaneContent}`}
       >
         {children}
       </div>

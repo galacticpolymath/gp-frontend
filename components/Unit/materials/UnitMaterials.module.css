@@ -456,7 +456,6 @@
   flex-wrap: wrap;
   gap: 6px;
   border-top: 1px solid rgba(44, 131, 195, 0.16);
-  border-bottom: 1px solid rgba(44, 131, 195, 0.16);
   padding-top: 7px;
   padding-bottom: 7px;
 }
@@ -779,31 +778,6 @@
   margin: 0;
 }
 
-.lessonPreviewsCard {
-  width: 100%;
-  min-width: 0;
-  min-height: 0;
-  overflow: hidden;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  padding: 12px;
-  border: 2px solid rgba(44, 131, 195, 0.5);
-  border-radius: 18px;
-  background:
-    radial-gradient(circle at 12% 16%, rgba(44, 131, 195, 0.1), transparent 54%),
-    linear-gradient(160deg, rgba(243, 246, 251, 0.93), rgba(231, 236, 244, 0.9));
-  box-shadow: 0 14px 34px rgba(23, 39, 62, 0.16);
-}
-
-.lessonPreviewPaneContent {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  min-height: 0;
-  overflow: hidden;
-}
-
 .lessonPreviewItem {
   margin: 0;
   padding: 0;
@@ -814,6 +788,7 @@
   grid-template-rows: auto minmax(0, 1fr) auto;
   height: 100%;
   min-height: 0;
+  isolation: isolate;
 }
 
 .lessonPreviewHeader,
@@ -825,6 +800,8 @@
   justify-content: space-between;
   gap: 10px;
   flex-wrap: wrap;
+  position: relative;
+  z-index: 2;
 }
 
 .previewCarousel {
@@ -847,6 +824,8 @@
   border-radius: 10px;
   overflow: hidden;
   background: rgba(255, 255, 255, 0.88);
+  z-index: 1;
+  isolation: isolate;
 }
 
 .lessonPreviewSurfaceRatioFrame {
@@ -1694,28 +1673,76 @@
 .mobilePreviewModalBody {
   flex: 1 1 auto;
   min-height: 0;
-  overflow: auto;
-  padding: 0 10px;
+  overflow: hidden;
+  padding: 6px 10px 0;
   background: rgba(250, 252, 255, 0.94);
   border-top: 0;
   border-bottom: 1px solid rgba(44, 131, 195, 0.14);
 }
 
 .mobilePreviewModalBodyInner {
+  height: 100%;
   min-height: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
+  justify-content: center;
   gap: 10px;
+  overflow: hidden;
 }
 
 .mobilePreviewModalBodyInnerMaterial .lessonPreviewHeader {
   display: none;
 }
 
+.mobilePreviewModalBodyInnerMaterial {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr);
+}
+
+.mobilePreviewModalBodyInnerMaterial .lessonPreviewItem {
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  align-content: stretch;
+}
+
+.mobilePreviewModalBodyInnerMaterial .lessonPreviewSurface {
+  flex: 1 1 auto;
+  display: flex;
+  height: var(--mobile-material-surface-height, auto);
+  min-height: 0;
+  max-height: var(--mobile-material-surface-height, none);
+}
+
+.mobilePreviewModalBodyInnerMaterial .lessonPreviewSurfaceRatioFrame,
+.mobilePreviewModalBodyInnerMaterial .lessonPreviewSurfaceSlideDeck {
+  min-height: 0;
+  padding-bottom: 0;
+}
+
+.mobilePreviewModalBodyInnerMaterial .lessonPreviewMedia {
+  display: flex;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.mobilePreviewModalBodyInnerMaterial .lessonPreviewSurface iframe,
+.mobilePreviewModalBodyInnerMaterial .lessonPreviewSurface img {
+  display: block;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.mobilePreviewModalBodyInnerMaterial .lessonPreviewMeta {
+  min-height: 0;
+  flex: 0 0 auto;
+  align-self: stretch;
+}
+
 .mobilePreviewModalFooter {
   flex: 0 0 auto;
-  padding: 6px 10px 14px;
+  padding: 6px 10px max(8px, env(safe-area-inset-bottom, 0px));
   background: rgba(236, 241, 249, 0.98);
   border-top: 1px solid rgba(44, 131, 195, 0.16);
 }
@@ -1770,6 +1797,13 @@
   margin-right: auto;
 }
 
+.mobilePreviewModalBodyInnerMaterial .lessonPreviewMeta {
+  position: relative;
+  z-index: 2;
+  align-content: start;
+  padding-top: 2px;
+}
+
 .mobilePreviewModalBodyInner .lessonPreviewHeader {
   position: sticky;
   top: 0;
@@ -1801,17 +1835,11 @@
 
 .mobilePreviewModalBody .lessonPreviewSurfaceSlideDeck {
   padding-bottom: 0;
-  height: min(78dvh, calc(100dvh - 210px));
-  max-height: calc(100dvh - 210px);
+  height: var(--mobile-material-surface-height, min(78dvh, calc(100dvh - 210px)));
+  max-height: var(--mobile-material-surface-height, calc(100dvh - 210px));
 }
 
 @media (min-width: 768px) {
-  .lessonPreviewsCard {
-    position: sticky;
-    top: var(--lesson-preview-sticky-top, 0px);
-    align-self: start;
-  }
-
   .lessonSummaryCard {
     grid-template-columns: minmax(0, 1fr) minmax(220px, 280px);
     align-items: start;
@@ -1905,14 +1933,6 @@
     max-width: 410px;
     margin: 0 auto;
     min-height: 0;
-  }
-
-  .lessonPreviewsCard {
-    position: relative;
-    top: auto;
-    min-height: 0;
-    height: auto;
-    max-height: none;
   }
 
   .materialRow {

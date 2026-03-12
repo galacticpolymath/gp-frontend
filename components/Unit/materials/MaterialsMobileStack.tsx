@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import Image from 'next/image';
 import { createPortal } from 'react-dom';
 import CopyLessonBtn from '../../LessonSection/TeachIt/CopyLessonBtn';
@@ -143,9 +143,13 @@ const MaterialsMobileStack: React.FC<TMaterialsMobileStackProps> = ({
   renderPreviewContent,
 }) => {
   const [isPreviewModalOpen, setIsPreviewModalOpen] = useState(false);
+  const [mobileMaterialSurfaceHeight, setMobileMaterialSurfaceHeight] = useState<number | null>(
+    null
+  );
   const [openSections, setOpenSections] = useState<TAccordionState>(
     isAssessmentLesson ? ASSESSMENT_DEFAULT_OPEN : NON_ASSESSMENT_DEFAULT_OPEN
   );
+  const mobilePreviewBodyInnerRef = useRef<HTMLDivElement | null>(null);
 
   const { digital, printed } = useMemo(
     () => getAssessmentBuckets(assessmentProps?.assessmentItems ?? []),
@@ -257,6 +261,69 @@ const MaterialsMobileStack: React.FC<TMaterialsMobileStackProps> = ({
       window.removeEventListener('keydown', handleKeyDown);
     };
   }, [isPreviewModalOpen]);
+
+  useEffect(() => {
+    if (
+      !isPreviewModalOpen ||
+      activeLessonPreviewMode !== 'materials' ||
+      typeof window === 'undefined'
+    ) {
+      setMobileMaterialSurfaceHeight(null);
+      return;
+    }
+
+    let rafId = 0;
+    const container = mobilePreviewBodyInnerRef.current;
+    if (!container) {
+      setMobileMaterialSurfaceHeight(null);
+      return;
+    }
+
+    const previewItem = container.querySelector<HTMLElement>(`.${styles.lessonPreviewItem}`);
+    const previewMeta = container.querySelector<HTMLElement>(`.${styles.lessonPreviewMeta}`);
+
+    if (!previewItem || !previewMeta) {
+      setMobileMaterialSurfaceHeight(null);
+      return;
+    }
+
+    const measure = () => {
+      const itemStyles = window.getComputedStyle(previewItem);
+      const rowGap = Number.parseFloat(itemStyles.rowGap || '0');
+      const previewMetaHeight = Math.ceil(previewMeta.getBoundingClientRect().height);
+      const availableHeight = Math.floor(container.clientHeight - previewMetaHeight - rowGap);
+
+      setMobileMaterialSurfaceHeight((current) => {
+        if (!Number.isFinite(availableHeight) || availableHeight <= 0) {
+          return null;
+        }
+        if (current != null && Math.abs(current - availableHeight) < 2) {
+          return current;
+        }
+        return availableHeight;
+      });
+    };
+
+    const scheduleMeasure = () => {
+      window.cancelAnimationFrame(rafId);
+      rafId = window.requestAnimationFrame(measure);
+    };
+
+    scheduleMeasure();
+
+    const resizeObserver =
+      typeof ResizeObserver !== 'undefined' ? new ResizeObserver(scheduleMeasure) : null;
+    resizeObserver?.observe(container);
+    resizeObserver?.observe(previewItem);
+    resizeObserver?.observe(previewMeta);
+    window.addEventListener('resize', scheduleMeasure);
+
+    return () => {
+      window.cancelAnimationFrame(rafId);
+      resizeObserver?.disconnect();
+      window.removeEventListener('resize', scheduleMeasure);
+    };
+  }, [activeLessonPreviewMode, isPreviewModalOpen, modalActiveItem]);
 
   const openPreviewMode = (mode: string) => {
     setActiveLessonPreviewMode(mode);
@@ -779,12 +846,25 @@ const MaterialsMobileStack: React.FC<TMaterialsMobileStackProps> = ({
                 </div>
                 <div className={styles.mobilePreviewModalBody}>
                   <div
+                    ref={
+                      activeLessonPreviewMode === 'materials'
+                        ? mobilePreviewBodyInnerRef
+                        : null
+                    }
                     key={`mobile-preview-${activeLessonPreviewMode}`}
                     className={`${styles.mobilePreviewModalBodyInner} ${
                       activeLessonPreviewMode === 'materials'
                         ? styles.mobilePreviewModalBodyInnerMaterial
                         : ''
                     }`}
+                    style={
+                      activeLessonPreviewMode === 'materials' &&
+                      mobileMaterialSurfaceHeight != null
+                        ? ({
+                            ['--mobile-material-surface-height' as string]: `${mobileMaterialSurfaceHeight}px`,
+                          } as React.CSSProperties)
+                        : undefined
+                    }
                   >
                     {renderPreviewContent({
                       onCopyAll: handleCopyAllFromModal,
