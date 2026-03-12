@@ -22,6 +22,8 @@ type TMaterialItemPreviewProps = {
   handleOpenOfficeUpsell: (format: string) => void;
   isCopyAllDisabledForGpPlus: boolean;
   latestCopiedLessonFolderUrl: string | null;
+  enforceGpPlusDigitalGate?: boolean;
+  forceFormPreviewOnly?: boolean;
 };
 
 const MaterialItemPreview: React.FC<TMaterialItemPreviewProps> = ({
@@ -42,6 +44,8 @@ const MaterialItemPreview: React.FC<TMaterialItemPreviewProps> = ({
   handleOpenOfficeUpsell,
   isCopyAllDisabledForGpPlus,
   latestCopiedLessonFolderUrl,
+  enforceGpPlusDigitalGate = false,
+  forceFormPreviewOnly = false,
 }) => {
   if (!activeLessonItems.length) {
     return <p className={styles.unitMutedText}>Item previews will appear here.</p>;
@@ -77,13 +81,41 @@ const MaterialItemPreview: React.FC<TMaterialItemPreviewProps> = ({
   const hasExternalOpenUrl = Boolean(openUrl && /^https?:\/\//i.test(openUrl));
   const allowOpenInNewTab = isPresentation || (isWebResource && hasExternalOpenUrl);
   const frameSrc = isPresentation ? embedUrl ?? previewUrl ?? openUrl : embedUrl ?? previewUrl;
+  const formSourceUrl =
+    getFirstItemUrl(selectedPreviewItem) ??
+    selectedPreviewItem?.gdriveRoot ??
+    frameSrc ??
+    openUrl ??
+    '';
+  const isGoogleFormItem = /docs\.google\.com\/forms\//i.test(String(formSourceUrl));
+  const isFormPreviewOnly = forceFormPreviewOnly && isGoogleFormItem;
   const isGoogleDrivePreviewFrame = Boolean(
     frameSrc && /(?:docs\.google\.com|drive\.google\.com)/i.test(frameSrc)
   );
+  const digitalSourceUrl = getFirstItemUrl(selectedPreviewItem) ?? selectedPreviewItem?.gdriveRoot ?? '';
+  const selectedIsDigitalAssessment =
+    /docs\.google\.com\/forms\//i.test(String(digitalSourceUrl)) ||
+    /digital|google form|online form|web resource/.test(
+      [
+        selectedItem?.itemTitle ?? '',
+        selectedPreviewItem?.itemType ?? '',
+        selectedPreviewItem?.itemCat ?? '',
+        selectedPreviewItem?.fileType ?? '',
+      ]
+        .join(' ')
+        .toLowerCase()
+    );
   const isPreviewLockedLoggedOut = !isAuthenticated;
   const isPreviewLockedTeacher = isAuthenticated && !isUserTeacher && selectedIsTeacherOnly;
-  const isPreviewLocked = isPreviewLockedLoggedOut || isPreviewLockedTeacher;
-  const canOpenSelected = allowOpenInNewTab && !!openUrl && !isPreviewLocked;
+  const isPreviewLockedGpPlus =
+    enforceGpPlusDigitalGate &&
+    selectedIsDigitalAssessment &&
+    isAuthenticated &&
+    !isGpPlusUser;
+  const isPreviewLocked =
+    isPreviewLockedLoggedOut || isPreviewLockedTeacher || isPreviewLockedGpPlus;
+  const canOpenSelected =
+    allowOpenInNewTab && !!openUrl && !isPreviewLocked && !isFormPreviewOnly;
   const hasOfficeDownload = !!officeDownloadUrl && !!officeFormat;
   const canAccessOffice =
     hasOfficeDownload && !isPreviewLockedTeacher && isAuthenticated && isGpPlusUser;
@@ -134,7 +166,9 @@ const MaterialItemPreview: React.FC<TMaterialItemPreviewProps> = ({
             <iframe
               title={`${previewTitle} preview`}
               src={frameSrc}
-              className={isGoogleDrivePreviewFrame ? styles.lessonPreviewIFrameGoogle : undefined}
+              className={`${isGoogleDrivePreviewFrame ? styles.lessonPreviewIFrameGoogle : ''} ${
+                isFormPreviewOnly ? styles.lessonPreviewIFrameNonInteractive : ''
+              }`.trim()}
             />
           ) : previewImg ? (
             <img src={previewImg} alt={`${previewTitle} preview`} loading="lazy" />
@@ -144,6 +178,11 @@ const MaterialItemPreview: React.FC<TMaterialItemPreviewProps> = ({
             <p className={styles.unitMutedText}>Preview unavailable for this file type.</p>
           )}
         </div>
+        {isFormPreviewOnly && !isPreviewLocked && (
+          <div className={styles.lessonPreviewReadOnlyOverlay}>
+            Preview only. Copy to your Google Drive to assign this assessment.
+          </div>
+        )}
         {isPreviewLocked && (
           <div className={styles.lessonPreviewGate}>
             <p>
@@ -152,18 +191,20 @@ const MaterialItemPreview: React.FC<TMaterialItemPreviewProps> = ({
                   <CircleAlert size={18} aria-hidden="true" />
                   <span>Must Be Logged in to View Teaching Materials</span>
                 </span>
+              ) : isPreviewLockedGpPlus ? (
+                'This digital assessment preview is a GP+ feature.'
               ) : (
                 'Only viewable by teachers. If you are a teacher, please update your account.'
               )}
             </p>
-            {isPreviewLockedLoggedOut ? (
+            {isPreviewLockedLoggedOut || isPreviewLockedGpPlus ? (
               <div className={styles.lessonPreviewGateActions}>
                 <Link
                   href="/gp-plus"
                   className={styles.lessonPreviewGateButton}
                   onClick={handleGateNavigateToGpPlus}
                 >
-                  Create a Free Account
+                  {isPreviewLockedGpPlus ? 'Upgrade to GP+' : 'Create a Free Account'}
                 </Link>
                 <Link
                   href="/account"

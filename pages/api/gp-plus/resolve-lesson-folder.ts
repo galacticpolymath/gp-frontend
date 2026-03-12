@@ -83,7 +83,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           name: assessmentsFolder.name,
           parentFolder: { id: unitRootFolderId, name: 'Unit Root' },
         },
-        lessonsFolder: { sharedGDriveId: unitRootFolderId, name: 'Unit Root' },
+        lessonsFolder: {
+          sharedGDriveId: assessmentsFolder.id,
+          name: assessmentsFolder.name,
+        },
       });
     }
 

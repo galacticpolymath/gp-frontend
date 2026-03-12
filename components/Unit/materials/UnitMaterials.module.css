@@ -342,6 +342,18 @@
   background: linear-gradient(145deg, rgba(243, 247, 251, 0.84), rgba(225, 233, 241, 0.8));
 }
 
+.assessmentIntroCopy {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.45;
+  color: #30476a;
+}
+
+.assessmentDigitalWrap {
+  display: grid;
+  gap: 8px;
+}
+
 .materialRow {
   display: grid;
   gap: 6px;
@@ -833,6 +845,10 @@
   height: 108.7%;
 }
 
+.lessonPreviewIFrameNonInteractive {
+  pointer-events: none;
+}
+
 .lessonPreviewSurfaceLocked {
   background: rgba(255, 255, 255, 0.8);
 }
@@ -896,6 +912,22 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+}
+
+.lessonPreviewReadOnlyOverlay {
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  bottom: 10px;
+  z-index: 2;
+  padding: 8px 10px;
+  border: 1px solid rgba(44, 131, 195, 0.18);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.9);
+  color: #2f466b;
+  font-size: 14px;
+  line-height: 1.35;
+  text-align: center;
 }
 
 .lessonPreviewType {
@@ -1526,7 +1558,17 @@
   }
 }
 
+@media (min-width: 768px) and (max-width: 1023px) {
+  .lessonLayout {
+    padding-top: 24px;
+  }
+}
+
 @media (max-width: 767px) {
+  .lessonLayout {
+    padding-top: 16px;
+  }
+
   .lessonMaterialsGrid {
     grid-template-columns: minmax(0, 1fr);
   }

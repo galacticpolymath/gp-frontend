@@ -41,6 +41,7 @@ import StandardsTab from './tabs/StandardsTab';
 import CreditsTab from './tabs/CreditsTab';
 import MaterialsStandalonePreview from './materials/MaterialsStandalonePreview';
 import MaterialsResourcesPanel from './materials/MaterialsResourcesPanel';
+import AssessmentMaterialsPanel from './materials/AssessmentMaterialsPanel';
 import MaterialsPreviewPane from './materials/MaterialsPreviewPane';
 import LessonSummaryCard from './materials/LessonSummaryCard';
 import GradeBandSelectorCard from './materials/GradeBandSelectorCard';
@@ -87,6 +88,7 @@ const TAB_MATERIALS = 'materials';
 const TAB_STANDARDS = 'standards';
 const TAB_CREDITS = 'credits';
 const LESSON_TILE_FALLBACK_SRC = '/imgs/gp_logo_gradient_transBG.png';
+const ASSESSMENT_LESSON_ID = 100;
 
 type TTabKey =
   | typeof TAB_OVERVIEW
@@ -736,12 +738,7 @@ const isAssessmentLesson = <TItem extends IItem = IItemForUI>(
   if (!lesson) {
     return false;
   }
-  const identifier = getLessonIdentifier(lesson, index);
-  if (identifier === 100) {
-    return true;
-  }
-  const title = lesson?.title?.trim().toLowerCase() ?? '';
-  return title.includes('assessment');
+  return getLessonIdentifier(lesson, index) === ASSESSMENT_LESSON_ID;
 };
 
 type TPreviewItem = {
@@ -869,6 +866,27 @@ const getGoogleDriveFolderIdFromUrl = (value?: string | null) => {
   return null;
 };
 
+const getGoogleFormBase = (value: string) => {
+  const match = value.match(
+    /https?:\/\/docs\.google\.com\/forms\/(?:u\/\d+\/)?d\/(e\/)?([^/?#]+)/i
+  );
+  if (!match?.[2]) {
+    return null;
+  }
+  const kindPrefix = match[1] ? 'e/' : '';
+  return `https://docs.google.com/forms/d/${kindPrefix}${match[2]}`;
+};
+
+const toGoogleFormViewUrl = (value: string) => {
+  const base = getGoogleFormBase(value);
+  return base ? `${base}/viewform` : null;
+};
+
+const toGoogleFormEmbedUrl = (value: string) => {
+  const viewUrl = toGoogleFormViewUrl(value);
+  return viewUrl ? `${viewUrl}?embedded=true` : null;
+};
+
 const withGoogleSuffix = (value: string, suffix: 'view' | 'preview') => {
   const docBase = getGoogleDocBase(value);
   if (docBase) {
@@ -968,6 +986,28 @@ const getMaterialUrls = (item?: TPreviewItem & { mimeType?: string | null }) => 
       mimeType.includes('document') ||
       mimeType.includes('word') ||
       fileType === 'document');
+  const googleFormSourceUrl =
+    (typeof baseUrl === 'string' && baseUrl.trim() ? baseUrl : null) ??
+    (typeof item?.gdriveRoot === 'string' && item.gdriveRoot.trim()
+      ? item.gdriveRoot
+      : null);
+  const googleFormViewUrl = googleFormSourceUrl
+    ? toGoogleFormViewUrl(googleFormSourceUrl)
+    : null;
+  const googleFormEmbedUrl = googleFormSourceUrl
+    ? toGoogleFormEmbedUrl(googleFormSourceUrl)
+    : null;
+
+  if (googleFormViewUrl) {
+    return {
+      openUrl: googleFormViewUrl,
+      previewUrl: googleFormViewUrl,
+      embedUrl: googleFormEmbedUrl ?? googleFormViewUrl,
+      pdfDownloadUrl: null,
+      officeDownloadUrl: null,
+      officeFormat: null,
+    };
+  }
 
   if (isWebResource) {
     return {
@@ -1943,14 +1983,16 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
   };
 
   const handleLessonChange = (lessonId: number) => {
+    const nextPreviewMode =
+      lessonId === ASSESSMENT_LESSON_ID ? 'materials' : 'featured-media';
     setActiveLessonId(lessonId);
-    setActiveLessonPreviewMode('featured-media');
+    setActiveLessonPreviewMode(nextPreviewMode);
     setActiveMaterialIndex(0);
     setActiveTab(TAB_MATERIALS);
     updateUrlState({
       tab: TAB_MATERIALS,
       lessonId,
-      previewMode: 'featured-media',
+      previewMode: nextPreviewMode,
       materialIndex: 0,
     });
     trackUnitEvent('unit_lesson_selected', { lesson_id: lessonId });
@@ -2483,6 +2525,10 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
   );
   const activeLesson =
     activeLessonIndex >= 0 ? lessons[activeLessonIndex] : undefined;
+  const isActiveAssessmentLesson =
+    activeLessonIndex >= 0
+      ? isAssessmentLesson(activeLesson, activeLessonIndex)
+      : false;
   const standaloneResolvedLesson = useMemo(() => {
     if (!isStandalonePreview || activeLessonId == null) {
       return null;
@@ -2951,7 +2997,9 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
 
   useEffect(() => {
     setActiveMaterialIndex(0);
-    setActiveLessonPreviewMode('featured-media');
+    setActiveLessonPreviewMode(
+      activeLessonId === ASSESSMENT_LESSON_ID ? 'materials' : 'featured-media'
+    );
   }, [activeLessonId]);
   useEffect(() => {
     return () => {
@@ -2967,7 +3015,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
       return null;
     }
 
-    if (activeLessonId === 100) {
+    if (activeLessonId === ASSESSMENT_LESSON_ID) {
       return (
         activeLesson.sharedGDriveLessonFolders.find(
           (folder) => folder?.name?.toLowerCase() === 'assessments'
@@ -3118,6 +3166,23 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
   }, [activeLessonId, selectedGradeBandFolderId, unit.GdrivePublicID]);
 
   const resolvedLessonsFolderForCopy = useMemo(() => {
+    if (activeLessonId === ASSESSMENT_LESSON_ID) {
+      const assessmentFolderId =
+        resolvedLessonFolderFromApi?.lessonFolder?.id ||
+        resolvedActiveLessonSharedFolder?.id;
+      const assessmentFolderName =
+        resolvedLessonFolderFromApi?.lessonFolder?.name ||
+        resolvedActiveLessonSharedFolder?.name ||
+        'Assessments';
+
+      if (assessmentFolderId) {
+        return {
+          sharedGDriveId: assessmentFolderId,
+          name: assessmentFolderName,
+        };
+      }
+    }
+
     if (resolvedLessonsFolder?.sharedGDriveId) {
       return {
         sharedGDriveId: resolvedLessonsFolder.sharedGDriveId,
@@ -3169,8 +3234,11 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
 
     return undefined;
   }, [
+    activeLessonId,
     lessonResources,
     resolvedActiveLessonSharedFolder,
+    resolvedLessonFolderFromApi?.lessonFolder?.id,
+    resolvedLessonFolderFromApi?.lessonFolder?.name,
     resolvedLessonsFolder,
     unit.GdrivePublicID,
     unit.MediumTitle,
@@ -3258,7 +3326,12 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
       hasValidLessonsFolderForCopy &&
       allUnitLessonsForCopy?.length
   );
-  const browseAllMaterialsUrl = lessonResources?.links?.url?.[0] ?? null;
+  const browseAllMaterialsUrl =
+    activeLessonId === ASSESSMENT_LESSON_ID
+      ? resolvedSharedFolderIdForCopy
+        ? `https://drive.google.com/drive/folders/${resolvedSharedFolderIdForCopy}`
+        : null
+      : lessonResources?.links?.url?.[0] ?? null;
   const canBrowseAllMaterials = Boolean(browseAllMaterialsUrl);
   const isCopyAllDisabledForGpPlus = isGpPlusUser && !canShowCopyAllToGoogleDriveBtn;
   const isBrowseDisabledForGpPlus = isGpPlusUser && !canBrowseAllMaterials;
@@ -3973,6 +4046,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                     setActiveLessonPreviewMode={setActiveLessonPreviewMode}
                     onTagSearchClick={(tag) => handleTagSearchClick(tag, 'lesson_tile')}
                     onShare={handleShare}
+                    assessmentIntroCopy={activeLesson?.lsnPreface ?? null}
                   />
                   <GradeBandSelectorCard
                     teachingMaterialsPreface={teachingMaterialsPreface}
@@ -3984,70 +4058,135 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                     setSelectedResourceIndex={setSelectedResourceIndex}
                   />
                   <div className={materialStyles.lessonMaterialsGrid}>
-                    <MaterialsResourcesPanel
-                      lessonResourcesCardRef={lessonResourcesCardRef}
-                      isGpPlusUser={isGpPlusUser}
-                      isGpPlusBannerDismissed={isGpPlusBannerDismissed}
-                      setIsGpPlusBannerDismissed={setIsGpPlusBannerDismissed}
-                      setIsGpPlusModalDisplayed={setIsGpPlusModalDisplayed}
-                      quickStartProps={{
-                        isFeaturedMediaOpen,
-                        isDetailedFlowOpen,
-                        isBackgroundOpen,
-                        isGoingFurtherOpen,
-                        hasFeaturedMedia,
-                        hasDetailedFlow,
-                        hasBackgroundContent,
-                        hasGoingFurther,
-                        setActiveLessonPreviewMode,
-                      }}
-                      gpPlusFunctionsProps={{
-                        isJobVizPreviewOpen,
-                        hasJobVizConnections,
-                        setActiveLessonPreviewMode,
-                        handleBrowseAllMaterialsClick,
-                        handleCopyAllMaterialsClick,
-                        isBrowseDisabledForGpPlus,
-                        isCopyAllDisabledForGpPlus,
-                        latestCopiedLessonFolderUrl,
-                        browseUnavailableReason,
-                        copyAllUnavailableReason,
-                        isGpPlusUser,
-                        canShowCopyAllToGoogleDriveBtn,
-                        copyLessonBtnRef,
-                        unitId,
-                        unit,
-                        activeLessonId,
-                        activeLesson,
-                        lessonsGradesForCopy,
-                        resolvedSharedFolderIdForCopy,
-                        resolvedSharedFolderNameForCopy,
-                        allUnitLessonsForCopy,
-                        effectiveLessonsFolderForCopy,
-                        isRetrievingLessonFolderIds,
-                        setLessons,
-                      }}
-                      previewDownloadProps={{
-                        activeLessonItems,
-                        activeLessonPreviewMode,
-                        activeMaterialIndex,
-                        isAuthenticated,
-                        isUserTeacher,
-                        isGpPlusUser,
-                        isGpPlusMember,
-                        isGpPlusResolved,
-                        getMaterialTypeIcon,
-                        getMaterialUrls,
-                        selectMaterialItem,
-                        handleOpenOfficeUpsell,
-                      }}
-                    />
+                    {isActiveAssessmentLesson ? (
+                      <AssessmentMaterialsPanel
+                        lessonResourcesCardRef={lessonResourcesCardRef}
+                        isGpPlusUser={isGpPlusUser}
+                        isGpPlusBannerDismissed={isGpPlusBannerDismissed}
+                        setIsGpPlusBannerDismissed={setIsGpPlusBannerDismissed}
+                        setIsGpPlusModalDisplayed={setIsGpPlusModalDisplayed}
+                        assessmentItems={activeLessonItems}
+                        activeLessonPreviewMode={activeLessonPreviewMode}
+                        activeMaterialIndex={activeMaterialIndex}
+                        isAuthenticated={isAuthenticated}
+                        isUserTeacher={isUserTeacher}
+                        isGpPlusMember={isGpPlusMember}
+                        isGpPlusResolved={isGpPlusResolved}
+                        getMaterialTypeIcon={getMaterialTypeIcon}
+                        getMaterialUrls={getMaterialUrls}
+                        toGooglePdfExportUrl={toGooglePdfExportUrl}
+                        getNormalizedGDriveRoot={getNormalizedGDriveRoot}
+                        selectMaterialItem={selectMaterialItem}
+                        handleOpenOfficeUpsell={handleOpenOfficeUpsell}
+                        handleBrowseAllMaterialsClick={handleBrowseAllMaterialsClick}
+                        handleCopyAllMaterialsClick={handleCopyAllMaterialsClick}
+                        isBrowseDisabledForGpPlus={isBrowseDisabledForGpPlus}
+                        isCopyAllDisabledForGpPlus={isCopyAllDisabledForGpPlus}
+                        browseUnavailableReason={browseUnavailableReason}
+                        copyAllUnavailableReason={copyAllUnavailableReason}
+                        latestCopiedLessonFolderUrl={latestCopiedLessonFolderUrl}
+                        canShowCopyAllToGoogleDriveBtn={canShowCopyAllToGoogleDriveBtn}
+                        copyLessonBtnRef={copyLessonBtnRef}
+                        unitId={unitId}
+                        unit={unit}
+                        activeLessonId={activeLessonId}
+                        activeLesson={activeLesson}
+                        lessonsGradesForCopy={lessonsGradesForCopy}
+                        resolvedSharedFolderIdForCopy={resolvedSharedFolderIdForCopy}
+                        resolvedSharedFolderNameForCopy={resolvedSharedFolderNameForCopy}
+                        allUnitLessonsForCopy={allUnitLessonsForCopy}
+                        effectiveLessonsFolderForCopy={effectiveLessonsFolderForCopy}
+                        isRetrievingLessonFolderIds={isRetrievingLessonFolderIds}
+                        setLessons={setLessons}
+                      />
+                    ) : (
+                      <MaterialsResourcesPanel
+                        lessonResourcesCardRef={lessonResourcesCardRef}
+                        isGpPlusUser={isGpPlusUser}
+                        isGpPlusBannerDismissed={isGpPlusBannerDismissed}
+                        setIsGpPlusBannerDismissed={setIsGpPlusBannerDismissed}
+                        setIsGpPlusModalDisplayed={setIsGpPlusModalDisplayed}
+                        quickStartProps={{
+                          isFeaturedMediaOpen,
+                          isDetailedFlowOpen,
+                          isBackgroundOpen,
+                          isGoingFurtherOpen,
+                          hasFeaturedMedia,
+                          hasDetailedFlow,
+                          hasBackgroundContent,
+                          hasGoingFurther,
+                          setActiveLessonPreviewMode,
+                        }}
+                        gpPlusFunctionsProps={{
+                          isJobVizPreviewOpen,
+                          hasJobVizConnections,
+                          setActiveLessonPreviewMode,
+                          handleBrowseAllMaterialsClick,
+                          handleCopyAllMaterialsClick,
+                          isBrowseDisabledForGpPlus,
+                          isCopyAllDisabledForGpPlus,
+                          latestCopiedLessonFolderUrl,
+                          browseUnavailableReason,
+                          copyAllUnavailableReason,
+                          isGpPlusUser,
+                          canShowCopyAllToGoogleDriveBtn,
+                          copyLessonBtnRef,
+                          unitId,
+                          unit,
+                          activeLessonId,
+                          activeLesson,
+                          lessonsGradesForCopy,
+                          resolvedSharedFolderIdForCopy,
+                          resolvedSharedFolderNameForCopy,
+                          allUnitLessonsForCopy,
+                          effectiveLessonsFolderForCopy,
+                          isRetrievingLessonFolderIds,
+                          setLessons,
+                        }}
+                        previewDownloadProps={{
+                          activeLessonItems,
+                          activeLessonPreviewMode,
+                          activeMaterialIndex,
+                          isAuthenticated,
+                          isUserTeacher,
+                          isGpPlusUser,
+                          isGpPlusMember,
+                          isGpPlusResolved,
+                          getMaterialTypeIcon,
+                          getMaterialUrls,
+                          selectMaterialItem,
+                          handleOpenOfficeUpsell,
+                        }}
+                      />
+                    )}
                     <MaterialsPreviewPane
                       lessonPreviewsCardRef={lessonPreviewsCardRef}
                       previewPaneStickyStyle={previewPaneStickyStyle}
                       activeLessonPreviewMode={activeLessonPreviewMode}
                     >
-                      {isFeaturedMediaOpen ? (
+                      {isActiveAssessmentLesson ? (
+                        <MaterialItemPreview
+                          activeLessonItems={activeLessonItems}
+                          activeMaterialIndex={activeMaterialIndex}
+                          getMaterialUrls={getMaterialUrls}
+                          toGooglePdfExportUrl={toGooglePdfExportUrl}
+                          getNormalizedGDriveRoot={getNormalizedGDriveRoot}
+                          getFirstItemUrl={getFirstItemUrl}
+                          isImageUrl={isImageUrl}
+                          isAuthenticated={isAuthenticated}
+                          isUserTeacher={isUserTeacher}
+                          isGpPlusUser={isGpPlusUser}
+                          isGpPlusMember={isGpPlusMember}
+                          handleGateNavigateToGpPlus={handleGateNavigateToGpPlus}
+                          handleGateNavigateToAccount={handleGateNavigateToAccount}
+                          handleCopyAllMaterialsClick={handleCopyAllMaterialsClick}
+                          handleOpenOfficeUpsell={handleOpenOfficeUpsell}
+                          isCopyAllDisabledForGpPlus={isCopyAllDisabledForGpPlus}
+                          latestCopiedLessonFolderUrl={latestCopiedLessonFolderUrl}
+                          enforceGpPlusDigitalGate
+                          forceFormPreviewOnly
+                        />
+                      ) : isFeaturedMediaOpen ? (
                         <FeaturedMediaPreview
                           hasFeaturedMedia={hasFeaturedMedia}
                           activeLessonFeaturedMedia={activeLessonFeaturedMedia}

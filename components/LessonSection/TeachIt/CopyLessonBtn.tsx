@@ -515,7 +515,7 @@ const CopyLessonBtn: React.FC<
       if (!validToken) {
         setLocalStorageItem(
           'gpPlusFeatureLocation',
-          `${window.location.protocol}//${window.location.host}${window.location.pathname}#teaching-materials`
+          window.location.href
         );
         window.location.href = createGDriveAuthUrl();
         return;
@@ -612,7 +612,7 @@ const CopyLessonBtn: React.FC<
             if (!validToken || !gdriveEmail) {
               setLocalStorageItem(
                 'gpPlusFeatureLocation',
-                `${window.location.protocol}//${window.location.host}${window.location.pathname}#teaching-materials`
+                window.location.href
               );
               updateIdsOfLessonsBeingCopied('delete');
               setIsCopyingLesson(false);
@@ -695,7 +695,7 @@ const CopyLessonBtn: React.FC<
 
               setLocalStorageItem(
                 'gpPlusFeatureLocation',
-                `${window.location.protocol}//${window.location.host}${window.location.pathname}#teaching-materials`
+                window.location.href
               );
               window.location.href = createGDriveAuthUrl();
               return;
@@ -1133,7 +1133,7 @@ const CopyLessonBtn: React.FC<
 
       setLocalStorageItem(
         'gpPlusFeatureLocation',
-        `${window.location.protocol}//${window.location.host}${window.location.pathname}#teaching-materials`
+        window.location.href
       );
 
       router.push('/gp-plus');
@@ -1165,7 +1165,7 @@ const CopyLessonBtn: React.FC<
         if (!validToken) {
           setLocalStorageItem(
             'gpPlusFeatureLocation',
-            `${window.location.protocol}//${window.location.host}${window.location.pathname}#teaching-materials`
+            window.location.href
           );
           window.location.href = createGDriveAuthUrl();
           // TODO: after the user authenticates with google, start copy lesson job
@@ -1221,7 +1221,7 @@ const CopyLessonBtn: React.FC<
               if (!validToken || !gdriveEmail) {
                 setLocalStorageItem(
                   'gpPlusFeatureLocation',
-                  `${window.location.protocol}//${window.location.host}${window.location.pathname}#teaching-materials`
+                  window.location.href
                 );
                 window.location.href = createGDriveAuthUrl();
                 return;
@@ -1300,7 +1300,7 @@ const CopyLessonBtn: React.FC<
                 setIsCopyingLesson(false);
                 setLocalStorageItem(
                   'gpPlusFeatureLocation',
-                  `${window.location.protocol}//${window.location.host}${window.location.pathname}#teaching-materials`
+                  window.location.href
                 );
                 window.location.href = createGDriveAuthUrl();
                 return;
