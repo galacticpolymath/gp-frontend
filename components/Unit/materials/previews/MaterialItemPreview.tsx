@@ -112,7 +112,7 @@ const MaterialItemPreview: React.FC<TMaterialItemPreviewProps> = ({
   const previewImg = (selectedItem as { filePreviewImg?: string })?.filePreviewImg ?? null;
   const previewTitle = selectedItem?.itemTitle ?? `Resource ${safeIndex + 1}`;
   const previewDescription =
-    selectedItem?.itemDescription ?? 'Preview details will appear for this material.';
+    selectedItem?.itemDescription ?? 'These questions mirror Print Assessment exactly';
   const itemTypeLabel = selectedPreviewItem?.itemType?.toLowerCase() ?? '';
   const selectedIsTeacherOnly =
     typeof selectedItem?.itemTitle === 'string' && selectedItem.itemTitle.toLowerCase().includes('teacher');

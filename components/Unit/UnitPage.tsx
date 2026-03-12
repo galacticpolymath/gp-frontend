@@ -3136,12 +3136,19 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
   const selectedGradeBandFolderId = getGoogleDriveFolderIdFromUrl(
     lessonResources?.links?.url?.[0] ?? null
   );
+  const assessmentUnitRootFolderId =
+    unit.GdrivePublishedID?.trim() || unit.GdrivePublicID?.trim() || '';
 
   useEffect(() => {
     let didCancel = false;
 
     const resolveLessonFolder = async () => {
-      if (!unit.GdrivePublicID || activeLessonId == null) {
+      const isAssessmentLesson = activeLessonId === ASSESSMENT_LESSON_ID;
+      const unitRootFolderId = isAssessmentLesson
+        ? assessmentUnitRootFolderId
+        : unit.GdrivePublicID?.trim() || '';
+
+      if (!unitRootFolderId || activeLessonId == null) {
         setResolvedLessonFolderFromApi(null);
         setIsResolvingLessonFolder(false);
         return;
@@ -3153,9 +3160,9 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
         const url = new URL(
           `${window.location.origin}/api/gp-plus/resolve-lesson-folder`
         );
-        url.searchParams.set('unitRootFolderId', unit.GdrivePublicID);
+        url.searchParams.set('unitRootFolderId', unitRootFolderId);
         url.searchParams.set('lessonId', String(activeLessonId));
-        if (selectedGradeBandFolderId) {
+        if (!isAssessmentLesson && selectedGradeBandFolderId) {
           url.searchParams.set('gradeBandFolderId', selectedGradeBandFolderId);
         }
 
@@ -3185,7 +3192,12 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
     return () => {
       didCancel = true;
     };
-  }, [activeLessonId, selectedGradeBandFolderId, unit.GdrivePublicID]);
+  }, [
+    activeLessonId,
+    assessmentUnitRootFolderId,
+    selectedGradeBandFolderId,
+    unit.GdrivePublicID,
+  ]);
 
   const resolvedLessonsFolderForCopy = useMemo(() => {
     if (activeLessonId === ASSESSMENT_LESSON_ID) {
@@ -3273,9 +3285,13 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
           (lesson) => lesson.id === String(activeLessonId)
         )?.sharedGDriveId
       : undefined;
+  const assessmentFolderIdFromLink = getGoogleDriveFolderIdFromUrl(
+    activeLessonId === ASSESSMENT_LESSON_ID ? lessonResources?.links?.url?.[0] ?? null : null
+  );
   const assessmentFolderIdForCopy =
     resolvedLessonFolderFromApi?.lessonFolder?.id ||
     resolvedActiveLessonSharedFolder?.id ||
+    assessmentFolderIdFromLink ||
     lessonFolderIdFromAllUnitLessons ||
     '';
   const resolvedSharedFolderIdForCopy =
@@ -3291,6 +3307,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
     activeLessonId === ASSESSMENT_LESSON_ID
       ? resolvedLessonFolderFromApi?.lessonFolder?.name?.trim() ||
         resolvedActiveLessonSharedFolder?.name?.trim() ||
+        lessonResources?.links?.linkText?.trim() ||
         'Assessments'
       : resolvedLessonFolderFromApi?.lessonFolder?.name?.trim() ||
         resolvedActiveLessonSharedFolder?.name?.trim() ||
@@ -3372,7 +3389,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
     activeLessonId === ASSESSMENT_LESSON_ID
       ? resolvedSharedFolderIdForCopy
         ? `https://drive.google.com/drive/folders/${resolvedSharedFolderIdForCopy}`
-        : null
+        : lessonResources?.links?.url?.[0] ?? null
       : lessonResources?.links?.url?.[0] ?? null;
   const canBrowseAllMaterials = Boolean(browseAllMaterialsUrl);
   const isCopyAllDisabledForGpPlus = isGpPlusUser && !canShowCopyAllToGoogleDriveBtn;

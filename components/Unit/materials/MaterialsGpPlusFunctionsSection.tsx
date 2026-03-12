@@ -84,7 +84,9 @@ const MaterialsGpPlusFunctionsSection: React.FC<TMaterialsGpPlusFunctionsSection
         </button>
         <button
           type="button"
-          className={`${styles.lessonProcedureToggle} ${styles.gpFunctionActionBtn}`}
+          className={`${styles.lessonProcedureToggle} ${styles.gpFunctionActionBtn} ${
+            isBrowseDisabledForGpPlus ? styles.lessonProcedureToggleUnavailable : ''
+          }`}
           onClick={handleBrowseAllMaterialsClick}
           disabled={isBrowseDisabledForGpPlus}
         >
@@ -95,7 +97,9 @@ const MaterialsGpPlusFunctionsSection: React.FC<TMaterialsGpPlusFunctionsSection
         </button>
         <button
           type="button"
-          className={`${styles.lessonProcedureToggle} ${styles.gpFunctionActionBtn}`}
+          className={`${styles.lessonProcedureToggle} ${styles.gpFunctionActionBtn} ${
+            isCopyAllDisabledForGpPlus ? styles.lessonProcedureToggleUnavailable : ''
+          }`}
           onClick={handleCopyAllMaterialsClick}
           disabled={isCopyAllDisabledForGpPlus}
         >

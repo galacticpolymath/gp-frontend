@@ -74,7 +74,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         unitRootChildren.find((f) => f.name.trim().toLowerCase() === 'assessments') ?? null;
 
       if (!assessmentsFolder) {
-        return res.status(404).json({ err: 'Assessments folder not found under unit root' });
+        return res
+          .status(404)
+          .json({ err: "Assessments folder not found under provided unit root folder" });
       }
 
       return res.status(200).json({

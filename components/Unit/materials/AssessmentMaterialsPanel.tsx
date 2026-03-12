@@ -236,14 +236,17 @@ const AssessmentMaterialsPanel: React.FC<TAssessmentMaterialsPanelProps> = ({
         <section className={`${styles.resourceSection} ${styles.gpPlusFunctionsSection}`}>
           <h3 className={styles.lessonCardHeading}>
             <Image alt="GP+ icon" width={18} height={18} src="/plus/plus.png" />
-            <span>Assessment Folder Actions</span>
+            <span>GP Plus Functions</span>
           </h3>
           <div className={styles.gpFunctionActions}>
             <div className={styles.gpFunctionActionItem}>
               <button
                 type="button"
-                className={`${styles.lessonProcedureToggle} ${styles.gpFunctionActionBtn}`}
+                className={`${styles.lessonProcedureToggle} ${styles.gpFunctionActionBtn} ${
+                  isBrowseDisabledForGpPlus ? styles.lessonProcedureToggleUnavailable : ''
+                }`}
                 onClick={handleBrowseAllMaterialsClick}
+                disabled={isBrowseDisabledForGpPlus}
               >
                 <span className={styles.lessonProcedureToggleText}>
                   <Eye size={16} aria-hidden="true" />
@@ -257,8 +260,11 @@ const AssessmentMaterialsPanel: React.FC<TAssessmentMaterialsPanelProps> = ({
             <div className={styles.gpFunctionActionItem}>
               <button
                 type="button"
-                className={`${styles.lessonProcedureToggle} ${styles.gpFunctionActionBtn}`}
+                className={`${styles.lessonProcedureToggle} ${styles.gpFunctionActionBtn} ${
+                  isCopyAllDisabledForGpPlus ? styles.lessonProcedureToggleUnavailable : ''
+                }`}
                 onClick={handleCopyAllMaterialsClick}
+                disabled={isCopyAllDisabledForGpPlus}
               >
                 <span className={styles.lessonProcedureToggleText}>
                   <FileStack size={16} aria-hidden="true" />
