@@ -43,6 +43,7 @@ import MaterialsStandalonePreview from './materials/MaterialsStandalonePreview';
 import MaterialsResourcesPanel from './materials/MaterialsResourcesPanel';
 import AssessmentMaterialsPanel from './materials/AssessmentMaterialsPanel';
 import MaterialsPreviewPane from './materials/MaterialsPreviewPane';
+import MaterialsMobileStack from './materials/MaterialsMobileStack';
 import LessonSummaryCard from './materials/LessonSummaryCard';
 import GradeBandSelectorCard from './materials/GradeBandSelectorCard';
 import FeaturedMediaPreview from './materials/previews/FeaturedMediaPreview';
@@ -1024,9 +1025,10 @@ const getMaterialUrls = (item?: TPreviewItem & { mimeType?: string | null }) => 
     const gdriveRoot = getNormalizedGDriveRoot(item.gdriveRoot);
     if (isPresentation) {
       const viewUrl = toGoogleDriveViewUrl(gdriveRoot) ?? `${gdriveRoot}/view`;
+      const previewUrl = toGoogleDrivePreviewUrl(gdriveRoot) ?? `${gdriveRoot}/preview`;
       return {
         openUrl: viewUrl,
-        previewUrl: viewUrl,
+        previewUrl,
         embedUrl: viewUrl,
         pdfDownloadUrl: null,
         officeDownloadUrl: toGoogleOfficeExport(gdriveRoot)?.url ?? null,
@@ -1060,10 +1062,11 @@ const getMaterialUrls = (item?: TPreviewItem & { mimeType?: string | null }) => 
 
   if (isPresentation) {
     const viewUrl = toGoogleDriveViewUrl(baseUrl) ?? baseUrl;
+    const previewUrl = toGoogleDrivePreviewUrl(baseUrl) ?? baseUrl;
     const officeExport = toGoogleOfficeExport(baseUrl);
     return {
       openUrl: viewUrl,
-      previewUrl: viewUrl,
+      previewUrl,
       embedUrl: viewUrl,
       pdfDownloadUrl: null,
       officeDownloadUrl: officeExport?.url ?? null,
@@ -1570,6 +1573,7 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
     null
   );
   const [jobVizSaveError, setJobVizSaveError] = useState<string | null>(null);
+  const [isMobileMaterialsViewport, setIsMobileMaterialsViewport] = useState(false);
 
   useEffect(() => {
     setIsAvatarHydrated(true);
@@ -1578,6 +1582,24 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
   useEffect(() => {
     setAvatarCandidateIndex(0);
   }, [avatarCandidates]);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    const mediaQuery = window.matchMedia('(max-width: 767px)');
+    const syncMobileViewport = () => setIsMobileMaterialsViewport(mediaQuery.matches);
+    syncMobileViewport();
+
+    if (typeof mediaQuery.addEventListener === 'function') {
+      mediaQuery.addEventListener('change', syncMobileViewport);
+      return () => mediaQuery.removeEventListener('change', syncMobileViewport);
+    }
+
+    mediaQuery.addListener(syncMobileViewport);
+    return () => mediaQuery.removeListener(syncMobileViewport);
+  }, []);
 
   useEffect(() => {
     if (!isAvatarHydrated || !isAuthenticated) return;
@@ -3789,6 +3811,103 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
             : null),
         } as React.CSSProperties)
       : undefined;
+  const renderPreviewPaneContent = (options?: {
+    onCopyAllClick?: () => void;
+    preferPresentationPreview?: boolean;
+    hideMaterialHeader?: boolean;
+  }) => {
+    const onCopyAllClick = options?.onCopyAllClick ?? handleCopyAllMaterialsClick;
+    const preferPresentationPreview = Boolean(options?.preferPresentationPreview);
+    const hideMaterialHeader = Boolean(options?.hideMaterialHeader);
+    return (
+    isActiveAssessmentLesson ? (
+      <MaterialItemPreview
+        activeLessonItems={activeLessonItems}
+        activeMaterialIndex={activeMaterialIndex}
+        getMaterialUrls={getMaterialUrls}
+        toGooglePdfExportUrl={toGooglePdfExportUrl}
+        getNormalizedGDriveRoot={getNormalizedGDriveRoot}
+        getFirstItemUrl={getFirstItemUrl}
+        isImageUrl={isImageUrl}
+        isAuthenticated={isAuthenticated}
+        isUserTeacher={isUserTeacher}
+        isGpPlusUser={isGpPlusUser}
+        isGpPlusMember={isGpPlusMember}
+        handleGateNavigateToGpPlus={handleGateNavigateToGpPlus}
+        handleGateNavigateToAccount={handleGateNavigateToAccount}
+        handleCopyAllMaterialsClick={onCopyAllClick}
+        handleOpenOfficeUpsell={handleOpenOfficeUpsell}
+        isCopyAllDisabledForGpPlus={isCopyAllDisabledForGpPlus}
+        latestCopiedLessonFolderUrl={latestCopiedLessonFolderUrl}
+        enforceGpPlusDigitalGate
+        forceFormPreviewOnly
+        preferPresentationPreview={preferPresentationPreview}
+        hideHeader={hideMaterialHeader}
+      />
+    ) : isFeaturedMediaOpen ? (
+      <FeaturedMediaPreview
+        hasFeaturedMedia={hasFeaturedMedia}
+        activeLessonFeaturedMedia={activeLessonFeaturedMedia}
+      />
+    ) : isDetailedFlowOpen ? (
+      <ProcedurePreview
+        activeLesson={activeLesson ?? null}
+        chunkDurations={chunkDurations}
+        onPrint={handlePrintProcedureFromPreview}
+        onOpenInNewTab={handleOpenProcedureInNewTab}
+      />
+    ) : isBackgroundOpen ? (
+      <BackgroundPreview
+        backgroundContent={backgroundContent}
+        onPrint={handlePrintBackgroundFromPreview}
+        onOpenInNewTab={handleOpenBackgroundInNewTab}
+      />
+    ) : isGoingFurtherOpen ? (
+      <GoingFurtherPreview
+        hasGoingFurther={hasGoingFurther}
+        activeLessonGoingFurther={activeLessonGoingFurther}
+      />
+    ) : isJobVizPreviewOpen ? (
+      <JobVizPreview
+        hasJobVizConnections={hasJobVizConnections}
+        unitTitle={unitTitle}
+        jobVizConnections={jobVizConnections}
+        jobVizConnectionIcons={jobVizConnectionIcons}
+        isGpPlusUser={isGpPlusUser}
+        isAuthenticated={isAuthenticated}
+        isSavingJobVizTour={isSavingJobVizTour}
+        handlePreviewJobVizAssignmentClick={handlePreviewJobVizAssignmentClick}
+        handleSaveJobVizTourClick={handleSaveJobVizTourClick}
+        jobVizSaveMessage={jobVizSaveMessage}
+        jobVizSaveError={jobVizSaveError}
+      />
+    ) : !!activeLessonItems.length ? (
+      <MaterialItemPreview
+        activeLessonItems={activeLessonItems}
+        activeMaterialIndex={activeMaterialIndex}
+        getMaterialUrls={getMaterialUrls}
+        toGooglePdfExportUrl={toGooglePdfExportUrl}
+        getNormalizedGDriveRoot={getNormalizedGDriveRoot}
+        getFirstItemUrl={getFirstItemUrl}
+        isImageUrl={isImageUrl}
+        isAuthenticated={isAuthenticated}
+        isUserTeacher={isUserTeacher}
+        isGpPlusUser={isGpPlusUser}
+        isGpPlusMember={isGpPlusMember}
+        handleGateNavigateToGpPlus={handleGateNavigateToGpPlus}
+        handleGateNavigateToAccount={handleGateNavigateToAccount}
+        handleCopyAllMaterialsClick={onCopyAllClick}
+        handleOpenOfficeUpsell={handleOpenOfficeUpsell}
+        isCopyAllDisabledForGpPlus={isCopyAllDisabledForGpPlus}
+        latestCopiedLessonFolderUrl={latestCopiedLessonFolderUrl}
+        preferPresentationPreview={preferPresentationPreview}
+        hideHeader={hideMaterialHeader}
+      />
+    ) : (
+      <p className={materialStyles.unitMutedText}>Item previews will appear here.</p>
+    )
+    );
+  };
 
   const handleGradeBandFilter = (gradeBand: TGradeBand) => {
     setSelectedGradeBands((current) => {
@@ -4077,199 +4196,216 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                     hasMultipleGradeBandOptions={hasMultipleGradeBandOptions}
                     setSelectedResourceIndex={setSelectedResourceIndex}
                   />
-                  <div className={materialStyles.lessonMaterialsGrid}>
-                    {isActiveAssessmentLesson ? (
-                      <AssessmentMaterialsPanel
-                        lessonResourcesCardRef={lessonResourcesCardRef}
-                        isGpPlusUser={isGpPlusUser}
-                        isGpPlusBannerDismissed={isGpPlusBannerDismissed}
-                        setIsGpPlusBannerDismissed={setIsGpPlusBannerDismissed}
-                        setIsGpPlusModalDisplayed={setIsGpPlusModalDisplayed}
-                        assessmentItems={activeLessonItems}
-                        activeLessonPreviewMode={activeLessonPreviewMode}
-                        activeMaterialIndex={activeMaterialIndex}
-                        isAuthenticated={isAuthenticated}
-                        isUserTeacher={isUserTeacher}
-                        isGpPlusMember={isGpPlusMember}
-                        isGpPlusResolved={isGpPlusResolved}
-                        getMaterialTypeIcon={getMaterialTypeIcon}
-                        getMaterialUrls={getMaterialUrls}
-                        toGooglePdfExportUrl={toGooglePdfExportUrl}
-                        getNormalizedGDriveRoot={getNormalizedGDriveRoot}
-                        selectMaterialItem={selectMaterialItem}
-                        handleOpenOfficeUpsell={handleOpenOfficeUpsell}
-                        handleBrowseAllMaterialsClick={handleBrowseAllMaterialsClick}
-                        handleCopyAllMaterialsClick={handleCopyAllMaterialsClick}
-                        isBrowseDisabledForGpPlus={isBrowseDisabledForGpPlus}
-                        isCopyAllDisabledForGpPlus={isCopyAllDisabledForGpPlus}
-                        browseUnavailableReason={browseUnavailableReason}
-                        copyAllUnavailableReason={copyAllUnavailableReason}
-                        latestCopiedLessonFolderUrl={latestCopiedLessonFolderUrl}
-                        canShowCopyAllToGoogleDriveBtn={canShowCopyAllToGoogleDriveBtn}
-                        copyLessonBtnRef={copyLessonBtnRef}
-                        unitId={unitId}
-                        unit={unit}
-                        activeLessonId={activeLessonId}
-                        activeLesson={activeLesson}
-                        lessonsGradesForCopy={lessonsGradesForCopy}
-                        resolvedSharedFolderIdForCopy={resolvedSharedFolderIdForCopy}
-                        resolvedSharedFolderNameForCopy={resolvedSharedFolderNameForCopy}
-                        allUnitLessonsForCopy={allUnitLessonsForCopy}
-                        effectiveLessonsFolderForCopy={effectiveLessonsFolderForCopy}
-                        isRetrievingLessonFolderIds={isRetrievingLessonFolderIds}
-                        setLessons={setLessons}
-                      />
-                    ) : (
-                      <MaterialsResourcesPanel
-                        lessonResourcesCardRef={lessonResourcesCardRef}
-                        isGpPlusUser={isGpPlusUser}
-                        isGpPlusBannerDismissed={isGpPlusBannerDismissed}
-                        setIsGpPlusBannerDismissed={setIsGpPlusBannerDismissed}
-                        setIsGpPlusModalDisplayed={setIsGpPlusModalDisplayed}
-                        quickStartProps={{
-                          isFeaturedMediaOpen,
-                          isDetailedFlowOpen,
-                          isBackgroundOpen,
-                          isGoingFurtherOpen,
-                          hasFeaturedMedia,
-                          hasDetailedFlow,
-                          hasBackgroundContent,
-                          hasGoingFurther,
-                          setActiveLessonPreviewMode,
-                        }}
-                        gpPlusFunctionsProps={{
-                          isJobVizPreviewOpen,
-                          hasJobVizConnections,
-                          setActiveLessonPreviewMode,
-                          handleBrowseAllMaterialsClick,
-                          handleCopyAllMaterialsClick,
-                          isBrowseDisabledForGpPlus,
-                          isCopyAllDisabledForGpPlus,
-                          latestCopiedLessonFolderUrl,
-                          browseUnavailableReason,
-                          copyAllUnavailableReason,
-                          isGpPlusUser,
-                          canShowCopyAllToGoogleDriveBtn,
-                          copyLessonBtnRef,
-                          unitId,
-                          unit,
-                          activeLessonId,
-                          activeLesson,
-                          lessonsGradesForCopy,
-                          resolvedSharedFolderIdForCopy,
-                          resolvedSharedFolderNameForCopy,
-                          allUnitLessonsForCopy,
-                          effectiveLessonsFolderForCopy,
-                          isRetrievingLessonFolderIds,
-                          setLessons,
-                        }}
-                        previewDownloadProps={{
-                          activeLessonItems,
-                          activeLessonPreviewMode,
-                          activeMaterialIndex,
-                          isAuthenticated,
-                          isUserTeacher,
-                          isGpPlusUser,
-                          isGpPlusMember,
-                          isGpPlusResolved,
-                          getMaterialTypeIcon,
-                          getMaterialUrls,
-                          selectMaterialItem,
-                          handleOpenOfficeUpsell,
-                        }}
-                      />
-                    )}
-                    <MaterialsPreviewPane
-                      lessonPreviewsCardRef={lessonPreviewsCardRef}
-                      previewPaneStickyStyle={previewPaneStickyStyle}
+                  {isMobileMaterialsViewport ? (
+                    <MaterialsMobileStack
+                      activeLessonId={activeLessonId}
+                      isAssessmentLesson={isActiveAssessmentLesson}
                       activeLessonPreviewMode={activeLessonPreviewMode}
-                    >
+                      setActiveLessonPreviewMode={(mode: string) =>
+                        setActiveLessonPreviewMode(mode as TActiveLessonPreviewMode)
+                      }
+                      hasFeaturedMedia={hasFeaturedMedia}
+                      hasDetailedFlow={hasDetailedFlow}
+                      hasBackgroundContent={hasBackgroundContent}
+                      hasGoingFurther={hasGoingFurther}
+                      hasJobVizConnections={hasJobVizConnections}
+                      previewDownloadProps={{
+                        activeLessonItems,
+                        activeLessonPreviewMode,
+                        activeMaterialIndex,
+                        isAuthenticated,
+                        isUserTeacher,
+                        isGpPlusUser,
+                        isGpPlusMember,
+                        isGpPlusResolved,
+                        getMaterialTypeIcon,
+                        getMaterialUrls,
+                        selectMaterialItem,
+                        handleOpenOfficeUpsell,
+                      }}
+                      gpPlusFunctionsProps={{
+                        isJobVizPreviewOpen,
+                        hasJobVizConnections,
+                        setActiveLessonPreviewMode,
+                        handleBrowseAllMaterialsClick,
+                        handleCopyAllMaterialsClick,
+                        isBrowseDisabledForGpPlus,
+                        isCopyAllDisabledForGpPlus,
+                        latestCopiedLessonFolderUrl,
+                        browseUnavailableReason,
+                        copyAllUnavailableReason,
+                        isGpPlusUser,
+                        canShowCopyAllToGoogleDriveBtn,
+                        copyLessonBtnRef,
+                        unitId,
+                        unit,
+                        activeLessonId,
+                        activeLesson,
+                        lessonsGradesForCopy,
+                        resolvedSharedFolderIdForCopy,
+                        resolvedSharedFolderNameForCopy,
+                        allUnitLessonsForCopy,
+                        effectiveLessonsFolderForCopy,
+                        isRetrievingLessonFolderIds,
+                        setLessons,
+                      }}
+                      assessmentProps={{
+                        isGpPlusUser,
+                        assessmentItems: activeLessonItems,
+                        activeLessonPreviewMode,
+                        activeMaterialIndex,
+                        isAuthenticated,
+                        isUserTeacher,
+                        isGpPlusMember,
+                        isGpPlusResolved,
+                        getMaterialTypeIcon,
+                        getMaterialUrls,
+                        toGooglePdfExportUrl,
+                        getNormalizedGDriveRoot,
+                        selectMaterialItem,
+                        handleOpenOfficeUpsell,
+                        handleBrowseAllMaterialsClick,
+                        handleCopyAllMaterialsClick,
+                        isBrowseDisabledForGpPlus,
+                        isCopyAllDisabledForGpPlus,
+                        browseUnavailableReason,
+                        copyAllUnavailableReason,
+                        latestCopiedLessonFolderUrl,
+                        canShowCopyAllToGoogleDriveBtn,
+                        copyLessonBtnRef,
+                        unitId,
+                        unit,
+                        activeLessonId,
+                        activeLesson,
+                        lessonsGradesForCopy,
+                        resolvedSharedFolderIdForCopy,
+                        resolvedSharedFolderNameForCopy,
+                        allUnitLessonsForCopy,
+                        effectiveLessonsFolderForCopy,
+                        isRetrievingLessonFolderIds,
+                        setLessons,
+                      }}
+                      onCopyAllFromModal={handleCopyAllMaterialsClick}
+                      renderPreviewContent={(options) =>
+                        renderPreviewPaneContent({
+                          onCopyAllClick: options?.onCopyAll,
+                          preferPresentationPreview: true,
+                          hideMaterialHeader: options?.hideMaterialHeader,
+                        })
+                      }
+                    />
+                  ) : (
+                    <div className={materialStyles.lessonMaterialsGrid}>
                       {isActiveAssessmentLesson ? (
-                        <MaterialItemPreview
-                          activeLessonItems={activeLessonItems}
+                        <AssessmentMaterialsPanel
+                          lessonResourcesCardRef={lessonResourcesCardRef}
+                          isGpPlusUser={isGpPlusUser}
+                          isGpPlusBannerDismissed={isGpPlusBannerDismissed}
+                          setIsGpPlusBannerDismissed={setIsGpPlusBannerDismissed}
+                          setIsGpPlusModalDisplayed={setIsGpPlusModalDisplayed}
+                          assessmentItems={activeLessonItems}
+                          activeLessonPreviewMode={activeLessonPreviewMode}
                           activeMaterialIndex={activeMaterialIndex}
+                          isAuthenticated={isAuthenticated}
+                          isUserTeacher={isUserTeacher}
+                          isGpPlusMember={isGpPlusMember}
+                          isGpPlusResolved={isGpPlusResolved}
+                          getMaterialTypeIcon={getMaterialTypeIcon}
                           getMaterialUrls={getMaterialUrls}
                           toGooglePdfExportUrl={toGooglePdfExportUrl}
                           getNormalizedGDriveRoot={getNormalizedGDriveRoot}
-                          getFirstItemUrl={getFirstItemUrl}
-                          isImageUrl={isImageUrl}
-                          isAuthenticated={isAuthenticated}
-                          isUserTeacher={isUserTeacher}
-                          isGpPlusUser={isGpPlusUser}
-                          isGpPlusMember={isGpPlusMember}
-                          handleGateNavigateToGpPlus={handleGateNavigateToGpPlus}
-                          handleGateNavigateToAccount={handleGateNavigateToAccount}
-                          handleCopyAllMaterialsClick={handleCopyAllMaterialsClick}
+                          selectMaterialItem={selectMaterialItem}
                           handleOpenOfficeUpsell={handleOpenOfficeUpsell}
-                          isCopyAllDisabledForGpPlus={isCopyAllDisabledForGpPlus}
-                          latestCopiedLessonFolderUrl={latestCopiedLessonFolderUrl}
-                          enforceGpPlusDigitalGate
-                          forceFormPreviewOnly
-                        />
-                      ) : isFeaturedMediaOpen ? (
-                        <FeaturedMediaPreview
-                          hasFeaturedMedia={hasFeaturedMedia}
-                          activeLessonFeaturedMedia={activeLessonFeaturedMedia}
-                        />
-                      ) : isDetailedFlowOpen ? (
-                        <ProcedurePreview
-                          activeLesson={activeLesson ?? null}
-                          chunkDurations={chunkDurations}
-                          onPrint={handlePrintProcedureFromPreview}
-                          onOpenInNewTab={handleOpenProcedureInNewTab}
-                        />
-                      ) : isBackgroundOpen ? (
-                        <BackgroundPreview
-                          backgroundContent={backgroundContent}
-                          onPrint={handlePrintBackgroundFromPreview}
-                          onOpenInNewTab={handleOpenBackgroundInNewTab}
-                        />
-                      ) : isGoingFurtherOpen ? (
-                        <GoingFurtherPreview
-                          hasGoingFurther={hasGoingFurther}
-                          activeLessonGoingFurther={activeLessonGoingFurther}
-                        />
-                      ) : isJobVizPreviewOpen ? (
-                        <JobVizPreview
-                          hasJobVizConnections={hasJobVizConnections}
-                          unitTitle={unitTitle}
-                          jobVizConnections={jobVizConnections}
-                          jobVizConnectionIcons={jobVizConnectionIcons}
-                          isGpPlusUser={isGpPlusUser}
-                          isAuthenticated={isAuthenticated}
-                          isSavingJobVizTour={isSavingJobVizTour}
-                          handlePreviewJobVizAssignmentClick={handlePreviewJobVizAssignmentClick}
-                          handleSaveJobVizTourClick={handleSaveJobVizTourClick}
-                          jobVizSaveMessage={jobVizSaveMessage}
-                          jobVizSaveError={jobVizSaveError}
-                        />
-                      ) : !!activeLessonItems.length ? (
-                        <MaterialItemPreview
-                          activeLessonItems={activeLessonItems}
-                          activeMaterialIndex={activeMaterialIndex}
-                          getMaterialUrls={getMaterialUrls}
-                          toGooglePdfExportUrl={toGooglePdfExportUrl}
-                          getNormalizedGDriveRoot={getNormalizedGDriveRoot}
-                          getFirstItemUrl={getFirstItemUrl}
-                          isImageUrl={isImageUrl}
-                          isAuthenticated={isAuthenticated}
-                          isUserTeacher={isUserTeacher}
-                          isGpPlusUser={isGpPlusUser}
-                          isGpPlusMember={isGpPlusMember}
-                          handleGateNavigateToGpPlus={handleGateNavigateToGpPlus}
-                          handleGateNavigateToAccount={handleGateNavigateToAccount}
+                          handleBrowseAllMaterialsClick={handleBrowseAllMaterialsClick}
                           handleCopyAllMaterialsClick={handleCopyAllMaterialsClick}
-                          handleOpenOfficeUpsell={handleOpenOfficeUpsell}
+                          isBrowseDisabledForGpPlus={isBrowseDisabledForGpPlus}
                           isCopyAllDisabledForGpPlus={isCopyAllDisabledForGpPlus}
+                          browseUnavailableReason={browseUnavailableReason}
+                          copyAllUnavailableReason={copyAllUnavailableReason}
                           latestCopiedLessonFolderUrl={latestCopiedLessonFolderUrl}
+                          canShowCopyAllToGoogleDriveBtn={canShowCopyAllToGoogleDriveBtn}
+                          copyLessonBtnRef={copyLessonBtnRef}
+                          unitId={unitId}
+                          unit={unit}
+                          activeLessonId={activeLessonId}
+                          activeLesson={activeLesson}
+                          lessonsGradesForCopy={lessonsGradesForCopy}
+                          resolvedSharedFolderIdForCopy={resolvedSharedFolderIdForCopy}
+                          resolvedSharedFolderNameForCopy={resolvedSharedFolderNameForCopy}
+                          allUnitLessonsForCopy={allUnitLessonsForCopy}
+                          effectiveLessonsFolderForCopy={effectiveLessonsFolderForCopy}
+                          isRetrievingLessonFolderIds={isRetrievingLessonFolderIds}
+                          setLessons={setLessons}
                         />
                       ) : (
-                        <p className={materialStyles.unitMutedText}>
-                          Item previews will appear here.
-                        </p>
+                        <MaterialsResourcesPanel
+                          lessonResourcesCardRef={lessonResourcesCardRef}
+                          isGpPlusUser={isGpPlusUser}
+                          isGpPlusBannerDismissed={isGpPlusBannerDismissed}
+                          setIsGpPlusBannerDismissed={setIsGpPlusBannerDismissed}
+                          setIsGpPlusModalDisplayed={setIsGpPlusModalDisplayed}
+                          quickStartProps={{
+                            isFeaturedMediaOpen,
+                            isDetailedFlowOpen,
+                            isBackgroundOpen,
+                            isGoingFurtherOpen,
+                            hasFeaturedMedia,
+                            hasDetailedFlow,
+                            hasBackgroundContent,
+                            hasGoingFurther,
+                            setActiveLessonPreviewMode,
+                          }}
+                          gpPlusFunctionsProps={{
+                            isJobVizPreviewOpen,
+                            hasJobVizConnections,
+                            setActiveLessonPreviewMode,
+                            handleBrowseAllMaterialsClick,
+                            handleCopyAllMaterialsClick,
+                            isBrowseDisabledForGpPlus,
+                            isCopyAllDisabledForGpPlus,
+                            latestCopiedLessonFolderUrl,
+                            browseUnavailableReason,
+                            copyAllUnavailableReason,
+                            isGpPlusUser,
+                            canShowCopyAllToGoogleDriveBtn,
+                            copyLessonBtnRef,
+                            unitId,
+                            unit,
+                            activeLessonId,
+                            activeLesson,
+                            lessonsGradesForCopy,
+                            resolvedSharedFolderIdForCopy,
+                            resolvedSharedFolderNameForCopy,
+                            allUnitLessonsForCopy,
+                            effectiveLessonsFolderForCopy,
+                            isRetrievingLessonFolderIds,
+                            setLessons,
+                          }}
+                          previewDownloadProps={{
+                            activeLessonItems,
+                            activeLessonPreviewMode,
+                            activeMaterialIndex,
+                            isAuthenticated,
+                            isUserTeacher,
+                            isGpPlusUser,
+                            isGpPlusMember,
+                            isGpPlusResolved,
+                            getMaterialTypeIcon,
+                            getMaterialUrls,
+                            selectMaterialItem,
+                            handleOpenOfficeUpsell,
+                          }}
+                        />
                       )}
-                    </MaterialsPreviewPane>
-                  </div>
+                      <MaterialsPreviewPane
+                        lessonPreviewsCardRef={lessonPreviewsCardRef}
+                        previewPaneStickyStyle={previewPaneStickyStyle}
+                        activeLessonPreviewMode={activeLessonPreviewMode}
+                      >
+                        {renderPreviewPaneContent()}
+                      </MaterialsPreviewPane>
+                    </div>
+                  )}
                 </div>
                 )
               ) : (

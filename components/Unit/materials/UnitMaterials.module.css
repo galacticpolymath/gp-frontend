@@ -70,6 +70,14 @@
   gap: 14px;
 }
 
+.lessonLayout {
+  scroll-margin-top: calc(
+    var(--portal-nav-offset, 0px) +
+    max(var(--unit-sticky-header-height, 0px), var(--unit-sticky-header-fallback, 0px)) +
+    var(--unit-sticky-headroom, 18px)
+  );
+}
+
 .lessonMaterialsGrid {
   display: grid;
   gap: 10px;
@@ -447,10 +455,14 @@
   align-items: center;
   flex-wrap: wrap;
   gap: 6px;
+  border-top: 1px solid rgba(44, 131, 195, 0.16);
+  border-bottom: 1px solid rgba(44, 131, 195, 0.16);
+  padding-top: 7px;
+  padding-bottom: 7px;
 }
 
 .materialDownloadLabel {
-  margin-left: 1.1rem;
+  margin-left: 0;
   font-size: 13px;
   font-weight: 700;
   letter-spacing: 0.03em;
@@ -468,6 +480,14 @@
   align-items: center;
   flex-wrap: wrap;
   gap: 6px;
+}
+
+.materialDownloadPair {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  flex: 0 0 auto;
 }
 
 .materialPdfLink,
@@ -829,6 +849,32 @@
   background: rgba(255, 255, 255, 0.88);
 }
 
+.lessonPreviewSurfaceRatioFrame {
+  height: 0;
+  min-height: 0;
+  padding-bottom: 56.25%;
+}
+
+.lessonPreviewSurfaceSlideDeck {
+  height: 0;
+  min-height: 0;
+  padding-bottom: 75%;
+}
+
+.lessonPreviewSurfaceRatioFrame .lessonPreviewMedia {
+  position: absolute;
+  inset: 0;
+}
+
+.lessonPreviewSurfaceRatioFrame iframe,
+.lessonPreviewSurfaceRatioFrame img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+}
+
 .lessonPreviewMedia {
   width: 100%;
   height: 100%;
@@ -990,6 +1036,7 @@
   align-items: center;
   gap: 7px;
   cursor: pointer;
+  margin-right: 1.1rem;
 }
 
 .goingFurtherPreviewItem {
@@ -1499,6 +1546,266 @@
   overflow: visible;
 }
 
+.mobileMaterialsStack {
+  display: grid;
+  gap: 10px;
+}
+
+.mobileAccordionSection {
+  border: 1px solid rgba(44, 131, 195, 0.2);
+  border-radius: 14px;
+  background: rgba(247, 250, 255, 0.92);
+  overflow: hidden;
+}
+
+.mobileAccordionButton {
+  width: 100%;
+  border: 0;
+  background: rgba(231, 240, 251, 0.84);
+  color: #16335b;
+  min-height: 48px;
+  font-size: 15px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 12px;
+  text-align: left;
+}
+
+.mobileAccordionTitle {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.mobileAccordionTitleWithIcon {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.mobileAccordionPanel {
+  padding: 10px;
+  display: grid;
+  gap: 10px;
+}
+
+.mobileAccordionPanelHidden {
+  display: none;
+}
+
+.mobileAccordionChevron {
+  transition: transform 160ms ease;
+}
+
+.mobileAccordionChevronOpen {
+  transform: rotate(180deg);
+}
+
+.mobileActionList {
+  display: grid;
+  gap: 8px;
+}
+
+.mobileGpPlusContent {
+  display: grid;
+  gap: 8px;
+}
+
+.mobilePreviewModalBackdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1711;
+  background: rgba(9, 14, 27, 0.74);
+  display: grid;
+  align-items: stretch;
+}
+
+.mobilePreviewModal {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(160deg, rgba(233, 238, 247, 0.98), rgba(224, 231, 241, 0.96));
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.mobilePreviewModalHeader {
+  flex: 0 0 auto;
+  padding: 6px 10px;
+  background: rgba(236, 241, 249, 0.98);
+  border-bottom: 1px solid rgba(44, 131, 195, 0.16);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 17px;
+  line-height: 1.2;
+}
+
+.mobilePreviewModalHeaderLabel {
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: #1f355a;
+  font-size: inherit;
+  line-height: inherit;
+  font-weight: 800;
+  min-width: 0;
+}
+
+.mobilePreviewModalHeaderActions {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.mobilePreviewModalOpenLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: #2f3cb1;
+  font-size: inherit;
+  font-weight: 700;
+  line-height: inherit;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.mobilePreviewModalClose {
+  position: static;
+  width: 36px;
+  height: 36px;
+  border: 1px solid rgba(44, 131, 195, 0.22);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.92);
+  color: #16335b;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 6;
+}
+
+.mobilePreviewModalBody {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  padding: 0 10px;
+  background: rgba(250, 252, 255, 0.94);
+  border-top: 0;
+  border-bottom: 1px solid rgba(44, 131, 195, 0.14);
+}
+
+.mobilePreviewModalBodyInner {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 10px;
+}
+
+.mobilePreviewModalBodyInnerMaterial .lessonPreviewHeader {
+  display: none;
+}
+
+.mobilePreviewModalFooter {
+  flex: 0 0 auto;
+  padding: 6px 10px 14px;
+  background: rgba(236, 241, 249, 0.98);
+  border-top: 1px solid rgba(44, 131, 195, 0.16);
+}
+
+.mobileModalCarouselControls {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+  margin-top: 0;
+}
+
+.mobileModalCarouselButton {
+  min-height: 38px;
+  padding: 0 10px;
+  border: 1px solid rgba(44, 131, 195, 0.34);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.94);
+  color: #16335b;
+  font-size: 14px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.mobileModalCarouselCount {
+  text-align: center;
+  font-size: 14px;
+  font-weight: 600;
+  color: #2f466b;
+}
+
+.mobilePreviewModalBodyInner .lessonPreviewItem,
+.mobilePreviewModalBody .lessonPreviewPaneContent,
+.mobilePreviewModalBody .lessonPreviewMedia,
+.mobilePreviewModalBody .lessonPreviewSurface {
+  min-height: 0;
+  height: auto;
+}
+
+.mobilePreviewModalBodyInner .lessonPreviewSurface iframe,
+.mobilePreviewModalBodyInner .lessonPreviewSurface img {
+  min-height: 0;
+  height: 100%;
+}
+
+.mobilePreviewModalBodyInner .lessonPreviewItem {
+  width: 100%;
+  max-width: 1080px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.mobilePreviewModalBodyInner .lessonPreviewHeader {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  min-height: 36px;
+  padding-right: 52px;
+  background: rgba(232, 238, 247, 0.92);
+  border-radius: 10px;
+  display: inline-flex;
+  width: fit-content;
+  max-width: calc(100% - 52px);
+  align-self: flex-start;
+}
+
+.mobilePreviewModalBody .lessonPreviewIFrameGoogle {
+  transform: none;
+  width: 100%;
+  height: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+}
+
+.mobilePreviewModalBody .lessonPreviewIFrameGoogleDocReduced {
+  transform: none;
+  width: 100%;
+  height: 100%;
+}
+
+.mobilePreviewModalBody .lessonPreviewSurfaceSlideDeck {
+  padding-bottom: 0;
+  height: min(78dvh, calc(100dvh - 210px));
+  max-height: calc(100dvh - 210px);
+}
+
 @media (min-width: 768px) {
   .lessonPreviewsCard {
     position: sticky;
@@ -1588,7 +1895,7 @@
 
 @media (max-width: 767px) {
   .lessonLayout {
-    padding-top: 16px;
+    padding-top: 24px;
   }
 
   .lessonMaterialsGrid {
@@ -1598,13 +1905,13 @@
   .lessonResourcesCard {
     max-width: 410px;
     margin: 0 auto;
-    min-height: 420px;
+    min-height: 0;
   }
 
   .lessonPreviewsCard {
     position: relative;
     top: auto;
-    min-height: 420px;
+    min-height: 0;
     height: auto;
     max-height: none;
   }

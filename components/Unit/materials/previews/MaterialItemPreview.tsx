@@ -24,6 +24,8 @@ type TMaterialItemPreviewProps = {
   latestCopiedLessonFolderUrl: string | null;
   enforceGpPlusDigitalGate?: boolean;
   forceFormPreviewOnly?: boolean;
+  preferPresentationPreview?: boolean;
+  hideHeader?: boolean;
 };
 
 const MaterialItemPreview: React.FC<TMaterialItemPreviewProps> = ({
@@ -46,6 +48,8 @@ const MaterialItemPreview: React.FC<TMaterialItemPreviewProps> = ({
   latestCopiedLessonFolderUrl,
   enforceGpPlusDigitalGate = false,
   forceFormPreviewOnly = false,
+  preferPresentationPreview = false,
+  hideHeader = false,
 }) => {
   if (!activeLessonItems.length) {
     return <p className={styles.unitMutedText}>Item previews will appear here.</p>;
@@ -76,11 +80,20 @@ const MaterialItemPreview: React.FC<TMaterialItemPreviewProps> = ({
     typeof selectedItem?.itemTitle === 'string' && selectedItem.itemTitle.toLowerCase().includes('teacher');
   const isPresentation = itemTypeLabel === 'presentation';
   const itemCatLabel = selectedPreviewItem?.itemCat?.toLowerCase() ?? '';
+  const shouldUseLargeEmbeddedSurface =
+    itemCatLabel === 'presentation' || itemCatLabel === 'document';
   const fileTypeLabel = selectedPreviewItem?.fileType?.toLowerCase() ?? '';
   const isWebResource = itemCatLabel === 'web resource' || fileTypeLabel === 'web resource';
   const hasExternalOpenUrl = Boolean(openUrl && /^https?:\/\//i.test(openUrl));
   const allowOpenInNewTab = isPresentation || (isWebResource && hasExternalOpenUrl);
-  const frameSrc = isPresentation ? embedUrl ?? previewUrl ?? openUrl : embedUrl ?? previewUrl;
+  const frameSrc = isPresentation
+    ? preferPresentationPreview
+      ? previewUrl ?? embedUrl ?? openUrl
+      : embedUrl ?? previewUrl ?? openUrl
+    : embedUrl ?? previewUrl;
+  const shouldUseReducedDocumentZoom =
+    itemCatLabel === 'document' ||
+    /docs\.google\.com\/document\/d\//i.test(String(frameSrc ?? ''));
   const formSourceUrl =
     getFirstItemUrl(selectedPreviewItem) ??
     selectedPreviewItem?.gdriveRoot ??
@@ -139,22 +152,30 @@ const MaterialItemPreview: React.FC<TMaterialItemPreviewProps> = ({
 
   return (
     <article className={styles.lessonPreviewItem}>
-      <header className={styles.lessonPreviewHeader}>
-        <h3 className={styles.lessonCardHeading}>
-          <Eye size={16} aria-hidden="true" />
-          <span>Item preview</span>
-        </h3>
-        {canOpenSelected ? (
-          <a className={styles.materialOpenLink} href={openUrl ?? undefined} target="_blank" rel="noreferrer">
-            <span>Open in new tab</span>
-            <SquareArrowOutUpRight size={13} aria-hidden="true" />
-          </a>
-        ) : isPreviewLocked || !allowOpenInNewTab ? null : (
-          <span className={styles.materialOpenLinkDisabled}>No file link</span>
-        )}
-      </header>
+      {!hideHeader ? (
+        <header className={styles.lessonPreviewHeader}>
+          <h3 className={styles.lessonCardHeading}>
+            <Eye size={16} aria-hidden="true" />
+            <span>Item preview</span>
+          </h3>
+          {canOpenSelected ? (
+            <a className={styles.materialOpenLink} href={openUrl ?? undefined} target="_blank" rel="noreferrer">
+              <span>Open in new tab</span>
+              <SquareArrowOutUpRight size={13} aria-hidden="true" />
+            </a>
+          ) : isPreviewLocked || !allowOpenInNewTab ? null : (
+            <span className={styles.materialOpenLinkDisabled}>No file link</span>
+          )}
+        </header>
+      ) : null}
       <div
         className={`${styles.lessonPreviewSurface} ${
+          isGoogleDrivePreviewFrame ? styles.lessonPreviewSurfaceRatioFrame : ''
+        } ${
+          isGoogleDrivePreviewFrame && (shouldUseLargeEmbeddedSurface || isPresentation)
+            ? styles.lessonPreviewSurfaceSlideDeck
+            : ''
+        } ${
           isPreviewLocked ? styles.lessonPreviewSurfaceLocked : ''
         }`}
       >
@@ -168,6 +189,10 @@ const MaterialItemPreview: React.FC<TMaterialItemPreviewProps> = ({
               title={`${previewTitle} preview`}
               src={frameSrc}
               className={`${isGoogleDrivePreviewFrame ? styles.lessonPreviewIFrameGoogle : ''} ${
+                shouldUseReducedDocumentZoom
+                  ? styles.lessonPreviewIFrameGoogleDocReduced
+                  : ''
+              } ${
                 isFormPreviewOnly ? styles.lessonPreviewIFrameNonInteractive : ''
               }`.trim()}
             />
@@ -253,72 +278,74 @@ const MaterialItemPreview: React.FC<TMaterialItemPreviewProps> = ({
                 <span>Copy All to my Google Drive</span>
               </button>
             )}
-            <span className={styles.materialDownloadLabel}>Download</span>
-            <div className={styles.materialDownloadActions}>
-              {previewPdfDownloadUrl && isAuthenticated && !isPreviewLockedTeacher ? (
-                <a
-                  className={styles.materialPdfLink}
-                  href={previewPdfDownloadUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  PDF
-                </a>
-              ) : previewPdfDownloadUrl ? (
-                <span className={styles.materialPdfLinkDisabled}>PDF</span>
-              ) : null}
-              {hasOfficeDownload &&
-                (canAccessOffice ? (
+            <div className={styles.materialDownloadPair}>
+              <span className={styles.materialDownloadLabel}>Download</span>
+              <div className={styles.materialDownloadActions}>
+                {previewPdfDownloadUrl && isAuthenticated && !isPreviewLockedTeacher ? (
                   <a
-                    className={`${styles.materialPdfLink} ${styles.materialOfficeLink}`}
-                    href={officeDownloadUrl ?? undefined}
+                    className={styles.materialPdfLink}
+                    href={previewPdfDownloadUrl}
                     target="_blank"
                     rel="noreferrer"
                   >
-                    <span className={styles.materialOfficeLinkContent}>
-                      <Image
-                        alt="GP+ icon"
-                        width={13}
-                        height={13}
-                        src="/plus/plus.png"
-                        className={styles.materialOfficeLinkPlusIcon}
-                      />
-                      <span>{officeFormat}</span>
-                    </span>
+                    PDF
                   </a>
-                ) : canUpsellOffice ? (
-                  <button
-                    type="button"
-                    className={`${styles.materialPdfLink} ${styles.materialOfficeLink} ${styles.materialOfficeLinkLocked}`}
-                    onClick={() => handleOpenOfficeUpsell(officeFormat ?? 'Office')}
-                  >
-                    <span className={styles.materialOfficeLinkContent}>
-                      <Image
-                        alt="GP+ icon"
-                        width={13}
-                        height={13}
-                        src="/plus/plus.png"
-                        className={styles.materialOfficeLinkPlusIcon}
-                      />
-                      <span>{officeFormat}</span>
+                ) : previewPdfDownloadUrl ? (
+                  <span className={styles.materialPdfLinkDisabled}>PDF</span>
+                ) : null}
+                {hasOfficeDownload &&
+                  (canAccessOffice ? (
+                    <a
+                      className={`${styles.materialPdfLink} ${styles.materialOfficeLink}`}
+                      href={officeDownloadUrl ?? undefined}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      <span className={styles.materialOfficeLinkContent}>
+                        <Image
+                          alt="GP+ icon"
+                          width={13}
+                          height={13}
+                          src="/plus/plus.png"
+                          className={styles.materialOfficeLinkPlusIcon}
+                        />
+                        <span>{officeFormat}</span>
+                      </span>
+                    </a>
+                  ) : canUpsellOffice ? (
+                    <button
+                      type="button"
+                      className={`${styles.materialPdfLink} ${styles.materialOfficeLink} ${styles.materialOfficeLinkLocked}`}
+                      onClick={() => handleOpenOfficeUpsell(officeFormat ?? 'Office')}
+                    >
+                      <span className={styles.materialOfficeLinkContent}>
+                        <Image
+                          alt="GP+ icon"
+                          width={13}
+                          height={13}
+                          src="/plus/plus.png"
+                          className={styles.materialOfficeLinkPlusIcon}
+                        />
+                        <span>{officeFormat}</span>
+                      </span>
+                    </button>
+                  ) : (
+                    <span
+                      className={`${styles.materialPdfLinkDisabled} ${styles.materialOfficeLink} ${styles.materialOfficeLinkLocked}`}
+                    >
+                      <span className={styles.materialOfficeLinkContent}>
+                        <Image
+                          alt="GP+ icon"
+                          width={13}
+                          height={13}
+                          src="/plus/plus.png"
+                          className={styles.materialOfficeLinkPlusIcon}
+                        />
+                        <span>{officeFormat}</span>
+                      </span>
                     </span>
-                  </button>
-                ) : (
-                  <span
-                    className={`${styles.materialPdfLinkDisabled} ${styles.materialOfficeLink} ${styles.materialOfficeLinkLocked}`}
-                  >
-                    <span className={styles.materialOfficeLinkContent}>
-                      <Image
-                        alt="GP+ icon"
-                        width={13}
-                        height={13}
-                        src="/plus/plus.png"
-                        className={styles.materialOfficeLinkPlusIcon}
-                      />
-                      <span>{officeFormat}</span>
-                    </span>
-                  </span>
-                ))}
+                  ))}
+              </div>
             </div>
           </div>
         )}

@@ -29,6 +29,7 @@ type TMaterialsGpPlusFunctionsSectionProps = {
   effectiveLessonsFolderForCopy: any;
   isRetrievingLessonFolderIds: boolean;
   setLessons: React.Dispatch<React.SetStateAction<any[]>>;
+  renderAsSection?: boolean;
 };
 
 const MaterialsGpPlusFunctionsSection: React.FC<TMaterialsGpPlusFunctionsSectionProps> = ({
@@ -56,13 +57,10 @@ const MaterialsGpPlusFunctionsSection: React.FC<TMaterialsGpPlusFunctionsSection
   effectiveLessonsFolderForCopy,
   isRetrievingLessonFolderIds,
   setLessons,
+  renderAsSection = true,
 }) => {
-  return (
-    <section className={`${styles.resourceSection} ${styles.gpPlusFunctionsSection}`}>
-      <h3 className={styles.lessonCardHeading}>
-        <Image alt="GP+ icon" width={18} height={18} src="/plus/plus.png" />
-        <span>GP Plus Functions</span>
-      </h3>
+  const content = (
+    <>
       <div className={styles.gpFunctionActions}>
         <button
           type="button"
@@ -146,6 +144,20 @@ const MaterialsGpPlusFunctionsSection: React.FC<TMaterialsGpPlusFunctionsSection
           btnWrapperClassName={styles.hiddenCopyLessonBtn}
         />
       )}
+    </>
+  );
+
+  if (!renderAsSection) {
+    return <div className={styles.mobileGpPlusContent}>{content}</div>;
+  }
+
+  return (
+    <section className={`${styles.resourceSection} ${styles.gpPlusFunctionsSection}`}>
+      <h3 className={styles.lessonCardHeading}>
+        <Image alt="GP+ icon" width={18} height={18} src="/plus/plus.png" />
+        <span>GP Plus Functions</span>
+      </h3>
+      {content}
     </section>
   );
 };
