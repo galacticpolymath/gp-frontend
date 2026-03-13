@@ -100,6 +100,7 @@ const CopyLessonHelperModal: React.FC<ThankYouModalProps> = ({ onClose }) => {
       centered
       className="rounded"
       keyboard={false}
+      restoreFocus={false}
       style={{
         zIndex: 10000,
       }}

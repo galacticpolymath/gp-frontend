@@ -554,7 +554,7 @@
 .lessonSubtabButtonActive {
   background: rgba(255, 255, 255, 0.18);
   color: #ffffff;
-  border: 1.5px solid rgba(240, 244, 255, 0.42);
+  border: 1.5px solid #ffffff;
 }
 
 .lessonSubtabThumb {

@@ -161,7 +161,7 @@
 .title {
   margin: 0;
   color: var(--media-text);
-  font-size: clamp(19px, 2.2vw, 26px);
+  font-size: 16px;
   line-height: 1.12;
   font-weight: 700;
 }

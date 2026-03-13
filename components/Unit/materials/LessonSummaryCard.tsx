@@ -14,6 +14,7 @@ type TLessonSummaryCardProps = {
   setActiveLessonPreviewMode: (mode: 'procedure') => void;
   onTagSearchClick: (tag: string) => void;
   onShare: () => void;
+  assessmentIntroCopy?: string | null;
 };
 
 const LessonSummaryCard: React.FC<TLessonSummaryCardProps> = ({
@@ -25,7 +26,13 @@ const LessonSummaryCard: React.FC<TLessonSummaryCardProps> = ({
   setActiveLessonPreviewMode,
   onTagSearchClick,
   onShare,
+  assessmentIntroCopy,
 }) => {
+  const isAssessment = isAssessmentLesson(activeLesson, activeLessonIndex);
+  const resolvedAssessmentIntro =
+    assessmentIntroCopy?.trim() ||
+    'Streamlined assessments to measure how this unit affects: 1) student interests and career aspirations in STEM, and 2) content-specific learning gains.';
+
   return (
     <div className={styles.lessonSummaryCard}>
       <div className={styles.lessonSummaryMain}>
@@ -40,7 +47,7 @@ const LessonSummaryCard: React.FC<TLessonSummaryCardProps> = ({
             height={180}
           />
         </div>
-        {!isAssessmentLesson(activeLesson, activeLessonIndex) && (
+        {!isAssessment && (
           <div className={styles.lessonEyebrowRow}>
             <p className={styles.lessonEyebrow}>
               Lesson {getLessonIdentifier(activeLesson, activeLessonIndex)}
@@ -61,7 +68,10 @@ const LessonSummaryCard: React.FC<TLessonSummaryCardProps> = ({
         <div className={styles.lessonTitleMarkdown}>
           <RichText content={activeLesson.title ?? 'Untitled lesson'} />
         </div>
-        {activeLesson.lsnPreface && (
+        {isAssessment && (
+          <p className={styles.assessmentIntroCopy}>{resolvedAssessmentIntro}</p>
+        )}
+        {activeLesson.lsnPreface && !isAssessment && (
           <RichText
             className={styles.lessonPreface}
             content={activeLesson.lsnPreface}

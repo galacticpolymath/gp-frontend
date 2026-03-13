@@ -1,0 +1,43 @@
+.desktopPreviewPane {
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 12px;
+  border: 2px solid rgba(44, 131, 195, 0.5);
+  border-radius: 18px;
+  background:
+    radial-gradient(circle at 12% 16%, rgba(44, 131, 195, 0.1), transparent 54%),
+    linear-gradient(160deg, rgba(243, 246, 251, 0.93), rgba(231, 236, 244, 0.9));
+  box-shadow: 0 14px 34px rgba(23, 39, 62, 0.16);
+  isolation: isolate;
+}
+
+.desktopPreviewPaneContent {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+
+@media (min-width: 768px) {
+  .desktopPreviewPane {
+    position: sticky;
+    top: var(--lesson-preview-sticky-top, 0px);
+    align-self: start;
+  }
+}
+
+@media (max-width: 767px) {
+  .desktopPreviewPane {
+    position: relative;
+    top: auto;
+    min-height: 0;
+    height: auto;
+    max-height: none;
+  }
+}

@@ -104,77 +104,80 @@ const MaterialsPreviewDownloadSection: React.FC<TMaterialsPreviewDownloadSection
                 {(pdfDownloadUrl || hasOfficeDownload) && (
                   <div className={styles.materialRowPdfWrap}>
                     <div className={styles.materialDownloadRow}>
-                      <span
-                        className={`${styles.materialDownloadLabel} ${styles.materialDownloadLabelLeading}`}
-                      >
-                        Download
-                      </span>
-                      <div className={styles.materialDownloadActions}>
-                        {pdfDownloadUrl &&
-                          (canAccessPdf ? (
-                            <a
-                              className={styles.materialPdfLink}
-                              href={pdfDownloadUrl}
-                              target="_blank"
-                              rel="noreferrer"
-                            >
-                              PDF
-                            </a>
-                          ) : (
-                            <span className={styles.materialPdfLinkDisabled}>PDF</span>
-                          ))}
-                        {hasOfficeDownload &&
-                          (canAccessOffice ? (
-                            <a
-                              className={`${styles.materialPdfLink} ${styles.materialOfficeLink}`}
-                              href={officeDownloadUrl ?? undefined}
-                              target="_blank"
-                              rel="noreferrer"
-                            >
-                              <span className={styles.materialOfficeLinkContent}>
-                                <Image
-                                  alt="GP+ icon"
-                                  width={13}
-                                  height={13}
-                                  src="/plus/plus.png"
-                                  className={styles.materialOfficeLinkPlusIcon}
-                                />
-                                <span>{officeFormat}</span>
+                      <div className={styles.materialDownloadPair}>
+                        <span
+                          className={`${styles.materialDownloadLabel} ${styles.materialDownloadLabelLeading}`}
+                          aria-hidden="true"
+                        >
+                          <Download size={16} />
+                        </span>
+                        <div className={styles.materialDownloadActions}>
+                          {pdfDownloadUrl &&
+                            (canAccessPdf ? (
+                              <a
+                                className={styles.materialPdfLink}
+                                href={pdfDownloadUrl}
+                                target="_blank"
+                                rel="noreferrer"
+                              >
+                                PDF
+                              </a>
+                            ) : (
+                              <span className={styles.materialPdfLinkDisabled}>PDF</span>
+                            ))}
+                          {hasOfficeDownload &&
+                            (canAccessOffice ? (
+                              <a
+                                className={`${styles.materialPdfLink} ${styles.materialOfficeLink}`}
+                                href={officeDownloadUrl ?? undefined}
+                                target="_blank"
+                                rel="noreferrer"
+                              >
+                                <span className={styles.materialOfficeLinkContent}>
+                                  <Image
+                                    alt="GP+ icon"
+                                    width={13}
+                                    height={13}
+                                    src="/plus/plus.png"
+                                    className={styles.materialOfficeLinkPlusIcon}
+                                  />
+                                  <span>{officeFormat}</span>
+                                </span>
+                              </a>
+                            ) : canUpsellOffice ? (
+                              <button
+                                type="button"
+                                className={`${styles.materialPdfLink} ${styles.materialOfficeLink} ${styles.materialOfficeLinkLocked}`}
+                                onClick={() => handleOpenOfficeUpsell(officeFormat ?? 'Office')}
+                              >
+                                <span className={styles.materialOfficeLinkContent}>
+                                  <Image
+                                    alt="GP+ icon"
+                                    width={13}
+                                    height={13}
+                                    src="/plus/plus.png"
+                                    className={styles.materialOfficeLinkPlusIcon}
+                                  />
+                                  <span>{officeFormat}</span>
+                                </span>
+                              </button>
+                            ) : (
+                              <span
+                                className={`${styles.materialPdfLinkDisabled} ${styles.materialOfficeLink} ${styles.materialOfficeLinkLocked}`}
+                              >
+                                <span className={styles.materialOfficeLinkContent}>
+                                  <Image
+                                    alt="GP+ icon"
+                                    width={13}
+                                    height={13}
+                                    src="/plus/plus.png"
+                                    className={styles.materialOfficeLinkPlusIcon}
+                                  />
+                                  <span>{officeFormat}</span>
+                                </span>
                               </span>
-                            </a>
-                          ) : canUpsellOffice ? (
-                            <button
-                              type="button"
-                              className={`${styles.materialPdfLink} ${styles.materialOfficeLink} ${styles.materialOfficeLinkLocked}`}
-                              onClick={() => handleOpenOfficeUpsell(officeFormat ?? 'Office')}
-                            >
-                              <span className={styles.materialOfficeLinkContent}>
-                                <Image
-                                  alt="GP+ icon"
-                                  width={13}
-                                  height={13}
-                                  src="/plus/plus.png"
-                                  className={styles.materialOfficeLinkPlusIcon}
-                                />
-                                <span>{officeFormat}</span>
-                              </span>
-                            </button>
-                          ) : (
-                            <span
-                              className={`${styles.materialPdfLinkDisabled} ${styles.materialOfficeLink} ${styles.materialOfficeLinkLocked}`}
-                            >
-                              <span className={styles.materialOfficeLinkContent}>
-                                <Image
-                                  alt="GP+ icon"
-                                  width={13}
-                                  height={13}
-                                  src="/plus/plus.png"
-                                  className={styles.materialOfficeLinkPlusIcon}
-                                />
-                                <span>{officeFormat}</span>
-                              </span>
-                            </span>
-                          ))}
+                            ))}
+                        </div>
                       </div>
                     </div>
                     {isGpPlusResolved &&
