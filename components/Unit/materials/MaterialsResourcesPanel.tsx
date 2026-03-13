@@ -1,10 +1,9 @@
 import React from 'react';
-import Image from 'next/image';
-import { X } from 'lucide-react';
 import styles from './UnitMaterials.module.css';
 import MaterialsQuickStartSection from './MaterialsQuickStartSection';
 import MaterialsGpPlusFunctionsSection from './MaterialsGpPlusFunctionsSection';
 import MaterialsPreviewDownloadSection from './MaterialsPreviewDownloadSection';
+import MaterialsGpPlusBanner from './MaterialsGpPlusBanner';
 
 type TMaterialsResourcesPanelProps = {
   lessonResourcesCardRef: React.RefObject<HTMLDivElement | null>;
@@ -29,44 +28,14 @@ const MaterialsResourcesPanel: React.FC<TMaterialsResourcesPanelProps> = ({
 }) => {
   return (
     <>
-      {!isGpPlusUser && !isGpPlusBannerDismissed && (
-        <div className={styles.gpPlusBannerWrapInGrid}>
-          <div className={styles.gpPlusBanner}>
-            <button
-              type="button"
-              className={styles.gpPlusBannerClose}
-              aria-label="Dismiss GP+ upgrade banner"
-              onClick={() => setIsGpPlusBannerDismissed(true)}
-            >
-              <X size={16} aria-hidden="true" />
-            </button>
-            <div className={styles.gpPlusLogo}>
-              <Image
-                alt="GP+ logo"
-                width={88}
-                height={88}
-                src="/imgs/gp-logos/gp_submark.png"
-              />
-            </div>
-            <div className={styles.gpPlusCopy}>
-              <div className={styles.gpPlusHeadline}>
-                Download &amp; Edit lessons in one-click
-              </div>
-              <div className={styles.gpPlusSubhead}>Get 50% off GP+</div>
-            </div>
-            <button
-              type="button"
-              className={styles.gpPlusCta}
-              onClick={() => setIsGpPlusModalDisplayed(true)}
-            >
-              <span className={styles.gpPlusCtaIcon}>
-                <Image alt="GP+ icon" width={48} height={48} src="/plus/plus.png" />
-              </span>
-              <span>Upgrade to GP+</span>
-            </button>
-          </div>
-        </div>
-      )}
+      <MaterialsGpPlusBanner
+        headline="Download & Edit lessons in one-click"
+        subhead="Get 50% off GP+"
+        isGpPlusUser={isGpPlusUser}
+        isGpPlusBannerDismissed={isGpPlusBannerDismissed}
+        setIsGpPlusBannerDismissed={setIsGpPlusBannerDismissed}
+        setIsGpPlusModalDisplayed={setIsGpPlusModalDisplayed}
+      />
       <div ref={lessonResourcesCardRef} className={styles.lessonResourcesCard}>
         <MaterialsQuickStartSection {...quickStartProps} />
         <MaterialsGpPlusFunctionsSection {...gpPlusFunctionsProps} />
