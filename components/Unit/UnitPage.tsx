@@ -4260,6 +4260,10 @@ const UnitPage: React.FC<{ unit: TUnitForUI }> = ({ unit }) => {
                     <MaterialsMobileStack
                       activeLessonId={activeLessonId}
                       isAssessmentLesson={isActiveAssessmentLesson}
+                      isGpPlusUser={isGpPlusUser}
+                      isGpPlusBannerDismissed={isGpPlusBannerDismissed}
+                      setIsGpPlusBannerDismissed={setIsGpPlusBannerDismissed}
+                      setIsGpPlusModalDisplayed={setIsGpPlusModalDisplayed}
                       activeLessonPreviewMode={activeLessonPreviewMode}
                       setActiveLessonPreviewMode={(mode: string) =>
                         setActiveLessonPreviewMode(mode as TActiveLessonPreviewMode)

@@ -27,13 +27,76 @@ type TMediaTypeConfig = {
   Icon: React.ComponentType<{ size?: number; className?: string; 'aria-hidden'?: boolean }>;
 };
 
+const MISSING_LINK_PLACEHOLDER =
+  'No link provided to this resource. Probably under construction.';
+
 const getNumericOrder = (value?: string | null) => {
   const parsed = Number(value);
   return Number.isFinite(parsed) ? parsed : Number.MAX_SAFE_INTEGER;
 };
 
-const hasRenderableMediaLink = (item: TFeaturedMultimediaForUI) =>
-  typeof item.mainLink === 'string' && item.mainLink.trim().length > 0;
+const getNormalizedMediaLink = (link?: string | null) => {
+  if (typeof link !== 'string') {
+    return '';
+  }
+
+  return link.trim();
+};
+
+const hasMediaFileExtension = (pathname: string) =>
+  /\.(mp4|webm|ogg|mov|m4v|m3u8|pdf)$/i.test(pathname);
+
+const isLikelyInternalNavigationLink = (link: string) => {
+  if (!link) {
+    return true;
+  }
+
+  if (/^(#|\?)/.test(link)) {
+    return true;
+  }
+
+  if (link.startsWith('/')) {
+    return !hasMediaFileExtension(link);
+  }
+
+  try {
+    const baseOrigin =
+      typeof window !== 'undefined' ? window.location.origin : 'https://www.galacticpolymath.com';
+    const currentHost =
+      typeof window !== 'undefined' ? window.location.hostname.toLowerCase() : null;
+    const parsedUrl = new URL(link, baseOrigin);
+    const host = parsedUrl.hostname.toLowerCase();
+    const isKnownGpHost =
+      host === 'localhost' ||
+      host === '127.0.0.1' ||
+      host === 'galacticpolymath.com' ||
+      host.endsWith('.galacticpolymath.com');
+    const isCurrentHost = currentHost ? host === currentHost : false;
+    const isInternalHost = isKnownGpHost || isCurrentHost;
+
+    if (!isInternalHost) {
+      return false;
+    }
+
+    if (hasMediaFileExtension(parsedUrl.pathname)) {
+      return false;
+    }
+
+    return true;
+  } catch {
+    return true;
+  }
+};
+
+const hasUsableMediaLink = (item: TFeaturedMultimediaForUI) => {
+  const normalizedLink = getNormalizedMediaLink(item.mainLink);
+
+  if (!normalizedLink) {
+    return false;
+  }
+
+  return !isLikelyInternalNavigationLink(normalizedLink);
+};
 
 const getYoutubeThumbUrl = (link?: string | null) => {
   if (!link || typeof link !== 'string') {
@@ -168,7 +231,7 @@ const CompactMediaCarousel: React.FC<TCompactMediaCarouselProps> = ({
   const sortedMediaItems = useMemo(
     () =>
       [...(mediaItems ?? [])]
-        .filter(hasRenderableMediaLink)
+        .filter(Boolean)
         .sort((a, b) => getNumericOrder(a.order) - getNumericOrder(b.order)),
     [mediaItems]
   );
@@ -209,12 +272,16 @@ const CompactMediaCarousel: React.FC<TCompactMediaCarouselProps> = ({
 
   useEffect(() => {
     const missingPreviewItems = hydratedMediaItems.filter(
-      (item) =>
-        item.type === 'web-app' &&
-        !item.webAppPreviewImg &&
-        typeof item.mainLink === 'string' &&
-        item.mainLink.length > 0 &&
-        !resolvedPreviewMap[item.mainLink]
+      (item) => {
+        const linkKey = getNormalizedMediaLink(item.mainLink);
+        return (
+          item.type === 'web-app' &&
+          !item.webAppPreviewImg &&
+          hasUsableMediaLink(item) &&
+          !!linkKey &&
+          !resolvedPreviewMap[linkKey]
+        );
+      }
     );
 
     if (!missingPreviewItems.length) {
@@ -225,8 +292,13 @@ const CompactMediaCarousel: React.FC<TCompactMediaCarouselProps> = ({
 
     Promise.all(
       missingPreviewItems.map(async (item) => {
+        const linkKey = getNormalizedMediaLink(item.mainLink);
+        if (!linkKey) {
+          return null;
+        }
+
         const url = new URL('/api/link-preview-image', window.location.origin);
-        url.searchParams.set('url', item.mainLink as string);
+        url.searchParams.set('url', linkKey);
 
         try {
           const response = await fetch(url.toString());
@@ -242,7 +314,7 @@ const CompactMediaCarousel: React.FC<TCompactMediaCarouselProps> = ({
           }
 
           return {
-            link: item.mainLink as string,
+            link: linkKey,
             image: payload.image,
             title: payload.title ?? null,
           };
@@ -295,7 +367,9 @@ const CompactMediaCarousel: React.FC<TCompactMediaCarouselProps> = ({
   const mediaType = getMediaTypeConfig(activeItem);
   const description = activeItem.lessonRelevance?.trim() || activeItem.description?.trim() || '';
   const lessonLabel = activeItem.forLsn?.trim() || null;
-  const canOpen = typeof activeItem.mainLink === 'string' && activeItem.mainLink.length > 0;
+  const hasUsableActiveLink = hasUsableMediaLink(activeItem);
+  const canOpen = hasUsableActiveLink;
+  const shouldShowMissingLinkPlaceholder = !hasUsableActiveLink;
 
   return (
     <section
@@ -306,7 +380,12 @@ const CompactMediaCarousel: React.FC<TCompactMediaCarouselProps> = ({
       <div className={styles.stage}>
         <div className={styles.mediaColumn}>
           <div className={styles.mediaFrame}>
-            {activeItem.type === 'web-app' && !activeItem.webAppPreviewImg ? (
+            {shouldShowMissingLinkPlaceholder ? (
+              <div className={styles.mediaFallback}>
+                <MonitorPlay size={28} aria-hidden="true" />
+                <p>{MISSING_LINK_PLACEHOLDER}</p>
+              </div>
+            ) : activeItem.type === 'web-app' && !activeItem.webAppPreviewImg ? (
               <div className={styles.mediaFallback}>
                 <MonitorPlay size={28} aria-hidden="true" />
                 <p>Preview image unavailable.</p>
